@@ -15,6 +15,7 @@ services:
       retries: 10
 
   backend:
+    image: ${BACKEND_IMAGE:-codinghubs-backend}
     build: ./backend
     restart: unless-stopped
     env_file: .env
@@ -27,6 +28,7 @@ services:
       - '8000'
 
   frontend:
+    image: ${FRONTEND_IMAGE:-codinghubs-frontend}
     build:
       context: ./frontend
       args:

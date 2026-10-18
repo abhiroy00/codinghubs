@@ -11,6 +11,11 @@ This replaces the static site (`index.html`, `faq.html`, `main.js`, `styles.css`
 The original static files are left in place for reference / comparison — delete
 them once you're happy with the rebuild.
 
+**Live deployment:** every push to `main` auto-deploys to AWS via GitHub Actions
+(Docker images on ECR, running on a single EC2 instance, no SSH / no standing
+AWS credentials in CI). See [DEPLOY.md](DEPLOY.md) for the infrastructure
+details and what's left before going live with real payments.
+
 ## Running it locally
 
 **Backend** (Django, port 8000):
