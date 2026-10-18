@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { CoursesGrid } from './free-session/CoursesGrid'
 import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
+import { PROGRAMS } from './free-session/programs'
 import { RegisterForm } from './free-session/RegisterForm'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
@@ -395,7 +397,7 @@ export function FreeSession() {
               <p className="sub">Attend the free demo session first. If you like it, join the paid 15-day training program for the same course.</p>
             </div>
 
-            <div className="plan-grid">
+            <div className="programs-intro">
               <article className="plan-card">
                 <div className="plan-media">
                   <img src="/fs-assets/img/Modern Virtual Classroom Studio.png" alt="Free live demo session" width={800} height={500} loading="lazy" decoding="async" />
@@ -412,70 +414,51 @@ export function FreeSession() {
                     <span className="amt">₹0</span>
                     <span className="per">no payment to register</span>
                   </p>
-                  <ul className="plan-list">
-                    <li>
-                      <FsIcon id="i-check" />Introduction to your chosen course
-                    </li>
-                    <li>
-                      <FsIcon id="i-check" />Live demonstration by the trainer
-                    </li>
-                    <li>
-                      <FsIcon id="i-check" />Course roadmap &amp; modules
-                    </li>
-                    <li>
-                      <FsIcon id="i-check" />Live Q&amp;A with the trainer
-                    </li>
-                  </ul>
                   <a href="#register" className="btn btn-ghost btn-block" data-cta="plan-demo">
                     Register for Free <FsIcon id="i-arrow" />
                   </a>
                 </div>
               </article>
+            </div>
 
-              <div className="plan-link" aria-hidden="true">
-                <FsIcon id="i-arrow" />
-              </div>
+            <div className="sec-head center" style={{ marginTop: '2.5rem' }}>
+              <h3 className="h2" style={{ fontSize: 'clamp(1.3rem,2.4vw,1.8rem)' }}>
+                Step 2 — Then Choose Your <span className="marker">15-Day Program</span>
+              </h3>
+              <p className="sub">Tap a program to see the full day-by-day plan before you enroll.</p>
+            </div>
 
-              <article className="plan-card plan-featured">
-                <div className="plan-media">
-                  <img src="/fs-assets/img/Live Python Class Studio.png" alt="15-day live training program" width={800} height={500} loading="lazy" decoding="async" />
-                  <span className="plan-step">Step 2</span>
-                  <span className="plan-badge">Paid Program</span>
-                </div>
-                <div className="plan-body">
-                  <h3>
-                    15-Day Training Program <span className="paid-tag">PAID</span>
-                  </h3>
-                  <p className="plan-meta">
-                    <FsIcon id="i-cal" />15 Days · Online Live
-                  </p>
-                  <p className="plan-price">
-                    <span className="amt">₹4,999</span>
-                    <span className="per">paid course fee</span>
-                  </p>
-                  <ul className="plan-list">
-                    <li>
-                      <FsIcon id="i-check" />15 days of live, trainer-led classes
-                    </li>
-                    <li>
-                      <FsIcon id="i-check" />Hands-on practice on real examples
-                    </li>
-                    <li>
-                      <FsIcon id="i-check" />Doubt-solving with the trainer
-                    </li>
-                    <li>
-                      <FsIcon id="i-check" />Guidance on your next learning steps
-                    </li>
-                  </ul>
-                  <a href="#register" className="btn btn-anim btn-yellow btn-block" data-cta="plan-program">
-                    Enroll Now <FsIcon id="i-arrow" />
-                  </a>
-                </div>
-              </article>
+            <div className="programs-grid">
+              {PROGRAMS.map((program) => (
+                <Link to={`/program/${program.slug}`} key={program.slug} className="program-card-link">
+                  <article className="plan-card plan-featured">
+                    <div className="plan-media">
+                      <img src={program.image} alt={program.title} width={800} height={500} loading="lazy" decoding="async" />
+                      <span className="plan-badge">Paid Program</span>
+                    </div>
+                    <div className="plan-body">
+                      <h3>
+                        {program.title} <span className="paid-tag">PAID</span>
+                      </h3>
+                      <p className="plan-meta">
+                        <FsIcon id="i-cal" />15 Days · Online Live
+                      </p>
+                      <p className="plan-price">
+                        <span className="amt">₹4,999</span>
+                        <span className="per">paid course fee</span>
+                      </p>
+                      <p style={{ color: 'var(--muted)', fontSize: '.92rem', marginBottom: '1rem' }}>{program.tagline}</p>
+                      <span className="btn btn-anim btn-yellow btn-block">
+                        View Day-by-Day Plan <FsIcon id="i-arrow" />
+                      </span>
+                    </div>
+                  </article>
+                </Link>
+              ))}
             </div>
 
             <p className="plan-note">
-              <FsIcon id="i-ticket" />You only pay the ₹4,999 fee if you decide to join the 15-day program after the free demo.
+              <FsIcon id="i-ticket" />You only pay the ₹4,999 fee if you decide to join a 15-day program after the free demo.
             </p>
           </div>
         </section>

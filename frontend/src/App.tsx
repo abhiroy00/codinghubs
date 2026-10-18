@@ -5,6 +5,7 @@ import { AuthProvider } from './lib/auth-context'
 import { LenisProvider } from './lib/lenis-context'
 import { ModalProvider } from './lib/modal-context'
 import { CourseCheckout } from './pages/CourseCheckout'
+import { Curriculum } from './pages/Curriculum'
 import { Dashboard } from './pages/Dashboard'
 import { Faq } from './pages/Faq'
 import { FreeSession } from './pages/FreeSession'
@@ -21,6 +22,7 @@ export function App() {
             <Routes>
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
+              <Route path="program/:slug" element={<Curriculum />} />
               <Route element={<Layout />}>
                 <Route path="faq" element={<Faq />} />
                 <Route path="policies" element={<Policies />} />
