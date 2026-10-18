@@ -33,7 +33,7 @@ export function FreeSession() {
   useEffect(() => {
     document.title = 'Free 2-Hour Live Online Demo Session | AI, Data, Development, Design & Marketing Courses'
     return () => {
-      document.title = 'Coding Hubs School of AI — AI will shape your career. Are you ready?'
+      document.title = 'Coding Hubs School of AI'
     }
   }, [])
 
