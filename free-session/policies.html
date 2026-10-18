@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Policies | Free Live Training Session</title>
+<meta name="robots" content="noindex,follow" />
+<meta name="theme-color" content="#0A1A3F" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .doc{max-width:780px;padding-block:3rem 4rem}
+  .doc h1{font-size:clamp(1.8rem,4vw,2.4rem)}
+  .doc h2{margin-top:2.75rem;font-size:1.4rem;scroll-margin-top:90px}
+  .doc h3{margin-top:1.25rem;font-size:1.02rem}
+  .doc p,.doc li{color:var(--muted);margin-top:.6rem}
+  .doc ul{padding-left:1.2rem}
+  .note{margin-top:1rem;padding:.85rem 1rem;border-radius:12px;background:var(--yellow-soft);border:1px dashed var(--yellow-2);color:#6b4f00;font-size:.9rem}
+  .toc{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.25rem}
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a href="index.html" class="logo"><img class="logo-img" src="img/logo.jpg" alt="Coding Hubs School of AI" width="380" height="100" /></a>
+    <div class="hdr-actions" style="margin-left:auto"><a href="index.html#register" class="btn btn-yellow btn-sm">Register Free</a></div>
+  </div>
+</header>
+<main class="wrap doc">
+  <h1>Policies</h1>
+  <p class="note"><strong>Template:</strong> replace this text with policies reviewed for your institute before going live with ads.</p>
+  <nav class="toc" aria-label="Policies">
+    <a class="btn btn-ghost btn-sm" href="#privacy">Privacy Policy</a>
+    <a class="btn btn-ghost btn-sm" href="#cookies">Cookies</a>
+    <a class="btn btn-ghost btn-sm" href="#terms">Terms &amp; Conditions</a>
+    <a class="btn btn-ghost btn-sm" href="#rescheduling">Session Rescheduling</a>
+  </nav>
+
+  <h2 id="privacy">Privacy Policy</h2>
+  <h3>What we collect</h3>
+  <p>When you register for the free live session we collect your name, mobile number, email address, the course you are interested in and, optionally, your current education. We also record basic campaign information (such as the advertisement or link you came from) to understand which of our ads are useful.</p>
+  <h3>How we use it</h3>
+  <p>Your information will only be used to contact you about the training session and related course information — for example, to share the session date, time and joining link, and to answer your questions about the course and admission process.</p>
+  <h3>WhatsApp</h3>
+  <p>We contact you on WhatsApp only if you opt in on the form or message us there first. You can ask us to stop at any time.</p>
+  <h3>Sharing &amp; retention</h3>
+  <p>We do not sell your personal data. It is stored with the service providers we use to run registrations and is kept only as long as needed for these purposes.</p>
+  <h3>Your rights</h3>
+  <p>You can ask us to access, correct or delete your information by contacting us at <a href="mailto:info@codingnowai.in" data-cfg="institute.email" data-cfg-href="mailto">info@codingnowai.in</a>.</p>
+
+  <h2 id="cookies">Cookies</h2>
+  <p>With your consent, this page uses analytics and advertising cookies (Google Analytics / Google Ads) to measure visits and registrations from our ads. If you reject them, these cookies are not set. You can change your choice using “Cookie settings” in the page footer.</p>
+
+  <h2 id="terms">Terms &amp; Conditions</h2>
+  <ul>
+    <li>The free 2-hour live online session is a demonstration and introduction to the selected course. It is not the complete paid course.</li>
+    <li>Registration does not create any obligation to enrol in a paid course.</li>
+    <li>Session joining details are personal and should not be shared publicly.</li>
+    <li>Participants are expected to behave respectfully during the live session. The trainer may remove participants who disrupt the session.</li>
+    <li>Information about the full course curriculum, fees and admission is provided separately by the institute.</li>
+  </ul>
+
+  <h2 id="rescheduling">Session Rescheduling Policy</h2>
+  <p>Session dates and times may change due to trainer availability or technical reasons. If a session is rescheduled or cancelled, registered students will be informed through the contact details they provided. If you cannot attend, contact us and we will let you know about upcoming sessions for your course, where available.</p>
+
+  <p style="margin-top:3rem"><a href="index.html">← Back to the free session page</a></p>
+</main>
+<footer class="ftr"><div class="wrap ftr-bottom" style="margin-top:0;border:0">© <span id="year"></span> <span data-cfg="institute.name">Coding Hubs School of AI</span>. All rights reserved.</div></footer>
+<script>
+  (function(){var C=window.LP_CONFIG||{},g=function(p){return p.split('.').reduce(function(o,k){return o==null?o:o[k]},C)};
+  document.querySelectorAll('[data-cfg]').forEach(function(el){var v=g(el.dataset.cfg);if(v)el.textContent=v;if(el.dataset.cfgHref==='mailto'&&v)el.href='mailto:'+v;});
+  document.getElementById('year').textContent=new Date().getFullYear();})();
+</script>
+</body>
+</html>
