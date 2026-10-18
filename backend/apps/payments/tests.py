@@ -39,6 +39,20 @@ class PaymentFlowTests(TestCase):
         self.assertTrue(Order.objects.filter(razorpay_order_id='order_TEST123').exists())
 
     @patch('apps.payments.views.get_client')
+    def test_create_order_returns_clean_error_on_gateway_failure(self, mock_get_client):
+        import razorpay
+
+        mock_client = MagicMock()
+        mock_client.order.create.side_effect = razorpay.errors.BadRequestError('Authentication failed')
+        mock_get_client.return_value = mock_client
+
+        resp = self.client.post('/api/payments/create-order/', {'course_id': self.course.id}, format='json')
+
+        self.assertEqual(resp.status_code, 503)
+        self.assertIn('detail', resp.data)
+        self.assertFalse(Order.objects.filter(course=self.course).exists())
+
+    @patch('apps.payments.views.get_client')
     def test_create_order_blocks_duplicate_enrollment(self, mock_get_client):
         Enrollment.objects.create(user=self.user, course=self.course)
         resp = self.client.post('/api/payments/create-order/', {'course_id': self.course.id}, format='json')

@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import json
+import logging
 
 import razorpay
 from django.conf import settings
@@ -9,6 +10,8 @@ from django.http import HttpResponse
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+logger = logging.getLogger(__name__)
 
 from apps.courses.models import Course
 from apps.enrollments.models import Enrollment
@@ -33,11 +36,18 @@ class CreateOrderView(APIView):
 
         amount = course.price_paise
         client = get_client()
-        rp_order = client.order.create({
-            'amount': amount,
-            'currency': 'INR',
-            'notes': {'course_id': str(course.id), 'user_id': str(request.user.id)},
-        })
+        try:
+            rp_order = client.order.create({
+                'amount': amount,
+                'currency': 'INR',
+                'notes': {'course_id': str(course.id), 'user_id': str(request.user.id)},
+            })
+        except (razorpay.errors.BadRequestError, razorpay.errors.GatewayError, razorpay.errors.ServerError) as exc:
+            logger.error('Razorpay order.create failed for course %s: %s', course.id, exc)
+            return Response(
+                {'detail': 'Payment gateway is not available right now. Please try again later.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
         order = Order.objects.create(
             user=request.user,
