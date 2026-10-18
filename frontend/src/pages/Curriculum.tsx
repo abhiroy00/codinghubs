@@ -43,30 +43,44 @@ export function Curriculum() {
       </header>
 
       <main>
-        <section className="sec curriculum-hero" aria-labelledby="curriculum-title">
-          <div className="wrap">
-            <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', marginBottom: '1.25rem', color: 'var(--navy)', fontWeight: 600 }}>
-              <svg className="ico" style={{ transform: 'scaleX(-1)' }} aria-hidden="true">
-                <use href="#i-arrow" />
-              </svg>
-              Back to all programs
-            </Link>
-            <div className="sec-head center">
-              <p className="eyebrow">15-Day Training Program</p>
-              <h1 id="curriculum-title" className="h2">
+        <section className="curriculum-banner" aria-labelledby="curriculum-title">
+          <img src={program.image} alt="" aria-hidden="true" />
+          <div className="wrap curriculum-banner-in">
+            <nav className="breadcrumb" aria-label="Breadcrumb">
+              <Link to="/">Home</Link>
+              <span className="sep">/</span>
+              <Link to="/#program">Programs</Link>
+              <span className="sep">/</span>
+              <span className="current" aria-current="page">
                 {program.title}
-              </h1>
-              <p className="sub">{program.tagline}</p>
-              <p className="plan-price" style={{ justifyContent: 'center' }}>
-                <span className="amt">₹4,999</span>
-                <span className="per">15 days · online live</span>
-              </p>
-            </div>
+              </span>
+            </nav>
+            <p className="eyebrow">15-Day Training Program</p>
+            <h1 id="curriculum-title">{program.title}</h1>
+            <p className="sub">{program.tagline}</p>
+            <ul className="form-meta" aria-label="Program summary">
+              <li>
+                <FsIcon id="i-cal" />15 Days
+              </li>
+              <li>
+                <FsIcon id="i-monitor" />Online Live
+              </li>
+              <li>
+                <FsIcon id="i-ticket" />₹4,999
+              </li>
+            </ul>
           </div>
         </section>
 
-        <section className="sec sec-alt" aria-label={`${program.title} day-by-day plan`}>
+        <section className="sec sec-alt curriculum-sec" aria-label={`${program.title} day-by-day plan`}>
           <div className="wrap">
+            <div className="sec-head center reveal">
+              <p className="eyebrow">Day by day</p>
+              <h2 className="h2">
+                What You'll Learn, <span className="marker">Day by Day</span>
+              </h2>
+              <p className="sub">Tap a day to see what it covers.</p>
+            </div>
             <div className="faq curriculum-days">
               {program.days.map((day, i) => (
                 <details key={day.title} open={i === 0}>

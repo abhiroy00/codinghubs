@@ -608,10 +608,26 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .program-card-link{display:block;color:inherit;text-decoration:none}
 
 /* ============ CURRICULUM (day-by-day) PAGE ============ */
-.curriculum-hero{padding-block:2.5rem 1.5rem}
+.curriculum-banner{position:relative;isolation:isolate;min-height:320px;display:flex;align-items:flex-end;overflow:hidden;background:var(--navy)}
+.curriculum-banner img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover}
+.curriculum-banner::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,26,63,.55) 0%,rgba(7,18,48,.88) 72%,rgba(7,18,48,.96) 100%)}
+.curriculum-banner-in{width:100%;padding-block:3rem 2.25rem}
+.curriculum-banner .eyebrow{color:var(--yellow)}
+.curriculum-banner h1{color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);margin-top:.4rem}
+.curriculum-banner .sub{color:rgba(255,255,255,.82);max-width:620px;margin-top:.75rem}
+.curriculum-banner .form-meta{margin-top:1.25rem}
+
+.breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0;padding:0;list-style:none;font:600 .82rem/1.4 var(--f-head);color:rgba(255,255,255,.65)}
+.breadcrumb a{color:rgba(255,255,255,.92);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb .sep{opacity:.5}
+.breadcrumb .current{color:var(--yellow)}
+
+.curriculum-sec{padding-block:3rem}
 .curriculum-days{max-width:760px;margin-inline:auto;display:grid;gap:.75rem}
-.curriculum-days summary{display:flex;align-items:center;gap:.75rem}
-.curriculum-days .day-n{flex-shrink:0;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--yellow);font:800 .85rem var(--f-head)}
+.curriculum-days summary{display:flex;align-items:center;gap:1rem}
+.curriculum-days.faq summary{font-size:1.05rem;padding-block:1.25rem}
+.curriculum-days .day-n{flex-shrink:0;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--navy);color:var(--yellow);font:800 1.05rem var(--f-head);box-shadow:0 0 0 4px var(--yellow-soft)}
 
 /* ============ FINAL CTA BANNER ============ */
 .final-banner{display:none}
