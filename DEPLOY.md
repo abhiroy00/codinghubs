@@ -1,5 +1,10 @@
 # Deployment
 
+**Live now:** http://13.236.145.34 — auto-deploys on every push to `main`.
+Admin: http://13.236.145.34/admin/ (`admin` / check your password manager —
+generated at setup time, not stored in this repo; reset via
+`docker compose exec backend python manage.py changepassword admin` over SSM if lost).
+
 CI/CD is fully automated via GitHub Actions (`.github/workflows/ci.yml`). On every
 push to `main`: backend tests run, frontend type-checks and builds, then (only on
 `main`) both Docker images are built, pushed to ECR, and deployed to the EC2 host
