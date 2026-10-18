@@ -1,15 +1,12 @@
-# Coding Hubs School of AI — React + DRF rebuild
+# Coding Hubs School of AI — React + DRF
 
-This replaces the static site (`index.html`, `faq.html`, `main.js`, `styles.css`,
-`free-session/`) with:
+Full rewrite of the original static HTML site as:
 
 - **`backend/`** — Django 5 + Django REST Framework. JWT auth, course catalog,
   lead capture, and Razorpay-powered course enrollment payments.
-- **`frontend/`** — React 19 + Vite + TypeScript, pixel-matched to the original
-  design (same CSS, same copy, same animations), now talking to the API above.
-
-The original static files are left in place for reference / comparison — delete
-them once you're happy with the rebuild.
+- **`frontend/`** — React 19 + Vite + TypeScript. Home/FAQ/Policies are
+  pixel-matched to the original marketing site; `/free-session` is a separate
+  ported landing page with its own scoped design.
 
 **Live deployment:** every push to `main` auto-deploys to AWS via GitHub Actions
 (Docker images on ECR, running on a single EC2 instance, no SSH / no standing
