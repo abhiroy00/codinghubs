@@ -93,12 +93,13 @@ jobs:
           CMD_ID=$(aws ssm send-command \
             --instance-ids "${{ vars.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --parameters "commands=[\"curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/infra/deploy-remote.sh | bash -s -- ${{ github.sha }}\"]" \
+            --timeout-seconds 900 \
+            --parameters "commands=[\"curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/infra/deploy-remote.sh | bash -s -- ${{ github.sha }}\"],executionTimeout=[\"900\"]" \
             --comment "deploy ${{ github.sha }}" \
             --query 'Command.CommandId' --output text)
           echo "command id: $CMD_ID"
 
-          for i in $(seq 1 60); do
+          for i in $(seq 1 90); do
             STATUS=$(aws ssm get-command-invocation \
               --command-id "$CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
               --query 'Status' --output text 2>/dev/null || echo Pending)
@@ -110,7 +111,7 @@ jobs:
                   --query '{stdout:StandardOutputContent,stderr:StandardErrorContent}' --output text
                 exit 1 ;;
             esac
-            sleep 5
+            sleep 10
           done
 
           aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
