@@ -111,7 +111,7 @@ export function FreeSession() {
       <header className="hdr" id="hdr">
         <div className="wrap hdr-in">
           <a href="#home" className="logo" aria-label="Home">
-            <img className="logo-img" src="/free-session/img/logo.jpg" alt="Coding Hubs School of AI" width={380} height={100} />
+            <img className="logo-img" src="/fs-assets/img/logo.jpg" alt="Coding Hubs School of AI" width={380} height={100} />
           </a>
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary" onClick={(e) => { if ((e.target as HTMLElement).closest('a')) setNavOpen(false) }}>
             <a href="#home">Home</a>
@@ -398,7 +398,7 @@ export function FreeSession() {
             <div className="plan-grid">
               <article className="plan-card">
                 <div className="plan-media">
-                  <img src="/free-session/img/Modern Virtual Classroom Studio.png" alt="Free live demo session" width={800} height={500} loading="lazy" decoding="async" />
+                  <img src="/fs-assets/img/Modern Virtual Classroom Studio.png" alt="Free live demo session" width={800} height={500} loading="lazy" decoding="async" />
                   <span className="plan-step">Step 1</span>
                 </div>
                 <div className="plan-body">
@@ -438,7 +438,7 @@ export function FreeSession() {
 
               <article className="plan-card plan-featured">
                 <div className="plan-media">
-                  <img src="/free-session/img/Live Python Class Studio.png" alt="15-day live training program" width={800} height={500} loading="lazy" decoding="async" />
+                  <img src="/fs-assets/img/Live Python Class Studio.png" alt="15-day live training program" width={800} height={500} loading="lazy" decoding="async" />
                   <span className="plan-step">Step 2</span>
                   <span className="plan-badge">Paid Program</span>
                 </div>
@@ -481,7 +481,7 @@ export function FreeSession() {
         </section>
 
         <a href="#courses" className="wide-banner" data-cta="courses-banner">
-          <img src="/free-session/img/bg3.png" alt="Build your future with AI Engineer. Learn today, build tomorrow. Explore all courses." width={2048} height={584} loading="lazy" decoding="async" />
+          <img src="/fs-assets/img/bg3.png" alt="Build your future with AI Engineer. Learn today, build tomorrow. Explore all courses." width={2048} height={584} loading="lazy" decoding="async" />
         </a>
 
         <section className="sec sec-alt" id="courses" aria-labelledby="courses-title">
@@ -765,7 +765,7 @@ export function FreeSession() {
                 ))}
               </div>
               <figure className="faq-img">
-                <img src="/free-session/img/faq.png" alt="" width={1024} height={1536} loading="lazy" decoding="async" />
+                <img src="/fs-assets/img/faq.png" alt="" width={1024} height={1536} loading="lazy" decoding="async" />
               </figure>
             </div>
           </div>
@@ -774,7 +774,7 @@ export function FreeSession() {
         <section className="final" aria-labelledby="final-title">
           <div className="wrap">
             <a href="#register" className="final-banner" data-cta="final-banner">
-              <img src="/free-session/img/contact-banner.jpg" alt="Your Next Learning Journey Starts Here! Register for our free 2-hour live online session. Register for Free" width={1920} height={592} loading="lazy" decoding="async" />
+              <img src="/fs-assets/img/contact-banner.jpg" alt="Your Next Learning Journey Starts Here! Register for our free 2-hour live online session. Register for Free" width={1920} height={592} loading="lazy" decoding="async" />
             </a>
             <div className="final-box">
               <span className="ring r1" aria-hidden="true"></span>
@@ -795,7 +795,7 @@ export function FreeSession() {
         <div className="wrap ftr-grid">
           <div className="ftr-brand">
             <a href="#home" className="logo logo-light" aria-label="Back to top">
-              <img className="logo-img" src="/free-session/img/logo.jpg" alt="Coding Hubs School of AI" width={380} height={100} />
+              <img className="logo-img" src="/fs-assets/img/logo.jpg" alt="Coding Hubs School of AI" width={380} height={100} />
             </a>
             <p className="ftr-tag">Free 2-hour live online demo sessions for AI, development, data, design and marketing courses.</p>
           </div>

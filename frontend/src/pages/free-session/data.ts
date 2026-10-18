@@ -29,12 +29,12 @@ export interface VideoItem {
 }
 
 export const VIDEOS: VideoItem[] = [
-  { src: '/free-session/img/videos/demo-1.mp4', title: 'AI Challenge: Day 3', duration: '1:06' },
-  { src: '/free-session/img/videos/demo-2.mp4', title: 'Multi-Agent Systems', duration: '0:44' },
-  { src: '/free-session/img/videos/demo-3.mp4', title: 'Claude vs Codex', duration: '0:53' },
-  { src: '/free-session/img/videos/demo-4.mp4', title: 'AI Concept Challenge', duration: '0:40' },
-  { src: '/free-session/img/videos/demo-5.mp4', title: 'ChatGPT for Developers', duration: '1:06' },
-  { src: '/free-session/img/videos/demo-6.mp4', title: 'End-to-End AI Solutions', duration: '0:30' },
+  { src: '/fs-assets/img/videos/demo-1.mp4', title: 'AI Challenge: Day 3', duration: '1:06' },
+  { src: '/fs-assets/img/videos/demo-2.mp4', title: 'Multi-Agent Systems', duration: '0:44' },
+  { src: '/fs-assets/img/videos/demo-3.mp4', title: 'Claude vs Codex', duration: '0:53' },
+  { src: '/fs-assets/img/videos/demo-4.mp4', title: 'AI Concept Challenge', duration: '0:40' },
+  { src: '/fs-assets/img/videos/demo-5.mp4', title: 'ChatGPT for Developers', duration: '1:06' },
+  { src: '/fs-assets/img/videos/demo-6.mp4', title: 'End-to-End AI Solutions', duration: '0:30' },
 ]
 
 export const COURSE_OPTIONS = [
