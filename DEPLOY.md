@@ -1,9 +1,11 @@
 # Deployment
 
-**Live now:** http://13.236.145.34 — auto-deploys on every push to `main`.
-Admin: http://13.236.145.34/admin/ (`admin` / check your password manager —
+**Live now:** https://codinghubs.in — auto-deploys on every push to `main`.
+Admin: https://codinghubs.in/admin/ (`admin` / check your password manager —
 generated at setup time, not stored in this repo; reset via
 `docker compose exec backend python manage.py changepassword admin` over SSM if lost).
+Also reachable directly at http://13.236.145.34 (the Elastic IP, HTTP-only —
+no TLS cert covers the raw IP, only `codinghubs.in`/`www.codinghubs.in`).
 
 CI/CD is fully automated via GitHub Actions (`.github/workflows/ci.yml`). On every
 push to `main`: backend tests run, frontend type-checks and builds, then (only on
@@ -56,20 +58,39 @@ aws ssm start-session --region ap-southeast-2 --target i-0e1969128b9e39f8a
    Then re-run the deploy (push a commit, or re-run the workflow) so the new
    values get picked up.
 2. **Course prices are still placeholders** — see the main README.
-3. **Point your domain at it** once you share which domain + DNS provider you're
-   using:
-   - Add an **A record** for your domain (or subdomain) → `13.236.145.34`.
-   - Update these SSM params to the real domain, then redeploy:
-     ```bash
-     aws ssm put-parameter --region ap-southeast-2 --name /codinghubs/prod/ALLOWED_HOSTS --type String --value "your-domain.com,13.236.145.34" --overwrite
-     aws ssm put-parameter --region ap-southeast-2 --name /codinghubs/prod/CORS_ALLOWED_ORIGINS --type String --value "https://your-domain.com" --overwrite
-     aws ssm put-parameter --region ap-southeast-2 --name /codinghubs/prod/DOMAIN --type String --value "your-domain.com" --overwrite
-     ```
-   - Add HTTPS: easiest path is adding a `certbot` container (webroot or DNS
-     challenge) to `docker-compose.prod.yml` and a port-443 server block to
-     `frontend/nginx.conf`, or put an AWS ALB + ACM certificate in front of the
-     instance instead. Not wired up yet — ask and this can be added.
-   - Once HTTPS is live, flip `SECURE_SSL_REDIRECT` to `True` in SSM and redeploy.
+
+## Domain & HTTPS (done)
+
+`codinghubs.in` + `www.codinghubs.in` point at the Elastic IP (A records at the
+registrar, Hostinger) and are served over HTTPS with a Let's Encrypt cert.
+`ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`, `DOMAIN` and `SECURE_SSL_REDIRECT` are
+all set in SSM Parameter Store accordingly.
+
+**How HTTPS is set up** — `docker-compose.prod.yml` runs a `certbot` service
+(webroot mode) alongside `frontend`/`backend`/`db`. `frontend/nginx.conf` has
+two server blocks: port 80 serves `/.well-known/acme-challenge/` for
+certificate validation/renewal and redirects everything else to HTTPS; port
+443 terminates TLS using the cert at `/etc/letsencrypt/live/codinghubs.in/`
+(a volume shared with the certbot container). The certbot service loops
+`certbot renew` every 12h — Let's Encrypt certs are valid 90 days, so this
+keeps it current automatically; nothing to do manually.
+
+**If the instance is ever recreated from scratch**, the 443 server block in
+`nginx.conf` references cert files that won't exist yet — nginx will fail to
+start if deployed as-is. Bring it up in two stages like the first time:
+1. Deploy with only the port-80 block + ACME location (no 443/ssl_certificate
+   lines) so nginx starts cleanly and can serve the HTTP-01 challenge.
+2. Run the cert issuance once:
+   ```bash
+   docker compose -f docker-compose.prod.yml --env-file .env run --rm \
+     --entrypoint certbot certbot certonly --webroot -w /var/www/certbot \
+     -d codinghubs.in -d www.codinghubs.in \
+     --email info@codingnowai.in --agree-tos --no-eff-email --non-interactive
+   ```
+   (`--entrypoint certbot` is required — the `certbot` service's default
+   entrypoint is the renewal loop, which otherwise swallows this command and
+   runs forever instead of issuing the cert and exiting.)
+3. Only then deploy the full `nginx.conf` with the 443 block.
 
 ## Cost
 
