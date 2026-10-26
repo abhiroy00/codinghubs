@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
+import { FsFooter } from '../locations/FsShell'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { INSTITUTE, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
@@ -116,18 +117,7 @@ export function Curriculum() {
         </section>
       </main>
 
-      <footer className="ftr">
-        <div className="wrap ftr-bottom">
-          <p>
-            © {new Date().getFullYear()} {INSTITUTE.name}. All rights reserved.
-          </p>
-          <Link to="/" className="to-top" aria-label="Back to home">
-            <svg className="ico" aria-hidden="true" style={{ transform: 'rotate(-90deg)' }}>
-              <use href="#i-arrow" />
-            </svg>
-          </Link>
-        </div>
-      </footer>
+      <FsFooter />
     </div>
   )
 }

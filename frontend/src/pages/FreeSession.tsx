@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
+import { FsFooter } from '../locations/FsShell'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
 import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
@@ -769,110 +770,7 @@ export function FreeSession() {
         </section>
       </main>
 
-      <footer className="ftr">
-        <div className="wrap ftr-grid">
-          <div className="ftr-brand">
-            <a href="#home" className="logo logo-light" aria-label="Back to top">
-              <img className="logo-img" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
-            </a>
-            <p className="ftr-tag">Free 2-hour live online demo sessions for AI, development, data, design and marketing courses.</p>
-          </div>
-
-          <nav className="ftr-col" aria-label="Quick links">
-            <h2>Quick Links</h2>
-            <ul className="ftr-links">
-              <li><a href="#courses">Explore Courses</a></li>
-              <li><a href="#program">Programs</a></li>
-              <li><a href="#session">About the Session</a></li>
-              <li><a href="#faq">FAQ</a></li>
-              <li><a href="/policies#privacy">Privacy Policy</a></li>
-              <li><a href="/policies#terms">Terms &amp; Conditions</a></li>
-              <li><a href="/policies#rescheduling">Rescheduling Policy</a></li>
-            </ul>
-          </nav>
-
-          <div className="ftr-col ftr-social-col">
-            <h2>Our Social</h2>
-            <ul className="ftr-social">
-              <li>
-                <a href={INSTITUTE.social.linkedin} target="_blank" rel="noopener">
-                  <FsIcon id="i-in" className="ico ico-fill" />LinkedIn
-                </a>
-              </li>
-              <li>
-                <a href={INSTITUTE.social.instagram} target="_blank" rel="noopener">
-                  <FsIcon id="i-ig" />Instagram
-                </a>
-              </li>
-              <li>
-                <a href={INSTITUTE.social.facebook} target="_blank" rel="noopener">
-                  <FsIcon id="i-fb" className="ico ico-fill" />Facebook
-                </a>
-              </li>
-              <li>
-                <a href={INSTITUTE.social.youtube} target="_blank" rel="noopener">
-                  <FsIcon id="i-yt" className="ico ico-fill" />YouTube
-                </a>
-              </li>
-              <li>
-                <a href={`https://wa.me/${WHATSAPP.number}`} target="_blank" rel="noopener">
-                  <FsIcon id="i-wa" className="ico ico-fill" />WhatsApp
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="ftr-col">
-            <h2>Contact Us</h2>
-            <ul className="ftr-contact">
-              <li>
-                <span className="fc-ico"><FsIcon id="i-phone" /></span>
-                <a href={INSTITUTE.phoneHref}>{INSTITUTE.phone}</a>
-              </li>
-              <li>
-                <span className="fc-ico"><FsIcon id="i-mail" /></span>
-                <a href={`mailto:${INSTITUTE.email}`}>{INSTITUTE.email}</a>
-              </li>
-              <li>
-                <span className="fc-ico"><FsIcon id="i-globe" /></span>
-                <a href={INSTITUTE.websiteHref} target="_blank" rel="noopener">{INSTITUTE.website}</a>
-              </li>
-              <li>
-                <span className="fc-ico"><FsIcon id="i-pin" /></span>
-                <span>
-                  <span>{INSTITUTE.name}</span>
-                  <br />
-                  <span>{INSTITUTE.address}</span>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="wrap ftr-cta">
-          <div>
-            <h2>Join the Next Free Live Session</h2>
-            <p>2 hours · Online · Free. Reserve your seat in under a minute.</p>
-          </div>
-          <a href="#register" className="ftr-pill" data-cta="footer">
-            <span>Enter your details to reserve a free seat</span>
-            <span className="btn btn-yellow btn-sm">
-              Register Free <FsIcon id="i-arrow" />
-            </span>
-          </a>
-        </div>
-
-        <div className="wrap ftr-bottom">
-          <p>
-            © {new Date().getFullYear()} {INSTITUTE.name}. All rights reserved.
-          </p>
-          <a href="#home" className="to-top" aria-label="Back to top">
-            <svg className="ico" aria-hidden="true" style={{ transform: 'rotate(-90deg)' }}>
-              <use href="#i-arrow" />
-            </svg>
-          </a>
-        </div>
-      </footer>
+      <FsFooter home />
 
       <a href={WA_HREF} className="wa-float" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
         <FsIcon id="i-wa" />
