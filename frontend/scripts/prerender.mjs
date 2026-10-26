@@ -1,5 +1,6 @@
 // Build-time prerender for the location pages: writes dist/locations/<slug>/index.html with the full
 // article, metadata and JSON-LD already in the HTML, plus dist/sitemap.xml. The SPA then takes over.
+import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -13,6 +14,7 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g
 
 const { renderAll } = await import(pathToFileURL(path.join(root, 'dist-ssr', 'entry-server.js')).href)
 const template = await readFile(path.join(dist, 'index.html'), 'utf8')
+const cssVersion = createHash('md5').update(await readFile(path.join(dist, 'free-session.css'))).digest('hex').slice(0, 8)
 
 function buildHead(page) {
   const ld = JSON.stringify(page.jsonLd).replace(/</g, '\\u003c')
@@ -30,7 +32,7 @@ function buildHead(page) {
     `<meta property="og:locale" content="en_IN" />`,
     `<meta name="twitter:card" content="summary" />`,
     `<link rel="icon" href="/assets/coding-hubs-school-of-ai-logo.jpeg" />`,
-    `<link rel="stylesheet" href="/free-session.css" />`,
+    `<link rel="stylesheet" href="/free-session.css?v=${cssVersion}" />`,
     `<script type="application/ld+json">${ld}</script>`,
   ].join('\n    ')
 }

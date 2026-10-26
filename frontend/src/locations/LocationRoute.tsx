@@ -4,11 +4,12 @@ import { getCachedContent, loadContent } from './content-loader'
 import { LocationView } from './LocationView'
 import { getLocation } from './registry'
 import type { LocationContent } from './types'
+import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 
 export function LocationRoute() {
   useScopedStylesheet([
-    '/free-session.css',
+    FS_CSS,
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap',
   ])
   const { slug } = useParams<{ slug: string }>()

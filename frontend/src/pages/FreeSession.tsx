@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
@@ -19,7 +20,7 @@ const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHAT
 
 export function FreeSession() {
   useScopedStylesheet([
-    '/free-session.css',
+    FS_CSS,
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap',
   ])
 
