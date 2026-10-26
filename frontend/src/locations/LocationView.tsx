@@ -3,8 +3,14 @@ import { FsIcon } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { EnquiryForm } from './EnquiryForm'
 import { FsFooter, FsHeader } from './FsShell'
-import { HEAD_OFFICE, getLocation, locationPath } from './registry'
+import { LocationFx } from './LocationFx'
+import { GROUP_LABELS, HEAD_OFFICE, getLocation, locationPath } from './registry'
 import type { LocationContent, LocationMeta } from './types'
+
+const FIGURES: Record<string, { src: string; alt: string }> = {
+  curriculum: { src: '/assets/ai/path.jpg', alt: 'AI-generated illustration of a staircase of learning steps from code to data, neural networks and an AI assistant' },
+  projects: { src: '/assets/ai/team.jpg', alt: 'AI-generated illustration of learners and professionals building an AI chatbot and data dashboard together' },
+}
 
 /** Pure presentational page, used both by the client route and by the build-time prerender. */
 export function LocationView({ meta, content }: { meta: LocationMeta; content: LocationContent }) {
@@ -12,7 +18,8 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
   const waHref = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(`Hi! I am interested in the AI course. I am from ${meta.short}. Please share the details.`)}`
 
   return (
-    <div className="fs-page">
+    <div className="fs-page lv">
+      <LocationFx />
       <FsHeader />
       <main id="main">
         <section className="loc-hero" aria-labelledby="loc-title">
@@ -41,14 +48,37 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
                   </a>
                 </div>
               </div>
-              <aside className="loc-ho-card" aria-label="Head office">
-                <img src="/assets/coding-hubs-school-of-ai-logo-wide.jpeg" alt="Coding Hubs School of AI logo" width={640} height={194} />
-                <p className="loc-ho-h">Head Office</p>
-                <p>{HEAD_OFFICE.line}.</p>
-                <p className="loc-ho-sub">Official address. See the Head Office section below for how learners from {meta.short} can enquire.</p>
-                <a className="loc-ho-tel" href={INSTITUTE.phoneHref}>{INSTITUTE.phone}</a>
-              </aside>
+              <div className="lv-visual">
+                <figure className="lv-hero-img">
+                  <img src="/assets/ai/hero.jpg" alt="AI-generated illustration of students learning artificial intelligence together" width={1536} height={870} fetchPriority="high" />
+                  <span className="lv-chip lv-chip-1">Free 2-hour live online demo</span>
+                  <span className="lv-chip lv-chip-2">Learn from {meta.short}</span>
+                </figure>
+                <aside className="loc-ho-card" aria-label="Head office">
+                  <p className="loc-ho-h">Head Office</p>
+                  <p>{HEAD_OFFICE.line}.</p>
+                  <a className="loc-ho-tel" href={INSTITUTE.phoneHref}>{INSTITUTE.phone}</a>
+                </aside>
+              </div>
             </div>
+          </div>
+        </section>
+
+        <section className="lv-glance" aria-label="This guide at a glance">
+          <div className="wrap">
+            <ul>
+              {[
+                { n: 16, l: 'topic AI learning path' },
+                { n: 8, l: 'career roles explained' },
+                { n: 8, l: 'portfolio project ideas' },
+                { n: content.faqs.length, l: 'questions answered' },
+              ].map((g) => (
+                <li key={g.l} data-rv>
+                  <strong data-count={g.n}>{g.n}</strong>
+                  <span>{g.l}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -69,7 +99,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               </nav>
 
               {content.sections.map((s) => (
-                <section key={s.id} id={s.id} className="loc-sec" aria-labelledby={`${s.id}-h`}>
+                <section key={s.id} id={s.id} className="loc-sec" aria-labelledby={`${s.id}-h`} data-rv>
                   <h2 id={`${s.id}-h`}>{s.heading}</h2>
                   {s.paragraphs.map((p, i) => (
                     <p key={i}>{p}</p>
@@ -82,6 +112,12 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
                       ))}
                     </div>
                   ))}
+                  {FIGURES[s.id] && (
+                    <figure className="loc-fig">
+                      <img src={FIGURES[s.id].src} alt={FIGURES[s.id].alt} width={1024} height={768} loading="lazy" decoding="async" />
+                      <figcaption>AI-generated illustration</figcaption>
+                    </figure>
+                  )}
                 </section>
               ))}
 
@@ -109,6 +145,17 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
                 <p>Tell us your goal and we will share the current syllabus, format, schedule and fee details.</p>
                 <EnquiryForm locality={meta.label} sourcePage={locationPath(meta.slug)} />
               </div>
+              <nav className="loc-jump" aria-label="Jump to a section">
+                <p>Jump to</p>
+                <ul>
+                  {content.sections.map((sec) => (
+                    <li key={sec.id}>
+                      <a href={`#${sec.id}`}>{sec.heading}</a>
+                    </li>
+                  ))}
+                  <li><a href="#faqs">Questions answered</a></li>
+                </ul>
+              </nav>
             </aside>
           </div>
         </div>
@@ -146,19 +193,28 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
         <section className="sec sec-alt loc-related" aria-labelledby="rel-h">
           <div className="wrap">
             <h2 id="rel-h" className="loc-rel-h">AI course information for nearby areas</h2>
-            <ul className="loc-cards">
-              {related.map((l) => (
-                <li key={l.slug}>
-                  <Link to={locationPath(l.slug)}>
+            <ul className="lx-grid">
+              {related.map((l, i) => (
+                <li key={l.slug} style={{ ['--i' as string]: i }}>
+                  <Link to={locationPath(l.slug)} className={`lx-card g-${l.group}`}>
+                    <span className="lx-tag">{GROUP_LABELS[l.group]}</span>
                     <strong>AI Course in {l.short}</strong>
-                    <span>{l.blurb}</span>
+                    <span className="lx-blurb">{l.blurb}</span>
+                    <span className="lx-go">
+                      Read the guide <FsIcon id="i-arrow" />
+                    </span>
                   </Link>
                 </li>
               ))}
             </ul>
+            <p className="lv-all"><Link to="/locations/" className="btn btn-navy">View All Locations</Link></p>
           </div>
         </section>
       </main>
+      <div className="lv-bar">
+        <a href="#enquire" className="btn btn-yellow btn-sm">Request Course Details</a>
+        <a href={waHref} className="btn btn-wa btn-sm" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      </div>
       <FsFooter />
     </div>
   )
