@@ -140,9 +140,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
             </article>
 
             <aside className="loc-side" id="enquire" aria-label="Course enquiry">
-              <div className="loc-side-card">
-                <h2>Request course details</h2>
-                <p>Tell us your goal and we will share the current syllabus, format, schedule and fee details.</p>
+              <div className="form-card">
                 <EnquiryForm locality={meta.label} sourcePage={locationPath(meta.slug)} />
               </div>
               <nav className="loc-jump" aria-label="Jump to a section">

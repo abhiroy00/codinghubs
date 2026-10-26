@@ -175,8 +175,7 @@ export function LocationsIndex() {
                 <li><a href={`mailto:${INSTITUTE.email}`}>{INSTITUTE.email}</a></li>
               </ul>
             </div>
-            <div className="loc-side-card">
-              <h2>Request course details</h2>
+            <div className="form-card">
               <EnquiryForm locality="Delhi NCR" sourcePage="/locations/" />
             </div>
           </div>
