@@ -48,3 +48,9 @@ export function getLocation(slug: string | undefined) {
 export function locationPath(slug: string) {
   return `/locations/${slug}/`
 }
+
+/** Course names shown in the Courses marquee (same list as the home page ticker). */
+export const COURSE_NAMES = [
+  'Generative AI', 'Agentic AI', 'AI Engineering', 'Vibe Coding', 'Cyber Security + Gen AI', 'Java Full Stack + Gen AI',
+  'MERN Stack + Gen AI', 'Data Science Pro', 'Data Analytics Using Python', 'Python', 'UI/UX Designing', 'Advanced Digital Marketing',
+]

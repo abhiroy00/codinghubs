@@ -6,7 +6,8 @@ import { INSTITUTE } from '../pages/free-session/data'
 import { FsIcon } from '../pages/free-session/icons'
 import { EnquiryForm } from './EnquiryForm'
 import { FsFooter, FsHeader } from './FsShell'
-import { GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
+import { Marquee } from './Marquee'
+import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
 import { INDEX_TITLE } from './seo'
 import type { LocationGroup } from './types'
 
@@ -51,12 +52,6 @@ export function LocationsIndex() {
           <span className="lx-blob lx-b2" aria-hidden="true"></span>
           <span className="lx-blob lx-b3" aria-hidden="true"></span>
           <div className="wrap lx-hero-in">
-            <nav className="breadcrumb" aria-label="Breadcrumb">
-              <ol>
-                <li><Link to="/">Home</Link></li>
-                <li aria-current="page"><span className="current">Locations</span></li>
-              </ol>
-            </nav>
             <p className="eyebrow eyebrow-light">AI training · Delhi NCR</p>
             <h1 id="idx-title">
               AI Course Information for Learners Across <span className="lx-mark">Delhi NCR</span>
@@ -95,6 +90,8 @@ export function LocationsIndex() {
           </div>
         </section>
 
+        <Marquee title="AI course locations" items={LOCATIONS.map((l) => ({ label: l.short, href: locationPath(l.slug), internal: true }))} />
+
         <section className="sec lx-find" id="all-locations" aria-labelledby="idx-h2">
           <div className="wrap">
             <div className="sec-head center">
@@ -128,7 +125,7 @@ export function LocationsIndex() {
               {filtered.map((l, i) => (
                 <li key={l.slug} style={{ ['--i' as string]: i }}>
                   <Link to={locationPath(l.slug)} className={`lx-card g-${l.group}`}>
-                    <img className="lx-thumb" src={`/assets/ai/loc/thumb/${l.slug}.jpg`} alt="" width={640} height={360} loading="lazy" decoding="async" />
+                    <img className="lx-thumb" src={`/assets/ai/loc/thumb/${l.slug}.jpg`} alt="" width={640} height={363} loading="lazy" decoding="async" />
                     <span className="lx-badge" aria-hidden="true">{String(LOCATIONS.indexOf(l) + 1).padStart(2, '0')}</span>
                     <span className="lx-tag">{GROUP_LABELS[l.group]}</span>
                     <strong>AI Course in {l.short}</strong>
@@ -161,6 +158,8 @@ export function LocationsIndex() {
             </ul>
           </div>
         </section>
+
+        <Marquee title="Courses at Coding Hubs" tone="navy" reverse items={COURSE_NAMES.map((c) => ({ label: c, href: '/#courses' }))} />
 
         <section className="lx-cta" id="enquire" aria-labelledby="idx-cta">
           <span className="lx-blob lx-b2" aria-hidden="true"></span>

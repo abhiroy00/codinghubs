@@ -4,12 +4,52 @@ import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { EnquiryForm } from './EnquiryForm'
 import { FsFooter, FsHeader } from './FsShell'
 import { LocationFx } from './LocationFx'
-import { GROUP_LABELS, HEAD_OFFICE, getLocation, locationPath } from './registry'
+import { Marquee } from './Marquee'
+import { COURSE_NAMES, GROUP_LABELS, HEAD_OFFICE, LOCATIONS, getLocation, locationPath } from './registry'
 import type { LocationContent, LocationMeta } from './types'
 
 const FIGURES: Record<string, { src: string; alt: string }> = {
   curriculum: { src: '/assets/ai/path.jpg', alt: 'AI-generated illustration of a staircase of learning steps from code to data, neural networks and an AI assistant' },
   projects: { src: '/assets/ai/team.jpg', alt: 'AI-generated illustration of learners and professionals building an AI chatbot and data dashboard together' },
+}
+
+const KICKERS: Record<string, { label: string; icon: string }> = {
+  'understanding-ai': { label: 'AI basics', icon: 'i-monitor' },
+  'why-learn-ai': { label: 'Why now', icon: 'i-clock' },
+  curriculum: { label: 'Curriculum', icon: 'i-cal' },
+  'who-can-learn': { label: 'Who it is for', icon: 'i-check' },
+  careers: { label: 'Careers', icon: 'i-ticket' },
+  projects: { label: 'Projects', icon: 'i-tap' },
+  'learning-process': { label: 'How to study', icon: 'i-clock' },
+  'choosing-course': { label: 'Choosing well', icon: 'i-check' },
+  'local-guidance': { label: 'Local guide', icon: 'i-pin' },
+  'admission-process': { label: 'How to enquire', icon: 'i-phone' },
+}
+
+/** Wraps the first occurrence of `term` in a highlighter mark. */
+function Marked({ text, term }: { text: string; term: string }) {
+  const i = text.indexOf(term)
+  if (i < 0) return <>{text}</>
+  return (
+    <>
+      {text.slice(0, i)}
+      <mark className="lv-mark">{term}</mark>
+      {text.slice(i + term.length)}
+    </>
+  )
+}
+
+/** "AI Course in <place>, Delhi" -> the place gets the gradient highlight; falls back to plain text. */
+function HeadlineHighlight({ text }: { text: string }) {
+  const m = text.match(/^(.*?\b(?:in|near)\s)(.+?)(,\s*Delhi)?$/)
+  if (!m) return <>{text}</>
+  return (
+    <>
+      {m[1]}
+      <span className="lv-hl">{m[2]}</span>
+      {m[3] ?? ''}
+    </>
+  )
 }
 
 /** Pure presentational page, used both by the client route and by the build-time prerender. */
@@ -24,16 +64,13 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
       <main id="main">
         <section className="loc-hero" aria-labelledby="loc-title">
           <div className="wrap loc-hero-in">
-            <nav className="breadcrumb" aria-label="Breadcrumb">
-              <ol>
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/locations/">Locations</Link></li>
-                <li><Link to={locationPath(meta.slug)}>{meta.short}</Link></li>
-                <li aria-current="page"><span className="current">AI Course</span></li>
-              </ol>
-            </nav>
             <p className="eyebrow eyebrow-light">AI training · Delhi NCR</p>
-            <h1 id="loc-title">{content.h1}</h1>
+            <h1 id="loc-title">
+              <HeadlineHighlight text={content.h1} />
+            </h1>
+            <p className="lv-rotor" aria-hidden="true">
+              Learn <span className="lv-rot"><b>Python</b><b>Machine Learning</b><b>Generative AI</b><b>RAG &amp; Chatbots</b><b>Real Projects</b></span>
+            </p>
             <div className="loc-hero-grid">
               <div className="loc-lead" data-editorial="hero">
                 {content.hero.map((p, i) => (
@@ -50,7 +87,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               </div>
               <div className="lv-visual">
                 <figure className="lv-hero-img">
-                  <img src={`/assets/ai/loc/${meta.slug}.jpg`} alt={`AI-generated illustration of learners studying artificial intelligence, with a ${meta.short} backdrop`} width={1536} height={870} fetchPriority="high" />
+                  <img src={`/assets/ai/loc/${meta.slug}.jpg`} alt={`AI-generated illustration of learners studying artificial intelligence, with a ${meta.short} backdrop`} width={1280} height={725} fetchPriority="high" />
                   <span className="lv-chip lv-chip-1">Free 2-hour live online demo</span>
                   <span className="lv-chip lv-chip-2">Learn from {meta.short}</span>
                 </figure>
@@ -82,6 +119,8 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
           </div>
         </section>
 
+        <Marquee title="Courses at Coding Hubs" items={COURSE_NAMES.map((c) => ({ label: c, href: '/#courses' }))} />
+
         <div className="wrap loc-body">
           <div className="loc-layout">
             <article className="loc-article" data-editorial="body">
@@ -100,7 +139,13 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
 
               {content.sections.map((s) => (
                 <section key={s.id} id={s.id} className="loc-sec" aria-labelledby={`${s.id}-h`} data-rv>
-                  <h2 id={`${s.id}-h`}>{s.heading}</h2>
+                  <p className="lv-kicker">
+                    <FsIcon id={KICKERS[s.id]?.icon ?? 'i-check'} />
+                    {KICKERS[s.id]?.label ?? 'Guide'}
+                  </p>
+                  <h2 id={`${s.id}-h`}>
+                    <span className="lv-h2t"><Marked text={s.heading} term={meta.short} /></span>
+                  </h2>
                   {s.paragraphs.map((p, i) => (
                     <p key={i}>{p}</p>
                   ))}
@@ -122,7 +167,13 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               ))}
 
               <section id="faqs" className="loc-sec" aria-labelledby="faqs-h">
-                <h2 id="faqs-h">Frequently asked questions about AI courses for learners in {meta.short}</h2>
+                <p className="lv-kicker">
+                  <FsIcon id="i-ticket" />
+                  FAQs
+                </p>
+                <h2 id="faqs-h">
+                  <span className="lv-h2t">Frequently asked questions about AI courses for learners in <Marked text={meta.short} term={meta.short} /></span>
+                </h2>
                 {content.faqs.map((f) => (
                   <div key={f.q} className="loc-faq">
                     <h3>{f.q}</h3>
@@ -132,7 +183,13 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               </section>
 
               <section id="conclusion" className="loc-sec" aria-labelledby="conclusion-h">
-                <h2 id="conclusion-h">Your next step towards AI skills</h2>
+                <p className="lv-kicker">
+                  <FsIcon id="i-arrow" />
+                  Next step
+                </p>
+                <h2 id="conclusion-h">
+                  <span className="lv-h2t">Your next step towards AI skills</span>
+                </h2>
                 {content.conclusion.map((p, i) => (
                   <p key={i}>{p}</p>
                 ))}
@@ -188,6 +245,8 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
           </div>
         </section>
 
+        <Marquee title="AI course locations" tone="navy" reverse items={LOCATIONS.map((l) => ({ label: l.short, href: locationPath(l.slug), internal: true }))} />
+
         <section className="sec sec-alt loc-related" aria-labelledby="rel-h">
           <div className="wrap">
             <h2 id="rel-h" className="loc-rel-h">AI course information for nearby areas</h2>
@@ -209,6 +268,9 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
           </div>
         </section>
       </main>
+      <a href={waHref} className="wa-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
+        <FsIcon id="i-wa" />
+      </a>
       <div className="lv-bar">
         <a href="#enquire" className="btn btn-yellow btn-sm">Request Course Details</a>
         <a href={waHref} className="btn btn-wa btn-sm" target="_blank" rel="noopener noreferrer">WhatsApp</a>
