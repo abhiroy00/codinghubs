@@ -1,4 +1,4 @@
-.ad-shell,.ad-login{--navy:#1E418F;--navy2:#11275C;--blue:#1F6BFF;--yellow:#FFDE6B;--ink:#0B1530;--mut:#5b6580;--line:#E2E8F3;--bg:#F4F7FC;--ok:#12945A;--err:#D33A2C;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);font-size:15px;line-height:1.5}
+.ad-shell,.ad-login{--navy:#0A1A3F;--navy2:#11275C;--blue:#1F6BFF;--yellow:#FFDE6B;--ink:#0B1530;--mut:#5b6580;--line:#E2E8F3;--bg:#F4F7FC;--ok:#12945A;--err:#D33A2C;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);font-size:15px;line-height:1.5}
 .ad-shell *,.ad-login *{box-sizing:border-box}
 .ad-login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(900px 500px at 15% 0%,#1d3d92 0%,transparent 60%),linear-gradient(160deg,#071535,#0e2a6e)}
 .ad-login-card{width:100%;max-width:410px;padding:2rem 1.75rem;border-radius:20px;background:#fff;box-shadow:0 30px 70px -25px rgba(0,0,0,.6);display:grid;gap:.45rem}
@@ -45,7 +45,7 @@
 .ad-card:hover{transform:translateY(-3px)}
 .ad-card span{display:block;color:var(--mut);font-size:.8rem;font-weight:500}
 .ad-card strong{display:block;margin-top:.15rem;font:800 1.9rem/1.1 Poppins,Inter,sans-serif;color:var(--navy)}
-.tone-yellow{--c:#FFDE6B}.tone-blue{--c:#1F6BFF}.tone-purple{--c:#7C4DFF}.tone-navy{--c:#1E418F}.tone-teal{--c:#0E9F8E}.tone-pink{--c:#E1457B}
+.tone-yellow{--c:#FFDE6B}.tone-blue{--c:#1F6BFF}.tone-purple{--c:#7C4DFF}.tone-navy{--c:#0A1A3F}.tone-teal{--c:#0E9F8E}.tone-pink{--c:#E1457B}
 .ad-grid2{display:grid;gap:1rem;margin-bottom:1rem}
 @media (min-width:1000px){.ad-grid2{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}.ad-grid2+.ad-grid2{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ad-panel{padding:1.1rem 1.2rem;border-radius:16px;background:#fff;border:1px solid var(--line);margin-bottom:1rem;box-shadow:0 8px 22px -18px rgba(10,26,63,.35)}
@@ -55,7 +55,7 @@
 .ad-chart .bar{fill:url(#none);fill:#1F6BFF;transition:opacity .15s}
 .ad-chart .bar:hover{opacity:.75}
 .ad-chart .bar.zero{fill:#dfe6f3}
-.ad-chart .bar-n{font:700 11px Inter;fill:#1E418F}
+.ad-chart .bar-n{font:700 11px Inter;fill:#0A1A3F}
 .ad-chart .bar-d{font:500 11px Inter;fill:#7b86a1}
 .ad-pipe,.ad-top-list{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
 .ad-pipe li,.ad-top-list li{display:grid;grid-template-columns:96px minmax(0,1fr) 34px;align-items:center;gap:.7rem;font-size:.88rem}
