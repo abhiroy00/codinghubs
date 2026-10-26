@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
+import { LocationsMenu } from '../locations/LocationsMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
 import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
@@ -119,6 +120,7 @@ export function FreeSession() {
             <a href="#home">Home</a>
             <a href="#demo-classes">Free Demo Classes</a>
             <a href="#courses">Explore Courses</a>
+            <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="#session">About the Session</a>
             <a href="#contact">Contact</a>
             <a href="#register" className="btn btn-yellow nav-cta btn-shake" data-cta="mobile-menu">
@@ -215,8 +217,8 @@ export function FreeSession() {
                     <FsIcon id="i-ticket" />
                   </span>
                   <div>
-                    <strong>₹0</strong>
-                    <span>Free demo</span>
+                    <strong>Free</strong>
+                    <span>Demo session</span>
                   </div>
                   <span className="f-badge" aria-hidden="true">FREE</span>
                 </div>
@@ -390,7 +392,7 @@ export function FreeSession() {
         <section className="sec plan-sec" id="program" aria-labelledby="program-title">
           <div className="wrap">
             <div className="sec-head center reveal">
-              <p className="eyebrow">Program &amp; fees</p>
+              <p className="eyebrow">Programs</p>
               <h2 id="program-title" className="h2">
                 Start <span className="marker">Free</span>. Then Go Deeper in 15&nbsp;Days.
               </h2>
@@ -409,10 +411,6 @@ export function FreeSession() {
                   </h3>
                   <p className="plan-meta">
                     <FsIcon id="i-clock" />2 Hours · Online Live
-                  </p>
-                  <p className="plan-price">
-                    <span className="amt">₹0</span>
-                    <span className="per">no payment to register</span>
                   </p>
                   <a href="#register" className="btn btn-ghost btn-block" data-cta="plan-demo">
                     Register for Free <FsIcon id="i-arrow" />
@@ -443,10 +441,6 @@ export function FreeSession() {
                       <p className="plan-meta">
                         <FsIcon id="i-cal" />15 Days · Online Live
                       </p>
-                      <p className="plan-price">
-                        <span className="amt">₹4,999</span>
-                        <span className="per">paid course fee</span>
-                      </p>
                       <p style={{ color: 'var(--muted)', fontSize: '.92rem', marginBottom: '1rem' }}>{program.tagline}</p>
                       <span className="btn btn-anim btn-yellow btn-block">
                         View Day-by-Day Plan <FsIcon id="i-arrow" />
@@ -458,7 +452,7 @@ export function FreeSession() {
             </div>
 
             <p className="plan-note">
-              <FsIcon id="i-ticket" />You only pay the ₹4,999 fee if you decide to join a 15-day program after the free demo.
+              <FsIcon id="i-ticket" />Registering for the free demo costs nothing. Contact us for details of the 15-day programs.
             </p>
           </div>
         </section>
@@ -492,7 +486,7 @@ export function FreeSession() {
               <p className="eyebrow">Why join</p>
               <h2 id="why-title" className="h2 why-h2">
                 Why Join Our <span className="marker">Free</span> Session?
-                <span className="sticker st-1" aria-hidden="true">₹0</span>
+                <span className="sticker st-1" aria-hidden="true">FREE</span>
                 <span className="sticker st-2" aria-hidden="true">
                   <span className="live-dot"></span>LIVE
                 </span>
@@ -542,7 +536,7 @@ export function FreeSession() {
                     <br />
                     YOU DECIDE
                   </span>
-                  <b>₹0</b>
+                  <b>FREE</b>
                 </div>
               </article>
 
@@ -613,7 +607,7 @@ export function FreeSession() {
                   <br />
                   Live.
                   <br />
-                  <span>₹0.</span>
+                  <span>Free.</span>
                 </p>
                 <p className="t-f-sub">Pick a course, save your seat, and come see for yourself.</p>
                 <a href="#register" className="btn btn-anim btn-yellow btn-block" data-cta="why-tile">
@@ -787,7 +781,7 @@ export function FreeSession() {
             <h2>Quick Links</h2>
             <ul className="ftr-links">
               <li><a href="#courses">Explore Courses</a></li>
-              <li><a href="#program">Program &amp; Fees</a></li>
+              <li><a href="#program">Programs</a></li>
               <li><a href="#session">About the Session</a></li>
               <li><a href="#faq">FAQ</a></li>
               <li><a href="/policies#privacy">Privacy Policy</a></li>
@@ -857,7 +851,7 @@ export function FreeSession() {
         <div className="wrap ftr-cta">
           <div>
             <h2>Join the Next Free Live Session</h2>
-            <p>2 hours · Online · ₹0. Reserve your seat in under a minute.</p>
+            <p>2 hours · Online · Free. Reserve your seat in under a minute.</p>
           </div>
           <a href="#register" className="ftr-pill" data-cta="footer">
             <span>Enter your details to reserve a free seat</span>
@@ -886,7 +880,7 @@ export function FreeSession() {
       <div className={`sticky-cta${showSticky ? ' show' : ''}`} aria-hidden={!showSticky}>
         <div>
           <strong>Free 2-hour live session</strong>
-          <span>Online · ₹0</span>
+          <span>Online · Free</span>
         </div>
         <a href="#register" className="btn btn-anim btn-yellow btn-sm" data-cta="sticky-mobile" tabIndex={showSticky ? 0 : -1}>
           Register Free

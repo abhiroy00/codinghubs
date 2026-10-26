@@ -3,7 +3,7 @@ import { api } from '../../lib/api'
 import { COURSE_OPTIONS, EDUCATION_OPTIONS, WHATSAPP } from './data'
 import { FsIcon } from './icons'
 
-function normalizePhone(v: string): string | null {
+export function normalizePhone(v: string): string | null {
   let d = String(v).replace(/[\s\-().]/g, '')
   if (/[^\d+]/.test(d)) return null
   d = d.replace(/^\+?91(?=\d{10}$)/, '').replace(/^0(?=\d{10}$)/, '')

@@ -12,6 +12,8 @@ import { FreeSession } from './pages/FreeSession'
 import { Login } from './pages/Login'
 import { Policies } from './pages/Policies'
 import { Register } from './pages/Register'
+import { LocationRoute } from './locations/LocationRoute'
+import { LocationsIndex } from './locations/LocationsIndex'
 
 export function App() {
   return (
@@ -23,6 +25,8 @@ export function App() {
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
               <Route path="program/:slug" element={<Curriculum />} />
+              <Route path="locations" element={<LocationsIndex />} />
+              <Route path="locations/:slug" element={<LocationRoute />} />
               <Route element={<Layout />}>
                 <Route path="faq" element={<Faq />} />
                 <Route path="policies" element={<Policies />} />

@@ -78,3 +78,21 @@ Open http://localhost:5173.
   also stores the lead in the database (visible in Django admin).
 - Course/category content (the "Our programs" and "Compare programs" sections)
   now comes from the database instead of being hardcoded in JS.
+
+## Location landing pages (`/locations/`)
+
+`/locations/` plus 18 locality pages (`/locations/ai-course-in-<area>/`) target
+AI-course searches across Delhi NCR. Each page is a long guide (4,000+ editorial
+words) written separately per locality in `frontend/src/locations/content/`;
+shared layout lives in `LocationView.tsx`, the list of locations/menu data in
+`registry.ts`. The official head-office address is used everywhere and no local
+branches are claimed.
+
+- `npm run build` also prerenders every location page to static HTML
+  (`scripts/prerender.mjs`, using `src/entry-server.tsx`), writes
+  `dist/sitemap.xml`, and the SPA takes over in the browser.
+- `npm run validate:locations` (run in CI) checks all 18 pages: word count,
+  one `<h1>`, unique title/description/canonical, head-office address, logo,
+  JSON-LD, internal links, sitemap, banned phrases and cross-page phrase overlap.
+- Logo for these pages: `frontend/public/assets/coding-hubs-school-of-ai-logo*.jpeg`.
+- No prices are shown anywhere on the site (home, program pages, checkout, dashboard).

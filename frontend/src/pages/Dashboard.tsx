@@ -47,7 +47,7 @@ export function Dashboard() {
                 <p className="stat-k">{e.course_name}</p>
                 <p className="stat-d">
                   {e.payment_status === 'paid' ? 'Paid' : e.payment_status}
-                  {e.amount_paid ? ` · ₹${(e.amount_paid / 100).toLocaleString('en-IN')}` : ''} · Enrolled{' '}
+                  · Enrolled{' '}
                   {new Date(e.enrolled_at).toLocaleDateString('en-IN')}
                 </p>
               </li>
@@ -66,7 +66,7 @@ export function Dashboard() {
                 {c.duration_display} · {c.placement_rate}% placement
               </p>
               <Link to={`/courses/${c.slug}`} className="stat-link">
-                Enroll for ₹{c.price.toLocaleString('en-IN')} →
+                Enroll now →
               </Link>
             </li>
           ))}

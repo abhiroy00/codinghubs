@@ -97,7 +97,7 @@ export function CourseCheckout() {
           {course.name}
         </h1>
         <p className="lede mt-4">
-          {course.duration_display} · {course.placement_rate}% placement · {course.salary_range_display}
+          {course.duration_display}
         </p>
 
         {success ? (
@@ -110,13 +110,10 @@ export function CourseCheckout() {
           </div>
         ) : (
           <div style={{ marginTop: '2rem' }}>
-            <p className="price">
-              <span className="new">₹{course.price.toLocaleString('en-IN')}</span>
-            </p>
             {error && <p style={{ color: '#be123c', fontSize: '.875rem', marginTop: '.5rem' }}>{error}</p>}
             <button type="button" className="btn btn-lime" style={{ marginTop: '1rem' }} onClick={handleEnroll} disabled={paying}>
               <span className="shine"></span>
-              <span>{paying ? 'Opening secure checkout…' : `Enroll & pay ₹${course.price.toLocaleString('en-IN')}`}</span>
+              <span>{paying ? 'Opening secure checkout…' : 'Enroll now'}</span>
             </button>
             <p className="form-note">🔒 Payments are processed securely by Razorpay.</p>
           </div>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
+import { LocationsMenu } from '../locations/LocationsMenu'
 import { INSTITUTE, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { getProgram } from './free-session/programs'
@@ -34,6 +35,9 @@ export function Curriculum() {
           <Link to="/" className="logo" aria-label="Home">
             <img className="logo-img" src="/fs-assets/img/logo.jpg" alt={INSTITUTE.name} width={380} height={100} />
           </Link>
+          <nav className="nav nav-inline" aria-label="Primary">
+            <LocationsMenu />
+          </nav>
           <div className="hdr-actions">
             <Link to="/#register" className="btn btn-yellow btn-sm hdr-cta">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
@@ -64,9 +68,6 @@ export function Curriculum() {
               </li>
               <li>
                 <FsIcon id="i-monitor" />Online Live
-              </li>
-              <li>
-                <FsIcon id="i-ticket" />₹4,999
               </li>
             </ul>
           </div>
