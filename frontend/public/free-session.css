@@ -1055,3 +1055,35 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   .hdr .nav:not(.nav-inline) a:not(.btn)::after{display:none}
   .hdr .nav:not(.nav-inline) .nav-cta{display:inline-flex;margin-top:.85rem}
 }
+
+/* ============ PROGRAM PAGE: banner, day cards (laptop / tablet / mobile) ============ */
+.curriculum-banner{min-height:clamp(340px,40vw,460px);align-items:center}
+.curriculum-banner img{object-position:72% 22%}
+.curriculum-banner::after{background:linear-gradient(90deg,rgba(7,18,48,.95) 0%,rgba(7,18,48,.86) 40%,rgba(7,18,48,.35) 72%,rgba(7,18,48,.12) 100%),linear-gradient(0deg,rgba(7,18,48,.5),transparent 35%)}
+.curriculum-banner-in{padding-block:3.2rem 3rem}
+.curriculum-banner .breadcrumb{margin-bottom:1.1rem}
+.curriculum-banner .sub{max-width:34rem;line-height:1.6}
+@media (max-width:760px){
+  .curriculum-banner{min-height:0;align-items:flex-end}
+  .curriculum-banner img{object-position:62% 15%}
+  .curriculum-banner::after{background:linear-gradient(180deg,rgba(7,18,48,.5) 0%,rgba(7,18,48,.9) 55%,rgba(7,18,48,.97) 100%)}
+  .curriculum-banner-in{padding-block:2.6rem 1.75rem}
+  .curriculum-banner h1{font-size:clamp(1.65rem,7.4vw,2.1rem)}
+  .curriculum-banner .sub{font-size:1rem}
+}
+
+/* global.css has its own ".faq summary / .faq" rules (right-aligned titles, narrow column): keep the free-session look */
+.fs-page .faq{margin:0;max-width:none;border-top:0;display:grid;gap:.75rem}
+.fs-page .faq details{border:1px solid var(--line)}
+.fs-page .faq details[open]{border-color:var(--blue)}
+.fs-page .faq summary{justify-content:flex-start;letter-spacing:normal;gap:1rem;padding:1.1rem 3.25rem 1.1rem 1.2rem;font-size:1rem}
+.fs-page .faq details p{padding:0 1.2rem 1.15rem;font-size:1rem;line-height:1.6;color:var(--muted)}
+.fs-page .faq.curriculum-days{max-width:760px;margin-inline:auto}
+.fs-page .faq.curriculum-days summary{font-size:1.05rem;padding-block:1.25rem}
+.fs-page .faq.curriculum-days details p{padding-left:calc(1.2rem + 46px + 1rem)}
+@media (max-width:560px){
+  .fs-page .faq summary{padding:1rem 3rem 1rem 1rem;font-size:.97rem;gap:.8rem}
+  .fs-page .faq.curriculum-days summary{font-size:.98rem;padding-block:1rem}
+  .curriculum-days .day-n{width:38px;height:38px;font-size:.92rem}
+  .fs-page .faq.curriculum-days details p{padding:0 1rem 1rem}
+}
