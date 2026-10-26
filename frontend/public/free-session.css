@@ -1038,3 +1038,9 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 }
 @media (max-width:340px){.brand-logo{height:26px}.brand-pill{padding:.2rem .5rem}}
 .hdr .nav{max-height:calc(100vh - 64px);overflow-y:auto}
+
+/* global.css also styles ".steps li" (white cards); keep the home "How it works" steps on the navy design */
+.fs-page .steps .step{display:block;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);padding:1.75rem 1.25rem}
+@media (min-width:860px){.fs-page .steps .step{background:none;border:0;padding-top:0}}
+.fs-page .steps .step h3{color:#fff}
+.fs-page .steps .step p{color:rgba(255,255,255,.72)}
