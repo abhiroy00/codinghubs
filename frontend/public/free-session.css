@@ -1111,3 +1111,13 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 @keyframes heroShift{from{background-position:top center}to{background-position:center 6%}}
 .nav a:not(.btn){transition:color .2s,transform .2s}
 .nav a:not(.btn):hover{transform:translateY(-1px)}
+
+/* ---- Brand-coloured social icons ---- */
+:is(.fx-social,.social) a{color:#fff!important;border-color:transparent!important;transition:transform .2s,filter .2s,box-shadow .2s}
+:is(.fx-social,.social) a:hover{transform:translateY(-4px) scale(1.06);filter:brightness(1.1);box-shadow:0 10px 20px -8px rgba(0,0,0,.45)}
+:is(.fx-social,.social) a[href*="instagram.com"]{background:linear-gradient(45deg,#F9A825 0%,#E1306C 50%,#833AB4 100%)!important}
+:is(.fx-social,.social) a[href*="linkedin.com"]{background:#0A66C2!important}
+:is(.fx-social,.social) a[href*="facebook.com"]{background:#1877F2!important}
+:is(.fx-social,.social) a[href*="youtube.com"]{background:#FF0000!important}
+:is(.fx-social,.social) a[href*="wa.me"],:is(.fx-social,.social) a[href*="whatsapp"]{background:#25D366!important}
+:is(.fx-social,.social) a[href*="twitter.com"],:is(.fx-social,.social) a[href*="x.com"]{background:#000!important}
