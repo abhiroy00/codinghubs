@@ -42,6 +42,7 @@ export function FsHeader() {
             <a href="/#demo-classes">Free Demo Classes</a>
             <a href="/#courses">Explore Courses</a>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
+            <a href="/#session">About the Session</a>
             <a href="/#contact">Contact</a>
             <a href="/#register" className="btn btn-yellow nav-cta btn-shake">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
