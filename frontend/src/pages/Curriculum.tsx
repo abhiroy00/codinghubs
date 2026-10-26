@@ -2,10 +2,9 @@ import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
-import { BrandLogo, FsFooter } from '../locations/FsShell'
-import { LocationsMenu } from '../locations/LocationsMenu'
+import { FsFooter, FsHeader } from '../locations/FsShell'
 import { INSTITUTE, WHATSAPP } from './free-session/data'
-import { FsIcon, IconSprite } from './free-session/icons'
+import { FsIcon } from './free-session/icons'
 import { getProgram } from './free-session/programs'
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
@@ -30,21 +29,7 @@ export function Curriculum() {
 
   return (
     <div className="fs-page">
-      <IconSprite />
-
-      <header className="hdr">
-        <div className="wrap hdr-in">
-          <BrandLogo />
-          <nav className="nav nav-inline" aria-label="Primary">
-            <LocationsMenu />
-          </nav>
-          <div className="hdr-actions">
-            <Link to="/#register" className="btn btn-yellow btn-sm hdr-cta">
-              <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <FsHeader />
 
       <main>
         <section className="curriculum-banner" aria-labelledby="curriculum-title">
