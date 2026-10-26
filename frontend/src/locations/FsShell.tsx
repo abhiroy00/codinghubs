@@ -5,19 +5,12 @@ import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { LocationsMenu } from './LocationsMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
 
-/** Circular emblem + live-text wordmark for the dark header (derived from the official logo's "hub" tile). */
+/** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
 export function BrandLogo({ home = false }: { home?: boolean }) {
   const inner = (
-    <>
-      <img className="brand-mark" src="/assets/logo-mark.png" alt="" width={44} height={44} />
-      <span className="brand-text">
-        <span className="brand-name">
-          Coding<b>hub</b>
-        </span>
-        <span className="brand-sub">School of AI</span>
-      </span>
-      <span className="sr-only">Coding Hubs School of AI home</span>
-    </>
+    <span className="brand-pill">
+      <img className="brand-logo" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
+    </span>
   )
   return home ? (
     <a href="#home" className="logo brand" aria-label="Coding Hubs School of AI home">

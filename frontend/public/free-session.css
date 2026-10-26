@@ -1015,3 +1015,27 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .hdr .nav{gap:.1rem}
 @media (min-width:1180px) and (max-width:1279px){.hdr-phone{display:none}}
 @media (min-width:1280px){.hdr-phone{display:inline-flex}}
+
+/* ============ HEADER: official logo pill + responsive tuning ============ */
+.brand-pill{display:inline-flex;align-items:center;padding:.3rem .8rem;border-radius:14px;background:#fff;box-shadow:0 8px 20px -10px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.4);transition:transform .25s,box-shadow .25s}
+.brand:hover .brand-pill{transform:translateY(-1px);box-shadow:0 12px 24px -10px rgba(0,0,0,.7),0 0 0 2px var(--yellow)}
+.brand-logo{display:block;height:40px;width:auto}
+.hdr .brand{flex-shrink:0}
+.hdr-in{height:72px}
+.hdr .nav a:not(.btn){padding:.5rem .7rem}
+@media (max-width:1060px){.hdr-in{gap:.8rem}.hdr .nav a:not(.btn){padding:.5rem .5rem;font-size:.9rem}.hdr .hdr-cta{padding-inline:.85rem}}
+@media (max-width:900px){
+  .hdr-in{height:64px;gap:.6rem}
+  .brand-logo{height:34px}
+  .brand-pill{padding:.25rem .65rem;border-radius:12px}
+  .hdr .hdr-actions{margin-left:auto;gap:.5rem}
+  .hdr .hdr-cta{display:inline-flex}
+}
+@media (max-width:480px){
+  .hdr-in{height:60px}
+  .brand-logo{height:30px}
+  .hdr .hdr-cta{display:none}
+  .hdr .nav-cta{display:inline-flex}
+}
+@media (max-width:340px){.brand-logo{height:26px}.brand-pill{padding:.2rem .5rem}}
+.hdr .nav{max-height:calc(100vh - 64px);overflow-y:auto}
