@@ -23,15 +23,6 @@ export function BrandLogo({ home = false }: { home?: boolean }) {
   )
 }
 
-export function HeaderPhone() {
-  return (
-    <a className="hdr-phone" href={INSTITUTE.phoneHref} aria-label={`Call ${INSTITUTE.phone}`}>
-      <FsIcon id="i-phone" />
-      <span>{INSTITUTE.phone}</span>
-    </a>
-  )
-}
-
 export const LOGO_WIDE = '/assets/coding-hubs-school-of-ai-logo-wide.png'
 
 /** Header for the location pages: same look as the free-session header plus the Locations menu. */
@@ -52,13 +43,11 @@ export function FsHeader() {
             <a href="/#courses">Explore Courses</a>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/#contact">Contact</a>
-            <a href={INSTITUTE.phoneHref} className="nav-phone">Call {INSTITUTE.phone}</a>
             <a href="/#register" className="btn btn-yellow nav-cta btn-shake">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>
           </nav>
           <div className="hdr-actions">
-            <HeaderPhone />
             <a href="/#register" className="btn btn-yellow btn-sm hdr-cta">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>

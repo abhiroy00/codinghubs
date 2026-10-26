@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
-import { BrandLogo, FsFooter, HeaderPhone } from '../locations/FsShell'
+import { BrandLogo, FsFooter } from '../locations/FsShell'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { INSTITUTE, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
@@ -39,7 +39,6 @@ export function Curriculum() {
             <LocationsMenu />
           </nav>
           <div className="hdr-actions">
-            <HeaderPhone />
             <Link to="/#register" className="btn btn-yellow btn-sm hdr-cta">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </Link>

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
-import { BrandLogo, FsFooter, HeaderPhone } from '../locations/FsShell'
+import { BrandLogo, FsFooter } from '../locations/FsShell'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
 import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
@@ -123,13 +123,11 @@ export function FreeSession() {
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="#session">About the Session</a>
             <a href="#contact">Contact</a>
-            <a href={INSTITUTE.phoneHref} className="nav-phone">Call {INSTITUTE.phone}</a>
             <a href="#register" className="btn btn-yellow nav-cta btn-shake" data-cta="mobile-menu">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>
           </nav>
           <div className="hdr-actions">
-            <HeaderPhone />
             <a href="#register" className="btn btn-yellow btn-sm hdr-cta btn-shake" data-cta="header">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>

@@ -1005,7 +1005,6 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 @media (max-width:900px){
   .hdr .nav{background:#0A1A3F;border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 24px 40px -20px rgba(0,0,0,.7)}
   .hdr .nav a:not(.btn){border-bottom:1px solid rgba(255,255,255,.1);color:#fff}
-  .hdr .nav a.nav-phone{display:block;color:var(--yellow)}
   .brand-name{font-size:1.2rem}
   .hdr .nav-inline{background:none;border:0;box-shadow:none}
 }
