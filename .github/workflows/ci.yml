@@ -49,8 +49,22 @@ jobs:
         run: npm run validate
         working-directory: frontend
 
+  admin-panel-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: admin-panel/package-lock.json
+      - run: npm ci
+        working-directory: admin-panel
+      - run: npm run build
+        working-directory: admin-panel
+
   deploy:
-    needs: [backend-tests, frontend-build]
+    needs: [backend-tests, frontend-build, admin-panel-build]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
@@ -80,7 +94,8 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
         with:
-          context: frontend
+          context: .
+          file: frontend/Dockerfile
           push: true
           build-args: |
             VITE_API_BASE_URL=/api

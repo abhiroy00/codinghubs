@@ -145,7 +145,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             className="ad-btn"
             onClick={() => {
               onLogout()
-              navigate('/admin-panel')
+              navigate('/')
             }}
           >
             Log out

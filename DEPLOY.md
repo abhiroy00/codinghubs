@@ -94,6 +94,8 @@ start if deployed as-is. Bring it up in two stages like the first time:
 
 ## Admin panel (`/admin-panel`)
 
+Code layout: the React app lives in its own top-level folder `admin-panel/` (separate `package.json`, Vite `base: /admin-panel/`; `cd admin-panel && npm ci && npm run dev` on port 5174). The frontend Dockerfile builds it and copies it into the same nginx image under `/admin-panel/` (build context is the repo root). The API is the Django app `backend/apps/adminpanel/` (`/api/admin/*`), which has to stay inside the backend package.
+
 A custom staff dashboard: overview chart, leads (search, filters, status, notes, CSV export,
 call/WhatsApp links), enrollments, orders, users and a course on/off switch. It talks to
 `/api/admin/*`, which only accepts logged-in **staff** users (login throttled to 5/min).
@@ -135,7 +137,7 @@ in this order:
 
 `frontend/nginx.conf` maps clean URLs to prerendered files (`/` → `home.html`, `/faq` → `faq.html`,
 `/program/<slug>` → `program/<slug>.html`, `/locations/**` → directory `index.html`) and returns a real `404` for
-anything else; login/register/dashboard/checkout/admin-panel get the `noindex` SPA shell. `www.<domain>` 301s to the
+anything else; login/register/dashboard/checkout get the `noindex` SPA shell; `/admin-panel/` is served by its own app with `noindex`. `www.<domain>` 301s to the
 apex, which needs the existing certificate to include `www` (it does if it was issued with `-d www.codinghubs.in`).
 After deploy verify with `curl -I` (see the checklist in [SEO.md](SEO.md)). `http2 on;` needs nginx ≥ 1.25.1 (image is 1.27).
 
