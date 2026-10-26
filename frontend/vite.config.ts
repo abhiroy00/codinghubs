@@ -8,7 +8,14 @@ import { defineConfig } from 'vite'
 const cssVersion = createHash('md5').update(readFileSync('public/free-session.css')).digest('hex').slice(0, 8)
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      // lets index.html reference the versioned stylesheet URL
+      name: 'fs-css-version',
+      transformIndexHtml: (html: string) => html.replaceAll('__FS_CSS_VERSION__', cssVersion),
+    },
+  ],
   define: { __CSS_VERSION__: JSON.stringify(cssVersion) },
   server: {
     port: 5173,

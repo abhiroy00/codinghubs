@@ -503,3 +503,6 @@ html.lenis,html.lenis body{height:auto}
 .journey2 text{font-family:var(--font-display)}
 /* page header for inner pages */
 .page-hero{padding:9rem 0 4rem;position:relative;isolation:isolate;overflow:hidden}
+
+/* hide the app while a page-scoped stylesheet is still loading (see hooks/useScopedStylesheet) */
+html[data-fs-loading] #root{visibility:hidden}

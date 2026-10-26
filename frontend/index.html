@@ -20,6 +20,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Home and program pages use the free-session design: load it as a parser-inserted (render-blocking) stylesheet so the first paint is already styled. It must sit after the app stylesheet in document order (hence in <body>), because free-session.css has to win over global.css. -->
+    <script>
+      if (/^\/(program\/.*)?$/.test(location.pathname)) {
+        document.write(
+          '<link rel="stylesheet" href="/free-session.css?v=__FS_CSS_VERSION__">' +
+            '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap">',
+        )
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
