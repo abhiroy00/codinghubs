@@ -14,6 +14,7 @@ export function LocationsIndex() {
   ])
   useEffect(() => {
     document.title = INDEX_TITLE
+    window.scrollTo(0, 0)
   }, [])
   const [q, setQ] = useState('')
   const filtered = useMemo(() => {

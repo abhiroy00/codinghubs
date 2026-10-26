@@ -692,37 +692,6 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .ideal-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.45rem}
 .ideal-chips li{padding:.4rem .75rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 .8rem/1 var(--f-head)}
 
-/* ============ LOCATIONS MENU ============ */
-.loc-menu{position:static}
-.loc-btn{display:inline-flex;align-items:center;gap:.35rem;padding:.5rem .8rem;border:0;border-radius:8px;background:none;color:#363636;font-weight:500;font-size:.95rem;cursor:pointer;transition:color .2s}
-.loc-btn:hover,.loc-btn[aria-expanded="true"]{color:var(--navy)}
-.loc-caret{transition:transform .2s}
-.loc-btn[aria-expanded="true"] .loc-caret{transform:rotate(180deg)}
-.loc-panel[hidden]{display:none}
-.loc-panel{position:absolute;left:0;right:0;top:100%;z-index:60;background:#fff;border-bottom:1px solid var(--line);box-shadow:var(--sh);padding:1.25rem max(16px,calc((100vw - 1200px) / 2 + 28px)) 1.4rem;max-height:calc(100vh - var(--hdr-h));overflow-y:auto}
-.loc-cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.25rem 1.5rem}
-.loc-col-h{margin:0 0 .5rem;font:700 .78rem/1.2 var(--f-head);letter-spacing:.1em;text-transform:uppercase;color:var(--blue-2)}
-.loc-col ul{list-style:none;margin:0;padding:0;display:grid;gap:.1rem}
-.loc-panel a{display:block;padding:.4rem .5rem;border-radius:8px;color:#363636;font-size:.92rem;font-weight:500;text-decoration:none}
-.loc-panel a:hover{background:var(--blue-soft);color:var(--navy)}
-.loc-panel .loc-all{display:inline-block;margin-top:1rem;padding:.6rem 1.1rem;border-radius:999px;background:var(--yellow);color:var(--navy);font:600 .92rem var(--f-head)}
-.loc-panel .loc-all:hover{background:var(--yellow-2)}
-.nav a.loc-all::after,.loc-panel a::after{display:none!important}
-@media (max-width:1100px){.loc-cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:900px){
-  .loc-menu{border-bottom:1px solid var(--line)}
-  .loc-btn{width:100%;justify-content:space-between;padding:.85rem .5rem;font-size:1rem;border-radius:0}
-  .nav .loc-panel{position:static;box-shadow:none;border:0;padding:0 0 .75rem;max-height:none}
-  .nav .loc-cols{grid-template-columns:1fr;gap:.75rem}
-  .nav .loc-panel a{padding:.65rem .5rem;font-size:.97rem}
-  .nav-inline{display:flex;position:static;margin-left:auto;padding:0;border:0;box-shadow:none;background:none}
-  .nav-inline .loc-menu{border:0}
-  .nav-inline .loc-btn{width:auto}
-  .nav-inline .loc-panel{position:absolute;padding:1rem 16px 1.25rem}
-  .nav-inline .loc-cols{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media (max-width:480px){.nav-inline .loc-cols{grid-template-columns:1fr}}
-
 /* ============ LOCATION PAGES ============ */
 .breadcrumb ol{display:flex;flex-wrap:wrap;gap:.25rem .5rem;list-style:none;margin:0;padding:0}
 .breadcrumb li:not(:last-child)::after{content:"/";margin-left:.5rem;opacity:.5}
@@ -798,3 +767,6 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .loc-ftr-cols p{font:700 .8rem var(--f-head);letter-spacing:.08em;text-transform:uppercase;color:var(--yellow);margin-bottom:.5rem}
 .loc-ftr-cols ul{gap:.4rem!important}
 .loc-ftr-cols a{font-size:.9rem}
+
+/* Curriculum header: keep the Locations link visible on small screens (the full .nav collapses there). */
+@media (max-width:900px){.nav-inline{display:flex;position:static;margin-left:auto;padding:0;border:0;box-shadow:none;background:none}.nav-inline a{padding:.5rem .6rem;border:0!important}}
