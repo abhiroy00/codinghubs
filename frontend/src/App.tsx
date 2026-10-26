@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -15,6 +16,8 @@ import { Register } from './pages/Register'
 import { LocationRoute } from './locations/LocationRoute'
 import { LocationsIndex } from './locations/LocationsIndex'
 
+const AdminApp = lazy(() => import('./admin/AdminApp').then((m) => ({ default: m.AdminApp })))
+
 export function App() {
   return (
     <AuthProvider>
@@ -25,6 +28,14 @@ export function App() {
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
               <Route path="program/:slug" element={<Curriculum />} />
+              <Route
+                path="admin-panel/*"
+                element={
+                  <Suspense fallback={null}>
+                    <AdminApp />
+                  </Suspense>
+                }
+              />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
               <Route element={<Layout />}>

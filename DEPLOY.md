@@ -92,6 +92,24 @@ start if deployed as-is. Bring it up in two stages like the first time:
    runs forever instead of issuing the cert and exiting.)
 3. Only then deploy the full `nginx.conf` with the 443 block.
 
+## Admin panel (`/admin-panel`)
+
+A custom staff dashboard: overview chart, leads (search, filters, status, notes, CSV export,
+call/WhatsApp links), enrollments, orders, users and a course on/off switch. It talks to
+`/api/admin/*`, which only accepts logged-in **staff** users (login throttled to 5/min).
+
+The login is created on every deploy by `manage.py ensure_admin` (called from
+`infra/deploy-remote.sh`) from two SSM SecureString parameters — **never put the
+password in the repo**:
+
+```bash
+aws ssm put-parameter --region ap-southeast-2 --name /codinghubs/prod/ADMIN_EMAIL --type SecureString --value <email> --overwrite
+aws ssm put-parameter --region ap-southeast-2 --name /codinghubs/prod/ADMIN_PASSWORD --type SecureString --value '<password>' --overwrite
+```
+
+Then push/re-run the deploy. To change the password later, overwrite `ADMIN_PASSWORD` and
+redeploy. With the parameters unset the command does nothing.
+
 ## Cost
 
 Roughly $8–15/month: t3.micro on-demand (~$7.50/mo in ap-southeast-2) + 20GB gp3

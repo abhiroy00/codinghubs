@@ -13,6 +13,21 @@ class Lead(models.Model):
     phone = models.CharField(max_length=20)
     course = models.CharField(max_length=120, blank=True)
     mode = models.CharField(max_length=10, choices=MODE_CHOICES, default=MODE_EXPERT)
+    STATUS_NEW = 'new'
+    STATUS_CONTACTED = 'contacted'
+    STATUS_INTERESTED = 'interested'
+    STATUS_CONVERTED = 'converted'
+    STATUS_CLOSED = 'closed'
+    STATUS_CHOICES = (
+        (STATUS_NEW, 'New'),
+        (STATUS_CONTACTED, 'Contacted'),
+        (STATUS_INTERESTED, 'Interested'),
+        (STATUS_CONVERTED, 'Converted'),
+        (STATUS_CLOSED, 'Closed'),
+    )
+
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default=STATUS_NEW)
+    notes = models.TextField(blank=True)
     source_page = models.CharField(max_length=200, blank=True)
     utm_source = models.CharField(max_length=100, blank=True)
     utm_medium = models.CharField(max_length=100, blank=True)

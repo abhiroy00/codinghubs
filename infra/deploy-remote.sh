@@ -28,6 +28,8 @@ aws ecr get-login-password --region "$REGION" | docker login --username AWS --pa
 docker compose -f docker-compose.prod.yml --env-file .env pull
 docker compose -f docker-compose.prod.yml --env-file .env up -d --remove-orphans
 docker compose -f docker-compose.prod.yml --env-file .env exec -T backend python manage.py migrate --noinput
+# Creates/updates the admin-panel login from ADMIN_EMAIL / ADMIN_PASSWORD (SSM params); no-op when they are unset.
+docker compose -f docker-compose.prod.yml --env-file .env exec -T backend python manage.py ensure_admin
 
 docker image prune -af --filter "until=72h" || true
 
