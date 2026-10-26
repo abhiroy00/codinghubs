@@ -882,3 +882,10 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .lv-bar .btn{flex:1}
 @media (min-width:1000px){.lv-bar{display:none}}
 @media (max-width:999px){.lv{padding-bottom:64px}}
+
+/* location thumbnails on the index cards */
+.lx-card .lx-thumb{position:relative;z-index:1;display:block;width:calc(100% + 2.6rem);max-width:none;height:auto;aspect-ratio:16/9;object-fit:cover;margin:-1.35rem -1.3rem .35rem;transition:transform .5s}
+.lx-card:hover .lx-thumb{transform:scale(1.04)}
+.lx-card::after{display:none}
+.lx-card .lx-badge{position:absolute;z-index:2;left:1rem;top:1rem;width:40px;height:40px;border-radius:11px;font-size:.9rem}
+.lx-card{overflow:hidden}

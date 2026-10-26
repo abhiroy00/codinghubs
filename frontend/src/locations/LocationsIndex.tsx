@@ -128,6 +128,7 @@ export function LocationsIndex() {
               {filtered.map((l, i) => (
                 <li key={l.slug} style={{ ['--i' as string]: i }}>
                   <Link to={locationPath(l.slug)} className={`lx-card g-${l.group}`}>
+                    <img className="lx-thumb" src={`/assets/ai/loc/thumb/${l.slug}.jpg`} alt="" width={640} height={360} loading="lazy" decoding="async" />
                     <span className="lx-badge" aria-hidden="true">{String(LOCATIONS.indexOf(l) + 1).padStart(2, '0')}</span>
                     <span className="lx-tag">{GROUP_LABELS[l.group]}</span>
                     <strong>AI Course in {l.short}</strong>

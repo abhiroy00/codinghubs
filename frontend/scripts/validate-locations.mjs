@@ -58,6 +58,8 @@ for (const slug of SLUGS) {
   if (!text(html).includes(ADDRESS)) fail(`${slug}: official head-office address missing`)
   if (!html.includes('coding-hubs-school-of-ai-logo')) fail(`${slug}: logo missing`)
   if (!html.includes('id="local-guidance"')) fail(`${slug}: locality guidance section missing`)
+  for (const img of [`assets/ai/loc/${slug}.jpg`, `assets/ai/loc/thumb/${slug}.jpg`]) if (!existsSync(path.join(dist, img))) fail(`${slug}: missing image ${img}`)
+  if (!html.includes(`/assets/ai/loc/${slug}.jpg`)) fail(`${slug}: page does not reference its own hero image`)
   if (!html.includes('id="faqs"')) fail(`${slug}: FAQ section missing`)
   if ((html.match(/<div class="loc-faq">/g)?.length ?? 0) < 12) fail(`${slug}: fewer than 12 FAQs`)
   if (wc < MIN_WORDS) fail(`${slug}: only ${wc} editorial words (need ${MIN_WORDS})`)

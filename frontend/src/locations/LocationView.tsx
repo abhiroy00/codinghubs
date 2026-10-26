@@ -50,7 +50,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               </div>
               <div className="lv-visual">
                 <figure className="lv-hero-img">
-                  <img src="/assets/ai/hero.jpg" alt="AI-generated illustration of students learning artificial intelligence together" width={1536} height={870} fetchPriority="high" />
+                  <img src={`/assets/ai/loc/${meta.slug}.jpg`} alt={`AI-generated illustration of learners studying artificial intelligence, with a ${meta.short} backdrop`} width={1536} height={870} fetchPriority="high" />
                   <span className="lv-chip lv-chip-1">Free 2-hour live online demo</span>
                   <span className="lv-chip lv-chip-2">Learn from {meta.short}</span>
                 </figure>
