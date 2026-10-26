@@ -31,7 +31,6 @@ function buildHead(page) {
     `<meta property="og:image" content="${LOGO}" />`,
     `<meta property="og:locale" content="en_IN" />`,
     `<meta name="twitter:card" content="summary" />`,
-    `<link rel="icon" href="/assets/coding-hubs-school-of-ai-logo.jpeg" />`,
     `<link rel="stylesheet" href="/free-session.css?v=${cssVersion}" />`,
     `<script type="application/ld+json">${ld}</script>`,
   ].join('\n    ')

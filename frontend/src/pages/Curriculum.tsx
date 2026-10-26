@@ -34,7 +34,7 @@ export function Curriculum() {
       <header className="hdr">
         <div className="wrap hdr-in">
           <Link to="/" className="logo" aria-label="Home">
-            <img className="logo-img" src="/fs-assets/img/logo.jpg" alt={INSTITUTE.name} width={380} height={100} />
+            <img className="logo-img" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt={INSTITUTE.name} width={720} height={208} />
           </Link>
           <nav className="nav nav-inline" aria-label="Primary">
             <LocationsMenu />

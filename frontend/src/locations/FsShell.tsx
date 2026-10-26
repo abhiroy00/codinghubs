@@ -5,7 +5,7 @@ import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { LocationsMenu } from './LocationsMenu'
 import { GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
 
-export const LOGO_WIDE = '/assets/coding-hubs-school-of-ai-logo-wide.jpeg'
+export const LOGO_WIDE = '/assets/coding-hubs-school-of-ai-logo-wide.png'
 
 /** Header for the location pages: same look as the free-session header plus the Locations menu. */
 export function FsHeader() {
@@ -19,7 +19,7 @@ export function FsHeader() {
       <header className="hdr" id="hdr">
         <div className="wrap hdr-in">
           <Link to="/" className="logo" aria-label="Coding Hubs School of AI home">
-            <img className="logo-img" src={LOGO_WIDE} alt="Coding Hubs School of AI logo" width={640} height={194} />
+            <img className="logo-img" src={LOGO_WIDE} alt="Coding Hubs School of AI logo" width={720} height={208} />
           </Link>
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
             <a href="/">Home</a>
@@ -53,7 +53,7 @@ export function FsFooter() {
       <div className="wrap ftr-grid">
         <div className="ftr-brand">
           <Link to="/" className="logo logo-light" aria-label="Coding Hubs School of AI home">
-            <img className="logo-img" src={LOGO_WIDE} alt="Coding Hubs School of AI logo" width={640} height={194} loading="lazy" />
+            <img className="logo-img" src={LOGO_WIDE} alt="Coding Hubs School of AI logo" width={720} height={208} loading="lazy" />
           </Link>
           <p className="ftr-tag">Practical AI training for learners across Delhi NCR. Official head office at Netaji Subhash Place, Delhi.</p>
         </div>

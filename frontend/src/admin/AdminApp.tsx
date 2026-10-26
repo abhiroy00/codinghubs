@@ -81,7 +81,7 @@ function Login({ onDone }: { onDone: (name: string) => void }) {
     <div className="ad-login">
       <form className="ad-login-card" onSubmit={submit}>
         <div className="ad-logo">
-          <img src="/assets/coding-hubs-school-of-ai-logo-wide.jpeg" alt="Coding Hubs School of AI" width={640} height={194} />
+          <img src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
         </div>
         <h1>Admin Panel</h1>
         <p>Sign in to manage leads, enrollments and courses.</p>
@@ -113,7 +113,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
     <div className="ad-shell">
       <aside className="ad-side">
         <div className="ad-brand">
-          <img src="/assets/coding-hubs-school-of-ai-logo-wide.jpeg" alt="Coding Hubs School of AI" width={640} height={194} />
+          <img src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
           <span>Admin</span>
         </div>
         <nav aria-label="Admin sections">

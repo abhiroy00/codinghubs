@@ -65,8 +65,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .logo-mark svg{width:22px;height:22px}
 .logo-name{font:700 1rem/1.15 var(--f-head);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .logo-light{color:#fff}
-.logo-img{display:block;height:44px;width:auto}
-@media (max-width:420px){.logo-img{height:38px}}
+.logo-img{display:block;height:50px;width:auto}
+@media (max-width:420px){.logo-img{height:40px}}
 .logo-light .logo-img{height:52px;padding:6px 10px;border-radius:12px;background:#fff;box-sizing:content-box}
 .nav{display:flex;align-items:center;gap:.25rem;margin-left:auto}
 .nav a:not(.btn){position:relative;padding:.5rem .8rem;border-radius:8px;color:#363636;font-weight:500;font-size:.95rem;text-decoration:none;transition:color .2s}

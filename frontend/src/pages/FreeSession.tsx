@@ -115,7 +115,7 @@ export function FreeSession() {
       <header className="hdr" id="hdr">
         <div className="wrap hdr-in">
           <a href="#home" className="logo" aria-label="Home">
-            <img className="logo-img" src="/fs-assets/img/logo.jpg" alt="Coding Hubs School of AI" width={380} height={100} />
+            <img className="logo-img" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
           </a>
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary" onClick={(e) => { if ((e.target as HTMLElement).closest('a')) setNavOpen(false) }}>
             <a href="#home">Home</a>
@@ -773,7 +773,7 @@ export function FreeSession() {
         <div className="wrap ftr-grid">
           <div className="ftr-brand">
             <a href="#home" className="logo logo-light" aria-label="Back to top">
-              <img className="logo-img" src="/fs-assets/img/logo.jpg" alt="Coding Hubs School of AI" width={380} height={100} />
+              <img className="logo-img" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
             </a>
             <p className="ftr-tag">Free 2-hour live online demo sessions for AI, development, data, design and marketing courses.</p>
           </div>
