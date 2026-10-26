@@ -11,6 +11,7 @@ import { Dashboard } from './pages/Dashboard'
 import { Faq } from './pages/Faq'
 import { FreeSession } from './pages/FreeSession'
 import { Login } from './pages/Login'
+import { NotFound } from './pages/NotFound'
 import { Policies } from './pages/Policies'
 import { Register } from './pages/Register'
 import { LocationRoute } from './locations/LocationRoute'
@@ -48,6 +49,7 @@ export function App() {
                   <Route path="dashboard" element={<Dashboard />} />
                 </Route>
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </ModalProvider>
         </LenisProvider>

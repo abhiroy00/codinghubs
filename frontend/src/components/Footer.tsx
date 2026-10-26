@@ -19,7 +19,7 @@ export function Footer() {
                   <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z" />
                   <circle cx="12" cy="10" r="2.5" />
                 </svg>
-                <span>9th Floor, Pearls Best Heights-I, 904, Netaji Subhash Place, Delhi – 110034</span>
+                <span>904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi – 110034</span>
               </li>
               <li>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

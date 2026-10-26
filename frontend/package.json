@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
-    "validate:locations": "node scripts/validate-locations.mjs"
+    "validate:locations": "node scripts/validate-locations.mjs",
+    "validate:seo": "node scripts/validate-seo.mjs",
+    "validate": "npm run validate:seo && npm run validate:locations"
   },
   "dependencies": {
     "axios": "^1.20.0",

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { FsIcon, IconSprite } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { LocationsMenu } from './LocationsMenu'
-import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
+import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
 export function BrandLogo({ home = false }: { home?: boolean }) {
@@ -164,20 +164,20 @@ export function FsFooter({ home = false }: { home?: boolean }) {
 
         <div className="fx-locs">
           <h2>AI course locations</h2>
-          <div className="fx-loc-groups">
+          <ul className="fx-loc-regions">
             {GROUP_ORDER.map((g) => (
-              <div key={g}>
-                <p>{GROUP_LABELS[g]}</p>
-                <ul>
-                  {LOCATIONS.filter((l) => l.group === g).map((l) => (
-                    <li key={l.slug}>
-                      <Link to={locationPath(l.slug)}>{l.short}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <li key={g}>
+                <Link to={`/locations/#${g}`}>
+                  {GROUP_LABELS[g]} <span>({LOCATIONS.filter((l) => l.group === g).length})</span>
+                </Link>
+              </li>
             ))}
-          </div>
+            <li>
+              <Link to="/locations/" className="fx-loc-all">
+                View all {LOCATIONS.length} locations
+              </Link>
+            </li>
+          </ul>
         </div>
 
         <div className="fx-bottom">

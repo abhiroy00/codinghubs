@@ -4,7 +4,7 @@ const content: LocationContent = {
   slug: 'ai-course-in-nsp-delhi',
   metaTitle: 'AI Course in NSP Delhi | Coding Hubs School of AI',
   metaDescription:
-    'Explore AI learning options for students and professionals in NSP, Delhi. Discover AI course topics, practical project ideas and enquiry details at Coding Hubs School of AI.',
+    'Explore AI learning options for students and professionals in NSP, Delhi: AI course topics, practical project ideas and enquiry details at Coding Hubs School of AI.',
   h1: 'AI Course in NSP (Netaji Subhash Place), Delhi',
   hero: [
     'If you are searching for an AI course in NSP, Delhi, you are looking at the neighbourhood where Coding Hubs School of AI has its official head office. Our address is 904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi – 110034. That makes this page a little different from the other location guides on our website: for learners in and around NSP, the head office is the place where enquiries are answered, questions about the syllabus are discussed and, where it suits you, a conversation about your goals can happen face to face.',

@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
 import { INSTITUTE, WHATSAPP } from './free-session/data'
 import { FsIcon } from './free-session/icons'
+import { NotFound } from './NotFound'
 import { getProgram } from './free-session/programs'
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
@@ -25,7 +26,7 @@ export function Curriculum() {
     }
   }, [program])
 
-  if (!program) return <Navigate to="/" replace />
+  if (!program) return <NotFound />
 
   return (
     <div className="fs-page">

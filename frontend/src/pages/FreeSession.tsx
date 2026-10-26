@@ -402,7 +402,7 @@ export function FreeSession() {
             <div className="programs-intro">
               <article className="plan-card">
                 <div className="plan-media">
-                  <img src="/fs-assets/img/Modern Virtual Classroom Studio.png" alt="Free live demo session" width={800} height={500} loading="lazy" decoding="async" />
+                  <img src="/fs-assets/img/modern-virtual-classroom-studio.jpg" alt="Free live demo session" width={800} height={500} loading="lazy" decoding="async" />
                   <span className="plan-step">Step 1</span>
                 </div>
                 <div className="plan-body">
@@ -458,7 +458,7 @@ export function FreeSession() {
         </section>
 
         <a href="#courses" className="wide-banner" data-cta="courses-banner">
-          <img src="/fs-assets/img/bg3.png" alt="Build your future with AI Engineer. Learn today, build tomorrow. Explore all courses." width={2048} height={584} loading="lazy" decoding="async" />
+          <img src="/fs-assets/img/bg3.jpg" alt="Build your future with AI Engineer. Learn today, build tomorrow. Explore all courses." width={1600} height={456} loading="lazy" decoding="async" />
         </a>
 
         <section className="sec sec-alt" id="courses" aria-labelledby="courses-title">
@@ -742,7 +742,7 @@ export function FreeSession() {
                 ))}
               </div>
               <figure className="faq-img">
-                <img src="/fs-assets/img/faq.png" alt="" width={1024} height={1536} loading="lazy" decoding="async" />
+                <img src="/fs-assets/img/faq.jpg" alt="" width={900} height={1350} loading="lazy" decoding="async" />
               </figure>
             </div>
           </div>

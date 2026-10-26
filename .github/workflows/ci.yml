@@ -45,8 +45,8 @@ jobs:
         env:
           VITE_API_BASE_URL: /api
           VITE_RAZORPAY_KEY_ID: rzp_test_ci_placeholder
-      - name: Validate location pages (word count, metadata, links, sitemap)
-        run: npm run validate:locations
+      - name: SEO validation (site-wide metadata, canonicals, sitemap, robots, links) and location pages (word counts, uniqueness)
+        run: npm run validate
         working-directory: frontend
 
   deploy:

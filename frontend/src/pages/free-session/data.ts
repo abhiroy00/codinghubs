@@ -3,7 +3,7 @@ export const INSTITUTE = {
   phone: '+91 74640 99059',
   phoneHref: 'tel:+917464099059',
   email: 'info@codingnowai.in',
-  address: '9th Floor, Pearls Best Heights-I, 904, Netaji Subhash Place, Delhi – 110034',
+  address: '904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi – 110034',
   website: 'codingnowai.in',
   websiteHref: 'https://codingnowai.in/',
   social: {

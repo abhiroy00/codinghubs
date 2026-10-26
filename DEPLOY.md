@@ -131,6 +131,14 @@ in this order:
    ```
 4. Re-deploy once so the backend picks up the new `ALLOWED_HOSTS`, then open https://admin.codinghubs.in.
 
+## SEO routing (nginx) — read before deploying `nginx.conf` changes
+
+`frontend/nginx.conf` maps clean URLs to prerendered files (`/` → `home.html`, `/faq` → `faq.html`,
+`/program/<slug>` → `program/<slug>.html`, `/locations/**` → directory `index.html`) and returns a real `404` for
+anything else; login/register/dashboard/checkout/admin-panel get the `noindex` SPA shell. `www.<domain>` 301s to the
+apex, which needs the existing certificate to include `www` (it does if it was issued with `-d www.codinghubs.in`).
+After deploy verify with `curl -I` (see the checklist in [SEO.md](SEO.md)). `http2 on;` needs nginx ≥ 1.25.1 (image is 1.27).
+
 ## Cost
 
 Roughly $8–15/month: t3.micro on-demand (~$7.50/mo in ap-southeast-2) + 20GB gp3

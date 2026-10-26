@@ -16,7 +16,7 @@ export const PROGRAMS: Program[] = [
     slug: 'vibe-coding-with-ai',
     title: 'Vibe Coding with AI',
     tagline: 'Build real, working apps by pairing with AI coding assistants — describe, generate, test and ship.',
-    image: '/fs-assets/img/Modern Virtual Classroom Studio.png',
+    image: '/fs-assets/img/modern-virtual-classroom-studio.jpg',
     days: [
       { title: 'Welcome & your AI coding setup', desc: 'Meet your trainer, install your AI coding assistant (Claude / Copilot / Cursor), and understand how the 15 days are structured.' },
       { title: 'How AI understands code', desc: 'Learn how LLMs read and write code, and how to prompt them clearly for programming tasks instead of vague requests.' },
@@ -39,7 +39,7 @@ export const PROGRAMS: Program[] = [
     slug: 'data-analytics-with-ai',
     title: 'Data Analytics with AI',
     tagline: 'Go from spreadsheets to real analysis — Python, SQL, dashboards and AI-assisted insights.',
-    image: '/fs-assets/img/Live Python Class Studio.png',
+    image: '/fs-assets/img/live-python-class-studio.jpg',
     days: [
       { title: 'Welcome to data analytics', desc: 'What a data analyst actually does day to day, and how AI tools are changing the job.' },
       { title: 'Spreadsheets + AI', desc: 'Faster analysis in Excel / Google Sheets using AI-assisted formulas and summaries.' },
@@ -62,7 +62,7 @@ export const PROGRAMS: Program[] = [
     slug: 'ai-for-all',
     title: 'AI for All',
     tagline: 'No coding background needed — practical AI skills for students, professionals and business owners.',
-    image: '/fs-assets/img/banner.png',
+    image: '/fs-assets/img/banner.jpg',
     days: [
       { title: 'What is AI, really?', desc: 'Demystifying AI, machine learning and large language models in plain language — no jargon.' },
       { title: 'Getting started with ChatGPT/Claude', desc: 'Prompting basics: how to ask AI for what you actually want, and get useful answers.' },

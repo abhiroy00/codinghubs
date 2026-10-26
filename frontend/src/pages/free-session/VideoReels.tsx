@@ -9,6 +9,26 @@ export function VideoReels() {
   const [dotCount, setDotCount] = useState(1)
   const [activeDot, setActiveDot] = useState(0)
   const [scrollable, setScrollable] = useState(true)
+  // Videos sit well below the fold: do not fetch their first frames until the carousel is near the viewport.
+  const [near, setNear] = useState(false)
+  useEffect(() => {
+    const el = listRef.current
+    if (!el || !('IntersectionObserver' in window)) {
+      setNear(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNear(true)
+          io.disconnect()
+        }
+      },
+      { rootMargin: '600px 0px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   const holdRef = useRef(false)
 
   const step = () => {
@@ -118,7 +138,7 @@ export function VideoReels() {
                     videoRefs.current[i] = el
                   }}
                   src={`${v.src}#t=0.5`}
-                  preload="metadata"
+                  preload={near ? 'metadata' : 'none'}
                   playsInline
                   onEnded={() => setPlayingIndex(null)}
                 />
@@ -130,7 +150,7 @@ export function VideoReels() {
                   </span>
                 </button>
               </div>
-              <h4>{v.title}</h4>
+              <h3>{v.title}</h3>
             </li>
           ))}
         </ol>

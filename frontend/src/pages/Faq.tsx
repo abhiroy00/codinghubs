@@ -9,7 +9,7 @@ const FAQS = [
   { q: 'Will I work on real projects?', a: 'Yes. Students build real-world projects and industry-level applications to gain practical experience.' },
   { q: 'What is the course duration?', a: 'It depends on the program. Most programs run between 3 and 9 months, with flexible learning schedules.' },
   { q: 'Is the demo class really free?', a: 'Yes — the demo class is completely free, with no commitment. Book it from any “Free Demo Class” button and our counsellor will confirm your slot.' },
-  { q: 'Where are your centres?', a: 'Our head office is at 9th Floor, Pearls Best Heights-I, 904, Netaji Subhash Place, Delhi – 110034. We serve students across Pitampura, Rohini, Ashok Vihar, Shalimar Bagh, Model Town, Paschim Vihar and nearby areas.' },
+  { q: 'Where are your centres?', a: 'Our head office is at 904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi – 110034. We serve students across Pitampura, Rohini, Ashok Vihar, Shalimar Bagh, Model Town, Paschim Vihar and nearby areas.' },
 ]
 
 const TEAM = [

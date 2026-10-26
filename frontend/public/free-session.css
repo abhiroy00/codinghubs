@@ -6,7 +6,7 @@
   --ink:#0B1530; --muted:#363636; --faint:#8A94AD;
   --bg:#FFFFFF; --bg-2:#F4F7FC; --line:#E2E8F3; --line-2:#CFD8E8;
   --ok:#12945A; --ok-soft:#E6F7EE; --err:#D33A2C; --err-soft:#FDECEA;
-  --wa:#1FAF55;
+  --wa:#12823f;
   --r-sm:10px; --r:16px; --r-lg:24px;
   --sh-sm:0 1px 2px rgba(10,26,63,.06),0 2px 6px rgba(10,26,63,.05);
   --sh:0 10px 30px -12px rgba(10,26,63,.18),0 2px 6px rgba(10,26,63,.05);
@@ -53,7 +53,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .btn-ghost-light{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.35);color:#fff}
 .btn-ghost-light:hover{background:rgba(255,255,255,.14);border-color:#fff}
 .btn-wa{background:var(--wa);color:#fff}
-.btn-wa:hover{background:#178f45}
+.btn-wa:hover{background:#0e6b34}
 .btn-wa .ico{fill:currentColor}
 .link-btn{background:none;border:0;padding:0;color:var(--blue-2);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 
@@ -92,7 +92,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 @media (max-width:420px){.hdr-cta{display:none}.logo-name{font-size:.92rem}}
 
 /* ============ HERO ============ */
-.hero{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(10,26,63,.92) 0%,rgba(17,39,92,.86) 55%,rgba(14,42,110,.8) 100%),url("img/banner.png") top center/100% auto no-repeat var(--navy);color:#fff;padding:2.25rem 0 3rem}
+.hero{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(10,26,63,.92) 0%,rgba(17,39,92,.86) 55%,rgba(14,42,110,.8) 100%),url("fs-assets/img/banner.jpg") top center/100% auto no-repeat var(--navy);color:#fff;padding:2.25rem 0 3rem}
 @media (min-width:1000px){.hero{padding:2.5rem 0 4rem}}
 .hero-deco{position:absolute;inset:0;pointer-events:none}
 .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
@@ -177,7 +177,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 #leadForm{margin-top:.8rem;display:grid;gap:.5rem}
 .field label{display:block;margin-bottom:.2rem;font-weight:600;font-size:.78rem;color:#334155;letter-spacing:.01em}
 .req{color:var(--err)}
-.opt{color:var(--faint);font-weight:400}
+.opt{color:#66708a;font-weight:400}
 .field input,.field select{width:100%;height:36px;padding:0 .75rem;border:1px solid #D3DAE6;border-radius:10px;background-color:#F8FAFD;font-size:.92rem;transition:border-color .2s,box-shadow .2s,background-color .2s}
 .field select{appearance:none;-webkit-appearance:none;padding-right:2.4rem;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A1A3F' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .8rem center;background-size:18px;cursor:pointer}
 .field select:invalid,.field select option[value=""]{color:var(--faint)}
@@ -352,7 +352,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .reel-btn:hover .pl{transform:scale(1.1)}
 .reel-btn .n{position:absolute;left:10px;top:10px;padding:.3rem .5rem;border-radius:8px;background:var(--navy);color:var(--yellow);font:800 .7rem/1 var(--f-head);letter-spacing:.06em}
 .reel-btn .d{position:absolute;right:10px;top:10px;padding:.3rem .45rem;border-radius:8px;background:rgba(0,0,0,.55);font:600 .72rem/1 var(--f-body)}
-.reel h4{margin:0;font:600 .92rem/1.3 var(--f-head);color:var(--navy)}
+.reel h3{margin:0;font:600 .92rem/1.3 var(--f-head);color:var(--navy)}
 .v-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem 1.5rem;margin-top:2rem;padding:1.25rem 1.4rem;border-radius:var(--r-lg);background:var(--navy);color:#fff}
 .v-cta-text{display:flex;align-items:center;gap:.9rem;flex:1 1 320px}
 .v-cta-text strong{color:var(--yellow)}
@@ -364,7 +364,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 @media (max-width:520px){.v-cta-btns,.v-cta-btns .btn{width:100%}}
 
 /* ============ WHY JOIN (bento) ============ */
-.why-sec{position:relative;overflow:hidden;background:#fff url("img/bg2.png") top center/100% auto repeat-y}
+.why-sec{position:relative;overflow:hidden;background:#fff url("fs-assets/img/bg2.webp") top center/100% auto repeat-y}
 .why-sec .why-deco{display:none}
 .why-deco span{position:absolute;border-radius:50%;pointer-events:none}
 .wd1{width:600px;height:600px;left:50%;top:-320px;margin-left:-300px;background:radial-gradient(circle,rgba(255,200,30,.22),transparent 65%)}
@@ -639,10 +639,10 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 }
 
 /* ============ SESSION DETAILS background ============ */
-#session{background:#fff url("img/bg.png") top center/100% auto repeat-y}
+#session{background:#fff url("fs-assets/img/bg.webp") top center/100% auto repeat-y}
 
 /* ============ FAQ background ============ */
-#faq{background:#fff url("img/bg2.png") top center/100% auto repeat-y}
+#faq{background:#fff url("fs-assets/img/bg2.webp") top center/100% auto repeat-y}
 
 /* ============ FULL-WIDTH COURSES BANNER ============ */
 .wide-banner{display:block;width:100%;margin:0;padding:0;line-height:0}
@@ -1087,3 +1087,15 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   .curriculum-days .day-n{width:38px;height:38px;font-size:.92rem}
   .fs-page .faq.curriculum-days details p{padding:0 1rem 1rem}
 }
+
+/* 404 page */
+.nf{padding:5rem 0 6rem;text-align:center}
+.nf h1{margin:.6rem 0 1rem;font-size:clamp(2rem,5vw,3rem);font-weight:800}
+.nf p{max-width:44ch;margin:0 auto 1.5rem}
+.nf .cta-row{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center}
+.ftr.fx .fx-loc-regions{display:flex;flex-wrap:wrap;gap:.6rem}
+.ftr.fx .fx-loc-regions a{display:inline-block;padding:.45rem 1rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);font-size:.9rem;color:rgba(255,255,255,.9);transition:all .2s}
+.ftr.fx .fx-loc-regions a span{opacity:.7}
+.ftr.fx .fx-loc-regions a:hover{background:var(--yellow);border-color:var(--yellow);color:var(--navy)}
+.ftr.fx .fx-loc-regions a.fx-loc-all{background:var(--yellow);border-color:var(--yellow);color:var(--navy);font-weight:600}
+.loc-group{scroll-margin-top:calc(var(--hdr-h) + 80px)}
