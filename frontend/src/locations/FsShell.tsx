@@ -5,6 +5,40 @@ import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { LocationsMenu } from './LocationsMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
 
+/** Circular emblem + live-text wordmark for the dark header (derived from the official logo's "hub" tile). */
+export function BrandLogo({ home = false }: { home?: boolean }) {
+  const inner = (
+    <>
+      <img className="brand-mark" src="/assets/logo-mark.png" alt="" width={44} height={44} />
+      <span className="brand-text">
+        <span className="brand-name">
+          Coding<b>hub</b>
+        </span>
+        <span className="brand-sub">School of AI</span>
+      </span>
+      <span className="sr-only">Coding Hubs School of AI home</span>
+    </>
+  )
+  return home ? (
+    <a href="#home" className="logo brand" aria-label="Coding Hubs School of AI home">
+      {inner}
+    </a>
+  ) : (
+    <Link to="/" className="logo brand" aria-label="Coding Hubs School of AI home">
+      {inner}
+    </Link>
+  )
+}
+
+export function HeaderPhone() {
+  return (
+    <a className="hdr-phone" href={INSTITUTE.phoneHref} aria-label={`Call ${INSTITUTE.phone}`}>
+      <FsIcon id="i-phone" />
+      <span>{INSTITUTE.phone}</span>
+    </a>
+  )
+}
+
 export const LOGO_WIDE = '/assets/coding-hubs-school-of-ai-logo-wide.png'
 
 /** Header for the location pages: same look as the free-session header plus the Locations menu. */
@@ -18,20 +52,20 @@ export function FsHeader() {
       </a>
       <header className="hdr" id="hdr">
         <div className="wrap hdr-in">
-          <Link to="/" className="logo" aria-label="Coding Hubs School of AI home">
-            <img className="logo-img" src={LOGO_WIDE} alt="Coding Hubs School of AI logo" width={720} height={208} />
-          </Link>
+          <BrandLogo />
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
             <a href="/">Home</a>
             <a href="/#demo-classes">Free Demo Classes</a>
             <a href="/#courses">Explore Courses</a>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/#contact">Contact</a>
+            <a href={INSTITUTE.phoneHref} className="nav-phone">Call {INSTITUTE.phone}</a>
             <a href="/#register" className="btn btn-yellow nav-cta btn-shake">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>
           </nav>
           <div className="hdr-actions">
+            <HeaderPhone />
             <a href="/#register" className="btn btn-yellow btn-sm hdr-cta">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>
