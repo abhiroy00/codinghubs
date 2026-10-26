@@ -110,6 +110,27 @@ aws ssm put-parameter --region ap-southeast-2 --name /codinghubs/prod/ADMIN_PASS
 Then push/re-run the deploy. To change the password later, overwrite `ADMIN_PASSWORD` and
 redeploy. With the parameters unset the command does nothing.
 
+### Admin subdomain (`admin.codinghubs.in`)
+
+nginx already answers for `admin.<DOMAIN>` (it opens straight on `/admin-panel`). One-time setup,
+in this order:
+
+1. **DNS (Hostinger):** add an `A` record `admin` → `13.236.145.34`.
+2. **Django host:** add the name to `ALLOWED_HOSTS` in SSM (read the current value first, then append):
+   ```bash
+   aws ssm get-parameter --region ap-southeast-2 --name /codinghubs/prod/ALLOWED_HOSTS --with-decryption --query Parameter.Value --output text
+   aws ssm put-parameter --region ap-southeast-2 --name /codinghubs/prod/ALLOWED_HOSTS --type SecureString --overwrite --value '<current>,admin.codinghubs.in'
+   ```
+3. **Certificate** (after DNS resolves; run on the instance via SSM): extend the existing cert so it also covers the subdomain, then reload nginx:
+   ```bash
+   cd /opt/codinghubs
+   docker compose -f docker-compose.prod.yml --env-file .env run --rm --entrypoint certbot certbot certonly --webroot -w /var/www/certbot \
+     -d codinghubs.in -d www.codinghubs.in -d admin.codinghubs.in --expand \
+     --email info@codingnowai.in --agree-tos --no-eff-email --non-interactive
+   docker compose -f docker-compose.prod.yml --env-file .env exec frontend nginx -s reload
+   ```
+4. Re-deploy once so the backend picks up the new `ALLOWED_HOSTS`, then open https://admin.codinghubs.in.
+
 ## Cost
 
 Roughly $8–15/month: t3.micro on-demand (~$7.50/mo in ap-southeast-2) + 20GB gp3

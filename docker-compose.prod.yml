@@ -38,6 +38,7 @@ services:
     environment:
       BACKEND_HOST: backend:8000
       SERVER_NAME: ${DOMAIN:-_}
+      ADMIN_SERVER_NAME: admin.${DOMAIN:-localhost}
     depends_on:
       - backend
     ports:
