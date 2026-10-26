@@ -1,21 +1,22 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Layout } from './components/Layout'
-import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './lib/auth-context'
 import { LenisProvider } from './lib/lenis-context'
 import { ModalProvider } from './lib/modal-context'
-import { CourseCheckout } from './pages/CourseCheckout'
 import { Curriculum } from './pages/Curriculum'
-import { Dashboard } from './pages/Dashboard'
-import { Faq } from './pages/Faq'
 import { FreeSession } from './pages/FreeSession'
-import { Login } from './pages/Login'
 import { NotFound } from './pages/NotFound'
-import { Policies } from './pages/Policies'
-import { Register } from './pages/Register'
 import { LocationRoute } from './locations/LocationRoute'
 import { LocationsIndex } from './locations/LocationsIndex'
 
+const Layout = lazy(() => import('./components/Layout').then((m) => ({ default: m.Layout })))
+const ProtectedRoute = lazy(() => import('./components/ProtectedRoute').then((m) => ({ default: m.ProtectedRoute })))
+const CourseCheckout = lazy(() => import('./pages/CourseCheckout').then((m) => ({ default: m.CourseCheckout })))
+const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })))
+const Faq = lazy(() => import('./pages/Faq').then((m) => ({ default: m.Faq })))
+const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })))
+const Policies = lazy(() => import('./pages/Policies').then((m) => ({ default: m.Policies })))
+const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
 
 export function App() {
   return (
@@ -23,7 +24,8 @@ export function App() {
       <BrowserRouter>
         <LenisProvider>
           <ModalProvider>
-            <Routes>
+            <Suspense fallback={null}>
+<Routes>
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
               <Route path="program/:slug" element={<Curriculum />} />
@@ -41,6 +43,7 @@ export function App() {
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
+</Suspense>
           </ModalProvider>
         </LenisProvider>
       </BrowserRouter>
