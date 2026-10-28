@@ -44,27 +44,10 @@ export function ResourcesMenu() {
   )
 }
 
-export function CartLink({ light = false }: { light?: boolean }) {
-  const [n, setN] = useState(() => {
-    try {
-      return Number(localStorage.getItem('ch_cart_count')) || 0
-    } catch {
-      return 0
-    }
-  })
-  useEffect(() => {
-    const h = (e: Event) => setN((e as CustomEvent<number>).detail)
-    window.addEventListener('cart-count', h)
-    return () => window.removeEventListener('cart-count', h)
-  }, [])
+export function StoreLink({ light = false }: { light?: boolean }) {
   return (
-    <a href="/cart" className={`cart-link${light ? ' on-light' : ''}`} aria-label={`Cart, ${n} item${n === 1 ? '' : 's'}`}>
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="9" cy="20" r="1.5" />
-        <circle cx="18" cy="20" r="1.5" />
-        <path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6" />
-      </svg>
-      {n > 0 && <span className="cart-badge">{n}</span>}
+    <a href="/store" className={`store-link${light ? ' on-light' : ''}`}>
+      Store
     </a>
   )
 }

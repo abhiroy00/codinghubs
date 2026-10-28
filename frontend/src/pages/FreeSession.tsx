@@ -4,7 +4,7 @@ import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { BrandLogo, FsFooter } from '../locations/FsShell'
 import { LocationsMenu } from '../locations/LocationsMenu'
-import { CartLink, ResourcesMenu } from '../locations/ResourcesMenu'
+import { ResourcesMenu, StoreLink } from '../locations/ResourcesMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
 import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
@@ -129,7 +129,7 @@ export function FreeSession() {
             </a>
           </nav>
           <div className="hdr-actions">
-            <CartLink />
+            <StoreLink />
             <a href="#register" className="btn btn-yellow btn-sm hdr-cta btn-shake" data-cta="header">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>

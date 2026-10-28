@@ -1243,9 +1243,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   .res-list a{color:#fff!important;padding:.75rem .5rem;border-radius:0;border-bottom:1px solid rgba(255,255,255,.08)}
   .res-list a:hover{background:rgba(255,255,255,.1)}
 }
-.cart-link{position:relative;display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;color:#fff;transition:background .2s,transform .2s}
-.cart-link:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
-.cart-badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:var(--yellow);color:var(--navy);font:700 .7rem/18px var(--f-body);text-align:center}
+.store-link{display:inline-flex;align-items:center;padding:.5rem .75rem;border-radius:8px;color:#fff;text-decoration:none;font-weight:600;transition:background .2s,transform .2s}
+.store-link:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
 .nav a:not(.btn).res-skip{display:none}
 
 /* ============ SHOP ============ */

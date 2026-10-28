@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth-context'
 import { Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
-import { CartLink } from '../locations/ResourcesMenu'
+import { StoreLink } from '../locations/ResourcesMenu'
 
 const COURSE_COLUMNS = [
   { heading: 'AI & Data', items: ['Generative AI', 'Agentic AI', 'Prompt Engineering', 'AI Engineering Diploma', 'Data Science', 'Data Analytics'] },
@@ -87,7 +87,7 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
           </li>
         </ul>
         <div className="nav-right">
-          <CartLink light />
+          <StoreLink light />
           {user ? (
             <>
               <Link className="nav-link nav-login" to="/dashboard">

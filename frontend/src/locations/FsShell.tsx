@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { FsIcon, IconSprite } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { LocationsMenu } from './LocationsMenu'
-import { CartLink, ResourcesMenu } from './ResourcesMenu'
+import { ResourcesMenu, StoreLink } from './ResourcesMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -50,7 +50,7 @@ export function FsHeader() {
             </a>
           </nav>
           <div className="hdr-actions">
-            <CartLink />
+            <StoreLink />
             <a href="/#register" className="btn btn-yellow btn-sm hdr-cta">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>
