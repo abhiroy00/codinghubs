@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'apps.enrollments',
     'apps.adminpanel',
     'apps.tutors',
+    'apps.content',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,10 @@ LOGGING = {
         'django.request': {'handlers': ['console'], 'level': 'ERROR', 'propagate': False},
     },
 }
+
+# --- Blog / case studies ---
+SITE_URL = config('SITE_URL', default='https://codinghubs.in').rstrip('/')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = config('MEDIA_ROOT', default=str(BASE_DIR / 'media'))
+# Where the backend fetches the built SPA shell from to wrap server-rendered blog pages (see apps/content/ssr.py).
+FRONTEND_SHELL_URL = config('FRONTEND_SHELL_URL', default='')

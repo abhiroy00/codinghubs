@@ -18,6 +18,8 @@ const read = (f) => readFile(path.join(dist, f), 'utf8')
 
 /** Mirrors nginx.conf: where a clean URL is served from. */
 function resolveUrl(urlPath) {
+  // blog / case studies come from the database: nginx hands these URLs to the backend (server-rendered)
+  if (/^\/(blog|case-studies)(\/[^/]+)?$/.test(urlPath)) return { file: 'content-shell.html', dynamic: true }
   if (urlPath === '/') return { file: 'home.html' }
   if (urlPath.endsWith('/')) {
     const f = path.posix.join(urlPath, 'index.html').slice(1)
@@ -40,6 +42,9 @@ if (/<lastmod>/.test(sitemapXml)) warn('sitemap.xml has <lastmod>; only keep it 
 // ---------- robots.txt ----------
 const robots = await read('robots.txt')
 if (!robots.includes(`Sitemap: ${SITE}/sitemap.xml`)) fail('robots.txt has no Sitemap line')
+if (!robots.includes(`Sitemap: ${SITE}/sitemap-content.xml`)) fail('robots.txt has no Sitemap line for the blog/case-study sitemap')
+const contentShell = await read('content-shell.html')
+if (!contentShell.includes('<!--SEO_HEAD-->') || !contentShell.includes('<!--SSR_ROOT-->')) fail('content-shell.html is missing its SEO_HEAD / SSR_ROOT markers (the backend fills them)')
 const disallows = [...robots.matchAll(/^Disallow:\s*(\S+)/gim)].map((m) => m[1])
 
 const pages = []

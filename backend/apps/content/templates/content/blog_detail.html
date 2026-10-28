@@ -1,0 +1,16 @@
+<div class="fs-page">{% include "content/_chrome_top.html" %}
+<main id="main" class="wrap bl-main"><article class="bl-article">
+  {% if preview %}<p class="bl-preview" role="status">Preview. This page is not public.</p>{% endif %}
+  <nav aria-label="Breadcrumb" class="bl-crumbs"><ol><li><a href="/">Home</a></li><li><a href="/blog">Blog</a></li><li aria-current="page">{{ a.title }}</li></ol></nav>
+  <header class="bl-head">
+    {% if a.category %}<p class="bl-cat"><a href="/blog?category={{ a.category.slug }}">{{ a.category.name }}</a></p>{% endif %}
+    <h1>{{ a.title }}</h1>
+    <p class="bl-meta">{% if a.author_name %}By {{ a.author_name }}{% if a.author_title %}, {{ a.author_title }}{% endif %} · {% endif %}{{ date }} · {{ a.reading_time }} min read</p>
+  </header>
+  {% if a.featured_image %}<img class="bl-cover" src="{{ a.featured_image }}" alt="{{ a.featured_image_alt }}" width="1200" height="630" decoding="async">{% endif %}
+  {% if a.toc %}<nav class="bl-toc" aria-label="Table of contents"><h2>Contents</h2><ol>{% for t in a.toc %}<li class="l{{ t.level }}"><a href="#{{ t.id }}">{{ t.text }}</a></li>{% endfor %}</ol></nav>{% endif %}
+  <div class="bl-body">{{ a.content_html|safe }}</div>
+  {% if a.faq %}<section class="bl-faq"><h2>Frequently asked questions</h2>{% for f in a.faq %}<h3>{{ f.q }}</h3><div>{{ f.a|safe }}</div>{% endfor %}</section>{% endif %}
+  <aside class="bl-cta"><h2>Learn AI hands-on</h2><p>Join the free 2-hour live online demo session and see how we teach.</p><a class="btn btn-yellow" href="/#register">Register for free</a></aside>
+  {% if a.related %}<section class="bl-related"><h2>Related articles</h2><ul>{% for r in a.related %}<li><a href="/blog/{{ r.slug }}">{{ r.title }}</a></li>{% endfor %}</ul></section>{% endif %}
+</article></main>{% include "content/_chrome_bottom.html" %}</div>

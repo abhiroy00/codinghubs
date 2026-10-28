@@ -1,0 +1,16 @@
+<div class="fs-page">{% include "content/_chrome_top.html" %}
+<main id="main" class="wrap bl-main"><article class="bl-article">
+  {% if preview %}<p class="bl-preview" role="status">Preview. This page is not public.</p>{% endif %}
+  <nav aria-label="Breadcrumb" class="bl-crumbs"><ol><li><a href="/">Home</a></li><li><a href="/case-studies">Case Studies</a></li><li aria-current="page">{{ a.title }}</li></ol></nav>
+  <header class="bl-head">
+    {% if a.industry %}<p class="bl-cat">{{ a.industry }}</p>{% endif %}
+    <h1>{{ a.title }}</h1>
+    <p class="bl-meta">{% if a.client %}{{ a.client }} · {% endif %}{% if a.duration %}{{ a.duration }} · {% endif %}{{ date }}</p>
+  </header>
+  {% if a.featured_image %}<img class="bl-cover" src="{{ a.featured_image }}" alt="{{ a.featured_image_alt }}" width="1200" height="630" decoding="async">{% endif %}
+  {% if a.metrics %}<ul class="bl-metrics">{% for m in a.metrics %}<li><strong>{{ m.value }}</strong> {{ m.label }}{% if m.note %}<small>{{ m.note }}</small>{% endif %}</li>{% endfor %}</ul>{% endif %}
+  {% for s in a.sections %}<section id="{{ s.key }}" class="bl-body"><h2>{{ s.title }}</h2>{{ s.html|safe }}</section>{% endfor %}
+  {% if a.technologies %}<section id="tech"><h2>Technology stack</h2><ul class="bl-tags">{% for t in a.technologies %}<li>{{ t }}</li>{% endfor %}</ul></section>{% endif %}
+  {% if a.related_services %}<section><h2>Related services</h2><ul>{% for s in a.related_services %}<li><a href="{{ s.url }}">{{ s.label }}</a></li>{% endfor %}</ul></section>{% endif %}
+  <aside class="bl-cta"><h2>Talk to us about your project</h2><p>Tell us your goal and a counsellor will get in touch.</p><a class="btn btn-yellow" href="/#contact">Get in touch</a></aside>
+</article></main>{% include "content/_chrome_bottom.html" %}</div>

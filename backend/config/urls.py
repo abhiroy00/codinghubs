@@ -10,4 +10,7 @@ urlpatterns = [
     path('api/enrollments/', include('apps.enrollments.urls')),
     path('api/admin/', include('apps.adminpanel.urls')),
     path('api/tutors/', include('apps.tutors.urls')),
+    path('api/admin/', include('apps.content.admin_urls')),
+    path('api/', include('apps.content.urls')),
+    path('', include('apps.content.ssr_urls')),
 ]

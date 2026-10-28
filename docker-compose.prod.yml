@@ -21,6 +21,11 @@ services:
     env_file: .env
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-codinghubs}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-codinghubs}
+      SITE_URL: https://${DOMAIN:-codinghubs.in}
+      FRONTEND_SHELL_URL: http://frontend:8081/__shell.html
+      MEDIA_ROOT: /app/media
+    volumes:
+      - media:/app/media
     depends_on:
       db:
         condition: service_healthy
@@ -35,6 +40,7 @@ services:
       args:
         VITE_API_BASE_URL: /api
         VITE_RAZORPAY_KEY_ID: ${VITE_RAZORPAY_KEY_ID:-}
+        VITE_TINYMCE_API_KEY: ${VITE_TINYMCE_API_KEY:-}
     restart: unless-stopped
     environment:
       BACKEND_HOST: backend:8000
@@ -48,6 +54,7 @@ services:
     volumes:
       - certbot_conf:/etc/letsencrypt:ro
       - certbot_webroot:/var/www/certbot:ro
+      - media:/var/www/media:ro
 
   certbot:
     image: certbot/certbot
@@ -62,3 +69,4 @@ volumes:
   pgdata:
   certbot_conf:
   certbot_webroot:
+  media:

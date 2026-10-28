@@ -62,10 +62,13 @@ function render(page) {
     // these pages use, loaded without blocking first paint (font-display: swap).
     html = html.replace(/\s*<link href="https:\/\/fonts\.googleapis\.com\/css2[^"]*" rel="stylesheet" \/>/, '')
   }
-  html = html.replace('</head>', `    ${buildHead(page)}\n  </head>`)
+  html = html.replace('</head>', `    ${page.rawHead ?? buildHead(page)}\n  </head>`)
   if (page.html) html = html.replace('<div id="root"></div>', `<div id="root">${page.html}</div>`)
   return html
 }
+
+// App shell for server-rendered content pages (blog, case studies): the backend fills the two markers.
+await writeFile(path.join(dist, 'content-shell.html'), render({ fsDesign: true, rawHead: `<!--SEO_HEAD-->\n    <link rel="stylesheet" href="/free-session.css?v=${cssVersion}" />\n    <link rel="preload" as="style" href="${FONTS}" onload="this.onload=null;this.rel='stylesheet'" />`, html: '<!--SSR_ROOT-->' }))
 
 const pages = renderAll({ skipMissing: process.env.ALLOW_MISSING_LOCATIONS === '1' })
 for (const page of pages) {

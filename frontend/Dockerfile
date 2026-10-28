@@ -7,7 +7,9 @@ COPY admin-panel/package.json admin-panel/package-lock.json ./
 RUN npm ci
 COPY admin-panel/ .
 ARG VITE_API_BASE_URL=/api
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ARG VITE_TINYMCE_API_KEY
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
+    VITE_TINYMCE_API_KEY=$VITE_TINYMCE_API_KEY
 RUN npm run build
 
 # --- site build stage ---

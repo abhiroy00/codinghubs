@@ -1,0 +1,9 @@
+<article class="bl-card">
+  {% if c.featured_image %}<a href="{{ c.url }}" class="bl-card-img" tabindex="-1" aria-hidden="true"><img src="{{ c.featured_image }}" alt="{{ c.featured_image_alt }}" loading="lazy" decoding="async" width="640" height="360"></a>{% endif %}
+  <div class="bl-card-body">
+    {% if c.category %}<p class="bl-cat">{{ c.category.name }}</p>{% elif c.industry %}<p class="bl-cat">{{ c.industry }}</p>{% endif %}
+    <h2><a href="{{ c.url }}">{{ c.title }}</a></h2>
+    <p>{% firstof c.excerpt c.summary %}</p>
+    <p class="bl-meta">{% if c.author_name %}{{ c.author_name }} · {% endif %}{% if c.date %}{{ c.date }}{% endif %}{% if c.reading_time %} · {{ c.reading_time }} min read{% endif %}</p>
+  </div>
+</article>
