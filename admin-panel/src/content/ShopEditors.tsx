@@ -94,7 +94,6 @@ export function GuideEditor() {
   const api = useContentForm<GuideForm>('project-guides', blankGuide)
   const { form, set, errors } = api
   const projects = useOptions<Row>('/projects/', { page_size: 100 })
-  const blogs = useOptions<Row>('/blogs/', { page_size: 100, status: 'published' })
   const courses = useOptions<any>('/courses/')
   // make sure every standard section exists in the form (older guides may have fewer)
   const sections = [...form.sections]
@@ -124,9 +123,6 @@ export function GuideEditor() {
             <SelectField id="g-difficulty" label="Difficulty" value={form.difficulty} onChange={(v) => set('difficulty', v)} options={DIFFICULTY} />
             <Text id="g-category" label="Category" value={form.category} onChange={(v) => set('category', v)} max={80} />
             <Text id="g-time" label="Estimated completion time" value={form.estimated_time} onChange={(v) => set('estimated_time', v)} />
-            <Text id="g-author" label="Author / instructor" value={form.author_name} onChange={(v) => set('author_name', v)} />
-            <Text id="g-role" label="Role" value={form.author_title} onChange={(v) => set('author_title', v)} />
-            <CheckField id="g-feat" label="Feature this guide" checked={form.is_featured} onChange={(v) => set('is_featured', v)} />
           </section>
           <section className="ad-panel">
             <h2>Featured image</h2>
@@ -155,15 +151,6 @@ export function GuideEditor() {
           <RichEditor id={`sec-${s.key}`} label={s.title} value={s.html} onChange={(v) => upd(s.key, { html: v })} height={380} />
         </Section>
       ))}
-      <Section title="FAQ">
-        <RowsEditor id="gfaq" rows={form.faq} onChange={(r) => set('faq', r)} fields={[{ key: 'q', label: 'Question' }, { key: 'a', label: 'Answer', type: 'textarea' }]} addLabel="Add a question" max={15} />
-      </Section>
-      <Section title="Related resources and content">
-        <RowsEditor id="gres" rows={form.related_resources} onChange={(r) => set('related_resources', r)} fields={[{ key: 'label', label: 'Label' }, { key: 'url', label: 'Link (https:// or /path)' }]} addLabel="Add a resource" max={12} error={errors.related_resources} />
-        <MultiSelect id="g-rp" label="Related projects" value={form.related_project_ids} onChange={(v) => set('related_project_ids', v)} options={projects} />
-        <MultiSelect id="g-rb" label="Related blogs" value={form.related_blog_ids} onChange={(v) => set('related_blog_ids', v)} options={blogs} />
-      </Section>
-      <SeoSection form={form} set={set} errors={errors} base="/project-guides" />
     </EditorShell>
   )
 }

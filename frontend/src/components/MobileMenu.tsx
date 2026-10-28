@@ -59,6 +59,9 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
         <Link className="m m-sub" to="/projects" onClick={onClose}>
           Projects
         </Link>
+        <Link className="m m-sub" to="/project-guides" onClick={onClose}>
+          Project Guides
+        </Link>
         <Link className="m m-sub" to="/#session" onClick={onClose}>
           About the Session
         </Link>

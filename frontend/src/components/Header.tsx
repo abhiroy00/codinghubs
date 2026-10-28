@@ -14,6 +14,7 @@ const RESOURCE_LINKS = [
   ['/blog', 'Blog'],
   ['/case-studies', 'Case Studies'],
   ['/projects', 'Projects'],
+  ['/project-guides', 'Project Guides'],
   ['/#session', 'About the Session'],
   ['/#contact', 'Contact'],
 ] as const
