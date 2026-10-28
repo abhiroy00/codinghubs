@@ -57,6 +57,6 @@
 .booking-success>p:not(.eyebrow){color:var(--color-muted)}
 .booking-reference{margin:1rem 0 1.5rem!important;padding:.8rem;border-radius:.75rem;background:#f4f7fc;color:#0A1A3F!important}
 @media(max-width:900px){.tutor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){.tutors-section-heading{align-items:start;flex-direction:column;gap:.75rem;margin-bottom:1.75rem}.tutor-grid{grid-template-columns:1fr}.tutor-portrait{height:250px}.tutor-dialog-backdrop{align-items:start;padding:.75rem}.tutor-dialog{max-height:calc(100vh - 1.5rem);padding:1.25rem;border-radius:1rem}.tutor-booking-form{grid-template-columns:1fr}.tutor-message-field,.tutor-booking-form .tutors-error,.tutor-submit{grid-column:auto}.tutor-actions .btn{font-size:.8rem}.tutor-profile-dialog .tutor-portrait{height:112px}}
+@media(max-width:640px){.tutors-section-heading{align-items:start;flex-direction:column;gap:.75rem;margin-bottom:1.75rem}.tutor-grid{grid-template-columns:minmax(0,420px);justify-content:center}.tutor-card-body{padding:1rem}.tutor-portrait{height:210px}.tutor-dialog-backdrop{align-items:start;padding:.75rem}.tutor-dialog{max-height:calc(100vh - 1.5rem);padding:1.25rem;border-radius:1rem}.tutor-booking-form{grid-template-columns:1fr}.tutor-message-field,.tutor-booking-form .tutors-error,.tutor-submit{grid-column:auto}.tutor-actions .btn{font-size:.8rem}.tutor-profile-dialog .tutor-portrait{height:112px}}
 @media(prefers-reduced-motion:reduce){.tutor-card{transition:none}}
 .tutors-section{scroll-margin-top:6rem}
