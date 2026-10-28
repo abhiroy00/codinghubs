@@ -66,6 +66,30 @@ class AdminLoginView(APIView):
         )
 
 
+class ChangePasswordView(APIView):
+    """Staff change their own password: the current one is required and the new one must pass Django's validators."""
+
+    permission_classes = [IsStaff]
+    throttle_classes = [LoginThrottle]
+
+    def post(self, request):
+        from django.contrib.auth.password_validation import validate_password
+        from django.core.exceptions import ValidationError
+
+        current, new = str(request.data.get('current_password', '')), str(request.data.get('new_password', ''))
+        if not request.user.check_password(current):
+            return Response({'current_password': ['Your current password is not correct.']}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            validate_password(new, request.user)
+        except ValidationError as exc:
+            return Response({'new_password': list(exc.messages)}, status=status.HTTP_400_BAD_REQUEST)
+        if new == current:
+            return Response({'new_password': ['Choose a password you have not used just now.']}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.set_password(new)
+        request.user.save(update_fields=['password'])
+        return Response({'detail': 'Password changed. Please sign in again with the new password.'})
+
+
 class StatsView(APIView):
     permission_classes = [IsStaff]
 

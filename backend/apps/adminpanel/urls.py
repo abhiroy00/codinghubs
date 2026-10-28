@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('login/', views.AdminLoginView.as_view(), name='admin-login'),
     path('stats/', views.StatsView.as_view(), name='admin-stats'),
+    path('change-password/', views.ChangePasswordView.as_view(), name='admin-change-password'),
     path('leads/', views.LeadListView.as_view(), name='admin-leads'),
     path('leads/export/', views.LeadExportView.as_view(), name='admin-leads-export'),
     path('leads/<int:pk>/', views.LeadDetailView.as_view(), name='admin-lead'),

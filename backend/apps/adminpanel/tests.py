@@ -124,3 +124,33 @@ class override_env:
                 os.environ.pop(k, None)
             else:
                 os.environ[k] = v
+
+
+@override_settings(REST_FRAMEWORK=NO_THROTTLE)
+class ChangePasswordTests(TestCase):
+    def setUp(self):
+        cache.clear()
+        self.staff = User.objects.create_user('boss2', email='boss2@example.com', password='S3cure-pass!', is_staff=True)
+        self.client = APIClient()
+        self.client.force_authenticate(self.staff)
+
+    def post(self, cur, new):
+        return self.client.post('/api/admin/change-password/', {'current_password': cur, 'new_password': new}, format='json')
+
+    def test_changes_password_with_the_right_current_one(self):
+        r = self.post('S3cure-pass!', 'An0ther-Strong-pass')
+        self.assertEqual(r.status_code, 200, r.content)
+        self.staff.refresh_from_db()
+        self.assertTrue(self.staff.check_password('An0ther-Strong-pass'))
+
+    def test_wrong_current_weak_new_and_anonymous_are_rejected(self):
+        self.assertEqual(self.post('nope', 'An0ther-Strong-pass').status_code, 400)
+        self.assertEqual(self.post('S3cure-pass!', '123').status_code, 400)
+        self.assertEqual(self.post('S3cure-pass!', 'S3cure-pass!').status_code, 400)
+        self.staff.refresh_from_db()
+        self.assertTrue(self.staff.check_password('S3cure-pass!'))
+        self.assertEqual(APIClient().post('/api/admin/change-password/', {}, format='json').status_code, 401)
+        student = User.objects.create_user('stu2', password='S3cure-pass!')
+        c = APIClient()
+        c.force_authenticate(student)
+        self.assertEqual(c.post('/api/admin/change-password/', {'current_password': 'S3cure-pass!', 'new_password': 'An0ther-Strong-pass'}, format='json').status_code, 403)

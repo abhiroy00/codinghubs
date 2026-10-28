@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { fmtDate } from './format'
 import { Field } from './fields'
-import type { Common, Kind, Revision } from './types'
+import type { Common, Kind, Revision, Status } from './types'
 import type { useContentForm } from './useContentForm'
 
 type Api<T extends Common> = ReturnType<typeof useContentForm<T>>
@@ -31,7 +31,7 @@ export function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; o
   )
 }
 
-export function EditorShell<T extends Common>({ kind, api, noun, children, side }: { kind: Kind; api: Api<T>; noun: string; children: ReactNode; side: ReactNode }) {
+export function EditorShell<T extends Common>({ kind, api, noun, children, side, layout = 'split' }: { kind: Kind; api: Api<T>; noun: string; children: ReactNode; side?: ReactNode; layout?: 'split' | 'single' }) {
   const { form, dirty, busy, notice, loading, recover, revisions } = api
   const [confirm, setConfirm] = useState(false)
   if (loading) return <p className="ad-muted" role="status">Loading…</p>
@@ -41,6 +41,10 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     void api.save()
+  }
+
+  if (layout === 'single') {
+    return <SinglePost kind={kind} api={api} noun={noun} onSubmit={submit}>{children}</SinglePost>
   }
 
   return (
@@ -135,5 +139,81 @@ function Revisions({ list, onRestore }: { list: Revision[]; onRestore: (id: numb
         ))}
       </ul>
     </section>
+  )
+}
+
+
+const STATUS_OPTIONS: [Status, string][] = [
+  ['draft', 'Draft — save only, do not publish'],
+  ['published', 'Published — live on the website'],
+  ['scheduled', 'Scheduled — goes live at the chosen time'],
+  ['archived', 'Archived — hidden, kept for later'],
+]
+
+/** One wide card, fields top to bottom, status + buttons at the end (the layout editors know from other CMSs). */
+function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children }: { kind: Kind; api: Api<T>; noun: string; onSubmit: (e: React.FormEvent) => void; children: ReactNode }) {
+  const { form, dirty, busy, notice, recover, revisions } = api
+  const [confirm, setConfirm] = useState(false)
+  const future = !!form.published_at && new Date(form.published_at).getTime() > Date.now()
+  const live = form.status === 'published' || form.status === 'scheduled'
+  const heading = form.id ? `Edit ${noun}` : `Write New ${noun.replace(/\b\w/g, (c) => c.toUpperCase())}`
+  const back = kind === 'blogs' ? 'All Posts' : 'All Case Studies'
+  return (
+    <form className="ad-post" onSubmit={onSubmit} noValidate>
+      <div className="ad-post-card">
+        <header className="ad-post-head">
+          <h1><span className="ad-post-ico" aria-hidden="true">{form.id ? '✎' : '+'}</span> {heading}</h1>
+          <span className={`ad-badge st-${form.status}`}>{STATUS_LABEL[form.status]}</span>
+          <Link className="ad-btn-outline" to={`/${kind}`}>← {back}</Link>
+        </header>
+        {recover && (
+          <div className="ad-banner" role="status">
+            <span>We found unsaved changes from an earlier session in this browser.</span>
+            <button type="button" className="ad-btn" onClick={api.acceptDraft}>Restore them</button>
+            <button type="button" className="ad-btn" onClick={api.dropDraft}>Discard</button>
+          </div>
+        )}
+        {notice && <div className={`ad-notice ${notice.type}`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.text}</div>}
+        <div className="ad-post-body">
+          {children}
+          <hr className="ad-hr" />
+          <div className="ad-two">
+            <Field label="Status" htmlFor="status" error={api.errors.status}>
+              <select id="status" className="ad-input" value={form.status} onChange={(e) => api.set('status' as keyof T, e.target.value as T[keyof T])}>
+                {STATUS_OPTIONS.map(([v, l]) => (<option key={v} value={v}>{l}</option>))}
+              </select>
+            </Field>
+            <div className="ad-field">
+              <span className="ad-label">Featured {noun}?</span>
+              <label className="ad-check ad-check-box" htmlFor="is_featured">
+                <input id="is_featured" type="checkbox" checked={form.is_featured} onChange={(e) => api.set('is_featured' as keyof T, e.target.checked as T[keyof T])} /> ⭐ Show in the featured section
+              </label>
+            </div>
+          </div>
+          {(form.status === 'scheduled' || form.published_at) && (
+            <Field label={form.status === 'scheduled' ? 'Go live on' : 'Publish date and time'} htmlFor="published_at" error={api.errors.published_at} hint="Leave empty to publish now. A future date and time schedules it; it goes live by itself, no one needs to be logged in.">
+              <input id="published_at" type="datetime-local" className="ad-input" value={form.published_at} onChange={(e) => api.set('published_at' as keyof T, e.target.value as T[keyof T])} />
+            </Field>
+          )}
+          {!form.published_at && form.status !== 'scheduled' && (
+            <button type="button" className="ad-link" onClick={() => api.set('published_at' as keyof T, new Date(Date.now() + 3600_000 - (Date.now() % 60000)).toISOString().slice(0, 16) as T[keyof T])}>Schedule for a later date…</button>
+          )}
+          <div className="ad-post-actions">
+            <button type="button" className="ad-btn ad-btn-soft" disabled={busy} onClick={() => void (live ? api.save() : api.save({ status: 'draft' } as Partial<T>))}>
+              💾 {live ? 'Save Changes' : 'Save as Draft'}
+            </button>
+            <button type="button" className="ad-btn ad-btn-blue" disabled={busy} onClick={() => void api.publish(form.published_at || undefined)}>
+              ➤ {live ? (future ? 'Reschedule' : 'Update Live Page') : future ? 'Schedule' : 'Publish Now'}
+            </button>
+            <button type="button" className="ad-btn" disabled={busy} onClick={() => void api.preview()}>Preview</button>
+            {live && <button type="button" className="ad-btn" disabled={busy} onClick={() => void api.action('unpublish', 'Unpublished. It is no longer on the website.')}>Unpublish</button>}
+            {form.id && <button type="button" className="ad-link ad-danger" onClick={() => setConfirm(true)}>Delete…</button>}
+            {dirty && <span className="ad-unsaved">Unsaved changes</span>}
+          </div>
+          {revisions.length > 0 && <Revisions list={revisions} onRestore={(id) => void api.restoreRevision(id)} />}
+        </div>
+      </div>
+      {confirm && <ConfirmDelete title={form.title} onCancel={() => setConfirm(false)} onConfirm={() => void api.remove()} />}
+    </form>
   )
 }

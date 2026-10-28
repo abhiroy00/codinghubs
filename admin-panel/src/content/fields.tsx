@@ -240,3 +240,55 @@ export function AssetPanel({ endpoint, ownerId, title = 'Private files' }: { end
     </section>
   )
 }
+
+/** Thumbnail with the two ways editors expect: upload from the computer (click or drop) or paste a URL. */
+export function ThumbnailField({ id, label = 'Thumbnail image', src, alt, onSrc, onAlt, error, altError }: { id: string; label?: string; src: string; alt: string; onSrc: (v: string) => void; onAlt: (v: string) => void; error?: string; altError?: string }) {
+  const [tab, setTab] = useState<'upload' | 'url'>('upload')
+  const [busy, setBusy] = useState(false)
+  const [drag, setDrag] = useState(false)
+  const [msg, setMsg] = useState('')
+  const pick = async (file?: File) => {
+    if (!file) return
+    setBusy(true)
+    setMsg('')
+    try {
+      onSrc(await uploadImage(file, file.name))
+    } catch (err) {
+      setMsg((err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? 'Upload failed.')
+    } finally {
+      setBusy(false)
+    }
+  }
+  return (
+    <div className="ad-thumb-field">
+      <span className="ad-label">{label}</span>
+      <div className="ad-tabs" role="tablist" aria-label="Image source">
+        <button type="button" role="tab" aria-selected={tab === 'upload'} className={tab === 'upload' ? 'on' : ''} onClick={() => setTab('upload')}>⬆ Upload from Computer</button>
+        <button type="button" role="tab" aria-selected={tab === 'url'} className={tab === 'url' ? 'on' : ''} onClick={() => setTab('url')}>🔗 Paste URL</button>
+      </div>
+      {tab === 'upload' ? (
+        <label
+          htmlFor={id}
+          className={`ad-drop${drag ? ' drag' : ''}`}
+          onDragOver={(e) => { e.preventDefault(); setDrag(true) }}
+          onDragLeave={() => setDrag(false)}
+          onDrop={(e) => { e.preventDefault(); setDrag(false); void pick(e.dataTransfer.files?.[0]) }}
+        >
+          {src ? <img src={src} alt="" className="ad-drop-img" /> : <span className="ad-drop-ico" aria-hidden="true">☁</span>}
+          <strong>{busy ? 'Uploading…' : src ? 'Click to replace the image' : 'Click to choose image'}</strong>
+          <small>JPG, PNG, WEBP, GIF — max 5 MB. Drag and drop works too.</small>
+          <input id={id} type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden disabled={busy} onChange={(e) => { void pick(e.target.files?.[0]); e.target.value = '' }} />
+        </label>
+      ) : (
+        <input id={id} className="ad-input" type="url" value={src} placeholder="https://… or an uploaded /media/ path" onChange={(e) => onSrc(e.target.value)} aria-label="Image URL" />
+      )}
+      {(error || msg) && <p className="ad-field-error" role="alert">{error || msg}</p>}
+      {src && (
+        <div className="ad-thumb-row">
+          <Text id={`${id}-alt`} label="Image description (alt text)" value={alt} onChange={onAlt} max={200} error={altError} hint="Describe the image for people who cannot see it (and for search engines)." />
+          <button type="button" className="ad-link ad-danger" onClick={() => onSrc('')}>Remove image</button>
+        </div>
+      )}
+    </div>
+  )
+}
