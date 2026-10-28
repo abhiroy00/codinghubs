@@ -1,0 +1,16 @@
+<div class="fs-page">{% include "content/_chrome_top.html" %}
+<main id="main" class="wrap bl-main"><article class="bl-article">
+  {% if preview %}<p class="bl-preview" role="status">Preview. This page is not public.</p>{% endif %}
+  <nav aria-label="Breadcrumb" class="bl-crumbs"><ol><li><a href="/">Home</a></li><li><a href="/projects">Projects</a></li><li aria-current="page">{{ a.title }}</li></ol></nav>
+  <header class="bl-head"><p class="bl-cat">{{ a.difficulty }}{% if a.category %} · {{ a.category }}{% endif %}</p><h1>{{ a.title }}</h1>
+    <p class="bl-meta">{% if a.estimated_time %}{{ a.estimated_time }} · {% endif %}{% if a.is_paid %}Paid project · ₹{{ a.price }}{% else %}Free project{% endif %}</p></header>
+  {% if a.featured_image %}<img class="bl-cover" src="{{ a.featured_image }}" alt="{{ a.featured_image_alt }}" width="1200" height="630" decoding="async">{% endif %}
+  <p>{{ a.summary }}</p>
+  {% if a.overview_html %}<section class="bl-body"><h2>Overview</h2>{{ a.overview_html|safe }}</section>{% endif %}
+  {% if a.problem_html %}<section class="bl-body"><h2>Problem statement</h2>{{ a.problem_html|safe }}</section>{% endif %}
+  {% if a.objectives_html %}<section class="bl-body"><h2>Objectives</h2>{{ a.objectives_html|safe }}</section>{% endif %}
+  {% if a.features %}<section><h2>Features</h2><ul>{% for f in a.features %}<li><strong>{{ f.title }}</strong> {{ f.description }}</li>{% endfor %}</ul></section>{% endif %}
+  {% if a.technologies %}<section><h2>Technology stack</h2><ul class="bl-tags">{% for t in a.technologies %}<li>{{ t }}</li>{% endfor %}</ul></section>{% endif %}
+  {% if a.learning_outcomes %}<section><h2>What you will learn</h2><ul>{% for o in a.learning_outcomes %}<li>{{ o }}</li>{% endfor %}</ul></section>{% endif %}
+  {% if a.guides %}<section><h2>Project guides</h2><ul>{% for g in a.guides %}<li><a href="/project-guides/{{ g.slug }}">{{ g.title }}</a></li>{% endfor %}</ul></section>{% endif %}
+</article></main>{% include "content/_chrome_bottom.html" %}</div>

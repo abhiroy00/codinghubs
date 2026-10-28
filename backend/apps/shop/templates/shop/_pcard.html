@@ -1,0 +1,10 @@
+<article class="bl-card">
+  {% if c.featured_image %}<a href="{{ c.url }}" class="bl-card-img" tabindex="-1" aria-hidden="true"><img src="{{ c.featured_image }}" alt="{{ c.featured_image_alt }}" loading="lazy" decoding="async" width="640" height="360"></a>
+  {% elif c.image %}<a href="{{ c.url }}" class="bl-card-img" tabindex="-1" aria-hidden="true"><img src="{{ c.image.src }}" alt="{{ c.image.alt }}" loading="lazy" decoding="async" width="640" height="360"></a>{% endif %}
+  <div class="bl-card-body">
+    {% if c.category.name %}<p class="bl-cat">{{ c.category.name }}</p>{% elif c.difficulty %}<p class="bl-cat">{{ c.difficulty }}</p>{% endif %}
+    <h2><a href="{{ c.url }}">{{ c.title }}</a></h2>
+    <p>{% firstof c.short_description c.summary %}</p>
+    {% if c.price %}<p class="bl-meta"><strong>{% if c.is_free %}Free{% else %}₹{{ c.price }}{% endif %}</strong>{% if c.original_price %} <s>₹{{ c.original_price }}</s>{% endif %}{% if c.stock_label %} · {{ c.stock_label }}{% endif %}</p>{% endif %}
+  </div>
+</article>

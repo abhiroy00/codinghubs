@@ -13,8 +13,11 @@ urlpatterns = [
     path('api/admin/', include('apps.adminpanel.urls')),
     path('api/tutors/', include('apps.tutors.urls')),
     path('api/admin/', include('apps.content.admin_urls')),
+    path('api/admin/', include('apps.shop.admin_urls')),
+    path('api/', include('apps.shop.urls')),
     path('api/', include('apps.content.urls')),
     path('', include('apps.content.ssr_urls')),
+    path('', include('apps.shop.ssr_urls')),
 ]
 
 if settings.DEBUG:  # local development only; in production nginx serves /media/ from the shared volume

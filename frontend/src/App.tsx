@@ -13,6 +13,16 @@ const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ de
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
 const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.BlogDetail })))
 const CaseDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.CaseDetail })))
+const CatalogList = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.CatalogList })))
+const ProductDetail = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.ProductDetail })))
+const ProjectDetail = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.ProjectDetail })))
+const GuideDetail = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.GuideDetail })))
+const CartPage = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.CartPage })))
+const CheckoutPage = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.CheckoutPage })))
+const PaymentResult = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.PaymentResult })))
+const MyAccount = lazy(() => import('./shop-pages/account').then((m) => ({ default: m.MyAccount })))
+const MyOrders = lazy(() => import('./shop-pages/account').then((m) => ({ default: m.MyOrders })))
+const MyDownloads = lazy(() => import('./shop-pages/account').then((m) => ({ default: m.MyDownloads })))
 const Layout = lazy(() => import('./components/Layout').then((m) => ({ default: m.Layout })))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute').then((m) => ({ default: m.ProtectedRoute })))
 const CourseCheckout = lazy(() => import('./pages/CourseCheckout').then((m) => ({ default: m.CourseCheckout })))
@@ -39,6 +49,19 @@ export function App() {
               <Route path="case-studies" element={<CaseList />} />
               <Route path="case-studies/:slug" element={<CaseDetail />} />
               <Route path="book-a-tutor" element={<BookTutor />} />
+              <Route path="store" element={<CatalogList kind="store" />} />
+              <Route path="store/:slug" element={<ProductDetail />} />
+              <Route path="projects" element={<CatalogList kind="projects" />} />
+              <Route path="projects/:slug" element={<ProjectDetail />} />
+              <Route path="project-guides" element={<CatalogList kind="guides" />} />
+              <Route path="project-guides/:slug" element={<GuideDetail />} />
+              <Route path="cart" element={<CartPage />} />
+              <Route path="checkout" element={<CheckoutPage />} />
+              <Route path="payment/success" element={<PaymentResult />} />
+              <Route path="payment/failure" element={<PaymentResult failed />} />
+              <Route path="my-account" element={<MyAccount />} />
+              <Route path="my-account/orders" element={<MyOrders />} />
+              <Route path="my-account/downloads" element={<MyDownloads />} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
               <Route element={<Layout />}>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { FsIcon, IconSprite } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { LocationsMenu } from './LocationsMenu'
+import { CartLink, ResourcesMenu } from './ResourcesMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -43,8 +44,7 @@ export function FsHeader() {
             <a href="/#courses">Explore Courses</a>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
-            <a href="/blog">Blog</a>
-            <a href="/case-studies">Case Studies</a>
+            <ResourcesMenu />
             <a href="/#session">About the Session</a>
             <a href="/#contact">Contact</a>
             <a href="/#register" className="btn btn-yellow nav-cta btn-shake">
@@ -52,6 +52,7 @@ export function FsHeader() {
             </a>
           </nav>
           <div className="hdr-actions">
+            <CartLink />
             <a href="/#register" className="btn btn-yellow btn-sm hdr-cta">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>
@@ -124,6 +125,9 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><Link to="/locations/">AI Course Locations</Link></li>
               <li><a href="/blog">Blog</a></li>
               <li><a href="/case-studies">Case Studies</a></li>
+              <li><a href="/projects">Projects</a></li>
+              <li><a href="/project-guides">Project Guides</a></li>
+              <li><a href="/store">Store</a></li>
               <li><a href={h('#faq')}>FAQ</a></li>
               <li><a href={h('#contact')}>Contact</a></li>
             </ul>

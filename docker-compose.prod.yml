@@ -24,8 +24,10 @@ services:
       SITE_URL: https://${DOMAIN:-codinghubs.in}
       FRONTEND_SHELL_URL: http://frontend:8081/__shell.html
       MEDIA_ROOT: /app/media
+      PRIVATE_MEDIA_ROOT: /app/private_media
     volumes:
       - media:/app/media
+      - private_media:/app/private_media
     depends_on:
       db:
         condition: service_healthy
@@ -70,3 +72,4 @@ volumes:
   certbot_conf:
   certbot_webroot:
   media:
+  private_media:

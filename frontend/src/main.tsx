@@ -13,6 +13,9 @@ async function start() {
   const c = window.location.pathname.match(/^\/(blog|case-studies)(\/|$)/)
   if (c) await (c[1] === 'blog' ? import('./content-pages/BlogList') : import('./content-pages/CaseList')).catch(() => null)
   if (c && window.location.pathname.split('/').filter(Boolean).length > 1) await import('./content-pages/Article').catch(() => null)
+  // Store / projects / guides pages are lazy chunks too: load theirs first so the server-rendered page is replaced without a flash.
+  const sp = window.location.pathname.match(/^\/(store|projects|project-guides)(\/|$)/)
+  if (sp) await import('./shop-pages/catalog').catch(() => null)
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />

@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'apps.adminpanel',
     'apps.tutors',
     'apps.content',
+    'apps.shop',
 ]
 
 MIDDLEWARE = [
@@ -152,3 +153,20 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = config('MEDIA_ROOT', default=str(BASE_DIR / 'media'))
 # Where the backend fetches the built SPA shell from to wrap server-rendered blog pages (see apps/content/ssr.py).
 FRONTEND_SHELL_URL = config('FRONTEND_SHELL_URL', default='')
+
+# --- Projects, guides and store ---
+PRIVATE_MEDIA_ROOT = config('PRIVATE_MEDIA_ROOT', default=str(BASE_DIR / 'private_media'))
+STORE_DOWNLOAD_LINK_TTL = config('STORE_DOWNLOAD_LINK_TTL', default=600, cast=int)  # seconds a download link stays valid
+STORE_PENDING_ORDER_MINUTES = config('STORE_PENDING_ORDER_MINUTES', default=30, cast=int)  # unpaid orders release stock after this
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Coding Hubs <no-reply@codinghubs.in>')
+
+import sys  # noqa: E402
+
+if 'test' in sys.argv:  # fast password hashing for the test suite only
+    PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']

@@ -1,0 +1,18 @@
+<div class="fs-page">{% include "content/_chrome_top.html" %}
+<main id="main" class="wrap bl-main"><article class="bl-article">
+  {% if preview %}<p class="bl-preview" role="status">Preview. This page is not public.</p>{% endif %}
+  <nav aria-label="Breadcrumb" class="bl-crumbs"><ol><li><a href="/">Home</a></li><li><a href="/store">Store</a></li><li aria-current="page">{{ a.title }}</li></ol></nav>
+  <header class="bl-head">
+    {% if a.category %}<p class="bl-cat">{{ a.category.name }}</p>{% endif %}
+    <h1>{{ a.title }}</h1>
+    <p class="bl-meta">{% if a.author %}By {{ a.author }} · {% endif %}{% if a.format %}{{ a.format }} · {% endif %}{{ a.stock_label }}</p>
+    <p class="bl-price"><strong>{% if a.is_free %}Free{% else %}₹{{ a.price }}{% endif %}</strong>{% if a.original_price %} <s>₹{{ a.original_price }}</s>{% endif %}</p>
+  </header>
+  {% if a.images %}<img class="bl-cover" src="{{ a.images.0.src }}" alt="{{ a.images.0.alt }}" width="1200" height="630" decoding="async">{% endif %}
+  <p>{{ a.short_description }}</p>
+  <div class="bl-body">{{ a.description_html|safe }}</div>
+  {% if a.included_materials %}<section><h2>What is included</h2><ul>{% for m in a.included_materials %}<li>{{ m }}</li>{% endfor %}</ul></section>{% endif %}
+  {% if a.delivery %}<p>{{ a.delivery }}</p>{% endif %}
+  <aside class="bl-cta"><h2>{% if a.in_stock %}Buy this item{% else %}Currently unavailable{% endif %}</h2><a class="btn btn-yellow" href="/store/{{ a.slug }}">{% if a.in_stock %}Add to cart{% else %}Out of stock{% endif %}</a></aside>
+  {% if a.related %}<section class="bl-related"><h2>Related items</h2><ul>{% for r in a.related %}<li><a href="/store/{{ r.slug }}">{{ r.title }}</a></li>{% endfor %}</ul></section>{% endif %}
+</article></main>{% include "content/_chrome_bottom.html" %}</div>
