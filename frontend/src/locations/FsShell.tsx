@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { FsIcon, IconSprite } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { LocationsMenu } from './LocationsMenu'
-import { ResourcesMenu, StoreLink } from './ResourcesMenu'
+import { ResourcesMenu } from './ResourcesMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -44,13 +44,13 @@ export function FsHeader() {
             <a href="/#courses">Explore Courses</a>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
+            <a href="/store">Store</a>
             <ResourcesMenu />
             <a href="/#register" className="btn btn-yellow nav-cta btn-shake">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>
           </nav>
           <div className="hdr-actions">
-            <StoreLink />
             <a href="/#register" className="btn btn-yellow btn-sm hdr-cta">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
             </a>

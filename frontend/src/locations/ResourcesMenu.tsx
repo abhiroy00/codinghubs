@@ -44,10 +44,3 @@ export function ResourcesMenu() {
   )
 }
 
-export function StoreLink({ light = false }: { light?: boolean }) {
-  return (
-    <a href="/store" className={`store-link${light ? ' on-light' : ''}`}>
-      Store
-    </a>
-  )
-}

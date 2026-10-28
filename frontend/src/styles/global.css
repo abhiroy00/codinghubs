@@ -115,7 +115,7 @@ header.site nav{display:flex;height:100%;align-items:center;justify-content:spac
 .menu-btn svg{width:18px;height:18px}
 .only-sm{display:inline}.only-lg{display:none}
 @media(min-width:640px){.only-sm{display:none}.only-lg{display:inline}}
-@media(min-width:1024px){.nav-links{display:flex}.nav-login{display:inline-flex}.menu-btn{display:none}}
+@media(min-width:1180px){.nav-links{display:flex}.nav-login{display:inline-flex}.menu-btn{display:none}}
 /* dropdown */
 .dd{position:relative}
 .dd-panel{position:absolute;left:50%;top:calc(100% + .5rem);width:34rem;transform:translate(-50%,6px);opacity:0;visibility:hidden;transition:all .3s var(--ease);background:var(--color-surface);border:1px solid var(--color-line);border-radius:1.25rem;padding:1.25rem;box-shadow:0 24px 60px -24px rgba(11,12,16,.3);display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
@@ -521,12 +521,10 @@ html[data-fs-loading] #root{visibility:hidden}
 .dd-panel.dd-small{width:13rem;grid-template-columns:1fr;gap:.1rem;padding:.6rem}
 .dd-panel.dd-small a{padding:.5rem .7rem;border-radius:.6rem;font-size:.9rem;color:var(--color-ink)}
 .dd-panel.dd-small a:hover{background:var(--color-line)}
-.store-link{display:inline-flex;align-items:center;padding:.45rem .65rem;border-radius:.6rem;color:var(--color-muted);font-size:.875rem;font-weight:600;text-decoration:none;transition:color .2s,background .2s}
-.store-link:hover,.store-link.on-light:hover{color:#FFDE6B;background:rgba(0,0,0,.06)}
-.store-link.on-light{color:var(--color-ink)}
 #mobile .m-head{margin:1rem 0 .1rem;font:600 .7rem var(--font-sans,Inter,sans-serif);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
 #mobile .sheet a.m.m-sub{padding-left:1.4rem;font-size:1.05rem;font-weight:500}
 
 /* equal space between the items of the main header (laptop and up) */
-@media(min-width:1024px){header.site .nav-links{flex:1 1 auto;justify-content:space-evenly;gap:0;margin-inline:1.5rem}}
+@media(min-width:1180px){header.site .nav-links{flex:1 1 auto;justify-content:space-evenly;gap:0;margin-inline:1.2rem}}
+header.site .nav-link{white-space:nowrap;padding-inline:.7rem}
 .dd-res .nav-link svg{transition:transform .25s}.dd-res:hover .nav-link svg,.dd-res:focus-within .nav-link svg{transform:rotate(180deg)}

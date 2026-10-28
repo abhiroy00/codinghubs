@@ -1223,7 +1223,10 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 /* ============ RESOURCES MENU & CART LINK ============ */
 .res{position:relative;display:inline-flex}
 .res-btn{position:relative;display:inline-flex;align-items:center;gap:.35rem;padding:.5rem .8rem;border:0;background:none;border-radius:8px;color:#fff;font:500 .95rem var(--f-body);cursor:pointer;transition:color .2s}
-.res-btn:hover,.res.open .res-btn{color:var(--yellow)}
+.res-btn{color:rgba(255,255,255,.88);transition:color .2s,transform .2s}
+.res-btn::after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:.3rem;height:2px;border-radius:2px;background:var(--yellow);transform:scaleX(0);transition:transform .25s}
+.res-btn:hover,.res.open .res-btn{color:#fff;transform:translateY(-1px)}
+.res-btn:hover::after,.res.open .res-btn::after{transform:scaleX(1)}
 .res-chev{transition:transform .25s}.res.open .res-chev{transform:rotate(180deg)}
 .res-list{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);min-width:13.5rem;margin:0;padding:.45rem;list-style:none;background:#fff;border-radius:14px;box-shadow:0 22px 48px -18px rgba(0,0,0,.55);z-index:60}
 .res-list::before{content:"";position:absolute;left:0;right:0;top:-8px;height:8px}
@@ -1238,13 +1241,11 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   .res{display:block}
   .res-btn{width:100%;justify-content:space-between;padding:.85rem .5rem;border-bottom:1px solid rgba(255,255,255,.1);font-size:1rem;color:#fff;border-radius:0}
   .res-list{position:static;transform:none;min-width:0;padding:0 0 .3rem .9rem;background:transparent;box-shadow:none;border-radius:0;animation:none}
-  .res-list::before,.res-list::after{display:none}
+  .res-list::before,.res-list::after,.res-btn::after{display:none}
   .res.open .res-list{animation:none}
   .res-list a{color:#fff!important;padding:.75rem .5rem;border-radius:0;border-bottom:1px solid rgba(255,255,255,.08)}
   .res-list a:hover{background:rgba(255,255,255,.1)}
 }
-.store-link{display:inline-flex;align-items:center;padding:.5rem .75rem;border-radius:8px;color:#fff;text-decoration:none;font-weight:600;transition:background .2s,transform .2s}
-.store-link:hover{color:var(--yellow);background:rgba(255,255,255,.14);transform:translateY(-1px)}
 .nav a:not(.btn).res-skip{display:none}
 
 /* ============ SHOP ============ */
