@@ -926,6 +926,17 @@ class ProjectGuideTests(ShopBase):
         self.api.post(f'/api/admin/projects/{p["id"]}/unpublish/')
         self.assertEqual(self.anon.get('/api/projects/').json()['count'], 0)
 
+    def test_create_published_project_appears_in_public_cards(self):
+        response = self.api.post(
+            '/api/admin/projects/',
+            {'title': 'Published on submit', 'summary': 'A project card.', 'status': 'published'},
+            format='json',
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        cards = self.anon.get('/api/projects/').json()
+        self.assertEqual(cards['count'], 1)
+        self.assertEqual(cards['results'][0]['title'], 'Published on submit')
+
     def test_filters(self):
         for t, diff, tech, cat in (('A', 'beginner', ['Python'], 'Web'), ('B', 'advanced', ['Go'], 'Data'), ('C', 'beginner', ['Python', 'Go'], 'Web')):
             p = self.new_project(title=t, difficulty=diff, technologies=tech, category=cat)

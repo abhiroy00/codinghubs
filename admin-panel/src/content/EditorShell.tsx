@@ -40,7 +40,7 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side,
   const live = form.status === 'published' || form.status === 'scheduled'
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (publishOnCreate && !form.id) void api.publish(form.published_at || undefined)
+    if (publishOnCreate && !form.id) void api.save({ status: 'published' } as Partial<T>, 'Project submitted and published.')
     else void api.save()
   }
 
