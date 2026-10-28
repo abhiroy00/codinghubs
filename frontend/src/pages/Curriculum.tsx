@@ -32,7 +32,7 @@ export function Curriculum() {
     <div className="fs-page">
       <FsHeader />
 
-      <main>
+      <main id="main">
         <section className="curriculum-banner" aria-labelledby="curriculum-title">
           <img src={program.image} alt="" aria-hidden="true" />
           <div className="wrap curriculum-banner-in">

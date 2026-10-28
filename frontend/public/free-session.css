@@ -1301,3 +1301,24 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 @media (min-width:1280px){.hdr .nav{flex:1 1 auto;margin-left:0;margin-right:.6rem;justify-content:space-evenly;gap:0}.hdr .nav a:not(.btn),.hdr .res-btn{padding:.5rem .6rem;font-size:.95rem;white-space:nowrap}}
 /* the desktop row must not clip the Resources dropdown (the burger menu below 1280px scrolls instead) */
 @media (min-width:1280px){.hdr .nav{overflow:visible;max-height:none}}
+
+/* ============ BUTTONS: one dynamic, accessible behaviour everywhere ============ */
+.btn{-webkit-tap-highlight-color:transparent}
+.btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn[aria-busy="true"]{position:relative;pointer-events:none;color:transparent!important}
+.btn[aria-busy="true"] *{opacity:0}
+.btn[aria-busy="true"]::after{content:"";position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border:3px solid rgba(10,26,63,.25);border-top-color:var(--navy);border-radius:50%;animation:btnSpin .7s linear infinite}
+@keyframes btnSpin{to{transform:rotate(360deg)}}
+/* shine sweep on the main call-to-action buttons (not on the header Register pill, whose FREE tag overflows) */
+.btn-yellow:not(.hdr-cta):not(.nav-cta):not(.btn-anim),.btn-navy:not(.btn-anim){position:relative;overflow:hidden;isolation:isolate}
+.btn-yellow:not(.hdr-cta):not(.nav-cta):not(.btn-anim)::before,.btn-navy:not(.btn-anim)::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:-80%;width:55%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);transition:left .6s ease}
+.btn-yellow:not(.hdr-cta):not(.nav-cta):not(.btn-anim):hover::before,.btn-navy:not(.btn-anim):hover::before{left:130%}
+.btn-navy:hover{box-shadow:0 12px 26px -10px rgba(10,26,63,.7)}
+.btn-ghost:hover{background:var(--yellow-soft);border-color:var(--yellow-2)}
+.btn-ghost-light:hover{box-shadow:0 10px 24px -12px rgba(255,255,255,.5)}
+.btn-wa:hover{box-shadow:0 12px 26px -10px rgba(18,130,63,.7)}
+/* text-style action links used in the shop (details, view cart ...) */
+.pj-go svg,.st-add svg{transition:transform .25s}
+.st-add:active{transform:scale(.96)}
+@media (prefers-reduced-motion:reduce){.btn::before,.btn-yellow::before,.btn-navy::before{display:none}}

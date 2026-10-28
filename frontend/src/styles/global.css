@@ -528,3 +528,11 @@ html[data-fs-loading] #root{visibility:hidden}
 @media(min-width:1180px){header.site .nav-links{flex:1 1 auto;justify-content:space-evenly;gap:0;margin-inline:1.2rem}}
 header.site .nav-link{white-space:nowrap;padding-inline:.7rem}
 .dd-res .nav-link svg{transition:transform .25s}.dd-res:hover .nav-link svg,.dd-res:focus-within .nav-link svg{transform:rotate(180deg)}
+
+/* Buttons of the account / FAQ pages: same focus, disabled and loading behaviour as the main site */
+.btn:focus-visible{outline:3px solid var(--color-brand);outline-offset:3px}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn[aria-busy="true"]{pointer-events:none;color:transparent}
+.btn[aria-busy="true"]::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border:3px solid rgba(17,18,24,.25);border-top-color:var(--color-ink);border-radius:50%;animation:btnSpin .7s linear infinite}
+.btn-ghost:hover{background:rgba(0,0,0,.04)}
+@keyframes btnSpin{to{transform:rotate(360deg)}}

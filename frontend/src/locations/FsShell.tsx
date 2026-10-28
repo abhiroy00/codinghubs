@@ -174,7 +174,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
           <ul className="fx-loc-regions">
             {GROUP_ORDER.map((g) => (
               <li key={g}>
-                <Link to={`/locations/#${g}`}>
+                <Link to={`/locations/?region=${g}`}>
                   {GROUP_LABELS[g]} <span>({LOCATIONS.filter((l) => l.group === g).length})</span>
                 </Link>
               </li>

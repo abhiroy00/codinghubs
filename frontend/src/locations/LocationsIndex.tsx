@@ -35,6 +35,10 @@ export function LocationsIndex() {
 
   const [q, setQ] = useState('')
   const [group, setGroup] = useState<LocationGroup | 'all'>('all')
+  useEffect(() => {
+    const h = new URLSearchParams(window.location.search).get('region') || ''
+    if ((GROUP_ORDER as string[]).includes(h)) setGroup(h as LocationGroup)
+  }, [])
 
   const filtered = useMemo(() => {
     const t = q.trim().toLowerCase()

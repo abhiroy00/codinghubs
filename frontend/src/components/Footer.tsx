@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { PHONE, WA, Logo } from '../lib/icons'
+import { INSTITUTE } from '../pages/free-session/data'
 
 export function Footer() {
   return (
@@ -30,7 +31,7 @@ export function Footer() {
             </ul>
             <ul className="social">
               <li>
-                <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
+                <a href={INSTITUTE.social.instagram} target="_blank" rel="noopener noreferrer">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="3" width="18" height="18" rx="5" />
                     <circle cx="12" cy="12" r="4" />
@@ -40,7 +41,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer">
+                <a href={INSTITUTE.social.linkedin} target="_blank" rel="noopener noreferrer">
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4V21H3V9.5Zm6.5 0h3.8v1.6h.1c.5-1 1.8-2 3.8-2 4 0 4.8 2.6 4.8 6V21h-4v-5.1c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4V9.5Z" />
                   </svg>
@@ -48,19 +49,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://youtube.com/" target="_blank" rel="noopener noreferrer">
+                <a href={INSTITUTE.social.youtube} target="_blank" rel="noopener noreferrer">
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.7 15.1V8.9l5.8 3.1-5.8 3.1Z" />
                   </svg>
                   <span className="sr-only">YouTube</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://x.com/" target="_blank" rel="noopener noreferrer">
-                  <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: 15, height: 15 }}>
-                    <path d="M18.2 2.3h3.3l-7.2 8.3 8.5 11.2h-6.7l-5.2-6.8-6 6.8H1.6l7.7-8.8L1.2 2.3h6.8l4.7 6.2 5.5-6.2Zm-1.2 17.5h1.8L7.1 4.2H5.1l11.9 15.6Z" />
-                  </svg>
-                  <span className="sr-only">X</span>
                 </a>
               </li>
             </ul>
@@ -70,7 +63,7 @@ export function Footer() {
               <h2>Learn</h2>
               <ul>
                 <li>
-                  <Link to="/#demo">Free Demo Class</Link>
+                  <Link to="/#demo-classes">Free Demo Class</Link>
                 </li>
                 <li>
                   <Link to="/#courses">AI &amp; Data</Link>
@@ -82,7 +75,7 @@ export function Footer() {
                   <Link to="/#courses">Cloud &amp; Cyber</Link>
                 </li>
                 <li>
-                  <Link to="/#compare">Compare Programs</Link>
+                  <Link to="/#program">Compare Programs</Link>
                 </li>
               </ul>
             </nav>
@@ -93,13 +86,13 @@ export function Footer() {
                   <Link to="/faq#team">About</Link>
                 </li>
                 <li>
-                  <Link to="/#learners">Success Stories</Link>
+                  <Link to="/#why">Success Stories</Link>
                 </li>
                 <li>
                   <Link to="/book-a-tutor/">Book a Tutor</Link>
                 </li>
                 <li>
-                  <Link to="/#placements">Hiring Partners</Link>
+                  <Link to="/#why">Hiring Partners</Link>
                 </li>
                 <li>
                   <a href={`tel:+${WA}`}>Contact</a>

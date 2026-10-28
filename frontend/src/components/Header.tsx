@@ -30,7 +30,7 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
         </Link>
         <ul className="nav-links">
           <li>
-            <Link className="nav-link" to="/#demo">
+            <Link className="nav-link" to="/#demo-classes">
               Free Demo Class
             </Link>
           </li>

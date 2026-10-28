@@ -31,13 +31,13 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
             <span className="sr-only">Close menu</span>
           </button>
         </div>
-        <Link className="m" to="/#demo" onClick={onClose}>
+        <Link className="m" to="/#demo-classes" onClick={onClose}>
           Free Demo Class
         </Link>
         <Link className="m" to="/#courses" onClick={onClose}>
           Courses
         </Link>
-        <Link className="m" to="/#learners" onClick={onClose}>
+        <Link className="m" to="/#why" onClick={onClose}>
           Success Stories
         </Link>
         <Link className="m" to="/faq" onClick={onClose}>

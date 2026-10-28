@@ -142,7 +142,7 @@ export function FreeSession() {
         </div>
       </header>
 
-      <main>
+      <main id="main">
         <section className="hero" id="home" aria-labelledby="hero-title">
           <div className="hero-deco" aria-hidden="true">
             <span className="blob b1"></span>
