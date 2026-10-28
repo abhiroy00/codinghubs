@@ -127,7 +127,38 @@ jobs:
       - name: Deploy to EC2 via SSM
         run: |
           SHA="${{ github.sha }}"
-          DEPLOY_COMMAND="mkdir -p /opt/codinghubs/deploy-logs && systemd-run --unit=codinghubs-deploy-${SHA} --collect --no-block /bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${SHA}/infra/deploy-remote.sh | bash -s -- ${SHA} > /opt/codinghubs/deploy-logs/${SHA}.log 2>&1'"
+          PREVIOUS_LOGS_COMMAND="for sha in 5c14a681936fa8de57d49620c709cb5866c6a9d3 444265afbee21cba236168db32a5d5cea069b826; do log=/opt/codinghubs/deploy-logs/\$sha.log; echo \"--- \$sha ---\"; if [ -f \"\$log\" ]; then tail -n 40 \"\$log\"; else echo 'deployment log not found'; fi; done"
+          PREVIOUS_LOGS_PARAMETERS=$(jq -nc --arg command "$PREVIOUS_LOGS_COMMAND" '{commands:[$command],executionTimeout:["60"]}')
+          LOG_CMD_ID=$(aws ssm send-command \
+            --instance-ids "${{ vars.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --timeout-seconds 60 \
+            --parameters "$PREVIOUS_LOGS_PARAMETERS" \
+            --comment "inspect previous deployment logs" \
+            --query 'Command.CommandId' --output text)
+          LOG_STATUS=Pending
+          for i in $(seq 1 12); do
+            LOG_STATUS=$(aws ssm get-command-invocation \
+              --command-id "$LOG_CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
+              --query 'Status' --output text 2>/dev/null || echo Pending)
+            if [ "$LOG_STATUS" = Success ]; then
+              aws ssm get-command-invocation \
+                --command-id "$LOG_CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
+                --query 'StandardOutputContent' --output text
+              break
+            fi
+            case "$LOG_STATUS" in
+              Failed|Cancelled|TimedOut)
+                echo "Could not read previous deployment logs (SSM status: $LOG_STATUS)."
+                break ;;
+            esac
+            sleep 5
+          done
+          if [ "$LOG_STATUS" != Success ]; then
+            echo "Previous deployment logs were not available; continuing with this deploy."
+          fi
+
+          DEPLOY_COMMAND="mkdir -p /opt/codinghubs/deploy-logs && systemd-run --unit=codinghubs-deploy-${SHA} --collect --no-block /bin/bash -lc 'exec > /opt/codinghubs/deploy-logs/${SHA}.log 2>&1; set -euo pipefail; curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${SHA}/infra/deploy-remote.sh -o /tmp/codinghubs-deploy-${SHA}.sh; bash /tmp/codinghubs-deploy-${SHA}.sh ${SHA}'"
           PARAMETERS=$(jq -nc --arg command "$DEPLOY_COMMAND" '{commands:[$command],executionTimeout:["120"]}')
           CMD_ID=$(aws ssm send-command \
             --instance-ids "${{ vars.EC2_INSTANCE_ID }}" \
@@ -167,7 +198,7 @@ jobs:
           fi
           CSS_URL="https://codinghubs.in/assets/$CSS_FILE"
           for i in $(seq 1 90); do
-            if curl -fsSL "$CSS_URL" -o deployed-tutor.css && grep -q 'max-height:calc(100dvh - 1.5rem)' deployed-tutor.css; then
+            if curl --connect-timeout 3 --max-time 5 -fsSL "$CSS_URL" -o deployed-tutor.css && grep -q 'max-height:calc(100dvh - 1.5rem)' deployed-tutor.css; then
               echo "Verified deployed tutor stylesheet: $CSS_URL"
               exit 0
             fi
