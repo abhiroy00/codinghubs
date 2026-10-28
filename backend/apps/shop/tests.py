@@ -10,6 +10,7 @@ from unittest import mock
 from zipfile import ZipFile
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core import mail
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -22,7 +23,7 @@ from apps.enrollments.models import Enrollment
 
 from . import downloads, orders
 from .models import (
-    Coupon, DigitalAsset, DownloadPermission, InventoryMovement, Order, PaymentEvent, Product, ProductCategory, Project, ProjectGuide, StoreSettings,
+    Coupon, DigitalAsset, DownloadPermission, InventoryMovement, Order, PaymentEvent, Product, ProductCategory, Project, ProjectGuide, ProjectQuestion, StoreSettings,
 )
 
 User = get_user_model()
@@ -936,6 +937,67 @@ class ProjectGuideTests(ShopBase):
         cards = self.anon.get('/api/projects/').json()
         self.assertEqual(cards['count'], 1)
         self.assertEqual(cards['results'][0]['title'], 'Published on submit')
+
+    def test_project_questions_are_private_until_answered_and_never_expose_email(self):
+        project = self.new_project()
+        self.api.post(f'/api/admin/projects/{project["id"]}/publish/')
+        submission = self.anon.post(
+            f'/api/projects/{project["slug"]}/questions/',
+            {'name': 'Learner', 'email': 'learner@example.com', 'question': 'How should I start?'},
+            format='json',
+        )
+        self.assertEqual(submission.status_code, 201, submission.content)
+        question = ProjectQuestion.objects.get(pk=submission.json()['id'])
+        self.assertEqual(question.project_id, project['id'])
+        self.assertEqual(self.anon.get(f'/api/projects/{project["slug"]}/').json()['questions'], [])
+        self.assertEqual(self.anon.get('/api/admin/project-questions/').status_code, 401)
+
+        admin_list = self.api.get('/api/admin/project-questions/')
+        self.assertEqual(admin_list.status_code, 200, admin_list.content)
+        self.assertEqual(admin_list.json()['results'][0]['email'], 'learner@example.com')
+        answer = self.api.patch(
+            f'/api/admin/project-questions/{question.id}/',
+            {'answer': 'Start by defining the project requirements.'},
+            format='json',
+        )
+        self.assertEqual(answer.status_code, 200, answer.content)
+        self.assertIsNotNone(answer.json()['answered_at'])
+
+        public = self.anon.get(f'/api/projects/{project["slug"]}/')
+        self.assertEqual(public.status_code, 200)
+        self.assertEqual(public.json()['questions'][0]['question'], 'How should I start?')
+        self.assertEqual(public.json()['questions'][0]['answer'], 'Start by defining the project requirements.')
+        self.assertNotIn('email', public.content.decode().lower())
+
+    def test_project_question_moderation_needs_project_permissions(self):
+        project = self.new_project()
+        self.api.post(f'/api/admin/projects/{project["id"]}/publish/')
+        submission = self.anon.post(
+            f'/api/projects/{project["slug"]}/questions/',
+            {'name': 'Learner', 'email': 'learner@example.com', 'question': 'Can I use Python?'},
+            format='json',
+        )
+        question_id = submission.json()['id']
+        editor = self.as_user(self.editor)
+        self.assertEqual(editor.get('/api/admin/project-questions/').status_code, 403)
+        self.assertEqual(editor.patch(f'/api/admin/project-questions/{question_id}/', {'answer': 'Yes.'}, format='json').status_code, 403)
+        self.editor.user_permissions.add(
+            Permission.objects.get(content_type__app_label='shop', codename='view_project'),
+            Permission.objects.get(content_type__app_label='shop', codename='change_project'),
+        )
+        editor = self.as_user(User.objects.get(pk=self.editor.pk))
+        self.assertEqual(editor.get('/api/admin/project-questions/').status_code, 200)
+        self.assertEqual(editor.patch(f'/api/admin/project-questions/{question_id}/', {'answer': 'Yes.'}, format='json').status_code, 200)
+
+    def test_questions_cannot_be_submitted_for_unpublished_projects(self):
+        project = self.new_project()
+        response = self.anon.post(
+            f'/api/projects/{project["slug"]}/questions/',
+            {'name': 'Learner', 'email': 'learner@example.com', 'question': 'Question'},
+            format='json',
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(ProjectQuestion.objects.count(), 0)
 
     def test_filters(self):
         for t, diff, tech, cat in (('A', 'beginner', ['Python'], 'Web'), ('B', 'advanced', ['Go'], 'Data'), ('C', 'beginner', ['Python', 'Go'], 'Web')):

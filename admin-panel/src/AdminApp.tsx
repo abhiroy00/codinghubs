@@ -8,6 +8,7 @@ import { ContentDashboard } from './content/Dashboard'
 import { ChangePassword } from './content/ChangePassword'
 import { Taxonomy } from './content/Taxonomy'
 import { GuideEditor, ProductEditor, ProjectEditor, SimpleProductEditor } from './content/ShopEditors'
+import { ProjectQuestionsPage } from './content/ProjectQuestions'
 import { ShopList } from './content/ShopLists'
 import { Customers, StoreOrderDetail, StoreOrders, StoreOverview } from './content/StorePages'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
@@ -51,6 +52,7 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
     heading: 'Projects & guides',
     items: [
       { to: '/projects', label: 'Projects', icon: 'M4 5h16v3H4V5Zm0 5h16v9H4v-9Zm3 2v2h10v-2H7Z' },
+      { to: '/project-questions', label: 'Project Questions', icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 14h.01M9.3 9a2.8 2.8 0 1 1 4.7 2c-1.2.8-2 1.3-2 2.5' },
       { to: '/project-guides', label: 'Project Guides', icon: 'M5 3h11l3 3v15H5V3Zm3 6v2h8V9H8Zm0 4v2h8v-2H8Z' },
     ],
   },
@@ -288,6 +290,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="projects" element={<ShopList kind="projects" />} />
             <Route path="projects/create" element={<ProjectEditor key="new-project" />} />
             <Route path="projects/edit/:id" element={<ProjectEditor />} />
+            <Route path="project-questions" element={<ProjectQuestionsPage />} />
             <Route path="project-guides" element={<ShopList kind="project-guides" />} />
             <Route path="project-guides/create" element={<GuideEditor key="new-guide" />} />
             <Route path="project-guides/edit/:id" element={<GuideEditor />} />

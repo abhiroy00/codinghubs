@@ -230,6 +230,22 @@ GUIDE_SECTION_KEYS = (
 )
 
 
+class ProjectQuestion(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='questions')
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    question = models.TextField(max_length=2000)
+    answer = models.TextField(blank=True, max_length=5000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    answered_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.project.title}: {self.question[:80]}'
+
+
 class ProjectGuide(SeoMixin, PublishMixin):
     KIND = 'guide'
     ACCESS_FREE, ACCESS_ACCOUNT, ACCESS_PAID, ACCESS_INCLUDED = 'free', 'account', 'paid', 'included'

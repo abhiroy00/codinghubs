@@ -20,6 +20,7 @@ from .models import (
 )
 from .money import q
 from .pricing import MAX_QTY, CartError, normalise_qty, price_lines
+from .serializers import ProjectQuestionSubmissionSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +53,16 @@ class CheckoutThrottle(AnonRateThrottle):
 class CouponThrottle(AnonRateThrottle):
     scope = 'shop_coupon'
     rate = '30/hour'
+
+
+class ProjectQuestionAnonThrottle(AnonRateThrottle):
+    scope = 'shop_project_question'
+    rate = '5/hour'
+
+
+class ProjectQuestionUserThrottle(UserRateThrottle):
+    scope = 'shop_project_question_user'
+    rate = '10/hour'
 
 
 # ============ catalogue ============
@@ -181,6 +192,20 @@ class ProjectDetail(APIView):
         obj, preview = load_published_or_preview(Project, request, slug, payloads.public_projects())
         resp = Response(payloads.project_detail(obj, request.user, preview))
         return no_cache(resp)  # depends on who is asking
+
+
+class ProjectQuestionCreate(APIView):
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [ProjectQuestionAnonThrottle, ProjectQuestionUserThrottle]
+
+    def post(self, request, slug):
+        project = payloads.public_projects().filter(slug=slug).first()
+        if not project:
+            return Response({'detail': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ProjectQuestionSubmissionSerializer(data=request.data, context={'project': project})
+        serializer.is_valid(raise_exception=True)
+        question = serializer.save()
+        return Response({'detail': 'Your question was submitted for review.', 'id': question.id}, status=status.HTTP_201_CREATED)
 
 
 class GuideList(generics.ListAPIView):

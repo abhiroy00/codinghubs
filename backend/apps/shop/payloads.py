@@ -129,6 +129,10 @@ def project_detail(p: Project, user=None, preview=False) -> dict:
         'files': [{'id': a.id, 'label': a.label, 'size': a.size, 'type': a.content_type} for a in p.assets.all()] if unlocked else [],
         'locked_files': 0 if unlocked else p.assets.count(),
         'guides': [guide_card(g) for g in guides[:6]],
+        'questions': [
+            {'id': q.id, 'name': q.name, 'question': q.question, 'answer': q.answer, 'answered_at': q.answered_at}
+            for q in p.questions.filter(answer__gt='').order_by('-answered_at')[:50]
+        ],
         'related_projects': [project_card(r) for r in p.related_projects.filter(pk__in=public_projects().values('pk'))[:3]],
         'related_blogs': [{'title': b.title, 'slug': b.slug} for b in p.related_blogs.public()[:3]],
         'related_courses': [{'name': c.name, 'slug': c.slug} for c in p.related_courses.filter(is_active=True)[:3]],

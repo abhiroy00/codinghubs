@@ -13,6 +13,8 @@ urlpatterns = [
     path('product-categories/<int:pk>/', a.CategoryDetail.as_view()),
     path('projects/', a.ProjectList.as_view()),
     path('projects/<int:pk>/', a.ProjectDetail.as_view()),
+    path('project-questions/', a.ProjectQuestionList.as_view()),
+    path('project-questions/<int:pk>/', a.ProjectQuestionDetail.as_view()),
     path('project-guides/', a.GuideList.as_view()),
     path('project-guides/<int:pk>/', a.GuideDetail.as_view()),
     path('products/<int:pk>/assets/', a.asset_upload_view(Product, 'product').as_view()),

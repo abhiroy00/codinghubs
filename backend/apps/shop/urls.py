@@ -9,6 +9,7 @@ urlpatterns = [
     path('store/settings/', v.StorePublicSettings.as_view()),
     path('projects/', v.ProjectList.as_view()),
     path('projects/<slug:slug>/', v.ProjectDetail.as_view()),
+    path('projects/<slug:slug>/questions/', v.ProjectQuestionCreate.as_view()),
     path('projects/<slug:slug>/files/<int:asset_id>/link/', type('ProjectLink', (v.ResourceDownloadLink,), {'kind': 'project'}).as_view()),
     path('project-guides/', v.GuideList.as_view()),
     path('project-guides/<slug:slug>/', v.GuideDetail.as_view()),

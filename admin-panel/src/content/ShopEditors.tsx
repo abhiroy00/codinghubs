@@ -88,12 +88,14 @@ export function GuideEditor() {
               {projects.map((p) => (<option key={p.id} value={p.id}>{p.title}</option>))}
             </select>
           </Field>
+          {errors.project && <p className="ad-field-error" role="alert">{errors.project}</p>}
         </section>
       }
     >
       <Text id="title" label="Guide title / query" required value={form.title} onChange={(v) => set('title', v)} error={errors.title} max={200} />
-      <Text id="summary" label="Project query or problem" required textarea rows={3} value={form.summary} onChange={(v) => set('summary', v)} max={400} hint="Briefly describe what the learner is asking or trying to build." />
+      <Text id="summary" label="Project query or problem" required textarea rows={3} value={form.summary} onChange={(v) => set('summary', v)} max={400} error={errors.summary} hint="Briefly describe what the learner is asking or trying to build." />
       {rich('g-guidance', 'Your guidance / answer', guidance.html, setGuidance, 380)}
+      {errors.sections && <p className="ad-field-error" role="alert">{errors.sections}</p>}
     </EditorShell>
   )
 }

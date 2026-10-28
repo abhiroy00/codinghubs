@@ -6,15 +6,28 @@ import { fromApi, slugify, toApi, type Common, type Kind, type Revision } from '
 type Errors = Record<string, string>
 const draftKey = (kind: Kind, id: string | undefined) => `ch_admin_draft_${kind}_${id ?? 'new'}`
 
+function formatError(value: unknown): string {
+  if (typeof value === 'string') return value
+  if (Array.isArray(value)) return value.map(formatError).filter(Boolean).join(' ')
+  if (value && typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>)
+      .map(([key, nested]) => `${key}: ${formatError(nested)}`)
+      .filter((entry) => !entry.endsWith(': '))
+      .join('; ')
+  }
+  return String(value)
+}
+
 function readErrors(err: unknown): { fields: Errors; message: string } {
   const data = (err as { response?: { data?: unknown; status?: number } })?.response?.data
   const status = (err as { response?: { status?: number } })?.response?.status
   if (status === 403) return { fields: {}, message: 'Your account does not have permission to do that.' }
   if (data && typeof data === 'object') {
     const fields: Errors = {}
-    for (const [k, v] of Object.entries(data as Record<string, unknown>)) fields[k] = Array.isArray(v) ? String(v[0]) : typeof v === 'string' ? v : JSON.stringify(v)
+    for (const [k, v] of Object.entries(data as Record<string, unknown>)) fields[k] = formatError(v)
     const first = Object.values(fields)[0]
-    return { fields, message: fields.detail ?? (first ? 'Please fix the highlighted fields.' : 'Something went wrong. Please try again.') }
+    const details = Object.entries(fields).filter(([key]) => key !== 'detail').map(([key, value]) => `${key}: ${value}`).join(' ')
+    return { fields, message: fields.detail || (first ? `Please fix the highlighted fields. ${details}` : 'Something went wrong. Please try again.') }
   }
   return { fields: {}, message: 'Could not reach the server. Your changes are kept on this page; try again.' }
 }

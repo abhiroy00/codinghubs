@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { FileList, Html, useDetail } from './catalog'
-import { get, initial, rupees, type Card, type Paged } from './api'
+import { errorText, get, initial, rupees, shop, type Card, type Paged } from './api'
 import './projects.css'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -246,8 +246,38 @@ function Lightbox({ shots, index, onClose, onMove }: { shots: any[]; index: numb
 export function ProjectPage() {
   const { data: p, missing, slug } = useDetail('project', '/projects')
   const [shot, setShot] = useState<number | null>(null)
+  const [questionName, setQuestionName] = useState('')
+  const [questionEmail, setQuestionEmail] = useState('')
+  const [questionText, setQuestionText] = useState('')
+  const [questionBusy, setQuestionBusy] = useState(false)
+  const [questionMessage, setQuestionMessage] = useState('')
+  const [questionError, setQuestionError] = useState('')
   const { slug: routeSlug } = useParams()
   useEffect(() => setShot(null), [routeSlug])
+
+  async function submitQuestion(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!slug) return
+    setQuestionBusy(true)
+    setQuestionMessage('')
+    setQuestionError('')
+    try {
+      const { data } = await shop.post(`/projects/${slug}/questions/`, {
+        name: questionName,
+        email: questionEmail,
+        question: questionText,
+      })
+      setQuestionMessage(data.detail)
+      setQuestionName('')
+      setQuestionEmail('')
+      setQuestionText('')
+    } catch (error) {
+      setQuestionError(errorText(error, 'Could not submit your question. Please try again.'))
+    } finally {
+      setQuestionBusy(false)
+    }
+  }
+
   if (missing) return <NotFound />
   if (!p) return <PageFrame wide><div className="pj-detail-skel" aria-busy="true" role="status"><span className="sr-only">Loading…</span></div></PageFrame>
 
@@ -343,6 +373,31 @@ export function ProjectPage() {
             )}
             {p.setup_html && <section id="setup" className="pj-sec"><h2>Setup overview</h2><Html html={p.setup_html} /></section>}
             {p.files?.length > 0 && <section id="files" className="pj-sec"><FileList files={p.files} base="/projects" slug={slug} /></section>}
+            {!p.preview && (
+              <section id="project-questions" className="pj-sec pj-qa">
+                <h2>Project questions</h2>
+                <p>Ask us for help with this project. Your name, question, and our answer may be shown publicly so other learners can benefit. Your email stays private.</p>
+                {p.questions?.length > 0 && <div className="pj-qa-list">{p.questions.map((item: any) => (
+                  <article className="pj-qa-item" key={item.id}>
+                    <h3>{item.question}</h3>
+                    <p className="pj-qa-author">Asked by {item.name}</p>
+                    <p className="pj-qa-answer">{item.answer}</p>
+                  </article>
+                ))}</div>}
+                <form className="pj-qa-form" onSubmit={(event) => void submitQuestion(event)}>
+                  <h3>Ask a project question</h3>
+                  <label htmlFor="project-question-name">Name</label>
+                  <input id="project-question-name" maxLength={100} required value={questionName} onChange={(event) => setQuestionName(event.target.value)} />
+                  <label htmlFor="project-question-email">Email (private)</label>
+                  <input id="project-question-email" type="email" required value={questionEmail} onChange={(event) => setQuestionEmail(event.target.value)} />
+                  <label htmlFor="project-question-text">Your question</label>
+                  <textarea id="project-question-text" maxLength={2000} required rows={5} value={questionText} onChange={(event) => setQuestionText(event.target.value)} />
+                  {questionError && <p className="pj-qa-error" role="alert">{questionError}</p>}
+                  {questionMessage && <p className="pj-qa-success" role="status">{questionMessage}</p>}
+                  <button className="btn btn-yellow" type="submit" disabled={questionBusy}>{questionBusy ? 'Submitting…' : 'Submit question'}</button>
+                </form>
+              </section>
+            )}
             {!p.unlocked && p.product && (
               <aside className="pj-lock"><div><strong>{p.locked_files} project file{p.locked_files === 1 ? '' : 's'} included</strong><p>Source code and files come with {p.product.title}.</p></div><Link className="btn btn-yellow" to={`/store/${p.product.slug}`}>Get it · {rupees(p.product.price)}</Link></aside>
             )}
