@@ -57,7 +57,6 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
   {
     heading: 'Store',
     items: [
-      { to: '/shop', label: 'Store Overview', icon: 'M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7L4 7Zm4-3h8l1 3H7l1-3Z' },
       { to: '/products', label: 'Products', icon: 'M12 2 3 6.5v11L12 22l9-4.5v-11L12 2Zm0 2.2 5.9 2.9L12 10 6.1 7.1 12 4.2Z' },
       { to: '/store-orders', label: 'Store Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
       { to: '/customers', label: 'Customers', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
@@ -221,7 +220,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
       <div className="ad-main">
         <main className="ad-content">
           <Routes>
-            <Route index element={<Overview />} />
+            <Route index element={<><Overview /><StoreOverview /></>} />
             <Route path="leads" element={<LeadsPage />} />
             <Route
               path="enrollments"
@@ -282,7 +281,6 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="case-studies/create" element={<CaseEditor key="new-case" />} />
             <Route path="case-studies/edit/:id" element={<CaseEditor />} />
             <Route path="taxonomy" element={<Taxonomy />} />
-            <Route path="shop" element={<StoreOverview />} />
             <Route path="products" element={<ShopList kind="products" />} />
             <Route path="products/create" element={<SimpleProductEditor key="new-product" />} />
             <Route path="products/edit/:id" element={<SimpleProductEditor />} />
