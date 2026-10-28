@@ -69,7 +69,7 @@ for (const slug of SLUGS) {
   const h1 = decode(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? '').replace(/<[^>]+>/g, '')
   if (!h1) fail(`${slug}: empty h1`)
   for (const re of BANNED) if (re.test(text(html))) fail(`${slug}: banned phrase/pattern ${re}`)
-  for (const m of html.matchAll(/href="(\/locations\/[^"#]*)"/g)) {
+  for (const m of html.matchAll(/href="(\/locations\/[^"#?]*)"/g)) {
     const target = path.join(dist, m[1], 'index.html')
     if (!existsSync(target)) fail(`${slug}: broken internal link ${m[1]}`)
   }
