@@ -51,9 +51,11 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side,
     <form className="ad-editor" onSubmit={submit} noValidate>
       <div className="ad-head">
         <div>
-          <p className="ad-crumb">
-            <Link to={`/${kind}`}>{KIND_LABEL[kind]}</Link> › {form.id ? 'Edit' : 'New'}
-          </p>
+          {kind !== 'projects' && kind !== 'project-guides' && (
+            <p className="ad-crumb">
+              <Link to={`/${kind}`}>{KIND_LABEL[kind]}</Link> › {form.id ? 'Edit' : 'New'}
+            </p>
+          )}
           <h1 className="ad-h1">{form.title || `New ${noun}`}</h1>
         </div>
         <span className={`ad-badge st-${form.status}`}>{STATUS_LABEL[form.status]}</span>
