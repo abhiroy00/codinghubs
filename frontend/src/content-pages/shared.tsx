@@ -14,12 +14,12 @@ export function SearchIcon() {
   )
 }
 
-export function PageFrame({ children }: { children: ReactNode }) {
+export function PageFrame({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap'])
   return (
     <div className="fs-page">
       <FsHeader />
-      <main id="main" className="wrap bl-main">
+      <main id="main" className={`wrap bl-main${wide ? ' bl-wide-main' : ''}`}>
         {children}
       </main>
       <FsFooter />

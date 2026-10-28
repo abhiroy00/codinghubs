@@ -166,7 +166,7 @@ export function CatalogList({ kind }: { kind: Kind }) {
 }
 
 /* ---------------- detail pages ---------------- */
-function useDetail(kind: 'product' | 'project' | 'guide', apiBase: string) {
+export function useDetail(kind: 'product' | 'project' | 'guide', apiBase: string) {
   const { slug = '' } = useParams<{ slug: string }>()
   const { search } = window.location.pathname ? { search: window.location.search } : { search: '' }
   const preview = new URLSearchParams(search).get('preview') ?? undefined
@@ -200,7 +200,7 @@ function useDetail(kind: 'product' | 'project' | 'guide', apiBase: string) {
   return { data, missing, slug }
 }
 
-function Html({ html }: { html?: string }) {
+export function Html({ html }: { html?: string }) {
   // sanitised on the server (allowlist) when saved and again when served
   return html ? <div className="bl-body" dangerouslySetInnerHTML={{ __html: html }} /> : null
 }
@@ -286,7 +286,7 @@ export function ProductDetail() {
   )
 }
 
-function FileList({ files, base, slug }: { files: any[]; base: string; slug: string }) {
+export function FileList({ files, base, slug }: { files: any[]; base: string; slug: string }) {
   const [err, setErr] = useState('')
   const open = async (id: number) => {
     setErr('')

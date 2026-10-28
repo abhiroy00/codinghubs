@@ -15,7 +15,8 @@ const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ d
 const CaseDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.CaseDetail })))
 const CatalogList = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.CatalogList })))
 const ProductDetail = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.ProductDetail })))
-const ProjectDetail = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.ProjectDetail })))
+const ProjectsPage = lazy(() => import('./shop-pages/projects').then((m) => ({ default: m.ProjectsPage })))
+const ProjectPage = lazy(() => import('./shop-pages/projects').then((m) => ({ default: m.ProjectPage })))
 const GuideDetail = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.GuideDetail })))
 const CartPage = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.CartPage })))
 const CheckoutPage = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.CheckoutPage })))
@@ -51,8 +52,8 @@ export function App() {
               <Route path="book-a-tutor" element={<BookTutor />} />
               <Route path="store" element={<CatalogList kind="store" />} />
               <Route path="store/:slug" element={<ProductDetail />} />
-              <Route path="projects" element={<CatalogList kind="projects" />} />
-              <Route path="projects/:slug" element={<ProjectDetail />} />
+              <Route path="projects" element={<ProjectsPage />} />
+              <Route path="projects/:slug" element={<ProjectPage />} />
               <Route path="project-guides" element={<CatalogList kind="guides" />} />
               <Route path="project-guides/:slug" element={<GuideDetail />} />
               <Route path="cart" element={<CartPage />} />
