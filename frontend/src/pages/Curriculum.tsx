@@ -36,15 +36,6 @@ export function Curriculum() {
         <section className="curriculum-banner" aria-labelledby="curriculum-title">
           <img src={program.image} alt="" aria-hidden="true" />
           <div className="wrap curriculum-banner-in">
-            <nav className="breadcrumb" aria-label="Breadcrumb">
-              <Link to="/">Home</Link>
-              <span className="sep">/</span>
-              <Link to="/#program">Programs</Link>
-              <span className="sep">/</span>
-              <span className="current" aria-current="page">
-                {program.title}
-              </span>
-            </nav>
             <p className="eyebrow">15-Day Training Program</p>
             <h1 id="curriculum-title">{program.title}</h1>
             <p className="sub">{program.tagline}</p>

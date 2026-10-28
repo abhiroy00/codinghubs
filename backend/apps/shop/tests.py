@@ -1205,12 +1205,12 @@ class SeoTests(ShopBase):
         self.api.post(f'/api/admin/products/{pub.id}/unpublish/')
         self.assertNotIn(pub.slug, self.anon.get('/sitemap-shop.xml').content.decode())
 
-    def test_project_and_guide_pages_have_article_and_breadcrumb_data(self):
+    def test_project_pages_have_article_data_and_no_hidden_breadcrumb_markup(self):
         pr = self.api.post('/api/admin/projects/', {'title': 'Chat app', 'summary': 'Realtime chat.'}, format='json').json()
         self.api.post(f'/api/admin/projects/{pr["id"]}/publish/')
         html = self.anon.get(f'/projects/{pr["slug"]}').content.decode()
         types = [n['@type'] for n in self.ld(html)['@graph']]
-        self.assertEqual(types, ['Article', 'BreadcrumbList'])
+        self.assertEqual(types, ['Article'])  # no breadcrumb is shown on the page, so no BreadcrumbList markup either
         self.assertEqual(html.count('<h1'), 1)
         self.assertIn(f'href="https://codinghubs.in/projects/{pr["slug"]}"', html)
 

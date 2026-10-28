@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
-import { Crumbs, PageFrame, Pager, SearchIcon, useSeo } from '../content-pages/shared'
+import { PageFrame, Pager, SearchIcon, useSeo } from '../content-pages/shared'
 import { cartApi, errorText, fmtSize, get, initial, rupees, shop, type Card, type Paged } from './api'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -121,7 +121,6 @@ export function CatalogList({ kind }: { kind: Kind }) {
 
   return (
     <PageFrame>
-      <Crumbs items={[{ label: 'Home', to: '/' }, { label: cfg.title }]} />
       <h1>{cfg.h1}</h1>
       <p className="bl-lead">{cfg.lead}</p>
       <div className="bl-tools">
@@ -231,7 +230,6 @@ export function ProductDetail() {
     <PageFrame>
       <article className="bl-article bl-wide">
         {p.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Store', to: '/store' }, { label: p.title }]} />
         <div className={`shop-product${p.images?.length ? ' has-img' : ''}`}>
           {p.images?.length ? (<div>
             {p.images?.length ? (
@@ -317,7 +315,6 @@ export function ProjectDetail() {
     <PageFrame>
       <article className="bl-article">
         {p.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Projects', to: '/projects' }, { label: p.title }]} />
         <header className="bl-head">
           <p className="bl-cat">{p.difficulty}{p.category ? ` · ${p.category}` : ''}</p>
           <h1>{p.title}</h1>
@@ -369,7 +366,6 @@ export function GuideDetail() {
     <PageFrame>
       <article className="bl-article">
         {g.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Project Guides', to: '/project-guides' }, { label: g.title }]} />
         <header className="bl-head">
           <p className="bl-cat">{g.difficulty}{g.category ? ` · ${g.category}` : ''}</p>
           <h1>{g.title}</h1>

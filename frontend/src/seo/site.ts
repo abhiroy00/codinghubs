@@ -88,14 +88,6 @@ export function programMeta(p: Program): PageMeta {
           provider: { '@id': ORG_ID },
           hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'P15D' },
         },
-        {
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-            { '@type': 'ListItem', position: 2, name: 'Programs', item: `${SITE_URL}/#program` },
-            { '@type': 'ListItem', position: 3, name: p.title, item: url },
-          ],
-        },
       ],
     },
   }

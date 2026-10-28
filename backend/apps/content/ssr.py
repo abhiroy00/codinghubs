@@ -121,10 +121,6 @@ def listing_seo(kind, page, extra_qs, indexable):
             '@context': 'https://schema.org',
             '@graph': [
                 {'@type': 'CollectionPage', '@id': f'{settings.SITE_URL}{path}#webpage', 'url': f'{settings.SITE_URL}{path}', 'name': title, 'description': desc, 'inLanguage': 'en-IN', 'isPartOf': {'@id': f'{settings.SITE_URL}/#website'}},
-                {'@type': 'BreadcrumbList', 'itemListElement': [
-                    {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': f'{settings.SITE_URL}/'},
-                    {'@type': 'ListItem', 'position': 2, 'name': label, 'item': f'{settings.SITE_URL}{path}'},
-                ]},
             ],
         },
     }

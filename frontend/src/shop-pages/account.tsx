@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
-import { Crumbs, PageFrame, Pager } from '../content-pages/shared'
+import { PageFrame, Pager } from '../content-pages/shared'
 import { DownloadList } from './cart'
 import { errorText, fmtSize, rupees, shop } from './api'
 
@@ -20,7 +20,6 @@ function AccountFrame({ children, title }: { children: React.ReactNode; title: s
   if (!localStorage.getItem('ch_access')) return <Navigate to="/login" replace state={{ from: loc.pathname }} />
   return (
     <PageFrame>
-      <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'My account', to: '/my-account' }, { label: title }]} />
       <nav className="shop-tabs" aria-label="My account">
         <Link to="/my-account">Profile</Link>
         <Link to="/my-account/orders">Orders</Link>

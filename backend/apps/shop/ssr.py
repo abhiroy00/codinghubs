@@ -38,9 +38,6 @@ def listing_seo(kind, page, extra_qs, indexable):
         'og': {'type': 'website', 'title': title, 'description': desc, 'image': content_services.LOGO_URL, 'url': canonical},
         'json_ld': {'@context': 'https://schema.org', '@graph': [
             {'@type': 'CollectionPage', '@id': f'{settings.SITE_URL}{base}#webpage', 'url': f'{settings.SITE_URL}{base}', 'name': title, 'description': desc, 'inLanguage': 'en-IN'},
-            {'@type': 'BreadcrumbList', 'itemListElement': [
-                {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': f'{settings.SITE_URL}/'},
-                {'@type': 'ListItem', 'position': 2, 'name': label, 'item': f'{settings.SITE_URL}{base}'}]},
         ]},
     }
 

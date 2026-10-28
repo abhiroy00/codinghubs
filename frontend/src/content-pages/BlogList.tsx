@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { getBlogCategories, getBlogs, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
-import { CardView, Crumbs, PageFrame, Pager, SearchIcon } from './shared'
+import { CardView, PageFrame, Pager, SearchIcon } from './shared'
 
 type Cats = { name: string; slug: string; blog_count: number }[]
 const initial = typeof document === 'undefined' ? null : takeInitial()
@@ -70,7 +70,6 @@ export function BlogList() {
 
   return (
     <PageFrame>
-      <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Blog' }]} />
       <h1>AI &amp; Coding Blog</h1>
       <p className="bl-lead">Guides, tutorials and career advice on AI, programming and data from Coding Hubs School of AI.</p>
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { Crumbs, PageFrame } from '../content-pages/shared'
+import { PageFrame } from '../content-pages/shared'
 import { cartApi, errorText, fmtSize, get, lastOrder, rupees, shop, type CartData } from './api'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -64,7 +64,6 @@ export function CartPage() {
 
   return (
     <PageFrame>
-      <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Store', to: '/store' }, { label: 'Cart' }]} />
       <h1>Your cart</h1>
       {error && <p className="shop-err" role="alert">{error}</p>}
       {!cart && !error && <p className="bl-state" role="status">Loading…</p>}
@@ -210,7 +209,6 @@ export function CheckoutPage() {
   const guestBlocked = settings && !settings.allow_guest_checkout && !loggedIn
   return (
     <PageFrame>
-      <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Cart', to: '/cart' }, { label: 'Checkout' }]} />
       <h1>Checkout</h1>
       {settings && !settings.payments_enabled && cart && Number(cart.total) > 0 && (
         <p className="shop-err" role="alert">Online payment is not switched on yet, so paid orders cannot be placed right now. Please contact us.</p>

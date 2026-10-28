@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { fmtDate, getBlog, getCase, takeInitial, type Article } from './api'
-import { CardView, Crumbs, PageFrame, useSeo } from './shared'
+import { CardView, PageFrame, useSeo } from './shared'
 
 const initial = typeof document === 'undefined' ? null : takeInitial()
 
@@ -73,7 +73,6 @@ export function BlogDetail() {
     <PageFrame>
       <article className="bl-article">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Blog', to: '/blog' }, { label: a.title }]} />
         <header className="bl-head">
           {a.category && (
             <p className="bl-cat">
@@ -138,7 +137,6 @@ export function CaseDetail() {
     <PageFrame>
       <article className="bl-article">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Case Studies', to: '/case-studies' }, { label: a.title }]} />
         <header className="bl-head">
           {a.industry && <p className="bl-cat">{a.industry}</p>}
           <h1>{a.title}</h1>

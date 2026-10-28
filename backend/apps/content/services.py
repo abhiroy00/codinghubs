@@ -147,19 +147,6 @@ def organization_ref() -> dict:
     return {'@type': 'EducationalOrganization', '@id': ORG_ID, 'name': 'Coding Hubs School of AI', 'url': f'{settings.SITE_URL}/', 'logo': LOGO_URL}
 
 
-def breadcrumb(kind: str, title: str, slug: str) -> dict:
-    base = BASE_PATH[kind]
-    label = 'Blog' if kind == 'blog' else 'Case Studies'
-    return {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-            {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': f'{settings.SITE_URL}/'},
-            {'@type': 'ListItem', 'position': 2, 'name': label, 'item': f'{settings.SITE_URL}{base}'},
-            {'@type': 'ListItem', 'position': 3, 'name': title, 'item': f'{settings.SITE_URL}{base}/{slug}'},
-        ],
-    }
-
-
 def article_json_ld(obj, kind, canonical, description, image) -> dict:
     node = {
         '@type': 'BlogPosting' if kind == 'blog' else 'Article',
@@ -180,7 +167,7 @@ def article_json_ld(obj, kind, canonical, description, image) -> dict:
         node['author'] = {'@type': 'Person', 'name': obj.author_name, **({'jobTitle': obj.author_title} if obj.author_title else {})}
     else:
         node['author'] = {'@id': ORG_ID, '@type': 'EducationalOrganization', 'name': 'Coding Hubs School of AI'}
-    graph = [node, breadcrumb(kind, obj.title, obj.slug)]
+    graph = [node]
     if kind == 'blog' and obj.faq:
         faq = [f for f in obj.faq if f.get('q') and f.get('a')]
         if faq:

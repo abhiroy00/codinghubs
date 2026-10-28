@@ -6,6 +6,8 @@ const LINKS = [
   ['/projects', 'Projects'],
   ['/project-guides', 'Project Guides'],
   ['/store', 'Store'],
+  ['/#session', 'About the Session'],
+  ['/#contact', 'Contact'],
 ] as const
 
 /** "Resources" header item: a button that opens a short list (hover, tap or keyboard). Inline list inside the burger menu. */
@@ -26,7 +28,7 @@ export function ResourcesMenu() {
   }, [open])
   return (
     <div className={`res${open ? ' open' : ''}`} ref={ref} onMouseEnter={() => window.matchMedia('(hover:hover)').matches && setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <button type="button" className="res-btn" aria-expanded={open} aria-haspopup="true" onClick={() => setOpen((o) => !o)}>
+      <button type="button" className="res-btn" aria-expanded={open} aria-haspopup="true" onClick={() => setOpen((o) => (window.matchMedia('(hover:hover)').matches && o ? true : !o))}>
         Resources <span aria-hidden="true">▾</span>
       </button>
       <ul className="res-list">

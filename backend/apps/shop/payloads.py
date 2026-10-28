@@ -93,23 +93,12 @@ def product_seo(p: Product, preview=False) -> dict:
     }
     if p.author:
         product_node['author'] = {'@type': 'Person', 'name': p.author}
-    graph = [product_node, breadcrumb('Store', '/store', p.title, url)]
+    graph = [product_node]
     return {
         'title': title, 'description': desc, 'canonical': canonical,
         'robots': 'noindex, nofollow' if preview else 'index, follow, max-image-preview:large',
         'og': {'type': 'product', 'title': p.og_title or p.seo_title or p.title, 'description': p.og_description or desc, 'image': img_url, 'url': canonical},
         'json_ld': {'@context': 'https://schema.org', '@graph': graph},
-    }
-
-
-def breadcrumb(label, base, title, url):
-    return {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-            {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': f'{settings.SITE_URL}/'},
-            {'@type': 'ListItem', 'position': 2, 'name': label, 'item': f'{settings.SITE_URL}{base}'},
-            {'@type': 'ListItem', 'position': 3, 'name': title, 'item': url},
-        ],
     }
 
 
@@ -214,5 +203,5 @@ def simple_seo(obj, kind, base, label, summary, preview=False, free=True) -> dic
         'title': title, 'description': desc, 'canonical': canonical,
         'robots': 'noindex, nofollow' if preview else 'index, follow, max-image-preview:large',
         'og': {'type': 'article', 'title': obj.og_title or obj.seo_title or obj.title, 'description': obj.og_description or desc, 'image': image, 'url': canonical},
-        'json_ld': {'@context': 'https://schema.org', '@graph': [node, breadcrumb(label, base, obj.title, url)]},
+        'json_ld': {'@context': 'https://schema.org', '@graph': [node]},
     }

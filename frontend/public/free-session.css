@@ -18,7 +18,7 @@
 
 /* ============ BASE ============ */
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:clip}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 body{margin:0;background:var(--bg);color:#363636;font:400 16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;overflow-x:clip}
 h1,h2,h3{font-family:var(--f-head);line-height:1.2;margin:0;color:var(--navy)}
@@ -604,7 +604,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 
 .programs-intro{max-width:420px;margin:0 auto 2rem}
 .programs-grid{display:grid;gap:1.25rem;max-width:1100px;margin-inline:auto}
-@media (min-width:720px){.programs-grid{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:900px){.programs-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.programs-grid>*{min-width:0}
 .programs-grid .plan-card{height:100%}
 .program-card-link{display:block;color:inherit;text-decoration:none}
 
@@ -1046,8 +1047,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .fs-page .steps .step h3{color:#fff}
 .fs-page .steps .step p{color:rgba(255,255,255,.72)}
 
-/* nine nav items need ~1360px: collapse to the burger menu below that (laptops keep the full row) */
-@media (max-width:1359px){
+/* seven nav items need ~1280px: collapse to the burger menu below that (laptops keep the full row) */
+@media (max-width:1279px){
   .burger{display:inline-flex}
   .hdr-actions{margin-left:auto}
   .hdr .nav:not(.nav-inline){position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;margin-left:0;padding:.5rem 16px 1rem;background:#0A1A3F;border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 24px 40px -20px rgba(0,0,0,.7);display:none}
@@ -1213,7 +1214,6 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .bl-tags li{padding:.3rem .8rem;border-radius:999px;background:var(--blue-soft);color:var(--blue-2);font-weight:600;font-size:.88rem}
 .bl-gallery{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));margin:1.4rem 0}
 .bl-gallery img{width:100%;border-radius:var(--r-sm)}
-@media (min-width:1360px) and (max-width:1599px){.nav a:not(.btn){padding:.5rem .55rem;font-size:.9rem}}
 /* header row is wider than page content so nine nav items never clip */
 .hdr .wrap{max-width:1400px}
 .bl-body ul{list-style:disc}.bl-body ol{list-style:decimal}.bl-body li{display:list-item}
@@ -1228,7 +1228,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .res.open .res-list{display:block}
 .res-list a{display:block;padding:.55rem .8rem;border-radius:8px;color:var(--navy)!important;text-decoration:none;font-weight:500}
 .res-list a:hover{background:var(--yellow-soft)}
-@media (max-width:1359px){.res{display:block}.res-btn{width:100%;text-align:left;padding:.8rem 1rem}.res-list{position:static;display:block;box-shadow:none;background:transparent;padding:0 0 0 1rem}.res-list a{color:inherit!important}}
+@media (max-width:1279px){.res{display:block}.res-btn{width:100%;text-align:left;padding:.8rem 1rem;color:#fff}.res-list{position:static;display:block;box-shadow:none;background:transparent;padding:0 0 0 1rem}.res-list a{color:#fff!important}.res-list a:hover{background:rgba(255,255,255,.1)}}
 .cart-link{position:relative;display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;color:#fff;transition:background .2s,transform .2s}
 .cart-link:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
 .cart-badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:var(--yellow);color:var(--navy);font:700 .7rem/18px var(--f-body);text-align:center}
@@ -1278,3 +1278,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .code-copy:hover{background:var(--yellow);color:var(--navy)}
 .bl-selects{display:flex;gap:.6rem;flex-wrap:wrap}.bl-selects select{padding:.5rem .9rem;border:1px solid var(--line-2);border-radius:999px;background:#fff}
 @media print{.hdr,.ftr,.shop-tabs,.shop-order-actions,.shop-summary .btn{display:none!important}}
+
+/* the floating WhatsApp button must not cover the mobile sticky CTA bar */
+@media (max-width:999px){body:has(.sticky-cta.show) .wa-float{bottom:84px}}
+@media (min-width:600px) and (max-width:899px){.programs-grid .plan-media{aspect-ratio:21/9}}

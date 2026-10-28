@@ -27,20 +27,6 @@ export function PageFrame({ children }: { children: ReactNode }) {
   )
 }
 
-export function Crumbs({ items }: { items: { label: string; to?: string }[] }) {
-  return (
-    <nav aria-label="Breadcrumb" className="bl-crumbs">
-      <ol>
-        {items.map((i, n) => (
-          <li key={i.label} aria-current={n === items.length - 1 ? 'page' : undefined}>
-            {i.to ? <Link to={i.to}>{i.label}</Link> : i.label}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  )
-}
-
 export function CardView({ c, base }: { c: Card; base: string }) {
   const tag = c.category?.name ?? c.industry
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { getCases, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
-import { CardView, Crumbs, PageFrame, Pager, SearchIcon } from './shared'
+import { CardView, PageFrame, Pager, SearchIcon } from './shared'
 
 const initial = typeof document === 'undefined' ? null : takeInitial()
 
@@ -61,7 +61,6 @@ export function CaseList() {
 
   return (
     <PageFrame>
-      <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Case Studies' }]} />
       <h1>Case Studies</h1>
       <p className="bl-lead">Learning and project stories from Coding Hubs School of AI.</p>
       <div className="bl-tools">
