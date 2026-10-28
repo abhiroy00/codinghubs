@@ -74,6 +74,10 @@ jobs:
     needs: [backend-tests, frontend-build, admin-panel-build]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: codinghubs-production-deploy
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
 
@@ -122,29 +126,38 @@ jobs:
 
       - name: Deploy to EC2 via SSM
         run: |
+          SHA="${{ github.sha }}"
+          DEPLOY_COMMAND="mkdir -p /opt/codinghubs/deploy-logs && systemd-run --unit=codinghubs-deploy-${SHA} --collect --no-block /bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${SHA}/infra/deploy-remote.sh | bash -s -- ${SHA} > /opt/codinghubs/deploy-logs/${SHA}.log 2>&1'"
+          PARAMETERS=$(jq -nc --arg command "$DEPLOY_COMMAND" '{commands:[$command],executionTimeout:["120"]}')
           CMD_ID=$(aws ssm send-command \
             --instance-ids "${{ vars.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --timeout-seconds 900 \
-            --parameters "commands=[\"mkdir -p /opt/codinghubs/deploy-logs; nohup bash -c 'curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/infra/deploy-remote.sh | bash -s -- ${{ github.sha }}' > /opt/codinghubs/deploy-logs/${{ github.sha }}.log 2>&1 < /dev/null & echo deploy-started\"],executionTimeout=[\"900\"]" \
-            --comment "deploy ${{ github.sha }}" \
+            --timeout-seconds 120 \
+            --parameters "$PARAMETERS" \
+            --comment "deploy $SHA" \
             --query 'Command.CommandId' --output text)
           echo "command id: $CMD_ID"
 
-          for i in $(seq 1 90); do
+          SSM_STATUS=Pending
+          for i in $(seq 1 24); do
             STATUS=$(aws ssm get-command-invocation \
               --command-id "$CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
               --query 'Status' --output text 2>/dev/null || echo Pending)
             echo "status: $STATUS"
             case "$STATUS" in
-              Success) break ;;
+              Success) SSM_STATUS=Success; break ;;
               Failed|Cancelled|TimedOut)
                 aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
                   --query '{stdout:StandardOutputContent,stderr:StandardErrorContent}' --output text
                 exit 1 ;;
             esac
-            sleep 10
+            sleep 5
           done
+
+          if [ "$SSM_STATUS" != Success ]; then
+            echo "SSM did not confirm the deployment launch within 2 minutes."
+            exit 1
+          fi
 
           CSS_PATH=$(find tutor-page-css -maxdepth 1 -name 'BookTutor-*.css' -print -quit)
           CSS_FILE=${CSS_PATH##*/}
