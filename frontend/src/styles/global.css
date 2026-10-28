@@ -522,7 +522,7 @@ html[data-fs-loading] #root{visibility:hidden}
 .dd-panel.dd-small a{padding:.5rem .7rem;border-radius:.6rem;font-size:.9rem;color:var(--color-ink)}
 .dd-panel.dd-small a:hover{background:var(--color-line)}
 .store-link{display:inline-flex;align-items:center;padding:.45rem .65rem;border-radius:.6rem;color:var(--color-muted);font-size:.875rem;font-weight:600;text-decoration:none;transition:color .2s,background .2s}
-.store-link:hover{color:var(--color-ink);background:rgba(0,0,0,.06)}
+.store-link:hover,.store-link.on-light:hover{color:#FFDE6B;background:rgba(0,0,0,.06)}
 .store-link.on-light{color:var(--color-ink)}
 #mobile .m-head{margin:1rem 0 .1rem;font:600 .7rem var(--font-sans,Inter,sans-serif);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
 #mobile .sheet a.m.m-sub{padding-left:1.4rem;font-size:1.05rem;font-weight:500}
