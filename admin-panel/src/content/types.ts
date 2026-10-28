@@ -134,12 +134,17 @@ export function fromApi<T extends Common>(blank: T, data: any): T {
   return out as T
 }
 
+const NULLABLE = ['category', 'product', 'project', 'original_price', 'tax_rate', 'publication_year', 'pages', 'weight_grams', 'download_limit']
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function toApi(form: Common): Record<string, any> {
   const { related_titles: _t, published_at, id: _id, ...rest } = form as Common & Record<string, unknown>
   void _t
   void _id
-  return { ...rest, published_at: fromLocalInput(published_at), ...('category' in form && form['category' as keyof Common] === '' ? { category: null } : {}) }
+  const out: Record<string, unknown> = { ...rest, published_at: fromLocalInput(published_at) }
+  // optional numeric / relation fields: an empty box means "not set", which the API expects as null
+  for (const k of NULLABLE) if (out[k] === '') out[k] = null
+  return out
 }
 
 export const wordCount = (html: string) => {

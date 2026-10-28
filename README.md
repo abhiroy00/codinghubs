@@ -118,3 +118,8 @@ branches are claimed.
 
 Managed from the admin panel; published content appears at `/blog` and `/case-studies` with server-rendered, SEO-ready HTML.
 See "Blog and case studies (CMS)" in [DEPLOY.md](DEPLOY.md) for setup (TinyMCE key, images, scheduling, deployment).
+
+
+## Projects, project guides and store
+
+Projects, step-by-step guides (free, account-only, paid or included with a course) and a store for notes, books, project files and printed material, with cart, coupons, Razorpay checkout, private downloads, orders and inventory. All managed from `/admin-panel/`. Setup, payment testing and the launch checklist are in [DEPLOY.md](DEPLOY.md).

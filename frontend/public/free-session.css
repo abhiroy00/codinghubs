@@ -1237,7 +1237,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 /* ============ SHOP ============ */
 .bl-wide{max-width:1100px}
 .shop-product{display:grid;gap:1.6rem;margin:1rem 0 1.5rem}
-@media (min-width:860px){.shop-product{grid-template-columns:1.05fr 1fr;align-items:start}}
+@media (min-width:860px){.shop-product.has-img{grid-template-columns:1.05fr 1fr;align-items:start}}
 .shop-thumbs{display:flex;gap:.5rem;flex-wrap:wrap}.shop-thumbs img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
 .bl-price{font-size:1.7rem;color:var(--navy);margin:.4rem 0}.bl-price s{font-size:1rem;color:var(--faint);font-weight:400}
 .bl-stock{font-weight:600;color:var(--ok)}.bl-stock.out{color:var(--err)}

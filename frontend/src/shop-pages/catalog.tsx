@@ -232,15 +232,15 @@ export function ProductDetail() {
       <article className="bl-article bl-wide">
         {p.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
         <Crumbs items={[{ label: 'Home', to: '/' }, { label: 'Store', to: '/store' }, { label: p.title }]} />
-        <div className="shop-product">
-          <div>
+        <div className={`shop-product${p.images?.length ? ' has-img' : ''}`}>
+          {p.images?.length ? (<div>
             {p.images?.length ? (
               <div className="shop-gallery">
                 <img className="bl-cover" src={p.images[0].src} alt={p.images[0].alt} width={1200} height={630} decoding="async" />
                 {p.images.length > 1 && <div className="shop-thumbs">{p.images.slice(1).map((i: any) => <img key={i.src} src={i.src} alt={i.alt} loading="lazy" />)}</div>}
               </div>
             ) : null}
-          </div>
+          </div>) : null}
           <div>
             {p.category && <p className="bl-cat">{p.category.name}</p>}
             <h1>{p.title}</h1>

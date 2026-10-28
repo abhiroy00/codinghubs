@@ -184,3 +184,27 @@ First admin: see "Admin panel" above (`ensure_admin`, credentials from SSM, no d
 Frontend: `cd frontend && npm run dev` (React fetches the API; the server-rendered HTML needs the built shell, see below).
 Admin: `cd admin-panel && npm run dev` (port 5174, `/admin-panel/`). To see the server-rendered pages locally, `npm run build` the
 frontend and point `FRONTEND_SHELL_URL` at a server that returns `dist/content-shell.html`.
+
+
+## Projects, project guides and the online store
+
+**Where things live.** Admin: `/admin-panel/` → *Store overview*, *Products*, *Projects*, *Project guides*, *Store orders*, *Inventory*, *Customers*, *Coupons*, *Store settings* (product categories are in *Categories & tags*). Public: `/store`, `/projects`, `/project-guides` (server-rendered like the blog), `/cart`, `/checkout`, `/payment/success`, `/payment/failure`, `/my-account`, `/my-account/orders`, `/my-account/downloads`. Backend app: `backend/apps/shop/`. Staff accounts need the Django model permissions `shop.*` (superusers have them all); order refunds/cancellations need `shop.change_order`.
+
+**Payments (Razorpay).** The store reuses the existing Razorpay keys (`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` in SSM).
+1. Test first: put `rzp_test_…` keys in SSM, redeploy, place a test order (Razorpay test cards), check it turns *Paid* and the files appear.
+2. In the Razorpay dashboard add a **second webhook** `https://codinghubs.in/api/store/payments/webhook/` with the same secret and the events `payment.captured`, `payment.failed`, `order.paid`, `refund.processed`. (The existing `/api/payments/webhook/` keeps serving course payments; it ignores store orders and vice-versa.)
+3. Only after the checklist below, swap in `rzp_live_…` keys. The overview page shows *test mode* until you do.
+An order becomes *Paid* only when the gateway confirms it: browser callback → signature check **and** a server-side fetch of the payment (status, amount, order id must match), or the signed webhook. Visiting `/payment/success` never marks anything paid. Webhooks are idempotent (unique event id) and fulfilment (files, e-mail) runs once.
+Without keys the store still works for **free** items; paid checkouts answer "payment is not set up" and cancel the held stock.
+
+**Private files.** Uploaded in the admin (products, guides, projects) to `PRIVATE_MEDIA_ROOT` (`/app/private_media`, docker volume `private_media`, mounted **only** into the backend, never into nginx). Files are checked by content (PDF/ZIP/image signatures, zip path traversal, size ≤ 100 MB) and stored under random names. Buyers get a signed link valid `STORE_DOWNLOAD_LINK_TTL` seconds (default 600) from `POST /api/store/downloads/<id>/link/`; entitlement is checked again when the link is used, downloads are counted/limited and logged. A full refund revokes access. Back up the `private_media` volume with the database (it holds the files customers paid for). For S3 later, swap `apps/shop/storage.py` for a private S3 storage backend and presigned URLs; nothing else depends on the disk.
+
+**Stock.** Stock is reserved (deducted) when a customer starts paying and given back if the order is cancelled, the payment fails and the order expires (`STORE_PENDING_ORDER_MINUTES`, default 30, released lazily at the next checkout of that product) or an admin cancels. Every change is in the inventory history. Row locking (`select_for_update`) prevents overselling on PostgreSQL (production); SQLite (local dev) does not enforce row locks.
+
+**Tax and shipping are not pre-filled.** *Store settings* starts with "no tax", no shipping charge and empty policies. Confirm the correct GST treatment with the business owner's accountant before enabling tax, and have the refund / return / shipping / privacy policies reviewed (and the Indian consumer-protection / data-protection requirements checked) before launch. These technical features are not a statement of legal compliance.
+
+**E-mail.** Order confirmations, shipping and refund mails use Django e-mail settings (`EMAIL_*`, `DEFAULT_FROM_EMAIL`); the default prints to the log. Set SMTP credentials in SSM for real delivery.
+
+**Guest orders.** A guest order has a private token (in the confirmation e-mail link and this browser). It opens the order and its downloads; a logged-in customer can attach it with *My account → Bought as a guest?*.
+
+**Production checklist.** (1) Test-mode order → paid → download → refund works end to end. (2) Webhook secret and second webhook URL set. (3) SMTP works (a real e-mail arrives). (4) Policies, tax mode/rate, shipping and contact details filled and reviewed. (5) `private_media` and `media` volumes and the database are backed up. (6) TinyMCE key set (see above). (7) `ALLOWED_HOSTS` / HTTPS as before. (8) Live Razorpay keys only after 1–7.
