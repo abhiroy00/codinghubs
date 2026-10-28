@@ -9,18 +9,18 @@ import './projects.css'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 9
 const LEVELS: [string, string][] = [['', 'Any level'], ['beginner', 'Beginner'], ['intermediate', 'Intermediate'], ['advanced', 'Advanced']]
-const cap = (s?: string) => (s ? s[0].toUpperCase() + s.slice(1) : '')
-const initials = (t: string) => t.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
-const hue = (t: string) => [...t].reduce((n, c) => (n * 31 + c.charCodeAt(0)) % 360, 7)
+export const cap = (s?: string) => (s ? s[0].toUpperCase() + s.slice(1) : '')
+export const initials = (t: string) => t.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
+export const hue = (t: string) => [...t].reduce((n, c) => (n * 31 + c.charCodeAt(0)) % 360, 7)
 
-function Clock() {
+export function Clock() {
   return (
     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
     </svg>
   )
 }
-function Arrow() {
+export function Arrow() {
   return (
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M5 12h14M13 6l6 6-6 6" />
@@ -28,7 +28,7 @@ function Arrow() {
   )
 }
 
-function Cover({ c, big = false }: { c: Card; big?: boolean }) {
+export function Cover({ c, big = false }: { c: Card; big?: boolean }) {
   if (c.featured_image) return <img src={c.featured_image} alt={c.featured_image_alt || c.title} loading={big ? 'eager' : 'lazy'} decoding="async" width={800} height={450} />
   const h = hue(c.title)
   return (

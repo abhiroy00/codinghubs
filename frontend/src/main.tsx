@@ -15,7 +15,7 @@ async function start() {
   if (c && window.location.pathname.split('/').filter(Boolean).length > 1) await import('./content-pages/Article').catch(() => null)
   // Store / projects / guides pages are lazy chunks too: load theirs first so the server-rendered page is replaced without a flash.
   const sp = window.location.pathname.match(/^\/(store|projects|project-guides)(\/|$)/)
-  if (sp) await Promise.all([import('./shop-pages/catalog'), sp[1] === 'projects' ? import('./shop-pages/projects') : null]).catch(() => null)
+  if (sp) await Promise.all([import('./shop-pages/catalog'), sp[1] === 'projects' ? import('./shop-pages/projects') : sp[1] === 'store' ? import('./shop-pages/store') : import('./shop-pages/guides')]).catch(() => null)
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />

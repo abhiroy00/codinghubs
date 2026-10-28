@@ -403,7 +403,7 @@ export function GuideDetail() {
 }
 
 /** Guide HTML with a copy button on every code block (accessible, works on mobile). */
-function CodeEnhancedHtml({ html }: { html: string }) {
+export function CodeEnhancedHtml({ html }: { html: string }) {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const root = ref.current

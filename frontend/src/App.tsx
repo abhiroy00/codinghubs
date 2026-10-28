@@ -13,11 +13,12 @@ const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ de
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
 const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.BlogDetail })))
 const CaseDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.CaseDetail })))
-const CatalogList = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.CatalogList })))
-const ProductDetail = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.ProductDetail })))
+const StorePage = lazy(() => import('./shop-pages/store').then((m) => ({ default: m.StorePage })))
+const ProductPage = lazy(() => import('./shop-pages/store').then((m) => ({ default: m.ProductPage })))
 const ProjectsPage = lazy(() => import('./shop-pages/projects').then((m) => ({ default: m.ProjectsPage })))
 const ProjectPage = lazy(() => import('./shop-pages/projects').then((m) => ({ default: m.ProjectPage })))
-const GuideDetail = lazy(() => import('./shop-pages/catalog').then((m) => ({ default: m.GuideDetail })))
+const GuidesPage = lazy(() => import('./shop-pages/guides').then((m) => ({ default: m.GuidesPage })))
+const GuidePage = lazy(() => import('./shop-pages/guides').then((m) => ({ default: m.GuidePage })))
 const CartPage = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.CartPage })))
 const CheckoutPage = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.CheckoutPage })))
 const PaymentResult = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.PaymentResult })))
@@ -50,12 +51,12 @@ export function App() {
               <Route path="case-studies" element={<CaseList />} />
               <Route path="case-studies/:slug" element={<CaseDetail />} />
               <Route path="book-a-tutor" element={<BookTutor />} />
-              <Route path="store" element={<CatalogList kind="store" />} />
-              <Route path="store/:slug" element={<ProductDetail />} />
+              <Route path="store" element={<StorePage />} />
+              <Route path="store/:slug" element={<ProductPage />} />
               <Route path="projects" element={<ProjectsPage />} />
               <Route path="projects/:slug" element={<ProjectPage />} />
-              <Route path="project-guides" element={<CatalogList kind="guides" />} />
-              <Route path="project-guides/:slug" element={<GuideDetail />} />
+              <Route path="project-guides" element={<GuidesPage />} />
+              <Route path="project-guides/:slug" element={<GuidePage />} />
               <Route path="cart" element={<CartPage />} />
               <Route path="checkout" element={<CheckoutPage />} />
               <Route path="payment/success" element={<PaymentResult />} />
