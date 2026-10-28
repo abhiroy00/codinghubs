@@ -9,7 +9,7 @@ import { ChangePassword } from './content/ChangePassword'
 import { Taxonomy } from './content/Taxonomy'
 import { GuideEditor, ProductEditor, ProjectEditor, SimpleProductEditor } from './content/ShopEditors'
 import { ShopList } from './content/ShopLists'
-import { Coupons, Customers, Inventory, StoreOrderDetail, StoreOrders, StoreOverview, StoreSettings } from './content/StorePages'
+import { Customers, StoreOrderDetail, StoreOrders, StoreOverview } from './content/StorePages'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
 import { TutorBookingsPage } from './TutorBookingsPage'
 import { TutorsPage } from './TutorsPage'
@@ -60,10 +60,7 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
       { to: '/shop', label: 'Store Overview', icon: 'M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7L4 7Zm4-3h8l1 3H7l1-3Z' },
       { to: '/products', label: 'Products', icon: 'M12 2 3 6.5v11L12 22l9-4.5v-11L12 2Zm0 2.2 5.9 2.9L12 10 6.1 7.1 12 4.2Z' },
       { to: '/store-orders', label: 'Store Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
-      { to: '/inventory', label: 'Inventory', icon: 'M3 3h18v4H3V3Zm1 5h16v13H4V8Zm5 3v2h6v-2H9Z' },
       { to: '/customers', label: 'Customers', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
-      { to: '/coupons', label: 'Coupons', icon: 'M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4V8Z' },
-      { to: '/store-settings', label: 'Store Settings', icon: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9 4-2.1.7a7 7 0 0 1-.6 1.5l1 2-2 2-2-1a7 7 0 0 1-1.5.6L13 21h-2l-.7-2.1a7 7 0 0 1-1.5-.6l-2 1-2-2 1-2a7 7 0 0 1-.6-1.5L3 12v-2l2.1-.7a7 7 0 0 1 .6-1.5l-1-2 2-2 2 1a7 7 0 0 1 1.5-.6L11 3h2l.7 2.1a7 7 0 0 1 1.5.6l2-1 2 2-1 2a7 7 0 0 1 .6 1.5L21 10v2Z' },
     ],
   },
   {
@@ -298,10 +295,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="project-guides/edit/:id" element={<GuideEditor />} />
             <Route path="store-orders" element={<StoreOrders />} />
             <Route path="store-orders/:number" element={<StoreOrderDetail />} />
-            <Route path="inventory" element={<Inventory />} />
             <Route path="customers" element={<Customers />} />
-            <Route path="coupons" element={<Coupons />} />
-            <Route path="store-settings" element={<StoreSettings />} />
             <Route path="tutor-bookings" element={<TutorBookingsPage />} />
             <Route path="tutors" element={<TutorsPage />} />
             <Route path="change-password" element={<ChangePassword onDone={onLogout} />} />
