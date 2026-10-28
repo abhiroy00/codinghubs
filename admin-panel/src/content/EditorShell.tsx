@@ -31,7 +31,7 @@ export function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; o
   )
 }
 
-export function EditorShell<T extends Common>({ kind, api, noun, children, side, layout = 'split', publishBlock }: { kind: Kind; api: Api<T>; noun: string; children: ReactNode; side?: ReactNode; layout?: 'split' | 'single'; publishBlock?: string }) {
+export function EditorShell<T extends Common>({ kind, api, noun, children, side, layout = 'split', publishBlock, publishOnCreate = false }: { kind: Kind; api: Api<T>; noun: string; children: ReactNode; side?: ReactNode; layout?: 'split' | 'single'; publishBlock?: string; publishOnCreate?: boolean }) {
   const { form, dirty, busy, notice, loading, recover, revisions } = api
   const [confirm, setConfirm] = useState(false)
   if (loading) return <p className="ad-muted" role="status">Loading…</p>
@@ -40,7 +40,8 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side,
   const live = form.status === 'published' || form.status === 'scheduled'
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    void api.save()
+    if (publishOnCreate && !form.id) void api.publish(form.published_at || undefined)
+    else void api.save()
   }
 
   if (layout === 'single') {
@@ -84,12 +85,12 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side,
             </Field>
             <div className="ad-publish-actions">
               <button type="submit" className="ad-btn" disabled={busy}>
-                {busy ? 'Working…' : form.status === 'draft' || !form.id ? 'Save draft' : 'Save changes'}
+                {busy ? 'Working…' : publishOnCreate && !form.id ? `${future ? 'Schedule' : 'Publish'} ${noun}` : form.status === 'draft' ? 'Save draft' : 'Save changes'}
               </button>
               <button type="button" className="ad-btn" disabled={busy} onClick={() => void api.preview()}>
                 Preview
               </button>
-              {(!live || form.status === 'archived') && (
+              {(!live || form.status === 'archived') && !(publishOnCreate && !form.id) && (
                 <button type="button" className="ad-btn ad-btn-primary" disabled={busy} onClick={() => void api.publish(form.published_at || undefined)}>
                   {future ? 'Schedule' : 'Publish now'}
                 </button>

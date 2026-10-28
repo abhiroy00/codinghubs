@@ -56,11 +56,8 @@ const rich = (id: string, label: string, value: string, onChange: (v: string) =>
 export function ProjectEditor() {
   const api = useContentForm<ProjectForm>('projects', blankProject)
   const { form, set, errors } = api
-  const projects = useOptions<Row>('/projects/', { page_size: 100, status: 'published' })
-  const blogs = useOptions<Row>('/blogs/', { page_size: 100, status: 'published' })
-  const courses = useOptions<any>('/courses/')
   return (
-    <EditorShell kind="projects" api={api} noun="project"
+    <EditorShell kind="projects" api={api} noun="project" publishOnCreate
       side={
         <>
           <section className="ad-panel">
@@ -68,19 +65,11 @@ export function ProjectEditor() {
             <SelectField id="difficulty" label="Difficulty" value={form.difficulty} onChange={(v) => set('difficulty', v)} options={DIFFICULTY} error={errors.difficulty} />
             <Text id="category" label="Category" value={form.category} onChange={(v) => set('category', v)} hint="e.g. Web development, Data analytics." max={80} />
             <Text id="estimated_time" label="Estimated completion time" value={form.estimated_time} onChange={(v) => set('estimated_time', v)} placeholder="e.g. 2 weeks" />
-            <Text id="author_name" label="Author / mentor" value={form.author_name} onChange={(v) => set('author_name', v)} />
-            <Text id="author_title" label="Role" value={form.author_title} onChange={(v) => set('author_title', v)} />
-            <CheckField id="is_featured" label="Feature this project" checked={form.is_featured} onChange={(v) => set('is_featured', v)} />
-          </section>
-          <section className="ad-panel">
-            <h2>Free or paid</h2>
-            <ProductPicker id="product" label="Paid files product" value={form.product} onChange={(v) => set('product', v)} error={errors.product} hint="Leave empty for a free project. Choose a store product to sell the project files (source, report); buyers of that product can download them." />
           </section>
           <section className="ad-panel">
             <h2>Featured image</h2>
             <ImageField id="featured_image" label="Image" src={form.featured_image} alt={form.featured_image_alt} onSrc={(v) => set('featured_image', v)} onAlt={(v) => set('featured_image_alt', v)} errors={{ src: errors.featured_image }} />
           </section>
-          <AssetPanel endpoint="projects" ownerId={form.id} title="Project files (private)" />
         </>
       }
     >
@@ -88,41 +77,14 @@ export function ProjectEditor() {
       <Field label="URL slug" htmlFor="slug" error={errors.slug} hint={`Public address: /projects/${form.slug || 'your-url'}`}>
         <input id="slug" className="ad-input" value={form.slug} onChange={(e) => api.setSlug(e.target.value)} placeholder="generated from the title" />
       </Field>
-      <Text id="summary" label="Short description" textarea rows={3} value={form.summary} onChange={(v) => set('summary', v)} max={400} error={errors.summary} />
+      <Text id="summary" label="Short description" required textarea rows={3} value={form.summary} onChange={(v) => set('summary', v)} max={400} error={errors.summary} hint="This appears on the project card." />
       {rich('overview', 'Detailed project overview', form.overview, (v) => set('overview', v), 360)}
-      {rich('problem_statement', 'Problem statement', form.problem_statement, (v) => set('problem_statement', v))}
-      {rich('objectives', 'Project objectives', form.objectives, (v) => set('objectives', v))}
       <Section title="Features (add as many as you need)" open>
         <RowsEditor id="feat" rows={form.features} onChange={(r) => set('features', r)} fields={[{ key: 'title', label: 'Feature' }, { key: 'description', label: 'Description', type: 'textarea' }]} addLabel="Add a feature" max={60} error={errors.features} />
       </Section>
       <Section title="Technology stack">
         <Chips id="technologies" label="Technologies" value={form.technologies} onChange={(v) => set('technologies', v)} max={30} />
-        <Chips id="languages" label="Programming languages" value={form.languages} onChange={(v) => set('languages', v)} max={20} />
-        <Chips id="tools" label="Frameworks and tools" value={form.tools} onChange={(v) => set('tools', v)} max={30} />
       </Section>
-      {rich('prerequisites', 'Prerequisites', form.prerequisites, (v) => set('prerequisites', v), 240)}
-      {rich('system_requirements', 'System requirements', form.system_requirements, (v) => set('system_requirements', v), 240)}
-      {rich('architecture', 'Architecture overview', form.architecture, (v) => set('architecture', v))}
-      {rich('database_requirements', 'Database requirements', form.database_requirements, (v) => set('database_requirements', v), 240)}
-      {rich('setup_overview', 'Setup overview', form.setup_overview, (v) => set('setup_overview', v), 240)}
-      <Section title="Learning outcomes">
-        <Chips id="learning_outcomes" label="What students will learn" value={form.learning_outcomes} onChange={(v) => set('learning_outcomes', v)} max={30} hint="One outcome per entry." />
-      </Section>
-      <Section title="Screenshots">
-        <RowsEditor id="shot" rows={form.screenshots} onChange={(r) => set('screenshots', r)} fields={[{ key: 'src', label: 'Image', type: 'image' }, { key: 'alt', label: 'Description (alt text)' }, { key: 'caption', label: 'Caption (optional)' }]} addLabel="Add a screenshot" max={12} error={errors.screenshots} />
-      </Section>
-      <Section title="Links">
-        <Text id="demo_url" label="Live demo URL (if available)" value={form.demo_url} onChange={(v) => set('demo_url', v)} error={errors.demo_url} />
-        <Text id="repo_url" label="Repository URL" value={form.repo_url} onChange={(v) => set('repo_url', v)} error={errors.repo_url} hint="https:// only." />
-        <CheckField id="repo_public" label="Show the repository link publicly" checked={form.repo_public} onChange={(v) => set('repo_public', v)} hint="Leave off for private or client code. A hidden link is never sent to the browser." />
-      </Section>
-      <Section title="Related content">
-        <MultiSelect id="rp" label="Related projects" value={form.related_project_ids} onChange={(v) => set('related_project_ids', v)} options={projects.filter((p) => p.id !== form.id)} />
-        <MultiSelect id="rb" label="Related blogs" value={form.related_blog_ids} onChange={(v) => set('related_blog_ids', v)} options={blogs} />
-        <MultiSelect id="rc" label="Related courses" value={form.related_course_ids} onChange={(v) => set('related_course_ids', v)} options={courses.map((c: any) => ({ id: c.id, name: c.name }))} />
-        <p className="ad-hint">Guides are linked from the guide itself (choose this project there).</p>
-      </Section>
-      <SeoSection form={form} set={set} errors={errors} base="/projects" />
     </EditorShell>
   )
 }
