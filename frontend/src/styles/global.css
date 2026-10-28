@@ -516,3 +516,11 @@ html[data-fs-loading] #root{visibility:hidden}
 :is(.fx-social,.social) a[href*="youtube.com"]{background:#FF0000!important}
 :is(.fx-social,.social) a[href*="wa.me"],:is(.fx-social,.social) a[href*="whatsapp"]{background:#25D366!important}
 :is(.fx-social,.social) a[href*="twitter.com"],:is(.fx-social,.social) a[href*="x.com"]{background:#000!important}
+
+/* Resources dropdown in the main header + mobile menu group */
+.dd-panel.dd-small{width:13rem;grid-template-columns:1fr;gap:.1rem;padding:.6rem}
+.dd-panel.dd-small a{padding:.5rem .7rem;border-radius:.6rem;font-size:.9rem;color:var(--color-ink)}
+.dd-panel.dd-small a:hover{background:var(--color-line)}
+.cart-link.on-light{color:var(--color-ink)}.cart-link.on-light:hover{background:rgba(0,0,0,.06)}
+#mobile .m-head{margin:1rem 0 .1rem;font:600 .7rem var(--font-sans,Inter,sans-serif);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+#mobile .sheet a.m.m-sub{padding-left:1.4rem;font-size:1.05rem;font-weight:500}

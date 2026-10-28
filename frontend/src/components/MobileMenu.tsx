@@ -49,6 +49,19 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
         <Link className="m" to="/faq#team" onClick={onClose}>
           About Us
         </Link>
+        <p className="m-head">Resources</p>
+        <Link className="m m-sub" to="/blog" onClick={onClose}>
+          Blog
+        </Link>
+        <Link className="m m-sub" to="/case-studies" onClick={onClose}>
+          Case Studies
+        </Link>
+        <Link className="m m-sub" to="/#session" onClick={onClose}>
+          About the Session
+        </Link>
+        <Link className="m m-sub" to="/#contact" onClick={onClose}>
+          Contact
+        </Link>
         <a className="m" href={`tel:+${WA}`} onClick={onClose}>
           Call {PHONE}
         </a>

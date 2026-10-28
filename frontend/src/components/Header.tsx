@@ -2,12 +2,20 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth-context'
 import { Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
+import { CartLink } from '../locations/ResourcesMenu'
 
 const COURSE_COLUMNS = [
   { heading: 'AI & Data', items: ['Generative AI', 'Agentic AI', 'Prompt Engineering', 'AI Engineering Diploma', 'Data Science', 'Data Analytics'] },
   { heading: 'Full Stack', items: ['AI-Integrated Full Stack', 'Python Full Stack', 'MERN Stack', 'MEAN Stack', 'React Full Stack', '.NET Full Stack'] },
   { heading: 'Cloud & Cyber', items: ['AWS Solutions Architect', 'Azure (AZ-104)', 'Google Cloud', 'Cloud DevOps', 'Ethical Hacker (C|EH)', 'CISSP'] },
 ]
+
+const RESOURCE_LINKS = [
+  ['/blog', 'Blog'],
+  ['/case-studies', 'Case Studies'],
+  ['/#session', 'About the Session'],
+  ['/#contact', 'Contact'],
+] as const
 
 export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu: () => void }) {
   const { openModal } = useModal()
@@ -55,6 +63,21 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
               Book a Tutor
             </Link>
           </li>
+          <li className="dd dd-res">
+            <button type="button" className="nav-link" aria-haspopup="true">
+              Resources{' '}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <div className="dd-panel dd-small">
+              {RESOURCE_LINKS.map(([to, label]) => (
+                <Link key={to} to={to}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </li>
           <li>
             <button type="button" className="nav-link" onClick={() => openModal()}>
               Talk to an Expert
@@ -62,6 +85,7 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
           </li>
         </ul>
         <div className="nav-right">
+          <CartLink light />
           {user ? (
             <>
               <Link className="nav-link nav-login" to="/dashboard">

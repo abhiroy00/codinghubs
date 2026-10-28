@@ -39,7 +39,7 @@ export function ResourcesMenu() {
   )
 }
 
-export function CartLink() {
+export function CartLink({ light = false }: { light?: boolean }) {
   const [n, setN] = useState(() => {
     try {
       return Number(localStorage.getItem('ch_cart_count')) || 0
@@ -53,7 +53,7 @@ export function CartLink() {
     return () => window.removeEventListener('cart-count', h)
   }, [])
   return (
-    <a href="/cart" className="cart-link" aria-label={`Cart, ${n} item${n === 1 ? '' : 's'}`}>
+    <a href="/cart" className={`cart-link${light ? ' on-light' : ''}`} aria-label={`Cart, ${n} item${n === 1 ? '' : 's'}`}>
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <circle cx="9" cy="20" r="1.5" />
         <circle cx="18" cy="20" r="1.5" />

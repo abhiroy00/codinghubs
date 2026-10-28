@@ -88,7 +88,6 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   .nav.open{display:flex}
   .nav a:not(.btn){padding:.85rem .5rem;border-bottom:1px solid var(--line);font-size:1rem;color:#363636}
   .nav a:not(.btn)::after{display:none}
-  .nav-cta{display:inline-flex;margin-top:.85rem}
 }
 @media (max-width:420px){.hdr-cta{display:none}.logo-name{font-size:.92rem}}
 
@@ -1036,7 +1035,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   .hdr-in{height:60px}
   .brand-logo{height:30px}
   .hdr .hdr-cta{display:none}
-  .hdr .nav-cta{display:inline-flex}
+  .hdr .nav-cta{display:inline-flex;margin-top:.85rem}
 }
 @media (max-width:340px){.brand-logo{height:26px}.brand-pill{padding:.2rem .5rem}}
 .hdr .nav{max-height:calc(100vh - 64px);overflow-y:auto}
@@ -1055,7 +1054,6 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   .hdr .nav:not(.nav-inline).open{display:flex}
   .hdr .nav:not(.nav-inline) a:not(.btn){padding:.85rem .5rem;border-bottom:1px solid rgba(255,255,255,.1);font-size:1rem;color:#fff}
   .hdr .nav:not(.nav-inline) a:not(.btn)::after{display:none}
-  .hdr .nav:not(.nav-inline) .nav-cta{display:inline-flex;margin-top:.85rem}
 }
 
 /* ============ PROGRAM PAGE: banner, day cards (laptop / tablet / mobile) ============ */
