@@ -1013,6 +1013,25 @@ class ProjectGuideTests(ShopBase):
         d = self.anon.get(f'/api/project-guides/{g["slug"]}/').json()
         self.assertEqual([s['key'] for s in d['sections']], ['x'])
 
+    def test_submit_simple_project_guidance_publishes_it(self):
+        project = self.new_project()
+        response = self.api.post(
+            '/api/admin/project-guides/',
+            {
+                'title': 'Help with the library app',
+                'summary': 'How should I set up the database?',
+                'project': project['id'],
+                'sections': [{'key': 'guidance', 'title': 'Guidance', 'html': '<p>Start with the book model.</p>', 'enabled': True}],
+                'status': 'published',
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        public = self.anon.get(f'/api/project-guides/{response.json()["slug"]}/').json()
+        self.assertEqual(public['project']['title'], project['title'])
+        self.assertEqual(public['sections'][0]['title'], 'Guidance')
+        self.assertIn('Start with the book model.', public['sections'][0]['html'])
+
     def test_free_guide_is_open_and_disabled_sections_hidden(self):
         g = self.new_guide()
         self.api.post(f'/api/admin/project-guides/{g["id"]}/publish/')

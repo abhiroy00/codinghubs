@@ -5,7 +5,7 @@ import { EditorShell } from './EditorShell'
 import { AssetPanel, CheckField, Chips, Field, ImageField, NumberField, RowsEditor, Section, SelectField, Text, ThumbnailField } from './fields'
 import { RichEditor } from './RichEditor'
 import { SeoSection } from './SeoSection'
-import { blankGuide, blankProduct, blankProject, GUIDE_SECTIONS, type GuideForm, type ProductForm, type ProjectForm } from './shopTypes'
+import { blankGuide, blankProduct, blankProject, type GuideForm, type ProductForm, type ProjectForm } from './shopTypes'
 import type { Row } from './types'
 import { useContentForm } from './useContentForm'
 
@@ -18,32 +18,6 @@ function useOptions<T = any>(url: string, params: Record<string, unknown> = {}) 
     adminApi.get(url, { params }).then((r) => setRows(Array.isArray(r.data) ? r.data : r.data.results ?? [])).catch(() => undefined)
   }, [url]) // eslint-disable-line react-hooks/exhaustive-deps
   return rows
-}
-
-function MultiSelect({ id, label, value, onChange, options, max = 6 }: { id: string; label: string; value: number[]; onChange: (v: number[]) => void; options: { id: number; title?: string; name?: string }[]; max?: number }) {
-  return (
-    <Field label={label} htmlFor={id} hint={`Hold Ctrl/Cmd to choose several (up to ${max}).`}>
-      <select id={id} multiple size={5} className="ad-input" value={value.map(String)} onChange={(e) => onChange([...e.target.selectedOptions].map((o) => Number(o.value)).slice(0, max))}>
-        {options.map((o) => (
-          <option key={o.id} value={o.id}>{o.title ?? o.name}</option>
-        ))}
-      </select>
-    </Field>
-  )
-}
-
-function ProductPicker({ id, label, value, onChange, hint, error }: { id: string; label: string; value: number | ''; onChange: (v: number | '') => void; hint?: string; error?: string }) {
-  const products = useOptions<Row>('/products/', { page_size: 100 })
-  return (
-    <Field label={label} htmlFor={id} hint={hint} error={error}>
-      <select id={id} className="ad-input" value={value} onChange={(e) => onChange(e.target.value ? Number(e.target.value) : '')}>
-        <option value="">None</option>
-        {products.map((p) => (
-          <option key={p.id} value={p.id}>{p.title}</option>
-        ))}
-      </select>
-    </Field>
-  )
 }
 
 const rich = (id: string, label: string, value: string, onChange: (v: string) => void, height = 300) => (
@@ -94,63 +68,32 @@ export function GuideEditor() {
   const api = useContentForm<GuideForm>('project-guides', blankGuide)
   const { form, set, errors } = api
   const projects = useOptions<Row>('/projects/', { page_size: 100 })
-  const courses = useOptions<any>('/courses/')
-  // make sure every standard section exists in the form (older guides may have fewer)
-  const sections = [...form.sections]
-  for (const [key, title] of GUIDE_SECTIONS) if (!sections.some((s) => s.key === key)) sections.push({ key, title, html: '', enabled: false, preview: false })
-  const upd = (key: string, patch: Partial<GuideForm['sections'][number]>) => set('sections', sections.map((s) => (s.key === key ? { ...s, ...patch } : s)))
-  const needsProduct = form.access_type === 'paid' || form.access_type === 'included'
+  const guidance = form.sections.find((s) => s.key === 'guidance') ?? form.sections.find((s) => s.enabled) ?? {
+    key: 'guidance', title: 'Guidance', html: '', enabled: true, preview: false,
+  }
+  const setGuidance = (html: string) => {
+    const index = form.sections.findIndex((s) => s.key === guidance.key)
+    const next = { ...guidance, html, enabled: true }
+    set('sections', index < 0 ? [next, ...form.sections] : form.sections.map((s, i) => i === index ? next : s))
+  }
 
   return (
-    <EditorShell kind="project-guides" api={api} noun="project guide"
+    <EditorShell kind="project-guides" api={api} noun="project guide" publishOnCreate submitMessage="Project guide submitted and published."
       side={
-        <>
-          <section className="ad-panel">
-            <h2>Access</h2>
-            <SelectField id="access_type" label="Who can read it" value={form.access_type} onChange={(v) => set('access_type', v)} options={[['free', 'Free for everyone'], ['account', 'Free, account required'], ['paid', 'Paid'], ['included', 'Included with a product or course']]} />
-            {needsProduct && <ProductPicker id="gproduct" label={form.access_type === 'paid' ? 'Product that unlocks it *' : 'Product that unlocks it'} value={form.product} onChange={(v) => set('product', v)} error={errors.product} hint="Customers who bought this product (and whose payment was not refunded) can read the whole guide." />}
-            {form.access_type === 'included' && <MultiSelect id="icourses" label="Courses that include it" value={form.included_course_ids} onChange={(v) => set('included_course_ids', v)} options={courses.map((c: any) => ({ id: c.id, name: c.name }))} max={10} />}
-            <p className="ad-hint">Locked sections are never sent to the browser or search engines. Mark a section “free preview” to show it to everyone.</p>
-          </section>
-          <section className="ad-panel">
-            <h2>Details</h2>
-            <Field label="Project" htmlFor="project">
-              <select id="project" className="ad-input" value={form.project} onChange={(e) => set('project', e.target.value ? Number(e.target.value) : '')}>
-                <option value="">None</option>
-                {projects.map((p) => (<option key={p.id} value={p.id}>{p.title}</option>))}
-              </select>
-            </Field>
-            <SelectField id="g-difficulty" label="Difficulty" value={form.difficulty} onChange={(v) => set('difficulty', v)} options={DIFFICULTY} />
-            <Text id="g-category" label="Category" value={form.category} onChange={(v) => set('category', v)} max={80} />
-            <Text id="g-time" label="Estimated completion time" value={form.estimated_time} onChange={(v) => set('estimated_time', v)} />
-          </section>
-          <section className="ad-panel">
-            <h2>Featured image</h2>
-            <ImageField id="g-image" label="Image" src={form.featured_image} alt={form.featured_image_alt} onSrc={(v) => set('featured_image', v)} onAlt={(v) => set('featured_image_alt', v)} />
-          </section>
-          <AssetPanel endpoint="project-guides" ownerId={form.id} title="Attachments (private)" />
-        </>
+        <section className="ad-panel">
+          <h2>Project</h2>
+          <Field label="Related project" htmlFor="project">
+            <select id="project" className="ad-input" value={form.project} onChange={(e) => set('project', e.target.value ? Number(e.target.value) : '')}>
+              <option value="">Select a project (optional)</option>
+              {projects.map((p) => (<option key={p.id} value={p.id}>{p.title}</option>))}
+            </select>
+          </Field>
+        </section>
       }
     >
-      <Text id="title" label="Guide title" required value={form.title} onChange={(v) => set('title', v)} error={errors.title} max={200} />
-      <Field label="URL slug" htmlFor="slug" error={errors.slug} hint={`Public address: /project-guides/${form.slug || 'your-url'}`}>
-        <input id="slug" className="ad-input" value={form.slug} onChange={(e) => api.setSlug(e.target.value)} placeholder="generated from the title" />
-      </Field>
-      <Text id="summary" label="Short description" textarea rows={3} value={form.summary} onChange={(v) => set('summary', v)} max={400} />
-      <Chips id="objectives" label="Learning objectives" value={form.objectives} onChange={(v) => set('objectives', v)} max={20} />
-      <Chips id="required_software" label="Required software" value={form.required_software} onChange={(v) => set('required_software', v)} max={30} />
-      <Chips id="g-tech" label="Technology stack" value={form.technologies} onChange={(v) => set('technologies', v)} max={30} />
-      {rich('g-prereq', 'Prerequisites', form.prerequisites, (v) => set('prerequisites', v), 240)}
-      <h2 className="ad-sub">Guide sections</h2>
-      <p className="ad-hint">Switch on only the sections this guide needs. Add code with the code-sample button; it is shown with a copy button. Never paste passwords or private keys.</p>
-      {sections.map((s) => (
-        <Section key={s.key} title={s.title} badge={<span className={`ad-badge ${s.enabled ? 'st-published' : ''}`}>{s.enabled ? 'On' : 'Off'}</span>}>
-          <CheckField id={`en-${s.key}`} label="Include this section" checked={s.enabled} onChange={(v) => upd(s.key, { enabled: v })} />
-          <CheckField id={`pv-${s.key}`} label="Show to everyone as a free preview (even when the guide is locked)" checked={s.preview} onChange={(v) => upd(s.key, { preview: v })} />
-          <Text id={`st-${s.key}`} label="Section title" value={s.title} onChange={(v) => upd(s.key, { title: v })} max={120} />
-          <RichEditor id={`sec-${s.key}`} label={s.title} value={s.html} onChange={(v) => upd(s.key, { html: v })} height={380} />
-        </Section>
-      ))}
+      <Text id="title" label="Guide title / query" required value={form.title} onChange={(v) => set('title', v)} error={errors.title} max={200} />
+      <Text id="summary" label="Project query or problem" required textarea rows={3} value={form.summary} onChange={(v) => set('summary', v)} max={400} hint="Briefly describe what the learner is asking or trying to build." />
+      {rich('g-guidance', 'Your guidance / answer', guidance.html, setGuidance, 380)}
     </EditorShell>
   )
 }

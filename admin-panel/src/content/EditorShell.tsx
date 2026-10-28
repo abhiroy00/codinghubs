@@ -31,7 +31,7 @@ export function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; o
   )
 }
 
-export function EditorShell<T extends Common>({ kind, api, noun, children, side, layout = 'split', publishBlock, publishOnCreate = false }: { kind: Kind; api: Api<T>; noun: string; children: ReactNode; side?: ReactNode; layout?: 'split' | 'single'; publishBlock?: string; publishOnCreate?: boolean }) {
+export function EditorShell<T extends Common>({ kind, api, noun, children, side, layout = 'split', publishBlock, publishOnCreate = false, submitMessage = 'Project submitted and published.' }: { kind: Kind; api: Api<T>; noun: string; children: ReactNode; side?: ReactNode; layout?: 'split' | 'single'; publishBlock?: string; publishOnCreate?: boolean; submitMessage?: string }) {
   const { form, dirty, busy, notice, loading, recover, revisions } = api
   const [confirm, setConfirm] = useState(false)
   if (loading) return <p className="ad-muted" role="status">Loading…</p>
@@ -40,7 +40,7 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side,
   const live = form.status === 'published' || form.status === 'scheduled'
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (publishOnCreate && !form.id) void api.save({ status: 'published' } as Partial<T>, 'Project submitted and published.')
+    if (publishOnCreate && !form.id) void api.save({ status: 'published' } as Partial<T>, submitMessage)
     else void api.save()
   }
 
