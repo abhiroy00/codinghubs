@@ -1143,6 +1143,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 @media (min-width:1000px){.bl-grid{grid-template-columns:repeat(3,1fr)}}
 .bl-card{display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:var(--r);background:#fff;transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .25s}
 .bl-card:hover{transform:translateY(-5px);box-shadow:var(--sh);border-color:var(--yellow-2)}
+.bl-card-project{position:relative}
+.bl-card-project .bl-card-body h2 a::after{content:"";position:absolute;inset:0}
 .bl-card-img{display:block;aspect-ratio:16/9;background:var(--bg-2);overflow:hidden}
 .bl-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
 .bl-card:hover .bl-card-img img{transform:scale(1.04)}

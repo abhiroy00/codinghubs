@@ -26,7 +26,7 @@ export function ItemCard({ c, base }: { c: Card; base: string }) {
   const alt = c.image?.alt ?? c.featured_image_alt ?? ''
   const tag = typeof c.category === 'object' && c.category ? c.category.name : (c.category as string) || c.difficulty
   return (
-    <article className="bl-card">
+    <article className={`bl-card${base === '/projects' ? ' bl-card-project' : ''}`}>
       {img && (
         <Link to={`${base}/${c.slug}`} className="bl-card-img" tabIndex={-1} aria-hidden="true">
           <img src={img} alt={alt} loading="lazy" decoding="async" width={640} height={360} />
