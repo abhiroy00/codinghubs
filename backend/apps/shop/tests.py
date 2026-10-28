@@ -1020,6 +1020,15 @@ class ProjectGuideTests(ShopBase):
         r = self.api.post('/api/admin/projects/', {'title': 'x', 'overview': '<p>a</p><script>alert(1)</script>'}, format='json')
         self.assertNotIn('<script', r.json()['overview'])
 
+    def test_project_and_guide_accept_empty_category_as_null(self):
+        project = self.api.post('/api/admin/projects/', {'title': 'Uncategorised project', 'category': None}, format='json')
+        self.assertEqual(project.status_code, 201, project.content)
+        self.assertEqual(project.json()['category'], '')
+
+        guide = self.api.post('/api/admin/project-guides/', {'title': 'Uncategorised guide', 'category': None}, format='json')
+        self.assertEqual(guide.status_code, 201, guide.content)
+        self.assertEqual(guide.json()['category'], '')
+
     def test_private_repo_is_never_exposed(self):
         p = self.new_project(repo_url='https://github.com/acme/private', demo_url='https://demo.example.com')
         self.api.post(f'/api/admin/projects/{p["id"]}/publish/')

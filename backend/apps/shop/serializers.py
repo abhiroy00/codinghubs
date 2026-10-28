@@ -227,6 +227,7 @@ class ProjectQuestionAdminSerializer(serializers.ModelSerializer):
 class ProjectAdminSerializer(SluggedWriteMixin, serializers.ModelSerializer):
     M2M = {'related_project_ids': ('related_projects', Project)}
     slug = serializers.SlugField(max_length=180, required=False, allow_blank=True)
+    category = serializers.CharField(max_length=80, required=False, allow_blank=True, allow_null=True)
     related_project_ids = serializers.ListField(child=serializers.IntegerField(), required=False, write_only=True)
     related_blog_ids = serializers.ListField(child=serializers.IntegerField(), required=False, write_only=True)
     related_course_ids = serializers.ListField(child=serializers.IntegerField(), required=False, write_only=True)
@@ -289,6 +290,8 @@ class ProjectAdminSerializer(SluggedWriteMixin, serializers.ModelSerializer):
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
+        if attrs.get('category') is None:
+            attrs['category'] = ''
         for f in ('overview', 'problem_statement', 'objectives', 'system_requirements', 'prerequisites', 'architecture', 'database_requirements', 'setup_overview'):
             if f in attrs:
                 attrs[f] = sanitize_html(attrs[f])
@@ -314,6 +317,7 @@ DEFAULT_SECTIONS = [{'key': k, 'title': t, 'html': '', 'enabled': False, 'previe
 class GuideAdminSerializer(SluggedWriteMixin, serializers.ModelSerializer):
     M2M = {'related_project_ids': ('related_projects', Project)}
     slug = serializers.SlugField(max_length=180, required=False, allow_blank=True)
+    category = serializers.CharField(max_length=80, required=False, allow_blank=True, allow_null=True)
     related_project_ids = serializers.ListField(child=serializers.IntegerField(), required=False, write_only=True)
     related_blog_ids = serializers.ListField(child=serializers.IntegerField(), required=False, write_only=True)
     included_course_ids = serializers.ListField(child=serializers.IntegerField(), required=False, write_only=True)
@@ -375,6 +379,8 @@ class GuideAdminSerializer(SluggedWriteMixin, serializers.ModelSerializer):
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
+        if attrs.get('category') is None:
+            attrs['category'] = ''
         access = attrs.get('access_type', getattr(self.instance, 'access_type', 'free'))
         product = attrs.get('product', getattr(self.instance, 'product', None))
         if access == ProjectGuide.ACCESS_PAID and not product:
