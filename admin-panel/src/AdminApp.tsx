@@ -8,6 +8,7 @@ import { ContentDashboard } from './content/Dashboard'
 import { Taxonomy } from './content/Taxonomy'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
 import { TutorBookingsPage } from './TutorBookingsPage'
+import { TutorsPage } from './TutorsPage'
 import './admin.css'
 
 const NAV = [
@@ -22,6 +23,7 @@ const NAV = [
   { to: '/taxonomy', label: 'Categories & tags', icon: 'M3 3h8l10 10-8 8L3 11V3Zm4 3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z' },
   { to: '/courses', label: 'Courses', icon: 'M4 5h16v3H4V5Zm0 5h16v3H4v-3Zm0 5h10v3H4v-3Z' },
   { to: '/tutor-bookings', label: 'Tutor Bookings', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Zm14-11h4m-2-2v4' },
+  { to: '/tutors', label: 'Tutors', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Z' },
 ]
 
 export function AdminApp() {
@@ -226,6 +228,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="case-studies/edit/:id" element={<CaseEditor />} />
             <Route path="taxonomy" element={<Taxonomy />} />
             <Route path="tutor-bookings" element={<TutorBookingsPage />} />
+            <Route path="tutors" element={<TutorsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

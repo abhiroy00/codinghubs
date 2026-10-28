@@ -7,7 +7,7 @@ from django.utils import timezone
 
 class Tutor(models.Model):
     full_name = models.CharField(max_length=160)
-    profile_image = models.URLField(blank=True)
+    profile_image = models.CharField(max_length=500, blank=True)
     designation = models.CharField(max_length=160)
     bio = models.TextField()
     experience = models.CharField(max_length=100, blank=True)

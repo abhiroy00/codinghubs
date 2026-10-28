@@ -1,3 +1,6 @@
+from urllib.parse import urlparse
+
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from rest_framework import serializers
@@ -12,6 +15,53 @@ class TutorSerializer(serializers.ModelSerializer):
             'id', 'full_name', 'profile_image', 'designation', 'bio', 'experience',
             'expertise', 'courses', 'teaching_approach',
         )
+
+    def validate_profile_image(self, value):
+        if not value:
+            return value
+        if value.startswith('/media/') and '..' not in value and '//' not in value[1:]:
+            return value
+        parsed = urlparse(value)
+        if parsed.scheme == 'https' and parsed.netloc and ' ' not in value:
+            return value
+        raise serializers.ValidationError('Enter an https:// URL or an uploaded /media/ path.')
+
+
+class TutorAdminSerializer(TutorSerializer):
+    expertise = serializers.ListField(
+        child=serializers.CharField(max_length=80, trim_whitespace=True),
+        max_length=20,
+        required=False,
+    )
+    courses = serializers.ListField(
+        child=serializers.CharField(max_length=120, trim_whitespace=True),
+        max_length=20,
+        required=False,
+    )
+
+    class Meta(TutorSerializer.Meta):
+        fields = TutorSerializer.Meta.fields + ('is_active', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at', 'updated_at')
+
+    def validate_expertise(self, value):
+        return self._clean_items(value)
+
+    def validate_courses(self, value):
+        return self._clean_items(value)
+
+    @staticmethod
+    def _clean_items(value):
+        if not value:
+            return value
+        cleaned = []
+        seen = set()
+        for item in value:
+            item = item.strip()
+            normalized = item.casefold()
+            if item and normalized not in seen:
+                cleaned.append(item)
+                seen.add(normalized)
+        return cleaned
 
 
 class TutorBookingCreateSerializer(serializers.ModelSerializer):

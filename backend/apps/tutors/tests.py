@@ -1,10 +1,14 @@
 from datetime import time, timedelta
+from io import BytesIO
+import tempfile
 import uuid
 
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.utils import timezone
+from PIL import Image
 from rest_framework.test import APIClient
 
 from .models import Tutor, TutorBooking
@@ -139,3 +143,69 @@ class TutorBookingApiTests(TestCase):
         response = self.client.get('/api/admin/tutor-bookings/', {'from': 'not-a-date'})
 
         self.assertEqual(response.status_code, 400)
+
+
+class TutorAdminApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.staff = User.objects.create_user(username='tutor-admin', password='StrongPass123', is_staff=True)
+        self.client.force_authenticate(self.staff)
+
+    def tutor_payload(self, **overrides):
+        return {
+            'full_name': 'Alex Example',
+            'profile_image': '',
+            'designation': 'AI Tutor',
+            'bio': 'Hands-on AI lessons for learners.',
+            'experience': '5 years',
+            'expertise': ['Python', 'AI'],
+            'courses': ['Python Development'],
+            'teaching_approach': 'Build projects together.',
+            'is_active': True,
+            **overrides,
+        }
+
+    def test_staff_can_create_update_and_deactivate_tutor(self):
+        response = self.client.post('/api/admin/tutors/', self.tutor_payload(), format='json')
+        self.assertEqual(response.status_code, 201, response.content)
+        tutor_id = response.data['id']
+
+        updated = self.client.patch(
+            f'/api/admin/tutors/{tutor_id}/',
+            {'is_active': False, 'expertise': ['Python', 'python', 'AI']},
+            format='json',
+        )
+
+        self.assertEqual(updated.status_code, 200, updated.content)
+        self.assertFalse(updated.data['is_active'])
+        self.assertEqual(updated.data['expertise'], ['Python', 'AI'])
+        self.assertEqual(self.client.get('/api/tutors/').data, [])
+
+    def test_tutor_management_requires_staff_and_rejects_unsafe_photo_urls(self):
+        self.client.force_authenticate(None)
+        self.assertEqual(self.client.get('/api/admin/tutors/').status_code, 401)
+        self.client.force_authenticate(self.staff)
+
+        unsafe = self.client.post(
+            '/api/admin/tutors/',
+            self.tutor_payload(profile_image='javascript:alert(1)'),
+            format='json',
+        )
+
+        self.assertEqual(unsafe.status_code, 400)
+        self.assertEqual(Tutor.objects.count(), 0)
+
+    def test_staff_can_upload_validated_profile_photo(self):
+        buffer = BytesIO()
+        Image.new('RGB', (12, 12), (20, 40, 60)).save(buffer, 'PNG')
+        photo = SimpleUploadedFile('profile.png', buffer.getvalue(), content_type='image/png')
+
+        with tempfile.TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            response = self.client.post('/api/admin/tutors/upload-image/', {'file': photo}, format='multipart')
+
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertTrue(response.data['url'].startswith('/media/tutors/'))
+
+        invalid = SimpleUploadedFile('not-image.png', b'not an image', content_type='image/png')
+        invalid_response = self.client.post('/api/admin/tutors/upload-image/', {'file': invalid}, format='multipart')
+        self.assertEqual(invalid_response.status_code, 400)

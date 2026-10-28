@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from . import views
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('courses/<int:pk>/', views.CourseDetailView.as_view(), name='admin-course'),
     path('tutor-bookings/', views.TutorBookingListView.as_view(), name='admin-tutor-bookings'),
     path('tutor-bookings/<int:pk>/', views.TutorBookingDetailView.as_view(), name='admin-tutor-booking'),
+    path('tutors/', include('apps.tutors.admin_urls')),
 ]

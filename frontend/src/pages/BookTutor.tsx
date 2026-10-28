@@ -132,14 +132,14 @@ export function BookTutor() {
             <p className="eyebrow">PERSONALIZED LEARNING</p>
             <h1 className="display-lg">Learn directly from a <span>tutor</span></h1>
             <p className="lede">Get focused, one-to-one guidance in AI, data and software development. Choose a tutor and request a session that fits your schedule.</p>
-            <button type="button" className="btn btn-yellow btn-lg" onClick={() => { setBooking(null); setBookingTutor(null) }} disabled={!tutors.length}>
+            <a className="btn btn-yellow btn-lg" href="#tutor-list">
               Find a tutor
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
-            </button>
+            </a>
           </div>
         </section>
 
-        <section className="section tutors-section" aria-labelledby="tutors-heading">
+        <section className="section tutors-section" id="tutor-list" aria-labelledby="tutors-heading">
           <div className="container-x">
             <div className="tutors-section-heading">
               <div>
