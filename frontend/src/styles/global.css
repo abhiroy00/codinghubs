@@ -524,3 +524,7 @@ html[data-fs-loading] #root{visibility:hidden}
 .cart-link.on-light{color:var(--color-ink)}.cart-link.on-light:hover{background:rgba(0,0,0,.06)}
 #mobile .m-head{margin:1rem 0 .1rem;font:600 .7rem var(--font-sans,Inter,sans-serif);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
 #mobile .sheet a.m.m-sub{padding-left:1.4rem;font-size:1.05rem;font-weight:500}
+
+/* equal space between the items of the main header (laptop and up) */
+@media(min-width:1024px){header.site .nav-links{flex:1 1 auto;justify-content:space-evenly;gap:0;margin-inline:1.5rem}}
+.dd-res .nav-link svg{transition:transform .25s}.dd-res:hover .nav-link svg,.dd-res:focus-within .nav-link svg{transform:rotate(180deg)}

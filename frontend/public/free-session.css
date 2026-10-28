@@ -1219,14 +1219,28 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .bl-related ul,.bl-article section>ul:not(.bl-tags):not(.bl-metrics){list-style:disc;padding-left:1.3rem}
 
 /* ============ RESOURCES MENU & CART LINK ============ */
-.res{position:relative;display:inline-block}
-.res-btn{position:relative;padding:.5rem .8rem;border:0;background:none;border-radius:8px;color:#fff;font:500 .95rem var(--f-body);cursor:pointer}
+.res{position:relative;display:inline-flex}
+.res-btn{position:relative;display:inline-flex;align-items:center;gap:.35rem;padding:.5rem .8rem;border:0;background:none;border-radius:8px;color:#fff;font:500 .95rem var(--f-body);cursor:pointer;transition:color .2s}
 .res-btn:hover,.res.open .res-btn{color:var(--yellow)}
-.res-list{display:none;position:absolute;top:100%;left:0;min-width:12.5rem;margin:0;padding:.4rem;list-style:none;background:#fff;border-radius:12px;box-shadow:0 18px 40px -16px rgba(0,0,0,.5);z-index:60}
-.res.open .res-list{display:block}
-.res-list a{display:block;padding:.55rem .8rem;border-radius:8px;color:var(--navy)!important;text-decoration:none;font-weight:500}
-.res-list a:hover{background:var(--yellow-soft)}
-@media (max-width:1279px){.res{display:block}.res-btn{width:100%;text-align:left;padding:.8rem 1rem;color:#fff}.res-list{position:static;display:block;box-shadow:none;background:transparent;padding:0 0 0 1rem}.res-list a{color:#fff!important}.res-list a:hover{background:rgba(255,255,255,.1)}}
+.res-chev{transition:transform .25s}.res.open .res-chev{transform:rotate(180deg)}
+.res-list{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);min-width:13.5rem;margin:0;padding:.45rem;list-style:none;background:#fff;border-radius:14px;box-shadow:0 22px 48px -18px rgba(0,0,0,.55);z-index:60}
+.res-list::before{content:"";position:absolute;left:0;right:0;top:-8px;height:8px}
+.res-list::after{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;background:#fff;transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.res.open .res-list{display:block;animation:resIn .18s ease-out}
+@keyframes resIn{from{opacity:0;transform:translate(-50%,-4px)}to{opacity:1;transform:translate(-50%,0)}}
+.res-list li{position:relative;z-index:1}
+.res-list a{display:block;padding:.65rem .9rem;border-radius:10px;color:var(--navy)!important;text-decoration:none;font-weight:500;font-size:.95rem}
+.res-list a:hover,.res-list a:focus-visible{background:var(--yellow-soft)}
+/* inside the burger menu the group is an accordion: closed until tapped */
+@media (max-width:1279px){
+  .res{display:block}
+  .res-btn{width:100%;justify-content:space-between;padding:.85rem .5rem;border-bottom:1px solid rgba(255,255,255,.1);font-size:1rem;color:#fff;border-radius:0}
+  .res-list{position:static;transform:none;min-width:0;padding:0 0 .3rem .9rem;background:transparent;box-shadow:none;border-radius:0;animation:none}
+  .res-list::before,.res-list::after{display:none}
+  .res.open .res-list{animation:none}
+  .res-list a{color:#fff!important;padding:.75rem .5rem;border-radius:0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .res-list a:hover{background:rgba(255,255,255,.1)}
+}
 .cart-link{position:relative;display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;color:#fff;transition:background .2s,transform .2s}
 .cart-link:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
 .cart-badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:var(--yellow);color:var(--navy);font:700 .7rem/18px var(--f-body);text-align:center}
@@ -1280,3 +1294,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 /* the floating WhatsApp button must not cover the mobile sticky CTA bar */
 @media (max-width:999px){body:has(.sticky-cta.show) .wa-float{bottom:84px}}
 @media (min-width:600px) and (max-width:899px){.programs-grid .plan-media{aspect-ratio:21/9}}
+
+/* equal space between the header items (desktop row); the burger menu keeps its own column layout */
+@media (min-width:1280px){.hdr .nav{flex:1 1 auto;margin-left:0;margin-right:.6rem;justify-content:space-evenly;gap:0}.hdr .nav a:not(.btn),.hdr .res-btn{padding:.5rem .6rem;font-size:.95rem;white-space:nowrap}}
+/* the desktop row must not clip the Resources dropdown (the burger menu below 1280px scrolls instead) */
+@media (min-width:1280px){.hdr .nav{overflow:visible;max-height:none}}
