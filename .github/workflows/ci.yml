@@ -48,6 +48,13 @@ jobs:
       - name: SEO validation (site-wide metadata, canonicals, sitemap, robots, links) and location pages (word counts, uniqueness)
         run: npm run validate
         working-directory: frontend
+      - name: Upload tutor page stylesheet for deployment verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: tutor-page-css
+          path: frontend/dist/assets/BookTutor-*.css
+          if-no-files-found: error
+          retention-days: 1
 
   admin-panel-build:
     runs-on: ubuntu-latest
@@ -69,6 +76,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download tutor page stylesheet
+        uses: actions/download-artifact@v4
+        with:
+          name: tutor-page-css
+          path: tutor-page-css
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -113,7 +126,7 @@ jobs:
             --instance-ids "${{ vars.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
             --timeout-seconds 900 \
-            --parameters "commands=[\"curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/infra/deploy-remote.sh | bash -s -- ${{ github.sha }}\"],executionTimeout=[\"900\"]" \
+            --parameters "commands=[\"mkdir -p /opt/codinghubs/deploy-logs; nohup bash -c 'curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/infra/deploy-remote.sh | bash -s -- ${{ github.sha }}' > /opt/codinghubs/deploy-logs/${{ github.sha }}.log 2>&1 < /dev/null & echo deploy-started\"],executionTimeout=[\"900\"]" \
             --comment "deploy ${{ github.sha }}" \
             --query 'Command.CommandId' --output text)
           echo "command id: $CMD_ID"
@@ -133,5 +146,20 @@ jobs:
             sleep 10
           done
 
-          aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
-            --query 'StandardOutputContent' --output text
+          CSS_PATH=$(find tutor-page-css -maxdepth 1 -name 'BookTutor-*.css' -print -quit)
+          CSS_FILE=${CSS_PATH##*/}
+          if [ -z "$CSS_FILE" ]; then
+            echo "Tutor stylesheet artifact was not found."
+            exit 1
+          fi
+          CSS_URL="https://codinghubs.in/assets/$CSS_FILE"
+          for i in $(seq 1 90); do
+            if curl -fsSL "$CSS_URL" -o deployed-tutor.css && grep -q 'max-height:calc(100dvh - 1.5rem)' deployed-tutor.css; then
+              echo "Verified deployed tutor stylesheet: $CSS_URL"
+              exit 0
+            fi
+            echo "Waiting for tutor page asset: $CSS_URL"
+            sleep 10
+          done
+          echo "Tutor page stylesheet was not deployed within 15 minutes: $CSS_URL"
+          exit 1
