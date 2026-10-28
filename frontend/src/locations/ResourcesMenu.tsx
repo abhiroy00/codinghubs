@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 const LINKS = [
   ['/blog', 'Blog'],
   ['/case-studies', 'Case Studies'],
+  ['/projects', 'Projects'],
   ['/#session', 'About the Session'],
   ['/#contact', 'Contact'],
 ] as const

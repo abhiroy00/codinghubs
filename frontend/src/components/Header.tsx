@@ -13,6 +13,7 @@ const COURSE_COLUMNS = [
 const RESOURCE_LINKS = [
   ['/blog', 'Blog'],
   ['/case-studies', 'Case Studies'],
+  ['/projects', 'Projects'],
   ['/#session', 'About the Session'],
   ['/#contact', 'Contact'],
 ] as const
