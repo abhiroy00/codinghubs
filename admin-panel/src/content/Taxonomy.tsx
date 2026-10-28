@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { adminApi } from '../api'
 import type { Taxon } from './types'
 
-function Manager({ title, endpoint, noun }: { title: string; endpoint: string; noun: string }) {
+function Manager({ title, endpoint, noun, countKey = 'blog_count' }: { title: string; endpoint: string; noun: string; countKey?: string }) {
   const [items, setItems] = useState<Taxon[]>([])
   const [name, setName] = useState('')
   const [editing, setEditing] = useState<{ id: number; name: string } | null>(null)
@@ -38,7 +38,8 @@ function Manager({ title, endpoint, noun }: { title: string; endpoint: string; n
     }
   }
   const remove = async (t: Taxon) => {
-    const warn = t.blog_count ? `“${t.name}” is used by ${t.blog_count} post(s). They stay published; only the ${noun} is removed from them. Delete it?` : `Delete “${t.name}”?`
+    const used = ((t as unknown) as Record<string, number>)[countKey] ?? 0
+    const warn = used ? `“${t.name}” is used by ${used} item(s). They stay published; only the ${noun} is removed from them. Delete it?` : `Delete “${t.name}”?`
     if (!window.confirm(warn)) return
     try {
       await adminApi.delete(`/${endpoint}/${t.id}/`)
@@ -70,7 +71,7 @@ function Manager({ title, endpoint, noun }: { title: string; endpoint: string; n
                 </>
               ) : (
                 <>
-                  <span>{t.name} <small className="ad-muted">({t.blog_count})</small></span>
+                  <span>{t.name} <small className="ad-muted">({((t as unknown) as Record<string, number>)[countKey] ?? 0})</small></span>
                   <button type="button" className="ad-link" onClick={() => setEditing({ id: t.id, name: t.name })}>Rename</button>
                   <button type="button" className="ad-link ad-danger" onClick={() => void remove(t)}>Delete</button>
                 </>
@@ -90,6 +91,7 @@ export function Taxonomy() {
       <div className="ad-grid2">
         <Manager title="Blog categories" endpoint="blog-categories" noun="category" />
         <Manager title="Blog tags" endpoint="blog-tags" noun="tag" />
+        <Manager title="Store product categories" endpoint="product-categories" noun="category" countKey="product_count" />
       </div>
     </>
   )

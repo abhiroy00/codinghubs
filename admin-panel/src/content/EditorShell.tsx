@@ -7,6 +7,7 @@ import type { useContentForm } from './useContentForm'
 
 type Api<T extends Common> = ReturnType<typeof useContentForm<T>>
 
+export const KIND_LABEL: Record<Kind, string> = { blogs: 'Blogs', 'case-studies': 'Case studies', projects: 'Projects', 'project-guides': 'Project guides', products: 'Products' }
 const STATUS_LABEL: Record<string, string> = { draft: 'Draft', scheduled: 'Scheduled', published: 'Published', archived: 'Archived' }
 
 export function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; onCancel: () => void; onConfirm: () => void }) {
@@ -47,7 +48,7 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side 
       <div className="ad-head">
         <div>
           <p className="ad-crumb">
-            <Link to={`/${kind}`}>{kind === 'blogs' ? 'Blogs' : 'Case studies'}</Link> › {form.id ? 'Edit' : 'New'}
+            <Link to={`/${kind}`}>{KIND_LABEL[kind]}</Link> › {form.id ? 'Edit' : 'New'}
           </p>
           <h1 className="ad-h1">{form.title || `New ${noun}`}</h1>
         </div>

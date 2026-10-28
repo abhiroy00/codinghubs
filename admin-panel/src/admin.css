@@ -187,3 +187,10 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .ad-tutor-form-card .ad-field{margin-top:.8rem}
 .ad-tutor-form-card .ad-field>span{font-weight:600;font-size:.88rem}
 .ad-tutor-preview{display:block;width:96px;height:96px;object-fit:cover;border-radius:12px;background:#eef2f8}
+
+/* ---------------- Store ---------------- */
+.ad-inline{display:inline-flex;align-items:center;gap:.4rem;font-size:.88rem}
+.ad-wide{max-width:42rem;max-height:90vh;overflow:auto}
+.ad-modal-card.ad-wide{display:grid;gap:.4rem}
+.shop-dl{display:grid;grid-template-columns:max-content 1fr;gap:.3rem 1.2rem;margin:.6rem 0 0}.shop-dl dd{margin:0;text-align:right}
+.st-unpaid,.st-pending{background:#fff3d1;color:#8a5b00}.st-paid{background:#dcf5e8;color:#0d7a49}.st-failed{background:#fdecea;color:#a8271c}.st-refunded,.st-partially_refunded{background:#efe7ff;color:#5b34d1}

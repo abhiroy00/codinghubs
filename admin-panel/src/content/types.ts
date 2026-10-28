@@ -1,4 +1,4 @@
-export type Kind = 'blogs' | 'case-studies'
+export type Kind = 'blogs' | 'case-studies' | 'projects' | 'project-guides' | 'products'
 export type Status = 'draft' | 'scheduled' | 'published' | 'archived'
 
 export interface Row {

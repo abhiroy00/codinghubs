@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import { adminApi } from '../api'
 import { uploadImage } from './RichEditor'
 import { Counter } from './seoTools'
 
@@ -119,5 +120,123 @@ export function Section({ title, children, open, badge }: { title: string; child
       </summary>
       <div className="ad-section-body">{mounted && children}</div>
     </details>
+  )
+}
+
+export function NumberField({ id, label, value, onChange, error, hint, step = '1', min }: { id: string; label: string; value: string | number | null; onChange: (v: string) => void; error?: string; hint?: string; step?: string; min?: number }) {
+  return (
+    <Field label={label} htmlFor={id} error={error} hint={hint}>
+      <input id={id} className="ad-input" type="number" inputMode="decimal" step={step} min={min} value={value ?? ''} onChange={(e) => onChange(e.target.value)} />
+    </Field>
+  )
+}
+
+export function SelectField({ id, label, value, onChange, options, error, hint }: { id: string; label: string; value: string | number; onChange: (v: string) => void; options: [string | number, string][]; error?: string; hint?: string }) {
+  return (
+    <Field label={label} htmlFor={id} error={error} hint={hint}>
+      <select id={id} className="ad-input" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map(([v, l]) => (
+          <option key={String(v)} value={v}>{l}</option>
+        ))}
+      </select>
+    </Field>
+  )
+}
+
+export function CheckField({ id, label, checked, onChange, hint }: { id: string; label: string; checked: boolean; onChange: (v: boolean) => void; hint?: string }) {
+  return (
+    <div className="ad-field">
+      <label className="ad-check" htmlFor={id}>
+        <input id={id} type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} /> {label}
+      </label>
+      {hint && <p className="ad-hint">{hint}</p>}
+    </div>
+  )
+}
+
+type RowField = { key: string; label: string; type?: 'text' | 'textarea' | 'image'; placeholder?: string }
+/** Repeatable rows (features, screenshots, FAQ ...). Any number of rows up to `max`. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function RowsEditor({ id, rows, onChange, fields, addLabel, max = 30, error }: { id: string; rows: any[]; onChange: (r: any[]) => void; fields: RowField[]; addLabel: string; max?: number; error?: string }) {
+  const blank = () => Object.fromEntries(fields.map((f) => [f.key, '']))
+  return (
+    <div>
+      {rows.map((row, i) => (
+        <div key={i} className="ad-row-card">
+          {fields.map((f) =>
+            f.type === 'image' ? (
+              <ImageField key={f.key} id={`${id}-${f.key}-${i}`} label={f.label} src={row[f.key] ?? ''} alt="" onSrc={(v) => onChange(rows.map((r, n) => (n === i ? { ...r, [f.key]: v } : r)))} />
+            ) : (
+              <Text key={f.key} id={`${id}-${f.key}-${i}`} label={f.label} textarea={f.type === 'textarea'} rows={2} value={row[f.key] ?? ''} placeholder={f.placeholder} onChange={(v) => onChange(rows.map((r, n) => (n === i ? { ...r, [f.key]: v } : r)))} />
+            ),
+          )}
+          <button type="button" className="ad-link ad-danger" onClick={() => onChange(rows.filter((_, n) => n !== i))}>Remove</button>
+        </div>
+      ))}
+      {rows.length < max && (
+        <button type="button" className="ad-btn" onClick={() => onChange([...rows, blank()])}>{addLabel}</button>
+      )}
+      {error && <p className="ad-field-error" role="alert">{error}</p>}
+    </div>
+  )
+}
+
+export interface AssetRow {
+  id: number
+  label: string
+  size: number
+  content_type: string
+  original_name: string
+}
+/** Private files (PDF, ZIP, SQL ...). Stored outside the public web root; shown to buyers only through expiring links. */
+export function AssetPanel({ endpoint, ownerId, title = 'Private files' }: { endpoint: string; ownerId?: number; title?: string }) {
+  const [rows, setRows] = useState<AssetRow[]>([])
+  const [label, setLabel] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState('')
+  const load = useCallback(() => {
+    if (!ownerId) return
+    adminApi.get(`/${endpoint}/${ownerId}/`).then((r) => setRows(r.data.assets ?? [])).catch(() => undefined)
+  }, [endpoint, ownerId])
+  useEffect(load, [load])
+  if (!ownerId) return <section className="ad-panel"><h2>{title}</h2><p className="ad-hint">Save the draft first, then you can attach files.</p></section>
+  const upload = async (f?: File) => {
+    if (!f) return
+    setBusy(true)
+    setMsg('')
+    const fd = new FormData()
+    fd.append('file', f)
+    fd.append('label', label || f.name)
+    try {
+      await adminApi.post(`/${endpoint}/${ownerId}/assets/`, fd)
+      setLabel('')
+      load()
+    } catch (err) {
+      setMsg((err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? 'Upload failed.')
+    } finally {
+      setBusy(false)
+    }
+  }
+  const remove = async (a: AssetRow) => {
+    if (!window.confirm(`Delete “${a.label}” permanently? Customers who bought it lose this file.`)) return
+    await adminApi.delete(`/assets/${a.id}/`)
+    load()
+  }
+  return (
+    <section className="ad-panel">
+      <h2>{title}</h2>
+      <p className="ad-hint">PDF, ZIP, EPUB, DOCX, PPTX, XLSX, SQL, TXT, MD, CSV or images up to 100 MB. Files are checked by content and are never publicly reachable.</p>
+      <ul className="ad-revs">
+        {rows.map((a) => (
+          <li key={a.id}><span>{a.label} <small className="ad-muted">({a.original_name}, {a.size > 1048576 ? `${(a.size / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(a.size / 1024))} KB`})</small></span><button type="button" className="ad-link ad-danger" onClick={() => void remove(a)}>Delete</button></li>
+        ))}
+      </ul>
+      <Text id={`asset-label-${endpoint}`} label="Label for the next file" value={label} onChange={setLabel} placeholder="e.g. Source code (ZIP)" />
+      <label className="ad-btn">
+        {busy ? 'Uploading…' : 'Upload a file'}
+        <input type="file" hidden disabled={busy} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = '' }} />
+      </label>
+      {msg && <p className="ad-field-error" role="alert">{msg}</p>}
+    </section>
   )
 }
