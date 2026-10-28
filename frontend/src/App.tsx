@@ -9,6 +9,10 @@ import { NotFound } from './pages/NotFound'
 import { LocationRoute } from './locations/LocationRoute'
 import { LocationsIndex } from './locations/LocationsIndex'
 
+const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ default: m.BlogList })))
+const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
+const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.BlogDetail })))
+const CaseDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.CaseDetail })))
 const Layout = lazy(() => import('./components/Layout').then((m) => ({ default: m.Layout })))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute').then((m) => ({ default: m.ProtectedRoute })))
 const CourseCheckout = lazy(() => import('./pages/CourseCheckout').then((m) => ({ default: m.CourseCheckout })))
@@ -30,6 +34,10 @@ export function App() {
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
               <Route path="program/:slug" element={<Curriculum />} />
+              <Route path="blog" element={<BlogList />} />
+              <Route path="blog/:slug" element={<BlogDetail />} />
+              <Route path="case-studies" element={<CaseList />} />
+              <Route path="case-studies/:slug" element={<CaseDetail />} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
               <Route element={<Layout />}>

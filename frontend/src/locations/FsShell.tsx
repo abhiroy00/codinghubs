@@ -43,6 +43,8 @@ export function FsHeader() {
             <a href="/#courses">Explore Courses</a>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
+            <a href="/blog">Blog</a>
+            <a href="/case-studies">Case Studies</a>
             <a href="/#session">About the Session</a>
             <a href="/#contact">Contact</a>
             <a href="/#register" className="btn btn-yellow nav-cta btn-shake">
@@ -120,6 +122,8 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><a href={h('#demo-classes')}>Free Demo Classes</a></li>
               <li><a href={h('#courses')}>All Courses</a></li>
               <li><Link to="/locations/">AI Course Locations</Link></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/case-studies">Case Studies</a></li>
               <li><a href={h('#faq')}>FAQ</a></li>
               <li><a href={h('#contact')}>Contact</a></li>
             </ul>

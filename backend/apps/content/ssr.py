@@ -10,6 +10,7 @@ from html import escape
 
 from django.conf import settings
 from django.core.paginator import EmptyPage, Paginator
+from django.db.models import Count, Q
 from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
 from django.template.loader import render_to_string
 from django.utils.dateparse import parse_datetime
@@ -31,7 +32,7 @@ FALLBACK_SHELL = (
 
 def get_shell() -> str:
     now = time.time()
-    if _shell['html'] and now - _shell['at'] < 300:
+    if _shell['html'] and now - _shell["at"] < 60:
         return _shell['html']
     url = settings.FRONTEND_SHELL_URL
     if url:
@@ -152,7 +153,12 @@ def blog_list(request):
     extra = f'category={cat}&' if cat else ''
     seo = listing_seo('blog', page, extra, indexable=not query)
     html = render_to_string('content/blog_list.html', {'items': card_ctx(items, '/blog'), 'page': pg, 'cat': cat, 'query': query})
-    return respond(seo, html, data={'kind': 'blog-list', 'page': page, 'category': cat, 'q': query})
+    from .models import BlogCategory
+
+    public = Blog.objects.public().values('pk')
+    cats = [{'name': c.name, 'slug': c.slug, 'blog_count': c.n} for c in BlogCategory.objects.annotate(n=Count('blogs', filter=Q(blogs__pk__in=public))).filter(n__gt=0)]
+    data = {'kind': 'blog-list', 'page': page, 'category': cat, 'q': query, 'results': items, 'count': paginator.count, 'categories': cats}
+    return respond(seo, html, data=data)
 
 
 @require_GET
@@ -192,7 +198,9 @@ def case_list(request):
     extra = f'industry={industry}&' if industry else ''
     seo = listing_seo('case', page, extra, indexable=not query)
     html = render_to_string('content/case_list.html', {'items': card_ctx(items, '/case-studies'), 'page': pg, 'query': query})
-    return respond(seo, html, data={'kind': 'case-list', 'page': page, 'industry': industry, 'q': query})
+    industries = sorted(set(public_case_qs().exclude(industry='').values_list('industry', flat=True)))
+    data = {'kind': 'case-list', 'page': page, 'industry': industry, 'q': query, 'results': items, 'count': paginator.count, 'industries': industries}
+    return respond(seo, html, data=data)
 
 
 @require_GET

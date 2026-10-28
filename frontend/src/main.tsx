@@ -9,6 +9,10 @@ async function start() {
   // prerendered content is replaced by identical content instead of a blank flash.
   const m = window.location.pathname.match(/^\/locations\/([^/]+)\/?$/)
   if (m) await loadContent(m[1]).catch(() => null)
+  // Blog / case-study pages are lazy chunks: load theirs first so the server-rendered page is replaced without a blank flash.
+  const c = window.location.pathname.match(/^\/(blog|case-studies)(\/|$)/)
+  if (c) await (c[1] === 'blog' ? import('./content-pages/BlogList') : import('./content-pages/CaseList')).catch(() => null)
+  if (c && window.location.pathname.split('/').filter(Boolean).length > 1) await import('./content-pages/Article').catch(() => null)
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />
