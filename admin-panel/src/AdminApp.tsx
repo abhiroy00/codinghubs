@@ -7,7 +7,7 @@ import { ContentList } from './content/ContentList'
 import { ContentDashboard } from './content/Dashboard'
 import { ChangePassword } from './content/ChangePassword'
 import { Taxonomy } from './content/Taxonomy'
-import { GuideEditor, ProductEditor, ProjectEditor } from './content/ShopEditors'
+import { GuideEditor, ProductEditor, ProjectEditor, SimpleProductEditor } from './content/ShopEditors'
 import { ShopList } from './content/ShopLists'
 import { Coupons, Customers, Inventory, StoreOrderDetail, StoreOrders, StoreOverview, StoreSettings } from './content/StorePages'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
@@ -287,8 +287,9 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="taxonomy" element={<Taxonomy />} />
             <Route path="shop" element={<StoreOverview />} />
             <Route path="products" element={<ShopList kind="products" />} />
-            <Route path="products/create" element={<ProductEditor key="new-product" />} />
-            <Route path="products/edit/:id" element={<ProductEditor />} />
+            <Route path="products/create" element={<SimpleProductEditor key="new-product" />} />
+            <Route path="products/edit/:id" element={<SimpleProductEditor />} />
+            <Route path="products/advanced/:id" element={<ProductEditor />} />
             <Route path="projects" element={<ShopList kind="projects" />} />
             <Route path="projects/create" element={<ProjectEditor key="new-project" />} />
             <Route path="projects/edit/:id" element={<ProjectEditor />} />

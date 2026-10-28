@@ -189,17 +189,17 @@ export interface AssetRow {
   original_name: string
 }
 /** Private files (PDF, ZIP, SQL ...). Stored outside the public web root; shown to buyers only through expiring links. */
-export function AssetPanel({ endpoint, ownerId, title = 'Private files' }: { endpoint: string; ownerId?: number; title?: string }) {
+export function AssetPanel({ endpoint, ownerId, title = 'Private files', onCount, saveFirst = 'Save the draft first, then you can attach files.' }: { endpoint: string; ownerId?: number; title?: string; onCount?: (n: number) => void; saveFirst?: string }) {
   const [rows, setRows] = useState<AssetRow[]>([])
   const [label, setLabel] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
   const load = useCallback(() => {
     if (!ownerId) return
-    adminApi.get(`/${endpoint}/${ownerId}/`).then((r) => setRows(r.data.assets ?? [])).catch(() => undefined)
-  }, [endpoint, ownerId])
+    adminApi.get(`/${endpoint}/${ownerId}/`).then((r) => { setRows(r.data.assets ?? []); onCount?.((r.data.assets ?? []).length) }).catch(() => undefined)
+  }, [endpoint, ownerId]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(load, [load])
-  if (!ownerId) return <section className="ad-panel"><h2>{title}</h2><p className="ad-hint">Save the draft first, then you can attach files.</p></section>
+  if (!ownerId) return <section className="ad-panel"><h2>{title}</h2><p className="ad-hint">{saveFirst}</p></section>
   const upload = async (f?: File) => {
     if (!f) return
     setBusy(true)

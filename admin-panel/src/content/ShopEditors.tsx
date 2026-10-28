@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { adminApi } from '../api'
 import { EditorShell } from './EditorShell'
-import { AssetPanel, CheckField, Chips, Field, ImageField, NumberField, RowsEditor, Section, SelectField, Text } from './fields'
+import { AssetPanel, CheckField, Chips, Field, ImageField, NumberField, RowsEditor, Section, SelectField, Text, ThumbnailField } from './fields'
 import { RichEditor } from './RichEditor'
 import { SeoSection } from './SeoSection'
 import { blankGuide, blankProduct, blankProject, GUIDE_SECTIONS, type GuideForm, type ProductForm, type ProjectForm } from './shopTypes'
@@ -288,6 +289,31 @@ export function ProductEditor() {
         <Chips id="topics" label="Technologies / topics covered" value={form.topics} onChange={(v) => set('topics', v)} max={20} />
       </Section>
       <SeoSection form={form} set={set} errors={errors} base="/store" />
+    </EditorShell>
+  )
+}
+
+
+/* ============================ Simple product (notes) ============================ */
+/** What the owner needs to sell notes: name, price, a short line, a picture and the PDF. Everything else is filled in for them. */
+export function SimpleProductEditor() {
+  const api = useContentForm<ProductForm>('products', { ...blankProduct, price: '', item_kind: 'pdf_notes', product_type: 'digital', format: 'PDF' })
+  const { form, set, errors } = api
+  const [files, setFiles] = useState(0)
+  const cover = form.images[0]
+  const blocked = !form.id ? 'Save the draft first, then upload the note file (PDF). Publish unlocks after that.' : files === 0 ? 'Upload the note file (PDF) below before publishing.' : undefined
+  return (
+    <EditorShell kind="products" api={api} noun="product" layout="single" publishBlock={blocked}>
+      <Text id="title" label="Note name" required value={form.title} onChange={(v) => set('title', v)} error={errors.title} max={200} placeholder="e.g. Python Notes — Complete Handwritten PDF" />
+      <div className="ad-two">
+        <NumberField id="price" label="Price (₹) *" step="1" min={0} value={form.price} onChange={(v) => set('price', v)} error={errors.price} hint="Enter 0 to give it for free." />
+        <NumberField id="original_price" label="Original price / MRP (₹), optional" step="1" min={0} value={form.original_price} onChange={(v) => set('original_price', v)} error={errors.original_price} hint="Only if it is a real earlier price; it shows struck through." />
+      </div>
+      <Text id="short_description" label="Short description" textarea rows={3} value={form.short_description} onChange={(v) => set('short_description', v)} max={400} error={errors.short_description} placeholder="One or two lines about what is inside (shown on the store card)." />
+      <ThumbnailField id="cover" label="Cover image" src={cover?.src ?? ''} alt={cover?.alt ?? ''} onSrc={(v) => set('images', v ? [{ src: v, alt: cover?.alt ?? '' }] : [])} onAlt={(v) => set('images', cover ? [{ ...cover, alt: v }] : [])} error={errors.images} />
+      <RichEditor id="description" label="Full description (optional)" value={form.description} onChange={(v) => set('description', v)} height={320} />
+      <AssetPanel endpoint="products" ownerId={form.id} title="The note file (PDF) customers get after paying" onCount={setFiles} saveFirst="Click “Save as Draft” first. This box then lets you upload the PDF." />
+      {form.id && <p className="ad-note-line">Need printed books, stock or tax settings? <Link to={`/products/advanced/${form.id}`}>Open the advanced editor</Link>.</p>}
     </EditorShell>
   )
 }

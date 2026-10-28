@@ -31,7 +31,7 @@ export function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; o
   )
 }
 
-export function EditorShell<T extends Common>({ kind, api, noun, children, side, layout = 'split' }: { kind: Kind; api: Api<T>; noun: string; children: ReactNode; side?: ReactNode; layout?: 'split' | 'single' }) {
+export function EditorShell<T extends Common>({ kind, api, noun, children, side, layout = 'split', publishBlock }: { kind: Kind; api: Api<T>; noun: string; children: ReactNode; side?: ReactNode; layout?: 'split' | 'single'; publishBlock?: string }) {
   const { form, dirty, busy, notice, loading, recover, revisions } = api
   const [confirm, setConfirm] = useState(false)
   if (loading) return <p className="ad-muted" role="status">Loading…</p>
@@ -44,7 +44,7 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side,
   }
 
   if (layout === 'single') {
-    return <SinglePost kind={kind} api={api} noun={noun} onSubmit={submit}>{children}</SinglePost>
+    return <SinglePost kind={kind} api={api} noun={noun} onSubmit={submit} publishBlock={publishBlock}>{children}</SinglePost>
   }
 
   return (
@@ -151,13 +151,13 @@ const STATUS_OPTIONS: [Status, string][] = [
 ]
 
 /** One wide card, fields top to bottom, status + buttons at the end (the layout editors know from other CMSs). */
-function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children }: { kind: Kind; api: Api<T>; noun: string; onSubmit: (e: React.FormEvent) => void; children: ReactNode }) {
+function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children, publishBlock }: { kind: Kind; api: Api<T>; noun: string; onSubmit: (e: React.FormEvent) => void; children: ReactNode; publishBlock?: string }) {
   const { form, dirty, busy, notice, recover, revisions } = api
   const [confirm, setConfirm] = useState(false)
   const future = !!form.published_at && new Date(form.published_at).getTime() > Date.now()
   const live = form.status === 'published' || form.status === 'scheduled'
   const heading = form.id ? `Edit ${noun}` : `Write New ${noun.replace(/\b\w/g, (c) => c.toUpperCase())}`
-  const back = kind === 'blogs' ? 'All Posts' : 'All Case Studies'
+  const back = kind === 'blogs' ? 'All Posts' : kind === 'products' ? 'All Products' : 'All Case Studies'
   return (
     <form className="ad-post" onSubmit={onSubmit} noValidate>
       <div className="ad-post-card">
@@ -202,7 +202,7 @@ function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children }: {
             <button type="button" className="ad-btn ad-btn-soft" disabled={busy} onClick={() => void (live ? api.save() : api.save({ status: 'draft' } as Partial<T>))}>
               💾 {live ? 'Save Changes' : 'Save as Draft'}
             </button>
-            <button type="button" className="ad-btn ad-btn-blue" disabled={busy} onClick={() => void api.publish(form.published_at || undefined)}>
+            <button type="button" className="ad-btn ad-btn-blue" disabled={busy || (!!publishBlock && !live)} title={publishBlock} onClick={() => void api.publish(form.published_at || undefined)}>
               ➤ {live ? (future ? 'Reschedule' : 'Update Live Page') : future ? 'Schedule' : 'Publish Now'}
             </button>
             <button type="button" className="ad-btn" disabled={busy} onClick={() => void api.preview()}>Preview</button>
@@ -210,6 +210,7 @@ function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children }: {
             {form.id && <button type="button" className="ad-link ad-danger" onClick={() => setConfirm(true)}>Delete…</button>}
             {dirty && <span className="ad-unsaved">Unsaved changes</span>}
           </div>
+          {publishBlock && !live && <p className="ad-hint">{publishBlock}</p>}
           {revisions.length > 0 && <Revisions list={revisions} onRestore={(id) => void api.restoreRevision(id)} />}
         </div>
       </div>
