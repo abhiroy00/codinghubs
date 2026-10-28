@@ -47,7 +47,7 @@ export function StoreOverview() {
           <p className="ad-hint">Published / total. Sales figures count paid orders only and come straight from the database.</p>
           <div className="ad-grid2">
             <section className="ad-panel"><h2>Low stock</h2>
-              {s.low_stock.length === 0 ? <p className="ad-muted">No stock alerts.</p> : <ul className="ad-revs">{s.low_stock.map((p: any) => <li key={p.id}><Link to="/inventory">{p.title}</Link><strong>{p.stock} left</strong></li>)}</ul>}
+              {s.low_stock.length === 0 ? <p className="ad-muted">No stock alerts.</p> : <ul className="ad-revs">{s.low_stock.map((p: any) => <li key={p.id}><span>{p.title}</span><strong>{p.stock} left</strong></li>)}</ul>}
             </section>
             <section className="ad-panel"><h2>Recent orders</h2>
               {s.recent_orders.length === 0 ? <p className="ad-muted">No orders yet.</p> : <ul className="ad-revs">{s.recent_orders.map((o: any) => <li key={o.number}><Link to={`/store-orders/${o.number}`}>{o.number}</Link><span>{o.name} · {inr(o.total)} · <span className={`ad-badge st-${o.payment_status}`}>{nice(o.payment_status)}</span></span></li>)}</ul>}
