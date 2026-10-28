@@ -112,3 +112,9 @@ branches are claimed.
   JSON-LD, internal links, sitemap, banned phrases and cross-page phrase overlap.
 - Logo for these pages: `frontend/public/assets/coding-hubs-school-of-ai-logo*.jpeg`.
 - No prices are shown anywhere on the site (home, program pages, checkout, dashboard).
+
+
+## Blog and case studies
+
+Managed from the admin panel; published content appears at `/blog` and `/case-studies` with server-rendered, SEO-ready HTML.
+See "Blog and case studies (CMS)" in [DEPLOY.md](DEPLOY.md) for setup (TinyMCE key, images, scheduling, deployment).

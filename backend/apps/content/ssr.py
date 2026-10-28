@@ -81,7 +81,7 @@ def respond(seo, body_html, status=200, preview=False, data=None):
         payload = json.dumps(data, default=str).replace('<', '\\u003c')
         shell = shell.replace('</body>', f'<script id="__CONTENT__" type="application/json">{payload}</script></body>', 1)
     r = HttpResponse(shell, status=status, content_type='text/html; charset=utf-8')
-    r['Cache-Control'] = 'no-store' if preview or status != 200 else 'public, max-age=60'
+    r['Cache-Control'] = 'no-store' if preview or status != 200 else 'public, max-age=0, must-revalidate'
     if preview or status != 200:
         r['X-Robots-Tag'] = 'noindex, nofollow'
     return r
@@ -226,5 +226,5 @@ def content_sitemap(request):
         out.append(f'  <url><loc>{escape(loc)}</loc>' + (f'<lastmod>{mod.date().isoformat()}</lastmod>' if mod else '') + '</url>')
     out.append('</urlset>')
     r = HttpResponse('\n'.join(out) + '\n', content_type='application/xml; charset=utf-8')
-    r['Cache-Control'] = 'public, max-age=300'
+    r['Cache-Control'] = 'public, max-age=0, must-revalidate'
     return r

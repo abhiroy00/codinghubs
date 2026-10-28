@@ -60,7 +60,9 @@ adminApi.interceptors.response.use(
       adminTokens.clear()
       window.dispatchEvent(new Event('admin-logout'))
     }
-    if (status === 403 && !isLogin) {
+    // 403 on a content endpoint = signed in but not allowed to do that (the page shows it); anywhere else = not a staff session
+    const isContent = /\/(blogs|case-studies|blog-categories|blog-tags|media|content)\//.test(original?.url ?? '')
+    if (status === 403 && !isLogin && !isContent) {
       adminTokens.clear()
       window.dispatchEvent(new Event('admin-logout'))
     }

@@ -146,3 +146,41 @@ After deploy verify with `curl -I` (see the checklist in [SEO.md](SEO.md)). `htt
 Roughly $8–15/month: t3.micro on-demand (~$7.50/mo in ap-southeast-2) + 20GB gp3
 EBS (~$1.60/mo) + Elastic IP (free while attached to a running instance) + ECR
 storage (a few cents). No RDS, no load balancer, no NAT gateway.
+
+
+## Blog and case studies (CMS)
+
+Content lives in the database and is managed in the admin panel (`/admin-panel/blogs`, `/admin-panel/case-studies`,
+`/admin-panel/taxonomy`, overview at `/admin-panel/content`). Staff accounts need the Django model permissions
+`content.add_*`, `change_*`, `delete_*` (superusers, such as the one `ensure_admin` creates, have all of them).
+
+**How pages are served.** The site is a static single-page app, so it cannot know database content at build time. nginx
+therefore hands `/blog`, `/blog/<slug>`, `/case-studies`, `/case-studies/<slug>` and `/sitemap-content.xml` to Django
+(`apps/content/ssr.py`), which returns real HTML (title, description, canonical, Open Graph, JSON-LD, article text) inside the
+app shell (`content-shell.html`, fetched from the frontend container on the internal port 8081, never published). React then
+takes over in the browser. Unknown slugs return a real 404; drafts/previews are `noindex` and never cached.
+
+**TinyMCE.** Get a key at <https://www.tiny.cloud/>, restrict it to `codinghubs.in` and `admin.codinghubs.in`, then set the
+GitHub repository variable `VITE_TINYMCE_API_KEY` (it is a client-side key, not a secret) and redeploy. For local builds:
+`admin-panel/.env.local` with `VITE_TINYMCE_API_KEY=...`. Without it the editor shows a plain HTML box. The free Cloud plan
+keeps the "Powered by Tiny" notice; paid plugins (e.g. Premium) are not used.
+
+**Images.** Uploaded through `POST /api/admin/media/` (JPEG/PNG/WebP/GIF, max 5 MB, decoded and re-encoded, random file names)
+into `MEDIA_ROOT` (`/app/media`, the docker volume `media`, shared read-only with nginx which serves `/media/`). The volume
+lives on the EC2 disk: back it up with the database (e.g. `docker run --rm -v codinghubs_media:/m -v $PWD:/b alpine tar czf /b/media.tgz -C /m .`),
+or move to S3 later (a Django storage backend; nothing else depends on the path).
+
+**Scheduling.** A post with status *scheduled* is public as soon as its publish time has passed: the check happens on every
+request (no worker, nothing to keep running), so a restart cannot make it miss. The sitemap (`/sitemap-content.xml`, listed in
+`robots.txt` next to `/sitemap.xml`) is generated per request from the same rule, so publish/unpublish is reflected at once.
+
+**Backups.** The database (posts, revisions, redirects) and the `media` volume. Revisions keep the last 20 versions of each post;
+renamed public slugs are kept as 301 redirects in `SlugRedirect`.
+
+**Environment.** `SITE_URL`, `MEDIA_ROOT`, `FRONTEND_SHELL_URL` (set by `docker-compose.prod.yml`), `VITE_TINYMCE_API_KEY` (build).
+First admin: see "Admin panel" above (`ensure_admin`, credentials from SSM, no default password).
+
+**Local development.** Backend: `cd backend && pip install -r requirements.txt && python manage.py migrate && python manage.py runserver`.
+Frontend: `cd frontend && npm run dev` (React fetches the API; the server-rendered HTML needs the built shell, see below).
+Admin: `cd admin-panel && npm run dev` (port 5174, `/admin-panel/`). To see the server-rendered pages locally, `npm run build` the
+frontend and point `FRONTEND_SHELL_URL` at a server that returns `dist/content-shell.html`.

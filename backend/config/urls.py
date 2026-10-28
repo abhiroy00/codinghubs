@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
@@ -14,3 +16,6 @@ urlpatterns = [
     path('api/', include('apps.content.urls')),
     path('', include('apps.content.ssr_urls')),
 ]
+
+if settings.DEBUG:  # local development only; in production nginx serves /media/ from the shared volume
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

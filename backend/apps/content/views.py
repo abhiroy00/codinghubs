@@ -65,8 +65,9 @@ class ContentPermission(IsStaff):
         return request.user.has_perm(f'content.{action}_{model._meta.model_name}')
 
 
-def public_cache(response, seconds=60):
-    response['Cache-Control'] = f'public, max-age={seconds}'
+def public_cache(response):
+    # Always revalidate: unpublishing must take effect at once, also for browsers and any CDN in front.
+    response['Cache-Control'] = 'public, max-age=0, must-revalidate'
     return response
 
 

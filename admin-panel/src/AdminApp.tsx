@@ -1,18 +1,27 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { adminApi, adminTokens } from './api'
+import { BlogEditor } from './content/BlogEditor'
+import { CaseEditor } from './content/CaseEditor'
+import { ContentList } from './content/ContentList'
+import { ContentDashboard } from './content/Dashboard'
+import { Taxonomy } from './content/Taxonomy'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
 import { TutorBookingsPage } from './TutorBookingsPage'
 import './admin.css'
 
 const NAV = [
-  { to: '', label: 'Overview', icon: 'M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z' },
-  { to: 'leads', label: 'Leads', icon: 'M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0Zm-12 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Z' },
-  { to: 'enrollments', label: 'Enrollments', icon: 'M12 3 2 8l10 5 8-4v6h2V8L12 3Zm-6 9.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-3.5l-6 3-6-3Z' },
-  { to: 'orders', label: 'Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
-  { to: 'users', label: 'Users', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
-  { to: 'courses', label: 'Courses', icon: 'M4 5h16v3H4V5Zm0 5h16v3H4v-3Zm0 5h10v3H4v-3Z' },
-  { to: 'tutor-bookings', label: 'Tutor Bookings', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Zm14-11h4m-2-2v4' },
+  { to: '/', label: 'Overview', icon: 'M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z' },
+  { to: '/leads', label: 'Leads', icon: 'M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0Zm-12 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Z' },
+  { to: '/enrollments', label: 'Enrollments', icon: 'M12 3 2 8l10 5 8-4v6h2V8L12 3Zm-6 9.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-3.5l-6 3-6-3Z' },
+  { to: '/orders', label: 'Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
+  { to: '/users', label: 'Users', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
+  { to: '/content', label: 'Content', icon: 'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm2 4v2h10V7H7Zm0 4v2h10v-2H7Zm0 4v2h6v-2H7Z' },
+  { to: '/blogs', label: 'Blogs', icon: 'M4 4h13l3 3v13H4V4Zm3 5v2h10V9H7Zm0 4v2h10v-2H7Z' },
+  { to: '/case-studies', label: 'Case studies', icon: 'M4 7h16v13H4V7Zm4-3h8v2H8V4Zm-1 6v2h10v-2H7Z' },
+  { to: '/taxonomy', label: 'Categories & tags', icon: 'M3 3h8l10 10-8 8L3 11V3Zm4 3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z' },
+  { to: '/courses', label: 'Courses', icon: 'M4 5h16v3H4V5Zm0 5h16v3H4v-3Zm0 5h10v3H4v-3Z' },
+  { to: '/tutor-bookings', label: 'Tutor Bookings', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Zm14-11h4m-2-2v4' },
 ]
 
 export function AdminApp() {
@@ -120,7 +129,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
         </div>
         <nav aria-label="Admin sections">
           {NAV.map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.to === ''} className={({ isActive }) => (isActive ? 'on' : '')}>
+            <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => (isActive ? 'on' : '')}>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d={n.icon} />
               </svg>
@@ -208,8 +217,16 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
               }
             />
             <Route path="courses" element={<CoursesPage />} />
+            <Route path="content" element={<ContentDashboard />} />
+            <Route path="blogs" element={<ContentList kind="blogs" />} />
+            <Route path="blogs/create" element={<BlogEditor key="new-blog" />} />
+            <Route path="blogs/edit/:id" element={<BlogEditor />} />
+            <Route path="case-studies" element={<ContentList kind="case-studies" />} />
+            <Route path="case-studies/create" element={<CaseEditor key="new-case" />} />
+            <Route path="case-studies/edit/:id" element={<CaseEditor />} />
+            <Route path="taxonomy" element={<Taxonomy />} />
             <Route path="tutor-bookings" element={<TutorBookingsPage />} />
-            <Route path="*" element={<Navigate to="" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
       </div>
