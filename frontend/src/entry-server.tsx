@@ -80,7 +80,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     description: TUTOR_META.description,
     image: TUTOR_META.image,
     indexable: TUTOR_META.indexable,
-    fsDesign: false,
+    fsDesign: true,
     html: renderToString(
       <StaticRouter location={TUTOR_META.path}>
         <BookTutor />

@@ -38,10 +38,10 @@ export function App() {
               <Route path="blog/:slug" element={<BlogDetail />} />
               <Route path="case-studies" element={<CaseList />} />
               <Route path="case-studies/:slug" element={<CaseDetail />} />
+              <Route path="book-a-tutor" element={<BookTutor />} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
               <Route element={<Layout />}>
-                <Route path="book-a-tutor" element={<BookTutor />} />
                 <Route path="faq" element={<Faq />} />
                 <Route path="policies" element={<Policies />} />
                 <Route path="login" element={<Login />} />

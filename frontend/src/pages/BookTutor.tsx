@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { api } from '../lib/api'
+import { FS_CSS } from '../lib/fs-css'
+import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
+import { FsFooter, FsHeader } from '../locations/FsShell'
 import './book-tutor.css'
 
 interface Tutor {
@@ -40,6 +43,11 @@ function bookingError(error: unknown) {
 }
 
 export function BookTutor() {
+  useScopedStylesheet([
+    FS_CSS,
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap',
+  ])
+
   const [tutors, setTutors] = useState<Tutor[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
@@ -116,64 +124,67 @@ export function BookTutor() {
   }
 
   return (
-    <div className="tutors-page">
-      <section className="tutors-hero">
-        <div className="container-x tutors-hero-inner">
-          <p className="eyebrow">PERSONALIZED LEARNING</p>
-          <h1 className="display-lg">Learn directly from a <span>tutor</span></h1>
-          <p className="lede">Get focused, one-to-one guidance in AI, data and software development. Choose a tutor and request a session that fits your schedule.</p>
-          <button type="button" className="btn btn-ink" onClick={() => { setBooking(null); setBookingTutor(null) }} disabled={!tutors.length}>
-            Find a tutor
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
-          </button>
-        </div>
-      </section>
-
-      <section className="section tutors-section" aria-labelledby="tutors-heading">
-        <div className="container-x">
-          <div className="tutors-section-heading">
-            <div>
-              <p className="eyebrow">MEET YOUR TUTOR</p>
-              <h2 className="display-md" id="tutors-heading">Practical help, from people who teach</h2>
-            </div>
-            <p className="muted">Book an online session for the topic you want to master.</p>
+    <div className="fs-page tutors-page">
+      <FsHeader />
+      <main id="main">
+        <section className="tutors-hero">
+          <div className="container-x tutors-hero-inner">
+            <p className="eyebrow">PERSONALIZED LEARNING</p>
+            <h1 className="display-lg">Learn directly from a <span>tutor</span></h1>
+            <p className="lede">Get focused, one-to-one guidance in AI, data and software development. Choose a tutor and request a session that fits your schedule.</p>
+            <button type="button" className="btn btn-yellow btn-lg" onClick={() => { setBooking(null); setBookingTutor(null) }} disabled={!tutors.length}>
+              Find a tutor
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+            </button>
           </div>
+        </section>
 
-          {loading && <p className="tutors-state" role="status">Loading tutor profiles…</p>}
-          {loadError && <p className="tutors-state tutors-error" role="alert">{loadError}</p>}
-          {!loading && !loadError && tutors.length === 0 && (
-            <div className="tutors-empty">
-              <div aria-hidden="true">✦</div>
-              <h3>Tutor profiles are being added</h3>
-              <p>Please check back soon. Once profiles are available, you can choose a tutor and request a session here.</p>
+        <section className="section tutors-section" aria-labelledby="tutors-heading">
+          <div className="container-x">
+            <div className="tutors-section-heading">
+              <div>
+                <p className="eyebrow">MEET YOUR TUTOR</p>
+                <h2 className="display-md" id="tutors-heading">Practical help, from people who teach</h2>
+              </div>
+              <p className="muted">Book an online session for the topic you want to master.</p>
             </div>
-          )}
-          {tutors.length > 0 && (
-            <div className="tutor-grid">
-              {tutors.map((tutor) => (
-                <article className="tutor-card" key={tutor.id}>
-                  <TutorPortrait tutor={tutor} />
-                  <div className="tutor-card-body">
-                    <p className="tutor-designation">{tutor.designation}</p>
-                    <h3>{tutor.full_name}</h3>
-                    <p className="tutor-bio">{tutor.bio}</p>
-                    {tutor.expertise.length > 0 && (
-                      <ul className="tutor-tags" aria-label="Areas of expertise">
-                        {tutor.expertise.slice(0, 4).map((skill) => <li key={skill}>{skill}</li>)}
-                      </ul>
-                    )}
-                    {tutor.experience && <p className="tutor-experience">{tutor.experience} experience</p>}
-                    <div className="tutor-actions">
-                      <button type="button" className="btn btn-ghost" onClick={() => setProfile(tutor)}>View profile</button>
-                      <button type="button" className="btn btn-lime" onClick={() => { setBooking(null); setBookingTutor(tutor) }}>Book a tutor</button>
+
+            {loading && <p className="tutors-state" role="status">Loading tutor profiles…</p>}
+            {loadError && <p className="tutors-state tutors-error" role="alert">{loadError}</p>}
+            {!loading && !loadError && tutors.length === 0 && (
+              <div className="tutors-empty">
+                <div aria-hidden="true">✦</div>
+                <h3>Tutor profiles are being added</h3>
+                <p>Please check back soon. Once profiles are available, you can choose a tutor and request a session here.</p>
+              </div>
+            )}
+            {tutors.length > 0 && (
+              <div className="tutor-grid">
+                {tutors.map((tutor) => (
+                  <article className="tutor-card" key={tutor.id}>
+                    <TutorPortrait tutor={tutor} />
+                    <div className="tutor-card-body">
+                      <p className="tutor-designation">{tutor.designation}</p>
+                      <h3>{tutor.full_name}</h3>
+                      <p className="tutor-bio">{tutor.bio}</p>
+                      {tutor.expertise.length > 0 && (
+                        <ul className="tutor-tags" aria-label="Areas of expertise">
+                          {tutor.expertise.slice(0, 4).map((skill) => <li key={skill}>{skill}</li>)}
+                        </ul>
+                      )}
+                      {tutor.experience && <p className="tutor-experience">{tutor.experience} experience</p>}
+                      <div className="tutor-actions">
+                        <button type="button" className="btn btn-ghost" onClick={() => setProfile(tutor)}>View profile</button>
+                        <button type="button" className="btn btn-yellow" onClick={() => { setBooking(null); setBookingTutor(tutor) }}>Book a tutor</button>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
 
       {profile && (
         <div className="tutor-dialog-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setProfile(null)}>
@@ -188,7 +199,7 @@ export function BookTutor() {
             {profile.courses.length > 0 && <p><strong>Courses:</strong> {profile.courses.join(', ')}</p>}
             {profile.teaching_approach && <p><strong>Teaching approach:</strong> {profile.teaching_approach}</p>}
             <p><strong>Session type:</strong> Online</p>
-            <button type="button" className="btn btn-ink" onClick={() => { setProfile(null); setBooking(null); setBookingTutor(profile) }}>Book this tutor</button>
+            <button type="button" className="btn btn-yellow" onClick={() => { setProfile(null); setBooking(null); setBookingTutor(profile) }}>Book this tutor</button>
           </section>
         </div>
       )}
@@ -204,7 +215,7 @@ export function BookTutor() {
                 <h2 id="booking-title">Your tutor booking request has been submitted successfully.</h2>
                 <p>Our team will contact you to confirm your session.</p>
                 <p className="booking-reference">Booking reference <strong>{booking.reference}</strong></p>
-                <button type="button" className="btn btn-ink" onClick={closeBooking}>Done</button>
+                <button type="button" className="btn btn-yellow" onClick={closeBooking}>Done</button>
               </div>
             ) : (
               <>
@@ -229,7 +240,7 @@ export function BookTutor() {
                   <label>Session type<input value="Online" readOnly aria-readonly="true" /></label>
                   <label className="tutor-message-field">Additional message <span>(optional)</span><textarea name="message" rows={3} maxLength={2000} placeholder="Tell us what you would like to work on." /></label>
                   {submitError && <p className="tutors-error" role="alert">{submitError}</p>}
-                  <button type="submit" className="btn btn-ink tutor-submit" disabled={submitting}>
+                  <button type="submit" className="btn btn-yellow tutor-submit" disabled={submitting}>
                     {submitting ? 'Submitting…' : 'Submit booking request'}
                   </button>
                 </form>
@@ -238,6 +249,7 @@ export function BookTutor() {
           </section>
         </div>
       )}
+      <FsFooter />
     </div>
   )
 }
