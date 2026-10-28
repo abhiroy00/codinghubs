@@ -238,7 +238,7 @@ export function BookTutor() {
                   <label>Preferred date<input name="preferred_date" type="date" min={today()} required /></label>
                   <label>Preferred time<input name="preferred_time" type="time" required /></label>
                   <label>Session type<input value="Online" readOnly aria-readonly="true" /></label>
-                  <label className="tutor-message-field">Additional message <span>(optional)</span><textarea name="message" rows={3} maxLength={2000} placeholder="Tell us what you would like to work on." /></label>
+                  <label className="tutor-message-field">Additional message <span>(optional)</span><textarea name="message" rows={2} maxLength={2000} placeholder="Tell us what you would like to work on." /></label>
                   {submitError && <p className="tutors-error" role="alert">{submitError}</p>}
                   <button type="submit" className="btn btn-yellow tutor-submit" disabled={submitting}>
                     {submitting ? 'Submitting…' : 'Submit booking request'}

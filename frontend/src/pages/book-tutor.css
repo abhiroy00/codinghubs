@@ -50,6 +50,19 @@
 .tutor-booking-form input:focus,.tutor-booking-form select:focus,.tutor-booking-form textarea:focus{border-color:#1F6BFF;outline:3px solid rgba(31,107,255,.13)}
 .tutor-message-field,.tutor-booking-form .tutors-error,.tutor-submit{grid-column:1/-1}
 .tutor-submit{width:100%;margin-top:.3rem}
+@media(min-width:641px){
+  .tutor-booking-dialog{width:min(100%,50rem);max-height:calc(100dvh - 1.5rem);padding:1.15rem 1.5rem}
+  .tutor-booking-dialog>.eyebrow{margin-bottom:.35rem}
+  .tutor-booking-dialog h2{margin:.2rem 0 .35rem;font-size:1.75rem}
+  .tutor-booking-dialog>.muted{margin-bottom:.7rem}
+  .tutor-booking-form{gap:.5rem .85rem}
+  .tutor-booking-form label{gap:.2rem;font-size:.8rem}
+  .tutor-booking-form input,.tutor-booking-form select,.tutor-booking-form textarea{min-height:2.4rem;padding:.45rem .7rem;font-size:.88rem}
+  .tutor-booking-form .tutor-message-field{grid-template-columns:auto 1fr;align-items:baseline}
+  .tutor-booking-form .tutor-message-field textarea{grid-column:1/-1;min-height:3.4rem}
+  .tutor-booking-form .tutor-submit{min-height:2.5rem}
+  .tutor-booking-dialog .tutor-dialog-close{top:.7rem;right:.7rem;width:2rem;height:2rem;font-size:1.35rem}
+}
 .booking-success{text-align:center;padding:1rem 0}
 .booking-success-icon{display:grid;width:3.5rem;height:3.5rem;place-items:center;margin:0 auto 1rem;border-radius:50%;background:#dcf5e8;color:#0d7a49;font-size:1.7rem;font-weight:700}
 .booking-success .eyebrow{margin-bottom:.5rem}
@@ -57,6 +70,6 @@
 .booking-success>p:not(.eyebrow){color:var(--color-muted)}
 .booking-reference{margin:1rem 0 1.5rem!important;padding:.8rem;border-radius:.75rem;background:#f4f7fc;color:#0A1A3F!important}
 @media(max-width:900px){.tutor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){.tutors-section-heading{align-items:start;flex-direction:column;gap:.75rem;margin-bottom:1.75rem}.tutor-grid{grid-template-columns:minmax(0,420px);justify-content:center}.tutor-card-body{padding:1rem}.tutor-portrait{height:210px}.tutor-dialog-backdrop{align-items:start;padding:.75rem}.tutor-dialog{max-height:calc(100vh - 1.5rem);padding:1.25rem;border-radius:1rem}.tutor-booking-form{grid-template-columns:1fr}.tutor-message-field,.tutor-booking-form .tutors-error,.tutor-submit{grid-column:auto}.tutor-actions .btn{font-size:.8rem}.tutor-profile-dialog .tutor-portrait{height:112px}}
+@media(max-width:640px){.tutors-section-heading{align-items:start;flex-direction:column;gap:.75rem;margin-bottom:1.75rem}.tutor-grid{grid-template-columns:minmax(0,420px);justify-content:center}.tutor-card-body{padding:1rem}.tutor-portrait{height:210px}.tutor-dialog-backdrop{align-items:start;padding:.5rem}.tutor-dialog{max-height:calc(100dvh - 1rem);padding:.9rem;border-radius:1rem}.tutor-booking-dialog>.eyebrow{margin-bottom:.25rem}.tutor-booking-dialog h2{margin:.2rem 0 .3rem;font-size:1.5rem}.tutor-booking-dialog>.muted{margin-bottom:.55rem;font-size:.85rem}.tutor-booking-form{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem .6rem}.tutor-booking-form label{gap:.2rem;font-size:.76rem}.tutor-booking-form input,.tutor-booking-form select,.tutor-booking-form textarea{min-height:2.45rem;padding:.4rem .5rem;font-size:.84rem}.tutor-booking-form .tutor-message-field{grid-template-columns:auto 1fr;align-items:baseline}.tutor-booking-form .tutor-message-field textarea{grid-column:1/-1;min-height:3rem}.tutor-booking-form .tutor-submit{min-height:2.45rem;margin-top:0;font-size:.88rem}.tutor-dialog-close{top:.55rem;right:.55rem;width:1.9rem;height:1.9rem;font-size:1.25rem}.tutor-actions .btn{font-size:.8rem}.tutor-profile-dialog .tutor-portrait{height:112px}}
 @media(prefers-reduced-motion:reduce){.tutor-card{transition:none}}
 .tutors-section{scroll-margin-top:6rem}
