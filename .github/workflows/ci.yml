@@ -127,36 +127,24 @@ jobs:
       - name: Deploy to EC2 via SSM
         run: |
           SHA="${{ github.sha }}"
-          PREVIOUS_LOGS_COMMAND="for sha in 5c14a681936fa8de57d49620c709cb5866c6a9d3 444265afbee21cba236168db32a5d5cea069b826; do log=/opt/codinghubs/deploy-logs/\$sha.log; echo \"--- \$sha ---\"; if [ -f \"\$log\" ]; then tail -n 40 \"\$log\"; else echo 'deployment log not found'; fi; done"
-          PREVIOUS_LOGS_PARAMETERS=$(jq -nc --arg command "$PREVIOUS_LOGS_COMMAND" '{commands:[$command],executionTimeout:["60"]}')
-          LOG_CMD_ID=$(aws ssm send-command \
-            --instance-ids "${{ vars.EC2_INSTANCE_ID }}" \
-            --document-name "AWS-RunShellScript" \
-            --timeout-seconds 60 \
-            --parameters "$PREVIOUS_LOGS_PARAMETERS" \
-            --comment "inspect previous deployment logs" \
-            --query 'Command.CommandId' --output text)
-          LOG_STATUS=Pending
-          for i in $(seq 1 12); do
-            LOG_STATUS=$(aws ssm get-command-invocation \
-              --command-id "$LOG_CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
-              --query 'Status' --output text 2>/dev/null || echo Pending)
-            if [ "$LOG_STATUS" = Success ]; then
-              aws ssm get-command-invocation \
-                --command-id "$LOG_CMD_ID" --instance-id "${{ vars.EC2_INSTANCE_ID }}" \
-                --query 'StandardOutputContent' --output text
-              break
-            fi
-            case "$LOG_STATUS" in
-              Failed|Cancelled|TimedOut)
-                echo "Could not read previous deployment logs (SSM status: $LOG_STATUS)."
-                break ;;
-            esac
-            sleep 5
-          done
-          if [ "$LOG_STATUS" != Success ]; then
-            echo "Previous deployment logs were not available; continuing with this deploy."
-          fi
+          LOGS_CMD="df -h / | tail -2; for log in \$(ls -t /opt/codinghubs/deploy-logs/*.log 2>/dev/null | head -3); do echo \"--- \$log ---\"; tail -n 60 \"\$log\"; done"
+          remote() {
+            local params id st
+            params=$(jq -nc --arg command "$1" '{commands:[$command],executionTimeout:["60"]}')
+            id=$(aws ssm send-command --instance-ids "${{ vars.EC2_INSTANCE_ID }}" --document-name "AWS-RunShellScript" \
+              --timeout-seconds 60 --parameters "$params" --comment "ci diagnostics" --query 'Command.CommandId' --output text) || return 0
+            for _ in $(seq 1 12); do
+              st=$(aws ssm get-command-invocation --command-id "$id" --instance-id "${{ vars.EC2_INSTANCE_ID }}" --query 'Status' --output text 2>/dev/null || echo Pending)
+              if [ "$st" = Success ]; then
+                aws ssm get-command-invocation --command-id "$id" --instance-id "${{ vars.EC2_INSTANCE_ID }}" --query 'StandardOutputContent' --output text
+                return 0
+              fi
+              case "$st" in Failed|Cancelled|TimedOut) echo "diagnostics command $st"; return 0 ;; esac
+              sleep 5
+            done
+          }
+          echo "=== latest deployment logs on the server (before this deploy) ==="
+          remote "$LOGS_CMD"
 
           DEPLOY_COMMAND="mkdir -p /opt/codinghubs/deploy-logs && systemd-run --unit=codinghubs-deploy-${SHA} --collect --no-block /bin/bash -lc 'exec > /opt/codinghubs/deploy-logs/${SHA}.log 2>&1; set -euo pipefail; curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${SHA}/infra/deploy-remote.sh -o /tmp/codinghubs-deploy-${SHA}.sh; bash /tmp/codinghubs-deploy-${SHA}.sh ${SHA}'"
           PARAMETERS=$(jq -nc --arg command "$DEPLOY_COMMAND" '{commands:[$command],executionTimeout:["120"]}')
@@ -187,6 +175,7 @@ jobs:
 
           if [ "$SSM_STATUS" != Success ]; then
             echo "SSM did not confirm the deployment launch within 2 minutes."
+            remote "$LOGS_CMD"
             exit 1
           fi
 
@@ -206,4 +195,6 @@ jobs:
             sleep 10
           done
           echo "Tutor page stylesheet was not deployed within 15 minutes: $CSS_URL"
+          echo "=== deployment log on the server ==="
+          remote "$LOGS_CMD"
           exit 1

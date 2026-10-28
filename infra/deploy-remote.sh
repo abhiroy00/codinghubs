@@ -13,6 +13,23 @@ REGISTRY="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
 mkdir -p /opt/codinghubs
 cd /opt/codinghubs
 
+COMPOSE="docker compose -f docker-compose.prod.yml --env-file .env"
+on_error() {
+  echo "!! deploy failed at line $1"
+  df -h / | tail -1 || true
+  $COMPOSE ps || true
+  $COMPOSE logs --tail 60 backend frontend || true
+}
+trap 'on_error $LINENO' ERR
+
+# A small server fills up with old images after many deploys, and a full disk makes `pull` fail or hang.
+echo "== disk before"; df -h / | tail -1; docker system df || true
+docker container prune -f || true
+docker image prune -af || true   # unused images only: the running containers keep theirs
+docker builder prune -af || true
+journalctl --vacuum-size=100M >/dev/null 2>&1 || true
+echo "== disk after"; df -h / | tail -1
+
 curl -fsSL "$RAW/docker-compose.prod.yml" -o docker-compose.prod.yml
 curl -fsSL "$RAW/infra/fetch-env.sh" -o fetch-env.sh
 chmod +x fetch-env.sh
@@ -25,12 +42,16 @@ AWS_REGION="$REGION" ./fetch-env.sh
 
 aws ecr get-login-password --region "$REGION" | docker login --username AWS --password-stdin "$REGISTRY"
 
-docker compose -f docker-compose.prod.yml --env-file .env pull
-docker compose -f docker-compose.prod.yml --env-file .env up -d --remove-orphans
-docker compose -f docker-compose.prod.yml --env-file .env exec -T backend python manage.py migrate --noinput
+$COMPOSE pull
+$COMPOSE up -d --remove-orphans
+# the container applies migrations itself on start; wait until it is really up before running commands in it
+for i in $(seq 1 60); do
+  if $COMPOSE exec -T backend python manage.py check >/dev/null 2>&1; then break; fi
+  echo "waiting for the backend container ($i)"; sleep 3
+done
+$COMPOSE exec -T backend python manage.py migrate --noinput
 # Creates/updates the admin-panel login from ADMIN_EMAIL / ADMIN_PASSWORD (SSM params); no-op when they are unset.
-docker compose -f docker-compose.prod.yml --env-file .env exec -T backend python manage.py ensure_admin
+$COMPOSE exec -T backend python manage.py ensure_admin
 
-docker image prune -af --filter "until=72h" || true
 
 echo "deployed $SHA"
