@@ -66,6 +66,7 @@
 .ad-meter i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1F6BFF,#7C4DFF)}
 .ad-badge{display:inline-block;padding:.15rem .6rem;border-radius:99px;font:700 .72rem Inter;text-transform:capitalize;background:#eef2f8;color:#44506b}
 .st-new{background:#e8f0ff;color:#1554d6}.st-contacted{background:#fff3d1;color:#8a5b00}.st-interested{background:#efe7ff;color:#5b34d1}.st-converted,.st-paid{background:#dcf5e8;color:#0d7a49}.st-closed,.st-failed{background:#eceff5;color:#5b6580}.st-created{background:#fff3d1;color:#8a5b00}
+.st-pending{background:#fff3d1;color:#8a5b00}.st-confirmed{background:#dcf5e8;color:#0d7a49}.st-completed{background:#e8f0ff;color:#1554d6}.st-cancelled{background:#eceff5;color:#5b6580}
 .ad-filters{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:1rem}
 .ad-filters input,.ad-filters select{height:40px;padding:0 .8rem;border:1.5px solid #cfd8e8;border-radius:10px;background:#fff;font:inherit;font-size:.9rem}
 .ad-filters input[type=search]{min-width:220px;flex:1 1 220px}
@@ -95,6 +96,16 @@
 .ad-modal textarea{width:100%;margin-top:.8rem;padding:.8rem;border:1.5px solid #cfd8e8;border-radius:12px;font:inherit;resize:vertical}
 .ad-modal-actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:.9rem}
 .ad-modal-actions .ad-btn-primary{height:40px;margin:0;font-size:.9rem}
+.ad-booking-detail{position:relative;max-width:620px}
+.ad-booking-detail h2{padding-right:2rem}
+.ad-booking-close{position:absolute;top:1rem;right:1rem;width:32px;height:32px;border:0;border-radius:50%;background:#eef2f8;color:var(--navy);font-size:1.4rem;cursor:pointer}
+.ad-booking-detail dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem;margin:1.2rem 0 0}
+.ad-booking-detail dl>div{min-width:0}
+.ad-booking-detail dt{margin-bottom:.2rem;color:var(--mut);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.ad-booking-detail dd{margin:0;overflow-wrap:anywhere}
+.ad-booking-detail dd a,.ad-student-email{color:#1554d6;font-weight:600;text-decoration:none}
+.ad-booking-detail .ad-booking-message{grid-column:1/-1}
+.ad-student-email{display:block;font-size:.8rem}
 .ad-switch{width:46px;height:26px;border:0;border-radius:99px;background:#cbd5e6;position:relative;cursor:pointer;transition:background .2s}
 .ad-switch i{position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .2s}
 .ad-switch.on{background:var(--ok)}

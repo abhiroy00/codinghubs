@@ -120,6 +120,18 @@ export const POLICIES_META: PageMeta = {
   indexable: true,
 }
 
+export const TUTOR_META: PageMeta = {
+  path: '/book-a-tutor/',
+  title: 'Book an Online Tutor | Coding Hubs School of AI',
+  description: 'Explore tutor profiles and request a one-to-one online session in Python, AI, data science or software development with Coding Hubs School of AI.',
+  image: LOGO_URL,
+  indexable: true,
+  jsonLd: {
+    '@context': 'https://schema.org',
+    '@graph': [organizationNode()],
+  },
+}
+
 export const NOT_FOUND_META: PageMeta = {
   path: '/404',
   title: 'Page not found | Coding Hubs School of AI',

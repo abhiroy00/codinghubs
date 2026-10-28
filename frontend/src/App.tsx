@@ -17,6 +17,7 @@ const Faq = lazy(() => import('./pages/Faq').then((m) => ({ default: m.Faq })))
 const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })))
 const Policies = lazy(() => import('./pages/Policies').then((m) => ({ default: m.Policies })))
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
+const BookTutor = lazy(() => import('./pages/BookTutor').then((m) => ({ default: m.BookTutor })))
 
 export function App() {
   return (
@@ -32,6 +33,7 @@ export function App() {
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
               <Route element={<Layout />}>
+                <Route path="book-a-tutor" element={<BookTutor />} />
                 <Route path="faq" element={<Faq />} />
                 <Route path="policies" element={<Policies />} />
                 <Route path="login" element={<Login />} />

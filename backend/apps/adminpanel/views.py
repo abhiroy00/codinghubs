@@ -5,8 +5,10 @@ from django.contrib.auth import authenticate, get_user_model
 from django.db.models import Count, Q
 from django.db.models.functions import TruncDate
 from django.http import HttpResponse
+from django.utils.dateparse import parse_date
 from django.utils import timezone
 from rest_framework import generics, permissions, serializers, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
@@ -17,6 +19,8 @@ from apps.courses.models import Course
 from apps.enrollments.models import Enrollment
 from apps.leads.models import Lead
 from apps.payments.models import Order
+from apps.tutors.models import TutorBooking
+from apps.tutors.serializers import TutorBookingAdminSerializer
 
 User = get_user_model()
 
@@ -257,3 +261,43 @@ class CourseDetailView(generics.UpdateAPIView):
     serializer_class = CourseRowSerializer
     queryset = Course.objects.all()
     http_method_names = ['patch', 'options']
+
+
+class TutorBookingListView(generics.ListAPIView):
+    permission_classes = [IsStaff]
+    serializer_class = TutorBookingAdminSerializer
+    pagination_class = Page
+
+    def get_queryset(self):
+        qs = TutorBooking.objects.select_related('tutor')
+        params = self.request.query_params
+        if q := params.get('q', '').strip():
+            qs = qs.filter(Q(student_name__icontains=q) | Q(student_email__icontains=q))
+        if tutor := params.get('tutor', '').strip():
+            qs = qs.filter(tutor__full_name__icontains=tutor)
+        if course := params.get('course', '').strip():
+            qs = qs.filter(course__icontains=course)
+        if status_value := params.get('status', '').strip():
+            if status_value not in dict(TutorBooking.STATUS_CHOICES):
+                raise ValidationError({'status': 'Select a valid booking status.'})
+            qs = qs.filter(status=status_value)
+        if date_from := params.get('from', '').strip():
+            parsed_from = parse_date(date_from)
+            if parsed_from is None:
+                raise ValidationError({'from': 'Enter a valid date in YYYY-MM-DD format.'})
+            qs = qs.filter(preferred_date__gte=parsed_from)
+        if date_to := params.get('to', '').strip():
+            parsed_to = parse_date(date_to)
+            if parsed_to is None:
+                raise ValidationError({'to': 'Enter a valid date in YYYY-MM-DD format.'})
+            qs = qs.filter(preferred_date__lte=parsed_to)
+        if date_from and date_to and parsed_from > parsed_to:
+            raise ValidationError({'to': 'The end date must be on or after the start date.'})
+        return qs
+
+
+class TutorBookingDetailView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsStaff]
+    serializer_class = TutorBookingAdminSerializer
+    queryset = TutorBooking.objects.select_related('tutor')
+    http_method_names = ['get', 'patch', 'options']

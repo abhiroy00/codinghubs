@@ -2,6 +2,7 @@ import { renderToString } from 'react-dom/server'
 import { Route, Routes } from 'react-router-dom'
 import { StaticRouter } from 'react-router-dom'
 import { Curriculum } from './pages/Curriculum'
+import { BookTutor } from './pages/BookTutor'
 import { FreeSession } from './pages/FreeSession'
 import { NotFound } from './pages/NotFound'
 import { LocationsIndex } from './locations/LocationsIndex'
@@ -9,7 +10,7 @@ import { LocationView } from './locations/LocationView'
 import { INDEX_DESCRIPTION, INDEX_TITLE, indexJsonLd, locationJsonLd } from './locations/seo'
 import { LOCATIONS, SITE_URL, locationPath } from './locations/registry'
 import type { LocationContent } from './locations/types'
-import { FAQ_META, HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS } from './seo/site'
+import { FAQ_META, HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -71,6 +72,22 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
   for (const meta of [FAQ_META, POLICIES_META]) {
     pages.push({ file: `${meta.path.slice(1)}.html`, path: meta.path, title: meta.title, description: meta.description, image: meta.image, indexable: meta.indexable, fsDesign: false, html: '' })
   }
+
+  pages.push({
+    file: 'book-a-tutor/index.html',
+    path: TUTOR_META.path,
+    title: TUTOR_META.title,
+    description: TUTOR_META.description,
+    image: TUTOR_META.image,
+    indexable: TUTOR_META.indexable,
+    fsDesign: false,
+    html: renderToString(
+      <StaticRouter location={TUTOR_META.path}>
+        <BookTutor />
+      </StaticRouter>,
+    ),
+    jsonLd: TUTOR_META.jsonLd,
+  })
 
   pages.push({
     file: 'locations/index.html',

@@ -120,6 +120,7 @@ export function FreeSession() {
             <a href="#home">Home</a>
             <a href="#demo-classes">Free Demo Classes</a>
             <a href="#courses">Explore Courses</a>
+            <Link to="/book-a-tutor/">Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="#session">About the Session</a>
             <a href="#contact">Contact</a>

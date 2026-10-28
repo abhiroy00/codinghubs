@@ -51,6 +51,11 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
             </Link>
           </li>
           <li>
+            <Link className="nav-link" to="/book-a-tutor/">
+              Book a Tutor
+            </Link>
+          </li>
+          <li>
             <button type="button" className="nav-link" onClick={() => openModal()}>
               Talk to an Expert
             </button>

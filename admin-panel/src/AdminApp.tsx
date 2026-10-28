@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { adminApi, adminTokens } from './api'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
+import { TutorBookingsPage } from './TutorBookingsPage'
 import './admin.css'
 
 const NAV = [
@@ -11,6 +12,7 @@ const NAV = [
   { to: 'orders', label: 'Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
   { to: 'users', label: 'Users', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
   { to: 'courses', label: 'Courses', icon: 'M4 5h16v3H4V5Zm0 5h16v3H4v-3Zm0 5h10v3H4v-3Z' },
+  { to: 'tutor-bookings', label: 'Tutor Bookings', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Zm14-11h4m-2-2v4' },
 ]
 
 export function AdminApp() {
@@ -206,6 +208,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
               }
             />
             <Route path="courses" element={<CoursesPage />} />
+            <Route path="tutor-bookings" element={<TutorBookingsPage />} />
             <Route path="*" element={<Navigate to="" replace />} />
           </Routes>
         </main>

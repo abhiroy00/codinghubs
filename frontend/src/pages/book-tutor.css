@@ -1,0 +1,58 @@
+.tutors-page{min-height:60vh}
+.tutors-hero{position:relative;overflow:hidden;padding:clamp(4rem,9vw,8rem) 0;background:radial-gradient(ellipse at 82% 15%,rgba(214,242,75,.22),transparent 36%),linear-gradient(135deg,#f6f7ff,#fff 60%,#f0f3ff)}
+.tutors-hero::after{position:absolute;right:-5rem;bottom:-12rem;width:34rem;height:34rem;border:1px solid rgba(79,70,229,.13);border-radius:50%;content:"";box-shadow:0 0 0 3rem rgba(79,70,229,.025),0 0 0 6rem rgba(79,70,229,.02)}
+.tutors-hero-inner{position:relative;z-index:1;max-width:80rem}
+.tutors-hero h1{max-width:52rem;margin:.75rem 0 1.15rem}
+.tutors-hero h1 span{color:var(--color-brand)}
+.tutors-hero .lede{max-width:42rem;margin-bottom:1.75rem}
+.tutors-hero .btn svg{width:18px;height:18px}
+.tutors-section-heading{display:flex;align-items:end;justify-content:space-between;gap:2rem;margin-bottom:2.5rem}
+.tutors-section-heading h2{max-width:43rem;margin-top:.6rem}
+.tutors-section-heading>p{max-width:20rem;padding-bottom:.3rem}
+.tutor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem}
+.tutor-card{overflow:hidden;border:1px solid var(--color-line);border-radius:1.25rem;background:var(--color-surface);box-shadow:0 18px 48px -36px rgba(17,18,24,.35);transition:transform .25s ease,box-shadow .25s ease}
+.tutor-card:hover{transform:translateY(-4px);box-shadow:0 24px 60px -36px rgba(17,18,24,.4)}
+.tutor-portrait{display:grid;width:100%;height:230px;object-fit:cover;background:#eef0ff}
+.tutor-portrait-placeholder{place-items:center;background:radial-gradient(circle at 30% 25%,#d6f24b 0,transparent 28%),linear-gradient(135deg,#e9eaff,#c9caff)}
+.tutor-portrait-placeholder span{display:grid;width:96px;height:96px;place-items:center;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(255,255,255,.58);color:#302878;font-size:2rem;font-weight:700}
+.tutor-portrait.large{width:112px;height:112px;margin-bottom:1rem;border-radius:50%;object-fit:cover}
+.tutor-portrait-placeholder.large span{width:72px;height:72px;font-size:1.4rem}
+.tutor-card-body{padding:1.25rem}
+.tutor-designation{margin:0 0 .25rem;color:var(--color-brand);font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tutor-card h3{margin:0;font-size:1.25rem;letter-spacing:-.02em}
+.tutor-bio{display:-webkit-box;min-height:4.7rem;margin:.65rem 0;color:var(--color-muted);overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3}
+.tutor-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.75rem 0}
+.tutor-tags li{padding:.3rem .6rem;border:1px solid var(--color-line);border-radius:99px;background:#fafaff;color:#3e4260;font-size:.75rem}
+.tutor-experience{margin:.65rem 0;color:var(--color-muted);font-size:.85rem}
+.tutor-actions{display:flex;gap:.6rem;margin-top:1.1rem}
+.tutor-actions .btn{height:2.65rem;flex:1;padding-inline:.7rem;font-size:.86rem}
+.tutors-state{padding:2rem 0;color:var(--color-muted);text-align:center}
+.tutors-error{color:#b42318!important}
+.tutors-empty{max-width:38rem;margin:0 auto;padding:3rem 1.5rem;border:1px solid var(--color-line);border-radius:1.5rem;background:#fff;text-align:center;box-shadow:0 16px 46px -38px rgba(17,18,24,.35)}
+.tutors-empty>div{display:grid;width:3.5rem;height:3.5rem;place-items:center;margin:0 auto 1rem;border-radius:50%;background:var(--color-lime);font-size:1.5rem}
+.tutors-empty h3{margin-bottom:.5rem;font-size:1.3rem}
+.tutors-empty p{color:var(--color-muted)}
+.tutor-dialog-backdrop{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:auto;padding:1.25rem;background:rgba(11,12,16,.6);backdrop-filter:blur(5px)}
+.tutor-dialog{position:relative;width:min(100%,42rem);max-height:min(90vh,900px);overflow:auto;padding:clamp(1.25rem,4vw,2.25rem);border:1px solid var(--color-line);border-radius:1.4rem;background:#fff;box-shadow:0 30px 90px -30px rgba(0,0,0,.4)}
+.tutor-dialog-close{position:absolute;top:1rem;right:1rem;display:grid;width:2.4rem;height:2.4rem;place-items:center;border:1px solid var(--color-line);border-radius:50%;background:#fff;font-size:1.6rem;line-height:1}
+.tutor-dialog h2{margin:.4rem 0 .5rem;font-size:clamp(1.5rem,4vw,2rem);letter-spacing:-.035em}
+.tutor-profile-dialog>p:not(.tutor-designation,.tutor-experience){margin:.9rem 0;color:var(--color-muted)}
+.tutor-profile-dialog>.btn{margin-top:.75rem}
+.tutor-booking-dialog>.muted{margin-bottom:1.25rem}
+.tutor-booking-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
+.tutor-booking-form label{display:grid;gap:.35rem;color:#242638;font-size:.85rem;font-weight:600}
+.tutor-booking-form label>span{display:inline;color:var(--color-muted);font-weight:400}
+.tutor-booking-form input,.tutor-booking-form select,.tutor-booking-form textarea{width:100%;min-width:0;min-height:2.8rem;padding:.65rem .75rem;border:1px solid var(--color-line-strong);border-radius:.7rem;background:#fff;font:inherit;font-size:.95rem}
+.tutor-booking-form textarea{resize:vertical}
+.tutor-booking-form input:focus,.tutor-booking-form select:focus,.tutor-booking-form textarea:focus{border-color:var(--color-brand);outline:3px solid rgba(79,70,229,.13)}
+.tutor-message-field,.tutor-booking-form .tutors-error,.tutor-submit{grid-column:1/-1}
+.tutor-submit{width:100%;margin-top:.3rem}
+.booking-success{text-align:center;padding:1rem 0}
+.booking-success-icon{display:grid;width:3.5rem;height:3.5rem;place-items:center;margin:0 auto 1rem;border-radius:50%;background:#e8f8ed;color:#16803c;font-size:1.7rem;font-weight:700}
+.booking-success .eyebrow{margin-bottom:.5rem}
+.booking-success h2{max-width:32rem;margin:0 auto .75rem}
+.booking-success>p:not(.eyebrow){color:var(--color-muted)}
+.booking-reference{margin:1rem 0 1.5rem!important;padding:.8rem;border-radius:.75rem;background:#f6f7ff;color:var(--color-ink)!important}
+@media(max-width:900px){.tutor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.tutors-section-heading{align-items:start;flex-direction:column;gap:.75rem;margin-bottom:1.75rem}.tutor-grid{grid-template-columns:1fr}.tutor-portrait{height:250px}.tutor-dialog-backdrop{align-items:start;padding:.75rem}.tutor-dialog{max-height:calc(100vh - 1.5rem);padding:1.25rem;border-radius:1rem}.tutor-booking-form{grid-template-columns:1fr}.tutor-message-field,.tutor-booking-form .tutors-error,.tutor-submit{grid-column:auto}.tutor-actions .btn{font-size:.8rem}.tutor-profile-dialog .tutor-portrait{height:112px}}
+@media(prefers-reduced-motion:reduce){.tutor-card{transition:none}}

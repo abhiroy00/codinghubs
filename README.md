@@ -39,6 +39,22 @@ npm run dev
 
 Open http://localhost:5173.
 
+**Admin panel** (Vite, port 5174; run the backend at `127.0.0.1:8000` in another terminal):
+
+```powershell
+cd admin-panel
+npm install
+npm run dev
+```
+
+Open http://localhost:5174/admin-panel/ and sign in with a Django staff account.
+
+## Tutor bookings
+
+The public **Book a Tutor** page saves requests in Django and the custom admin panel lists and updates them under **Tutor Bookings**. Tutor profiles are managed in Django admin (`/admin/tutors/tutor/`); add verified tutor details and activate the profile before it appears publicly. No sample identities are created. Bookings start as **Pending** and are online-only because the project has no configured in-person availability.
+
+Apply the schema with `python manage.py migrate` in `backend/`. Email notifications are not configured; bookings are persisted and visible to staff without email setup.
+
 ## Razorpay setup (required for payments to work)
 
 1. Create a [Razorpay](https://dashboard.razorpay.com/) account, switch to **Test Mode**.
