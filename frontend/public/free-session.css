@@ -1,3 +1,6 @@
+/* Metric-matched fallbacks: the web fonts swap in without moving the layout (CLS). */
+@font-face{font-family:'Inter Fallback';src:local('Arial');size-adjust:107.4%;ascent-override:90.2%;descent-override:22.5%;line-gap-override:0%}
+@font-face{font-family:'Poppins Fallback';src:local('Arial');size-adjust:112.4%;ascent-override:93.7%;descent-override:31.2%;line-gap-override:8.7%}
 /* ============ TOKENS ============ */
 :root{
   --navy:#0A1A3F; --navy-2:#11275C; --navy-3:#1A3577;
@@ -11,8 +14,8 @@
   --sh-sm:0 1px 2px rgba(10,26,63,.06),0 2px 6px rgba(10,26,63,.05);
   --sh:0 10px 30px -12px rgba(10,26,63,.18),0 2px 6px rgba(10,26,63,.05);
   --sh-lg:0 30px 60px -20px rgba(5,14,40,.45);
-  --f-head:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-head:'Poppins','Poppins Fallback',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body:'Inter','Inter Fallback',system-ui,-apple-system,'Segoe UI',sans-serif;
   --hdr-h:68px;
 }
 

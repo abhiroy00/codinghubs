@@ -440,6 +440,9 @@ class UploadThrottle(UserRateThrottle):
     rate = '40/hour'
 
 
+MAX_WIDTH = 1600
+
+
 class MediaUpload(APIView):
     """Image upload for the editor. The file is decoded and re-encoded with Pillow (drops metadata and any payload hidden
     in the file), named with a random id (never the uploaded name) and stored below MEDIA_ROOT/uploads/."""
@@ -463,14 +466,16 @@ class MediaUpload(APIView):
             img.load()
         except (UnidentifiedImageError, ValueError, OSError, Image.DecompressionBombError):
             return Response({'detail': 'Upload a JPEG, PNG, WebP or GIF image (max 5 MB).'}, status=400)
-        ext, _ = FORMATS[fmt]
         out = BytesIO()
-        if fmt == 'JPEG':
-            img.convert('RGB').save(out, 'JPEG', quality=88, optimize=True)
-        elif fmt == 'GIF':
+        if fmt == 'GIF':
+            ext = FORMATS[fmt][0]
             img.save(out, 'GIF')
         else:
-            img.save(out, fmt)
+            # Photos and screenshots are served as-is on public pages, so cap the size and use WebP (keeps transparency):
+            # a raw 1 MB+ PNG cover is the usual cause of a slow Largest Contentful Paint.
+            img.thumbnail((MAX_WIDTH, MAX_WIDTH * 4), Image.LANCZOS)
+            ext = 'webp'
+            img.save(out, 'WEBP', quality=82, method=4)
         now = timezone.now()
         name = f'uploads/{now:%Y/%m}/{uuid.uuid4().hex}.{ext}'
         saved = default_storage.save(name, ContentFile(out.getvalue()))
