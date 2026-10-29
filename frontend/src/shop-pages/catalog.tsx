@@ -213,11 +213,11 @@ export function ProductDetail() {
   const nav = useNavigate()
   if (missing) return <NotFound />
   if (!p) return <PageFrame><p className="bl-state" role="status">Loading…</p></PageFrame>
-  const add = async (then?: () => void) => {
+  const add = async (then?: () => void, openDrawer = true) => {
     setBusy(true)
     setMsg(null)
     try {
-      await cartApi.add(p.id, p.is_physical ? qty : 1)
+      await cartApi.add(p.id, p.is_physical ? qty : 1, openDrawer)
       setMsg({ ok: true, text: 'Added to your cart.' })
       then?.()
     } catch (e) {
@@ -256,7 +256,7 @@ export function ProductDetail() {
             )}
             <div className="shop-actions">
               <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy} onClick={() => void add()}>{p.is_free ? 'Get for free' : 'Add to cart'}</button>
-              <button type="button" className="btn btn-ghost-dark" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'))}>Buy now</button>
+              <button type="button" className="btn btn-ghost-dark" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'), false)}>Buy now</button>
             </div>
             {msg && <p className={msg.ok ? 'shop-ok' : 'shop-err'} role={msg.ok ? 'status' : 'alert'}>{msg.text} {msg.ok && <Link to="/cart">View cart</Link>}</p>}
             {p.delivery && <p className="bl-meta">{p.delivery}</p>}

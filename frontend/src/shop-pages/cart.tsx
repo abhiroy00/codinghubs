@@ -213,7 +213,7 @@ export function CheckoutPage() {
       {settings && !settings.payments_enabled && cart && Number(cart.total) > 0 && (
         <p className="shop-err" role="alert">Online payment is not switched on yet, so paid orders cannot be placed right now. Please contact us.</p>
       )}
-      {guestBlocked && <p className="shop-err" role="alert">Please <Link to="/login">log in</Link> or <Link to="/register">create an account</Link> to check out.</p>}
+      {guestBlocked && <p className="shop-err" role="alert">Please <Link to="/login" state={{ from: { pathname: '/checkout' } }}>log in</Link> or <Link to="/register" state={{ from: { pathname: '/checkout' } }}>create an account</Link> to check out.</p>}
       {error && <p className="shop-err" role="alert">{error}</p>}
       {pending && <button type="button" className="btn btn-yellow" disabled={busy} onClick={() => void retry()}>Try the payment again</button>}
       <div className="shop-cart">

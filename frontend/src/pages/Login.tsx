@@ -56,7 +56,7 @@ export function Login() {
         </form>
         <p style={{ marginTop: '1.5rem', fontSize: '.875rem', color: 'var(--color-muted)' }}>
           New here?{' '}
-          <Link to="/register" style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+          <Link to="/register" state={location.state} style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
             Create an account
           </Link>
         </p>

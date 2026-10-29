@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../lib/auth-context'
 import { FsIcon, IconSprite } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { CartLink } from '../components/CartLink'
@@ -36,7 +35,6 @@ export const LOGO_WIDE = '/assets/coding-hubs-school-of-ai-logo-wide.png'
 /** Header for the location pages: same look as the free-session header plus the Locations menu. */
 export function FsHeader() {
   const [navOpen, setNavOpen] = useState(false)
-  const { user, logout } = useAuth()
   return (
     <>
       <IconSprite />
@@ -54,10 +52,9 @@ export function FsHeader() {
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/store">Store</a>
             <ResourcesMenu />
-            {!user && <Link to="/#register" className="btn btn-yellow nav-cta btn-shake" onClick={() => setNavOpen(false)}><FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span></Link>}
           </nav>
           <div className="hdr-actions">
-            {user ? <><Link className="hdr-account" to="/dashboard">My account</Link><button type="button" className="hdr-account" onClick={logout}>Logout</button><CartLink /></> : <><Link className="hdr-account" to="/register">Register</Link><Link className="hdr-account" to="/login">Login</Link><Link to="/#register" className="btn btn-yellow btn-sm hdr-cta"><FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span></Link></>}
+            <CartLink />
             <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
               <span></span>
               <span></span>

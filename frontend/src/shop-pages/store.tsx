@@ -184,9 +184,9 @@ export function ProductPage() {
   if (!p) return <PageFrame wide><div className="pj-detail-skel" aria-busy="true" role="status"><span className="sr-only">Loading…</span></div></PageFrame>
   const cut = saving(p)
   const images: { src: string; alt: string }[] = p.images ?? []
-  const add = async (then?: () => void) => {
+  const add = async (then?: () => void, openDrawer = true) => {
     setBusy(true); setMsg(null)
-    try { await cartApi.add(p.id, p.is_physical ? qty : 1); setMsg({ ok: true, text: 'Added to your cart.' }); then?.() } catch (e) { setMsg({ ok: false, text: errorText(e) }) } finally { setBusy(false) }
+    try { await cartApi.add(p.id, p.is_physical ? qty : 1, openDrawer); setMsg({ ok: true, text: 'Added to your cart.' }); then?.() } catch (e) { setMsg({ ok: false, text: errorText(e) }) } finally { setBusy(false) }
   }
   const details: [string, any][] = [['Author', p.author], ['Publisher', p.publisher], ['Edition', p.edition], ['Year', p.publication_year], ['Pages', p.pages], ['Language', p.language], ['Format', p.format], ['ISBN', p.isbn], ['SKU', p.sku]].filter(([, v]) => v) as any
   return (
@@ -219,7 +219,7 @@ export function ProductPage() {
               )}
               <div className="st-actions">
                 <button type="button" className="btn btn-yellow btn-lg" disabled={!p.in_stock || busy} onClick={() => void add()}>{p.is_free ? 'Get for free' : 'Add to cart'}</button>
-                <button type="button" className="btn pj-btn-dark btn-lg" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'))}>Buy now</button>
+                <button type="button" className="btn pj-btn-dark btn-lg" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'), false)}>Buy now</button>
               </div>
               {msg && <p className={msg.ok ? 'shop-ok' : 'shop-err'} role={msg.ok ? 'status' : 'alert'}>{msg.text} {msg.ok && <Link to="/cart">View cart →</Link>}</p>}
             </div>
@@ -257,7 +257,7 @@ export function ProductPage() {
 
       <div className="st-bar" role="region" aria-label="Buy">
         <div><strong>{p.is_free ? 'Free' : rupees(p.price)}</strong>{p.original_price && <s>{rupees(p.original_price)}</s>}</div>
-        <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'))}>{p.is_free ? 'Get free' : 'Buy now'}</button>
+        <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'), false)}>{p.is_free ? 'Get free' : 'Buy now'}</button>
       </div>
     </PageFrame>
   )

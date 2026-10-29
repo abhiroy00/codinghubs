@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './lib/auth-context'
+import { CartDrawer } from './components/CartDrawer'
 import { LenisProvider } from './lib/lenis-context'
 import { ModalProvider } from './lib/modal-context'
 import { Curriculum } from './pages/Curriculum'
@@ -39,6 +40,7 @@ export function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <CartDrawer />
         <LenisProvider>
           <ModalProvider>
             <Suspense fallback={null}>

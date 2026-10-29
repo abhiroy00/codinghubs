@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth-context'
 
 export function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation() as { state?: { from?: { pathname?: string } } }
   const [form, setForm] = useState({ username: '', email: '', phone: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -19,7 +20,7 @@ export function Register() {
     setLoading(true)
     try {
       await register(form)
-      navigate('/dashboard', { replace: true })
+      navigate(location.state?.from?.pathname ?? '/dashboard', { replace: true })
     } catch (err) {
       const detail = (err as { response?: { data?: Record<string, string[]> } }).response?.data
       const firstError = detail ? Object.values(detail)[0]?.[0] : undefined
@@ -69,7 +70,7 @@ export function Register() {
         </form>
         <p style={{ marginTop: '1.5rem', fontSize: '.875rem', color: 'var(--color-muted)' }}>
           Already have an account?{' '}
-          <Link to="/login" style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+          <Link to="/login" state={location.state} style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
             Log in
           </Link>
         </p>

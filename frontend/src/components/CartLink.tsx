@@ -1,27 +1,22 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useAuth } from '../lib/auth-context'
 import { cartApi } from '../shop-pages/api'
 
+function cachedCount() {
+  if (typeof window === 'undefined') return 0
+  try {
+    const value = Number(localStorage.getItem('ch_cart_count') || 0)
+    return Number.isFinite(value) ? value : 0
+  } catch {
+    return 0
+  }
+}
+
 export function CartLink({ className = '' }: { className?: string }) {
-  const { user } = useAuth()
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(cachedCount)
 
   useEffect(() => {
-    if (!user) {
-      setCount(0)
-      return
-    }
-
     let active = true
     let receivedUpdate = false
-    try {
-      const cached = Number(localStorage.getItem('ch_cart_count') || 0)
-      setCount(Number.isFinite(cached) ? cached : 0)
-    } catch {
-      setCount(0)
-    }
-
     const onCartCount = (event: Event) => {
       receivedUpdate = true
       const next = (event as CustomEvent<number>).detail
@@ -36,17 +31,16 @@ export function CartLink({ className = '' }: { className?: string }) {
       active = false
       window.removeEventListener('cart-count', onCartCount)
     }
-  }, [user])
-
-  if (!user) return null
+  }, [])
 
   const badge = count > 99 ? '99+' : String(count)
   return (
-    <Link
+    <button
+      type="button"
       className={`cart-nav${className ? ` ${className}` : ''}`}
-      to="/cart"
       aria-label={`Shopping cart${count ? `, ${count} item${count === 1 ? '' : 's'}` : ', empty'}`}
       title={`Cart${count ? ` (${count})` : ''}`}
+      onClick={() => window.dispatchEvent(new CustomEvent('cart-open'))}
     >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M3 4h2l2.1 11.1a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.5L20 8H6" />
@@ -55,6 +49,6 @@ export function CartLink({ className = '' }: { className?: string }) {
       </svg>
       {count > 0 && <span className="cart-nav-badge" aria-hidden="true">{badge}</span>}
       <span className="sr-only">Cart</span>
-    </Link>
+    </button>
   )
 }

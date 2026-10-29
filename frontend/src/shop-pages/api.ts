@@ -61,6 +61,7 @@ export const rupees = (v: string | number | null | undefined) => `₹${Number(v 
 export const fmtSize = (n: number) => (n > 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`)
 
 export interface Card {
+  id?: number
   title: string
   slug: string
   short_description?: string
@@ -129,14 +130,16 @@ const emit = (count: number) => {
   }
   window.dispatchEvent(new CustomEvent('cart-count', { detail: count }))
 }
-const adopt = (c: CartData) => {
+const adopt = (c: CartData, openDrawer = false) => {
   if (c.token) cartToken.set(c.token)
   emit(c.count)
+  window.dispatchEvent(new CustomEvent('cart-updated', { detail: c }))
+  if (openDrawer) window.dispatchEvent(new CustomEvent('cart-open', { detail: c }))
   return c
 }
 export const cartApi = {
   get: () => get<CartData>('/cart/').then(adopt),
-  add: (product: number, quantity = 1) => shop.post<CartData>('/cart/items/', { product, quantity }).then((r) => adopt(r.data)),
+  add: (product: number, quantity = 1, openDrawer = true) => shop.post<CartData>('/cart/items/', { product, quantity }).then((r) => adopt(r.data, openDrawer)),
   set: (productId: number, quantity: number) => shop.patch<CartData>(`/cart/items/${productId}/`, { quantity }).then((r) => adopt(r.data)),
   remove: (productId: number) => shop.delete<CartData>(`/cart/items/${productId}/`).then((r) => adopt(r.data)),
   coupon: (code: string, email = '') => shop.post<CartData>('/cart/coupon/', { code, email }).then((r) => adopt(r.data)),

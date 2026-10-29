@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../lib/auth-context'
 import { Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
 import { CartLink } from './CartLink'
@@ -21,7 +20,6 @@ const RESOURCE_LINKS = [
 
 export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu: () => void }) {
   const { openModal } = useModal()
-  const { user, logout } = useAuth()
 
   return (
     <header className={`site${scrolled ? ' scrolled' : ''}`} id="hdr">
@@ -92,29 +90,7 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
           </li>
         </ul>
         <div className="nav-right">
-          {user ? (
-            <>
-              <Link className="nav-link nav-login" to="/dashboard">
-                {user.username}
-              </Link>
-              <button type="button" className="nav-link" onClick={logout}>
-                Logout
-              </button>
-              <CartLink />
-            </>
-          ) : (
-            <>
-              <Link className="nav-link nav-login" to="/register">Register</Link>
-              <Link className="nav-link nav-login" to="/login">Login</Link>
-            </>
-          )}
-          <button type="button" className="btn btn-lime btn-sm" onClick={() => openModal('demo')}>
-            <span className="shine"></span>
-            <span>
-              <span className="only-lg">Join Free Demo Class</span>
-              <span className="only-sm">Join Free</span>
-            </span>
-          </button>
+          <CartLink />
           <button type="button" className="menu-btn" aria-haspopup="dialog" aria-expanded="false" onClick={onOpenMenu}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M4 8h16M4 16h16" />
