@@ -26,9 +26,7 @@ export function StoreOverview() {
   )
   return (
     <>
-      <div className="ad-head"><h1 className="ad-h1">Store overview</h1>
-        <div className="ad-head-actions"><Link className="ad-btn ad-btn-primary" to="/products/create">+ New product</Link><Link className="ad-btn" to="/projects/create">+ New project</Link><Link className="ad-btn" to="/project-guides/create">+ New guide</Link></div>
-      </div>
+      <div className="ad-head"><h1 className="ad-h1">Store overview</h1></div>
       {err && <div className="ad-notice error" role="alert">Could not load the statistics.</div>}
       {!s && !err && <p className="ad-muted" role="status">Loading…</p>}
       {s && (

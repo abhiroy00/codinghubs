@@ -53,9 +53,8 @@ fix both. Measure real field data (CrUX / PageSpeed Insights / Search Console "C
 
 ## Not changed on purpose / needs a business decision
 
-* **Phone and email are inconsistent across the site.** Home/location pages use `+91 74640 99059` and `info@codingnowai.in`;
-  the account/FAQ/policy pages (`src/components/Footer.tsx`, `src/lib/icons.tsx`) show `+91 84488 11540`. The email domain is
-  `codingnowai.in` while the site is `codinghubs.in`. Confirm the correct values; NAP consistency matters for local SEO.
+* **Phone and email consistency:** the site phone now uses `+91 84488 11320` across public pages. The email domain is
+  `codingnowai.in` while the site is `codinghubs.in`; confirm whether that is intentional. NAP consistency matters for local SEO.
 * **Course facts are limited to what the site already states** (free 2-hour live online demo; three 15-day online programs;
   the listed course names). No fees, durations, certificates, placement or trainer claims were added.
 * **Hosting `www`:** after deploy confirm the cert covers `www` (it was issued with `-d www.codinghubs.in`).
