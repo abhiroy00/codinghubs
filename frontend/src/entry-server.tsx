@@ -1,5 +1,10 @@
 import { renderToString } from 'react-dom/server'
 import { Route, Routes } from 'react-router-dom'
+import { Layout } from './components/Layout'
+import { Policies } from './pages/Policies'
+import { AuthProvider } from './lib/auth-context'
+import { LenisProvider } from './lib/lenis-context'
+import { ModalProvider } from './lib/modal-context'
 import { StaticRouter } from 'react-router-dom'
 import { Curriculum } from './pages/Curriculum'
 import { BookTutor } from './pages/BookTutor'
@@ -68,10 +73,32 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     })
   }
 
-  // Layout (global.css) pages: metadata only; the SPA renders their content in the browser.
-  for (const meta of [FAQ_META, POLICIES_META]) {
-    pages.push({ file: `${meta.path.slice(1)}.html`, path: meta.path, title: meta.title, description: meta.description, image: meta.image, indexable: meta.indexable, fsDesign: false, html: '' })
-  }
+  // Layout (global.css) pages. Policies is indexable, so its content is prerendered; the FAQ stays noindex (metadata only) until reviewed.
+  pages.push({ file: 'faq.html', path: FAQ_META.path, title: FAQ_META.title, description: FAQ_META.description, image: FAQ_META.image, indexable: FAQ_META.indexable, fsDesign: false, html: '' })
+  pages.push({
+    file: 'policies.html',
+    path: POLICIES_META.path,
+    title: POLICIES_META.title,
+    description: POLICIES_META.description,
+    image: POLICIES_META.image,
+    indexable: POLICIES_META.indexable,
+    fsDesign: false,
+    html: renderToString(
+      <AuthProvider>
+        <StaticRouter location="/policies">
+          <LenisProvider>
+            <ModalProvider>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route path="policies" element={<Policies />} />
+                </Route>
+              </Routes>
+            </ModalProvider>
+          </LenisProvider>
+        </StaticRouter>
+      </AuthProvider>,
+    ),
+  })
 
   pages.push({
     file: 'book-a-tutor/index.html',

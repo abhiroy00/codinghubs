@@ -77,11 +77,20 @@ def tax_note(cfg):
     return ''
 
 
+def fill_description(desc: str, title: str, what: str) -> str:
+    """Meta descriptions under ~70 characters are too thin to be useful in results; pad with factual context."""
+    desc = (desc or '').strip()
+    if len(desc) >= 70:
+        return desc[:158]
+    lead = f'{title}: {desc.rstrip(".")}. ' if desc else f'{title}. '
+    return (lead + f'{what} from Coding Hubs School of AI, Netaji Subhash Place, Delhi.')[:158]
+
+
 def product_seo(p: Product, preview=False) -> dict:
     url = f'{settings.SITE_URL}/store/{p.slug}'
     canonical = p.canonical_url or url
     title = p.seo_title or f'{p.title} | Coding Hubs Store'
-    desc = p.meta_description or (p.short_description or content_services.plain_text(p.description))[:158]
+    desc = p.meta_description or fill_description((p.short_description or content_services.plain_text(p.description))[:158], p.title, 'Study notes and learning material')
     image = next(iter(p.images.all()), None)
     img_url = content_services.absolute(p.og_image or (image.src if image else '')) or content_services.LOGO_URL
     availability = 'https://schema.org/InStock' if p.in_stock else 'https://schema.org/OutOfStock'
@@ -193,7 +202,7 @@ def simple_seo(obj, kind, base, label, summary, preview=False, free=True) -> dic
     url = f'{settings.SITE_URL}{base}/{obj.slug}'
     canonical = obj.canonical_url or url
     title = obj.seo_title or f'{obj.title} | Coding Hubs School of AI'
-    desc = obj.meta_description or (summary or '')[:158]
+    desc = obj.meta_description or fill_description((summary or '')[:158], obj.title, 'A hands-on ' + ('project' if kind == 'project' else 'step-by-step guide'))
     image = content_services.absolute(obj.og_image or obj.featured_image) or content_services.LOGO_URL
     node = {
         '@type': 'Article', '@id': f'{canonical}#article', 'mainEntityOfPage': {'@type': 'WebPage', '@id': canonical}, 'headline': obj.title[:110],
