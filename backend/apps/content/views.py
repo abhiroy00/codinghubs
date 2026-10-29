@@ -371,7 +371,7 @@ class RevisionRestore(APIView):
         return Response({'restored': rev.id})
 
 
-class AdminCategoryList(generics.ListCreateAPIView):
+class AdminCategoryList(generics.ListAPIView):
     model_class = BlogCategory
     permission_classes = [ContentPermission]
     serializer_class = CategorySerializer
@@ -379,30 +379,6 @@ class AdminCategoryList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return BlogCategory.objects.annotate(blog_count=Count('blogs'))
-
-
-class AdminCategoryDetail(generics.RetrieveUpdateDestroyAPIView):
-    model_class = BlogCategory
-    permission_classes = [ContentPermission]
-    serializer_class = CategorySerializer
-    queryset = BlogCategory.objects.all()
-
-
-class AdminTagList(generics.ListCreateAPIView):
-    model_class = BlogTag
-    permission_classes = [ContentPermission]
-    serializer_class = TagSerializer
-    pagination_class = None
-
-    def get_queryset(self):
-        return BlogTag.objects.annotate(blog_count=Count('blogs'))
-
-
-class AdminTagDetail(generics.RetrieveUpdateDestroyAPIView):
-    model_class = BlogTag
-    permission_classes = [ContentPermission]
-    serializer_class = TagSerializer
-    queryset = BlogTag.objects.all()
 
 
 class ContentStats(APIView):

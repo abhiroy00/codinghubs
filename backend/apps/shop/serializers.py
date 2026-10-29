@@ -208,22 +208,6 @@ class ProjectQuestionSubmissionSerializer(serializers.ModelSerializer):
         return ProjectQuestion.objects.create(project=self.context['project'], **validated_data)
 
 
-class ProjectQuestionAdminSerializer(serializers.ModelSerializer):
-    project_title = serializers.CharField(source='project.title', read_only=True)
-    project_slug = serializers.CharField(source='project.slug', read_only=True)
-
-    class Meta:
-        model = ProjectQuestion
-        fields = ('id', 'project', 'project_title', 'project_slug', 'name', 'email', 'question', 'answer', 'created_at', 'answered_at')
-        read_only_fields = ('id', 'project', 'project_title', 'project_slug', 'name', 'email', 'question', 'created_at', 'answered_at')
-
-    def update(self, instance, validated_data):
-        instance.answer = validated_data.get('answer', instance.answer).strip()
-        instance.answered_at = timezone.now() if instance.answer else None
-        instance.save(update_fields=('answer', 'answered_at'))
-        return instance
-
-
 class ProjectAdminSerializer(SluggedWriteMixin, serializers.ModelSerializer):
     M2M = {'related_project_ids': ('related_projects', Project)}
     slug = serializers.SlugField(max_length=180, required=False, allow_blank=True)

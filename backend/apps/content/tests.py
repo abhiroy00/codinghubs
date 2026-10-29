@@ -65,8 +65,17 @@ class ContentBase(TestCase):
 
 class AuthTests(ContentBase):
     def test_admin_api_requires_login(self):
-        for url in ('/api/admin/blogs/', '/api/admin/case-studies/', '/api/admin/content/stats/', '/api/admin/blog-tags/'):
+        for url in ('/api/admin/blogs/', '/api/admin/case-studies/', '/api/admin/content/stats/', '/api/admin/blog-categories/'):
             self.assertEqual(self.as_user(None).get(url).status_code, 401, url)
+
+    def test_blog_taxonomy_is_read_only_and_tag_management_route_is_removed(self):
+        category = BlogCategory.objects.create(name='AI')
+        response = self.api.get('/api/admin/blog-categories/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]['name'], 'AI')
+        self.assertEqual(self.api.post('/api/admin/blog-categories/', {'name': 'New'}, format='json').status_code, 405)
+        self.assertEqual(self.api.get(f'/api/admin/blog-categories/{category.id}/').status_code, 404)
+        self.assertEqual(self.api.get('/api/admin/blog-tags/').status_code, 404)
 
     def test_non_staff_cannot_use_admin_api(self):
         self.assertEqual(self.as_user(self.student).get('/api/admin/blogs/').status_code, 403)

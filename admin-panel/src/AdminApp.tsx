@@ -6,9 +6,7 @@ import { CaseEditor } from './content/CaseEditor'
 import { ContentList } from './content/ContentList'
 import { ContentDashboard } from './content/Dashboard'
 import { ChangePassword } from './content/ChangePassword'
-import { Taxonomy } from './content/Taxonomy'
 import { GuideEditor, ProductEditor, ProjectEditor, SimpleProductEditor } from './content/ShopEditors'
-import { ProjectQuestionsPage } from './content/ProjectQuestions'
 import { ShopList } from './content/ShopLists'
 import { Customers, StoreOrderDetail, StoreOrders, StoreOverview } from './content/StorePages'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
@@ -38,7 +36,6 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
     items: [
       { to: '/blogs', label: 'All Posts', icon: 'M4 4h13l3 3v13H4V4Zm3 5v2h10V9H7Zm0 4v2h10v-2H7Z', end: true, count: 'blogs' },
       { to: '/blogs/create', label: 'Write New Post', icon: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm1 4v3h3v2h-3v3h-2v-3H8v-2h3V8h2Z' },
-      { to: '/taxonomy', label: 'Categories & Tags', icon: 'M3 3h8l10 10-8 8L3 11V3Zm4 3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z' },
     ],
   },
   {
@@ -52,7 +49,6 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
     heading: 'Projects & guides',
     items: [
       { to: '/projects', label: 'Projects', icon: 'M4 5h16v3H4V5Zm0 5h16v9H4v-9Zm3 2v2h10v-2H7Z' },
-      { to: '/project-questions', label: 'Project Questions', icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 14h.01M9.3 9a2.8 2.8 0 1 1 4.7 2c-1.2.8-2 1.3-2 2.5' },
       { to: '/project-guides', label: 'Project Guides', icon: 'M5 3h11l3 3v15H5V3Zm3 6v2h8V9H8Zm0 4v2h8v-2H8Z' },
     ],
   },
@@ -282,7 +278,6 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="case-studies" element={<ContentList kind="case-studies" />} />
             <Route path="case-studies/create" element={<CaseEditor key="new-case" />} />
             <Route path="case-studies/edit/:id" element={<CaseEditor />} />
-            <Route path="taxonomy" element={<Taxonomy />} />
             <Route path="products" element={<ShopList kind="products" />} />
             <Route path="products/create" element={<SimpleProductEditor key="new-product" />} />
             <Route path="products/edit/:id" element={<SimpleProductEditor />} />
@@ -290,7 +285,6 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="projects" element={<ShopList kind="projects" />} />
             <Route path="projects/create" element={<ProjectEditor key="new-project" />} />
             <Route path="projects/edit/:id" element={<ProjectEditor />} />
-            <Route path="project-questions" element={<ProjectQuestionsPage />} />
             <Route path="project-guides" element={<ShopList kind="project-guides" />} />
             <Route path="project-guides/create" element={<GuideEditor key="new-guide" />} />
             <Route path="project-guides/edit/:id" element={<GuideEditor />} />

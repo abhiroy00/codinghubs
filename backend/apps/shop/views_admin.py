@@ -19,13 +19,13 @@ from apps.content import services as content_services
 
 from . import audit, downloads, gateway, inventory, orders
 from .models import (
-    AuditLog, Coupon, DigitalAsset, InventoryMovement, Order, Product, ProductCategory, Project, ProjectGuide, ProjectQuestion, StoreSettings,
+    AuditLog, Coupon, DigitalAsset, InventoryMovement, Order, Product, ProductCategory, Project, ProjectGuide, StoreSettings,
 )
 from .money import q
 from .pricing import CartError
 from .serializers import (
     AdminOrderSerializer, CategoryAdminSerializer, CouponSerializer, GuideAdminSerializer, ProductAdminSerializer, ProjectAdminSerializer,
-    ProjectQuestionAdminSerializer, StoreSettingsSerializer,
+    StoreSettingsSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -136,33 +136,6 @@ class ProjectDetail(Base, AuditedCRUD, generics.RetrieveUpdateDestroyAPIView):
         super().perform_destroy(instance)
 
 
-class ProjectQuestionList(Base, generics.ListAPIView):
-    model_class = Project
-    serializer_class = ProjectQuestionAdminSerializer
-
-    def get_queryset(self):
-        qs = ProjectQuestion.objects.select_related('project')
-        status_filter = self.request.query_params.get('status')
-        if status_filter == 'unanswered':
-            qs = qs.filter(answer='')
-        elif status_filter == 'answered':
-            qs = qs.exclude(answer='')
-        return qs.order_by('answered_at', '-created_at')
-
-
-class ProjectQuestionDetail(Base, generics.RetrieveUpdateAPIView):
-    model_class = Project
-    serializer_class = ProjectQuestionAdminSerializer
-    http_method_names = ['get', 'patch', 'head', 'options']
-
-    def get_queryset(self):
-        return ProjectQuestion.objects.select_related('project')
-
-    def perform_update(self, serializer):
-        question = serializer.save()
-        audited(self, 'projectquestion.answered', question, {'project': question.project.title})
-
-
 class GuideList(Base, AuditedCRUD, generics.ListCreateAPIView):
     model_class = ProjectGuide
     serializer_class = GuideAdminSerializer
@@ -271,19 +244,13 @@ class AssetDelete(Base, APIView):
 
 
 # ---------- categories, coupons, settings ----------
-class CategoryList(Base, generics.ListCreateAPIView):
+class CategoryList(Base, generics.ListAPIView):
     model_class = ProductCategory
     serializer_class = CategoryAdminSerializer
     pagination_class = None
 
     def get_queryset(self):
         return ProductCategory.objects.annotate(product_count=Count('products'))
-
-
-class CategoryDetail(Base, generics.RetrieveUpdateDestroyAPIView):
-    model_class = ProductCategory
-    serializer_class = CategoryAdminSerializer
-    queryset = ProductCategory.objects.all()
 
 
 class CouponList(Base, AuditedCRUD, generics.ListCreateAPIView):
