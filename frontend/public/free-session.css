@@ -466,7 +466,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 /* steps */
 .sec-navy::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
 .sec-navy .wrap{position:relative}
-.steps-layout{position:relative;width:100%;max-width:980px;margin:0 auto 1.5rem;overflow:hidden}
+.steps-layout{position:relative;width:100%;margin:0 auto 1.5rem;overflow:hidden}
 .steps-thread{display:none}
 .steps-thread path{fill:none;stroke:rgba(126,185,255,.8);stroke-width:4;stroke-linecap:round;stroke-dasharray:8 9}
 .steps{position:relative;z-index:1;list-style:none;padding:0;margin:0;display:grid;gap:.6rem}
