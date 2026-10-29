@@ -66,7 +66,7 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
           </li>
           <li>
             <Link className="nav-link" to="/store">
-              Store
+              Notes &amp; Resources
             </Link>
           </li>
           <li className="dd dd-res">

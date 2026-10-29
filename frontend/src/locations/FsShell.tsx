@@ -49,7 +49,7 @@ export function FsHeader() {
             <Link to="/#courses" onClick={() => setNavOpen(false)}>Explore Courses</Link>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
-            <a href="/store">Store</a>
+            <a href="/store">Notes &amp; Resources</a>
             <ResourcesMenu />
             <Link to="/#register" className="btn btn-yellow nav-cta btn-shake" onClick={() => setNavOpen(false)}>
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
@@ -130,7 +130,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><a href="/case-studies">Case Studies</a></li>
               <li><a href="/projects">Projects</a></li>
               <li><a href="/project-guides">Project Guides</a></li>
-              <li><a href="/store">Store</a></li>
+              <li><a href="/store">Notes &amp; Resources</a></li>
               <li><HLink home={home} to={h('#faq')}>FAQ</HLink></li>
               <li><HLink home={home} to={h('#contact')}>Contact</HLink></li>
             </ul>
