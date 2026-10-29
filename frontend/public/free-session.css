@@ -403,8 +403,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .t-a .t-num{color:rgba(255,255,255,.08)}
 .t-a .t-ico{background:var(--yellow);color:var(--navy)}
 .ticks{list-style:none;padding:0;margin:1.25rem 0 0;display:grid;gap:.6rem}
-.ticks li{display:flex;align-items:center;gap:.6rem;font-weight:500;font-size:.95rem}
-.ticks .ico{width:22px;height:22px;padding:4px;border-radius:50%;background:var(--yellow);color:var(--navy);stroke-width:3}
+.ticks li{display:flex;align-items:center;gap:.6rem;min-width:0;padding:.55rem .85rem;border-radius:999px;background:#f4f6fa;color:var(--navy);font-weight:600;font-size:.95rem;line-height:1.35;overflow-wrap:anywhere;box-shadow:0 2px 8px rgba(3,14,40,.12)}
+.ticks .ico{flex:0 0 22px;width:22px;height:22px;padding:4px;border-radius:50%;background:var(--yellow);color:var(--navy);stroke-width:3}
 .js .t-a .ticks li{opacity:0;transform:translateX(-12px);transition:all .5s}
 .t-a.in .ticks li{opacity:1;transform:none}
 .t-a.in .ticks li:nth-child(2){transition-delay:.15s}.t-a.in .ticks li:nth-child(3){transition-delay:.3s}.t-a.in .ticks li:nth-child(4){transition-delay:.45s}.t-a.in .ticks li:nth-child(5){transition-delay:.6s}
