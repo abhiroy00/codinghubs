@@ -6,6 +6,7 @@ export function CartDrawer() {
   const [open, setOpen] = useState(false)
   const [cart, setCart] = useState<CartData | null>(null)
   const [busyId, setBusyId] = useState<number | null>(null)
+  const [quantityDrafts, setQuantityDrafts] = useState<Record<number, string>>({})
   const [error, setError] = useState('')
 
   const load = useCallback(async () => {
@@ -47,9 +48,20 @@ export function CartDrawer() {
   const changeQuantity = async (productId: number, quantity: number) => {
     setBusyId(productId)
     setError('')
-    try { setCart(await cartApi.set(productId, quantity)) }
+    try {
+      setCart(await cartApi.set(productId, quantity))
+      setQuantityDrafts((drafts) => { const next = { ...drafts }; delete next[productId]; return next })
+    }
     catch (e) { setError(errorText(e)) }
     finally { setBusyId(null) }
+  }
+
+  const finishQuantityEdit = (productId: number, value: string, current: number, maximum: number) => {
+    setQuantityDrafts((drafts) => { const next = { ...drafts }; delete next[productId]; return next })
+    const parsed = Number(value)
+    if (!value || !Number.isFinite(parsed)) return
+    const quantity = Math.min(maximum, Math.max(1, Math.floor(parsed)))
+    if (quantity !== current) void changeQuantity(productId, quantity)
   }
 
   const remove = async (productId: number) => {
@@ -67,7 +79,9 @@ export function CartDrawer() {
       <section className="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title">
         <header className="cart-drawer-head">
           <h2 id="cart-drawer-title">Your cart{cart?.count ? ` (${cart.count})` : ''}</h2>
-          <button type="button" className="cart-drawer-close" aria-label="Close cart" onClick={() => setOpen(false)}>×</button>
+          <button type="button" className="cart-drawer-close" aria-label="Close cart" onClick={() => setOpen(false)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
         </header>
         {error && <p className="cart-drawer-warning" role="alert">{error}</p>}
         {!cart ? (
@@ -84,17 +98,16 @@ export function CartDrawer() {
                 <article className="cart-drawer-line" key={line.product.slug}>
                   {image ? <img className="cart-drawer-image" src={image} alt={line.product.image?.alt || line.product.featured_image_alt || line.product.title} /> : <div className="cart-drawer-image cart-drawer-placeholder" aria-hidden="true">{line.product.format || 'Item'}</div>}
                   <div className="cart-drawer-info">
-                    <h3>{line.product.title}</h3>
+                    <div className="cart-drawer-product-head"><h3>{line.product.title}</h3><strong className="cart-drawer-price">{rupees(line.subtotal)}</strong></div>
                     <p>{rupees(line.unit_price)} each</p>
                     <div className="cart-drawer-qty" aria-label={`Quantity for ${line.product.title}`}>
                       <button type="button" aria-label="Decrease quantity" disabled={busy} onClick={() => line.quantity <= 1 ? void remove(productId) : void changeQuantity(productId, line.quantity - 1)}>−</button>
-                      <span>{line.quantity}</span>
+                      <input className="cart-drawer-quantity" type="number" inputMode="numeric" min={1} max={line.max_quantity} step={1} aria-label={`Quantity for ${line.product.title}`} disabled={busy} value={quantityDrafts[productId] ?? String(line.quantity)} onChange={(event) => setQuantityDrafts((drafts) => ({ ...drafts, [productId]: event.target.value }))} onBlur={(event) => finishQuantityEdit(productId, event.target.value, line.quantity, line.max_quantity)} onKeyDown={(event) => { if (event.key === 'Enter') event.currentTarget.blur() }} />
                       <button type="button" aria-label="Increase quantity" disabled={busy || line.quantity >= line.max_quantity} onClick={() => void changeQuantity(productId, line.quantity + 1)}>+</button>
                       <button type="button" className="cart-drawer-remove" disabled={busy} onClick={() => void remove(productId)}>Remove</button>
                     </div>
                     {line.problem && <p className="cart-drawer-warning">{line.problem}</p>}
                   </div>
-                  <strong className="cart-drawer-price">{rupees(line.subtotal)}</strong>
                 </article>
               )
             })}
