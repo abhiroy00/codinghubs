@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../lib/auth-context'
 import { useLenisRef } from '../lib/lenis-context'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { BrandLogo, FsFooter } from '../locations/FsShell'
+import { CartLink } from '../components/CartLink'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { ResourcesMenu } from '../locations/ResourcesMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
@@ -28,6 +30,7 @@ export function FreeSession() {
   ])
 
   const rootRef = useRef<HTMLDivElement>(null)
+  const { user, logout } = useAuth()
   const lenisRef = useLenisRef()
   const location = useLocation()
   useFsReveal(rootRef)
@@ -147,14 +150,10 @@ export function FreeSession() {
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/store">Store</a>
             <ResourcesMenu />
-            <a href="#register" className="btn btn-yellow nav-cta btn-shake" data-cta="mobile-menu">
-              <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
-            </a>
+            {!user && <a href="#register" className="btn btn-yellow nav-cta btn-shake" data-cta="mobile-menu"><FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span></a>}
           </nav>
           <div className="hdr-actions">
-            <a href="#register" className="btn btn-yellow btn-sm hdr-cta btn-shake" data-cta="header">
-              <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
-            </a>
+            {user ? <><Link className="hdr-account" to="/dashboard">My account</Link><button type="button" className="hdr-account" onClick={logout}>Logout</button><CartLink /></> : <><Link className="hdr-account" to="/register">Register</Link><Link className="hdr-account" to="/login">Login</Link><a href="#register" className="btn btn-yellow btn-sm hdr-cta btn-shake" data-cta="header"><FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span></a></>}
             <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
               <span></span>
               <span></span>

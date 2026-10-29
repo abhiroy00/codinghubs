@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../lib/auth-context'
 import { PHONE, WA, Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
 
 export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { openModal } = useModal()
+  const { user, logout } = useAuth()
 
   function go(mode?: 'demo') {
     onClose()
@@ -50,8 +52,20 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
           About Us
         </Link>
         <Link className="m" to="/store" onClick={onClose}>
-          Notes &amp; Resources
+          Store
         </Link>
+        {user ? (
+          <>
+            <Link className="m" to="/dashboard" onClick={onClose}>My account · {user.username}</Link>
+            <Link className="m" to="/cart" onClick={onClose}>Cart</Link>
+            <Link className="m" to="/login" onClick={() => { logout(); onClose() }}>Logout</Link>
+          </>
+        ) : (
+          <>
+            <Link className="m" to="/register" onClick={onClose}>Register</Link>
+            <Link className="m" to="/login" onClick={onClose}>Login</Link>
+          </>
+        )}
         <p className="m-head">Resources</p>
         <Link className="m m-sub" to="/blog" onClick={onClose}>
           Blog

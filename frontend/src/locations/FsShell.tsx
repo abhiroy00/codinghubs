@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../lib/auth-context'
 import { FsIcon, IconSprite } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
+import { CartLink } from '../components/CartLink'
 import { LocationsMenu } from './LocationsMenu'
 import { ResourcesMenu } from './ResourcesMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
@@ -34,6 +36,7 @@ export const LOGO_WIDE = '/assets/coding-hubs-school-of-ai-logo-wide.png'
 /** Header for the location pages: same look as the free-session header plus the Locations menu. */
 export function FsHeader() {
   const [navOpen, setNavOpen] = useState(false)
+  const { user, logout } = useAuth()
   return (
     <>
       <IconSprite />
@@ -49,16 +52,12 @@ export function FsHeader() {
             <Link to="/#courses" onClick={() => setNavOpen(false)}>Explore Courses</Link>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
-            <a href="/store">Notes &amp; Resources</a>
+            <a href="/store">Store</a>
             <ResourcesMenu />
-            <Link to="/#register" className="btn btn-yellow nav-cta btn-shake" onClick={() => setNavOpen(false)}>
-              <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
-            </Link>
+            {!user && <Link to="/#register" className="btn btn-yellow nav-cta btn-shake" onClick={() => setNavOpen(false)}><FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span></Link>}
           </nav>
           <div className="hdr-actions">
-            <Link to="/#register" className="btn btn-yellow btn-sm hdr-cta">
-              <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
-            </Link>
+            {user ? <><Link className="hdr-account" to="/dashboard">My account</Link><button type="button" className="hdr-account" onClick={logout}>Logout</button><CartLink /></> : <><Link className="hdr-account" to="/register">Register</Link><Link className="hdr-account" to="/login">Login</Link><Link to="/#register" className="btn btn-yellow btn-sm hdr-cta"><FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span></Link></>}
             <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
               <span></span>
               <span></span>
@@ -130,7 +129,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><a href="/case-studies">Case Studies</a></li>
               <li><a href="/projects">Projects</a></li>
               <li><a href="/project-guides">Project Guides</a></li>
-              <li><a href="/store">Notes &amp; Resources</a></li>
+              <li><a href="/store">Store</a></li>
               <li><HLink home={home} to={h('#faq')}>FAQ</HLink></li>
               <li><HLink home={home} to={h('#contact')}>Contact</HLink></li>
             </ul>

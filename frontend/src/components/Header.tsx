@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth-context'
 import { Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
+import { CartLink } from './CartLink'
 
 const COURSE_COLUMNS = [
   { heading: 'AI & Data', items: ['Generative AI', 'Agentic AI', 'Prompt Engineering', 'AI Engineering Diploma', 'Data Science', 'Data Analytics'] },
@@ -66,7 +67,7 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
           </li>
           <li>
             <Link className="nav-link" to="/store">
-              Notes &amp; Resources
+              Store
             </Link>
           </li>
           <li className="dd dd-res">
@@ -99,11 +100,13 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
               <button type="button" className="nav-link" onClick={logout}>
                 Logout
               </button>
+              <CartLink />
             </>
           ) : (
-            <Link className="nav-link nav-login" to="/login">
-              Login
-            </Link>
+            <>
+              <Link className="nav-link nav-login" to="/register">Register</Link>
+              <Link className="nav-link nav-login" to="/login">Login</Link>
+            </>
           )}
           <button type="button" className="btn btn-lime btn-sm" onClick={() => openModal('demo')}>
             <span className="shine"></span>

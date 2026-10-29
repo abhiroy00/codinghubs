@@ -110,6 +110,13 @@ header.site nav{display:flex;height:100%;align-items:center;justify-content:spac
 .nav-link:hover::after{transform:scaleX(1)}
 .nav-right{display:flex;align-items:center;gap:.5rem}
 .nav-login{display:none}
+.cart-nav{position:relative;display:inline-flex;width:2.625rem;height:2.625rem;flex:0 0 2.625rem;align-items:center;justify-content:center;border:1px solid var(--color-line-strong);border-radius:999px;background:var(--color-surface);color:var(--color-ink);text-decoration:none;transition:transform .2s,border-color .2s,background-color .2s}
+.cart-nav:hover{transform:translateY(-1px);border-color:var(--color-brand);background:var(--color-brand-soft,#eef5d7)}
+.cart-nav:focus-visible{outline:3px solid var(--color-brand);outline-offset:3px}
+.cart-nav svg{width:20px;height:20px}
+.cart-nav-badge{position:absolute;top:-.35rem;right:-.35rem;display:grid;min-width:1.2rem;height:1.2rem;place-items:center;padding:0 .2rem;border:2px solid var(--color-surface);border-radius:999px;background:var(--color-brand);color:var(--color-ink);font-size:.65rem;font-weight:700;line-height:1}
+.hdr .cart-nav{border-color:rgba(255,255,255,.35);background:var(--yellow);color:var(--navy)}
+.hdr .cart-nav-badge{border-color:var(--navy);background:#fff}
 .menu-btn{display:inline-flex;width:2.5rem;height:2.5rem;align-items:center;justify-content:center;border-radius:999px;border:1px solid var(--color-line-strong);background:var(--color-surface)}
 .menu-btn:hover{border-color:var(--color-ink)}
 .menu-btn svg{width:18px;height:18px}
