@@ -46,9 +46,11 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     indexable: true,
     fsDesign: true,
     html: renderToString(
-      <StaticRouter location="/">
-        <FreeSession />
-      </StaticRouter>,
+      <AuthProvider>
+        <StaticRouter location="/">
+          <FreeSession />
+        </StaticRouter>
+      </AuthProvider>,
     ),
     jsonLd: HOME_META.jsonLd,
   })
@@ -63,11 +65,13 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       indexable: true,
       fsDesign: true,
       html: renderToString(
+      <AuthProvider>
         <StaticRouter location={meta.path}>
           <Routes>
             <Route path="program/:slug" element={<Curriculum />} />
           </Routes>
-        </StaticRouter>,
+        </StaticRouter>
+      </AuthProvider>,
       ),
       jsonLd: meta.jsonLd,
     })
@@ -109,9 +113,11 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     indexable: TUTOR_META.indexable,
     fsDesign: true,
     html: renderToString(
-      <StaticRouter location={TUTOR_META.path}>
-        <BookTutor />
-      </StaticRouter>,
+      <AuthProvider>
+        <StaticRouter location={TUTOR_META.path}>
+          <BookTutor />
+        </StaticRouter>
+      </AuthProvider>,
     ),
     jsonLd: TUTOR_META.jsonLd,
   })
@@ -125,9 +131,11 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     indexable: true,
     fsDesign: true,
     html: renderToString(
-      <StaticRouter location="/locations/">
-        <LocationsIndex />
-      </StaticRouter>,
+      <AuthProvider>
+        <StaticRouter location="/locations/">
+          <LocationsIndex />
+        </StaticRouter>
+      </AuthProvider>,
     ),
     jsonLd: indexJsonLd(),
   })
@@ -148,9 +156,11 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       indexable: true,
       fsDesign: true,
       html: renderToString(
-        <StaticRouter location={locationPath(meta.slug)}>
-          <LocationView meta={meta} content={content} />
-        </StaticRouter>,
+        <AuthProvider>
+          <StaticRouter location={locationPath(meta.slug)}>
+            <LocationView meta={meta} content={content} />
+          </StaticRouter>
+        </AuthProvider>,
       ),
       jsonLd: locationJsonLd(meta, content),
     })
@@ -165,9 +175,11 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     indexable: false,
     fsDesign: true,
     html: renderToString(
-      <StaticRouter location="/404">
-        <NotFound />
-      </StaticRouter>,
+      <AuthProvider>
+        <StaticRouter location="/404">
+          <NotFound />
+        </StaticRouter>
+      </AuthProvider>,
     ),
   })
 
