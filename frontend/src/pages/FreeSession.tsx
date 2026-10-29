@@ -651,8 +651,8 @@ export function FreeSession() {
               </h2>
             </div>
             <div className="steps-layout">
-              <svg className="steps-thread" viewBox="0 0 1000 180" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M0 48C90 48 110 64 167 64S340 124 500 124 680 64 833 64 930 48 1000 48" />
+              <svg className="steps-thread" viewBox="0 0 1000 288" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 64C90 64 110 64 167 64 300 64 350 92 500 92S700 64 833 64 930 64 1000 64" />
               </svg>
               <ol className="steps">
                 <li className="step">
