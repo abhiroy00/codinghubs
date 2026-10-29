@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { initRipple } from './lib/ripple'
 import { App } from './App'
 import { loadContent } from './locations/content-loader'
 import './styles/global.css'
@@ -16,6 +17,7 @@ async function start() {
   // Store / projects / guides pages are lazy chunks too: load theirs first so the server-rendered page is replaced without a flash.
   const sp = window.location.pathname.match(/^\/(store|projects|project-guides)(\/|$)/)
   if (sp) await Promise.all([import('./shop-pages/catalog'), sp[1] === 'projects' ? import('./shop-pages/projects') : sp[1] === 'store' ? import('./shop-pages/store') : import('./shop-pages/guides')]).catch(() => null)
+  initRipple()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />

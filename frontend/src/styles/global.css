@@ -536,3 +536,11 @@ header.site .nav-link{white-space:nowrap;padding-inline:.7rem}
 .btn[aria-busy="true"]::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border:3px solid rgba(17,18,24,.25);border-top-color:var(--color-ink);border-radius:50%;animation:btnSpin .7s linear infinite}
 .btn-ghost:hover{background:rgba(0,0,0,.04)}
 @keyframes btnSpin{to{transform:rotate(360deg)}}
+
+/* BUTTONS: lift, press and click ripple */
+.btn,.btn-primary,.btn-outline{position:relative;overflow:hidden}
+.btn:not(:disabled):not([aria-disabled="true"]):hover{transform:translateY(-2px)}
+.btn:not(:disabled):not([aria-disabled="true"]):active{transform:translateY(1px) scale(.97)}
+.fx-ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:fxRipple .6s ease-out forwards}
+@keyframes fxRipple{to{transform:scale(1);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fx-ripple{display:none}.btn:hover,.btn:active{transform:none!important}}
