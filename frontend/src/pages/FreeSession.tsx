@@ -650,23 +650,43 @@ export function FreeSession() {
                 3 Simple <span className="marker">Steps</span>
               </h2>
             </div>
-            <ol className="steps">
-              <li className="step">
-                <span className="step-n">1</span>
-                <h3>Choose Your Course</h3>
-                <p>Pick the course you're curious about from the 12 options.</p>
-              </li>
-              <li className="step">
-                <span className="step-n">2</span>
-                <h3>Register for the Free Online Session</h3>
-                <p>Fill the short form — it's free.</p>
-              </li>
-              <li className="step">
-                <span className="step-n">3</span>
-                <h3>Attend the Live Demo &amp; Explore the Full Course</h3>
-                <p>Join online, learn live, ask questions and explore the full course.</p>
-              </li>
-            </ol>
+            <div className="steps-layout">
+              <svg className="steps-thread" viewBox="0 0 1000 180" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 48C90 48 110 64 167 64S340 124 500 124 680 64 833 64 930 48 1000 48" />
+              </svg>
+              <ol className="steps">
+                <li className="step">
+                  <div className="step-visual" aria-hidden="true">
+                    <span className="step-diamond"><FsIcon id="i-compass" className="step-icon" /></span>
+                    <span className="step-n">01</span>
+                  </div>
+                  <div className="step-copy">
+                    <h3>Choose Your Course</h3>
+                    <p>Pick the course you're curious about from the 12 options.</p>
+                  </div>
+                </li>
+                <li className="step">
+                  <div className="step-visual" aria-hidden="true">
+                    <span className="step-diamond"><FsIcon id="i-pen" className="step-icon" /></span>
+                    <span className="step-n">02</span>
+                  </div>
+                  <div className="step-copy">
+                    <h3>Register for the Free Online Session</h3>
+                    <p>Fill the short form — it's free.</p>
+                  </div>
+                </li>
+                <li className="step">
+                  <div className="step-visual" aria-hidden="true">
+                    <span className="step-diamond"><FsIcon id="i-monitor" className="step-icon" /></span>
+                    <span className="step-n">03</span>
+                  </div>
+                  <div className="step-copy">
+                    <h3>Attend the Live Demo &amp; Explore the Full Course</h3>
+                    <p>Join online, learn live, ask questions and explore the full course.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
             <div className="center">
               <a href="#register" className="btn btn-anim btn-yellow btn-lg" data-cta="how-it-works">
                 Book My Free Seat <FsIcon id="i-arrow" />
