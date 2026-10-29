@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { cartApi } from '../shop-pages/api'
 
 function cachedCount() {
   if (typeof window === 'undefined') return 0
   try {
     const value = Number(localStorage.getItem('ch_cart_count') || 0)
-    return Number.isFinite(value) ? value : 0
+    return Number.isFinite(value) ? Math.max(0, value) : 0
   } catch {
     return 0
   }
@@ -20,7 +21,7 @@ export function CartLink({ className = '' }: { className?: string }) {
     const onCartCount = (event: Event) => {
       receivedUpdate = true
       const next = (event as CustomEvent<number>).detail
-      setCount(Number.isFinite(next) ? next : 0)
+      setCount(Number.isFinite(next) ? Math.max(0, next) : 0)
     }
     window.addEventListener('cart-count', onCartCount)
     void cartApi.get().then((cart) => {
@@ -32,6 +33,10 @@ export function CartLink({ className = '' }: { className?: string }) {
       window.removeEventListener('cart-count', onCartCount)
     }
   }, [])
+
+  if (count === 0) {
+    return <Link className={`nav-link cart-register${className ? ` ${className}` : ''}`} to="/register">Register</Link>
+  }
 
   const badge = count > 99 ? '99+' : String(count)
   return (
