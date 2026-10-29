@@ -207,6 +207,9 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             </svg>
           </button>
         </div>
+        <p className="fx-credit">
+          Designed and Developed by <a href="https://innovativeais.com/" target="_blank" rel="noopener noreferrer">Innovative Ai Solutions</a>
+        </p>
       </div>
     </footer>
   )

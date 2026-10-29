@@ -1332,3 +1332,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .btn-yellow:not(:disabled):hover{box-shadow:0 14px 28px -10px rgba(255,203,61,.95)}
 .pj-chips button:active,.st-chips button:active,.lx-tab:active{transform:scale(.95)}
 @media (prefers-reduced-motion:reduce){.btn:hover,.btn:active{transform:none!important}}
+
+.fx-credit{margin:1rem 0 0;text-align:center;font-size:.86rem;color:rgba(255,255,255,.7)}
+.fx-credit a{color:var(--yellow);font-weight:600;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s,color .2s}
+.fx-credit a:hover,.fx-credit a:focus-visible{border-bottom-color:currentColor}

@@ -122,6 +122,9 @@ export function Footer() {
           <p>© {new Date().getFullYear()} Coding Hubs School of AI. All rights reserved.</p>
           <p>AI skills for the future of work.</p>
         </div>
+        <p className="f-credit">
+          Designed and Developed by <a href="https://innovativeais.com/" target="_blank" rel="noopener noreferrer">Innovative Ai Solutions</a>
+        </p>
       </div>
     </footer>
   )

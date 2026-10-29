@@ -3,7 +3,6 @@ import { adminApi } from '../api'
 import { EditorShell } from './EditorShell'
 import { CheckField, Chips, Field, Section, Text, ThumbnailField } from './fields'
 import { RichEditor } from './RichEditor'
-import { MetaFields, SeoPreviewBox, SeoSection } from './SeoSection'
 import { blankCase, readingMinutes, type Row } from './types'
 import { useContentForm } from './useContentForm'
 
@@ -38,7 +37,6 @@ export function CaseEditor() {
         <input id="slug" className="ad-input" value={form.slug} onChange={(e) => api.setSlug(e.target.value)} placeholder="how-a-logistics-team-automated-its-reports" />
       </Field>
       <p className="ad-urlchip">🔗 codinghubs.in/case-studies/{form.slug || 'your-study-slug'}</p>
-      <SeoPreviewBox title={form.title} seoTitle={form.seo_title} metaDescription={form.meta_description} excerpt={form.summary} content={form.overview} focus={form.focus_keyword} tags={form.technologies} />
       <hr className="ad-hr" />
       <div className="ad-three">
         <Text id="industry" label="Industry" value={form.industry} onChange={(v) => set('industry', v)} error={errors.industry} max={80} placeholder="e.g. Logistics" />
@@ -53,7 +51,6 @@ export function CaseEditor() {
           <label className="ad-check ad-check-box" htmlFor="client_permission"><input id="client_permission" type="checkbox" checked={form.client_permission} onChange={(e) => set('client_permission', e.target.checked)} /> The client agreed to be named publicly</label>
         </Field>
       </div>
-      <MetaFields form={form} set={set} errors={errors} />
       <hr className="ad-hr" />
       <ThumbnailField id="featured_image" src={form.featured_image} alt={form.featured_image_alt} onSrc={(v) => set('featured_image', v)} onAlt={(v) => set('featured_image_alt', v)} error={errors.featured_image} altError={errors.featured_image_alt} />
       <Text id="summary" label="Project summary" required textarea rows={4} value={form.summary} onChange={(v) => set('summary', v)} max={400} error={errors.summary} placeholder="A short summary — shown on case study cards." />
@@ -104,7 +101,6 @@ export function CaseEditor() {
           {others.filter((o) => o.id !== form.id).map((o) => (<option key={o.id} value={o.id}>{o.title}</option>))}
         </select>
       </Section>
-      <SeoSection form={form} set={set} errors={errors} base="/case-studies" />
     </EditorShell>
   )
 }

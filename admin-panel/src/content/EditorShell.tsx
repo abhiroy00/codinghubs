@@ -164,6 +164,13 @@ const STATUS_OPTIONS: [Status, string][] = [
 ]
 
 /** One wide card, fields top to bottom, status + buttons at the end (the layout editors know from other CMSs). */
+/** Current time as a datetime-local value (local zone, minutes). */
+function nowLocal() {
+  const d = new Date()
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset())
+  return d.toISOString().slice(0, 16)
+}
+
 function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children, publishBlock }: { kind: Kind; api: Api<T>; noun: string; onSubmit: (e: React.FormEvent) => void; children: ReactNode; publishBlock?: string }) {
   const { form, dirty, busy, notice, recover, revisions } = api
   const [confirm, setConfirm] = useState(false)
@@ -203,14 +210,9 @@ function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children, pub
               </label>
             </div>
           </div>
-          {(form.status === 'scheduled' || form.published_at) && (
-            <Field label={form.status === 'scheduled' ? 'Go live on' : 'Publish date and time'} htmlFor="published_at" error={api.errors.published_at} hint="Leave empty to publish now. A future date and time schedules it; it goes live by itself, no one needs to be logged in.">
-              <input id="published_at" type="datetime-local" className="ad-input" value={form.published_at} onChange={(e) => api.set('published_at' as keyof T, e.target.value as T[keyof T])} />
-            </Field>
-          )}
-          {!form.published_at && form.status !== 'scheduled' && (
-            <button type="button" className="ad-link" onClick={() => api.set('published_at' as keyof T, new Date(Date.now() + 3600_000 - (Date.now() % 60000)).toISOString().slice(0, 16) as T[keyof T])}>Schedule for a later date…</button>
-          )}
+          <Field label="Publish date" htmlFor="published_at" error={api.errors.published_at} hint="Filled automatically with the current date and time. Pick a later date to schedule; it goes live by itself.">
+            <input id="published_at" type="datetime-local" className="ad-input" value={form.published_at || nowLocal()} onChange={(e) => api.set('published_at' as keyof T, e.target.value as T[keyof T])} />
+          </Field>
           <div className="ad-post-actions">
             <button type="button" className="ad-btn ad-btn-soft" disabled={busy} onClick={() => void (live ? api.save() : api.save({ status: 'draft' } as Partial<T>))}>
               💾 {live ? 'Save Changes' : 'Save as Draft'}
