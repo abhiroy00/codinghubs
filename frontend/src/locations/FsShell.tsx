@@ -7,6 +7,11 @@ import { ResourcesMenu } from './ResourcesMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
+/** In-page anchor on the home page, client-side route to it from every other page (no full reload). */
+function HLink({ home, to, children, ...rest }: { home: boolean; to: string; children: React.ReactNode } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>) {
+  return home ? <a href={to} {...rest}>{children}</a> : <Link to={to} {...(rest as object)}>{children}</Link>
+}
+
 export function BrandLogo({ home = false }: { home?: boolean }) {
   const inner = (
     <span className="brand-pill">
@@ -40,20 +45,20 @@ export function FsHeader() {
           <BrandLogo />
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
             <a href="/">Home</a>
-            <a href="/#demo-classes">Free Demo Classes</a>
-            <a href="/#courses">Explore Courses</a>
+            <Link to="/#demo-classes" onClick={() => setNavOpen(false)}>Free Demo Classes</Link>
+            <Link to="/#courses" onClick={() => setNavOpen(false)}>Explore Courses</Link>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/store">Store</a>
             <ResourcesMenu />
-            <a href="/#register" className="btn btn-yellow nav-cta btn-shake">
+            <Link to="/#register" className="btn btn-yellow nav-cta btn-shake" onClick={() => setNavOpen(false)}>
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
-            </a>
+            </Link>
           </nav>
           <div className="hdr-actions">
-            <a href="/#register" className="btn btn-yellow btn-sm hdr-cta">
+            <Link to="/#register" className="btn btn-yellow btn-sm hdr-cta">
               <FsIcon id="i-tap" />Register<span className="free-badge-red">FREE</span>
-            </a>
+            </Link>
             <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
               <span></span>
               <span></span>
@@ -88,9 +93,9 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             <p>Join the free 2-hour live online demo, or talk to a counsellor about the course that fits your goals.</p>
           </div>
           <div className="fx-cta-btns">
-            <a href={h('#register')} className="btn btn-navy btn-lg" data-cta="footer">
+            <HLink home={home} to={h('#register')} className="btn btn-navy btn-lg" data-cta="footer">
               Register Free <FsIcon id="i-arrow" />
-            </a>
+            </HLink>
             <a href={INSTITUTE.phoneHref} className="btn btn-ghost btn-lg">
               Call {INSTITUTE.phone}
             </a>
@@ -118,16 +123,16 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             <h2>Explore</h2>
             <ul>
               <li><a href={home ? '#home' : '/'}>Home</a></li>
-              <li><a href={h('#demo-classes')}>Free Demo Classes</a></li>
-              <li><a href={h('#courses')}>All Courses</a></li>
+              <li><HLink home={home} to={h('#demo-classes')}>Free Demo Classes</HLink></li>
+              <li><HLink home={home} to={h('#courses')}>All Courses</HLink></li>
               <li><Link to="/locations/">AI Course Locations</Link></li>
               <li><a href="/blog">Blog</a></li>
               <li><a href="/case-studies">Case Studies</a></li>
               <li><a href="/projects">Projects</a></li>
               <li><a href="/project-guides">Project Guides</a></li>
               <li><a href="/store">Store</a></li>
-              <li><a href={h('#faq')}>FAQ</a></li>
-              <li><a href={h('#contact')}>Contact</a></li>
+              <li><HLink home={home} to={h('#faq')}>FAQ</HLink></li>
+              <li><HLink home={home} to={h('#contact')}>Contact</HLink></li>
             </ul>
           </nav>
 
@@ -136,7 +141,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             <ul>
               {COURSE_NAMES.slice(0, 7).map((c) => (
                 <li key={c}>
-                  <a href={h('#courses')}>{c}</a>
+                  <HLink home={home} to={h('#courses')}>{c}</HLink>
                 </li>
               ))}
             </ul>

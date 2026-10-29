@@ -1326,12 +1326,9 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .st-add:active{transform:scale(.96)}
 @media (prefers-reduced-motion:reduce){.btn::before,.btn-yellow::before,.btn-navy::before{display:none}}
 
-/* BUTTONS: lift, press and click ripple on every button/chip site-wide */
-.btn,.pj-chips button,.st-chips button,.lx-tab,.pj-pill{position:relative;overflow:hidden}
+/* BUTTONS: lift, press and press on every button/chip site-wide */
 .btn:not(:disabled):not([aria-disabled="true"]):hover{transform:translateY(-2px)}
 .btn:not(:disabled):not([aria-disabled="true"]):active{transform:translateY(1px) scale(.97);transition-duration:.08s}
 .btn-yellow:not(:disabled):hover{box-shadow:0 14px 28px -10px rgba(255,203,61,.95)}
 .pj-chips button:active,.st-chips button:active,.lx-tab:active{transform:scale(.95)}
-.fx-ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:fxRipple .6s ease-out forwards}
-@keyframes fxRipple{to{transform:scale(1);opacity:0}}
-@media (prefers-reduced-motion:reduce){.fx-ripple{display:none}.btn:hover,.btn:active{transform:none!important}}
+@media (prefers-reduced-motion:reduce){.btn:hover,.btn:active{transform:none!important}}

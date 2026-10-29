@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { useLenisRef } from '../lib/lenis-context'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { BrandLogo, FsFooter } from '../locations/FsShell'
@@ -27,6 +28,8 @@ export function FreeSession() {
   ])
 
   const rootRef = useRef<HTMLDivElement>(null)
+  const lenisRef = useLenisRef()
+  const location = useLocation()
   useFsReveal(rootRef)
 
   const [navOpen, setNavOpen] = useState(false)
@@ -82,7 +85,11 @@ export function FreeSession() {
       setPrefillCourse(course)
       setPrefillToken((t) => t + 1)
     }
-    document.getElementById('register')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    const form = document.getElementById('register')
+    const lenis = lenisRef.current
+    // One scroll engine only: Lenis when active (it also handles anchor clicks), native smooth scroll otherwise.
+    if (lenis && form) lenis.scrollTo(form, { offset: -72 })
+    else form?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
     setTimeout(() => {
       const ids = ['f-name', 'f-phone', 'f-email', 'f-course']
       const firstEmpty = ids
@@ -91,6 +98,21 @@ export function FreeSession() {
       ;(firstEmpty ?? (document.getElementById('submitBtn') as HTMLElement | null))?.focus()
     }, 450)
   }
+
+  // Arriving from another page (/#register, /#courses): scroll to the section once the page has laid out.
+  useEffect(() => {
+    const id = location.hash.slice(1)
+    if (!id) return
+    const t = setTimeout(() => {
+      if (id === 'register') goToForm()
+      else {
+        const el = document.getElementById(id)
+        if (el) (lenisRef.current ? lenisRef.current.scrollTo(el, { offset: -72 }) : el.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+      }
+    }, 120)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.hash])
 
   function handleRootClick(e: React.MouseEvent) {
     const target = e.target as HTMLElement

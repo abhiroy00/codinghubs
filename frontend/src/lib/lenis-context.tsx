@@ -12,6 +12,8 @@ export function LenisProvider({ children }: { children: ReactNode }) {
 /** Returns a ref whose `.current` is the active Lenis instance (or null if reduced-motion). */
 export function useLenisRef() {
   const ctx = useContext(LenisContext)
-  if (!ctx) throw new Error('useLenisRef must be used within LenisProvider')
-  return ctx
+  // Prerender (no provider) and reduced-motion get an empty ref: callers fall back to native scrolling.
+  return ctx ?? EMPTY
 }
+
+const EMPTY: RefObject<Lenis | null> = { current: null }

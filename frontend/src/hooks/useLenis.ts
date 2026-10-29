@@ -19,6 +19,7 @@ export function useLenis() {
     }
 
     const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented) return
       const a = (e.target as HTMLElement).closest('a[href*="#"]') as HTMLAnchorElement | null
       if (!a) return
       const url = new URL(a.href, location.href)
