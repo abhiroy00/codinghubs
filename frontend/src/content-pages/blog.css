@@ -1,0 +1,54 @@
+/* Blog listing: hero, animated cards, skeleton. Uses the free-session design tokens. */
+.bl-wide-main{max-width:1240px}
+@keyframes blUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes blFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,-18px)}}
+@keyframes blShimmer{to{background-position:-200% 0}}
+
+.bl-hero{position:relative;overflow:hidden;isolation:isolate;margin:.5rem 0 1.6rem;padding:clamp(2rem,5vw,3.4rem) clamp(1.2rem,4vw,3rem);border-radius:28px;background:linear-gradient(135deg,#0a1a3f 0%,#14307a 55%,#1a4fd0 100%);color:#fff}
+.bl-blob{position:absolute;z-index:-1;border-radius:50%;filter:blur(60px);opacity:.3;animation:blFloat 14s ease-in-out infinite}
+.bl-blob.b1{width:320px;height:320px;right:-80px;top:-100px;background:#ffde6b}
+.bl-blob.b2{width:260px;height:260px;left:-90px;bottom:-120px;background:#3d7bff;animation-delay:-6s}
+.bl-grid-bg{position:absolute;inset:0;z-index:-1;opacity:.1;background-image:linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px);background-size:38px 38px}
+.bl-hero-in{max-width:760px;animation:blUp .6s both}
+.bl-eyebrow{display:inline-block;margin:0 0 .8rem;padding:.3rem .8rem;border-radius:99px;background:rgba(255,222,107,.16);border:1px solid rgba(255,222,107,.5);color:#ffde6b;font:700 .75rem var(--f-head);letter-spacing:.12em;text-transform:uppercase}
+.bl-main .bl-hero h1{margin:0;color:#fff;font-size:clamp(1.9rem,4.8vw,3.1rem);line-height:1.12}
+.bl-hero h1 span{color:#ffde6b}
+.bl-hero .bl-lead{margin:.9rem 0 1.4rem;color:rgba(255,255,255,.82)}
+.bl-hero .bl-search{max-width:30rem;border:0;border-radius:99px;background:#fff;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transition:box-shadow .2s,transform .15s}
+.bl-hero .bl-search:hover{transform:translateY(-1px)}
+.bl-hero .bl-search:focus-within{box-shadow:0 0 0 4px rgba(255,222,107,.5),0 18px 40px -18px rgba(0,0,0,.6)}
+.bl-clear{border:0;background:var(--bg-2);color:var(--navy);width:26px;height:26px;border-radius:50%;font-size:1.1rem;line-height:1;cursor:pointer;transition:background .2s,transform .15s}
+.bl-clear:hover{background:var(--yellow);transform:scale(1.1)}
+.bl-stats{display:flex;gap:1.6rem;list-style:none;margin:1.5rem 0 0;padding:0}
+.bl-stats strong{display:block;font:800 1.6rem var(--f-head);color:#ffde6b}
+.bl-stats span{font-size:.8rem;color:rgba(255,255,255,.72);text-transform:uppercase;letter-spacing:.08em}
+
+.bl-main>.bl-chips{margin:0 0 1.6rem}
+.bl-chips button{cursor:pointer;transition:all .2s}
+.bl-chips button:active{transform:scale(.95)}
+.bl-chips button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+.bl-in{animation:blUp .55s both;animation-delay:calc(var(--i,0) * 70ms)}
+.bl-card{position:relative}
+.bl-card-img img{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.bl-card:hover .bl-card-img img{transform:scale(1.07)}
+.bl-more{margin-top:.2rem;align-self:flex-start;font:700 .9rem var(--f-head);color:var(--blue-2);text-decoration:none}
+.bl-more span{display:inline-block;transition:transform .2s}
+.bl-card:hover .bl-more span,.bl-more:hover span{transform:translateX(5px)}
+.bl-more:hover{color:var(--navy)}
+.bl-card:focus-within{border-color:var(--yellow-2);box-shadow:var(--sh)}
+
+.bl-featured .bl-card{box-shadow:0 20px 50px -28px rgba(10,26,63,.5)}
+@media (min-width:900px){
+  .bl-featured .bl-card{flex-direction:row}
+  .bl-featured .bl-card-img{flex:1.2;aspect-ratio:auto;min-height:320px}
+  .bl-featured .bl-card-body{flex:1;justify-content:center;padding:2rem}
+  .bl-featured .bl-card-body h2{font-size:1.7rem}
+}
+
+.bl-skel{height:340px;border-radius:var(--r);background:linear-gradient(90deg,#eef1f7 25%,#f8f9fc 37%,#eef1f7 63%);background-size:200% 100%;animation:blShimmer 1.3s linear infinite}
+
+@media (prefers-reduced-motion:reduce){.bl-in,.bl-hero-in{animation:none}.bl-blob,.bl-skel{animation:none}}
+
+.bl-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:100;background:transparent;pointer-events:none}
+.bl-progress span{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--blue));transition:width .1s linear}

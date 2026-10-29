@@ -27,10 +27,10 @@ export function PageFrame({ children, wide = false }: { children: ReactNode; wid
   )
 }
 
-export function CardView({ c, base }: { c: Card; base: string }) {
+export function CardView({ c, base, index = 0 }: { c: Card; base: string; index?: number }) {
   const tag = c.category?.name ?? c.industry
   return (
-    <article className="bl-card">
+    <article className="bl-card bl-in" style={{ ['--i' as string]: Math.min(index, 8) }}>
       {c.featured_image && (
         <Link to={`${base}/${c.slug}`} className="bl-card-img" tabIndex={-1} aria-hidden="true">
           <img src={c.featured_image} alt={c.featured_image_alt} loading="lazy" decoding="async" width={640} height={360} />
@@ -56,6 +56,9 @@ export function CardView({ c, base }: { c: Card; base: string }) {
           {fmtDate(c.published_at)}
           {c.reading_time ? ` · ${c.reading_time} min read` : ''}
         </p>
+        <Link to={`${base}/${c.slug}`} className="bl-more" aria-label={`Read ${c.title}`}>
+          Read more <span aria-hidden="true">→</span>
+        </Link>
       </div>
     </article>
   )

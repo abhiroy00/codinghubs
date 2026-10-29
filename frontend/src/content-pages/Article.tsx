@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { fmtDate, getBlog, getCase, takeInitial, type Article } from './api'
 import { CardView, PageFrame, useSeo } from './shared'
+import './blog.css'
 
 const initial = typeof document === 'undefined' ? null : takeInitial()
 
@@ -65,12 +66,28 @@ function Share({ title, url }: { title: string; url: string }) {
   )
 }
 
+/** Thin bar at the top of the window that fills while the article is read. */
+function ReadProgress() {
+  const [pct, setPct] = useState(0)
+  useEffect(() => {
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      setPct(max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+  return <div className="bl-progress" role="presentation"><span style={{ width: `${pct}%` }} /></div>
+}
+
 export function BlogDetail() {
   const { article: a, missing } = useArticle('blog')
   if (missing) return <NotFound />
   if (!a) return <PageFrame><p className="bl-state" role="status">Loading…</p></PageFrame>
   return (
     <PageFrame>
+      <ReadProgress />
       <article className="bl-article">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
         <header className="bl-head">
@@ -135,6 +152,7 @@ export function CaseDetail() {
   if (!a) return <PageFrame><p className="bl-state" role="status">Loading…</p></PageFrame>
   return (
     <PageFrame>
+      <ReadProgress />
       <article className="bl-article">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
         <header className="bl-head">

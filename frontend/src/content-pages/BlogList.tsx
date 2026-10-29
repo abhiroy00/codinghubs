@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { getBlogCategories, getBlogs, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
 import { CardView, PageFrame, Pager, SearchIcon } from './shared'
+import './blog.css'
 
 type Cats = { name: string; slug: string; blog_count: number }[]
 const initial = typeof document === 'undefined' ? null : takeInitial()
@@ -69,32 +70,55 @@ export function BlogList() {
   const rest = data?.results.filter((c) => c !== featured) ?? []
 
   return (
-    <PageFrame>
-      <h1>AI &amp; Coding Blog</h1>
-      <p className="bl-lead">Guides, tutorials and career advice on AI, programming and data from Coding Hubs School of AI.</p>
-
-      <div className="bl-tools">
-        <label className="bl-search">
-          <span className="sr-only">Search articles</span>
-          <SearchIcon />
-          <input type="search" placeholder="Search articles" value={text} onChange={(e) => setText(e.target.value)} />
-        </label>
-        {cats.length > 0 && (
-          <div className="bl-chips" role="group" aria-label="Categories">
-            <button type="button" className={!category ? 'on' : ''} aria-pressed={!category} onClick={() => go({ category: null })}>
-              All
-            </button>
-            {cats.map((c) => (
-              <button key={c.slug} type="button" className={category === c.slug ? 'on' : ''} aria-pressed={category === c.slug} onClick={() => go({ category: c.slug })}>
-                {c.name} <span>({c.blog_count})</span>
+    <PageFrame wide>
+      <section className="bl-hero">
+        <span className="bl-blob b1" aria-hidden="true" />
+        <span className="bl-blob b2" aria-hidden="true" />
+        <span className="bl-grid-bg" aria-hidden="true" />
+        <div className="bl-hero-in">
+          <p className="bl-eyebrow">Learn · Blog</p>
+          <h1>
+            AI &amp; Coding <span>Blog</span>
+          </h1>
+          <p className="bl-lead">Guides, tutorials and career advice on AI, programming and data from Coding Hubs School of AI.</p>
+          <label className="bl-search">
+            <span className="sr-only">Search articles</span>
+            <SearchIcon />
+            <input type="search" placeholder="Search articles" value={text} onChange={(e) => setText(e.target.value)} />
+            {text && (
+              <button type="button" className="bl-clear" aria-label="Clear search" onClick={() => setText('')}>
+                ×
               </button>
-            ))}
-          </div>
-        )}
-      </div>
+            )}
+          </label>
+          {data && (
+            <ul className="bl-stats">
+              <li><strong>{data.count}</strong><span>{q || category ? 'Matching' : 'Articles'}</span></li>
+              <li><strong>{cats.length}</strong><span>Categories</span></li>
+            </ul>
+          )}
+        </div>
+      </section>
+
+      {cats.length > 0 && (
+        <div className="bl-chips" role="group" aria-label="Categories">
+          <button type="button" className={!category ? 'on' : ''} aria-pressed={!category} onClick={() => go({ category: null })}>
+            All
+          </button>
+          {cats.map((c) => (
+            <button key={c.slug} type="button" className={category === c.slug ? 'on' : ''} aria-pressed={category === c.slug} onClick={() => go({ category: c.slug })}>
+              {c.name} <span>({c.blog_count})</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {error && <p className="bl-state" role="alert">We could not load the articles. Please refresh the page.</p>}
-      {!data && !error && <p className="bl-state" role="status">Loading articles…</p>}
+      {!data && !error && (
+        <div className="bl-grid" role="status" aria-label="Loading articles">
+          {[0, 1, 2].map((i) => (<div key={i} className="bl-skel" />))}
+        </div>
+      )}
       {data && data.count === 0 && <p className="bl-state">{q || category ? 'No articles match your search.' : 'No articles published yet. Check back soon.'}</p>}
 
       {featured && (
@@ -102,9 +126,9 @@ export function BlogList() {
           <CardView c={featured} base="/blog" />
         </div>
       )}
-      <div className="bl-grid">
-        {rest.map((c) => (
-          <CardView key={c.slug} c={c} base="/blog" />
+      <div className="bl-grid" key={`${page}-${category}-${q}`}>
+        {rest.map((c, i) => (
+          <CardView key={c.slug} c={c} base="/blog" index={i} />
         ))}
       </div>
       {data && <Pager page={page} count={data.count} size={PAGE_SIZE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
