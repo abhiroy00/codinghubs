@@ -51,8 +51,6 @@ class Totals:
 def normalise_qty(product: Product, qty: int) -> int:
     if qty < 1:
         raise CartError('Quantity must be at least 1.', 'bad_quantity')
-    if product.is_digital and not product.is_physical:
-        return 1  # a digital licence is bought once per order
     return min(qty, MAX_QTY)
 
 

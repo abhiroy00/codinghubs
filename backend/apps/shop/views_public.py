@@ -298,7 +298,7 @@ def cart_payload(cart, email=''):
         'token': str(cart.token) if cart and not cart.user_id else None,
         'items': [{
             'product': payloads.product_card(l.product), 'quantity': l.quantity, 'unit_price': str(l.unit_price), 'subtotal': str(l.subtotal),
-            'discount': str(l.discount), 'tax': str(l.tax), 'problem': l.problem, 'max_quantity': 1 if (l.product.is_digital and not l.product.is_physical) else MAX_QTY,
+            'discount': str(l.discount), 'tax': str(l.tax), 'problem': l.problem, 'max_quantity': MAX_QTY,
         } for l in t.lines],
         'subtotal': str(t.subtotal), 'discount': str(t.discount), 'tax': str(t.tax), 'shipping': str(t.shipping), 'total': str(t.total),
         'coupon': t.coupon_code, 'coupon_error': t.coupon_error, 'tax_mode': t.tax_mode, 'currency': t.currency, 'has_physical': t.has_physical,
@@ -331,7 +331,7 @@ class CartItems(APIView):
         cart = get_cart(request, create=True)
         item, made = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': qty})
         if not made:
-            item.quantity = min(MAX_QTY, item.quantity + qty) if product.is_physical else 1
+            item.quantity = min(MAX_QTY, item.quantity + qty)
             item.save(update_fields=['quantity'])
         return no_cache(Response(cart_payload(cart), status=201))
 

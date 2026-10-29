@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { cartApi } from '../shop-pages/api'
 
 function cachedCount() {
@@ -33,10 +32,6 @@ export function CartLink({ className = '' }: { className?: string }) {
       window.removeEventListener('cart-count', onCartCount)
     }
   }, [])
-
-  if (count === 0) {
-    return <Link className={`nav-link cart-register${className ? ` ${className}` : ''}`} to="/register">Register</Link>
-  }
 
   const badge = count > 99 ? '99+' : String(count)
   return (

@@ -264,7 +264,17 @@ class CartTests(ShopBase):
     def test_quantity_rules(self):
         digital, physical = self.product('Pdf'), self.product('Book', 'physical', '100.00', stock=50)
         c = APIClient()
-        self.assertEqual(c.post('/api/cart/items/', {'product': digital.id, 'quantity': 5}, format='json').json()['items'][0]['quantity'], 1)
+        digital_add = c.post('/api/cart/items/', {'product': digital.id, 'quantity': 5}, format='json')
+        self.assertEqual(digital_add.json()['items'][0]['quantity'], 5)
+        self.assertEqual(digital_add.json()['items'][0]['subtotal'], '995.00')
+        c.credentials(HTTP_X_CART_TOKEN=digital_add.json()['token'])
+        digital_add_again = c.post('/api/cart/items/', {'product': digital.id, 'quantity': 2}, format='json')
+        self.assertEqual(digital_add_again.json()['items'][0]['quantity'], 7)
+        self.assertEqual(digital_add_again.json()['subtotal'], '1393.00')
+        digital_quantity = c.patch(f'/api/cart/items/{digital.id}/', {'quantity': 3}, format='json')
+        self.assertEqual(digital_quantity.json()['items'][0]['quantity'], 3)
+        self.assertEqual(digital_quantity.json()['subtotal'], '597.00')
+        c = APIClient()
         tok = c.post('/api/cart/items/', {'product': physical.id, 'quantity': 99}, format='json').json()['token']
         c.credentials(HTTP_X_CART_TOKEN=tok)
         items = {i['product']['slug']: i['quantity'] for i in c.get('/api/cart/').json()['items']}
