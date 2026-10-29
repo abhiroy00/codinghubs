@@ -15,6 +15,9 @@
 
 /* store */
 .st-hero{background:linear-gradient(135deg,#0a1a3f 0%,#0f4c81 55%,#0e9f8e 130%)}
+.st-cart-link{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;padding:.55rem .9rem;border:1px solid rgba(255,255,255,.35);border-radius:99px;color:#fff;font:700 .9rem var(--f-head);text-decoration:none;transition:background .2s,border-color .2s}
+.st-cart-link:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.7)}
+.st-cart-link span{display:grid;place-items:center;min-width:1.4rem;height:1.4rem;padding:0 .25rem;border-radius:99px;background:var(--yellow);color:var(--navy);font-size:.75rem}
 .st-trust{display:flex;gap:.5rem 1.4rem;flex-wrap:wrap;list-style:none;margin:1.4rem 0 0;padding:0;color:rgba(255,255,255,.85);font-size:.9rem}
 .st-grid{grid-template-columns:1fr}
 @media (min-width:560px){.st-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

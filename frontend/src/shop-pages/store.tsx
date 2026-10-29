@@ -5,7 +5,7 @@ import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { Html, useDetail } from './catalog'
 import { Arrow } from './projects'
 import { GuideCard } from './guides'
-import { cartApi, errorText, fmtSize, get, initial, rupees, type Card, type Paged } from './api'
+import { cartApi, errorText, fmtSize, get, initial, rupees, useCartData, type Card, type Paged } from './api'
 import './projects.css'
 import './shopui.css'
 
@@ -26,12 +26,15 @@ function CartBadge() {
 }
 
 export function ProductCard({ c, i = 0 }: { c: Card; i?: number }) {
-  const [state, setState] = useState<'idle' | 'busy' | 'added' | 'error'>('idle')
+  const [state, setState] = useState<'idle' | 'busy' | 'error'>('idle')
+  const { cart, ready: cartReady } = useCartData()
+  const inCart = !!cart?.items.some((line) => line.product.id === c.id)
   const cut = saving(c)
   const img = c.image
   const add = async () => {
+    if (inCart) return
     setState('busy')
-    try { await cartApi.add((c as any).id, 1); setState('added'); setTimeout(() => setState('idle'), 1800) } catch { setState('error'); setTimeout(() => setState('idle'), 2200) }
+    try { await cartApi.add(c.id!, 1); setState('idle') } catch { setState('error'); setTimeout(() => setState('idle'), 2200) }
   }
   return (
     <article className="pj-card st-card" style={{ ['--i' as string]: i }}>
@@ -50,9 +53,11 @@ export function ProductCard({ c, i = 0 }: { c: Card; i?: number }) {
           <span className={`st-stock${c.in_stock ? '' : ' out'}`}>{c.stock_label}</span>
         </div>
         <div className="pj-foot st-foot">
-          <button type="button" className="st-add" onClick={() => void add()} disabled={!c.in_stock || state === 'busy'} aria-live="polite">
-            <CartBadge /> {state === 'added' ? 'Added ✓' : state === 'error' ? 'Try again' : c.is_free ? 'Get free' : 'Add to cart'}
-          </button>
+          {inCart ? <Link to="/cart" className="st-add"><CartBadge /> Go to Cart</Link> : (
+            <button type="button" className="st-add" onClick={() => void add()} disabled={!c.in_stock || state === 'busy' || !cartReady} aria-live="polite">
+              <CartBadge /> {!cartReady ? 'Checking cart…' : state === 'error' ? 'Try again' : c.is_free ? 'Get free' : 'Add to cart'}
+            </button>
+          )}
           <Link to={`/store/${c.slug}`} className="pj-go" aria-label={`View ${c.title}`}>Details <Arrow /></Link>
         </div>
       </div>
@@ -62,6 +67,7 @@ export function ProductCard({ c, i = 0 }: { c: Card; i?: number }) {
 
 /* ---------------------------------------------------------------- list */
 export function StorePage() {
+  const { cart } = useCartData()
   const [params, setParams] = useSearchParams()
   const page = Math.max(1, Number(params.get('page')) || 1)
   const category = params.get('category') ?? ''
@@ -136,6 +142,9 @@ export function StorePage() {
             <span className="sr-only">Search the store</span><SearchIcon />
             <input type="search" placeholder="Search Python notes, Java notes, projects…" value={text} onChange={(e) => setText(e.target.value)} />
           </label>
+          <Link to="/cart" className="st-cart-link" aria-label={`Open cart, ${cart?.count ?? 0} items`}>
+            <CartBadge /> Cart <span>{cart?.count ?? 0}</span>
+          </Link>
           <ul className="st-trust"><li>⚡ Instant digital delivery</li><li>🔒 Secure checkout with Razorpay</li><li>📚 Made by Coding Hubs trainers</li></ul>
         </div>
       </section>
@@ -179,15 +188,19 @@ export function ProductPage() {
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
   const [busy, setBusy] = useState(false)
   const nav = useNavigate()
+  const { cart, ready: cartReady } = useCartData()
   useEffect(() => setActive(0), [p?.slug])
   if (missing) return <NotFound />
   if (!p) return <PageFrame wide><div className="pj-detail-skel" aria-busy="true" role="status"><span className="sr-only">Loading…</span></div></PageFrame>
   const cut = saving(p)
+  const inCart = !!cart?.items.some((line) => line.product.id === p.id)
   const images: { src: string; alt: string }[] = p.images ?? []
   const add = async (then?: () => void, openDrawer = true) => {
+    if (inCart) return
     setBusy(true); setMsg(null)
     try { await cartApi.add(p.id, p.is_physical ? qty : 1, openDrawer); setMsg({ ok: true, text: 'Added to your cart.' }); then?.() } catch (e) { setMsg({ ok: false, text: errorText(e) }) } finally { setBusy(false) }
   }
+  const buyNow = () => inCart ? nav('/checkout') : void add(() => nav('/checkout'), false)
   const details: [string, any][] = [['Author', p.author], ['Publisher', p.publisher], ['Edition', p.edition], ['Year', p.publication_year], ['Pages', p.pages], ['Language', p.language], ['Format', p.format], ['ISBN', p.isbn], ['SKU', p.sku]].filter(([, v]) => v) as any
   return (
     <PageFrame wide>
@@ -218,8 +231,8 @@ export function ProductPage() {
                 <label className="shop-qty">Quantity<input type="number" min={1} max={10} value={qty} onChange={(e) => setQty(Math.min(10, Math.max(1, Number(e.target.value) || 1)))} /></label>
               )}
               <div className="st-actions">
-                <button type="button" className="btn btn-yellow btn-lg" disabled={!p.in_stock || busy} onClick={() => void add()}>{p.is_free ? 'Get for free' : 'Add to cart'}</button>
-                <button type="button" className="btn pj-btn-dark btn-lg" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'), false)}>Buy now</button>
+                {inCart ? <Link to="/cart" className="btn btn-yellow btn-lg">Go to Cart</Link> : <button type="button" className="btn btn-yellow btn-lg" disabled={!p.in_stock || busy || !cartReady} onClick={() => void add()}>{!cartReady ? 'Checking cart…' : p.is_free ? 'Get for free' : 'Add to cart'}</button>}
+                <button type="button" className="btn pj-btn-dark btn-lg" disabled={!p.in_stock || busy || !cartReady} onClick={buyNow}>Buy now</button>
               </div>
               {msg && <p className={msg.ok ? 'shop-ok' : 'shop-err'} role={msg.ok ? 'status' : 'alert'}>{msg.text} {msg.ok && <Link to="/cart">View cart →</Link>}</p>}
             </div>
@@ -257,7 +270,7 @@ export function ProductPage() {
 
       <div className="st-bar" role="region" aria-label="Buy">
         <div><strong>{p.is_free ? 'Free' : rupees(p.price)}</strong>{p.original_price && <s>{rupees(p.original_price)}</s>}</div>
-        <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'), false)}>{p.is_free ? 'Get free' : 'Buy now'}</button>
+        <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy || !cartReady} onClick={buyNow}>{p.is_free ? 'Get free' : 'Buy now'}</button>
       </div>
     </PageFrame>
   )

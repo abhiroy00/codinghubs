@@ -638,7 +638,7 @@ export function FreeSession() {
           </div>
         </section>
 
-        <section className="sec sec-navy" id="how" aria-labelledby="how-title">
+        <section className="sec sec-process" id="how" aria-labelledby="how-title">
           <div className="wrap">
             <div className="sec-head center reveal">
               <p className="eyebrow eyebrow-light">How it works</p>
@@ -651,7 +651,7 @@ export function FreeSession() {
                 <path d="M0 64C90 64 110 64 167 64 300 64 350 92 500 92S700 64 833 64 930 64 1000 64" />
               </svg>
               <ol className="steps">
-                <li className="step">
+                <li className="step reveal">
                   <div className="step-visual" aria-hidden="true">
                     <span className="step-diamond"><FsIcon id="i-compass" className="step-icon" /></span>
                     <span className="step-n">01</span>
@@ -661,7 +661,7 @@ export function FreeSession() {
                     <p>Pick the course you're curious about from the 12 options.</p>
                   </div>
                 </li>
-                <li className="step">
+                <li className="step reveal">
                   <div className="step-visual" aria-hidden="true">
                     <span className="step-diamond"><FsIcon id="i-pen" className="step-icon" /></span>
                     <span className="step-n">02</span>
@@ -671,7 +671,7 @@ export function FreeSession() {
                     <p>Fill the short form — it's free.</p>
                   </div>
                 </li>
-                <li className="step">
+                <li className="step reveal">
                   <div className="step-visual" aria-hidden="true">
                     <span className="step-diamond"><FsIcon id="i-monitor" className="step-icon" /></span>
                     <span className="step-n">03</span>

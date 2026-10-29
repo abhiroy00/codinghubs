@@ -1375,3 +1375,23 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .fx-credit{margin:1rem 0 0;text-align:center;font-size:.86rem;color:rgba(255,255,255,.7)}
 .fx-credit a{color:var(--yellow);font-weight:600;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s,color .2s}
 .fx-credit a:hover,.fx-credit a:focus-visible{border-bottom-color:currentColor}
+
+/* Homepage How It Works refresh */
+.fs-page #how.sec-process{background:#f7faff;color:var(--navy);overflow:hidden}
+.fs-page #how.sec-process::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(26,73,132,.08) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
+.fs-page #how.sec-process .h2{color:var(--navy)}
+.fs-page #how.sec-process .eyebrow-light{color:#315b86}
+.fs-page #how.sec-process .marker{color:var(--navy)}
+.fs-page #how.sec-process .marker::before{background:var(--yellow)}
+.fs-page #how .steps-thread path{stroke:rgba(37,105,181,.42);animation:steps-dash 28s linear infinite}
+.fs-page #how .steps-layout::before{border-color:rgba(37,105,181,.4)}
+.fs-page #how .step-diamond{border-color:#e3ebf5;background:#fff;box-shadow:0 14px 34px rgba(22,54,95,.12)}
+.fs-page #how .step-n{border-color:#fff;background:var(--yellow);box-shadow:0 6px 18px rgba(22,54,95,.16)}
+.fs-page #how .step h3{color:var(--navy)}
+.fs-page #how .step p{color:#52647a}
+.fs-page #how .step.reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1)}
+.fs-page #how .step.reveal.in{opacity:1;transform:translateY(0)}
+.fs-page #how .step:nth-child(2).reveal{transition-delay:.12s}
+.fs-page #how .step:nth-child(3).reveal{transition-delay:.24s}
+@keyframes steps-dash{to{stroke-dashoffset:-68}}
+@media(prefers-reduced-motion:reduce){.fs-page #how .steps-thread path{animation:none}.fs-page #how .step.reveal{opacity:1;transform:none;transition:none}}

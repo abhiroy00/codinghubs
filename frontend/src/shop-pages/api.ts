@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { api as baseApi } from '../lib/api'
 import { takeInitial } from '../content-pages/api'
 
@@ -122,6 +123,13 @@ export interface CartData {
   problems: { product: string; message: string }[]
   count: number
 }
+let cartSnapshot: CartData | null = null
+let cartRequest: Promise<CartData> | null = null
+const cartSubscribers = new Set<(cart: CartData) => void>()
+const publishCart = (cart: CartData) => {
+  cartSnapshot = cart
+  cartSubscribers.forEach((subscriber) => subscriber(cart))
+}
 const emit = (count: number) => {
   try {
     localStorage.setItem('ch_cart_count', String(count))
@@ -132,17 +140,37 @@ const emit = (count: number) => {
 }
 const adopt = (c: CartData, openDrawer = false) => {
   if (c.token) cartToken.set(c.token)
+  publishCart(c)
   emit(c.count)
   window.dispatchEvent(new CustomEvent('cart-updated', { detail: c }))
   if (openDrawer) window.dispatchEvent(new CustomEvent('cart-open', { detail: c }))
   return c
 }
+const loadCart = () => {
+  if (!cartRequest) {
+    cartRequest = get<CartData>('/cart/').then(adopt).finally(() => { cartRequest = null })
+  }
+  return cartRequest
+}
 export const cartApi = {
-  get: () => get<CartData>('/cart/').then(adopt),
+  get: loadCart,
   add: (product: number, quantity = 1, openDrawer = true) => shop.post<CartData>('/cart/items/', { product, quantity }).then((r) => adopt(r.data, openDrawer)),
   set: (productId: number, quantity: number) => shop.patch<CartData>(`/cart/items/${productId}/`, { quantity }).then((r) => adopt(r.data)),
   remove: (productId: number) => shop.delete<CartData>(`/cart/items/${productId}/`).then((r) => adopt(r.data)),
   coupon: (code: string, email = '') => shop.post<CartData>('/cart/coupon/', { code, email }).then((r) => adopt(r.data)),
+}
+/** Shared view of the existing server cart, hydrated once and refreshed by every cart mutation. */
+export function useCartData() {
+  const [cart, setCart] = useState<CartData | null>(cartSnapshot)
+  const [ready, setReady] = useState(!!cartSnapshot)
+  useEffect(() => {
+    const receive = (next: CartData) => { setCart(next); setReady(true) }
+    cartSubscribers.add(receive)
+    if (cartSnapshot) { setCart(cartSnapshot); setReady(true) }
+    else void loadCart().then(() => setReady(true)).catch(() => setReady(true))
+    return () => { cartSubscribers.delete(receive) }
+  }, [])
+  return { cart, ready }
 }
 export const errorText = (err: unknown, fallback = 'Something went wrong. Please try again.') => {
   const d = (err as { response?: { data?: { detail?: string; coupon_error?: string } } })?.response?.data
