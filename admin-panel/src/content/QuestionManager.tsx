@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { adminApi } from '../api'
 
 const LEVELS: { value: string; label: string }[] = [
@@ -39,8 +38,10 @@ export function QuestionManager() {
   const [publishedFilter, setPublishedFilter] = useState('')
   const [page, setPage] = useState(1)
   const [data, setData] = useState<Paged<Question> | null>(null)
+  const results = data?.results ?? []
   const [error, setError] = useState('')
   const [editing, setEditing] = useState<Question | null>(null)
+  const editingId = editing?.id
   const [creating, setCreating] = useState(false)
   const [busyIds, setBusyIds] = useState<Record<number, boolean>>({})
   const dq = useDebounced(q, 350)
@@ -69,9 +70,9 @@ export function QuestionManager() {
 
   const courses = useMemo(() => {
     const set = new Set<string>()
-    data?.results.forEach((r) => set.add(r.course_slug + '|' + r.course_name))
+    results.forEach((r) => set.add(r.course_slug + '|' + r.course_name))
     return [...set].map((s) => { const [slug, name] = s.split('|'); return { slug, name } })
-  }, [data?.results])
+  }, [results])
 
   async function saveQuestion(qData: Partial<Question>, isNew: boolean) {
     setBusyIds({ ...busyIds, [isNew ? 0 : (qData.id ?? 0)]: true })
@@ -171,32 +172,32 @@ export function QuestionManager() {
                 </tr>
               </thead>
               <tbody>
-                {data?.results.map((q) => (
-                  <tr key={q.id}>
-                    <td className="wrap">{q.course_name}</td>
+                {results.map((item) => (
+                  <tr key={item.id}>
+                    <td className="wrap">{item.course_name}</td>
                     <td>
-                      <span className={`ad-badge st-${q.level}`}>{q.level.charAt(0).toUpperCase() + q.level.slice(1)}</span>
+                      <span className={`ad-badge st-${item.level}`}>{item.level.charAt(0).toUpperCase() + item.level.slice(1)}</span>
                     </td>
-                    <td className="wrap">{q.topic}</td>
-                    <td className="wrap">{q.question}</td>
+                    <td className="wrap">{item.topic}</td>
+                    <td className="wrap">{item.question}</td>
                     <td>
-                      <button type="button" className={`ad-switch${q.is_published ? ' on' : ''}`} role="switch" aria-checked={q.is_published} onClick={() => togglePublish(q)} disabled={busyIds[q.id]}>
+                      <button type="button" className={`ad-switch${item.is_published ? ' on' : ''}`} role="switch" aria-checked={item.is_published} onClick={() => togglePublish(item)} disabled={busyIds[item.id]}>
                         <i />
                       </button>
                     </td>
-                    <td className="nowrap">{new Date(q.updated_at).toLocaleDateString('en-IN')}</td>
+                    <td className="nowrap">{new Date(item.updated_at).toLocaleDateString('en-IN')}</td>
                     <td>
-                      {editing?.id === q.id ? null : (
+                      {editingId === item.id ? null : (
                         <>
-                          <button type="button" className="ad-link" onClick={() => setEditing(q)}>Edit</button>
+                          <button type="button" className="ad-link" onClick={() => setEditing(item)}>Edit</button>
                           {' | '}
-                          <button type="button" className="ad-link ad-danger" onClick={() => removeQuestion(q)}>Delete</button>
+                          <button type="button" className="ad-link ad-danger" onClick={() => removeQuestion(item)}>Delete</button>
                         </>
                       )}
                     </td>
                   </tr>
                 ))}
-                {data && data.results.length === 0 && (
+                {results.length === 0 && (
                   <tr>
                     <td colSpan={7} className="ad-muted">No questions found.</td>
                   </tr>
@@ -294,7 +295,7 @@ function QuestionForm({ question, onSave, onCancel }: { question?: Question; onS
           <Field label="Coding solution (optional)" htmlFor="qs-solution" textarea rows={5}>
             <textarea id="qs-solution" className="ad-input" value={form.coding_solution ?? ''} onChange={(e) => setForm({ ...form, coding_solution: e.target.value })} />
           </Field>
-          <Field label="Publish">
+          <Field label="Publish" htmlFor="qs-published">
             <label className="ad-check ad-check-box" htmlFor="qs-published">
               <input id="qs-published" type="checkbox" checked={form.is_published ?? true} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} /> Publish immediately
             </label>
@@ -309,7 +310,7 @@ function QuestionForm({ question, onSave, onCancel }: { question?: Question; onS
   )
 }
 
-function Field({ children, label, htmlFor, required, hint, textarea, rows }: { children: React.ReactNode; label: string; htmlFor: string; required?: boolean; hint?: string; textarea?: boolean; rows?: number }) {
+function Field({ children, label, htmlFor, required, hint, textarea, rows }: { children: React.ReactNode; label: string; htmlFor?: string; required?: boolean; hint?: string; textarea?: boolean; rows?: number }) {
   return (
     <div className="ad-field">
       <label htmlFor={htmlFor} className="ad-label">{label}{required ? ' *' : ''}</label>
