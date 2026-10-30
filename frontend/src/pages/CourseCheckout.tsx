@@ -31,7 +31,7 @@ export function CourseCheckout() {
   async function handleEnroll() {
     if (!course) return
     if (!user) {
-      navigate('/login', { state: { from: { pathname: `/courses/${slug}` } } })
+      navigate('/login', { state: { from: { pathname: `/enroll/${slug}` } } })
       return
     }
     setError('')

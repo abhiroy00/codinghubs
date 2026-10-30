@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PHONE, WA, Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
+import { COURSE_CATEGORIES } from '../learning/catalog'
 
 export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { openModal } = useModal()
@@ -34,9 +35,9 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
         <Link className="m" to="/#demo-classes" onClick={onClose}>
           Free Demo Class
         </Link>
-        <Link className="m" to="/#courses" onClick={onClose}>
-          Courses
-        </Link>
+        <Link className="m" to="/courses/" onClick={onClose}>Course catalog</Link>
+        <Link className="m" to="/interview-prep/" onClick={onClose}>Interview Prep</Link>
+        {COURSE_CATEGORIES.map((category) => <details className="learn-mobile-course-group" key={category.name}><summary>{category.name}</summary>{category.courses.map((course) => <Link className="m m-sub" key={course.slug} to={`/courses/${course.slug}/`} onClick={onClose}>{course.name}</Link>)}</details>)}
         <Link className="m" to="/#why" onClick={onClose}>
           Success Stories
         </Link>

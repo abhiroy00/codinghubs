@@ -9,6 +9,7 @@ import { FreeSession } from './pages/FreeSession'
 import { NotFound } from './pages/NotFound'
 import { LocationRoute } from './locations/LocationRoute'
 import { LocationsIndex } from './locations/LocationsIndex'
+import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/CourseLearning'
 
 const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ default: m.BlogList })))
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
@@ -70,11 +71,15 @@ export function App() {
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
               <Route element={<Layout />}>
+                <Route path="courses" element={<CourseDirectory />} />
+                <Route path="courses/:slug" element={<CourseDetails />} />
+                <Route path="interview-prep" element={<InterviewPrep />} />
+                <Route path="interview-prep/:slug" element={<InterviewPrep />} />
                 <Route path="faq" element={<Faq />} />
                 <Route path="policies" element={<Policies />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
-                <Route path="courses/:slug" element={<CourseCheckout />} />
+                <Route path="enroll/:slug" element={<CourseCheckout />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="dashboard" element={<Dashboard />} />
                 </Route>

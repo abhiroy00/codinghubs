@@ -2,12 +2,7 @@ import { Link } from 'react-router-dom'
 import { Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
 import { CartLink } from './CartLink'
-
-const COURSE_COLUMNS = [
-  { heading: 'AI & Data', items: ['Generative AI', 'Agentic AI', 'Prompt Engineering', 'AI Engineering Diploma', 'Data Science', 'Data Analytics'] },
-  { heading: 'Full Stack', items: ['AI-Integrated Full Stack', 'Python Full Stack', 'MERN Stack', 'MEAN Stack', 'React Full Stack', '.NET Full Stack'] },
-  { heading: 'Cloud & Cyber', items: ['AWS Solutions Architect', 'Azure (AZ-104)', 'Google Cloud', 'Cloud DevOps', 'Ethical Hacker (C|EH)', 'CISSP'] },
-]
+import { LearningNavigation } from '../learning/LearningNavigation'
 
 const RESOURCE_LINKS = [
   ['/blog', 'Blog'],
@@ -33,26 +28,7 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
               Free Demo Class
             </Link>
           </li>
-          <li className="dd">
-            <Link className="nav-link" to="/#courses" aria-haspopup="true">
-              Courses{' '}
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </Link>
-            <div className="dd-panel">
-              {COURSE_COLUMNS.map((col) => (
-                <div key={col.heading}>
-                  <h4>{col.heading}</h4>
-                  {col.items.map((item) => (
-                    <Link key={item} to="/#courses">
-                      {item}
-                    </Link>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </li>
+          <LearningNavigation />
           <li>
             <Link className="nav-link" to="/faq">
               FAQ

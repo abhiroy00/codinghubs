@@ -65,7 +65,7 @@ export function Dashboard() {
               <p className="stat-d">
                 {c.duration_display} · {c.placement_rate}% placement
               </p>
-              <Link to={`/courses/${c.slug}`} className="stat-link">
+                <Link to={`/enroll/${c.slug}`} className="stat-link">
                 Enroll now →
               </Link>
             </li>

@@ -5,6 +5,7 @@ import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { CartLink } from '../components/CartLink'
 import { LocationsMenu } from './LocationsMenu'
 import { ResourcesMenu } from './ResourcesMenu'
+import { FsLearningNavigation } from '../learning/LearningNavigation'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -47,7 +48,7 @@ export function FsHeader() {
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
             <a href="/">Home</a>
             <Link to="/#demo-classes" onClick={() => setNavOpen(false)}>Free Demo Classes</Link>
-            <Link to="/#courses" onClick={() => setNavOpen(false)}>Explore Courses</Link>
+            <FsLearningNavigation onNavigate={() => setNavOpen(false)} />
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/store">Store</a>

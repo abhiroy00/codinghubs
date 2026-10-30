@@ -1,9 +1,13 @@
 from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from .views import CourseCategoryViewSet, CourseViewSet
+from .views import CourseCategoryViewSet, CourseViewSet, LearningProgressListView, LearningProgressView
 
 router = DefaultRouter()
 router.register('categories', CourseCategoryViewSet, basename='course-category')
 router.register('', CourseViewSet, basename='course')
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('learning/progress/', LearningProgressListView.as_view(), name='learning-progress-list'),
+    path('learning/progress/<slug:slug>/', LearningProgressView.as_view(), name='learning-progress'),
+] + router.urls

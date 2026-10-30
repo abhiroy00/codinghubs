@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class CourseCategory(models.Model):
@@ -37,3 +38,17 @@ class Course(models.Model):
     @property
     def price_paise(self):
         return self.price * 100
+
+
+class LearningProgress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='learning_progress')
+    course_slug = models.SlugField(max_length=120)
+    current_day = models.PositiveSmallIntegerField(default=1)
+    completed_days = models.JSONField(default=list, blank=True)
+    quiz_scores = models.JSONField(default=dict, blank=True)
+    completed_challenges = models.JSONField(default=list, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'course_slug'], name='unique_user_course_learning_progress')]
+        ordering = ['-updated_at']
