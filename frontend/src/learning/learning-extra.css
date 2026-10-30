@@ -3,3 +3,7 @@
 .prep-editor-label{display:block;margin:15px 0 8px;font-weight:700}
 .prep-editor{display:block;width:100%;padding:16px;border:1px solid #243558;border-radius:12px;background:#0d1830;color:#e7efff;font:500 .88rem/1.65 'JetBrains Mono',monospace;resize:vertical}
 .learn-fs-menu>summary{font:inherit;color:inherit}
+.hdr .nav .learn-fs-menu>summary{position:relative;padding:.5rem .7rem;color:rgba(255,255,255,.88);font-size:.95rem;font-weight:500;cursor:pointer}
+.hdr .nav .learn-fs-menu>summary::after{content:'⌄';margin-left:.4rem}
+.hdr .nav .learn-fs-menu>summary:hover{color:#fff}
+@media(max-width:767px){.hdr .nav:not(.nav-inline).open .learn-fs-menu>summary{padding:.85rem .5rem;border-bottom:1px solid rgba(255,255,255,.1);font-size:1rem;color:#fff}}
