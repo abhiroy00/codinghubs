@@ -167,15 +167,9 @@ export function BookTutor() {
                       <p className="tutor-designation">{tutor.designation}</p>
                       <h3>{tutor.full_name}</h3>
                       <p className="tutor-bio">{tutor.bio}</p>
-                      {tutor.expertise.length > 0 && (
-                        <ul className="tutor-tags" aria-label="Areas of expertise">
-                          {tutor.expertise.slice(0, 4).map((skill) => <li key={skill}>{skill}</li>)}
-                        </ul>
-                      )}
-                      {tutor.experience && <p className="tutor-experience">{tutor.experience} experience</p>}
                       <div className="tutor-actions">
-                        <button type="button" className="btn btn-ghost" onClick={() => setProfile(tutor)}>View profile</button>
-                        <button type="button" className="btn btn-yellow" onClick={() => { setBooking(null); setBookingTutor(tutor) }}>Book a tutor</button>
+                        <button type="button" className="btn btn-ghost" onClick={() => setProfile(tutor)}>View Details</button>
+                        <button type="button" className="btn btn-yellow" onClick={() => { setBooking(null); setBookingTutor(tutor) }}>Book a Tutor</button>
                       </div>
                     </div>
                   </article>
@@ -190,15 +184,20 @@ export function BookTutor() {
         <div className="tutor-dialog-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setProfile(null)}>
           <section className="tutor-dialog tutor-profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-title">
             <button type="button" className="tutor-dialog-close" onClick={() => setProfile(null)} aria-label="Close profile">×</button>
-            <TutorPortrait tutor={profile} large />
-            <p className="tutor-designation">{profile.designation}</p>
-            <h2 id="profile-title">{profile.full_name}</h2>
-            {profile.experience && <p className="tutor-experience">{profile.experience} experience</p>}
-            <p>{profile.bio}</p>
-            {profile.expertise.length > 0 && <p><strong>Expertise:</strong> {profile.expertise.join(', ')}</p>}
-            {profile.courses.length > 0 && <p><strong>Courses:</strong> {profile.courses.join(', ')}</p>}
-            {profile.teaching_approach && <p><strong>Teaching approach:</strong> {profile.teaching_approach}</p>}
-            <p><strong>Session type:</strong> Online</p>
+            <div className="tutor-profile-header">
+              <TutorPortrait tutor={profile} large />
+              <div>
+                <p className="tutor-designation">{profile.designation}</p>
+                <h2 id="profile-title">{profile.full_name}</h2>
+              </div>
+            </div>
+            <div className="tutor-profile-details">
+              {profile.bio && <section><h3>About</h3><p>{profile.bio}</p></section>}
+              {profile.experience && <section><h3>Experience</h3><p>{profile.experience}</p></section>}
+              {profile.expertise.length > 0 && <section><h3>Expertise &amp; skills</h3><ul>{profile.expertise.map((skill) => <li key={skill}>{skill}</li>)}</ul></section>}
+              {profile.courses.length > 0 && <section><h3>Courses taught</h3><ul>{profile.courses.map((course) => <li key={course}>{course}</li>)}</ul></section>}
+              <section><h3>Session type</h3><p>Online</p></section>
+            </div>
             <button type="button" className="btn btn-yellow" onClick={() => { setProfile(null); setBooking(null); setBookingTutor(profile) }}>Book this tutor</button>
           </section>
         </div>
