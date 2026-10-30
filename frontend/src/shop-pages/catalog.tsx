@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { PageFrame, Pager, SearchIcon, useSeo } from '../content-pages/shared'
@@ -309,6 +309,36 @@ export function FileList({ files, base, slug }: { files: any[]; base: string; sl
 
 export function ProjectDetail() {
   const { data: p, missing, slug } = useDetail('project', '/projects')
+  const [questionName, setQuestionName] = useState('')
+  const [questionEmail, setQuestionEmail] = useState('')
+  const [questionText, setQuestionText] = useState('')
+  const [questionBusy, setQuestionBusy] = useState(false)
+  const [questionMessage, setQuestionMessage] = useState('')
+  const [questionError, setQuestionError] = useState('')
+
+  async function submitQuestion(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!slug) return
+    setQuestionBusy(true)
+    setQuestionMessage('')
+    setQuestionError('')
+    try {
+      const { data } = await shop.post(`/projects/${slug}/questions/`, {
+        name: questionName,
+        email: questionEmail,
+        question: questionText,
+      })
+      setQuestionMessage(data.detail)
+      setQuestionName('')
+      setQuestionEmail('')
+      setQuestionText('')
+    } catch (error) {
+      setQuestionError(errorText(error, 'Could not submit your question. Please try again.'))
+    } finally {
+      setQuestionBusy(false)
+    }
+  }
+
   if (missing) return <NotFound />
   if (!p) return <PageFrame><p className="bl-state" role="status">Loading…</p></PageFrame>
   return (
@@ -341,6 +371,35 @@ export function ProjectDetail() {
           {p.repo_url && <a className="btn btn-ghost-dark" href={p.repo_url} target="_blank" rel="noopener noreferrer">Source repository</a>}
         </div>
         <FileList files={p.files} base="/projects" slug={slug} />
+        {!p.preview && (
+          <section className="project-qa">
+            <h2>Project questions</h2>
+            <p className="project-qa-note">Ask us for help with this project. Your name, question, and our answer may be shown publicly so other learners can benefit. Your email stays private.</p>
+            {p.questions?.length > 0 && (
+              <div className="project-qa-list">
+                {p.questions.map((item: any) => (
+                  <article className="project-qa-item" key={item.id}>
+                    <h3>{item.question}</h3>
+                    <p className="project-qa-author">Asked by {item.name}</p>
+                    <p className="project-qa-answer">{item.answer}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+            <form className="project-qa-form" onSubmit={(event) => void submitQuestion(event)}>
+              <h3>Ask a project question</h3>
+              <label htmlFor="project-question-name">Name</label>
+              <input id="project-question-name" maxLength={100} required value={questionName} onChange={(event) => setQuestionName(event.target.value)} />
+              <label htmlFor="project-question-email">Email (private)</label>
+              <input id="project-question-email" type="email" required value={questionEmail} onChange={(event) => setQuestionEmail(event.target.value)} />
+              <label htmlFor="project-question-text">Your question</label>
+              <textarea id="project-question-text" maxLength={2000} required rows={5} value={questionText} onChange={(event) => setQuestionText(event.target.value)} />
+              {questionError && <p className="project-qa-error" role="alert">{questionError}</p>}
+              {questionMessage && <p className="project-qa-success" role="status">{questionMessage}</p>}
+              <button className="btn btn-yellow" type="submit" disabled={questionBusy}>{questionBusy ? 'Submitting…' : 'Submit question'}</button>
+            </form>
+          </section>
+        )}
         {!p.unlocked && p.product && (
           <aside className="bl-cta">
             <h2>Get the project files</h2>
