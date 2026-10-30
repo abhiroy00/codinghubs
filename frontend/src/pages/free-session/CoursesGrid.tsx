@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { CATEGORY_TABS, COURSES } from './data'
 import { FsIcon } from './icons'
+import { Link } from 'react-router-dom'
+import { COURSE_CATALOG } from '../../learning/catalog'
 
 export function CoursesGrid() {
   const [filter, setFilter] = useState('all')
@@ -35,6 +37,7 @@ export function CoursesGrid() {
             </div>
             <h3>{c.title}</h3>
             <p>{c.desc}</p>
+            {COURSE_CATALOG.find((course) => course.name === c.title) && <Link className="c-btn" to={`/courses/${COURSE_CATALOG.find((course) => course.name === c.title)?.slug}/`}>View course details <FsIcon id="i-arrow" /></Link>}
             <button type="button" className="c-btn" data-course={c.title} data-cta-location="course_card">
               Join Free Session <FsIcon id="i-arrow" />
             </button>

@@ -52,6 +52,7 @@ done
 $COMPOSE exec -T backend python manage.py migrate --noinput
 # Creates/updates the admin-panel login from ADMIN_EMAIL / ADMIN_PASSWORD (SSM params); no-op when they are unset.
 $COMPOSE exec -T backend python manage.py ensure_admin
+$COMPOSE exec -T backend python manage.py seed_interview_questions
 
 
 echo "deployed $SHA"

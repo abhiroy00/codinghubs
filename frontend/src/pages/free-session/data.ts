@@ -70,6 +70,7 @@ export const COURSES: CourseCard[] = [
   { cat: 'ai', icon: 'i-code', iconColor: 'ic-blue', catLabel: 'AI & Development', title: 'Vibe Coding', desc: 'Turn ideas into working apps by building with AI coding assistants — describe, generate, test and ship faster.' },
   { cat: 'dev', icon: 'i-layers', iconColor: 'ic-yellow', catLabel: 'Software Development', title: 'MERN Stack + Gen AI', desc: 'Build full stack web apps with MongoDB, Express, React and Node.js, plus Gen AI integrations.' },
   { cat: 'ai', icon: 'i-spark', iconColor: 'ic-blue', catLabel: 'AI & Cyber Security', title: 'Generative AI', desc: 'Discover how Gen AI models work and how to use them through prompts, tools and practical use-cases.' },
+  { cat: 'ai', icon: 'i-code', iconColor: 'ic-yellow', catLabel: 'AI & Data', title: 'Vibe Coding with AI', desc: 'Plan, prototype and ship useful apps with AI coding assistants, while learning to review, test and improve the generated code.' },
 ]
 
 export const CATEGORY_TABS: { filter: string; label: string }[] = [

@@ -10,7 +10,7 @@ CATEGORIES = [
         'color': '#4f46e5',
         'tagline': 'Become an AI engineer, not just an AI user.',
         'description': 'Generative AI, Agentic AI, LLMs and Machine Learning — from prompt to production.',
-        'courses': ['Generative AI', 'Agentic AI', 'Prompt Engineering', 'AI Engineering Diploma', 'Data Science', 'Data Analytics'],
+        'courses': ['Generative AI', 'Agentic AI', 'Prompt Engineering', 'AI Engineering Diploma', 'Vibe Coding with AI', 'Data Science', 'Data Analytics'],
     },
     {
         'name': 'Full Stack',

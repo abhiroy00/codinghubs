@@ -10,6 +10,7 @@ import { NotFound } from './pages/NotFound'
 import { LocationRoute } from './locations/LocationRoute'
 import { LocationsIndex } from './locations/LocationsIndex'
 import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/CourseLearning'
+import { CertificatesPage } from './learning/Certificates'
 
 const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ default: m.BlogList })))
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
@@ -75,6 +76,8 @@ export function App() {
                 <Route path="courses/:slug" element={<CourseDetails />} />
                 <Route path="interview-prep" element={<InterviewPrep />} />
                 <Route path="interview-prep/:slug" element={<InterviewPrep />} />
+                <Route path="certificates" element={<CertificatesPage />} />
+                <Route path="certificates/:slug" element={<CertificatesPage />} />
                 <Route path="faq" element={<Faq />} />
                 <Route path="policies" element={<Policies />} />
                 <Route path="login" element={<Login />} />

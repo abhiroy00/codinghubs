@@ -1,9 +1,10 @@
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.utils import timezone
 
-from .models import Course, CourseCategory, LearningProgress
-from .serializers import CourseCategorySerializer, CourseSerializer, LearningProgressSerializer
+from .models import Course, CourseCategory, CourseCertificate, CourseQuestion, LearningProgress
+from .serializers import CourseCategorySerializer, CourseCertificateSerializer, CourseQuestionSerializer, CourseSerializer, LearningProgressSerializer
 
 
 class CourseCategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -31,7 +32,9 @@ class LearningProgressView(APIView):
         progress, _ = LearningProgress.objects.get_or_create(user=request.user, course_slug=slug)
         serializer = LearningProgressSerializer(progress, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        progress = serializer.save(last_learning_date=timezone.localdate())
+        if set(progress.completed_days) == set(range(1, 31)):
+            CourseCertificate.objects.get_or_create(user=request.user, course_slug=slug)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -41,3 +44,22 @@ class LearningProgressListView(APIView):
     def get(self, request):
         progress = LearningProgress.objects.filter(user=request.user)
         return Response(LearningProgressSerializer(progress, many=True).data)
+
+
+class CourseQuestionListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, slug):
+        queryset = CourseQuestion.objects.filter(course_slug=slug, is_published=True)
+        level = request.query_params.get('level')
+        if level in {choice[0] for choice in CourseQuestion.LEVEL_CHOICES}:
+            queryset = queryset.filter(level=level)
+        return Response(CourseQuestionSerializer(queryset, many=True).data)
+
+
+class CourseCertificateListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        certificates = CourseCertificate.objects.filter(user=request.user)
+        return Response(CourseCertificateSerializer(certificates, many=True).data)

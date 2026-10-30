@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
 import { CartLink } from './CartLink'
-import { LearningNavigation } from '../learning/LearningNavigation'
 
 const RESOURCE_LINKS = [
   ['/blog', 'Blog'],
@@ -28,7 +27,9 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
               Free Demo Class
             </Link>
           </li>
-          <LearningNavigation />
+          <li><Link className="nav-link" to="/#courses">Courses</Link></li>
+          <li><Link className="nav-link" to="/interview-prep/">Interview Prep</Link></li>
+          <li><Link className="nav-link" to="/certificates/">Certificates</Link></li>
           <li>
             <Link className="nav-link" to="/faq">
               FAQ

@@ -5,7 +5,6 @@ import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { CartLink } from '../components/CartLink'
 import { LocationsMenu } from './LocationsMenu'
 import { ResourcesMenu } from './ResourcesMenu'
-import { FsLearningNavigation } from '../learning/LearningNavigation'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -48,7 +47,9 @@ export function FsHeader() {
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
             <a href="/">Home</a>
             <Link to="/#demo-classes" onClick={() => setNavOpen(false)}>Free Demo Classes</Link>
-            <FsLearningNavigation onNavigate={() => setNavOpen(false)} />
+            <Link to="/#courses" onClick={() => setNavOpen(false)}>Courses</Link>
+            <Link to="/interview-prep/" onClick={() => setNavOpen(false)}>Interview Prep</Link>
+            <Link to="/certificates/" onClick={() => setNavOpen(false)}>Certificates</Link>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/store">Store</a>
@@ -201,11 +202,6 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             <li><a href="/policies#terms">Terms &amp; Conditions</a></li>
             <li><a href="/policies#rescheduling">Rescheduling Policy</a></li>
           </ul>
-          <button type="button" className="fx-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Back to top">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 19V5M5 12l7-7 7 7" />
-            </svg>
-          </button>
         </div>
       </div>
     </footer>
