@@ -7,6 +7,7 @@ import { BrandLogo, FsFooter } from '../locations/FsShell'
 import { CartLink } from '../components/CartLink'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { ResourcesMenu } from '../locations/ResourcesMenu'
+import { FsLearningNavigation } from '../learning/LearningNavigation'
 import { CoursesGrid } from './free-session/CoursesGrid'
 import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
@@ -143,7 +144,7 @@ export function FreeSession() {
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary" onClick={(e) => { if ((e.target as HTMLElement).closest('a')) setNavOpen(false) }}>
             <a href="#home">Home</a>
             <a href="#demo-classes">Free Demo Classes</a>
-            <a href="#courses">Explore Courses</a>
+            <FsLearningNavigation onNavigate={() => setNavOpen(false)} />
             <Link to="/book-a-tutor/">Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/store">Store</a>
