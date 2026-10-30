@@ -468,11 +468,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 /* steps */
 .sec-navy::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
 .sec-navy .wrap{position:relative}
-<<<<<<< Updated upstream
-.steps-layout{position:relative;width:100%;margin:0 auto 1.5rem;overflow:hidden}
-=======
 .steps-layout{position:relative;width:100%;max-width:980px;margin:0 auto 1.5rem;overflow:hidden}
->>>>>>> Stashed changes
 .steps-thread{display:none}
 .steps-thread path{fill:none;stroke:rgba(126,185,255,.8);stroke-width:4;stroke-linecap:round;stroke-dasharray:8 9}
 .steps{position:relative;z-index:1;list-style:none;padding:0;margin:0;display:grid;gap:.6rem}
@@ -485,11 +481,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .step h3{color:#fff;font-size:1.05rem;font-weight:700;overflow-wrap:anywhere}
 .step p{margin-top:.4rem;color:rgba(255,255,255,.76);font-size:.93rem}
 @media (max-width:859px){
-<<<<<<< Updated upstream
-  .steps-layout::before{content:"";position:absolute;inset:0 auto 0 41px;border-left:2px dashed rgba(126,185,255,.65)}
-=======
   .steps-layout::before{content:"";position:absolute;top:44px;bottom:44px;left:41px;border-left:2px dashed rgba(126,185,255,.65)}
->>>>>>> Stashed changes
 }
 @media (min-width:860px){
   .steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
@@ -510,15 +502,12 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 }
 .step:active .step-diamond{transform:translate(-50%,-50%) rotate(45deg) scale(1.04)}
 .step:active .step-n{transform:scale(1.05)}
-<<<<<<< Updated upstream
 @media (hover:none){
   .step{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .step:active{transform:translateY(-3px) scale(1.015);filter:drop-shadow(0 10px 14px rgba(0,0,0,.2))}
   .step:active .step-diamond{transform:translate(-50%,-50%) rotate(45deg) scale(1.12);box-shadow:0 0 0 7px rgba(31,107,255,.2),0 16px 28px rgba(0,0,0,.3)}
   .step:active .step-n{transform:scale(1.12);box-shadow:0 0 0 6px rgba(255,222,107,.2),0 8px 18px rgba(0,0,0,.2)}
 }
-=======
->>>>>>> Stashed changes
 @media (prefers-reduced-motion:reduce){
   .step-diamond,.step-n{transition:none}
 }
@@ -1100,7 +1089,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .fs-page .steps .step p{color:rgba(255,255,255,.76)}
 
 /* seven nav items need ~1280px: collapse to the burger menu below that (laptops keep the full row) */
-@media (max-width:1279px){
+@media (max-width:1699px){
   .burger{display:inline-flex}
   .hdr-actions{margin-left:auto}
   .hdr .nav:not(.nav-inline){position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;margin-left:0;padding:.5rem 16px 1rem;background:#0A1A3F;border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 24px 40px -20px rgba(0,0,0,.7);display:none}
@@ -1304,7 +1293,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .res-list a{display:block;padding:.65rem .9rem;border-radius:10px;color:var(--navy)!important;text-decoration:none;font-weight:500;font-size:.95rem}
 .res-list a:hover,.res-list a:focus-visible{background:var(--yellow-soft)}
 /* inside the burger menu the group is an accordion: closed until tapped */
-@media (max-width:1279px){
+@media (max-width:1699px){
   .res{display:block}
   .res-btn{width:100%;justify-content:space-between;padding:.85rem .5rem;border-bottom:1px solid rgba(255,255,255,.1);font-size:1rem;color:#fff;border-radius:0}
   .res-list{position:static;transform:none;min-width:0;padding:0 0 .3rem .9rem;background:transparent;box-shadow:none;border-radius:0;animation:none}
@@ -1360,14 +1349,17 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .bl-selects{display:flex;gap:.6rem;flex-wrap:wrap}.bl-selects select{padding:.5rem .9rem;border:1px solid var(--line-2);border-radius:999px;background:#fff}
 @media print{.hdr,.ftr,.shop-tabs,.shop-order-actions,.shop-summary .btn{display:none!important}}
 
+/* The full nav row does not fit before 1700px; use the existing menu there. */
+@media (max-width:1699px){.hdr .wrap{max-width:1600px}}
+
 /* the floating WhatsApp button must not cover the mobile sticky CTA bar */
 @media (max-width:999px){body:has(.sticky-cta.show) .wa-float{bottom:84px}}
 @media (min-width:600px) and (max-width:899px){.programs-grid .plan-media{aspect-ratio:21/9}}
 
 /* equal space between the header items (desktop row); the burger menu keeps its own column layout */
-@media (min-width:1280px){.hdr .nav{flex:1 1 auto;margin-left:0;margin-right:.6rem;justify-content:space-evenly;gap:0}.hdr .nav a:not(.btn),.hdr .res-btn{padding:.5rem .6rem;font-size:.95rem;white-space:nowrap}}
+@media (min-width:1700px){.hdr .nav{flex:1 1 auto;margin-left:0;margin-right:.6rem;justify-content:space-evenly;gap:0}.hdr .nav a:not(.btn),.hdr .res-btn{padding:.5rem .6rem;font-size:.95rem;white-space:nowrap}}
 /* the desktop row must not clip the Resources dropdown (the burger menu below 1280px scrolls instead) */
-@media (min-width:1280px){.hdr .nav{overflow:visible;max-height:none}}
+@media (min-width:1700px){.hdr .nav{overflow:visible;max-height:none}}
 
 /* ============ BUTTONS: one dynamic, accessible behaviour everywhere ============ */
 .btn{-webkit-tap-highlight-color:transparent}
@@ -1395,17 +1387,14 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .btn:not(:disabled):not([aria-disabled="true"]):active{transform:translateY(1px) scale(.97);transition-duration:.08s}
 .btn-yellow:not(:disabled):hover{box-shadow:0 14px 28px -10px rgba(255,203,61,.95)}
 .pj-chips button:active,.st-chips button:active,.lx-tab:active{transform:scale(.95)}
-<<<<<<< Updated upstream
 @media (prefers-reduced-motion:reduce){.btn:hover,.btn:active{transform:none!important}}
 
 .fx-credit{margin:1rem 0 0;text-align:center;font-size:.86rem;color:rgba(255,255,255,.7)}
 .fx-credit a{color:var(--yellow);font-weight:600;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s,color .2s}
 .fx-credit a:hover,.fx-credit a:focus-visible{border-bottom-color:currentColor}
-=======
 .fx-ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:fxRipple .6s ease-out forwards}
 @keyframes fxRipple{to{transform:scale(1);opacity:0}}
 @media (prefers-reduced-motion:reduce){.fx-ripple{display:none}.btn:hover,.btn:active{transform:none!important}}
->>>>>>> Stashed changes
 
 /* Homepage How It Works refresh */
 .fs-page #how.sec-process{background:#f7faff;color:var(--navy);overflow:hidden}
@@ -1425,10 +1414,25 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .fs-page #how .step:nth-child(2).reveal{transition-delay:.12s}
 .fs-page #how .step:nth-child(3).reveal{transition-delay:.24s}
 @keyframes steps-dash{to{stroke-dashoffset:-68}}
-<<<<<<< Updated upstream
-=======
 .fx-bottom .fx-credit{flex:1 1 100%;text-align:center;font-size:.84rem}
 .fx-bottom .fx-credit a{font-weight:600;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:639px){.fx-bottom .fx-credit{text-align:left}}
->>>>>>> Stashed changes
 @media(prefers-reduced-motion:reduce){.fs-page #how .steps-thread path{animation:none}.fs-page #how .step.reveal{opacity:1;transform:none;transition:none}}
+
+/* Keep cart controls inside the summary card at every viewport width. */
+.shop-cart>*{min-width:0}
+.shop-summary{min-width:0}
+.shop-coupon,.shop-coupon>div{min-width:0}
+.shop-coupon>div{align-items:center}
+.shop-coupon input{flex:1 1 0;width:0}
+.shop-coupon>div .btn{flex:0 0 auto;min-width:5.5rem;padding-inline:.85rem}
+@media(max-width:899px){.shop-summary{position:static}}
+@media(max-width:640px){
+  .shop-cart{grid-template-columns:minmax(0,1fr);gap:1rem}
+  .shop-lines li{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:.55rem .7rem;align-items:center}
+  .shop-lines img{grid-column:1;grid-row:1/4;width:56px;height:56px}
+  .shop-line-main{grid-column:2/4;grid-row:1}
+  .shop-qty-sm{grid-column:2;grid-row:2}
+  .shop-lines li>strong{grid-column:3;grid-row:2}
+  .shop-lines li>.shop-linkbtn{grid-column:2/4;grid-row:3;justify-self:end}
+}

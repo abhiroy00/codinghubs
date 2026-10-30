@@ -154,11 +154,7 @@ const loadCart = () => {
 }
 export const cartApi = {
   get: loadCart,
-<<<<<<< Updated upstream
   add: (product: number, quantity = 1, openDrawer = true) => shop.post<CartData>('/cart/items/', { product, quantity }).then((r) => adopt(r.data, openDrawer)),
-=======
-  add: (product: number, quantity = 1) => shop.post<CartData>('/cart/items/', { product, quantity }).then((r) => adopt(r.data)),
->>>>>>> Stashed changes
   set: (productId: number, quantity: number) => shop.patch<CartData>(`/cart/items/${productId}/`, { quantity }).then((r) => adopt(r.data)),
   remove: (productId: number) => shop.delete<CartData>(`/cart/items/${productId}/`).then((r) => adopt(r.data)),
   coupon: (code: string, email = '') => shop.post<CartData>('/cart/coupon/', { code, email }).then((r) => adopt(r.data)),

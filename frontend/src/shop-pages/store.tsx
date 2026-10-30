@@ -195,20 +195,12 @@ export function ProductPage() {
   const cut = saving(p)
   const inCart = !!cart?.items.some((line) => line.product.id === p.id)
   const images: { src: string; alt: string }[] = p.images ?? []
-<<<<<<< Updated upstream
   const add = async (then?: () => void, openDrawer = true) => {
-=======
-  const add = async (then?: () => void) => {
->>>>>>> Stashed changes
     if (inCart) return
     setBusy(true); setMsg(null)
     try { await cartApi.add(p.id, p.is_physical ? qty : 1, openDrawer); setMsg({ ok: true, text: 'Added to your cart.' }); then?.() } catch (e) { setMsg({ ok: false, text: errorText(e) }) } finally { setBusy(false) }
   }
-<<<<<<< Updated upstream
   const buyNow = () => inCart ? nav('/checkout') : void add(() => nav('/checkout'), false)
-=======
-  const buyNow = () => inCart ? nav('/checkout') : void add(() => nav('/checkout'))
->>>>>>> Stashed changes
   const details: [string, any][] = [['Author', p.author], ['Publisher', p.publisher], ['Edition', p.edition], ['Year', p.publication_year], ['Pages', p.pages], ['Language', p.language], ['Format', p.format], ['ISBN', p.isbn], ['SKU', p.sku]].filter(([, v]) => v) as any
   return (
     <PageFrame wide>
@@ -278,11 +270,7 @@ export function ProductPage() {
 
       <div className="st-bar" role="region" aria-label="Buy">
         <div><strong>{p.is_free ? 'Free' : rupees(p.price)}</strong>{p.original_price && <s>{rupees(p.original_price)}</s>}</div>
-<<<<<<< Updated upstream
-        <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy || !cartReady} onClick={buyNow}>{p.is_free ? 'Get free' : 'Buy now'}</button>
-=======
         <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy || !cartReady} onClick={buyNow}>{!cartReady ? 'Checking cart…' : p.is_free ? 'Get free' : 'Buy now'}</button>
->>>>>>> Stashed changes
       </div>
     </PageFrame>
   )
