@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
@@ -51,12 +52,13 @@ export function BookTutor() {
   const [tutors, setTutors] = useState<Tutor[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
-  const [profile, setProfile] = useState<Tutor | null>(null)
   const [bookingTutor, setBookingTutor] = useState<Tutor | null | undefined>(undefined)
   const [booking, setBooking] = useState<BookingResponse | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const submissionKey = useRef(crypto.randomUUID())
+  const { tutorId } = useParams()
+  const selectedTutor = tutors.find((tutor) => String(tutor.id) === tutorId)
   const courseOptions = useMemo(() => [...new Set(tutors.flatMap((tutor) => tutor.courses))].sort(), [tutors])
 
   useEffect(() => {
@@ -71,22 +73,25 @@ export function BookTutor() {
   }, [])
 
   useEffect(() => {
-    const isDialogOpen = Boolean(profile) || bookingTutor !== undefined
-    if (!isDialogOpen) return
+    document.title = tutorId && selectedTutor
+      ? `${selectedTutor.full_name} | Book a Tutor | Coding Hubs School of AI`
+      : 'Book a Tutor | Coding Hubs School of AI'
+    window.scrollTo(0, 0)
+  }, [tutorId, selectedTutor])
+
+  useEffect(() => {
+    if (bookingTutor === undefined) return
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setProfile(null)
-        closeBooking()
-      }
+      if (event.key === 'Escape') closeBooking()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => {
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [profile, bookingTutor])
+  }, [bookingTutor])
 
   function closeBooking() {
     setBookingTutor(undefined)
@@ -127,6 +132,25 @@ export function BookTutor() {
     <div className="fs-page tutors-page">
       <FsHeader />
       <main id="main">
+        {tutorId ? (
+          <section className="section tutor-profile-page">
+            <div className="container-x">
+              {loading && <p className="tutors-state" role="status">Loading tutor profile…</p>}
+              {loadError && <p className="tutors-state tutors-error" role="alert">{loadError}</p>}
+              {!loading && !loadError && selectedTutor && (
+                <TutorDetails tutor={selectedTutor} onBook={() => { setBooking(null); setBookingTutor(selectedTutor) }} />
+              )}
+              {!loading && !loadError && !selectedTutor && (
+                <div className="tutors-empty">
+                  <h1>Tutor profile not found</h1>
+                  <p>This tutor profile may no longer be available.</p>
+                  <Link className="btn btn-yellow" to="/book-a-tutor/#tutor-list">Back to all tutors</Link>
+                </div>
+              )}
+            </div>
+          </section>
+        ) : (
+          <>
         <section className="tutors-hero">
           <div className="container-x tutors-hero-inner">
             <p className="eyebrow">PERSONALIZED LEARNING</p>
@@ -168,7 +192,7 @@ export function BookTutor() {
                       <h3>{tutor.full_name}</h3>
                       <p className="tutor-bio">{tutor.bio}</p>
                       <div className="tutor-actions">
-                        <button type="button" className="btn btn-ghost" onClick={() => setProfile(tutor)}>View Details</button>
+                        <Link className="btn btn-ghost" to={`/book-a-tutor/${tutor.id}`}>View Details</Link>
                         <button type="button" className="btn btn-yellow" onClick={() => { setBooking(null); setBookingTutor(tutor) }}>Book a Tutor</button>
                       </div>
                     </div>
@@ -178,30 +202,9 @@ export function BookTutor() {
             )}
           </div>
         </section>
+          </>
+        )}
       </main>
-
-      {profile && (
-        <div className="tutor-dialog-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setProfile(null)}>
-          <section className="tutor-dialog tutor-profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-title">
-            <button type="button" className="tutor-dialog-close" onClick={() => setProfile(null)} aria-label="Close profile">×</button>
-            <div className="tutor-profile-header">
-              <TutorPortrait tutor={profile} large />
-              <div>
-                <p className="tutor-designation">{profile.designation}</p>
-                <h2 id="profile-title">{profile.full_name}</h2>
-              </div>
-            </div>
-            <div className="tutor-profile-details">
-              {profile.bio && <section><h3>About</h3><p>{profile.bio}</p></section>}
-              {profile.experience && <section><h3>Experience</h3><p>{profile.experience}</p></section>}
-              {profile.expertise.length > 0 && <section><h3>Expertise &amp; skills</h3><ul>{profile.expertise.map((skill) => <li key={skill}>{skill}</li>)}</ul></section>}
-              {profile.courses.length > 0 && <section><h3>Courses taught</h3><ul>{profile.courses.map((course) => <li key={course}>{course}</li>)}</ul></section>}
-              <section><h3>Session type</h3><p>Online</p></section>
-            </div>
-            <button type="button" className="btn btn-yellow" onClick={() => { setProfile(null); setBooking(null); setBookingTutor(profile) }}>Book this tutor</button>
-          </section>
-        </div>
-      )}
 
       {bookingTutor !== undefined && (
         <div className="tutor-dialog-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && closeBooking()}>
@@ -250,6 +253,29 @@ export function BookTutor() {
       )}
       <FsFooter />
     </div>
+  )
+}
+
+function TutorDetails({ tutor, onBook }: { tutor: Tutor; onBook: () => void }) {
+  return (
+    <article className="tutor-detail">
+      <Link className="tutor-back-link" to="/book-a-tutor/#tutor-list">← All tutors</Link>
+      <div className="tutor-profile-header">
+        <TutorPortrait tutor={tutor} large />
+        <div>
+          <p className="tutor-designation">{tutor.designation}</p>
+          <h1>{tutor.full_name}</h1>
+        </div>
+      </div>
+      <div className="tutor-profile-details">
+        {tutor.bio && <section><h2>About</h2><p>{tutor.bio}</p></section>}
+        {tutor.experience && <section><h2>Experience</h2><p>{tutor.experience}</p></section>}
+        {tutor.expertise.length > 0 && <section><h2>Expertise &amp; skills</h2><ul>{tutor.expertise.map((skill) => <li key={skill}>{skill}</li>)}</ul></section>}
+        {tutor.courses.length > 0 && <section><h2>Courses taught</h2><ul>{tutor.courses.map((course) => <li key={course}>{course}</li>)}</ul></section>}
+        <section><h2>Session type</h2><p>Online</p></section>
+      </div>
+      <button type="button" className="btn btn-yellow tutor-detail-book" onClick={onBook}>Book this tutor</button>
+    </article>
   )
 }
 

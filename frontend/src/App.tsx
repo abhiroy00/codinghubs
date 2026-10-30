@@ -53,6 +53,7 @@ export function App() {
               <Route path="case-studies" element={<CaseList />} />
               <Route path="case-studies/:slug" element={<CaseDetail />} />
               <Route path="book-a-tutor" element={<BookTutor />} />
+              <Route path="book-a-tutor/:tutorId" element={<BookTutor />} />
               <Route path="store" element={<StorePage />} />
               <Route path="store/:slug" element={<ProductPage />} />
               <Route path="projects" element={<ProjectsPage />} />
