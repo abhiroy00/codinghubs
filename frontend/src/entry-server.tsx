@@ -17,8 +17,9 @@ import { INDEX_DESCRIPTION, INDEX_TITLE, indexJsonLd, locationJsonLd } from './l
 import { LOCATIONS, SITE_URL, locationPath } from './locations/registry'
 import { COURSE_CATALOG } from './learning/catalog'
 import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/CourseLearning'
+import { CertificatesPage } from './learning/Certificates'
 import type { LocationContent } from './locations/types'
-import { FAQ_META, HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META } from './seo/site'
+import { CERTIFICATES_META, FAQ_META, HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -90,6 +91,13 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     description: 'Choose a course-specific 30-day roadmap and track your daily interview preparation progress.',
     image: LOGO_URL, indexable: true, fsDesign: false,
     html: renderLearningPage('/interview-prep', <InterviewPrep />),
+  })
+
+  pages.push({
+    file: 'certificates/index.html', path: '/certificates/', title: CERTIFICATES_META.title,
+    description: CERTIFICATES_META.description, image: CERTIFICATES_META.image, indexable: CERTIFICATES_META.indexable, fsDesign: false,
+    html: renderLearningPage('/certificates/', <CertificatesPage />),
+    jsonLd: CERTIFICATES_META.jsonLd,
   })
 
   for (const meta of PROGRAM_METAS) {
