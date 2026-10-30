@@ -16,5 +16,7 @@ urlpatterns = [
     path('courses/<int:pk>/', views.CourseDetailView.as_view(), name='admin-course'),
     path('tutor-bookings/', views.TutorBookingListView.as_view(), name='admin-tutor-bookings'),
     path('tutor-bookings/<int:pk>/', views.TutorBookingDetailView.as_view(), name='admin-tutor-booking'),
+    path('questions/', views.QuestionListView.as_view(), name='admin-questions'),
+    path('questions/<int:pk>/', views.QuestionDetailView.as_view(), name='admin-question'),
     path('tutors/', include('apps.tutors.admin_urls')),
 ]

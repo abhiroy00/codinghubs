@@ -15,7 +15,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.courses.models import Course
+from apps.courses.models import Course, CourseQuestion
 from apps.enrollments.models import Enrollment
 from apps.leads.models import Lead
 from apps.payments.models import Order
@@ -325,3 +325,43 @@ class TutorBookingDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = TutorBookingAdminSerializer
     queryset = TutorBooking.objects.select_related('tutor')
     http_method_names = ['get', 'patch', 'options']
+
+
+class CourseQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseQuestion
+        fields = (
+            'id', 'course_slug', 'course_name', 'level', 'topic', 'question', 'answer',
+            'explanation', 'example', 'coding_prompt', 'coding_solution', 'is_published',
+            'created_at', 'updated_at',
+        )
+        read_only_fields = ('id', 'question_key', 'created_at', 'updated_at')
+
+
+class QuestionListView(generics.ListCreateAPIView):
+    permission_classes = [IsStaff]
+    serializer_class = CourseQuestionSerializer
+    pagination_class = Page
+
+    def get_queryset(self):
+        qs = CourseQuestion.objects.all()
+        p = self.request.query_params
+        if slug := p.get('course_slug'):
+            qs = qs.filter(course_slug=slug)
+        if level := p.get('level'):
+            qs = qs.filter(level=level)
+        if q := p.get('q'):
+            qs = qs.filter(Q(question__icontains=q) | Q(topic__icontains=q) | Q(course_name__icontains=q))
+        if pub := p.get('is_published'):
+            qs = qs.filter(is_published=pub.lower() in ('1', 'true', 'yes'))
+        return qs.order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class QuestionDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsStaff]
+    serializer_class = CourseQuestionSerializer
+    queryset = CourseQuestion.objects.all()
+    http_method_names = ['get', 'patch', 'put', 'delete', 'options']

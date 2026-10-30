@@ -10,6 +10,7 @@ import { GuideEditor, ProductEditor, ProjectEditor, SimpleProductEditor } from '
 import { ShopList } from './content/ShopLists'
 import { Customers, StoreOrderDetail, StoreOrders, StoreOverview } from './content/StorePages'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
+import { QuestionManager } from './content/QuestionManager'
 import { TutorBookingsPage } from './TutorBookingsPage'
 import { TutorsPage } from './TutorsPage'
 import './admin.css'
@@ -29,6 +30,7 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
       { to: '/orders', label: 'Course Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
       { to: '/users', label: 'Users', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
       { to: '/courses', label: 'Courses', icon: 'M4 5h16v3H4V5Zm0 5h16v3H4v-3Zm0 5h10v3H4v-3Z' },
+      { to: '/questions', label: 'Interview Questions', icon: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7 6a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm10 15H7v-6h10v6Z' },
     ],
   },
   {
@@ -271,6 +273,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
               }
             />
             <Route path="courses" element={<CoursesPage />} />
+            <Route path="questions" element={<QuestionManager />} />
             <Route path="content" element={<ContentDashboard />} />
             <Route path="blogs" element={<ContentList kind="blogs" />} />
             <Route path="blogs/create" element={<BlogEditor key="new-blog" />} />
