@@ -263,18 +263,22 @@ function TutorDetails({ tutor, onBook }: { tutor: Tutor; onBook: () => void }) {
       <div className="tutor-profile-header">
         <TutorPortrait tutor={tutor} large />
         <div>
+          <p className="tutor-profile-eyebrow">TUTOR PROFILE</p>
           <p className="tutor-designation">{tutor.designation}</p>
           <h1>{tutor.full_name}</h1>
         </div>
       </div>
       <div className="tutor-profile-details">
-        {tutor.bio && <section><h2>About</h2><p>{tutor.bio}</p></section>}
+        {tutor.bio && <section className="tutor-detail-about"><h2>About</h2><p>{tutor.bio}</p></section>}
         {tutor.experience && <section><h2>Experience</h2><p>{tutor.experience}</p></section>}
-        {tutor.expertise.length > 0 && <section><h2>Expertise &amp; skills</h2><ul>{tutor.expertise.map((skill) => <li key={skill}>{skill}</li>)}</ul></section>}
-        {tutor.courses.length > 0 && <section><h2>Courses taught</h2><ul>{tutor.courses.map((course) => <li key={course}>{course}</li>)}</ul></section>}
+        {tutor.expertise.length > 0 && <section><h2>Expertise &amp; skills</h2><ul className="tutor-profile-tags">{tutor.expertise.map((skill) => <li key={skill}>{skill}</li>)}</ul></section>}
+        {tutor.courses.length > 0 && <section><h2>Courses taught</h2><ul className="tutor-profile-tags">{tutor.courses.map((course) => <li key={course}>{course}</li>)}</ul></section>}
         <section><h2>Session type</h2><p>Online</p></section>
       </div>
-      <button type="button" className="btn btn-yellow tutor-detail-book" onClick={onBook}>Book this tutor</button>
+      <div className="tutor-booking-cta">
+        <div><strong>Ready to learn with {tutor.full_name}?</strong><p>Request a one-to-one online session.</p></div>
+        <button type="button" className="btn btn-yellow tutor-detail-book" onClick={onBook}>Book this tutor</button>
+      </div>
     </article>
   )
 }
