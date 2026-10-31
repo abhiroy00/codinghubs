@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CodeEditor } from './CodeEditor'
 
 export type BankQuestion = {
   id: number
@@ -22,7 +23,6 @@ const LEVEL = {
 type Level = BankQuestion['level']
 const LEVELS: Level[] = ['basic', 'intermediate', 'advanced']
 const short = (t: string, n = 110) => (t.length > n ? `${t.slice(0, n).trim()}…` : t)
-const draftKey = (slug: string, id: number) => `ch_practice_${slug}_${id}`
 
 /** HackerRank-style practice list for a course: filters on the right, challenges in rows, and a solve view with an editor and the model answer. */
 export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug: string; bank: BankQuestion[]; loading: boolean; solved: number[]; onToggle: (id: number) => void }) {
@@ -114,22 +114,7 @@ export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug:
 }
 
 function SolveView({ slug, item, solved, onToggle, onBack, onPrev, onNext, position }: { slug: string; item: BankQuestion; solved: boolean; onToggle: () => void; onBack: () => void; onPrev?: () => void; onNext?: () => void; position: string }) {
-  const [draft, setDraft] = useState(() => {
-    try {
-      return localStorage.getItem(draftKey(slug, item.id)) || ''
-    } catch {
-      return ''
-    }
-  })
   const [show, setShow] = useState(false)
-  const save = (v: string) => {
-    setDraft(v)
-    try {
-      localStorage.setItem(draftKey(slug, item.id), v)
-    } catch {
-      /* ignore */
-    }
-  }
   return (
     <section className="pb-solve-view" aria-labelledby="pbs-title">
       <div className="pbs-bar">
@@ -156,8 +141,7 @@ function SolveView({ slug, item, solved, onToggle, onBack, onPrev, onNext, posit
           )}
         </article>
         <div className="pbs-editor">
-          <label htmlFor="pbs-draft" className="prep-editor-label">Your answer</label>
-          <textarea id="pbs-draft" className="prep-editor" rows={14} spellCheck={false} value={draft} onChange={(e) => save(e.target.value)} placeholder="Type your answer or code here. It is saved in this browser and is not executed." />
+          <CodeEditor storageKey={`${slug}_${item.id}`} hint="Write your solution, pick any language and press Run." />
           <div className="pbs-actions">
             <button type="button" className="learn-button learn-button-quiet" onClick={() => setShow((s) => !s)}>{show ? 'Hide answer' : 'Show answer'}</button>
             <button type="button" className={`learn-button${solved ? ' learn-button-quiet' : ''}`} onClick={onToggle}>{solved ? 'Solved ✓ (undo)' : 'Mark as solved'}</button>
