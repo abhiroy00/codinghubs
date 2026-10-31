@@ -102,7 +102,7 @@ export function CatalogList({ kind }: { kind: Kind }) {
       if (text) next.set('q', text)
       else next.delete('q')
       next.delete('page')
-      setParams(next)
+      setParams(next, { replace: true })
     }, 350)
     return () => clearTimeout(t)
   }, [text]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -190,7 +190,7 @@ export function useDetail(kind: 'product' | 'project' | 'guide', apiBase: string
     }
     first.current = false
     get(`${apiBase}/${slug}/`, preview ? { preview } : undefined)
-      .then((d) => live && (setData(d), window.scrollTo(0, 0)))
+      .then((d) => live && setData(d))
       .catch(() => live && !seedRef.current && setMissing(true))
     return () => {
       live = false

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
+import { BackLink } from '../components/BackLink'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { FileList, Html, useDetail } from './catalog'
 import { errorText, get, initial, rupees, shop, type Card, type Paged } from './api'
@@ -133,7 +134,7 @@ export function ProjectsPage() {
       if (text) next.set('q', text)
       else next.delete('q')
       next.delete('page')
-      setParams(next)
+      setParams(next, { replace: true })
     }, 350)
     return () => clearTimeout(t)
   }, [text]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -310,7 +311,7 @@ export function ProjectPage() {
         <header className="pj-dhero">
           <div className="pj-dhero-bg" aria-hidden="true">{p.featured_image && <img src={p.featured_image} alt="" />}</div>
           <div className="pj-dhero-in">
-            <Link to="/projects" className="pj-back"><span aria-hidden="true">←</span> All projects</Link>
+            <BackLink to="/projects" className="pj-back"><span aria-hidden="true">←</span> All projects</BackLink>
             <div className="pj-badges">
               <span className={`pj-lvl pj-${p.difficulty}`}>{cap(p.difficulty)}</span>
               {p.category && <span className="pj-pill">{p.category}</span>}

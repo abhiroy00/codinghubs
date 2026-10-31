@@ -52,14 +52,14 @@ export function FsHeader() {
         <div className="wrap hdr-in">
           <BrandLogo />
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
-            <a href="/">Home</a>
+            <Link to="/" onClick={() => setNavOpen(false)}>Home</Link>
             <Link to="/#demo-classes" onClick={() => setNavOpen(false)}>Free Demo Classes</Link>
             <Link to="/courses/" onClick={() => setNavOpen(false)}>Courses</Link>
             <Link to="/interview-prep/" onClick={() => setNavOpen(false)}>Interview Prep</Link>
             <Link to="/certificates/" onClick={() => setNavOpen(false)}>Certificates</Link>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
-            <a href="/store">Store</a>
+            <Link to="/store" onClick={() => setNavOpen(false)}>Store</Link>
             <ResourcesMenu />
             <button type="button" className="btn btn-yellow nav-cta" onClick={() => { setNavOpen(false); popup.open() }}>
               <FsIcon id="i-tap" />Register for Free Demo
@@ -135,10 +135,10 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><HLink home={home} to={h('#demo-classes')}>Free Demo Classes</HLink></li>
               <li><Link to="/courses/">All Courses</Link></li>
               <li><Link to="/locations/">AI Course Locations</Link></li>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/case-studies">Case Studies</a></li>
-              <li><a href="/projects">Projects</a></li>
-              <li><a href="/store">Store</a></li>
+              <li><Link to="/blog">Blog</Link></li>
+              <li><Link to="/case-studies">Case Studies</Link></li>
+              <li><Link to="/projects">Projects</Link></li>
+              <li><Link to="/store">Store</Link></li>
               <li><HLink home={home} to={h('#contact')}>Contact</HLink></li>
             </ul>
           </nav>

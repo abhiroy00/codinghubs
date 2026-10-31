@@ -51,7 +51,7 @@ export function BlogList() {
       if (text) next.set('q', text)
       else next.delete('q')
       next.delete('page')
-      setParams(next)
+      setParams(next, { replace: true })
     }, 350)
     return () => clearTimeout(t)
   }, [text]) // eslint-disable-line react-hooks/exhaustive-deps

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const LINKS = [
   ['/blog', 'Blog'],
@@ -35,7 +36,7 @@ export function ResourcesMenu() {
       <ul className="res-list" onClick={() => setOpen(false)}>
         {LINKS.map(([href, label]) => (
           <li key={href}>
-            <a href={href}>{label}</a>
+            <Link to={href}>{label}</Link>
           </li>
         ))}
       </ul>

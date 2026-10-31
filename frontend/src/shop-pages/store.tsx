@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
+import { BackLink } from '../components/BackLink'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { Html, useDetail } from './catalog'
 import { GuideCard } from './guides'
@@ -130,7 +131,7 @@ export function StorePage() {
       if (text) next.set('q', text)
       else next.delete('q')
       next.delete('page')
-      setParams(next)
+      setParams(next, { replace: true })
     }, 350)
     return () => clearTimeout(t)
   }, [text]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -218,7 +219,7 @@ export function ProductPage() {
     <PageFrame wide store>
       <article className="st-detail">
         {p.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <Link to="/store" className="st-back"><span aria-hidden="true">←</span> Back to store</Link>
+        <BackLink to="/store" className="st-back"><span aria-hidden="true">←</span> Back to store</BackLink>
         <div className="st-top">
           <div className="st-gallery">
             <div className="st-stage">

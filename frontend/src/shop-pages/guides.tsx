@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
+import { BackLink } from '../components/BackLink'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { CodeEnhancedHtml, FileList, Html, useDetail } from './catalog'
 import { Arrow, Clock, Cover, cap } from './projects'
@@ -90,7 +91,7 @@ export function GuidesPage() {
       if (text) next.set('q', text)
       else next.delete('q')
       next.delete('page')
-      setParams(next)
+      setParams(next, { replace: true })
     }, 350)
     return () => clearTimeout(t)
   }, [text]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -175,7 +176,7 @@ export function GuidePage() {
         <header className="pj-dhero gd-dhero">
           <div className="pj-dhero-bg" aria-hidden="true">{g.featured_image && <img src={g.featured_image} alt="" />}</div>
           <div className="pj-dhero-in">
-            <Link to="/project-guides" className="pj-back"><span aria-hidden="true">←</span> All guides</Link>
+            <BackLink to="/project-guides" className="pj-back"><span aria-hidden="true">←</span> All guides</BackLink>
             <div className="pj-badges">
               <span className={`pj-lvl pj-${g.difficulty}`}>{cap(g.difficulty)}</span>
               {g.category && <span className="pj-pill">{g.category}</span>}

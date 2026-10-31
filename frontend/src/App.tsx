@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './lib/auth-context'
 import { LazyCartDrawer } from './components/LazyCartDrawer'
+import { ScrollManager } from './components/ScrollManager'
 import { LenisProvider } from './lib/lenis-context'
 import { ModalProvider } from './lib/modal-context'
 import { RegisterPopupProvider } from './lib/register-popup'
@@ -45,6 +46,7 @@ export function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollManager />
         <LazyCartDrawer />
         <LenisProvider>
           <ModalProvider>
