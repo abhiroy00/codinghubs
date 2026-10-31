@@ -15,3 +15,7 @@
 
 ## Remaining
 Delete/differentiate duplicate "AI chatbot" projects; decide FAQ indexing, phone/email, HSTS/CSP; add Search Console review; real Core Web Vitals field data.
+
+## 2026-10-31 addendum
+- Home: new sections **Practical projects** and **Project guides / tutorials** (show only published database items, hidden when none) and **Locations** (all 18 location pages, prerendered links) for internal linking; Resources menu now lists FAQ; header has a "Free Demo" register CTA (opens the registration popup); header switches to the burger menu below 1400px so nothing clips.
+- Not done (needs owner input/approval): Rohini location page (4,000+ words of verified, unique local content), genuine testimonials/reviews, hero copy rewrite, per-location "online vs offline" availability facts.

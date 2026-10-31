@@ -12,6 +12,7 @@ import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
 import { HeroCode } from './free-session/HeroCode'
+import { HomeExplore } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
 
@@ -132,8 +133,14 @@ export function FreeSession() {
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/store">Store</a>
             <ResourcesMenu />
+            <button type="button" className="btn btn-yellow nav-cta" onClick={() => { setNavOpen(false); popup.open() }}>
+              <FsIcon id="i-tap" />Register for Free Demo
+            </button>
           </nav>
           <div className="hdr-actions">
+            <button type="button" className="btn btn-yellow btn-sm hdr-cta" onClick={() => popup.open()}>
+              <FsIcon id="i-tap" />Free Demo<span className="free-badge-red">FREE</span>
+            </button>
             <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
               <span></span>
               <span></span>
@@ -742,6 +749,8 @@ export function FreeSession() {
             </div>
           </div>
         </section>
+
+        <HomeExplore />
 
         <section className="sec sec-alt" id="faq" aria-labelledby="faq-title">
           <div className="wrap faq-wrap">

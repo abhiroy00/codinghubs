@@ -35,6 +35,7 @@ export const LOGO_WIDE = '/assets/coding-hubs-school-of-ai-logo-wide.png'
 /** Header for the location pages: same look as the free-session header plus the Locations menu. */
 export function FsHeader() {
   const [navOpen, setNavOpen] = useState(false)
+  const popup = useRegisterPopup()
   return (
     <>
       <IconSprite />
@@ -54,8 +55,14 @@ export function FsHeader() {
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <a href="/store">Store</a>
             <ResourcesMenu />
+            <button type="button" className="btn btn-yellow nav-cta" onClick={() => { setNavOpen(false); popup.open() }}>
+              <FsIcon id="i-tap" />Register for Free Demo
+            </button>
           </nav>
           <div className="hdr-actions">
+            <button type="button" className="btn btn-yellow btn-sm hdr-cta" onClick={() => popup.open()}>
+              <FsIcon id="i-tap" />Free Demo<span className="free-badge-red">FREE</span>
+            </button>
             <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
               <span></span>
               <span></span>

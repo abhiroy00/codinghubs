@@ -1089,7 +1089,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .fs-page .steps .step p{color:rgba(255,255,255,.76)}
 
 /* Keep the desktop navigation visible when it fits; collapse it only on narrow screens. */
-@media (max-width:1279px){
+@media (max-width:1399px){
   .burger{display:inline-flex}
   .hdr-actions{margin-left:auto}
   .hdr .nav:not(.nav-inline){position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;margin-left:0;padding:.5rem 16px 1rem;background:#0A1A3F;border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 24px 40px -20px rgba(0,0,0,.7);display:none}
@@ -1293,7 +1293,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .res-list a{display:block;padding:.65rem .9rem;border-radius:10px;color:var(--navy)!important;text-decoration:none;font-weight:500;font-size:.95rem}
 .res-list a:hover,.res-list a:focus-visible{background:var(--yellow-soft)}
 /* inside the burger menu the group is an accordion: closed until tapped */
-@media (max-width:1279px){
+@media (max-width:1399px){
   .res{display:block}
   .res-btn{width:100%;justify-content:space-between;padding:.85rem .5rem;border-bottom:1px solid rgba(255,255,255,.1);font-size:1rem;color:#fff;border-radius:0}
   .res-list{position:static;transform:none;min-width:0;padding:0 0 .3rem .9rem;background:transparent;box-shadow:none;border-radius:0;animation:none}
@@ -1357,9 +1357,9 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 @media (min-width:600px) and (max-width:899px){.programs-grid .plan-media{aspect-ratio:21/9}}
 
 /* equal space between the header items (desktop row); the burger menu keeps its own column layout */
-@media (min-width:1280px){.hdr .nav{flex:1 1 auto;margin-left:0;margin-right:.6rem;justify-content:space-evenly;gap:0}.hdr .nav a:not(.btn),.hdr .res-btn{padding:.5rem .6rem;font-size:.95rem;white-space:nowrap}}
+@media (min-width:1400px){.hdr .nav{flex:1 1 auto;margin-left:0;margin-right:.6rem;justify-content:space-evenly;gap:0}.hdr .nav a:not(.btn),.hdr .res-btn{padding:.5rem .6rem;font-size:.95rem;white-space:nowrap}}
 /* the desktop row must not clip the Resources dropdown (the burger menu below 1280px scrolls instead) */
-@media (min-width:1280px){.hdr .nav{overflow:visible;max-height:none}}
+@media (min-width:1400px){.hdr .nav{overflow:visible;max-height:none}}
 
 /* ============ BUTTONS: one dynamic, accessible behaviour everywhere ============ */
 .btn{-webkit-tap-highlight-color:transparent}
@@ -1467,3 +1467,22 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 @keyframes codeBlink{50%{opacity:.35}}
 @media (max-width:999px){.hero-code{max-width:none}.chip-float.c1,.chip-float.c3{left:4px}.chip-float.c2,.chip-float.c4{right:4px}}
 @media (prefers-reduced-motion:reduce){.code-track,.chip-float,.code-bar em{animation:none}}
+
+/* Home: projects, guides, locations */
+.hx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.1rem;list-style:none;margin:0;padding:0}
+.hx-card{display:flex;flex-direction:column;gap:.55rem;padding:1.4rem;border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;box-shadow:var(--sh);transition:transform .3s,box-shadow .3s,border-color .3s}
+.hx-card:hover{transform:translateY(-5px);border-color:var(--yellow-2);box-shadow:0 26px 50px -24px rgba(10,26,63,.45)}
+.hx-tag{align-self:flex-start;padding:.2rem .65rem;border-radius:99px;background:var(--yellow-soft);border:1px solid var(--yellow-2);color:var(--navy);font:700 .68rem var(--f-head);letter-spacing:.08em;text-transform:uppercase}
+.hx-card h3{font-size:1.12rem;margin:0}.hx-card h3 a{color:var(--navy);text-decoration:none}.hx-card h3 a:hover{color:var(--blue-2)}
+.hx-card>p{margin:0;color:var(--muted);font-size:.94rem;line-height:1.6}
+.hx-tech{display:flex;flex-wrap:wrap;gap:.35rem;list-style:none;margin:0;padding:0}.hx-tech li{padding:.15rem .6rem;border-radius:99px;background:var(--bg-2);color:var(--navy);font-size:.78rem;font-weight:600}
+.hx-more{margin-top:auto;padding-top:.3rem;font:700 .9rem var(--f-head);color:var(--blue-2);text-decoration:none}.hx-more span{display:inline-block;transition:transform .2s}.hx-card:hover .hx-more span{transform:translateX(5px)}
+.hx-all{display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem;margin:1.6rem 0 0}
+.hx-locs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.1rem}
+.hx-loc-group{padding:1.2rem 1.3rem;border:1px solid var(--line);border-radius:var(--r-lg);background:#fff}
+.hx-loc-group h3{font-size:1rem;margin:0 0 .6rem;padding-left:.6rem;border-left:4px solid var(--yellow-2)}
+.hx-loc-group ul{display:flex;flex-wrap:wrap;gap:.4rem;list-style:none;margin:0;padding:0}
+.hx-loc-group a{display:inline-block;padding:.3rem .75rem;border-radius:99px;border:1px solid var(--line-2);color:var(--navy);font-size:.86rem;font-weight:600;text-decoration:none;transition:all .2s}
+.hx-loc-group a:hover{background:var(--yellow-soft);border-color:var(--yellow-2);transform:translateY(-1px)}
+@media (max-width:900px){.hx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.hx-grid{grid-template-columns:1fr}}
