@@ -11,7 +11,7 @@ import { CoursesGrid } from './free-session/CoursesGrid'
 import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
-import { RegisterForm } from './free-session/RegisterForm'
+import { HeroCode } from './free-session/HeroCode'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
 
@@ -35,10 +35,7 @@ export function FreeSession() {
   useFsReveal(rootRef)
 
   const [navOpen, setNavOpen] = useState(false)
-  const [prefillCourse, setPrefillCourse] = useState<string | null>(null)
-  const [prefillToken, setPrefillToken] = useState(0)
-  const [thanksShown, setThanksShown] = useState(false)
-  const [formVisible, setFormVisible] = useState(true)
+  const [formVisible, setFormVisible] = useState(false)
   const [pastHero, setPastHero] = useState(false)
 
   useEffect(() => {
@@ -82,10 +79,6 @@ export function FreeSession() {
   }, [])
 
   function goToForm(course?: string) {
-    if (course) {
-      setPrefillCourse(course)
-      setPrefillToken((t) => t + 1)
-    }
     popup.open(course)
   }
 
@@ -120,7 +113,7 @@ export function FreeSession() {
     }
   }
 
-  const showSticky = !formVisible && pastHero && !thanksShown
+  const showSticky = !formVisible && pastHero
 
   return (
     <div ref={rootRef} className="fs-page" onClick={handleRootClick}>
@@ -174,11 +167,7 @@ export function FreeSession() {
               </h1>
             </div>
 
-            <div className="hero-form" id="register">
-              <div className="form-card">
-                <RegisterForm onThanksChange={(shown) => { setThanksShown(shown); if (shown) popup.markRegistered() }} prefillCourse={prefillCourse} prefillToken={prefillToken} />
-              </div>
-            </div>
+            <HeroCode />
 
             <div className="hero-bottom">
               <ul className="checks">

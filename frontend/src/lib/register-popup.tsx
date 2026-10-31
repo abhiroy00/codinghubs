@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { RegisterForm } from '../pages/free-session/RegisterForm'
 import { useLenisRef } from './lenis-context'
 
 const KEY = 'ch_registered'
+const AUTO_MS = 10_000
 
 interface PopupApi {
   /** Opens the "Reserve your free seat" popup; after the visitor has registered it takes them to the courses instead. */
@@ -30,6 +31,7 @@ function readFlag() {
 
 export function RegisterPopupProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const lenisRef = useLenisRef()
   const [registered, setRegistered] = useState(false)
   const [isOpen, setOpen] = useState(false)
@@ -61,6 +63,15 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
     },
     [navigate, lenisRef],
   )
+
+  // Home page: bring the popup back every 10 seconds until the visitor has registered.
+  useEffect(() => {
+    if (pathname !== '/' || registered) return
+    const t = setInterval(() => {
+      if (!readFlag() && !document.querySelector('.rp-overlay')) open()
+    }, AUTO_MS)
+    return () => clearInterval(t)
+  }, [pathname, registered, open])
 
   useEffect(() => {
     if (!isOpen) return
