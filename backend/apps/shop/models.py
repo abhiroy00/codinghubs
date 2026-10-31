@@ -115,6 +115,10 @@ class Product(SeoMixin, PublishMixin):
         self.sku = self.sku.strip().upper()
         if self.status == 'published' and not self.published_at:
             self.published_at = timezone.now()
+        if self.category_id and self.category.slug in FREE_CATEGORY_SLUGS:
+            # Business rule: notes and books are free (T-shirts are sold). Keeps the shop honest even if a price is typed in.
+            self.price = ZERO
+            self.original_price = None
         super().save(*args, **kwargs)
 
 
@@ -125,6 +129,9 @@ def _valid_isbn(value: str) -> bool:
     if len(s) == 13 and s.isdigit():
         return sum(int(c) * (1 if i % 2 == 0 else 3) for i, c in enumerate(s)) % 10 == 0
     return False
+
+
+FREE_CATEGORY_SLUGS = ('notes', 'books')
 
 
 class ProductCategory(models.Model):

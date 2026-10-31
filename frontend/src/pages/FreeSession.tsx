@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useLenisRef } from '../lib/lenis-context'
+import { useRegisterPopup } from '../lib/register-popup'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { BrandLogo, FsFooter } from '../locations/FsShell'
-import { CartLink } from '../components/CartLink'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { ResourcesMenu } from '../locations/ResourcesMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
@@ -30,6 +30,7 @@ export function FreeSession() {
 
   const rootRef = useRef<HTMLDivElement>(null)
   const lenisRef = useLenisRef()
+  const popup = useRegisterPopup()
   const location = useLocation()
   useFsReveal(rootRef)
 
@@ -81,23 +82,11 @@ export function FreeSession() {
   }, [])
 
   function goToForm(course?: string) {
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     if (course) {
       setPrefillCourse(course)
       setPrefillToken((t) => t + 1)
     }
-    const form = document.getElementById('register')
-    const lenis = lenisRef.current
-    // One scroll engine only: Lenis when active (it also handles anchor clicks), native smooth scroll otherwise.
-    if (lenis && form) lenis.scrollTo(form, { offset: -72 })
-    else form?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
-    setTimeout(() => {
-      const ids = ['f-name', 'f-phone', 'f-email', 'f-course']
-      const firstEmpty = ids
-        .map((id) => document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null)
-        .find((el) => el && !el.value)
-      ;(firstEmpty ?? (document.getElementById('submitBtn') as HTMLElement | null))?.focus()
-    }, 450)
+    popup.open(course)
   }
 
   // Arriving from another page (/#register, /#courses): scroll to the section once the page has laid out.
@@ -152,7 +141,6 @@ export function FreeSession() {
             <ResourcesMenu />
           </nav>
           <div className="hdr-actions">
-            <CartLink />
             <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
               <span></span>
               <span></span>
@@ -188,7 +176,7 @@ export function FreeSession() {
 
             <div className="hero-form" id="register">
               <div className="form-card">
-                <RegisterForm onThanksChange={setThanksShown} prefillCourse={prefillCourse} prefillToken={prefillToken} />
+                <RegisterForm onThanksChange={(shown) => { setThanksShown(shown); if (shown) popup.markRegistered() }} prefillCourse={prefillCourse} prefillToken={prefillToken} />
               </div>
             </div>
 

@@ -4,6 +4,7 @@ import { AuthProvider } from './lib/auth-context'
 import { CartDrawer } from './components/CartDrawer'
 import { LenisProvider } from './lib/lenis-context'
 import { ModalProvider } from './lib/modal-context'
+import { RegisterPopupProvider } from './lib/register-popup'
 import { Curriculum } from './pages/Curriculum'
 import { FreeSession } from './pages/FreeSession'
 import { NotFound } from './pages/NotFound'
@@ -46,6 +47,7 @@ export function App() {
         <CartDrawer />
         <LenisProvider>
           <ModalProvider>
+            <RegisterPopupProvider>
             <Suspense fallback={null}>
 <Routes>
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
@@ -92,6 +94,7 @@ export function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
 </Suspense>
+            </RegisterPopupProvider>
           </ModalProvider>
         </LenisProvider>
       </BrowserRouter>

@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
 import { INSTITUTE, WHATSAPP } from './free-session/data'
 import { FsIcon } from './free-session/icons'
 import { NotFound } from './NotFound'
+import { useRegisterPopup } from '../lib/register-popup'
 import { getProgram } from './free-session/programs'
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
@@ -16,6 +17,7 @@ export function Curriculum() {
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap',
   ])
 
+  const popup = useRegisterPopup()
   const { slug } = useParams<{ slug: string }>()
   const program = getProgram(slug)
 
@@ -80,9 +82,9 @@ export function Curriculum() {
               Begin with the free 2-hour live demo session — no payment needed.
             </p>
             <div className="cta-row" style={{ justifyContent: 'center' }}>
-              <Link to="/#register" className="btn btn-anim btn-yellow btn-lg">
+              <button type="button" className="btn btn-anim btn-yellow btn-lg" onClick={() => popup.open()}>
                 Register for Free <FsIcon id="i-arrow" />
-              </Link>
+              </button>
               <a href={WA_HREF} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-lg">
                 <FsIcon id="i-wa" />
                 <span>Ask a question</span>

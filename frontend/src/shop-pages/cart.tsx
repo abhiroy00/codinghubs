@@ -63,7 +63,7 @@ export function CartPage() {
   const blocked = !!cart?.problems.length
 
   return (
-    <PageFrame>
+    <PageFrame store>
       <h1>Your cart</h1>
       {error && <p className="shop-err" role="alert">{error}</p>}
       {!cart && !error && <p className="bl-state" role="status">Loading…</p>}
@@ -204,11 +204,11 @@ export function CheckoutPage() {
   }
 
   if (cart && cart.items.length === 0 && !pending) {
-    return <PageFrame><h1>Checkout</h1><p className="bl-state">Your cart is empty. <Link to="/store">Browse the store</Link></p></PageFrame>
+    return <PageFrame store><h1>Checkout</h1><p className="bl-state">Your cart is empty. <Link to="/store">Browse the store</Link></p></PageFrame>
   }
   const guestBlocked = settings && !settings.allow_guest_checkout && !loggedIn
   return (
-    <PageFrame>
+    <PageFrame store>
       <h1>Checkout</h1>
       {settings && !settings.payments_enabled && cart && Number(cart.total) > 0 && (
         <p className="shop-err" role="alert">Online payment is not switched on yet, so paid orders cannot be placed right now. Please contact us.</p>
@@ -276,7 +276,7 @@ export function PaymentResult({ failed = false }: { failed?: boolean }) {
 
   const paid = order && (order.payment_status === 'paid' || order.payment_status === 'partially_refunded')
   return (
-    <PageFrame>
+    <PageFrame store>
       <h1>{failed ? 'Payment not completed' : paid ? 'Thank you! Your order is confirmed' : 'Confirming your payment…'}</h1>
       {error && <p className="shop-err" role="alert">{error}</p>}
       {!number && !error && <p className="bl-state">No order to show. <Link to="/store">Go to the store</Link></p>}

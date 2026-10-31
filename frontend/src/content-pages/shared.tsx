@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
+import { StoreHeader } from '../shop-pages/StoreHeader'
 import { fmtDate, type Card, type Seo } from './api'
 
 export function SearchIcon() {
@@ -14,11 +15,11 @@ export function SearchIcon() {
   )
 }
 
-export function PageFrame({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
+export function PageFrame({ children, wide = false, store = false }: { children: ReactNode; wide?: boolean; store?: boolean }) {
   useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap'])
   return (
     <div className="fs-page">
-      <FsHeader />
+      {store ? <StoreHeader /> : <FsHeader />}
       <main id="main" className={`wrap bl-main${wide ? ' bl-wide-main' : ''}`}>
         {children}
       </main>

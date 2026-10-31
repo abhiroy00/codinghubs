@@ -33,7 +33,7 @@ export function Faq() {
     <div ref={ref}>
       <section className="page-hero" aria-labelledby="faq-heading">
         <div aria-hidden="true" style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: -1 }}>
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(to bottom,#d2e8f9 0%,#e9f4fd 40%,#f6fbfe 70%,var(--color-bg) 100%)' }}></div>
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(to bottom,#F1E6C6 0%,#F7EFD9 40%,#FAF4E4 70%,var(--color-bg) 100%)' }}></div>
         </div>
         <div className="container-x">
           <div className="narrow center">

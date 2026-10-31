@@ -19,7 +19,7 @@ function AccountFrame({ children, title }: { children: React.ReactNode; title: s
   }, [title])
   if (!localStorage.getItem('ch_access')) return <Navigate to="/login" replace state={{ from: loc.pathname }} />
   return (
-    <PageFrame>
+    <PageFrame store>
       <nav className="shop-tabs" aria-label="My account">
         <Link to="/my-account">Profile</Link>
         <Link to="/my-account/orders">Orders</Link>

@@ -39,7 +39,7 @@ export function ProductCard({ c, i = 0 }: { c: Card; i?: number }) {
   return (
     <article className="pj-card st-card" style={{ ['--i' as string]: i }}>
       <Link to={`/store/${c.slug}`} className="pj-card-media st-media" tabIndex={-1} aria-hidden="true">
-        {img ? <img src={img.src} alt={img.alt || c.title} loading="lazy" decoding="async" width={640} height={480} /> : <div className="st-ph"><span>{c.product_type === 'physical' ? 'BOOK' : (c.format || 'PDF').slice(0, 4)}</span></div>}
+        {img ? <img src={img.src} alt={img.alt || c.title} loading="lazy" decoding="async" width={640} height={480} /> : <div className="st-ph"><span>{/shirt/i.test(c.title) ? 'TEE' : c.product_type === 'physical' ? 'BOOK' : (c.format || 'PDF').slice(0, 4)}</span></div>}
         <span className="st-type">{TYPE_LABEL[c.product_type ?? 'digital']}</span>
         {cut > 0 && <span className="st-save">Save {cut}%</span>}
       </Link>
@@ -67,7 +67,6 @@ export function ProductCard({ c, i = 0 }: { c: Card; i?: number }) {
 
 /* ---------------------------------------------------------------- list */
 export function StorePage() {
-  const { cart } = useCartData()
   const [params, setParams] = useSearchParams()
   const page = Math.max(1, Number(params.get('page')) || 1)
   const category = params.get('category') ?? ''
@@ -131,21 +130,18 @@ export function StorePage() {
   const reset = () => { setText(''); setParams(new URLSearchParams()) }
 
   return (
-    <PageFrame wide>
+    <PageFrame wide store>
       <section className="pj-hero st-hero">
         <span className="pj-blob b1" aria-hidden="true" /><span className="pj-blob b2" aria-hidden="true" /><span className="pj-grid-bg" aria-hidden="true" />
         <div className="pj-hero-in">
           <p className="pj-eyebrow">Coding Hubs Store</p>
-          <h1>Notes, books and project files <span>made for learners</span></h1>
-          <p className="pj-lead">Download study notes, project reports and source code the moment you pay, or order printed material.</p>
+          <h1>T-shirts, notes and books <span>for learners</span></h1>
+          <p className="pj-lead">Notes and books are free to download. Grab a Coding Hubs T-shirt and show you build with AI.</p>
           <label className="pj-search">
             <span className="sr-only">Search the store</span><SearchIcon />
-            <input type="search" placeholder="Search Python notes, Java notes, projects…" value={text} onChange={(e) => setText(e.target.value)} />
+            <input type="search" placeholder="Search T-shirts, Python notes, books…" value={text} onChange={(e) => setText(e.target.value)} />
           </label>
-          <Link to="/cart" className="st-cart-link" aria-label={`Open cart, ${cart?.count ?? 0} items`}>
-            <CartBadge /> Cart <span>{cart?.count ?? 0}</span>
-          </Link>
-          <ul className="st-trust"><li>⚡ Instant digital delivery</li><li>🔒 Secure checkout with Razorpay</li><li>📚 Made by Coding Hubs trainers</li></ul>
+          <ul className="st-trust"><li>🎁 Notes &amp; books are free</li><li>👕 Coding Hubs T-shirts</li><li>🔒 Secure checkout with Razorpay</li></ul>
         </div>
       </section>
       <div className="pj-filters">
@@ -191,7 +187,7 @@ export function ProductPage() {
   const { cart, ready: cartReady } = useCartData()
   useEffect(() => setActive(0), [p?.slug])
   if (missing) return <NotFound />
-  if (!p) return <PageFrame wide><div className="pj-detail-skel" aria-busy="true" role="status"><span className="sr-only">Loading…</span></div></PageFrame>
+  if (!p) return <PageFrame wide store><div className="pj-detail-skel" aria-busy="true" role="status"><span className="sr-only">Loading…</span></div></PageFrame>
   const cut = saving(p)
   const inCart = !!cart?.items.some((line) => line.product.id === p.id)
   const images: { src: string; alt: string }[] = p.images ?? []
@@ -203,7 +199,7 @@ export function ProductPage() {
   const buyNow = () => inCart ? nav('/checkout') : void add(() => nav('/checkout'), false)
   const details: [string, any][] = [['Author', p.author], ['Publisher', p.publisher], ['Edition', p.edition], ['Year', p.publication_year], ['Pages', p.pages], ['Language', p.language], ['Format', p.format], ['ISBN', p.isbn], ['SKU', p.sku]].filter(([, v]) => v) as any
   return (
-    <PageFrame wide>
+    <PageFrame wide store>
       <article className="st-detail">
         {p.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
         <Link to="/store" className="st-back"><span aria-hidden="true">←</span> Back to store</Link>

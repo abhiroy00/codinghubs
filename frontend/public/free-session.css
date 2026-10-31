@@ -7,7 +7,7 @@
   --blue:#1F6BFF; --blue-2:#1554D6; --blue-soft:#EAF1FF;
   --yellow:#FFDE6B; --yellow-2:#FFCB3D; --yellow-soft:#FFFAE6;
   --ink:#0B1530; --muted:#363636; --faint:#8A94AD;
-  --bg:#FFFFFF; --bg-2:#F4F7FC; --line:#E2E8F3; --line-2:#CFD8E8;
+  --bg:#FBF7EC; --bg-2:#F4ECD6; --line:#E7DDC2; --line-2:#D8CBA6;
   --ok:#12945A; --ok-soft:#E6F7EE; --err:#D33A2C; --err-soft:#FDECEA;
   --wa:#12823f;
   --r-sm:10px; --r:16px; --r-lg:24px;
@@ -158,8 +158,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .btn-navy.btn-anim{animation-name:ctaPulseNavy}
 .btn-navy.btn-anim::before{background:linear-gradient(100deg,transparent,rgba(255,255,255,.3),transparent)}
 @keyframes ctaPulseNavy{0%,100%{box-shadow:0 0 0 0 rgba(10,26,63,.45)}50%{box-shadow:0 0 0 12px rgba(10,26,63,0)}}
-#submitBtn.loading{animation:none}
-#submitBtn.loading::before{display:none}
+:is(#submitBtn,.lead-submit).loading{animation:none}
+:is(#submitBtn,.lead-submit).loading::before{display:none}
 
 /* course ticker */
 .ticker{overflow:hidden;background:var(--yellow);border-block:2px solid var(--navy);transform:rotate(-1deg);margin:-14px -10px 0;position:relative;z-index:2}
@@ -179,7 +179,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .form-meta{list-style:none;margin:.6rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.45rem}
 .form-meta li{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 .76rem/1 var(--f-head)}
 .form-meta .ico{width:14px;height:14px;color:var(--yellow)}
-#leadForm{margin-top:.8rem;display:grid;gap:.5rem}
+:is(#leadForm,.lead-form){margin-top:.8rem;display:grid;gap:.5rem}
 .field label{display:block;margin-bottom:.2rem;font-weight:600;font-size:.78rem;color:#334155;letter-spacing:.01em}
 .req{color:var(--err)}
 .opt{color:#66708a;font-weight:400}
@@ -202,11 +202,11 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .check{display:flex;gap:.5rem;align-items:flex-start;font-size:.82rem;color:var(--muted);cursor:pointer}
 .check input{width:18px;height:18px;margin-top:2px;accent-color:var(--blue);flex-shrink:0}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-#submitBtn{position:relative;margin-top:.15rem;min-height:42px;padding:.6rem 1.4rem;border-radius:12px;font-size:1rem;letter-spacing:.01em}
-#submitBtn .spinner{display:none;width:20px;height:20px;border-radius:50%;border:2.5px solid rgba(10,26,63,.25);border-top-color:var(--navy);animation:spin .7s linear infinite}
-#submitBtn.loading .spinner{display:inline-block}
-#submitBtn.loading .ico{display:none}
-#submitBtn[disabled]{cursor:progress;opacity:.85}
+:is(#submitBtn,.lead-submit){position:relative;margin-top:.15rem;min-height:42px;padding:.6rem 1.4rem;border-radius:12px;font-size:1rem;letter-spacing:.01em}
+:is(#submitBtn,.lead-submit) .spinner{display:none;width:20px;height:20px;border-radius:50%;border:2.5px solid rgba(10,26,63,.25);border-top-color:var(--navy);animation:spin .7s linear infinite}
+:is(#submitBtn,.lead-submit).loading .spinner{display:inline-block}
+:is(#submitBtn,.lead-submit).loading .ico{display:none}
+:is(#submitBtn,.lead-submit)[disabled]{cursor:progress;opacity:.85}
 @keyframes spin{to{transform:rotate(360deg)}}
 .form-status{font-size:.9rem;font-weight:500;border-radius:var(--r-sm)}
 .form-status:empty{display:none}
@@ -690,8 +690,8 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .wide-banner img{width:100%;height:auto}
 
 /* ============ REGISTER BUTTON: attention shake ============ */
-#submitBtn,.btn-shake{animation:btnShake 3s ease-in-out 1.5s infinite}
-#submitBtn:hover,#submitBtn:focus-visible,#submitBtn[disabled],.btn-shake:hover,.btn-shake:focus-visible{animation:none}
+:is(#submitBtn,.lead-submit),.btn-shake{animation:btnShake 3s ease-in-out 1.5s infinite}
+:is(#submitBtn,.lead-submit):hover,:is(#submitBtn,.lead-submit):focus-visible,:is(#submitBtn,.lead-submit)[disabled],.btn-shake:hover,.btn-shake:focus-visible{animation:none}
 .btn-shake .ico-tap{width:18px;height:18px;transform:rotate(-20deg)}
 .btn-shake:hover .ico-tap{transform:rotate(-20deg) translateY(-2px)}
 @keyframes btnShake{
@@ -1436,3 +1436,13 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   .shop-lines li>strong{grid-column:3;grid-row:2}
   .shop-lines li>.shop-linkbtn{grid-column:2/4;grid-row:3;justify-self:end}
 }
+
+/* Register popup ("Reserve your free seat") */
+@keyframes rpFade{from{opacity:0}to{opacity:1}}
+@keyframes rpPop{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+.rp-overlay{position:fixed;inset:0;z-index:300;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:clamp(.8rem,4vh,2.5rem) 1rem;background:rgba(6,14,38,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:rpFade .2s both}
+.rp-dialog{position:relative;width:100%;max-width:520px;margin:auto;background:transparent;animation:rpPop .3s cubic-bezier(.2,.8,.2,1) both}
+.rp-dialog .form-card{box-shadow:0 40px 90px -30px rgba(0,0,0,.7)}
+.rp-close{position:absolute;z-index:2;top:.7rem;right:.8rem;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer;transition:background .2s,transform .15s}
+.rp-close:hover{background:var(--yellow);color:var(--navy);transform:rotate(90deg)}
+@media (prefers-reduced-motion:reduce){.rp-overlay,.rp-dialog{animation:none}}

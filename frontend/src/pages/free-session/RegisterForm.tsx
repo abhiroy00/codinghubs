@@ -27,9 +27,11 @@ interface RegisterFormProps {
   onThanksChange?: (shown: boolean) => void
   prefillCourse?: string | null
   prefillToken?: number
+  /** Prefix for element ids so the form can be mounted twice on one page (inline and in the popup). */
+  idPrefix?: string
 }
 
-export function RegisterForm({ onThanksChange, prefillCourse, prefillToken }: RegisterFormProps = {}) {
+export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPrefix = '' }: RegisterFormProps = {}) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -122,11 +124,11 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken }: Re
   if (thanks) {
     const waText = WHATSAPP.message.replace('{course}', thanks.course).replace('{name}', thanks.firstName)
     return (
-      <div className="thanks" id="thanks" tabIndex={-1}>
+      <div className="thanks" id={`${idPrefix}thanks`} tabIndex={-1}>
         <div className="thanks-ico" aria-hidden="true">
           <FsIcon id="i-check" />
         </div>
-        <h2 id="thanks-title">You're registered!</h2>
+        <h2 id={`${idPrefix}thanks-title`}>You're registered!</h2>
         <p className="thanks-sub">
           {thanks.firstName ? `Thank you, ${thanks.firstName}. We've received your registration for the free live session.` : "We've received your registration for the free live session."}
         </p>
@@ -145,7 +147,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken }: Re
           <span>Message us on WhatsApp</span>
         </a>
         <p className="wa-note">Optional — opens WhatsApp with a pre-filled message. Only send it if you'd like to chat with us there.</p>
-        <button type="button" className="link-btn" id="againBtn" onClick={registerAgain}>
+        <button type="button" className="link-btn" id={`${idPrefix}againBtn`} onClick={registerAgain}>
           Register for another course
         </button>
       </div>
@@ -153,9 +155,9 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken }: Re
   }
 
   return (
-    <div id="formWrap">
+    <div id={`${idPrefix}formWrap`}>
       <div className="form-head">
-        <h2 id="form-title">Reserve your free seat</h2>
+        <h2 id={`${idPrefix}form-title`}>Reserve your free seat</h2>
         <p>Fill in your details to register for the free live online session.</p>
         <ul className="form-meta" aria-label="Session summary">
           <li>
@@ -169,79 +171,79 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken }: Re
           </li>
         </ul>
       </div>
-      <form id="leadForm" noValidate aria-labelledby="form-title" onSubmit={handleSubmit}>
+      <form className="lead-form" id={`${idPrefix}leadForm`} noValidate aria-labelledby={`${idPrefix}form-title`} onSubmit={handleSubmit}>
         <div className="field">
-          <label htmlFor="f-name">
+          <label htmlFor={`${idPrefix}f-name`}>
             Full Name <span className="req" aria-hidden="true">*</span>
           </label>
           <input
-            id="f-name"
+            id={`${idPrefix}f-name`}
             name="name"
             type="text"
             autoComplete="name"
             maxLength={80}
             required
-            aria-describedby="e-name"
+            aria-describedby={`${idPrefix}e-name`}
             placeholder="Your full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             aria-invalid={!!errors.name}
           />
-          <p className="err" id="e-name">
+          <p className="err" id={`${idPrefix}e-name`}>
             {errors.name}
           </p>
         </div>
         <div className="field">
-          <label htmlFor="f-phone">
+          <label htmlFor={`${idPrefix}f-phone`}>
             Mobile Number <span className="req" aria-hidden="true">*</span>
           </label>
           <div className="phone-wrap">
             <span className="cc" aria-hidden="true">+91</span>
             <input
-              id="f-phone"
+              id={`${idPrefix}f-phone`}
               name="phone"
               type="tel"
               inputMode="numeric"
               autoComplete="tel-national"
               maxLength={14}
               required
-              aria-describedby="e-phone"
+              aria-describedby={`${idPrefix}e-phone`}
               placeholder="10-digit mobile number"
               value={phone}
               onChange={(e) => setPhone(e.target.value.replace(/[^\d+\s-]/g, ''))}
               aria-invalid={!!errors.phone}
             />
           </div>
-          <p className="err" id="e-phone">
+          <p className="err" id={`${idPrefix}e-phone`}>
             {errors.phone}
           </p>
         </div>
         <div className="field">
-          <label htmlFor="f-email">
+          <label htmlFor={`${idPrefix}f-email`}>
             Email Address <span className="req" aria-hidden="true">*</span>
           </label>
           <input
-            id="f-email"
+            id={`${idPrefix}f-email`}
             name="email"
             type="email"
             autoComplete="email"
             maxLength={120}
             required
-            aria-describedby="e-email"
+            aria-describedby={`${idPrefix}e-email`}
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!errors.email}
           />
-          <p className="err" id="e-email">
+          <p className="err" id={`${idPrefix}e-email`}>
             {errors.email}
           </p>
         </div>
         <div className="field">
-          <label htmlFor="f-course">
+          <label htmlFor={`${idPrefix}f-course`}>
             Select Your Interested Course <span className="req" aria-hidden="true">*</span>
           </label>
-          <select id="f-course" name="course" required aria-describedby="e-course" value={course} onChange={(e) => setCourse(e.target.value)} aria-invalid={!!errors.course}>
+          <select id={`${idPrefix}f-course`} name="course" required aria-describedby={`${idPrefix}e-course`} value={course} onChange={(e) => setCourse(e.target.value)} aria-invalid={!!errors.course}>
             <option value="">Choose a course</option>
             {COURSE_OPTIONS.map((g) => (
               <optgroup label={g.group} key={g.group}>
@@ -251,15 +253,15 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken }: Re
               </optgroup>
             ))}
           </select>
-          <p className="err" id="e-course">
+          <p className="err" id={`${idPrefix}e-course`}>
             {errors.course}
           </p>
         </div>
         <div className="field">
-          <label htmlFor="f-edu">
+          <label htmlFor={`${idPrefix}f-edu`}>
             Current Education or Qualification <span className="opt">(optional)</span>
           </label>
-          <select id="f-edu" name="education" value={education} onChange={(e) => setEducation(e.target.value)}>
+          <select id={`${idPrefix}f-edu`} name="education" value={education} onChange={(e) => setEducation(e.target.value)}>
             <option value="">Select (optional)</option>
             {EDUCATION_OPTIONS.map((o) => (
               <option key={o}>{o}</option>
@@ -267,17 +269,17 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken }: Re
           </select>
         </div>
         <label className="check">
-          <input type="checkbox" name="whatsapp_consent" id="f-wa" checked={waConsent} onChange={(e) => setWaConsent(e.target.checked)} />
+          <input type="checkbox" name="whatsapp_consent" id={`${idPrefix}f-wa`} checked={waConsent} onChange={(e) => setWaConsent(e.target.checked)} />
           <span>
             Send me session updates on WhatsApp <span className="opt">(optional)</span>
           </span>
         </label>
         <div className="hp" aria-hidden="true">
-          <label htmlFor="f-company">Company</label>
-          <input id="f-company" name="company" type="text" tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} />
+          <label htmlFor={`${idPrefix}f-company`}>Company</label>
+          <input id={`${idPrefix}f-company`} name="company" type="text" tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} />
         </div>
 
-        <button type="submit" className="btn btn-yellow btn-block btn-lg" id="submitBtn" disabled={submitting} aria-busy={submitting}>
+        <button type="submit" className="btn btn-yellow btn-block btn-lg lead-submit" id={`${idPrefix}submitBtn`} disabled={submitting} aria-busy={submitting}>
           <span className="btn-label">{submitting ? 'Submitting…' : 'Reserve My Free Seat'}</span>
           <FsIcon id="i-arrow" />
           {submitting && <span className="spinner" aria-hidden="true"></span>}

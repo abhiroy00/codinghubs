@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
-import { CartLink } from './CartLink'
 
 const RESOURCE_LINKS = [
   ['/blog', 'Blog'],
@@ -67,7 +66,6 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
           </li>
         </ul>
         <div className="nav-right">
-          <CartLink />
           <button type="button" className="menu-btn" aria-haspopup="dialog" aria-expanded="false" onClick={onOpenMenu}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M4 8h16M4 16h16" />

@@ -216,8 +216,21 @@ class ProductTests(ShopBase):
         good = self.create(title='With image', images=[{'src': '/media/uploads/a.png', 'alt': 'cover'}])
         self.assertEqual(good.status_code, 201)
 
+    def test_notes_and_books_are_always_free_but_tshirts_are_sold(self):
+        notes = ProductCategory.objects.get(slug='notes')
+        books = ProductCategory.objects.get(slug='books')
+        shirts = ProductCategory.objects.get(slug='t-shirts')
+        n = self.product('Python Notes', price='199.00', original_price='299.00', category=notes)
+        b = self.product('AI Book', price='99.00', category=books)
+        t = self.product('Coding Hubs T-Shirt', 'physical', '499.00', stock=5, category=shirts)
+        for p in (n, b, t):
+            p.refresh_from_db()
+        self.assertEqual((n.price, n.original_price), (Decimal('0.00'), None))
+        self.assertEqual(b.price, Decimal('0.00'))
+        self.assertEqual(t.price, Decimal('499.00'))
+
     def test_public_filters_search_sort_pagination(self):
-        cat = ProductCategory.objects.create(name='Notes')
+        cat = ProductCategory.objects.create(name='Guides')
         for i in range(14):
             self.product(f'Item {i}', price=str(10 + i), category=cat if i % 2 else None)
         self.product('Printed Book', 'physical', '500.00', stock=3, item_kind='book')
@@ -226,7 +239,7 @@ class ProductTests(ShopBase):
         self.assertEqual((r['count'], len(r['results'])), (15, 12))
         self.assertEqual(len(pub.get('/api/products/?page=2').json()['results']), 3)
         self.assertEqual(pub.get('/api/products/?q=printed').json()['count'], 1)
-        self.assertEqual(pub.get('/api/products/?category=notes').json()['count'], 7)
+        self.assertEqual(pub.get('/api/products/?category=guides').json()['count'], 7)
         self.assertEqual(pub.get('/api/products/?type=physical').json()['count'], 1)
         self.assertEqual(pub.get('/api/products/?min_price=20&max_price=22').json()['count'], 3)
         prices = [Decimal(x['price']) for x in pub.get('/api/products/?ordering=price_desc').json()['results']]

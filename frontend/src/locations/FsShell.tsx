@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FsIcon, IconSprite } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
-import { CartLink } from '../components/CartLink'
+import { useRegisterPopup } from '../lib/register-popup'
 import { LocationsMenu } from './LocationsMenu'
 import { ResourcesMenu } from './ResourcesMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
@@ -56,7 +56,6 @@ export function FsHeader() {
             <ResourcesMenu />
           </nav>
           <div className="hdr-actions">
-            <CartLink />
             <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
               <span></span>
               <span></span>
@@ -70,6 +69,7 @@ export function FsHeader() {
 }
 
 export function FsFooter({ home = false }: { home?: boolean }) {
+  const popup = useRegisterPopup()
   // On the home page the in-page anchors scroll; everywhere else they go back to the home page section.
   const h = (hash: string) => (home ? hash : `/${hash}`)
   const waHref = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
@@ -91,9 +91,9 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             <p>Join the free 2-hour live online demo, or talk to a counsellor about the course that fits your goals.</p>
           </div>
           <div className="fx-cta-btns">
-            <HLink home={home} to={h('#register')} className="btn btn-navy btn-lg" data-cta="footer">
+            <button type="button" className="btn btn-navy btn-lg" data-cta="footer" onClick={() => popup.open()}>
               Register Free <FsIcon id="i-arrow" />
-            </HLink>
+            </button>
             <a href={INSTITUTE.phoneHref} className="btn btn-ghost btn-lg">
               Call {INSTITUTE.phone}
             </a>
