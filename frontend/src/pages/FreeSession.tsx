@@ -8,6 +8,7 @@ import { BrandLogo, FsFooter } from '../locations/FsShell'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { ResourcesMenu } from '../locations/ResourcesMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
+import { COURSES } from './free-session/data'
 import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
@@ -474,12 +475,12 @@ export function FreeSession() {
         <section className="sec sec-alt" id="courses" aria-labelledby="courses-title">
           <div className="wrap">
             <div className="sec-head center reveal">
-              <p className="eyebrow">12 courses</p>
+              <p className="eyebrow">{COURSES.length} courses</p>
               <h2 id="courses-title" className="h2">
                 Explore <span className="marker">All Courses</span>
               </h2>
               <p className="sub">
-                Choose a course and join its free live session. Click <strong>Join Free Session</strong> to register in one step.
+                Pick a course to see its details, or book the free live demo for it in one step.
               </p>
             </div>
             <CoursesGrid />
