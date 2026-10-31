@@ -28,7 +28,7 @@ const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHAT
 export function FreeSession() {
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap',
   ])
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -202,7 +202,7 @@ export function FreeSession() {
                 </a>
               </div>
               <p className="facts-label">
-                <span aria-hidden="true">✦</span> Session at a glance
+                Session at a glance
               </p>
               <div className="facts" aria-label="Session at a glance">
                 <div className="fact f-1">
@@ -580,7 +580,7 @@ export function FreeSession() {
                 <h3>Ask the trainer, live</h3>
                 <p>Interact with the trainer and get your doubts cleared in real time.</p>
                 <div className="bubbles" aria-hidden="true">
-                  <span className="bub">Is this course right for me? 🤔</span>
+                  <span className="bub">Is this course right for me?</span>
                   <span className="bub">What will I learn first?</span>
                   <span className="bub">How is the full course structured?</span>
                 </div>
@@ -607,7 +607,7 @@ export function FreeSession() {
                   </span>
                   <span className="link"></span>
                   <span className="node node-goal">
-                    <b>★</b>Your path
+                    <b>&#10003;</b>Your path
                   </span>
                 </div>
               </article>

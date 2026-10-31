@@ -10,7 +10,7 @@ import { pathToFileURL } from 'node:url'
 const root = path.resolve(import.meta.dirname, '..')
 const dist = path.join(root, 'dist')
 const SITE = 'https://codinghubs.in'
-const FONTS = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap'
+const FONTS = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap'
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 

@@ -4,17 +4,17 @@
 @keyframes blFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,-18px)}}
 @keyframes blShimmer{to{background-position:-200% 0}}
 
-.bl-hero{position:relative;overflow:hidden;isolation:isolate;margin:.5rem 0 1.6rem;padding:clamp(2rem,5vw,3.4rem) clamp(1.2rem,4vw,3rem);border-radius:28px;background:linear-gradient(135deg,#0a1a3f 0%,#14307a 55%,#1a4fd0 100%);color:#fff}
+.bl-hero{position:relative;overflow:hidden;isolation:isolate;margin:.5rem 0 1.6rem;padding:clamp(2rem,5vw,3.4rem) clamp(1.2rem,4vw,3rem);border-radius:14px;background:linear-gradient(135deg,#0a1a3f 0%,#14307a 55%,#1a4fd0 100%);color:#fff}
 .bl-blob{position:absolute;z-index:-1;border-radius:50%;filter:blur(60px);opacity:.3;animation:blFloat 14s ease-in-out infinite}
 .bl-blob.b1{width:320px;height:320px;right:-80px;top:-100px;background:#ffde6b}
 .bl-blob.b2{width:260px;height:260px;left:-90px;bottom:-120px;background:#3d7bff;animation-delay:-6s}
 .bl-grid-bg{position:absolute;inset:0;z-index:-1;opacity:.1;background-image:linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px);background-size:38px 38px}
 .bl-hero-in{max-width:760px;animation:blUp .6s both}
-.bl-eyebrow{display:inline-block;margin:0 0 .8rem;padding:.3rem .8rem;border-radius:99px;background:rgba(255,222,107,.16);border:1px solid rgba(255,222,107,.5);color:#ffde6b;font:700 .75rem var(--f-head);letter-spacing:.12em;text-transform:uppercase}
+.bl-eyebrow{display:inline-block;margin:0 0 .8rem;padding:.3rem .8rem;border-radius:8px;background:rgba(255,222,107,.16);border:1px solid rgba(255,222,107,.5);color:#ffde6b;font:700 .75rem var(--f-head);letter-spacing:.12em;text-transform:uppercase}
 .bl-main .bl-hero h1{margin:0;color:#fff;font-size:clamp(1.9rem,4.8vw,3.1rem);line-height:1.12}
 .bl-hero h1 span{color:#ffde6b}
 .bl-hero .bl-lead{margin:.9rem 0 1.4rem;color:rgba(255,255,255,.82)}
-.bl-hero .bl-search{max-width:30rem;border:0;border-radius:99px;background:#fff;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transition:box-shadow .2s,transform .15s}
+.bl-hero .bl-search{max-width:30rem;border:0;border-radius:8px;background:#fff;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transition:box-shadow .2s,transform .15s}
 .bl-hero .bl-search:hover{transform:translateY(-1px)}
 .bl-hero .bl-search:focus-within{box-shadow:0 0 0 4px rgba(255,222,107,.5),0 18px 40px -18px rgba(0,0,0,.6)}
 .bl-clear{border:0;background:var(--bg-2);color:var(--navy);width:26px;height:26px;border-radius:50%;font-size:1.1rem;line-height:1;cursor:pointer;transition:background .2s,transform .15s}

@@ -46,7 +46,7 @@ function bookingError(error: unknown) {
 export function BookTutor() {
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap',
   ])
 
   const [tutors, setTutors] = useState<Tutor[]>([])
@@ -177,7 +177,7 @@ export function BookTutor() {
             {loadError && <p className="tutors-state tutors-error" role="alert">{loadError}</p>}
             {!loading && !loadError && tutors.length === 0 && (
               <div className="tutors-empty">
-                <div aria-hidden="true">✦</div>
+                
                 <h3>Tutor profiles are being added</h3>
                 <p>Please check back soon. Once profiles are available, you can choose a tutor and request a session here.</p>
               </div>

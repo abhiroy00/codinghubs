@@ -439,7 +439,7 @@ export function GuideDetail() {
         {g.sections.map((s: any) => (
           <section key={s.key} id={s.key} className="guide-section">
             <h2>{s.title}</h2>
-            {s.locked ? <p className="guide-locked">🔒 This section is part of the full guide.</p> : <CodeEnhancedHtml html={s.html} />}
+            {s.locked ? <p className="guide-locked">This section is part of the full guide.</p> : <CodeEnhancedHtml html={s.html} />}
           </section>
         ))}
         {!g.unlocked && u && (

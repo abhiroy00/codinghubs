@@ -40,7 +40,7 @@
 .tutor-dialog h2{margin:.4rem 0 .5rem;font-size:clamp(1.5rem,4vw,2rem);letter-spacing:-.035em}
 .tutor-profile-page{min-height:55vh;padding-block:clamp(2rem,6vw,5rem);background:linear-gradient(180deg,#f4f7fc 0,#fff 28rem)}
 .tutor-detail{max-width:70rem;margin:0 auto}
-.tutor-back-link{display:inline-flex;align-items:center;min-height:2.5rem;margin-bottom:1.25rem;padding:.4rem .8rem;border:1px solid #dce5f5;border-radius:999px;background:#fff;color:#1554D6;font-weight:600;text-decoration:none;transition:background .2s,transform .2s}
+.tutor-back-link{display:inline-flex;align-items:center;min-height:2.5rem;margin-bottom:1.25rem;padding:.4rem .8rem;border:1px solid #dce5f5;border-radius:8px;background:#fff;color:#1554D6;font-weight:600;text-decoration:none;transition:background .2s,transform .2s}
 .tutor-back-link:hover{transform:translateX(-2px);background:#eef4ff}
 .tutor-profile-header{position:relative;isolation:isolate;display:flex;align-items:center;gap:clamp(1.25rem,4vw,2.5rem);min-height:13rem;overflow:hidden;padding:clamp(1.5rem,5vw,3.25rem);border-radius:1.75rem;background:radial-gradient(circle at 90% 10%,rgba(255,222,107,.2),transparent 25%),linear-gradient(125deg,#0A1A3F,#142f70 70%,#1F6BFF);color:#fff;box-shadow:0 22px 48px -30px rgba(10,26,63,.55)}
 .tutor-profile-header::after{position:absolute;z-index:-1;right:-3rem;bottom:-10rem;width:22rem;height:22rem;border:1px solid rgba(255,255,255,.14);border-radius:50%;content:"";box-shadow:0 0 0 2rem rgba(255,255,255,.035),0 0 0 4rem rgba(255,255,255,.025)}
@@ -55,7 +55,7 @@
 .tutor-profile-details p,.tutor-profile-details ul{margin:0;color:var(--color-muted);line-height:1.7;overflow-wrap:anywhere}
 .tutor-profile-details .tutor-detail-about{grid-column:1/-1}
 .tutor-profile-tags{display:flex;flex-wrap:wrap;gap:.55rem;padding:0;list-style:none}
-.tutor-profile-tags li{padding:.4rem .75rem;border:1px solid #dce5f5;border-radius:999px;background:#f4f7fc;color:#243456;font-size:.92rem}
+.tutor-profile-tags li{padding:.4rem .75rem;border:1px solid #dce5f5;border-radius:8px;background:#f4f7fc;color:#243456;font-size:.92rem}
 .tutor-booking-cta{display:flex;align-items:center;justify-content:space-between;gap:1.25rem;margin-top:1.5rem;padding:1.35rem 1.5rem;border-radius:1.25rem;background:#0A1A3F;color:#fff}
 .tutor-booking-cta strong{font:700 1.1rem/1.35 var(--f-head)}
 .tutor-booking-cta p{margin-top:.25rem;color:rgba(255,255,255,.72)}

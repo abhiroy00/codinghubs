@@ -149,7 +149,7 @@ export function LeadModal() {
               <span className="shine"></span>
               <span>{demo ? 'Book my free demo' : 'Call me back'}</span>
             </button>
-            <p className="form-note">🔒 Your details are safe with us. No spam, ever.</p>
+            <p className="form-note">Your details are safe with us. No spam, ever.</p>
           </form>
         ) : (
           <div className="form-ok show">

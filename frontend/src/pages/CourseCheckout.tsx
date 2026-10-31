@@ -115,7 +115,7 @@ export function CourseCheckout() {
               <span className="shine"></span>
               <span>{paying ? 'Opening secure checkout…' : 'Enroll now'}</span>
             </button>
-            <p className="form-note">🔒 Payments are processed securely by Razorpay.</p>
+            <p className="form-note">Payments are processed securely by Razorpay.</p>
           </div>
         )}
       </div>

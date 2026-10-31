@@ -46,10 +46,6 @@ export function HeroCode() {
           </div>
         </div>
       </div>
-      <span className="chip-float c1">Python</span>
-      <span className="chip-float c2">Generative AI</span>
-      <span className="chip-float c3">React</span>
-      <span className="chip-float c4">Data Science</span>
     </div>
   )
 }

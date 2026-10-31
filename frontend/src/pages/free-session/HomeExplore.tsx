@@ -65,7 +65,7 @@ function CardList({ items, base, cta }: { items: Item[]; base: string; cta: stri
           )}
           {c.guide && (
             <Link to={`/project-guides/${c.guide.slug}`} className="hx-guide">
-              <span aria-hidden="true">📘</span> Guide: {c.guide.title}
+              Guide: {c.guide.title}
             </Link>
           )}
           <Link to={`${base}/${c.slug}`} className="hx-more">{cta} <span aria-hidden="true">→</span></Link>

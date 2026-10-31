@@ -142,7 +142,7 @@ export function StorePage() {
             <span className="sr-only">Search the store</span><SearchIcon />
             <input type="search" placeholder="Search T-shirts, Python notes, books…" value={text} onChange={(e) => setText(e.target.value)} />
           </label>
-          <ul className="st-trust"><li>🎁 Notes &amp; books are free</li><li>👕 Coding Hubs T-shirts</li><li>🔒 Secure checkout with Razorpay</li></ul>
+          <ul className="st-trust"><li>Notes &amp; books are free</li><li>Coding Hubs T-shirts</li><li>Secure checkout with Razorpay</li></ul>
         </div>
       </section>
       <div className="pj-filters">
@@ -235,10 +235,10 @@ export function ProductPage() {
               {msg && <p className={msg.ok ? 'shop-ok' : 'shop-err'} role={msg.ok ? 'status' : 'alert'}>{msg.text} {msg.ok && <Link to="/cart">View cart →</Link>}</p>}
             </div>
             <ul className="st-perks">
-              {p.is_digital && <li><span>⚡</span><div><strong>Instant download</strong><small>Files unlock as soon as your payment is confirmed.</small></div></li>}
-              {p.is_physical && <li><span>📦</span><div><strong>Delivered to your address</strong><small>Tracking details are emailed when it ships.</small></div></li>}
-              <li><span>🔒</span><div><strong>Secure payment</strong><small>Paid through Razorpay. We never see your card details.</small></div></li>
-              <li><span>↩</span><div><strong>Clear policies</strong><small><Link to="/policies#rescheduling">Refund and return policy</Link> · <a href="/#contact">Contact us</a></small></div></li>
+              {p.is_digital && <li><span>1</span><div><strong>Instant download</strong><small>Files unlock as soon as your payment is confirmed.</small></div></li>}
+              {p.is_physical && <li><span>2</span><div><strong>Delivered to your address</strong><small>Tracking details are emailed when it ships.</small></div></li>}
+              <li><span>3</span><div><strong>Secure payment</strong><small>Paid through Razorpay. We never see your card details.</small></div></li>
+              <li><span>4</span><div><strong>Clear policies</strong><small><Link to="/policies#rescheduling">Refund and return policy</Link> · <a href="/#contact">Contact us</a></small></div></li>
             </ul>
           </div>
         </div>

@@ -218,7 +218,7 @@ export function GuidePage() {
             {sections.map((s) => (
               <section key={s.key} id={s.key} className={`pj-sec${s.locked ? ' gd-locked' : ''}`}>
                 <h2>{s.title}</h2>
-                {s.locked ? <p className="guide-locked">🔒 This part is in the full guide.</p> : <CodeEnhancedHtml html={s.html} />}
+                {s.locked ? <p className="guide-locked">This part is in the full guide.</p> : <CodeEnhancedHtml html={s.html} />}
               </section>
             ))}
             {g.faq?.length > 0 && (

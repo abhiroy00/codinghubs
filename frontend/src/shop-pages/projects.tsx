@@ -63,7 +63,7 @@ export function ProjectCard({ c, i = 0, featured = false }: { c: Card; i?: numbe
         )}
         {c.guide && (
           <Link to={`/project-guides/${c.guide.slug}`} className="pj-guide-link">
-            <span aria-hidden="true">📘</span> Guide: {c.guide.title}
+            Guide: {c.guide.title}
           </Link>
         )}
         <div className="pj-foot">
@@ -212,7 +212,7 @@ export function ProjectsPage() {
         </div>
       )}
       {featured && (
-        <div className="pj-featured"><p className="pj-feat-label">★ Featured project</p><ProjectCard c={featured} featured /></div>
+        <div className="pj-featured"><p className="pj-feat-label">Featured project</p><ProjectCard c={featured} featured /></div>
       )}
       <div className="pj-grid" key={`${page}-${category}-${difficulty}-${tech}-${price}-${q}-${ordering}`}>
         {rest.map((c, i) => (<ProjectCard key={c.slug} c={c} i={i} />))}

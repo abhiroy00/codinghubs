@@ -14,7 +14,7 @@ const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHAT
 export function Curriculum() {
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap',
   ])
 
   const popup = useRegisterPopup()
