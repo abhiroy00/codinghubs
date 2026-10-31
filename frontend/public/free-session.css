@@ -1486,3 +1486,5 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .hx-loc-group a:hover{background:var(--yellow-soft);border-color:var(--yellow-2);transform:translateY(-1px)}
 @media (max-width:900px){.hx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.hx-grid{grid-template-columns:1fr}}
+
+.hero-sub{margin:1.1rem 0 0;max-width:38rem;color:rgba(255,255,255,.85);font-size:1.08rem;line-height:1.7}

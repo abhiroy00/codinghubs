@@ -160,18 +160,21 @@ export function FreeSession() {
           <div className="wrap hero-grid">
             <div className="hero-top">
               <p className="pill">
-                <span className="live-dot" aria-hidden="true"></span>FREE 2-HOUR LIVE ONLINE SESSION
+                <span className="live-dot" aria-hidden="true"></span>PRACTICAL AI &amp; TECHNOLOGY TRAINING
               </p>
               <h1 id="hero-title">
-                Explore Your{' '}
+                Build Your{' '}
                 <span className="hl">
-                  Future Career
+                  Future
                   <svg viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M3 12C70 4 180 2 297 9" />
                   </svg>
                 </span>{' '}
-                with Our Free Live Training Session
+                with Artificial Intelligence and Next-Generation Technology
               </h1>
+              <p className="hero-sub">
+                Learn Generative AI, Agentic AI, AI Engineering, Python, Full Stack Development, Data Science and other in-demand skills through practical, instructor-led training.
+              </p>
             </div>
 
             <HeroCode />
@@ -189,11 +192,11 @@ export function FreeSession() {
                 </li>
               </ul>
               <div className="cta-row">
-                <a href="#register" className="btn btn-anim btn-yellow btn-lg" data-cta="hero-primary">
-                  Register for Free <FsIcon id="i-arrow" />
+                <a href="#courses" className="btn btn-anim btn-yellow btn-lg" data-cta="hero-explore">
+                  Explore Courses <FsIcon id="i-arrow" />
                 </a>
-                <a href="#courses" className="btn btn-ghost-light btn-lg" data-cta="hero-explore">
-                  Explore Courses
+                <a href="#register" className="btn btn-ghost-light btn-lg" data-cta="hero-primary">
+                  Book Free Live Demo
                 </a>
               </div>
               <p className="facts-label">

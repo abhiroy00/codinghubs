@@ -15,7 +15,7 @@ const SLUGS = [
   'ai-course-in-patel-nagar-delhi', 'ai-course-in-uttam-nagar-delhi', 'ai-course-in-nsp-delhi',
   'ai-course-in-aya-nagar-delhi', 'ai-course-in-noida-sector-62', 'ai-course-in-noida-sector-2',
   'ai-course-in-noida-sector-3', 'ai-course-in-gurugram', 'ai-course-in-gurugram-cyber-hub',
-  'ai-course-in-faridabad', 'ai-course-in-greater-noida', 'ai-course-in-panipat',
+  'ai-course-in-faridabad', 'ai-course-in-greater-noida', 'ai-course-in-panipat', 'ai-course-in-rohini-delhi',
 ]
 
 const BANNED = [/₹/, /\bRs\.?\s?\d/i, /\bINR\b/, /best (ai )?institute/i, /\bno\.?\s?1\b/i, /100% placement/i]
