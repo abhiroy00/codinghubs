@@ -24,14 +24,6 @@ export function locationJsonLd(meta: LocationMeta, content: LocationContent) {
         about: { '@id': ORG_ID },
       },
       {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-          { '@type': 'ListItem', position: 2, name: 'Locations', item: `${SITE_URL}/locations/` },
-          { '@type': 'ListItem', position: 3, name: meta.label, item: url },
-        ],
-      },
-      {
         '@type': 'FAQPage',
         mainEntity: content.faqs.map((f) => ({
           '@type': 'Question',

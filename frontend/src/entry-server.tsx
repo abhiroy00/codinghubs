@@ -32,16 +32,12 @@ function renderLearningPage(path: string, element: ReactNode) {
   )
 }
 
-/** WebPage + BreadcrumbList (the same trail the page shows) and, for a course page, a Course node without any price or rating. */
-function learningJsonLd(path: string, name: string, description: string, trail: [string, string][], course = false) {
+/** WebPage and, for a course page, a Course node without any price or rating. */
+function learningJsonLd(path: string, name: string, description: string, _trail: [string, string][], course = false) {
   const url = `${SITE_URL}${path}`
   const graph: Record<string, unknown>[] = [
     organizationNode(),
     { '@type': 'WebPage', '@id': `${url}#webpage`, url, name, description, inLanguage: 'en-IN', about: { '@id': ORG_ID } },
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: trail.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: `${SITE_URL}${u}` })),
-    },
   ]
   if (course) graph.push({ '@type': 'Course', name, description, url, provider: { '@id': ORG_ID }, inLanguage: 'en-IN' })
   return { '@context': 'https://schema.org', '@graph': graph }

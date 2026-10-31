@@ -102,8 +102,7 @@ def product_seo(p: Product, preview=False) -> dict:
     }
     if p.author:
         product_node['author'] = {'@type': 'Person', 'name': p.author}
-    graph = [product_node, content_services.breadcrumb_node([
-        ('Home', f'{settings.SITE_URL}/'), ('Store', f'{settings.SITE_URL}/store'), (p.title[:110], canonical)])]
+    graph = [product_node]
     return {
         'title': title, 'description': desc, 'canonical': canonical,
         'robots': 'noindex, nofollow' if preview else 'index, follow, max-image-preview:large',
@@ -225,6 +224,5 @@ def simple_seo(obj, kind, base, label, summary, preview=False, free=True) -> dic
         'title': title, 'description': desc, 'canonical': canonical,
         'robots': 'noindex, nofollow' if preview else 'index, follow, max-image-preview:large',
         'og': {'type': 'article', 'title': obj.og_title or obj.seo_title or obj.title, 'description': obj.og_description or desc, 'image': image, 'url': canonical},
-        'json_ld': {'@context': 'https://schema.org', '@graph': [node, content_services.breadcrumb_node([
-            ('Home', f'{settings.SITE_URL}/'), (label, f'{settings.SITE_URL}{base}'), (obj.title[:110], canonical)])]},
+        'json_ld': {'@context': 'https://schema.org', '@graph': [node]},
     }

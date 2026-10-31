@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
-import { Breadcrumbs } from '../components/Breadcrumbs'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { Html, useDetail } from './catalog'
 import { Arrow } from './projects'
@@ -201,7 +200,6 @@ export function ProductPage() {
   const details: [string, any][] = [['Author', p.author], ['Publisher', p.publisher], ['Edition', p.edition], ['Year', p.publication_year], ['Pages', p.pages], ['Language', p.language], ['Format', p.format], ['ISBN', p.isbn], ['SKU', p.sku]].filter(([, v]) => v) as any
   return (
     <PageFrame wide store>
-      <Breadcrumbs light items={[{ name: 'Home', to: '/' }, { name: 'Store', to: '/store' }, { name: p.title }]} />
       <article className="st-detail">
         {p.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
         <Link to="/store" className="st-back"><span aria-hidden="true">←</span> Back to store</Link>

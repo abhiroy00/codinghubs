@@ -332,7 +332,7 @@ class SeoTests(ContentBase):
         self.assertIn('id="one"', html)  # heading anchors for the table of contents
         ld = json.loads(html.split('<script type="application/ld+json">')[1].split('</script>')[0])
         types = [n['@type'] for n in ld['@graph']]
-        self.assertEqual(types, ['BlogPosting', 'BreadcrumbList', 'FAQPage'])
+        self.assertEqual(types, ['BlogPosting', 'FAQPage'])
         self.assertEqual(ld['@graph'][0]['author']['name'], 'Asha Rao')
         self.assertNotIn('aggregateRating', html)
         self.assertNotIn('review', json.dumps(ld).lower())

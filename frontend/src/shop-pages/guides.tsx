@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
-import { Breadcrumbs } from '../components/Breadcrumbs'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { CodeEnhancedHtml, FileList, Html, useDetail } from './catalog'
 import { Arrow, Clock, Cover, cap } from './projects'
@@ -176,7 +175,6 @@ export function GuidePage() {
         <header className="pj-dhero gd-dhero">
           <div className="pj-dhero-bg" aria-hidden="true">{g.featured_image && <img src={g.featured_image} alt="" />}</div>
           <div className="pj-dhero-in">
-            <Breadcrumbs items={[{ name: 'Home', to: '/' }, { name: 'Project Guides', to: '/project-guides' }, { name: g.title }]} />
             <Link to="/project-guides" className="pj-back"><span aria-hidden="true">←</span> All guides</Link>
             <div className="pj-badges">
               <span className={`pj-lvl pj-${g.difficulty}`}>{cap(g.difficulty)}</span>

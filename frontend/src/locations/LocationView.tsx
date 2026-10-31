@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { Breadcrumbs } from '../components/Breadcrumbs'
 import { FsIcon } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { EnquiryForm } from './EnquiryForm'
@@ -65,7 +64,6 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
       <main id="main">
         <section className="loc-hero" aria-labelledby="loc-title">
           <div className="wrap loc-hero-in">
-            <Breadcrumbs items={[{ name: 'Home', to: '/' }, { name: 'Locations', to: '/locations/' }, { name: meta.label }]} />
             <p className="eyebrow eyebrow-light">AI training · Delhi NCR</p>
             <h1 id="loc-title">
               <HeadlineHighlight text={content.h1} />
