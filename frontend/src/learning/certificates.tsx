@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth-context'
 import { api } from '../lib/api'
-import { COURSE_BY_SLUG, COURSE_CATALOG } from './catalog'
+import { FsIcon } from '../pages/free-session/icons'
+import { COURSE_BY_SLUG, COURSE_CATALOG, COURSE_CATEGORIES } from './catalog'
 import './learning.css'
 import './learning-extra.css'
 
@@ -43,36 +44,33 @@ export function useCertificates() {
   return { user, days, certificates, loading }
 }
 
-/** The certificate overview that sits inside the Interview Prep dashboard. */
-export function CertificateGrid() {
-  const { user, days, certificates, loading } = useCertificates()
-  const courses = useMemo(() => COURSE_CATALOG.map((course) => ({ course, done: days[course.slug] ?? 0, record: certificates[course.slug] })), [days, certificates])
+const TRACK_ICON: Record<string, string> = { ai: 'i-spark', development: 'i-code', data: 'i-line', cloud: 'i-layers', security: 'i-shield', program: 'i-brief', design: 'i-pen', marketing: 'i-mega' }
+
+/** Course tiles (icon + name). A tile opens the course's 30-day roadmap; the certificate is issued at the end of it. */
+export function CourseTiles() {
+  const { days, certificates } = useCertificates()
   return (
-    <section id="certificates" className="learn-prep-intro" aria-labelledby="certs-title">
-      <h2 id="certs-title">Certificates</h2>
-      <p className="learn-muted">A course certificate unlocks when your saved progress includes all 30 roadmap days.</p>
-      <div className="learn-course-grid certificate-grid">
-        {courses.map(({ course, done, record }) => (
-          <article className="learn-course-card" key={course.slug}>
-            <span>{course.category}</span>
-            <h3>{course.name}</h3>
-            {record ? (
-              <>
-                <p>Unlocked · completed {new Date(record.completed_at).toLocaleDateString('en-IN')}</p>
-                <Link className="learn-button" to={`/interview-prep/${course.slug}/#certificate`}>View certificate</Link>
-              </>
-            ) : (
-              <>
-                <p>{done}/30 days · {Math.round((done / 30) * 100)}% complete</p>
-                <div className="learn-progress"><div><i style={{ width: `${(done / 30) * 100}%` }} /></div></div>
-                <p>Locked until all 30 roadmap days are completed{!user ? ' and saved to your account.' : '.'}</p>
-                <Link className="learn-button learn-button-quiet" to={`/interview-prep/${course.slug}/#certificate`}>Open roadmap</Link>
-              </>
-            )}
-          </article>
-        ))}
-      </div>
-      {loading && <p className="learn-muted">Syncing account progress…</p>}
+    <section id="courses-grid" className="prep-tiles" aria-labelledby="tiles-title">
+      <h2 id="tiles-title">Choose a course</h2>
+      <p className="learn-muted">Open a course to start its 30-day roadmap. Finish all 30 days to receive the course certificate.</p>
+      {COURSE_CATEGORIES.map((category) => (
+        <div className="prep-tile-group" key={category.name}>
+          <h3>{category.name}</h3>
+          <div className="prep-tile-grid">
+            {category.courses.map((course) => {
+              const done = days[course.slug] ?? 0
+              const complete = !!certificates[course.slug] || done >= 30
+              return (
+                <Link key={course.slug} to={`/interview-prep/${course.slug}/`} className={`prep-tile${complete ? ' done' : ''}`}>
+                  <span className="pt-ico"><FsIcon id={TRACK_ICON[course.track] ?? 'i-code'} /></span>
+                  <span className="pt-name">{course.name}</span>
+                  <span className="pt-meta">{complete ? 'Certificate ready' : done > 0 ? `${done}/30 days` : '30 days'}</span>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      ))}
     </section>
   )
 }

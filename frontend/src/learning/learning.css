@@ -167,3 +167,28 @@
 .certificate-paper h3{font-size:clamp(1.8rem,4.4vw,3rem);color:var(--navy);margin:1rem 0 1.4rem}
 .certificate-paper h4{color:var(--blue-2);font-size:1.5rem;margin:.4rem 0}
 .learn-section .certificate-paper{margin:1rem auto 0}
+
+/* course tiles (interview prep): icon + name, one tile per course */
+.prep-tiles{margin:0 0 2.4rem}
+.prep-tiles h2{margin:0 0 .4rem}
+.prep-tile-group{margin-top:1.8rem}
+.prep-tile-group h3{margin:0 0 .9rem;font-size:1.05rem;color:var(--navy)}
+.prep-tile-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem}
+.prep-tile{position:relative;display:flex;align-items:center;gap:.9rem;min-height:84px;padding:1.1rem 1.3rem;border-radius:14px;background:#f4f6fb;color:var(--navy);text-decoration:none;transition:background .2s,transform .15s,box-shadow .2s}
+.prep-tile:hover{background:#e8ecf5;transform:translateY(-2px);box-shadow:0 10px 20px -16px rgba(12,18,32,.5)}
+.pt-ico{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#fff;color:#51657f;box-shadow:inset 0 0 0 1px var(--line)}
+.pt-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9}
+.pt-name{flex:1;min-width:0;font:600 1rem/1.3 var(--f-head)}
+.pt-meta{flex:none;align-self:flex-start;padding:.15rem .55rem;border-radius:99px;background:#fff;color:var(--faint);font:500 .72rem var(--f-body);white-space:nowrap}
+.prep-tile.done .pt-meta{background:#dcf5e8;color:#0d7a49}
+.prep-tile.done .pt-ico{color:#12945a}
+@media (max-width:1100px){.prep-tile-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.prep-tile-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.prep-tile{flex-wrap:wrap;gap:.5rem .8rem}.pt-meta{order:3}}
+@media (max-width:480px){.prep-tile-grid{grid-template-columns:1fr}}
+.prep-cert-hint{margin:.5rem 0 0!important;font-size:.9rem;color:var(--muted)}.prep-cert-hint a{color:var(--blue-2);font-weight:600}
+.prep-tile{display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:.9rem;row-gap:.25rem;align-items:center}
+.pt-ico{grid-row:1 / span 2}
+.pt-name{grid-column:2;align-self:end}
+.pt-meta{grid-column:2;grid-row:2;align-self:start;justify-self:start;padding:0;background:none;font-size:.76rem}
+.prep-tile.done .pt-meta{background:none;color:#0d7a49;font-weight:600}
+@media (max-width:760px){.prep-tile{display:grid}.pt-meta{order:0}}
