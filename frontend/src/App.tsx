@@ -36,7 +36,6 @@ const Layout = lazy(() => import('./components/Layout').then((m) => ({ default: 
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute').then((m) => ({ default: m.ProtectedRoute })))
 const CourseCheckout = lazy(() => import('./pages/CourseCheckout').then((m) => ({ default: m.CourseCheckout })))
 const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })))
-const Faq = lazy(() => import('./pages/Faq').then((m) => ({ default: m.Faq })))
 const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })))
 const Policies = lazy(() => import('./pages/Policies').then((m) => ({ default: m.Policies })))
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
@@ -84,7 +83,6 @@ export function App() {
                 <Route path="certificates" element={<LearnFrame><CertificatesPage /></LearnFrame>} />
                 <Route path="certificates/:slug" element={<LearnFrame><CertificatesPage /></LearnFrame>} />
               <Route element={<Layout />}>
-                <Route path="faq" element={<Faq />} />
                 <Route path="policies" element={<Policies />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />

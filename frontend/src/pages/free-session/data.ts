@@ -81,12 +81,3 @@ export const CATEGORY_TABS: { filter: string; label: string }[] = [
   { filter: 'design', label: 'Design & Digital Marketing' },
 ]
 
-export const FAQS = [
-  { q: 'Is the live session free?', a: 'Yes, registration for the 2-hour demo session is free.' },
-  { q: 'Will the session be online?', a: 'Yes, the session will be conducted online.' },
-  { q: 'Which courses are available?', a: 'Students can choose from the 12 courses listed on the website.' },
-  { q: 'Do I need prior experience?', a: 'Requirements depend on the selected course. Contact the institute for guidance.' },
-  { q: 'Will I get access to the complete course for free?', a: 'No. The session is a free demonstration and introduction to the course. After the demo, you can join the paid 15-day training program.' },
-  { q: 'How will I receive the session details?', a: 'Registered students will receive the confirmed session details through the contact method they have provided.' },
-  { q: 'How can I enroll in the complete course?', a: 'After the demo session, students can contact the institute to learn about the full course curriculum, fees, and admission process.' },
-]

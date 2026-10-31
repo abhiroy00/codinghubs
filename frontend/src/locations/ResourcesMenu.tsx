@@ -5,7 +5,6 @@ const LINKS = [
   ['/case-studies', 'Case Studies'],
   ['/projects', 'Projects'],
   ['/project-guides', 'Project Guides'],
-  ['/faq', 'FAQ'],
   ['/#session', 'About the Session'],
   ['/#contact', 'Contact'],
 ] as const

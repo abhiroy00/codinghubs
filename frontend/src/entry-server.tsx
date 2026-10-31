@@ -20,7 +20,7 @@ import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/Course
 import { CertificatesPage } from './learning/Certificates'
 import { LearnFrame } from './learning/LearnFrame'
 import type { LocationContent } from './locations/types'
-import { CERTIFICATES_META, FAQ_META, HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_METAS, TUTOR_META, organizationNode } from './seo/site'
+import { CERTIFICATES_META, HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_METAS, TUTOR_META, organizationNode } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -144,8 +144,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     })
   }
 
-  // Layout (global.css) pages. Policies is indexable, so its content is prerendered; the FAQ stays noindex (metadata only) until reviewed.
-  pages.push({ file: 'faq.html', path: FAQ_META.path, title: FAQ_META.title, description: FAQ_META.description, image: FAQ_META.image, indexable: FAQ_META.indexable, fsDesign: false, html: '' })
+  // Layout (global.css) pages. Policies is indexable, so its content is prerendered.
   pages.push({
     file: 'policies.html',
     path: POLICIES_META.path,

@@ -8,7 +8,7 @@ import { BrandLogo, FsFooter } from '../locations/FsShell'
 import { LocationsMenu } from '../locations/LocationsMenu'
 import { ResourcesMenu } from '../locations/ResourcesMenu'
 import { CoursesGrid } from './free-session/CoursesGrid'
-import { FAQS, INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
+import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
 import { HeroCode } from './free-session/HeroCode'
@@ -754,30 +754,6 @@ export function FreeSession() {
         </section>
 
         <HomeExplore />
-
-        <section className="sec sec-alt" id="faq" aria-labelledby="faq-title">
-          <div className="wrap faq-wrap">
-            <div className="sec-head center reveal">
-              <p className="eyebrow">FAQ</p>
-              <h2 id="faq-title" className="h2">
-                Frequently Asked <span className="marker">Questions</span>
-              </h2>
-            </div>
-            <div className="faq-grid">
-              <div className="faq">
-                {FAQS.map((f) => (
-                  <details key={f.q}>
-                    <summary>{f.q}</summary>
-                    <p>{f.a}</p>
-                  </details>
-                ))}
-              </div>
-              <figure className="faq-img">
-                <img src="/fs-assets/img/faq.jpg" alt="" width={900} height={1350} loading="lazy" decoding="async" />
-              </figure>
-            </div>
-          </div>
-        </section>
 
         <section className="final" aria-labelledby="final-title">
           <div className="wrap">

@@ -40,13 +40,10 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
         <Link className="m" to="/#why" onClick={onClose}>
           Success Stories
         </Link>
-        <Link className="m" to="/faq" onClick={onClose}>
-          FAQ
-        </Link>
         <Link className="m" to="/book-a-tutor/" onClick={onClose}>
           Book a Tutor
         </Link>
-        <Link className="m" to="/faq#team" onClick={onClose}>
+        <Link className="m" to="/#about" onClick={onClose}>
           About Us
         </Link>
         <Link className="m" to="/store" onClick={onClose}>

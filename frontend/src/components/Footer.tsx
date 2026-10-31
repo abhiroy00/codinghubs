@@ -83,7 +83,7 @@ export function Footer() {
               <h2>Company</h2>
               <ul>
                 <li>
-                  <Link to="/faq#team">About</Link>
+                  <Link to="/#about">About</Link>
                 </li>
                 <li>
                   <Link to="/#why">Success Stories</Link>
@@ -102,9 +102,6 @@ export function Footer() {
             <nav aria-label="Support">
               <h2>Support</h2>
               <ul>
-                <li>
-                  <Link to="/faq">FAQ</Link>
-                </li>
                 <li>
                   <Link to="/policies">Terms</Link>
                 </li>

@@ -534,20 +534,6 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .social .ico{width:18px;height:18px}
 
 /* faq */
-.faq-wrap{max-width:1100px}
-.faq-grid{display:grid;gap:2rem;align-items:center}
-@media (min-width:900px){.faq-grid{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:3rem}}
-.faq-img{margin:0;justify-self:center;width:100%;max-width:260px}
-@media (min-width:900px){.faq-img{max-width:400px}}
-.faq-img img{display:block;width:100%;height:auto;mix-blend-mode:multiply}
-.faq{display:grid;gap:.75rem}
-.faq details{border-radius:var(--r);background:#fff;border:1px solid var(--line);transition:border-color .2s,box-shadow .2s}
-.faq details[open]{border-color:var(--blue);box-shadow:var(--sh)}
-.faq summary{position:relative;list-style:none;cursor:pointer;padding:1.1rem 3.25rem 1.1rem 1.2rem;font:600 1rem/1.4 var(--f-head);color:var(--navy)}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"";position:absolute;right:1rem;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:50%;background:var(--yellow-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A1A3F' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M12 6v12M6 12h12'/%3E%3C/svg%3E") center/14px no-repeat;transition:transform .25s,background-color .2s}
-.faq details[open] summary::after{transform:rotate(45deg);background-color:var(--yellow)}
-.faq details p{padding:0 1.2rem 1.15rem;color:var(--muted)}
 
 /* final cta */
 .final{padding:60px 0}
@@ -683,7 +669,6 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 #session{background:#fff url("fs-assets/img/bg.webp") top center/100% auto repeat-y}
 
 /* ============ FAQ background ============ */
-#faq{background:#fff url("fs-assets/img/bg2.webp") top center/100% auto repeat-y}
 
 /* ============ FULL-WIDTH COURSES BANNER ============ */
 .wide-banner{display:block;width:100%;margin:0;padding:0;line-height:0}

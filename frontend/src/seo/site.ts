@@ -93,17 +93,6 @@ export function programMeta(p: Program): PageMeta {
   }
 }
 
-// Not indexable for now: its copy makes placement/outcome claims that have not been verified, and the home page already
-// carries an FAQ section. Flip to true after the business reviews the text.
-export const FAQ_META: PageMeta = {
-  path: '/faq',
-  title: 'FAQs: Courses, Free Demo & Enquiries | Coding Hubs School of AI',
-  description:
-    'Answers to common questions about Coding Hubs School of AI: course formats, the free demo class, learning schedules and how to contact the team in Delhi.',
-  image: LOGO_URL,
-  indexable: false,
-}
-
 export const POLICIES_META: PageMeta = {
   path: '/policies',
   title: 'Privacy, Terms & Rescheduling Policy | Coding Hubs School of AI',

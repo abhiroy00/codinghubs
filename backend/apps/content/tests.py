@@ -411,3 +411,33 @@ class TestimonialTests(TestCase):
         Testimonial.objects.create(name='C', text='Draft', is_published=False, permission_confirmed=True)
         rows = APIClient().get('/api/testimonials/').json()
         self.assertEqual([r['name'] for r in rows], ['A'])
+
+
+class OptimizeMediaTests(TestCase):
+    def test_big_png_is_converted_and_references_are_updated(self):
+        import os
+        from io import StringIO
+
+        from django.core.management import call_command
+        from django.test import override_settings
+        from PIL import Image as PILImage
+
+        from .models import Blog
+
+        with tempfile.TemporaryDirectory() as tmp:
+            os.makedirs(os.path.join(tmp, 'uploads', '2026', '10'))
+            png = os.path.join(tmp, 'uploads', '2026', '10', 'big.png')
+            PILImage.effect_noise((1800, 1200), 80).convert('RGB').save(png, 'PNG')
+            self.assertGreater(os.path.getsize(png), 150_000)
+            with override_settings(MEDIA_ROOT=tmp):
+                blog = Blog.objects.create(title='Img', slug='img', excerpt='x', content='<p><img src="/media/uploads/2026/10/big.png" alt="a"></p>',
+                                           featured_image='/media/uploads/2026/10/big.png')
+                call_command('optimize_media', stdout=StringIO())  # dry run changes nothing
+                blog.refresh_from_db()
+                self.assertTrue(blog.featured_image.endswith('big.png'))
+                call_command('optimize_media', '--apply', stdout=StringIO())
+                blog.refresh_from_db()
+                self.assertEqual(blog.featured_image, '/media/uploads/2026/10/big.webp')
+                self.assertIn('/media/uploads/2026/10/big.webp', blog.content)
+                self.assertTrue(os.path.exists(png))  # original kept
+                self.assertLess(os.path.getsize(os.path.join(tmp, 'uploads', '2026', '10', 'big.webp')), os.path.getsize(png))

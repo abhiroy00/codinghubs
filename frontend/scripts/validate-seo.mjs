@@ -154,8 +154,6 @@ if (!/<meta name="robots" content="noindex/.test(notFound)) fail('404.html must 
 if (urls.some((u) => u.endsWith('/404'))) fail('404 page is in the sitemap')
 const shell = await read('index.html')
 if (!/<meta name="robots" content="noindex/.test(shell)) fail('SPA shell index.html must be noindex')
-const faq = await read('faq.html')
-if (urls.includes(`${SITE}/faq`) === /noindex/.test(faq)) fail('faq.html robots meta and sitemap membership disagree')
 
 // ---------- report ----------
 console.log(`checked ${pages.length} indexable pages from sitemap.xml`)
