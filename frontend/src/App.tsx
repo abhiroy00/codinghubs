@@ -1,19 +1,21 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './lib/auth-context'
-import { CartDrawer } from './components/CartDrawer'
+import { LazyCartDrawer } from './components/LazyCartDrawer'
 import { LenisProvider } from './lib/lenis-context'
 import { ModalProvider } from './lib/modal-context'
 import { RegisterPopupProvider } from './lib/register-popup'
-import { Curriculum } from './pages/Curriculum'
 import { FreeSession } from './pages/FreeSession'
 import { NotFound } from './pages/NotFound'
 import { LocationRoute } from './locations/LocationRoute'
-import { LocationsIndex } from './locations/LocationsIndex'
-import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/CourseLearning'
-import { CertificatesPage } from './learning/Certificates'
 import { LearnFrame } from './learning/LearnFrame'
 
+const Curriculum = lazy(() => import('./pages/Curriculum').then((m) => ({ default: m.Curriculum })))
+const LocationsIndex = lazy(() => import('./locations/LocationsIndex').then((m) => ({ default: m.LocationsIndex })))
+const CourseDirectory = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.CourseDirectory })))
+const CourseDetails = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.CourseDetails })))
+const InterviewPrep = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.InterviewPrep })))
+const CertificatesPage = lazy(() => import('./learning/Certificates').then((m) => ({ default: m.CertificatesPage })))
 const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ default: m.BlogList })))
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
 const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.BlogDetail })))
@@ -44,7 +46,7 @@ export function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <CartDrawer />
+        <LazyCartDrawer />
         <LenisProvider>
           <ModalProvider>
             <RegisterPopupProvider>
