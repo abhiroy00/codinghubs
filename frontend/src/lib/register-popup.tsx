@@ -4,7 +4,8 @@ import { RegisterForm } from '../pages/free-session/RegisterForm'
 import { useLenisRef } from './lenis-context'
 
 const KEY = 'ch_registered'
-const AUTO_MS = 10_000
+const AUTO_MIN_MS = 30_000
+const AUTO_MAX_MS = 45_000
 
 interface PopupApi {
   /** Opens the "Reserve your free seat" popup; after the visitor has registered it takes them to the courses instead. */
@@ -64,13 +65,18 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
     [navigate, lenisRef],
   )
 
-  // Home page: bring the popup back every 10 seconds until the visitor has registered.
+  // Home page: bring the popup back every 30-45 seconds until the visitor has registered.
   useEffect(() => {
     if (pathname !== '/' || registered) return
-    const t = setInterval(() => {
-      if (!readFlag() && !document.querySelector('.rp-overlay')) open()
-    }, AUTO_MS)
-    return () => clearInterval(t)
+    let timer: ReturnType<typeof setTimeout>
+    const schedule = () => {
+      timer = setTimeout(() => {
+        if (!readFlag() && !document.querySelector('.rp-overlay')) open()
+        schedule()
+      }, AUTO_MIN_MS + Math.random() * (AUTO_MAX_MS - AUTO_MIN_MS))
+    }
+    schedule()
+    return () => clearTimeout(timer)
   }, [pathname, registered, open])
 
   useEffect(() => {
