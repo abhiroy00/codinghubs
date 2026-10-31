@@ -167,3 +167,7 @@
 .pj-search{transition:box-shadow .2s,transform .15s}.pj-search:hover{transform:translateY(-1px)}
 .st-check:hover{color:var(--blue-2)}.st-check input{accent-color:var(--navy);transition:transform .15s}.st-check:active input{transform:scale(.85)}
 @media (prefers-reduced-motion:reduce){.pj-selects select,.pj-search{transition:none}.pj-selects select:hover,.pj-search:hover{transform:none}}
+
+/* the project's guide, linked right on the card */
+.pj-guide-link{display:flex;align-items:center;gap:.45rem;margin-top:.7rem;padding:.5rem .75rem;border-radius:var(--r-sm);background:var(--yellow-soft);border:1px solid var(--yellow-2);color:var(--navy);font:600 .86rem var(--f-body);text-decoration:none;transition:background .2s,transform .15s;position:relative;z-index:2}
+.pj-guide-link:hover{background:var(--yellow);transform:translateY(-1px)}

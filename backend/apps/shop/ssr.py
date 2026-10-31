@@ -100,7 +100,8 @@ def projects_list(request):
     if query:
         qs = qs.filter(title__icontains=query)
     pg, pager = paginate(qs.order_by('-published_at', '-id'), page_number(request))
-    cards = with_urls([payloads.project_card(p) for p in pg.object_list], '/projects')
+    gmap = payloads.guides_by_project([p.pk for p in pg.object_list])
+    cards = with_urls([payloads.project_card(p, gmap.get(p.pk)) for p in pg.object_list], '/projects')
     seo = listing_seo('projects', pg.number, ''.join(f'{k}={v}&' for k, v in (('category', cat), ('difficulty', diff)) if v), indexable=not query)
     html = render_to_string('shop/project_list.html', {'items': cards, 'page': pg, 'query': query})
     all_pub = payloads.public_projects()

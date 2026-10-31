@@ -9,6 +9,7 @@ interface Item {
   difficulty?: string
   technologies?: string[]
   access_type?: string
+  guide?: { title: string; slug: string } | null
 }
 
 /** Published items from the database (nothing is shown until something has been published). */
@@ -62,6 +63,11 @@ function CardList({ items, base, cta }: { items: Item[]; base: string; cta: stri
               {c.technologies.slice(0, 4).map((t) => (<li key={t}>{t}</li>))}
             </ul>
           )}
+          {c.guide && (
+            <Link to={`/project-guides/${c.guide.slug}`} className="hx-guide">
+              <span aria-hidden="true">📘</span> Guide: {c.guide.title}
+            </Link>
+          )}
           <Link to={`${base}/${c.slug}`} className="hx-more">{cta} <span aria-hidden="true">→</span></Link>
         </li>
       ))}
@@ -71,7 +77,6 @@ function CardList({ items, base, cta }: { items: Item[]; base: string; cta: stri
 
 export function HomeExplore() {
   const projects = useLatest('/projects/')
-  const guides = useLatest('/project-guides/')
   const reviews = useReviews()
   return (
     <>
@@ -80,28 +85,11 @@ export function HomeExplore() {
           <div className="wrap">
             <div className="sec-head center reveal">
               <p className="eyebrow">Practical projects</p>
-              <h2 id="projects-title" className="h2">Build things you can <span className="marker">show</span></h2>
-              <p className="sub">Real project ideas with objectives, technology stack and learning outcomes.</p>
+              <h2 id="projects-title" className="h2">Projects with <span className="marker">step-by-step guides</span></h2>
+              <p className="sub">Each project comes with its guide: objectives, technology stack and how to build it.</p>
             </div>
             <CardList items={projects} base="/projects" cta="View project" />
-            <p className="hx-all"><Link className="btn btn-ghost" to="/projects">All projects</Link></p>
-          </div>
-        </section>
-      )}
-
-      {guides.length > 0 && (
-        <section className="sec sec-alt" id="guides" aria-labelledby="guides-title">
-          <div className="wrap">
-            <div className="sec-head center reveal">
-              <p className="eyebrow">Learning resources</p>
-              <h2 id="guides-title" className="h2">Project guides and <span className="marker">tutorials</span></h2>
-              <p className="sub">Step-by-step guides to build and understand each project, plus articles on AI and development.</p>
-            </div>
-            <CardList items={guides} base="/project-guides" cta="Read guide" />
-            <p className="hx-all">
-              <Link className="btn btn-ghost" to="/project-guides">All guides</Link>
-              <Link className="btn btn-ghost" to="/blog">Read the blog</Link>
-            </p>
+            <p className="hx-all"><Link className="btn btn-ghost" to="/projects">All projects</Link><Link className="btn btn-ghost" to="/blog">Read the blog</Link></p>
           </div>
         </section>
       )}

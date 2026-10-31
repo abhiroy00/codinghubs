@@ -61,6 +61,11 @@ export function ProjectCard({ c, i = 0, featured = false }: { c: Card; i?: numbe
             {tech.length > 4 && <li className="more">+{tech.length - 4}</li>}
           </ul>
         )}
+        {c.guide && (
+          <Link to={`/project-guides/${c.guide.slug}`} className="pj-guide-link">
+            <span aria-hidden="true">📘</span> Guide: {c.guide.title}
+          </Link>
+        )}
         <div className="pj-foot">
           {c.estimated_time ? <span className="pj-time"><Clock /> {c.estimated_time}</span> : <span />}
           <Link to={`/projects/${c.slug}`} className="pj-go" aria-label={`View ${c.title}`}>View project <Arrow /></Link>
@@ -321,6 +326,7 @@ export function ProjectPage() {
               {stack.length > 0 && <li>{stack.length} technologies</li>}
             </ul>
             <div className="pj-actions">
+              {p.guides?.length > 0 && <Link className="btn btn-yellow" to={`/project-guides/${p.guides[0].slug}`}>Read the project guide <Arrow /></Link>}
               {p.demo_url && <a className="btn btn-yellow" href={p.demo_url} target="_blank" rel="noopener noreferrer">Live demo <Arrow /></a>}
               {p.repo_url && <a className="btn pj-btn-ghost" href={p.repo_url} target="_blank" rel="noopener noreferrer">Source code</a>}
               {p.product && !p.unlocked && <Link className="btn btn-yellow" to={`/store/${p.product.slug}`}>Get the project · {rupees(p.product.price)}</Link>}

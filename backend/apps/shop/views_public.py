@@ -176,7 +176,8 @@ class ProjectList(generics.ListAPIView):
             qs = qs.exclude(product__price__gt=0)
         order = {'title': 'title', 'oldest': 'published_at', 'newest': '-published_at'}.get(p.get('ordering', 'newest'), '-published_at')
         page = self.paginate_queryset(qs.order_by(order, '-id'))
-        resp = self.get_paginated_response([payloads.project_card(x) for x in page])
+        gmap = payloads.guides_by_project([x.pk for x in page])
+        resp = self.get_paginated_response([payloads.project_card(x, gmap.get(x.pk)) for x in page])
         all_pub = payloads.public_projects()
         resp.data = dict(resp.data) | {
             'categories': sorted(set(all_pub.exclude(category='').values_list('category', flat=True))),

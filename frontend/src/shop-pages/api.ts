@@ -86,6 +86,8 @@ export interface Card {
   access_type?: string
   reading_time?: number
   is_featured?: boolean
+  /** First published guide of a project (set on project cards). */
+  guide?: { title: string; slug: string; access_type?: string } | null
 }
 export interface Paged<T> {
   count: number

@@ -113,12 +113,20 @@ def product_seo(p: Product, preview=False) -> dict:
 
 
 # ---------- projects ----------
-def project_card(p: Project) -> dict:
+def guides_by_project(project_ids) -> dict:
+    """First public guide of each project (one query), shown next to the project everywhere it is listed."""
+    out = {}
+    for g in ProjectGuide.objects.public().filter(project_id__in=list(project_ids)).order_by('-is_featured', '-published_at', 'id'):
+        out.setdefault(g.project_id, {'title': g.title, 'slug': g.slug, 'access_type': g.access_type})
+    return out
+
+
+def project_card(p: Project, guide=None) -> dict:
     return {
         'title': p.title, 'slug': p.slug, 'summary': p.summary, 'category': p.category, 'difficulty': p.difficulty, 'technologies': p.technologies,
         'featured_image': p.featured_image, 'featured_image_alt': p.featured_image_alt, 'estimated_time': p.estimated_time,
         'is_featured': p.is_featured, 'is_paid': p.is_paid, 'price': str(p.product.price) if p.is_paid else None,
-        'currency': p.product.currency if p.is_paid else None, 'published_at': p.published_at,
+        'currency': p.product.currency if p.is_paid else None, 'published_at': p.published_at, 'guide': guide,
     }
 
 

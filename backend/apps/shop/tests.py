@@ -968,6 +968,15 @@ class ProjectGuideTests(ShopBase):
         self.assertEqual(cards['count'], 1)
         self.assertEqual(cards['results'][0]['title'], 'Published on submit')
 
+    def test_project_cards_carry_their_published_guide(self):
+        proj = self.api.post('/api/admin/projects/', {'title': 'With guide', 'summary': 'A project.', 'status': 'published'}, format='json').json()
+        draft = self.api.post('/api/admin/project-guides/', {'title': 'Draft guide', 'summary': 'x', 'project': proj['id']}, format='json')
+        live = self.api.post('/api/admin/project-guides/', {'title': 'Live guide', 'summary': 'y', 'project': proj['id'], 'status': 'published'}, format='json')
+        self.assertEqual((draft.status_code, live.status_code), (201, 201), (draft.content, live.content))
+        card = self.anon.get('/api/projects/').json()['results'][0]
+        self.assertEqual(card['guide']['title'], 'Live guide')
+        self.assertEqual(card['guide']['slug'], 'live-guide')
+
     def test_project_questions_are_private_until_answered_and_never_expose_email(self):
         project = self.new_project()
         self.api.post(f'/api/admin/projects/{project["id"]}/publish/')

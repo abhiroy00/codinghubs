@@ -137,7 +137,6 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><a href="/blog">Blog</a></li>
               <li><a href="/case-studies">Case Studies</a></li>
               <li><a href="/projects">Projects</a></li>
-              <li><a href="/project-guides">Project Guides</a></li>
               <li><a href="/store">Store</a></li>
               <li><HLink home={home} to={h('#contact')}>Contact</HLink></li>
             </ul>
