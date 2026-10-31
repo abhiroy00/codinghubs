@@ -16,7 +16,10 @@ function HLink({ home, to, children, ...rest }: { home: boolean; to: string; chi
 export function BrandLogo({ home = false }: { home?: boolean }) {
   const inner = (
     <span className="brand-pill">
-      <img className="brand-logo" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
+      <picture>
+        <source srcSet="/assets/coding-hubs-school-of-ai-logo-wide.webp" type="image/webp" />
+        <img className="brand-logo" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
+      </picture>
     </span>
   )
   return home ? (

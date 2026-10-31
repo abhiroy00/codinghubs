@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { shop } from '../../shop-pages/api'
 import { GROUP_LABELS, GROUP_ORDER, LOCATIONS, locationPath } from '../../locations/registry'
 
 interface Item {
@@ -13,11 +12,14 @@ interface Item {
 }
 
 /** Published items from the database (nothing is shown until something has been published). */
+/** Small public GET without pulling the HTTP client into the home page bundle. */
+const getJson = (path: string) => fetch(`/api${path}`, { headers: { Accept: 'application/json' } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+
 function useLatest(path: string) {
   const [items, setItems] = useState<Item[]>([])
   useEffect(() => {
     let live = true
-    shop.get(path, { params: { page_size: 3 } }).then((r) => live && setItems(Array.isArray(r.data?.results) ? r.data.results : [])).catch(() => undefined)
+    getJson(`${path}?page_size=3`).then((d) => live && setItems(Array.isArray(d?.results) ? d.results : [])).catch(() => undefined)
     return () => {
       live = false
     }
@@ -37,7 +39,7 @@ function useReviews() {
   const [rows, setRows] = useState<Review[]>([])
   useEffect(() => {
     let live = true
-    shop.get('/testimonials/').then((r) => live && setRows(Array.isArray(r.data) ? r.data : [])).catch(() => undefined)
+    getJson('/testimonials/').then((d) => live && setRows(Array.isArray(d) ? d : [])).catch(() => undefined)
     return () => {
       live = false
     }

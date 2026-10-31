@@ -1,6 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { RegisterForm } from '../pages/free-session/RegisterForm'
+const RegisterForm = lazy(() => import('../pages/free-session/RegisterForm').then((m) => ({ default: m.RegisterForm })))
 import { useLenisRef } from './lenis-context'
 
 const KEY = 'ch_registered'
@@ -113,7 +113,9 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
               ×
             </button>
             <div className="form-card">
-              <RegisterForm idPrefix="rp-" onThanksChange={onThanks} prefillCourse={course} prefillToken={token} />
+              <Suspense fallback={<p className="rp-loading" role="status">Loading…</p>}>
+                <RegisterForm idPrefix="rp-" onThanksChange={onThanks} prefillCourse={course} prefillToken={token} />
+              </Suspense>
             </div>
           </div>
         </div>

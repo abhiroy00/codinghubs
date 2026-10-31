@@ -20,7 +20,7 @@ import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/Course
 import { CertificatesPage } from './learning/Certificates'
 import { LearnFrame } from './learning/LearnFrame'
 import type { LocationContent } from './locations/types'
-import { CERTIFICATES_META, FAQ_META, HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META } from './seo/site'
+import { CERTIFICATES_META, FAQ_META, HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_METAS, TUTOR_META, organizationNode } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -30,6 +30,21 @@ function renderLearningPage(path: string, element: ReactNode) {
   return renderToString(
     <AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<LearnFrame>{element}</LearnFrame>} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
   )
+}
+
+/** WebPage + BreadcrumbList (the same trail the page shows) and, for a course page, a Course node without any price or rating. */
+function learningJsonLd(path: string, name: string, description: string, trail: [string, string][], course = false) {
+  const url = `${SITE_URL}${path}`
+  const graph: Record<string, unknown>[] = [
+    organizationNode(),
+    { '@type': 'WebPage', '@id': `${url}#webpage`, url, name, description, inLanguage: 'en-IN', about: { '@id': ORG_ID } },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: trail.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: `${SITE_URL}${u}` })),
+    },
+  ]
+  if (course) graph.push({ '@type': 'Course', name, description, url, provider: { '@id': ORG_ID }, inLanguage: 'en-IN' })
+  return { '@context': 'https://schema.org', '@graph': graph }
 }
 
 export interface PrerenderedPage {
@@ -73,6 +88,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     description: 'Explore the Coding Hubs School of AI course catalog and course-specific learning paths.',
     image: LOGO_URL, indexable: true, fsDesign: true,
     html: renderLearningPage('/courses', <CourseDirectory />),
+    jsonLd: learningJsonLd('/courses/', 'Courses', 'Explore the Coding Hubs School of AI course catalog and course-specific learning paths.', [['Home', '/'], ['Courses', '/courses/']]),
   })
   for (const course of COURSE_CATALOG) {
     const path = `/courses/${course.slug}/`
@@ -80,6 +96,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       file: `courses/${course.slug}/index.html`, path, title: `${course.name} Course | Coding Hubs`,
       description: course.summary, image: LOGO_URL, indexable: true, fsDesign: true,
       html: renderLearningPage(path, <CourseDetails />),
+      jsonLd: learningJsonLd(path, course.name, course.summary, [['Home', '/'], ['Courses', '/courses/'], [course.name, path]], true),
     })
     const prepPath = `/interview-prep/${course.slug}/`
     pages.push({
@@ -87,6 +104,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       description: `A 30-day ${course.name} interview preparation roadmap with daily theory, questions, quizzes and practical challenges.`,
       image: LOGO_URL, indexable: true, fsDesign: true,
       html: renderLearningPage(prepPath, <InterviewPrep />),
+      jsonLd: learningJsonLd(prepPath, `${course.name}: 30-Day Interview Prep`, `A 30-day ${course.name} interview preparation roadmap.`, [['Home', '/'], ['Interview Prep', '/interview-prep/'], [course.name, prepPath]]),
     })
   }
   pages.push({
@@ -94,13 +112,14 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     description: 'Choose a course-specific 30-day roadmap and track your daily interview preparation progress.',
     image: LOGO_URL, indexable: true, fsDesign: true,
     html: renderLearningPage('/interview-prep', <InterviewPrep />),
+    jsonLd: learningJsonLd('/interview-prep/', 'Interview Preparation Dashboard', 'Choose a course-specific 30-day roadmap and track your daily interview preparation progress.', [['Home', '/'], ['Interview Prep', '/interview-prep/']]),
   })
 
   pages.push({
     file: 'certificates/index.html', path: '/certificates/', title: CERTIFICATES_META.title,
     description: CERTIFICATES_META.description, image: CERTIFICATES_META.image, indexable: CERTIFICATES_META.indexable, fsDesign: true,
     html: renderLearningPage('/certificates/', <CertificatesPage />),
-    jsonLd: CERTIFICATES_META.jsonLd,
+    jsonLd: learningJsonLd('/certificates/', 'Certificates', CERTIFICATES_META.description, [['Home', '/'], ['Certificates', '/certificates/']]),
   })
 
   for (const meta of PROGRAM_METAS) {

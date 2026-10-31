@@ -41,6 +41,8 @@ function buildHead(page) {
   )
   // free-session pages: stylesheet in <head> AFTER the app stylesheet so it wins the cascade
   if (page.fsDesign) {
+    tags.push(`<link rel="preload" as="image" href="/assets/coding-hubs-school-of-ai-logo-wide.webp" type="image/webp" />`)
+    if (page.path === '/') tags.push(`<link rel="preload" as="image" href="/fs-assets/img/banner.jpg" fetchpriority="high" />`)
     tags.push(`<link rel="stylesheet" href="/free-session.css?v=${cssVersion}" />`)
     tags.push(`<link rel="preload" as="style" href="${FONTS}" onload="this.onload=null;this.rel='stylesheet'" />`)
     tags.push(`<noscript><link rel="stylesheet" href="${FONTS}" /></noscript>`)
