@@ -5,6 +5,7 @@ import { api } from '../lib/api'
 import type { Course } from '../lib/types'
 import { COURSE_CATALOG, COURSE_CATEGORIES, COURSE_BY_SLUG, type CourseDefinition } from './catalog'
 import { Breadcrumbs } from '../components/Breadcrumbs'
+import { CoursesGrid } from '../pages/free-session/CoursesGrid'
 import './learning.css'
 import './learning-extra.css'
 
@@ -53,7 +54,7 @@ function ProjectCompletion({ slug, project }: { slug: string; project: string })
 }
 
 export function CourseDirectory() {
-  return <div className="learn-shell"><header className="learn-hero"><Breadcrumbs items={[{ name: 'Home', to: '/' }, { name: 'Courses' }]}/><p className="learn-kicker">LEARN WITH A PLAN</p><h1>Courses & interview preparation</h1><p>Explore the existing course catalog, review the learning path and practise one day at a time.</p></header><div className="learn-directory"><nav className="learn-directory-nav"><a href="#courses">Courses</a><a href="#prep">Interview prep</a></nav><section id="courses"><h2>Explore courses</h2>{COURSE_CATEGORIES.map((category) => <div className="learn-category" key={category.name}><h3>{category.name}</h3><div className="learn-course-grid">{category.courses.map((course) => <CourseCard key={course.slug} course={course}/>)}</div></div>)}</section><section id="prep" className="learn-prep-intro"><h2>30-day interview prep</h2><p>Choose a course to open its roadmap. Daily lessons include focused theory, interview practice, a five-question knowledge check and a practical challenge.</p><div className="learn-course-grid">{COURSE_CATALOG.slice(0, 6).map((course) => <CourseCard key={course.slug} course={course}/>)}</div></section></div></div>
+  return <div className="learn-shell"><header className="learn-hero"><Breadcrumbs items={[{ name: 'Home', to: '/' }, { name: 'Courses' }]}/><p className="learn-kicker">LEARN WITH A PLAN</p><h1>Courses & interview preparation</h1><p>Explore the existing course catalog, review the learning path and practise one day at a time.</p></header><div className="learn-directory"><nav className="learn-directory-nav"><a href="#catalogue">Courses</a><a href="#courses">All learning paths</a><a href="#prep">Interview prep</a></nav><section id="catalogue" className="learn-catalogue"><h2>Explore courses</h2><CoursesGrid /></section><section id="courses"><h2>All courses and learning paths</h2>{COURSE_CATEGORIES.map((category) => <div className="learn-category" key={category.name}><h3>{category.name}</h3><div className="learn-course-grid">{category.courses.map((course) => <CourseCard key={course.slug} course={course}/>)}</div></div>)}</section><section id="prep" className="learn-prep-intro"><h2>30-day interview prep</h2><p>Choose a course to open its roadmap. Daily lessons include focused theory, interview practice, a five-question knowledge check and a practical challenge.</p><div className="learn-course-grid">{COURSE_CATALOG.slice(0, 6).map((course) => <CourseCard key={course.slug} course={course}/>)}</div></section></div></div>
 }
 
 function LearningDashboard() {

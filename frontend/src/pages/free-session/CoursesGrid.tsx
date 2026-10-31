@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { COURSE_CATALOG } from '../../learning/catalog'
 import { CATEGORY_TABS, COURSES } from './data'
+import { useRegisterPopup } from '../../lib/register-popup'
 import { FsIcon } from './icons'
 
 const CATALOG_BY_NAME = new Map(COURSE_CATALOG.map((c) => [c.name, c]))
@@ -9,6 +10,7 @@ const countFor = (filter: string) => (filter === 'all' ? COURSES.length : COURSE
 
 /** Course catalogue: category tabs with counts, search, and equal-height poster cards with details and free-demo buttons. */
 export function CoursesGrid() {
+  const popup = useRegisterPopup()
   const [filter, setFilter] = useState('all')
   const [q, setQ] = useState('')
   const visible = useMemo(() => {
@@ -68,7 +70,7 @@ export function CoursesGrid() {
                 </ul>
                 <div className="cc-actions">
                   {def ? <Link className="cc-btn cc-ghost" to={`/courses/${def.slug}/`}>View details</Link> : <span />}
-                  <button type="button" className="cc-btn cc-solid" data-course={c.title} data-cta-location="course_card">
+                  <button type="button" className="cc-btn cc-solid" data-cta-location="course_card" onClick={() => popup.open(c.title)}>
                     Free demo <FsIcon id="i-arrow" />
                   </button>
                 </div>

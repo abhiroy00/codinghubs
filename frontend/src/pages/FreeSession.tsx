@@ -126,7 +126,7 @@ export function FreeSession() {
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary" onClick={(e) => { if ((e.target as HTMLElement).closest('a')) setNavOpen(false) }}>
             <a href="#home">Home</a>
             <a href="#demo-classes">Free Demo Classes</a>
-            <a href="#courses">Courses</a>
+            <Link to="/courses/">Courses</Link>
             <Link to="/interview-prep/">Interview Prep</Link>
             <Link to="/certificates/">Certificates</Link>
             <Link to="/book-a-tutor/">Book a Tutor</Link>
@@ -466,6 +466,7 @@ export function FreeSession() {
               </p>
             </div>
             <CoursesGrid />
+            <p className="cc-all"><Link className="btn btn-ghost" to="/courses/">See all courses and learning paths</Link></p>
           </div>
         </section>
 

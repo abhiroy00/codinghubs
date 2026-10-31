@@ -54,7 +54,7 @@ export function FsHeader() {
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
             <a href="/">Home</a>
             <Link to="/#demo-classes" onClick={() => setNavOpen(false)}>Free Demo Classes</Link>
-            <Link to="/#courses" onClick={() => setNavOpen(false)}>Courses</Link>
+            <Link to="/courses/" onClick={() => setNavOpen(false)}>Courses</Link>
             <Link to="/interview-prep/" onClick={() => setNavOpen(false)}>Interview Prep</Link>
             <Link to="/certificates/" onClick={() => setNavOpen(false)}>Certificates</Link>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
@@ -139,7 +139,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             <ul>
               <li><a href={home ? '#home' : '/'}>Home</a></li>
               <li><HLink home={home} to={h('#demo-classes')}>Free Demo Classes</HLink></li>
-              <li><HLink home={home} to={h('#courses')}>All Courses</HLink></li>
+              <li><Link to="/courses/">All Courses</Link></li>
               <li><Link to="/locations/">AI Course Locations</Link></li>
               <li><a href="/blog">Blog</a></li>
               <li><a href="/case-studies">Case Studies</a></li>
