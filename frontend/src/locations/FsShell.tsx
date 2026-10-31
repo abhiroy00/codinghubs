@@ -99,8 +99,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
 
   return (
     <>
-    <footer className="ftr fx">
-      <span className="fx-blob" aria-hidden="true"></span>
+    <section className="fx-cta-sec" aria-label="Register for the free demo">
       <div className="wrap">
         <div className="fx-cta">
           <div>
@@ -116,22 +115,17 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             </a>
           </div>
         </div>
-
+      </div>
+    </section>
+    <footer className="ftr fx">
+      <span className="fx-blob" aria-hidden="true"></span>
+      <div className="wrap">
         <div className="fx-grid">
           <div className="fx-brand">
             <Link to="/" className="fx-logo" aria-label="Coding Hubs School of AI home">
               <img src={LOGO_WIDE} alt="Coding Hubs School of AI logo" width={720} height={208} loading="lazy" />
             </Link>
             <p>Practical AI &amp; development training for learners across Delhi NCR. Learn live, build real projects, ask your questions.</p>
-            <ul className="fx-social" aria-label="Social media">
-              {socials.map((x) => (
-                <li key={x.label}>
-                  <a href={x.href} target="_blank" rel="noopener noreferrer" aria-label={x.label} title={x.label}>
-                    <FsIcon id={x.id} className="ico ico-fill" />
-                  </a>
-                </li>
-              ))}
-            </ul>
           </div>
 
           <nav className="fx-col" aria-label="Quick links">
@@ -205,12 +199,25 @@ export function FsFooter({ home = false }: { home?: boolean }) {
           </ul>
         </div>
 
-        <div className="fx-bottom">
+        <ul className="fx-social-row" aria-label="Social media">
+          {socials.map((x) => (
+            <li key={x.label}>
+              <a href={x.href} target="_blank" rel="noopener noreferrer">
+                <FsIcon id={x.id} className="ico ico-fill" />
+                {x.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="fx-bar">
+        <div className="wrap fx-bottom">
           <p>
             © {new Date().getFullYear()} {INSTITUTE.name}. All rights reserved.
           </p>
           <p className="fx-credit">
-            Powered &amp; Developed by <a href="https://innovativeais.com/">Innovative AI Solutions</a>
+            Powered and developed by <a href="https://innovativeais.com/" target="_blank" rel="noopener noreferrer">Innovative AI Solutions</a>
           </p>
           <ul>
             <li><a href="/policies#privacy">Privacy Policy</a></li>

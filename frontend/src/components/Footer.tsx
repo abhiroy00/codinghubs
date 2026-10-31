@@ -121,7 +121,7 @@ export function Footer() {
           <p>Powered &amp; Developed by <a href="https://innovativeais.com/">Innovative AI Solutions</a></p>
         </div>
         <p className="f-credit">
-          Designed and Developed by <a href="https://innovativeais.com/" target="_blank" rel="noopener noreferrer">Innovative Ai Solutions</a>
+          Powered and developed by <a href="https://innovativeais.com/" target="_blank" rel="noopener noreferrer">Innovative Ai Solutions</a>
         </p>
       </div>
     </footer>

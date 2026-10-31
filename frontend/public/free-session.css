@@ -1713,3 +1713,59 @@ body:has(.st-bar) .call-float{bottom:152px}
 .cc-code{color:rgba(12,18,32,.3)}
 .cc-all{display:flex;justify-content:center;margin:1.6rem 0 0}
 .learn-catalogue{margin-bottom:2.2rem}
+
+/* =====================================================================
+   Footer in the Innovative AI Labs style: gradient call-to-action band on white,
+   light blue-grey footer with dark headings, social row, dark bottom bar with the credit.
+   ===================================================================== */
+.fx-cta-sec{padding:2.5rem 0 3rem;background:#fff}
+.fx-cta-sec .fx-cta{display:grid;gap:1.25rem;align-items:center;padding:2rem 2rem;border-radius:20px;background:linear-gradient(110deg,#17306b 0%,#1f4fa8 55%,#2a7ec9 100%);color:#fff}
+.fx-cta-sec .fx-cta h2{color:#fff;font-size:clamp(1.3rem,2.6vw,1.8rem);font-weight:700;margin:0}
+.fx-cta-sec .fx-cta p{margin:.4rem 0 0;color:rgba(255,255,255,.85);max-width:52ch}
+.fx-cta-sec .fx-cta-btns{display:flex;flex-wrap:wrap;gap:.7rem}
+.fx-cta-sec .btn-navy{background:var(--cyan);color:#04222b}.fx-cta-sec .btn-navy:hover{background:#5ae4fa}
+.fx-cta-sec .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)}.fx-cta-sec .btn-ghost:hover{background:rgba(255,255,255,.12);border-color:#fff}
+@media (min-width:860px){.fx-cta-sec .fx-cta{grid-template-columns:1fr auto}}
+
+.ftr.fx{background:#eceff8;color:#475569;border-top:0;padding:3.5rem 0 0}
+.fx-blob{display:none}
+.fx-grid{padding:0 0 2rem}
+.ftr.fx h2{color:var(--navy);font-weight:700}
+.fx-col h2{display:inline-block}
+.fx-col h2::after{width:100%;height:3px;border-radius:0;background:var(--navy)}
+.fx-brand p{color:#475569}
+.fx-logo{box-shadow:0 0 0 1px var(--line-2)}
+.ftr.fx .fx-col>ul>li>a{color:#334155}
+.ftr.fx .fx-col>ul>li>a:hover{color:var(--blue-2)}
+.fx-ico{background:#fff;color:var(--blue-2);box-shadow:0 1px 3px rgba(12,18,32,.12)}
+.fx-contact li>span:last-child{color:#475569}.fx-contact strong{color:var(--navy)}
+.fx-contact a{color:#334155}.fx-contact a:hover{color:var(--blue-2)}
+.fx-locs{border-top:1px solid var(--line-2);padding-top:1.6rem}
+.fx-locs h2{font-size:1.1rem}
+.ftr.fx .fx-loc-regions a{background:#fff;border:1px solid var(--line-2);color:#334155}
+.ftr.fx .fx-loc-regions a:hover{border-color:var(--blue);color:var(--blue-2)}
+.ftr.fx .fx-loc-all{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important}
+.fx-social-row{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem 2.2rem;list-style:none;margin:0;padding:1.6rem 0 1.8rem;border-top:1px solid var(--line-2)}
+.ftr.fx .fx-social-row a{display:inline-flex;align-items:center;gap:.6rem;color:var(--navy);font-weight:600;font-size:1rem;text-decoration:none}
+.ftr.fx .fx-social-row a:hover{color:var(--blue-2)}
+.fx-social-row svg{width:26px;height:26px}
+.fx-social-row li:nth-child(1) svg{color:#0a66c2}.fx-social-row li:nth-child(2) svg{color:#e1306c}.fx-social-row li:nth-child(3) svg{color:#1877f2}.fx-social-row li:nth-child(4) svg{color:#ff0000}.fx-social-row li:nth-child(5) svg{color:#25d366}
+.fx-bar{background:#0b1220;color:rgba(255,255,255,.78)}
+.fx-bar .fx-bottom{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem 1.5rem;margin:0;padding:1.1rem 0;border:0;font-size:.88rem;color:rgba(255,255,255,.78)}
+.fx-bar p{margin:0}
+.fx-bar .fx-credit{flex:1;text-align:center}
+.fx-bar a,.ftr.fx .fx-bar a{color:#fff;font-weight:600;text-decoration:none}
+.fx-bar a:hover,.ftr.fx .fx-bar a:hover{color:var(--cyan)}
+.fx-bar ul{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;list-style:none;margin:0;padding:0}
+.fx-bar ul a{font-weight:400;color:rgba(255,255,255,.78)}
+@media (max-width:720px){.fx-bar .fx-credit{flex-basis:100%;text-align:left;order:3}}
+.ftr.fx ul.fx-social-row{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem 2.2rem}
+.fx-bar .fx-bottom{padding-block:1.1rem;padding-inline:max(16px,env(safe-area-inset-left))}
+.ftr.fx .fx-bar ul{display:flex}
+.fx-bar .fx-bottom{margin-inline:auto;padding-inline:16px}
+.fx-bar .fx-credit{white-space:nowrap}
+@media (max-width:720px){.fx-bar .fx-credit{white-space:normal}}
+.fx-bar .fx-bottom{padding-inline:0;font-size:.82rem;flex-wrap:nowrap;gap:.5rem 1.2rem}
+.fx-bar .fx-credit{flex:0 1 auto;text-align:center}
+.fx-bar ul{gap:.3rem 1rem;flex-wrap:nowrap}
+@media (max-width:1180px){.fx-bar .fx-bottom{flex-wrap:wrap;justify-content:center;text-align:center}.fx-bar ul{flex-wrap:wrap;justify-content:center}}
