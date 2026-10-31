@@ -143,6 +143,14 @@ def seo_for(obj, kind: str, preview: bool = False) -> dict:
     }
 
 
+def breadcrumb_node(trail) -> dict:
+    """BreadcrumbList for [(name, absolute_url), ...]; the page shows the same trail visibly."""
+    return {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [{'@type': 'ListItem', 'position': i, 'name': name, 'item': url} for i, (name, url) in enumerate(trail, 1)],
+    }
+
+
 def organization_ref() -> dict:
     return {'@type': 'EducationalOrganization', '@id': ORG_ID, 'name': 'Coding Hubs School of AI', 'url': f'{settings.SITE_URL}/', 'logo': LOGO_URL}
 
@@ -167,7 +175,11 @@ def article_json_ld(obj, kind, canonical, description, image) -> dict:
         node['author'] = {'@type': 'Person', 'name': obj.author_name, **({'jobTitle': obj.author_title} if obj.author_title else {})}
     else:
         node['author'] = {'@id': ORG_ID, '@type': 'EducationalOrganization', 'name': 'Coding Hubs School of AI'}
-    graph = [node]
+    graph = [node, breadcrumb_node([
+        ('Home', f'{settings.SITE_URL}/'),
+        ('Blog' if kind == 'blog' else 'Case Studies', f'{settings.SITE_URL}{BASE_PATH[kind]}'),
+        (_trim(obj.title, 110), canonical),
+    ])]
     if kind == 'blog' and obj.faq:
         faq = [f for f in obj.faq if f.get('q') and f.get('a')]
         if faq:

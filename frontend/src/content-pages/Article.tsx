@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { fmtDate, getBlog, getCase, takeInitial, type Article } from './api'
 import { CardView, PageFrame, useSeo } from './shared'
+import { Breadcrumbs } from '../components/Breadcrumbs'
 import './blog.css'
 
 const initial = typeof document === 'undefined' ? null : takeInitial()
@@ -90,6 +91,7 @@ export function BlogDetail() {
       <ReadProgress />
       <article className="bl-article">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
+        <Breadcrumbs light items={[{ name: 'Home', to: '/' }, { name: 'Blog', to: '/blog' }, { name: a.title }]} />
         <header className="bl-head">
           {a.category && (
             <p className="bl-cat">
@@ -155,6 +157,7 @@ export function CaseDetail() {
       <ReadProgress />
       <article className="bl-article">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
+        <Breadcrumbs light items={[{ name: 'Home', to: '/' }, { name: 'Case Studies', to: '/case-studies' }, { name: a.title }]} />
         <header className="bl-head">
           {a.industry && <p className="bl-cat">{a.industry}</p>}
           <h1>{a.title}</h1>

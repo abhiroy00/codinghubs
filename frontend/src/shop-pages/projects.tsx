@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
+import { Breadcrumbs } from '../components/Breadcrumbs'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { FileList, Html, useDetail } from './catalog'
 import { errorText, get, initial, rupees, shop, type Card, type Paged } from './api'
@@ -305,6 +306,7 @@ export function ProjectPage() {
         <header className="pj-dhero">
           <div className="pj-dhero-bg" aria-hidden="true">{p.featured_image && <img src={p.featured_image} alt="" />}</div>
           <div className="pj-dhero-in">
+            <Breadcrumbs items={[{ name: 'Home', to: '/' }, { name: 'Projects', to: '/projects' }, { name: p.title }]} />
             <Link to="/projects" className="pj-back"><span aria-hidden="true">←</span> All projects</Link>
             <div className="pj-badges">
               <span className={`pj-lvl pj-${p.difficulty}`}>{cap(p.difficulty)}</span>
