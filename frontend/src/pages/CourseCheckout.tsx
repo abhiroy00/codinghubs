@@ -50,7 +50,7 @@ export function CourseCheckout() {
         name: 'Coding Hubs School of AI',
         description: order.course_name,
         prefill: { name: user.username, email: user.email, contact: user.phone },
-        theme: { color: '#8F6A1A' },
+        theme: { color: '#4f46e5' },
         handler: async (response) => {
           try {
             await api.post('/payments/verify/', response)

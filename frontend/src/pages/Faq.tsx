@@ -14,7 +14,7 @@ const FAQS = [
 
 const TEAM = [
   {
-    initials: 'AK', bg: 'linear-gradient(140deg,#8F6A1A,#C9A24B)', role: 'Founder & Director', name: 'Abhishek Kumar',
+    initials: 'AK', bg: 'linear-gradient(140deg,#4f46e5,#7c6cf0)', role: 'Founder & Director', name: 'Abhishek Kumar',
     bio: 'Founder of Coding Hubs School of AI, passionate about transforming education through real-world learning. With strong expertise in AI, Data Science and Full Stack Development, he has trained thousands of students and helped them build successful careers.',
     ticks: ['5+ years industry experience', 'AI & Full Stack expert', '3200+ students trained'],
   },
