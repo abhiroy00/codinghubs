@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CartLink } from '../components/CartLink'
 import { BrandLogo } from '../locations/FsShell'
 import { IconSprite } from '../pages/free-session/icons'
 
@@ -26,7 +25,6 @@ export function StoreHeader() {
             <Link to="/my-account/orders" onClick={close}>My Orders</Link>
           </nav>
           <div className="hdr-actions">
-            <CartLink />
             <button type="button" className="burger" aria-expanded={open} aria-controls="nav" aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => setOpen((o) => !o)}>
               <span></span>
               <span></span>

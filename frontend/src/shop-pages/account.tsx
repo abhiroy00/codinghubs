@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import { PageFrame, Pager } from '../content-pages/shared'
 import { DownloadList } from './cart'
-import { errorText, fmtSize, rupees, shop } from './api'
+import { errorText, fmtSize, rupees, shop, useCartData } from './api'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const nice = (s: string) => s.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase())
 
-function AccountFrame({ children, title }: { children: React.ReactNode; title: string }) {
+function AccountFrame({ children, title, openToAll = false }: { children: React.ReactNode; title: string; openToAll?: boolean }) {
   const loc = useLocation()
   useEffect(() => {
     document.title = `${title} | Coding Hubs School of AI`
@@ -17,15 +17,17 @@ function AccountFrame({ children, title }: { children: React.ReactNode; title: s
     document.head.appendChild(m)
     return () => m.remove()
   }, [title])
-  if (!localStorage.getItem('ch_access')) return <Navigate to="/login" replace state={{ from: loc.pathname }} />
+  if (!openToAll && !localStorage.getItem('ch_access')) return <Navigate to="/login" replace state={{ from: loc.pathname }} />
   return (
     <PageFrame store>
-      <nav className="shop-tabs" aria-label="My account">
-        <Link to="/my-account">Profile</Link>
-        <Link to="/my-account/orders">Orders</Link>
-        <Link to="/my-account/downloads">Downloads</Link>
-        <Link to="/cart">Cart</Link>
-      </nav>
+      {localStorage.getItem('ch_access') && (
+        <nav className="shop-tabs" aria-label="My account">
+          <Link to="/my-account">Profile</Link>
+          <Link to="/my-account/orders">Orders</Link>
+          <Link to="/my-account/downloads">Downloads</Link>
+          <Link to="/cart">Cart</Link>
+        </nav>
+      )}
       {children}
     </PageFrame>
   )
@@ -69,15 +71,50 @@ export function MyAccount() {
   )
 }
 
+/** Products the visitor has added to the cart (works without signing in). */
+function CartItems() {
+  const { cart, ready } = useCartData()
+  return (
+    <section className="shop-cart-items" aria-labelledby="in-cart">
+      <h2 id="in-cart">In your cart{cart && cart.count > 0 ? ` (${cart.count})` : ''}</h2>
+      {!ready && <p className="bl-state" role="status">Loading…</p>}
+      {ready && (!cart || cart.items.length === 0) && <p className="bl-state">Nothing in your cart yet. <Link to="/store">Browse the store</Link></p>}
+      {cart && cart.items.length > 0 && (
+        <>
+          <ul className="shop-lines">
+            {cart.items.map((l) => (
+              <li key={l.product.id}>
+                <div className="shop-line-main">
+                  <Link to={`/store/${l.product.slug}`}>{l.product.title}</Link>
+                  <span className="bl-meta"> · {l.quantity} × {Number(l.unit_price) === 0 ? 'Free' : rupees(l.unit_price)}</span>
+                  {l.problem && <span className="shop-pill failed"> {l.problem}</span>}
+                </div>
+                <strong>{Number(l.subtotal) === 0 ? 'Free' : rupees(l.subtotal)}</strong>
+              </li>
+            ))}
+          </ul>
+          <p className="shop-order-actions">
+            <strong>Total: {Number(cart.total) === 0 ? 'Free' : rupees(cart.total)}</strong>
+            <Link className="btn btn-yellow" to="/checkout">Checkout</Link>
+            <Link className="btn btn-ghost" to="/cart">Edit cart</Link>
+          </p>
+        </>
+      )}
+    </section>
+  )
+}
+
 export function MyOrders() {
   const [page, setPage] = useState(1)
   const [data, setData] = useState<any>(null)
   const [open, setOpen] = useState<string | null>(null)
   const [detail, setDetail] = useState<any>(null)
   const [msg, setMsg] = useState('')
+  const signedIn = !!localStorage.getItem('ch_access')
   useEffect(() => {
+    if (!signedIn) return
     shop.get('/my-account/orders/', { params: { page } }).then((r) => setData(r.data)).catch(() => setMsg('Could not load your orders.'))
-  }, [page])
+  }, [page, signedIn])
   useEffect(() => {
     if (!open) return setDetail(null)
     shop.get(`/store/orders/${open}/`).then((r) => setDetail(r.data)).catch(() => setDetail(null))
@@ -93,9 +130,12 @@ export function MyOrders() {
     }
   }
   return (
-    <AccountFrame title="My orders">
+    <AccountFrame title="My orders" openToAll>
       <h1>My orders</h1>
-      {msg && <p role="status">{msg}</p>}
+      <CartItems />
+      <h2>Past orders</h2>
+      {!signedIn && <p className="bl-state"><Link to="/login" state={{ from: '/my-account/orders' }}>Sign in</Link> to see your past orders and downloads.</p>}
+      {msg && signedIn && <p role="status">{msg}</p>}
       {data && data.results.length === 0 && <p className="bl-state">No orders yet. <Link to="/store">Visit the store</Link></p>}
       <ul className="shop-orders">
         {data?.results.map((o: any) => (

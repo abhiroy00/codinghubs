@@ -72,3 +72,10 @@
   body:has(.st-bar) .wa-float{bottom:84px}
   .st-detail{padding-bottom:70px}
 }
+
+/* My orders: cart section */
+.shop-cart-items{margin:1.2rem 0 2rem}
+.shop-cart-items h2{margin:0 0 .9rem}
+.shop-cart-items .shop-order-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem;margin-top:1.1rem}
+.shop-cart-items .shop-line-main a{color:var(--navy);font-weight:600;text-decoration:none}
+.shop-cart-items .shop-line-main a:hover{color:var(--blue-2);text-decoration:underline}
