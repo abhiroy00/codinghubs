@@ -12,6 +12,7 @@ import { COURSES } from './free-session/data'
 import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
+import { ScrollProgress } from '../components/ScrollProgress'
 import { HeroBot } from './free-session/HeroBot'
 import { HeroCode } from './free-session/HeroCode'
 import { HomeExplore } from './free-session/HomeExplore'
@@ -24,7 +25,7 @@ const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHAT
 export function FreeSession() {
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap',
+    'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
   ])
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -118,6 +119,7 @@ export function FreeSession() {
     <div ref={rootRef} className="fs-page" onClick={handleRootClick}>
       <IconSprite />
 
+      <ScrollProgress />
       <header className="hdr" id="hdr">
         <div className="wrap hdr-in">
           <BrandLogo home />
@@ -136,6 +138,9 @@ export function FreeSession() {
             </button>
           </nav>
           <div className="hdr-actions">
+            <a href={INSTITUTE.phoneHref} className="hdr-phone">
+              <FsIcon id="i-phone" />{INSTITUTE.phone}
+            </a>
             <button type="button" className="btn btn-yellow btn-sm hdr-cta" onClick={() => popup.open()}>
               <FsIcon id="i-tap" />Free Demo<span className="free-badge-red">FREE</span>
             </button>
@@ -736,10 +741,6 @@ export function FreeSession() {
       </main>
 
       <FsFooter home />
-
-      <a href={WA_HREF} className="wa-float" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
-        <FsIcon id="i-wa" />
-      </a>
 
       <div className={`sticky-cta${showSticky ? ' show' : ''}`} aria-hidden={!showSticky}>
         <div>

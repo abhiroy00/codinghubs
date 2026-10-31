@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { FsIcon, IconSprite } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { useRegisterPopup } from '../lib/register-popup'
+import { FloatingContact } from '../components/FloatingContact'
+import { ScrollProgress } from '../components/ScrollProgress'
 import { LocationsMenu } from './LocationsMenu'
 import { ResourcesMenu } from './ResourcesMenu'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
@@ -45,6 +47,7 @@ export function FsHeader() {
       <a href="#main" className="skip">
         Skip to content
       </a>
+      <ScrollProgress />
       <header className="hdr" id="hdr">
         <div className="wrap hdr-in">
           <BrandLogo />
@@ -63,6 +66,9 @@ export function FsHeader() {
             </button>
           </nav>
           <div className="hdr-actions">
+            <a href={INSTITUTE.phoneHref} className="hdr-phone">
+              <FsIcon id="i-phone" />{INSTITUTE.phone}
+            </a>
             <button type="button" className="btn btn-yellow btn-sm hdr-cta" onClick={() => popup.open()}>
               <FsIcon id="i-tap" />Free Demo<span className="free-badge-red">FREE</span>
             </button>
@@ -92,6 +98,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
   ]
 
   return (
+    <>
     <footer className="ftr fx">
       <span className="fx-blob" aria-hidden="true"></span>
       <div className="wrap">
@@ -213,5 +220,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
         </div>
       </div>
     </footer>
+    <FloatingContact />
+    </>
   )
 }

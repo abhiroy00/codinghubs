@@ -16,7 +16,7 @@ export function SearchIcon() {
 }
 
 export function PageFrame({ children, wide = false, store = false }: { children: ReactNode; wide?: boolean; store?: boolean }) {
-  useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap'])
+  useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'])
   return (
     <div className="fs-page">
       {store ? <StoreHeader /> : <FsHeader />}

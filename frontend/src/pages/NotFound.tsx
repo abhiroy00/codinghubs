@@ -6,7 +6,7 @@ import { FsFooter, FsHeader } from '../locations/FsShell'
 
 /** Shown for unknown routes. The server also answers 404 for these URLs (see nginx.conf); this covers client-side navigation. */
 export function NotFound() {
-  useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap'])
+  useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'])
   useEffect(() => {
     document.title = 'Page not found | Coding Hubs School of AI'
     const meta = document.createElement('meta')

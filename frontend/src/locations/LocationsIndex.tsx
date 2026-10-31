@@ -26,7 +26,7 @@ const PERKS = [
 export function LocationsIndex() {
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap',
+    'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
   ])
   useEffect(() => {
     document.title = INDEX_TITLE

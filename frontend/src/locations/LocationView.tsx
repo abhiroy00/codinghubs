@@ -270,9 +270,6 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
           </div>
         </section>
       </main>
-      <a href={waHref} className="wa-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
-        <FsIcon id="i-wa" />
-      </a>
       <div className="lv-bar">
         <a href="#enquire" className="btn btn-yellow btn-sm">Request Course Details</a>
         <a href={waHref} className="btn btn-wa btn-sm" target="_blank" rel="noopener noreferrer">WhatsApp</a>

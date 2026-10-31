@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BrandLogo } from '../locations/FsShell'
-import { IconSprite } from '../pages/free-session/icons'
+import { INSTITUTE } from '../pages/free-session/data'
+import { FsIcon, IconSprite } from '../pages/free-session/icons'
+import { ScrollProgress } from '../components/ScrollProgress'
 
 /** Header of the Store area: its own menu (Home, product groups) and the shopping cart. */
 export function StoreHeader() {
@@ -13,6 +15,7 @@ export function StoreHeader() {
       <a href="#main" className="skip">
         Skip to content
       </a>
+      <ScrollProgress />
       <header className="hdr st-hdr" id="hdr">
         <div className="wrap hdr-in">
           <BrandLogo />
@@ -25,6 +28,9 @@ export function StoreHeader() {
             <Link to="/my-account/orders" onClick={close}>My Orders</Link>
           </nav>
           <div className="hdr-actions">
+            <a href={INSTITUTE.phoneHref} className="hdr-phone">
+              <FsIcon id="i-phone" />{INSTITUTE.phone}
+            </a>
             <button type="button" className="burger" aria-expanded={open} aria-controls="nav" aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => setOpen((o) => !o)}>
               <span></span>
               <span></span>
