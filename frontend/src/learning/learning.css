@@ -163,3 +163,7 @@
   .prep-navigation{flex-direction:column}
 }
 @media (prefers-reduced-motion:reduce){.learn-hero,.learn-course-card{animation:none}}
+
+.certificate-paper h3{font-size:clamp(1.8rem,4.4vw,3rem);color:var(--navy);margin:1rem 0 1.4rem}
+.certificate-paper h4{color:var(--blue-2);font-size:1.5rem;margin:.4rem 0}
+.learn-section .certificate-paper{margin:1rem auto 0}

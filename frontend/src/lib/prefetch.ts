@@ -1,6 +1,6 @@
 /**
  * Once the page has loaded and the browser is idle, fetch the code of the other sections (store, blog, projects, guides,
- * courses, interview prep, certificates, locations) so moving between them feels instant. Skipped on slow or data-saving connections.
+ * courses, interview prep, locations) so moving between them feels instant. Skipped on slow or data-saving connections.
  */
 const LOADERS: (() => Promise<unknown>)[] = [
   () => import('./../shop-pages/store'),
@@ -9,7 +9,6 @@ const LOADERS: (() => Promise<unknown>)[] = [
   () => import('./../shop-pages/projects'),
   () => import('./../shop-pages/guides'),
   () => import('./../learning/CourseLearning'),
-  () => import('./../learning/Certificates'),
   () => import('./../pages/Curriculum'),
   () => import('./../locations/LocationsIndex'),
 ]

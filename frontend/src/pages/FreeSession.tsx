@@ -128,7 +128,6 @@ export function FreeSession() {
             <a href="#demo-classes">Free Demo Classes</a>
             <Link to="/courses/">Courses</Link>
             <Link to="/interview-prep/">Interview Prep</Link>
-            <Link to="/certificates/">Certificates</Link>
             <Link to="/book-a-tutor/">Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <Link to="/store">Store</Link>

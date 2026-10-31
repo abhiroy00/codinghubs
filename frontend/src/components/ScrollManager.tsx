@@ -47,6 +47,18 @@ export function ScrollManager() {
       return () => clearInterval(t)
     }
     if (changed && !hash) window.scrollTo(0, 0)
+    if (hash && pathname !== '/') {
+      // in-site link to a section of another page (for example /interview-prep/<course>/#certificate)
+      let tries = 0
+      const t = setInterval(() => {
+        const el = document.getElementById(decodeURIComponent(hash.slice(1)))
+        if (el) {
+          el.scrollIntoView({ block: 'start' })
+          clearInterval(t)
+        } else if (++tries > 25) clearInterval(t)
+      }, 80)
+      return () => clearInterval(t)
+    }
   }, [key, pathname, hash, type])
 
   return null

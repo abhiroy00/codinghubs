@@ -121,12 +121,5 @@ export const NOT_FOUND_META: PageMeta = {
   indexable: false,
 }
 
-export const CERTIFICATES_META: PageMeta = {
-  path: '/certificates/',
-  title: 'Certificates: Unlock Your Course Completion | Coding Hubs School of AI',
-  description: 'View and download your certificates after completing the 30-day interview preparation roadmap for any course at Coding Hubs School of AI.',
-  image: LOGO_URL,
-  indexable: true,
-}
 
 export const PROGRAM_METAS = PROGRAMS.map(programMeta)

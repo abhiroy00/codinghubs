@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { AuthProvider } from './lib/auth-context'
 import { LazyCartDrawer } from './components/LazyCartDrawer'
 import { ScrollManager } from './components/ScrollManager'
@@ -16,7 +16,6 @@ const LocationsIndex = lazy(() => import('./locations/LocationsIndex').then((m) 
 const CourseDirectory = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.CourseDirectory })))
 const CourseDetails = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.CourseDetails })))
 const InterviewPrep = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.InterviewPrep })))
-const CertificatesPage = lazy(() => import('./learning/Certificates').then((m) => ({ default: m.CertificatesPage })))
 const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ default: m.BlogList })))
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
 const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.BlogDetail })))
@@ -41,6 +40,11 @@ const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login
 const Policies = lazy(() => import('./pages/Policies').then((m) => ({ default: m.Policies })))
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
 const BookTutor = lazy(() => import('./pages/BookTutor').then((m) => ({ default: m.BookTutor })))
+
+function CertificateRedirect() {
+  const { slug = '' } = useParams()
+  return <Navigate to={`/interview-prep/${slug}/#certificate`} replace />
+}
 
 export function App() {
   return (
@@ -82,8 +86,8 @@ export function App() {
                 <Route path="courses/:slug" element={<LearnFrame><CourseDetails /></LearnFrame>} />
                 <Route path="interview-prep" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
                 <Route path="interview-prep/:slug" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
-                <Route path="certificates" element={<LearnFrame><CertificatesPage /></LearnFrame>} />
-                <Route path="certificates/:slug" element={<LearnFrame><CertificatesPage /></LearnFrame>} />
+                <Route path="certificates" element={<Navigate to="/interview-prep/#certificates" replace />} />
+                <Route path="certificates/:slug" element={<CertificateRedirect />} />
               <Route element={<Layout />}>
                 <Route path="policies" element={<Policies />} />
                 <Route path="login" element={<Login />} />

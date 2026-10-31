@@ -17,11 +17,10 @@ async function start() {
   // Store / projects / guides pages are lazy chunks too: load theirs first so the server-rendered page is replaced without a flash.
   const sp = window.location.pathname.match(/^\/(store|projects|project-guides)(\/|$)/)
   if (sp) await Promise.all([import('./shop-pages/catalog'), sp[1] === 'projects' ? import('./shop-pages/projects') : sp[1] === 'store' ? import('./shop-pages/store') : import('./shop-pages/guides')]).catch(() => null)
-  // Program, courses, interview prep, certificates and the locations index are lazy chunks as well.
+  // Program, courses, interview prep and the locations index are lazy chunks as well.
   const path = window.location.pathname
   const lazyPage = /^\/program\//.test(path) ? import('./pages/Curriculum')
     : /^\/(courses|interview-prep)(\/|$)/.test(path) ? import('./learning/CourseLearning')
-    : /^\/certificates(\/|$)/.test(path) ? import('./learning/Certificates')
     : /^\/locations\/?$/.test(path) ? import('./locations/LocationsIndex')
     : null
   if (lazyPage) await lazyPage.catch(() => null)

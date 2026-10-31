@@ -56,7 +56,6 @@ export function FsHeader() {
             <Link to="/#demo-classes" onClick={() => setNavOpen(false)}>Free Demo Classes</Link>
             <Link to="/courses/" onClick={() => setNavOpen(false)}>Courses</Link>
             <Link to="/interview-prep/" onClick={() => setNavOpen(false)}>Interview Prep</Link>
-            <Link to="/certificates/" onClick={() => setNavOpen(false)}>Certificates</Link>
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <Link to="/store" onClick={() => setNavOpen(false)}>Store</Link>
