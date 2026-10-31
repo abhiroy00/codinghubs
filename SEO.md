@@ -53,7 +53,7 @@ fix both. Measure real field data (CrUX / PageSpeed Insights / Search Console "C
 
 ## Not changed on purpose / needs a business decision
 
-* **Phone and email consistency:** the site phone now uses `+91 84488 11320` across public pages. The email domain is
+* **Phone and email consistency:** the site phone now uses `+91 74640 99059` across public pages. The email domain is
   `codingnowai.in` while the site is `codinghubs.in`; confirm whether that is intentional. NAP consistency matters for local SEO.
 * **Course facts are limited to what the site already states** (free 2-hour live online demo; three 15-day online programs;
   the listed course names). No fees, durations, certificates, placement or trainer claims were added.

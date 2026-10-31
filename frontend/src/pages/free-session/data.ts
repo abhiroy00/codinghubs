@@ -1,7 +1,7 @@
 export const INSTITUTE = {
   name: 'Coding Hubs School of AI',
-  phone: '+91 84488 11320',
-  phoneHref: 'tel:+918448811320',
+  phone: '+91 74640 99059',
+  phoneHref: 'tel:+917464099059',
   email: 'info@codingnowai.in',
   address: '904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi – 110034',
   website: 'codingnowai.in',
@@ -17,7 +17,7 @@ export const INSTITUTE = {
 export const SESSION = { date: 'To Be Announced', time: 'To Be Announced' }
 
 export const WHATSAPP = {
-  number: '918448811320',
+  number: '917464099059',
   message: 'Hi! I just registered for the free 2-hour live session for "{course}". My name is {name}. Please share the session details.',
   genericMessage: 'Hi! I have a question about the free 2-hour live session.',
 }

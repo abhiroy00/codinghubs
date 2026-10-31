@@ -21,7 +21,7 @@ Django 6 + DRF backend, React 19 + Vite SPA, build-time prerender for home/progr
 | 5 | Medium | `sitemap-content.xml` / `sitemap-shop.xml` returned 502 for a short window during a deploy (backend restarting) | first fetch 502, re-fetch 200 | Operational: deploy restarts the backend while nginx keeps serving. Consider a health-gated deploy. Smoke test retries 5xx 3 times |
 | 6 | Low | One location description is 168 characters (Panipat) — may be truncated in results | `url-inventory.csv` | Open (copy edit) |
 | 7 | Info | `/faq` is `noindex` and out of the sitemap by design until the business reviews unsubstantiated claims | `SEO.md` #15 | Owner decision |
-| 8 | Info | Phone/email inconsistent between site sections (+91 74640 99059 vs +91 84488 11540; `codingnowai.in`) | `SEO.md` | Owner decision |
+| 8 | Info | Phone/email inconsistent between site sections (now +91 74640 99059 everywhere; `codingnowai.in`) | `SEO.md` | Owner decision |
 
 ## Verified OK
 robots.txt valid, lists all three sitemaps, no CSS/JS blocked; sitemap URLs absolute https on apex; titles unique and 29–65 characters except finding 4; one H1 per indexable page (after fix 1); no keyword meta tag; JSON-LD limited to Organization/WebSite/Breadcrumb/Article-type content matching visible copy.
