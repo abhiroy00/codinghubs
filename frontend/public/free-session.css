@@ -1609,3 +1609,12 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .lv-rot{min-width:16ch}
 .crumb-nav .sep{display:none}
 .learn-hero::before,.learn-hero::after,.bl-blob,.bl-grid-bg,.pj-blob,.pj-grid-bg,.lx-blob{display:none}
+
+/* One continuous page: same background all the way down, sections divided by a hairline instead of coloured bands */
+.fs-page main>section.sec{padding:56px 0;border-top:1px solid var(--line)}
+.sec-alt,.why-sec,.plan-sec,.videos,.fs-page #how.sec-process{background:transparent!important;border-block:0}
+.fs-page #how.sec-process::before{display:none}
+.fs-page main>section.sec:first-of-type{border-top:0}
+.final{padding:48px 0 64px}
+.final-box{border-radius:var(--r-lg)}
+.ring{display:none}

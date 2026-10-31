@@ -18,10 +18,6 @@ import { HomeExplore } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
 
-const COURSE_TICKER = [
-  'Generative AI', 'Agentic AI', 'AI Engineering', 'Vibe Coding', 'Cyber Security + Gen AI', 'Java Full Stack + Gen AI',
-  'MERN Stack + Gen AI', 'Data Science Pro', 'Data Analytics Using Python', 'Python', 'UI/UX Designing', 'Advanced Digital Marketing',
-]
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
 
@@ -238,21 +234,6 @@ export function FreeSession() {
           </div>
         </section>
 
-        <div className="ticker" aria-label="Courses with a free live session">
-          <div className="ticker-track">
-            <ul>
-              {COURSE_TICKER.map((c) => (
-                <li key={c}>{c}</li>
-              ))}
-            </ul>
-            <ul aria-hidden="true">
-              {COURSE_TICKER.map((c) => (
-                <li key={c}>{c}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
         <section className="sec videos" id="demo-classes" aria-labelledby="videos-title">
           <div className="v-deco" aria-hidden="true">
             <span></span>
@@ -467,10 +448,6 @@ export function FreeSession() {
             </p>
           </div>
         </section>
-
-        <a href="#courses" className="wide-banner" data-cta="courses-banner">
-          <img src="/fs-assets/img/bg3.jpg" alt="Build your future with AI Engineer. Learn today, build tomorrow. Explore all courses." width={1600} height={456} loading="lazy" decoding="async" />
-        </a>
 
         <section className="sec sec-alt" id="courses" aria-labelledby="courses-title">
           <div className="wrap">
@@ -756,25 +733,6 @@ export function FreeSession() {
         </section>
 
         <HomeExplore />
-
-        <section className="final" aria-labelledby="final-title">
-          <div className="wrap">
-            <a href="#register" className="final-banner" data-cta="final-banner">
-              <img src="/fs-assets/img/contact-banner.jpg" alt="Your Next Learning Journey Starts Here! Register for our free 2-hour live online session. Register for Free" width={1920} height={592} loading="lazy" decoding="async" />
-            </a>
-            <div className="final-box">
-              <span className="ring r1" aria-hidden="true"></span>
-              <span className="ring r2" aria-hidden="true"></span>
-              <h2 id="final-title">Your Next Learning Journey Starts Here!</h2>
-              <p>
-                Register for our <strong>FREE 2-HOUR LIVE ONLINE SESSION</strong> and explore the skills you want to learn.
-              </p>
-              <a href="#register" className="btn btn-anim btn-navy btn-lg" data-cta="final">
-                Register for Free <FsIcon id="i-arrow" />
-              </a>
-            </div>
-          </div>
-        </section>
       </main>
 
       <FsFooter home />
