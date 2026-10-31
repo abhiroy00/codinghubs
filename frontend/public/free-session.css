@@ -1483,3 +1483,27 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
 .hx-who strong{display:block;color:var(--navy)}.hx-who em{font-style:normal;font-size:.85rem}
 .rp-loading{padding:2rem;text-align:center;background:#fff;border-radius:18px;color:var(--muted)}
 .hx-guide{display:flex;align-items:center;gap:.45rem;padding:.45rem .7rem;border-radius:var(--r-sm);background:var(--yellow-soft);border:1px solid var(--yellow-2);color:var(--navy);font:600 .84rem var(--f-body);text-decoration:none}.hx-guide:hover{background:var(--yellow)}
+
+/* Hero background: AI network and robot */
+.hero-net{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+.net-lines line{stroke:rgba(150,185,255,.28);stroke-width:1.2}
+.net-nodes circle{fill:#9fc0ff;opacity:.35;animation:netPulse 3.2s ease-in-out infinite}
+.pkt{fill:#ffde6b;filter:drop-shadow(0 0 6px #ffde6b)}
+@keyframes netPulse{0%,100%{opacity:.25;transform-box:fill-box;transform-origin:center;transform:scale(1)}50%{opacity:.95;transform:scale(1.7)}}
+.hero-bot{position:absolute;right:2.5%;bottom:3%;width:min(240px,22vw);opacity:.95;filter:drop-shadow(0 20px 30px rgba(0,0,0,.35))}
+.hero-bot svg{width:100%;height:auto;display:block}
+.bot-float{animation:botFloat 4.2s ease-in-out infinite}
+.bot-shadow{fill:rgba(0,0,0,.28);transform-origin:120px 285px;animation:botShadow 4.2s ease-in-out infinite}
+.bot-eyes{transform-box:fill-box;transform-origin:center;animation:botBlink 5s infinite}
+.bot-bulb{animation:botBulb 1.4s ease-in-out infinite;filter:drop-shadow(0 0 8px #ffde6b)}
+.bot-chest{animation:botBulb 2.2s ease-in-out infinite;filter:drop-shadow(0 0 8px #ffde6b)}
+.bot-antenna{transform-origin:120px 38px;animation:botSway 3.4s ease-in-out infinite}
+.bot-arm-r{transform-origin:186px 170px;animation:botWave 2.2s ease-in-out infinite}
+@keyframes botFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes botShadow{0%,100%{transform:scaleX(1);opacity:.9}50%{transform:scaleX(.8);opacity:.55}}
+@keyframes botBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+@keyframes botBulb{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes botSway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes botWave{0%,100%{transform:rotate(0)}30%{transform:rotate(-28deg)}60%{transform:rotate(8deg)}}
+@media (max-width:999px){.hero-bot{right:4%;bottom:1.5%;width:130px;opacity:.55}.hero-net{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.bot-float,.bot-shadow,.bot-eyes,.bot-bulb,.bot-chest,.bot-antenna,.bot-arm-r,.net-nodes circle{animation:none}.pkt{display:none}}

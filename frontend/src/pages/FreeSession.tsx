@@ -11,6 +11,7 @@ import { CoursesGrid } from './free-session/CoursesGrid'
 import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
+import { HeroBot } from './free-session/HeroBot'
 import { HeroCode } from './free-session/HeroCode'
 import { HomeExplore } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
@@ -156,6 +157,7 @@ export function FreeSession() {
             <span className="blob b1"></span>
             <span className="blob b2"></span>
             <span className="grid"></span>
+            <HeroBot />
           </div>
           <div className="wrap hero-grid">
             <div className="hero-top">
@@ -163,17 +165,16 @@ export function FreeSession() {
                 <span className="live-dot" aria-hidden="true"></span>PRACTICAL AI &amp; TECHNOLOGY TRAINING
               </p>
               <h1 id="hero-title">
-                Build Your{' '}
+                Learn AI.{' '}
                 <span className="hl">
-                  Future
+                  Build Your Future.
                   <svg viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M3 12C70 4 180 2 297 9" />
                   </svg>
-                </span>{' '}
-                with Artificial Intelligence and Next-Generation Technology
+                </span>
               </h1>
               <p className="hero-sub">
-                Learn Generative AI, Agentic AI, AI Engineering, Python, Full Stack Development, Data Science and other in-demand skills through practical, instructor-led training.
+                Live, instructor-led training in Generative AI, Python, Full Stack and Data Science. Start with a free 2-hour demo session.
               </p>
             </div>
 
