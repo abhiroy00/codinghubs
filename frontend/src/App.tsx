@@ -11,6 +11,7 @@ import { LocationRoute } from './locations/LocationRoute'
 import { LocationsIndex } from './locations/LocationsIndex'
 import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/CourseLearning'
 import { CertificatesPage } from './learning/Certificates'
+import { LearnFrame } from './learning/LearnFrame'
 
 const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ default: m.BlogList })))
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
@@ -71,13 +72,14 @@ export function App() {
               <Route path="my-account/downloads" element={<MyDownloads />} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
+
+                <Route path="courses" element={<LearnFrame><CourseDirectory /></LearnFrame>} />
+                <Route path="courses/:slug" element={<LearnFrame><CourseDetails /></LearnFrame>} />
+                <Route path="interview-prep" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
+                <Route path="interview-prep/:slug" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
+                <Route path="certificates" element={<LearnFrame><CertificatesPage /></LearnFrame>} />
+                <Route path="certificates/:slug" element={<LearnFrame><CertificatesPage /></LearnFrame>} />
               <Route element={<Layout />}>
-                <Route path="courses" element={<CourseDirectory />} />
-                <Route path="courses/:slug" element={<CourseDetails />} />
-                <Route path="interview-prep" element={<InterviewPrep />} />
-                <Route path="interview-prep/:slug" element={<InterviewPrep />} />
-                <Route path="certificates" element={<CertificatesPage />} />
-                <Route path="certificates/:slug" element={<CertificatesPage />} />
                 <Route path="faq" element={<Faq />} />
                 <Route path="policies" element={<Policies />} />
                 <Route path="login" element={<Login />} />

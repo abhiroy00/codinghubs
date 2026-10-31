@@ -18,14 +18,17 @@ import { LOCATIONS, SITE_URL, locationPath } from './locations/registry'
 import { COURSE_CATALOG } from './learning/catalog'
 import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/CourseLearning'
 import { CertificatesPage } from './learning/Certificates'
+import { LearnFrame } from './learning/LearnFrame'
 import type { LocationContent } from './locations/types'
 import { CERTIFICATES_META, FAQ_META, HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
 function renderLearningPage(path: string, element: ReactNode) {
+  // /courses/<slug>/ and /interview-prep/<slug>/ need a :slug param for useParams()
+  const pattern = path.replace(/^(\/[^/]+)\/[^/]+\/?$/, '$1/:slug')
   return renderToString(
-    <AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route element={<Layout />}><Route path={path} element={element} /></Route></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
+    <AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<LearnFrame>{element}</LearnFrame>} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
   )
 }
 
@@ -68,34 +71,34 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
   pages.push({
     file: 'courses/index.html', path: '/courses/', title: 'Courses | Coding Hubs School of AI',
     description: 'Explore the Coding Hubs School of AI course catalog and course-specific learning paths.',
-    image: LOGO_URL, indexable: true, fsDesign: false,
+    image: LOGO_URL, indexable: true, fsDesign: true,
     html: renderLearningPage('/courses', <CourseDirectory />),
   })
   for (const course of COURSE_CATALOG) {
     const path = `/courses/${course.slug}/`
     pages.push({
       file: `courses/${course.slug}/index.html`, path, title: `${course.name} Course | Coding Hubs`,
-      description: course.summary, image: LOGO_URL, indexable: true, fsDesign: false,
+      description: course.summary, image: LOGO_URL, indexable: true, fsDesign: true,
       html: renderLearningPage(path, <CourseDetails />),
     })
     const prepPath = `/interview-prep/${course.slug}/`
     pages.push({
       file: `interview-prep/${course.slug}/index.html`, path: prepPath, title: `${course.name}: 30-Day Prep | Coding Hubs`,
       description: `A 30-day ${course.name} interview preparation roadmap with daily theory, questions, quizzes and practical challenges.`,
-      image: LOGO_URL, indexable: true, fsDesign: false,
+      image: LOGO_URL, indexable: true, fsDesign: true,
       html: renderLearningPage(prepPath, <InterviewPrep />),
     })
   }
   pages.push({
     file: 'interview-prep/index.html', path: '/interview-prep/', title: 'Interview Preparation Dashboard | Coding Hubs School of AI',
     description: 'Choose a course-specific 30-day roadmap and track your daily interview preparation progress.',
-    image: LOGO_URL, indexable: true, fsDesign: false,
+    image: LOGO_URL, indexable: true, fsDesign: true,
     html: renderLearningPage('/interview-prep', <InterviewPrep />),
   })
 
   pages.push({
     file: 'certificates/index.html', path: '/certificates/', title: CERTIFICATES_META.title,
-    description: CERTIFICATES_META.description, image: CERTIFICATES_META.image, indexable: CERTIFICATES_META.indexable, fsDesign: false,
+    description: CERTIFICATES_META.description, image: CERTIFICATES_META.image, indexable: CERTIFICATES_META.indexable, fsDesign: true,
     html: renderLearningPage('/certificates/', <CertificatesPage />),
     jsonLd: CERTIFICATES_META.jsonLd,
   })
