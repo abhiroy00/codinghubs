@@ -160,7 +160,7 @@ export function CheckoutPage() {
     const R = (window as any).Razorpay
     const inst = new R({
       key: pay.key, amount: pay.amount, currency: pay.currency, name: 'Coding Hubs School of AI', description: `Order ${pay.order_number}`, order_id: pay.razorpay_order_id,
-      prefill: { name: pay.name, email: pay.email, contact: pay.phone }, theme: { color: '#0A1A3F' },
+      prefill: { name: pay.name, email: pay.email, contact: pay.phone }, theme: { color: '#231A12' },
       handler: (res: any) => void verify(order, res),
       modal: { ondismiss: () => { setBusy(false); setPending(order); setError('The payment was not completed. Your items are held for a short time: you can try again below.') } },
     })
