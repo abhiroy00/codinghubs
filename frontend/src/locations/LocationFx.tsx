@@ -17,26 +17,7 @@ export function LocationFx() {
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
 
-    let revealIo: IntersectionObserver | null = null
-    if (!reduce && 'IntersectionObserver' in window) {
-      revealIo = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              e.target.classList.add('rv-in')
-              revealIo?.unobserve(e.target)
-            }
-          }
-        },
-        { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
-      )
-      document.querySelectorAll<HTMLElement>('.fs-page [data-rv]').forEach((el) => {
-        if (el.getBoundingClientRect().top > window.innerHeight * 0.92) {
-          el.classList.add('rv')
-          revealIo?.observe(el)
-        }
-      })
-    }
+    // Sections are always visible (no fade-in on scroll), so every visitor sees the full guide straight away.
 
     const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.loc-jump a'))
     const targets = links.map((a) => document.getElementById(a.hash.slice(1))).filter((x): x is HTMLElement => !!x)
@@ -77,7 +58,6 @@ export function LocationFx() {
 
     return () => {
       window.removeEventListener('scroll', onScroll)
-      revealIo?.disconnect()
       spyIo?.disconnect()
       countIo?.disconnect()
     }
