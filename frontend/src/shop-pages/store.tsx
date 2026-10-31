@@ -3,11 +3,11 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { Html, useDetail } from './catalog'
-import { Arrow } from './projects'
 import { GuideCard } from './guides'
 import { cartApi, errorText, fmtSize, get, initial, rupees, useCartData, type Card, type Paged } from './api'
 import './projects.css'
 import './shopui.css'
+import './store.css'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 12
@@ -15,6 +15,23 @@ const TYPE_LABEL: Record<string, string> = { digital: 'Instant download', physic
 const saving = (c: { price?: string | null; original_price?: string | null }) => {
   const p = Number(c.price), o = Number(c.original_price)
   return o > p && p >= 0 ? Math.round((1 - p / o) * 100) : 0
+}
+
+/** Simple line icon used when a product has no photo yet. */
+function ShopIcon({ c }: { c: { title: string; product_type?: string; format?: string } }) {
+  const tee = /shirt|tee\b/i.test(c.title)
+  const book = !tee && (c.product_type === 'physical' || /book/i.test(c.title))
+  return (
+    <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {tee ? (
+        <path d="M22 10 8 18l6 12 8-4v28h20V26l8 4 6-12-14-8c-1 4-5 7-10 7s-9-3-10-7Z" />
+      ) : book ? (
+        <><path d="M12 10h30a8 8 0 0 1 8 8v36H20a8 8 0 0 1-8-8Z" /><path d="M12 46a8 8 0 0 1 8-8h30" /><path d="M24 20h16" /></>
+      ) : (
+        <><path d="M16 6h22l12 12v40H16Z" /><path d="M38 6v12h12" /><path d="M24 30h18M24 38h18M24 46h12" /></>
+      )}
+    </svg>
+  )
 }
 
 function CartBadge() {
@@ -37,28 +54,28 @@ export function ProductCard({ c, i = 0 }: { c: Card; i?: number }) {
     try { await cartApi.add(c.id!, 1); setState('idle') } catch { setState('error'); setTimeout(() => setState('idle'), 2200) }
   }
   return (
-    <article className="pj-card st-card" style={{ ['--i' as string]: i }}>
-      <Link to={`/store/${c.slug}`} className="pj-card-media st-media" tabIndex={-1} aria-hidden="true">
-        {img ? <img src={img.src} alt={img.alt || c.title} loading="lazy" decoding="async" width={640} height={480} /> : <div className="st-ph"><span>{/shirt/i.test(c.title) ? 'TEE' : c.product_type === 'physical' ? 'BOOK' : (c.format || 'PDF').slice(0, 4)}</span></div>}
-        <span className="st-type">{TYPE_LABEL[c.product_type ?? 'digital']}</span>
-        {cut > 0 && <span className="st-save">Save {cut}%</span>}
+    <article className="shop-card" style={{ ['--i' as string]: i }}>
+      <Link to={`/store/${c.slug}`} className="shop-media" tabIndex={-1} aria-hidden="true">
+        {img ? <img src={img.src} alt={img.alt || c.title} loading="lazy" decoding="async" width={640} height={640} /> : <div className="shop-ph"><ShopIcon c={c} /></div>}
+        {c.is_free && <span className="shop-badge free">Free</span>}
+        {!c.is_free && cut > 0 && <span className="shop-badge">Save {cut}%</span>}
       </Link>
-      <div className="pj-card-body">
-        {c.category && typeof c.category === 'object' && <p className="pj-cat">{c.category.name}</p>}
+      <div className="shop-body">
+        {c.category && typeof c.category === 'object' && <p className="shop-cat">{c.category.name}</p>}
         <h2><Link to={`/store/${c.slug}`}>{c.title}</Link></h2>
-        {c.short_description && <p className="pj-sum">{c.short_description}</p>}
-        <div className="st-priceRow">
-          <strong className="st-price">{c.is_free ? 'Free' : rupees(c.price)}</strong>
+        {c.short_description && <p className="shop-sum">{c.short_description}</p>}
+        <div className="shop-priceRow">
+          <strong className="shop-price">{c.is_free ? 'Free' : rupees(c.price)}</strong>
           {c.original_price && <s>{rupees(c.original_price)}</s>}
-          <span className={`st-stock${c.in_stock ? '' : ' out'}`}>{c.stock_label}</span>
+          <span className={`shop-stock${c.in_stock ? '' : ' out'}`}>{c.stock_label}</span>
         </div>
-        <div className="pj-foot st-foot">
-          {inCart ? <Link to="/cart" className="st-add"><CartBadge /> Go to Cart</Link> : (
-            <button type="button" className="st-add" onClick={() => void add()} disabled={!c.in_stock || state === 'busy' || !cartReady} aria-live="polite">
+        <div className="shop-foot">
+          {inCart ? <Link to="/cart" className="shop-add"><CartBadge /> Go to cart</Link> : (
+            <button type="button" className="shop-add" onClick={() => void add()} disabled={!c.in_stock || state === 'busy' || !cartReady} aria-live="polite">
               <CartBadge /> {!cartReady ? 'Checking cart…' : state === 'error' ? 'Try again' : c.is_free ? 'Get free' : 'Add to cart'}
             </button>
           )}
-          <Link to={`/store/${c.slug}`} className="pj-go" aria-label={`View ${c.title}`}>Details <Arrow /></Link>
+          <Link to={`/store/${c.slug}`} className="shop-more" aria-label={`View ${c.title}`}>Details</Link>
         </div>
       </div>
     </article>
@@ -131,47 +148,46 @@ export function StorePage() {
 
   return (
     <PageFrame wide store>
-      <section className="pj-hero st-hero">
-        <span className="pj-blob b1" aria-hidden="true" /><span className="pj-blob b2" aria-hidden="true" /><span className="pj-grid-bg" aria-hidden="true" />
-        <div className="pj-hero-in">
-          <p className="pj-eyebrow">Coding Hubs Store</p>
-          <h1>T-shirts, notes and books <span>for learners</span></h1>
-          <p className="pj-lead">Notes and books are free to download. Grab a Coding Hubs T-shirt and show you build with AI.</p>
-          <label className="pj-search">
-            <span className="sr-only">Search the store</span><SearchIcon />
-            <input type="search" placeholder="Search T-shirts, Python notes, books…" value={text} onChange={(e) => setText(e.target.value)} />
-          </label>
-          <ul className="st-trust"><li>Notes &amp; books are free</li><li>Coding Hubs T-shirts</li><li>Secure checkout with Razorpay</li></ul>
+      <header className="shop-head">
+        <div>
+          <h1>Store</h1>
+          <p>Free notes and books, and Coding Hubs T-shirts.</p>
         </div>
-      </section>
-      <div className="pj-filters">
-        {cats.length > 0 && (
-          <div className="pj-chips" role="group" aria-label="Category">
-            <button type="button" className={!category ? 'on' : ''} aria-pressed={!category} onClick={() => go({ category: null })}>All{total !== null && !active ? ` (${total})` : ''}</button>
-            {cats.map((c) => (<button key={c.slug} type="button" className={category === c.slug ? 'on' : ''} aria-pressed={category === c.slug} onClick={() => go({ category: category === c.slug ? null : c.slug })}>{c.name} ({c.count})</button>))}
-          </div>
-        )}
-        <div className="pj-selects">
-          <select aria-label="Type" value={type} onChange={(e) => go({ type: e.target.value || null })}>
-            <option value="">All formats</option><option value="digital">Digital downloads</option><option value="physical">Printed</option><option value="mixed">Printed + digital</option>
-          </select>
-          <select aria-label="Sort" value={ordering} onChange={(e) => go({ ordering: e.target.value || null })}>
-            <option value="">Newest first</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option><option value="title">Title A–Z</option>
-          </select>
-          <label className="st-check"><input type="checkbox" checked={!!free} onChange={(e) => go({ free: e.target.checked ? '1' : null })} /> Free only</label>
-          {active > 0 && <button type="button" className="pj-clear" onClick={reset}>Clear filters ({active})</button>}
-        </div>
+        <label className="shop-search">
+          <span className="sr-only">Search the store</span><SearchIcon />
+          <input type="search" placeholder="Search the store" value={text} onChange={(e) => setText(e.target.value)} />
+        </label>
+      </header>
+
+      <nav className="shop-groups" aria-label="Product groups">
+        <Link to="/store" className={!category ? 'on' : ''} aria-current={!category ? 'page' : undefined}>All{total !== null ? <span>{total}</span> : null}</Link>
+        {cats.map((c) => (
+          <Link key={c.slug} to={`/store?category=${c.slug}`} className={category === c.slug ? 'on' : ''} aria-current={category === c.slug ? 'page' : undefined}>
+            {c.name}<span>{c.count}</span>
+          </Link>
+        ))}
+      </nav>
+
+      <div className="shop-bar">
+        <select aria-label="Format" value={type} onChange={(e) => go({ type: e.target.value || null })}>
+          <option value="">All formats</option><option value="digital">Digital downloads</option><option value="physical">Printed</option><option value="mixed">Printed + digital</option>
+        </select>
+        <select aria-label="Sort" value={ordering} onChange={(e) => go({ ordering: e.target.value || null })}>
+          <option value="">Newest first</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option><option value="title">Title A–Z</option>
+        </select>
+        <label className="shop-check"><input type="checkbox" checked={!!free} onChange={(e) => go({ free: e.target.checked ? '1' : null })} /> Free only</label>
+        {active > 0 && <button type="button" className="shop-clear" onClick={reset}>Clear filters ({active})</button>}
       </div>
       {error && <p className="bl-state" role="alert">We could not load the store. Please refresh the page.</p>}
-      {!data && !error && <div className="pj-grid st-grid" aria-busy="true">{Array.from({ length: 8 }).map((_, i) => (<div key={i} className="pj-skel" />))}</div>}
+      {!data && !error && <div className="shop-grid" aria-busy="true">{Array.from({ length: 8 }).map((_, i) => (<div key={i} className="shop-skel" />))}</div>}
       {data && data.count === 0 && (
         <div className="pj-empty"><strong>{active ? 'Nothing matches your search.' : 'The store is being stocked.'}</strong><p>{active ? 'Try different words or clear the filters.' : 'New notes and materials are coming soon.'}</p>{active > 0 && <button type="button" className="btn btn-yellow" onClick={reset}>Clear filters</button>}</div>
       )}
-      <div className="pj-grid st-grid" key={`${page}-${category}-${type}-${free}-${q}-${ordering}`}>
+      <div className="shop-grid" key={`${page}-${category}-${type}-${free}-${q}-${ordering}`}>
         {data?.results.map((c, i) => (<ProductCard key={c.slug} c={c} i={i} />))}
       </div>
       {data && <Pager page={page} count={data.count} size={PAGE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
-      <section className="pj-cta"><div><h2>Need help choosing?</h2><p>Talk to a Coding Hubs counsellor about the right material for your course.</p></div><a className="btn btn-yellow btn-lg" href="/#contact">Talk to us</a></section>
+      <section className="shop-help"><div><h2>Need help choosing?</h2><p>Talk to a Coding Hubs counsellor about the right material for your course.</p></div><a className="btn btn-yellow btn-lg" href="/#contact">Talk to us</a></section>
     </PageFrame>
   )
 }
@@ -206,7 +222,7 @@ export function ProductPage() {
         <div className="st-top">
           <div className="st-gallery">
             <div className="st-stage">
-              {images[active] ? <img src={images[active].src} alt={images[active].alt || p.title} width={1000} height={750} decoding="async" /> : <div className="st-ph big"><span>{p.product_type === 'physical' ? 'BOOK' : (p.format || 'PDF').slice(0, 4)}</span></div>}
+              {images[active] ? <img src={images[active].src} alt={images[active].alt || p.title} width={1000} height={750} decoding="async" /> : <div className="shop-ph big"><ShopIcon c={p} /></div>}
               {cut > 0 && <span className="st-save">Save {cut}%</span>}
             </div>
             {images.length > 1 && (
@@ -261,7 +277,7 @@ export function ProductPage() {
         </div>
 
         {p.guides?.length > 0 && <section className="pj-more"><h2>Related project guides</h2><div className="pj-grid">{p.guides.map((g: Card, i: number) => (<GuideCard key={g.slug} c={g} i={i} />))}</div></section>}
-        {p.related?.length > 0 && <section className="pj-more"><h2>You may also like</h2><div className="pj-grid st-grid">{p.related.map((r: Card, i: number) => (<ProductCard key={r.slug} c={r} i={i} />))}</div></section>}
+        {p.related?.length > 0 && <section className="pj-more"><h2>You may also like</h2><div className="shop-grid">{p.related.map((r: Card, i: number) => (<ProductCard key={r.slug} c={r} i={i} />))}</div></section>}
       </article>
 
       <div className="st-bar" role="region" aria-label="Buy">

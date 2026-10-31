@@ -1769,3 +1769,4 @@ body:has(.st-bar) .call-float{bottom:152px}
 .fx-bar .fx-credit{flex:0 1 auto;text-align:center}
 .fx-bar ul{gap:.3rem 1rem;flex-wrap:nowrap}
 @media (max-width:1180px){.fx-bar .fx-bottom{flex-wrap:wrap;justify-content:center;text-align:center}.fx-bar ul{flex-wrap:wrap;justify-content:center}}
+.st-hdr .nav a[aria-current=page]{color:var(--blue-2);font-weight:600}.st-hdr .nav a[aria-current=page]::after{transform:scaleX(1)}
