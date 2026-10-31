@@ -25,6 +25,26 @@ function useLatest(path: string) {
   return items
 }
 
+interface Review {
+  name: string
+  course: string
+  text: string
+  photo: string
+}
+
+/** Genuine student reviews the owner has published with permission (nothing renders until one exists). */
+function useReviews() {
+  const [rows, setRows] = useState<Review[]>([])
+  useEffect(() => {
+    let live = true
+    shop.get('/testimonials/').then((r) => live && setRows(Array.isArray(r.data) ? r.data : [])).catch(() => undefined)
+    return () => {
+      live = false
+    }
+  }, [])
+  return rows
+}
+
 function CardList({ items, base, cta }: { items: Item[]; base: string; cta: string }) {
   return (
     <ul className="hx-grid">
@@ -50,6 +70,7 @@ function CardList({ items, base, cta }: { items: Item[]; base: string; cta: stri
 export function HomeExplore() {
   const projects = useLatest('/projects/')
   const guides = useLatest('/project-guides/')
+  const reviews = useReviews()
   return (
     <>
       {projects.length > 0 && (
@@ -79,6 +100,28 @@ export function HomeExplore() {
               <Link className="btn btn-ghost" to="/project-guides">All guides</Link>
               <Link className="btn btn-ghost" to="/blog">Read the blog</Link>
             </p>
+          </div>
+        </section>
+      )}
+
+      {reviews.length > 0 && (
+        <section className="sec sec-alt" id="reviews" aria-labelledby="reviews-title">
+          <div className="wrap">
+            <div className="sec-head center reveal">
+              <p className="eyebrow">Student feedback</p>
+              <h2 id="reviews-title" className="h2">What our <span className="marker">students</span> say</h2>
+            </div>
+            <ul className="hx-grid">
+              {reviews.map((r) => (
+                <li key={r.name + r.text.slice(0, 12)} className="hx-card hx-review">
+                  <blockquote>“{r.text}”</blockquote>
+                  <p className="hx-who">
+                    {r.photo && <img src={r.photo} alt="" width={44} height={44} loading="lazy" />}
+                    <span><strong>{r.name}</strong>{r.course && <em>{r.course}</em>}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       )}

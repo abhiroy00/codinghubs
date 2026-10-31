@@ -18,7 +18,7 @@ from rest_framework.throttling import ScopedRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
 from . import services
-from .models import Blog, BlogCategory, BlogTag, CaseStudy, ContentRevision
+from .models import Blog, BlogCategory, BlogTag, CaseStudy, ContentRevision, Testimonial
 from .serializers import (
     BlogAdminSerializer,
     BlogCardSerializer,
@@ -456,3 +456,14 @@ class MediaUpload(APIView):
         name = f'uploads/{now:%Y/%m}/{uuid.uuid4().hex}.{ext}'
         saved = default_storage.save(name, ContentFile(out.getvalue()))
         return Response({'url': f'{settings.MEDIA_URL}{saved}', 'width': img.width, 'height': img.height}, status=status.HTTP_201_CREATED)
+
+
+class PublicTestimonials(generics.ListAPIView):
+    """Genuine, permitted student reviews only (empty until the owner adds some)."""
+
+    permission_classes = [permissions.AllowAny]
+    pagination_class = None
+
+    def list(self, request, *args, **kwargs):
+        rows = Testimonial.objects.filter(is_published=True, permission_confirmed=True)[:12]
+        return Response([{'name': t.name, 'course': t.course, 'text': t.text, 'photo': t.photo_url} for t in rows])

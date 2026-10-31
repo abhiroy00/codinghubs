@@ -398,3 +398,16 @@ class HeadingIdTests(TestCase):
         html, toc = add_heading_ids('<h2>Intro</h2><h2>Intro</h2><h3>Deep dive</h3>')
         self.assertEqual([t['id'] for t in toc], ['intro', 'intro-2', 'deep-dive'])
         self.assertIn('<h2 id="intro">', html)
+
+
+class TestimonialTests(TestCase):
+    def test_only_published_and_permitted_reviews_are_public(self):
+        from rest_framework.test import APIClient
+
+        from .models import Testimonial
+
+        Testimonial.objects.create(name='A', text='Great', is_published=True, permission_confirmed=True, course='Python')
+        Testimonial.objects.create(name='B', text='No permission', is_published=True, permission_confirmed=False)
+        Testimonial.objects.create(name='C', text='Draft', is_published=False, permission_confirmed=True)
+        rows = APIClient().get('/api/testimonials/').json()
+        self.assertEqual([r['name'] for r in rows], ['A'])

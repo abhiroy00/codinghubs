@@ -248,3 +248,26 @@ class ContentRevision(models.Model):
     class Meta:
         ordering = ['-created_at', '-id']
         indexes = [models.Index(fields=['kind', 'object_id', '-created_at'])]
+
+
+class Testimonial(models.Model):
+    """A genuine student review. Shown on the website only when it is published AND the student's permission is confirmed."""
+
+    name = models.CharField(max_length=80)
+    course = models.CharField(max_length=120, blank=True)
+    text = models.TextField(max_length=1200)
+    photo_url = models.CharField(max_length=500, blank=True, validators=[validate_media_or_https_url])
+    permission_confirmed = models.BooleanField(default=False, help_text='Tick only when the student has agreed to show this review (and photo) publicly.')
+    is_published = models.BooleanField(default=False)
+    position = models.PositiveSmallIntegerField(default=0, help_text='Lower numbers appear first.')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['position', '-created_at']
+
+    def __str__(self):
+        return f'{self.name} ({self.course})' if self.course else self.name
+
+    def clean(self):
+        if self.is_published and not self.permission_confirmed:
+            raise ValidationError({'permission_confirmed': "Confirm the student's permission before publishing."})
