@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tutor-page-css
-          path: frontend/dist/assets/BookTutor-*.css
+          path: frontend/dist/assets/book-tutor-*.css
           if-no-files-found: error
           retention-days: 1
 
@@ -179,7 +179,7 @@ jobs:
             exit 1
           fi
 
-          CSS_PATH=$(find tutor-page-css -maxdepth 1 -name 'BookTutor-*.css' -print -quit)
+          CSS_PATH=$(find tutor-page-css -maxdepth 1 -name 'book-tutor-*.css' -print -quit)
           CSS_FILE=${CSS_PATH##*/}
           if [ -z "$CSS_FILE" ]; then
             echo "Tutor stylesheet artifact was not found."
