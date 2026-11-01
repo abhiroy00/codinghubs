@@ -19,4 +19,5 @@ urlpatterns = [
     path('questions/', views.QuestionListView.as_view(), name='admin-questions'),
     path('questions/<int:pk>/', views.QuestionDetailView.as_view(), name='admin-question'),
     path('tutors/', include('apps.tutors.admin_urls')),
+    path('jobs/', include('apps.jobs.admin_urls')),
 ]

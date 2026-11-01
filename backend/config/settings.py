@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'apps.tutors',
     'apps.content',
     'apps.shop',
+    'apps.jobs',
 ]
 
 MIDDLEWARE = [

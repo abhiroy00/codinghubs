@@ -71,6 +71,7 @@ class TutorImageUploadView(APIView):
     MAX_UPLOAD = 5 * 1024 * 1024
     FORMATS = {'JPEG': 'jpg', 'PNG': 'png', 'WEBP': 'webp'}
     MAX_PIXELS = 40_000_000
+    UPLOAD_DIR = 'tutors'
 
     def post(self, request):
         uploaded = request.FILES.get('file')
@@ -96,7 +97,7 @@ class TutorImageUploadView(APIView):
         else:
             image.save(output, image_format)
         now = timezone.now()
-        filename = f'tutors/{now:%Y/%m}/{uuid.uuid4().hex}.{self.FORMATS[image_format]}'
+        filename = f'{self.UPLOAD_DIR}/{now:%Y/%m}/{uuid.uuid4().hex}.{self.FORMATS[image_format]}'
         saved = default_storage.save(filename, ContentFile(output.getvalue()))
         return Response(
             {'url': f'{settings.MEDIA_URL}{saved}'},

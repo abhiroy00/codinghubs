@@ -113,6 +113,18 @@ export const TUTOR_META: PageMeta = {
   },
 }
 
+export const JOBS_META: PageMeta = {
+  path: '/latest-jobs/',
+  title: 'Latest Jobs | Coding Hubs School of AI',
+  description: 'Explore the latest job openings in AI, data science and software development, with location, work mode, experience and how to apply.',
+  image: LOGO_URL,
+  indexable: true,
+  jsonLd: {
+    '@context': 'https://schema.org',
+    '@graph': [organizationNode()],
+  },
+}
+
 export const NOT_FOUND_META: PageMeta = {
   path: '/404',
   title: 'Page not found | Coding Hubs School of AI',

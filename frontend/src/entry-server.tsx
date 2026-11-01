@@ -9,6 +9,7 @@ import { ModalProvider } from './lib/modal-context'
 import { StaticRouter } from 'react-router-dom'
 import { Curriculum } from './pages/Curriculum'
 import { BookTutor } from './pages/BookTutor'
+import { LatestJobs } from './pages/LatestJobs'
 import { FreeSession } from './pages/FreeSession'
 import { NotFound } from './pages/NotFound'
 import { LocationsIndex } from './locations/LocationsIndex'
@@ -19,7 +20,7 @@ import { COURSE_CATALOG } from './learning/catalog'
 import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/CourseLearning'
 import { LearnFrame } from './learning/LearnFrame'
 import type { LocationContent } from './locations/types'
-import { HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_METAS, TUTOR_META, organizationNode } from './seo/site'
+import { HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -175,6 +176,24 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       </AuthProvider>,
     ),
     jsonLd: TUTOR_META.jsonLd,
+  })
+
+  pages.push({
+    file: 'latest-jobs/index.html',
+    path: JOBS_META.path,
+    title: JOBS_META.title,
+    description: JOBS_META.description,
+    image: JOBS_META.image,
+    indexable: JOBS_META.indexable,
+    fsDesign: true,
+    html: renderToString(
+      <AuthProvider>
+        <StaticRouter location={JOBS_META.path}>
+          <LatestJobs />
+        </StaticRouter>
+      </AuthProvider>,
+    ),
+    jsonLd: JOBS_META.jsonLd,
   })
 
   pages.push({

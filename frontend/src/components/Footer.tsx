@@ -92,6 +92,9 @@ export function Footer() {
                   <Link to="/book-a-tutor/">Book a Tutor</Link>
                 </li>
                 <li>
+                  <Link to="/latest-jobs/">Latest Jobs</Link>
+                </li>
+                <li>
                   <Link to="/#why">Hiring Partners</Link>
                 </li>
                 <li>

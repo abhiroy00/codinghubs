@@ -40,6 +40,7 @@ const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login
 const Policies = lazy(() => import('./pages/Policies').then((m) => ({ default: m.Policies })))
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
 const BookTutor = lazy(() => import('./pages/BookTutor').then((m) => ({ default: m.BookTutor })))
+const LatestJobs = lazy(() => import('./pages/LatestJobs').then((m) => ({ default: m.LatestJobs })))
 
 function CertificateRedirect() {
   const { slug = '' } = useParams()
@@ -66,6 +67,8 @@ export function App() {
               <Route path="case-studies/:slug" element={<CaseDetail />} />
               <Route path="book-a-tutor" element={<BookTutor />} />
               <Route path="book-a-tutor/:tutorId" element={<BookTutor />} />
+              <Route path="latest-jobs" element={<LatestJobs />} />
+              <Route path="latest-jobs/:slug" element={<LatestJobs />} />
               <Route path="store" element={<StorePage />} />
               <Route path="store/:slug" element={<ProductPage />} />
               <Route path="projects" element={<ProjectsPage />} />
