@@ -177,10 +177,10 @@ export function CheckoutPage() {
     setError('')
     try {
       const addr = { line1: form.line1, line2: form.line2, city: form.city, state: form.state, postal_code: form.postal_code, country: 'India' }
-      const { data } = await shop.post('/checkout/', { name: form.name, email: form.email, phone: form.phone, shipping_address: addr, billing_address: addr, note: form.note })
+      const { data } = await shop.post('/checkout/', { name: form.name, email: form.email, phone: form.phone, shipping_address: addr, billing_address: addr, note: form.note, skip_payment: cart && cart.has_digital && !cart.has_physical })
       cartApi.get().catch(() => undefined)
       lastOrder.set({ number: data.order_number, token: data.token })
-      if (data.free) return nav(`/payment/success?order=${data.order_number}&token=${data.token}`)
+      if (data.free || data.skip_payment) return nav(`/payment/success?order=${data.order_number}&token=${data.token}`)
       setPending({ number: data.order_number, token: data.token })
       await openPayment(data)
     } catch (err) {

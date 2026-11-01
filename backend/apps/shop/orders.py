@@ -88,11 +88,17 @@ def create_order(items, *, name, email, phone, shipping_address, billing_address
     return order, totals
 
 
-def start_payment(order: Order) -> dict:
-    """Create the provider order for an unpaid order. A free order (total 0) is completed without the gateway."""
+def start_payment(order: Order, *, skip_payment: bool = False) -> dict:
+    """Create the provider order for an unpaid order. A free order (total 0) is completed without the gateway.
+    When skip_payment is True (digital-only orders), the order is marked paid immediately without Razorpay."""
     if order.total <= 0:
         mark_paid(order, provider_payment_id='', provider_order_id='', method='free')
         return {'free': True, 'order_number': order.number, 'token': order.public_token}
+    if skip_payment:
+        if order.has_physical:
+            raise CartError('Cannot skip payment for orders with physical items.', 'physical_items')
+        mark_paid(order, provider_payment_id='', provider_order_id='', method='direct')
+        return {'skip_payment': True, 'order_number': order.number, 'token': order.public_token}
     if not gateway.configured():
         raise CartError('Online payment is not set up yet. Please contact us to order.', 'gateway_not_configured')
     rp = gateway.create_order(to_minor(order.total), order.number, {'order_number': order.number})

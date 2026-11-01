@@ -402,7 +402,7 @@ class Checkout(APIView):
         except CartError as exc:
             return cart_error(exc, 401 if exc.code == 'login_required' else 400)
         try:
-            result = orders.start_payment(order)
+            result = orders.start_payment(order, skip_payment=bool(d.get('skip_payment')))
         except CartError as exc:
             orders.cancel_order(order, reason='payment could not be started')
             return cart_error(exc, 503)
@@ -412,6 +412,9 @@ class Checkout(APIView):
         cart.items.all().delete()
         cart.coupon_code = ''
         cart.save(update_fields=['coupon_code'])
+        if result.get('skip_payment'):
+            order.refresh_from_db()
+            result['downloads'] = download_rows(order)
         return no_cache(Response(result, status=201))
 
 
