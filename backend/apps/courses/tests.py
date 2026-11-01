@@ -51,3 +51,17 @@ class CourseApiTests(TestCase):
         self.assertEqual(listed.status_code, 200)
         self.assertEqual(listed.data[0]['course_slug'], 'generative-ai')
         self.assertEqual(listed.data[0]['completed_days'], [1, 2, 3])
+
+    def test_learning_days_unlock_sequentially_per_user(self):
+        first = get_user_model().objects.create_user(username='first', password='test-password')
+        second = get_user_model().objects.create_user(username='second', password='test-password')
+        self.client.force_authenticate(user=first)
+        skipped = self.client.put('/api/courses/learning/progress/generative-ai/', {'completed_days': [1, 3]}, format='json')
+        self.assertEqual(skipped.status_code, 400)
+        saved = self.client.put('/api/courses/learning/progress/generative-ai/', {'completed_days': [1], 'current_day': 5}, format='json')
+        self.assertEqual(saved.status_code, 200)
+        self.assertEqual(saved.data['current_day'], 2)
+        self.client.force_authenticate(user=second)
+        other = self.client.get('/api/courses/learning/progress/generative-ai/')
+        self.assertEqual(other.data['completed_days'], [])
+        self.assertEqual(other.data['current_day'], 1)

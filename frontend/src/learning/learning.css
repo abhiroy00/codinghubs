@@ -91,6 +91,12 @@
 .prep-day-list button.active span{color:#ffde6b}.prep-day-list button.active small{color:rgba(255,255,255,.75)}
 .prep-day-list button.complete::after,.prep-day-list button b{position:absolute;right:.6rem;top:.55rem;color:#16a34a;font-weight:800}
 .prep-day-list button.complete::after{content:none}
+.prep-day-list button.locked{cursor:not-allowed;background:#f7f8fb;opacity:.72}
+.prep-day-list button.locked:hover{border-color:var(--line);background:#f7f8fb;transform:none}
+.prep-day-list button .prep-lock{color:var(--faint)}
+.prep-day-list button .prep-lock svg{width:14px;height:14px;display:block}
+.prep-lock-hint{display:block;margin-top:.25rem;color:var(--faint);font-size:.72rem;font-style:normal;line-height:1.3}
+.prep-day-content{scroll-margin-top:88px}
 .prep-main{min-width:0}
 .prep-heading{margin-bottom:.8rem}.prep-heading .learn-kicker{color:var(--navy);background:var(--yellow-soft);border-color:var(--yellow-2)}
 .prep-heading h2{margin:0;font-size:clamp(1.4rem,3vw,1.9rem)}

@@ -1,4 +1,4 @@
-/** Hero background: a drifting neural network with data pulses and a friendly floating AI robot. Purely decorative. */
+/** Hero background: a drifting neural network with data pulses. Purely decorative. */
 const NODES: [number, number][] = [
   [90, 140], [260, 70], [420, 190], [610, 90], [790, 210], [980, 110], [1160, 230], [1330, 120],
   [150, 420], [340, 520], [560, 400], [760, 560], [940, 430], [1120, 600], [1290, 470],
@@ -34,45 +34,6 @@ export function HeroBot() {
           </circle>
         ))}
       </svg>
-
-      <div className="hero-bot">
-        <svg viewBox="0 0 240 300" width="240" height="300">
-          <defs>
-            <linearGradient id="botBody" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#f4f7ff" />
-              <stop offset="1" stopColor="#b9c8ee" />
-            </linearGradient>
-            <linearGradient id="botScreen" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#0d1b44" />
-              <stop offset="1" stopColor="#09112c" />
-            </linearGradient>
-          </defs>
-          <ellipse className="bot-shadow" cx="120" cy="285" rx="62" ry="9" />
-          <g className="bot-float">
-            <g className="bot-antenna">
-              <line x1="120" y1="38" x2="120" y2="12" stroke="#b9c8ee" strokeWidth="5" strokeLinecap="round" />
-              <circle className="bot-bulb" cx="120" cy="10" r="7" fill="#ffde6b" />
-            </g>
-            <rect x="46" y="38" width="148" height="112" rx="34" fill="url(#botBody)" />
-            <rect x="34" y="78" width="14" height="34" rx="7" fill="#8fa5da" />
-            <rect x="192" y="78" width="14" height="34" rx="7" fill="#8fa5da" />
-            <rect x="64" y="56" width="112" height="72" rx="22" fill="url(#botScreen)" />
-            <g className="bot-eyes">
-              <ellipse cx="96" cy="92" rx="11" ry="13" fill="#7dffe0" />
-              <ellipse cx="144" cy="92" rx="11" ry="13" fill="#7dffe0" />
-            </g>
-            <path d="M104 114 Q120 124 136 114" fill="none" stroke="#7dffe0" strokeWidth="4" strokeLinecap="round" />
-            <rect x="72" y="158" width="96" height="84" rx="26" fill="url(#botBody)" />
-            <circle className="bot-chest" cx="120" cy="198" r="13" fill="#ffde6b" />
-            <rect className="bot-arm-l" x="42" y="164" width="24" height="64" rx="12" fill="#8fa5da" />
-            <g className="bot-arm-r">
-              <rect x="174" y="164" width="24" height="64" rx="12" fill="#8fa5da" />
-            </g>
-            <rect x="88" y="244" width="24" height="26" rx="10" fill="#8fa5da" />
-            <rect x="128" y="244" width="24" height="26" rx="10" fill="#8fa5da" />
-          </g>
-        </svg>
-      </div>
     </>
   )
 }

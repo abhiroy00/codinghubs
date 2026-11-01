@@ -55,6 +55,22 @@ class LearningProgressSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Completed projects must be a list of project identifiers.')
         return sorted(set(value))
 
+    def validate(self, attrs):
+        # Days unlock one at a time: a day can only be newly completed once the day before it is completed.
+        previous = set(self.instance.completed_days or []) if self.instance else set()
+        done = set(attrs.get('completed_days', previous))
+        accepted = set(previous)
+        for day in sorted(done - previous):
+            if day != 1 and day - 1 not in accepted:
+                raise serializers.ValidationError({'completed_days': f'Complete Day {day - 1} to unlock Day {day}.'})
+            accepted.add(day)
+        # The open day must be a completed day or the first day not yet completed.
+        if 'current_day' in attrs:
+            frontier = next((day for day in range(1, 31) if day not in done), 30)
+            if attrs['current_day'] not in done and attrs['current_day'] != frontier:
+                attrs['current_day'] = frontier
+        return attrs
+
 
 class CourseQuestionSerializer(serializers.ModelSerializer):
     class Meta:

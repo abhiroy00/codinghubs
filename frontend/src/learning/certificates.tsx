@@ -10,9 +10,9 @@ import './learning-extra.css'
 type ProgressRow = { course_slug: string; current_day: number; completed_days: number[] }
 type CertificateRecord = { course_slug: string; course_name: string; user_name: string; certificate_id: string; completed_at: string }
 
-function localDays(slug: string): number[] {
+function localDays(slug: string, userId?: number): number[] {
   try {
-    return JSON.parse(localStorage.getItem(`ch_learning_${slug}`) || '{}').done || []
+    return JSON.parse(localStorage.getItem(userId ? `ch_learning_u${userId}_${slug}` : `ch_learning_${slug}`) || '{}').done || []
   } catch {
     return []
   }
@@ -20,13 +20,14 @@ function localDays(slug: string): number[] {
 
 /** Progress (30-day roadmap) and issued certificates for the signed-in learner; guests see the progress saved in this browser. */
 export function useCertificates() {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const [days, setDays] = useState<Record<string, number>>({})
   const [certificates, setCertificates] = useState<Record<string, CertificateRecord>>({})
   const [loading, setLoading] = useState(true)
   useEffect(() => {
+    if (authLoading) return
     const local: Record<string, number> = {}
-    COURSE_CATALOG.forEach((course) => { local[course.slug] = localDays(course.slug).length })
+    COURSE_CATALOG.forEach((course) => { local[course.slug] = localDays(course.slug, user?.id).length })
     setDays(local)
     if (!user) { setLoading(false); return }
     Promise.all([api.get('/courses/learning/progress/'), api.get('/courses/certificates/')])
@@ -40,7 +41,7 @@ export function useCertificates() {
       })
       .catch(() => undefined)
       .finally(() => setLoading(false))
-  }, [user])
+  }, [user, authLoading])
   return { user, days, certificates, loading }
 }
 
