@@ -226,6 +226,19 @@ export function ProductDetail() {
       setBusy(false)
     }
   }
+
+  const download = async (id: number) => {
+    setBusy(true)
+    setMsg(null)
+    try {
+      const { data } = await shop.post(`/products/${slug}/files/${id}/link/`, {})
+      window.location.assign(data.url)
+    } catch (e) {
+      setMsg({ ok: false, text: errorText(e, 'This download is not available.') })
+    } finally {
+      setBusy(false)
+    }
+  }
   return (
     <PageFrame>
       <article className="bl-article bl-wide">
@@ -255,8 +268,20 @@ export function ProductDetail() {
               </label>
             )}
             <div className="shop-actions">
-              <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy} onClick={() => void add()}>{p.is_free ? 'Get for free' : 'Add to cart'}</button>
-              <button type="button" className="btn btn-ghost-dark" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'), false)}>Buy now</button>
+              {p.is_free ? (
+                <>
+                  {p.files?.length > 0 ? (
+                    <button type="button" className="btn btn-yellow" disabled={busy} onClick={() => void download(p.files[0].id)}>Download</button>
+                  ) : (
+                    <button type="button" className="btn btn-yellow" disabled={busy} onClick={() => void add()}>Get for free</button>
+                  )}
+                </>
+              ) : (
+                <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy} onClick={() => void add()}>Add to cart</button>
+              )}
+              {!p.is_free && (
+                <button type="button" className="btn btn-ghost-dark" disabled={!p.in_stock || busy} onClick={() => void add(() => nav('/checkout'), false)}>Buy now</button>
+              )}
             </div>
             {msg && <p className={msg.ok ? 'shop-ok' : 'shop-err'} role={msg.ok ? 'status' : 'alert'}>{msg.text} {msg.ok && <Link to="/cart">View cart</Link>}</p>}
             {p.delivery && <p className="bl-meta">{p.delivery}</p>}

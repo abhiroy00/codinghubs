@@ -167,13 +167,12 @@ export function InterviewPrep() {
   const course = slug ? COURSE_BY_SLUG.get(slug) : null
   const lenisRef = useLenisRef()
   const dayContent = useRef<HTMLElement>(null)
-  const [scrollRequest, setScrollRequest] = useState(0)
   useEffect(() => {
-    if (!scrollRequest || !dayContent.current) return
+    if (!prepLesson || !dayContent.current) return
     const target = dayContent.current
     if (lenisRef.current) lenisRef.current.scrollTo(target, { offset: -88 })
     else window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 88, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
-  }, [scrollRequest, lenisRef])
+  }, [prepLesson, lenisRef])
   useEffect(() => { if (slug && !authLoading) { const saved = readProgress(slug, uid); setProgress(saved); setDay(saved.currentDay && isUnlocked(saved.done, saved.currentDay) ? saved.currentDay : openDay(saved.done)) } }, [slug, uid, authLoading])
   useEffect(() => {
     if (!slug || !user) return
@@ -220,7 +219,7 @@ export function InterviewPrep() {
   const challenge = dailyChallenge(course, day)
   const score = questions.reduce((sum, question, i) => sum + (answers[i] === question.answer ? 1 : 0), 0)
   const persist = (next: Saved) => { const currentDay = next.currentDay ?? day; const value = { ...next, currentDay, lastLearningDate: new Date().toISOString().slice(0, 10) }; setProgress(value); writeProgress(course.slug, value, uid); if (user) api.put(`/courses/learning/progress/${course.slug}/`, { current_day: currentDay, completed_days: value.done, quiz_scores: value.scores, completed_challenges: value.challenge, completed_theory: value.theory, completed_questions: value.questions, completed_projects: value.projects }).catch(() => undefined) }
-  const moveDay = (nextDay: number) => { if (!isUnlocked(progress.done, nextDay)) return; setDay(nextDay); persist({ ...progress, currentDay: nextDay }); setAnswers([]); setSubmitted(false); setShowSolution(false); setScrollRequest((n) => n + 1) }
+  const moveDay = (nextDay: number) => { if (!isUnlocked(progress.done, nextDay)) return; setDay(nextDay); persist({ ...progress, currentDay: nextDay }); setAnswers([]); setSubmitted(false); setShowSolution(false) }
   const finishDay = () => { if (isUnlocked(progress.done, day)) persist({ ...progress, done: completeDays(progress.done, [day]), scores: { ...progress.scores, [day]: score }, theory: [...new Set([...progress.theory, day])], challenge: [...new Set([...progress.challenge, day])] }) }
   const markTheory = () => persist({ ...progress, theory: [...new Set([...progress.theory, day])] })
   const markPractice = () => persist({ ...progress, challenge: [...new Set([...progress.challenge, day])] })
