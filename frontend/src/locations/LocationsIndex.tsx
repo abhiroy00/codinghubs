@@ -11,12 +11,6 @@ import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locati
 import { INDEX_TITLE } from './seo'
 import type { LocationGroup } from './types'
 
-const STEPS = [
-  { n: '01', t: 'Find your area', d: 'Open the guide written for your locality and read what AI training involves for learners there.' },
-  { n: '02', t: 'Try the free session', d: 'Join the free two-hour live online demo and see the teaching style before you decide anything.' },
-  { n: '03', t: 'Talk to a counsellor', d: 'Ask about syllabus, format, schedule and terms, and decide at your own pace.' },
-]
-
 const PERKS = [
   { i: 'i-monitor', t: 'Learn online', d: 'The free demo and 15-day programs are live and online, so learners anywhere in NCR can join.' },
   { i: 'i-pin', t: 'Honest about location', d: 'One official head office at Netaji Subhash Place. No fake local branches.' },
@@ -77,20 +71,6 @@ export function LocationsIndex() {
               <li><strong>2-hour</strong> free live online demo</li>
               <li><strong>NSP, Delhi</strong> official head office</li>
             </ul>
-          </div>
-        </section>
-
-        <section className="lx-steps" aria-label="How it works">
-          <div className="wrap">
-            <ol className="lx-step-list">
-              {STEPS.map((s) => (
-                <li key={s.n}>
-                  <span className="lx-step-n">{s.n}</span>
-                  <h2>{s.t}</h2>
-                  <p>{s.d}</p>
-                </li>
-              ))}
-            </ol>
           </div>
         </section>
 
