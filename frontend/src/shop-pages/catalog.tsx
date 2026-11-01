@@ -231,7 +231,7 @@ export function ProductDetail() {
     setBusy(true)
     setMsg(null)
     try {
-      const { data } = await shop.post(`/products/${slug}/files/${id}/link/`, {})
+      const { data } = await shop.post(`/products/${p.slug}/files/${id}/link/`, {})
       window.location.assign(data.url)
     } catch (e) {
       setMsg({ ok: false, text: errorText(e, 'This download is not available.') })
