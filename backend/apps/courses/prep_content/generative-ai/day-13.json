@@ -1,0 +1,225 @@
+{
+  "day": 13,
+  "title": "Working with LLM APIs",
+  "module": "Transformers, prompting & APIs",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain how a chat completion API request and response are structured.",
+    "Use system, user and assistant messages correctly in a chat API.",
+    "Handle API errors, rate limits and timeouts in calling code.",
+    "Make an API call with a timeout and parse the generated text from the response.",
+    "Describe why API keys must be kept secret and never sent from a browser."
+  ],
+  "definition": "An LLM API lets a program send prompts to a language model and receive generated text over HTTP, usually as a chat completion with a list of messages. The program builds the message list, sends it with an API key, and extracts the assistant's reply from the JSON response. APIs make it possible to embed generative AI in applications without running a model locally.",
+  "theory": [
+    {
+      "heading": "Chat completion request and response",
+      "body": "A chat completion request sends an array of messages, each with a role and content, plus options such as model, temperature and max tokens. The response contains choices, each with a message and the generated text. The program parses the JSON, reads the assistant's content, and handles cases where the response is empty or an error occurred.",
+      "points": [
+        "Messages have roles: system, user and assistant.",
+        "The response is JSON with a choices array.",
+        "The assistant reply is in choices[0].message.content."
+      ]
+    },
+    {
+      "heading": "System, user and assistant messages",
+      "body": "The system message sets behaviour and rules for the whole conversation. User messages are the learner's or end user's input. Assistant messages are prior model replies, used to give the model conversation history. The order matters: system first, then alternating user and assistant messages.",
+      "points": [
+        "System: instructions, tone and safety rules.",
+        "User: the actual input or question.",
+        "Assistant: previous replies that provide context."
+      ]
+    },
+    {
+      "heading": "Errors, rate limits and retries",
+      "body": "API calls can fail for network reasons, invalid keys, bad requests or rate limits. A rate limit response (often HTTP 429) tells the caller to wait and retry. Robust code catches exceptions, checks status codes, retries after a delay for rate limits, and surfaces a friendly message instead of crashing.",
+      "points": [
+        "Catch network and timeout errors.",
+        "Retry after the delay suggested by a 429 response.",
+        "Never expose the API key in error messages."
+      ]
+    },
+    {
+      "heading": "Keeping API keys secret",
+      "body": "An API key authenticates every call and is tied to billing. It must never be embedded in frontend code, committed to version control or sent from a browser. Keys live on a server or in environment variables, and the frontend calls a backend endpoint that forwards the request.",
+      "points": [
+        "Store keys in environment variables or secret managers.",
+        "Never commit keys to Git.",
+        "Frontend calls a backend proxy, not the LLM API directly."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Calling a chat completion API in Python",
+    "body": "A Python program builds a message list with a system instruction and a user question, sends it to the API, and prints the assistant's reply. The API key is read from an environment variable so it is not hard-coded.",
+    "code": {
+      "language": "python",
+      "source": "import os\nimport requests\n\napi_key = os.environ.get('LLM_API_KEY')\nurl = 'https://api.example.com/v1/chat/completions'\nheaders = {'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'}\npayload = {\n    'model': 'gpt-4o-mini',\n    'messages': [\n        {'role': 'system', 'content': 'You are a helpful coding tutor.'},\n        {'role': 'user', 'content': 'Explain recursion in one sentence.'}\n    ],\n    'temperature': 0.7,\n    'max_tokens': 100\n}\nresponse = requests.post(url, headers=headers, json=payload, timeout=30)\nresponse.raise_for_status()\nreply = response.json()['choices'][0]['message']['content']\nprint(reply)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "AI coding assistant",
+      "description": "An editor plugin sends code and a question to the API and shows the suggested fix."
+    },
+    {
+      "title": "Customer support bot",
+      "description": "A backend forwards a customer's message to the API and returns a drafted reply."
+    },
+    {
+      "title": "Content generator",
+      "description": "A marketing tool calls the API to produce ad copy from a brief."
+    },
+    {
+      "title": "Document summariser",
+      "description": "An app sends long documents to the API and displays a short summary."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare a well-formed chat request that returns a useful reply with a malformed request missing the messages array, which returns an error that the program handles gracefully.",
+    "code": {
+      "language": "text",
+      "source": "Request A (valid): {\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"Hi\"}]}\nResponse A: {\"choices\": [{\"message\": {\"content\": \"Hello!\"}}]}\n\nRequest B (invalid): {\"model\": \"gpt-4o-mini\"}\nResponse B: {\"error\": {\"message\": \"messages is required\"}}"
+    },
+    "output": "Valid request returns the assistant's reply.\nInvalid request returns a 400 error; the program prints 'The request is missing required fields.' instead of crashing."
+  },
+  "takeaways": [
+    "A chat completion API takes a list of role/content messages and returns generated text.",
+    "Use system for rules, user for input and assistant for prior replies.",
+    "Handle errors, rate limits and timeouts so the app never crashes on API failure.",
+    "Keep API keys out of frontend code and version control.",
+    "Call the LLM API from a backend proxy that protects the key.",
+    "Parse the JSON response and read choices[0].message.content."
+  ],
+  "interview": [
+    {
+      "question": "What is a chat completion API?",
+      "answer": "It is an HTTP endpoint that takes a list of messages with roles and returns a model-generated assistant message as JSON.",
+      "explanation": "Mention the roles and the choices/message/content structure."
+    },
+    {
+      "question": "Why should an API key never be sent from a browser?",
+      "answer": "Browser code is visible to anyone, so a key embedded there can be stolen and used to spend the account's budget. The key stays on a backend server.",
+      "explanation": "This is a key security point interviewers look for."
+    },
+    {
+      "question": "What is a rate limit and how should code respond?",
+      "answer": "A rate limit restricts how many requests can be made in a time window, often signalled by HTTP 429. Code should wait the suggested delay and retry, rather than failing immediately.",
+      "explanation": "Showing awareness of retries and backoff indicates production experience."
+    },
+    {
+      "question": "What is the difference between system, user and assistant messages?",
+      "answer": "System sets behaviour and rules, user is the end-user input, and assistant holds prior model replies that give the model conversation history.",
+      "explanation": "Give one example of each to keep the answer concrete."
+    },
+    {
+      "question": "How do you extract the generated text from an API response?",
+      "answer": "Parse the JSON and read choices[0].message.content, handling cases where choices is empty or an error is present.",
+      "explanation": "Mention defensive parsing so the app does not crash on unexpected responses."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Parse a chat completion response",
+    "difficulty": "Basic",
+    "objective": "Practise reading and validating an LLM API response structure in Python.",
+    "statement": "Read an integer N, then N JSON lines each representing a chat completion response. For each response, if it has a non-empty choices array and the first choice has a message.content field, print that content; otherwise print '[no reply]'.",
+    "language": "python",
+    "input_format": "Line 1: N (number of responses).\nNext N lines: one JSON object per line.",
+    "output_format": "One line per response: either the assistant's content or '[no reply]'.",
+    "example": {
+      "input": "3\n{\"choices\": [{\"message\": {\"content\": \"Hello!\"}}]}\n{\"choices\": []}\n{\"error\": \"bad request\"}\n",
+      "output": "Hello!\n[no reply]\n[no reply]"
+    },
+    "constraints": [
+      "N is between 1 and 50.",
+      "Each line is valid JSON.",
+      "Content may be an empty string; treat empty content as '[no reply]'."
+    ],
+    "starter": "import json\n\nn = int(input())\nfor _ in range(n):\n    line = input()\n    # TODO: parse JSON and print content or '[no reply]'\n",
+    "solution": "import json\n\nn = int(input())\nfor _ in range(n):\n    data = json.loads(input())\n    choices = data.get('choices')\n    if isinstance(choices, list) and len(choices) > 0:\n        message = choices[0].get('message', {})\n        content = message.get('content', '')\n        if content:\n            print(content)\n        else:\n            print('[no reply]')\n    else:\n        print('[no reply]')\n",
+    "explanation": [
+      "Read N, then loop N times reading one JSON line each.",
+      "Parse each line with json.loads.",
+      "Get the choices list; if it exists and is non-empty, read the first message's content.",
+      "Print the content if non-empty, otherwise print '[no reply]'.",
+      "If choices is missing or empty, print '[no reply]'."
+    ],
+    "tests": [
+      {
+        "input": "3\n{\"choices\": [{\"message\": {\"content\": \"Hello!\"}}]}\n{\"choices\": []}\n{\"error\": \"bad request\"}\n",
+        "output": "Hello!\n[no reply]\n[no reply]"
+      },
+      {
+        "input": "1\n{\"choices\": [{\"message\": {\"content\": \"\"}}]}\n",
+        "output": "[no reply]"
+      },
+      {
+        "input": "2\n{\"choices\": [{\"message\": {\"content\": \"Line one\"}}]}\n{\"choices\": [{\"message\": {\"content\": \"Line two\"}}]}\n",
+        "output": "Line one\nLine two"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Where is the generated text found in a chat completion API response?",
+      "options": [
+        "data.answer",
+        "result.output",
+        "choices[0].message.content",
+        "response.text"
+      ],
+      "answer": 2,
+      "explanation": "The assistant's generated text is in choices[0].message.content of the JSON response."
+    },
+    {
+      "type": "scenario",
+      "question": "A frontend application needs to call an LLM API. Where should the API key be stored?",
+      "options": [
+        "In a JavaScript constant",
+        "In an environment variable on the backend",
+        "In the browser's local storage",
+        "In the HTML page source"
+      ],
+      "answer": 1,
+      "explanation": "The key must stay on the backend; the frontend calls a backend proxy instead of the LLM API directly."
+    },
+    {
+      "type": "concept",
+      "question": "Which message role sets the overall behaviour and rules for a conversation?",
+      "options": [
+        "system",
+        "developer",
+        "user",
+        "assistant"
+      ],
+      "answer": 0,
+      "explanation": "The system message establishes instructions, tone and safety rules for the whole conversation."
+    },
+    {
+      "type": "scenario",
+      "question": "An API call returns HTTP 429. What should the program do?",
+      "options": [
+        "Retry immediately in a tight loop",
+        "Wait the suggested delay, then retry",
+        "Give up and show an error",
+        "Send the request with a different key"
+      ],
+      "answer": 1,
+      "explanation": "HTTP 429 is a rate-limit response; the caller should back off and retry after the delay."
+    },
+    {
+      "type": "concept",
+      "question": "What is the purpose of the user message in a chat API?",
+      "options": [
+        "To set the model's temperature",
+        "To record billing information",
+        "To store the API key",
+        "To provide the end user's input or question"
+      ],
+      "answer": 3,
+      "explanation": "User messages carry the actual input from the person using the application."
+    }
+  ]
+}

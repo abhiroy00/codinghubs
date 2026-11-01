@@ -1,0 +1,243 @@
+{
+  "day": 2,
+  "title": "Variables, Dynamic Typing and Object References",
+  "module": "Python foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain that Python variables are names bound to objects, not boxes holding values.",
+    "Contrast dynamic typing with static typing and strong typing with weak typing.",
+    "Use id(), type(), isinstance(), == and is correctly.",
+    "Predict the effect of assignment, rebinding and in-place mutation on shared objects.",
+    "Recognise interning and small-integer caching as implementation details."
+  ],
+  "definition": "In Python a variable is a name that refers to an object stored in memory. Assignment binds a name to an object; it never copies the object. Python is dynamically typed, meaning the type belongs to the object and is checked at run time, so the same name can refer to an int now and a string later.",
+  "theory": [
+    {
+      "heading": "Names, objects and binding",
+      "body": "Every value in Python is an object with three properties: an identity (where it lives, shown by id()), a type (shown by type()) and a value. A statement such as x = 42 creates or finds the int object 42 and binds the name x to it. Writing y = x does not copy 42; it binds a second name to the same object. Thinking of variables as labels or sticky notes, rather than boxes, explains most surprising behaviour beginners meet with lists and dictionaries.",
+      "points": [
+        "Assignment binds a name; it never copies data.",
+        "id(obj) returns an integer unique among objects alive at the same time (the memory address in CPython).",
+        "A name can be rebound to a different object at any time with another assignment.",
+        "del x removes the name, not necessarily the object; the object is freed when nothing refers to it."
+      ]
+    },
+    {
+      "heading": "Dynamic and strong typing",
+      "body": "Python is dynamically typed: you never declare a type, and type checks happen when operations run. It is also strongly typed: Python does not silently convert unrelated types, so '3' + 4 raises TypeError instead of producing '34' or 7. Interviewers like this distinction because many candidates wrongly call Python 'weakly typed'. Optional type hints such as def area(r: float) -> float document intent and are checked by external tools like mypy, but the interpreter ignores them at run time.",
+      "points": [
+        "Dynamic: types are attached to objects and checked at run time.",
+        "Strong: no implicit conversion between unrelated types such as str and int.",
+        "Numeric types do widen automatically: 1 + 2.5 gives 3.5.",
+        "Type hints improve tooling and readability but do not enforce anything."
+      ]
+    },
+    {
+      "heading": "== versus is",
+      "body": "== compares values by calling the __eq__ method, while is compares identity, that is, whether two names refer to the very same object. Two separate lists [1, 2] are equal but not identical. Use is only for singletons such as None, True and False (x is None is the idiomatic check) and use == for comparing data. Relying on is for numbers or strings is a bug that may appear to work because of caching.",
+      "points": [
+        "a == b: do the objects have equal values?",
+        "a is b: are a and b the same object (same id)?",
+        "Always write x is None, never x == None.",
+        "isinstance(x, (int, float)) is preferred over type(x) == int because it respects inheritance."
+      ]
+    },
+    {
+      "heading": "Caching and interning are implementation details",
+      "body": "CPython pre-creates the integers from -5 to 256 and reuses them, and it interns some strings that look like identifiers. As a result, a = 100; b = 100; a is b is usually True, while the same test with 1000 can be True or False depending on how the code was compiled. These are optimisations, not language guarantees, so correct code never depends on them.",
+      "points": [
+        "Small int cache: -5 to 256 in CPython.",
+        "String interning: compile-time identifier-like strings, or explicit sys.intern().",
+        "Never use is to compare numbers or strings."
+      ]
+    },
+    {
+      "heading": "Multiple assignment, unpacking and swapping",
+      "body": "Python evaluates the whole right-hand side before binding names, which makes tuple unpacking safe for swaps: a, b = b, a needs no temporary variable. Starred unpacking collects the rest: first, *rest = [1, 2, 3]. Chained assignment a = b = [] binds both names to one list, a common source of shared-state bugs.",
+      "points": [
+        "a, b = b, a swaps by building a tuple first.",
+        "x = y = [] makes x and y refer to the same list.",
+        "Names are case-sensitive and must not start with a digit; follow snake_case per PEP 8."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Rebinding versus mutating",
+    "body": "Both names start out pointing to the same list. Mutating through one name is visible through the other, but rebinding one name to a new object breaks the link without affecting the other name.",
+    "code": {
+      "language": "python",
+      "source": "scores = [70, 85]\nbackup = scores            # same list, two names\nbackup.append(90)          # mutate the shared object\nprint(scores)              # [70, 85, 90]\n\nbackup = [0]               # rebind backup to a new list\nprint(scores, backup)      # [70, 85, 90] [0]\nprint(scores is backup)    # False"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Avoiding shared-state bugs",
+      "description": "Understanding references explains why two variables can unexpectedly change together when they point to one list or dict."
+    },
+    {
+      "title": "Writing None checks",
+      "description": "Using 'is None' for optional parameters and missing results is idiomatic and safe."
+    },
+    {
+      "title": "Flexible APIs",
+      "description": "Dynamic typing lets functions accept any object that supports the needed operations (duck typing)."
+    },
+    {
+      "title": "Type-hinted codebases",
+      "description": "Large teams add hints and run mypy in CI to catch type errors before run time."
+    }
+  ],
+  "demonstration": {
+    "description": "Inspect identity, type and value as names are bound and rebound. Note that id values differ on every run; only the comparisons matter.",
+    "code": {
+      "language": "python",
+      "source": "x = 10\nprint(type(x).__name__)     # int\nx = 'ten'\nprint(type(x).__name__)     # str  (same name, new object)\n\na = [1, 2]\nb = [1, 2]\nc = a\nprint(a == b, a is b)       # True False\nprint(a is c)               # True\nprint(isinstance(True, int))  # True: bool is a subclass of int\n\ntry:\n    '3' + 4\nexcept TypeError as e:\n    print('TypeError:', e)"
+    },
+    "output": "int\nstr\nTrue False\nTrue\nTrue\nTypeError: can only concatenate str (not \"int\") to str"
+  },
+  "takeaways": [
+    "Variables are names bound to objects; assignment never copies.",
+    "Python is dynamically and strongly typed.",
+    "== compares values; is compares identity. Use is only with None, True and False.",
+    "Mutating a shared object is visible through every name that refers to it; rebinding is not.",
+    "Small-integer caching and string interning are CPython optimisations, not guarantees.",
+    "Type hints are documentation for tools; the interpreter does not enforce them."
+  ],
+  "interview": [
+    {
+      "question": "What does it mean that Python is dynamically typed?",
+      "answer": "Types are attached to objects rather than variables and are checked at run time. A name can refer to an int and later to a str, and you never declare types.",
+      "explanation": "Add that Python is still strongly typed ('3' + 4 raises TypeError) to stand out."
+    },
+    {
+      "question": "What is the difference between == and is?",
+      "answer": "== checks whether two objects have equal values (via __eq__). is checks whether two names refer to the same object in memory. Use is for None and other singletons.",
+      "explanation": "Give the list example: [1] == [1] is True, [1] is [1] is False."
+    },
+    {
+      "question": "Why might a = 256; b = 256; a is b be True but the same test with 257 be False?",
+      "answer": "CPython caches small integers from -5 to 256, so both names get the same cached object. Larger integers may be created separately, so identity is not guaranteed. This is an implementation detail, and numbers should always be compared with ==.",
+      "explanation": "Interviewers want you to know the reason and the lesson: never rely on is for value comparison."
+    },
+    {
+      "question": "After a = [1, 2]; b = a; b += [3], what is a? What if the lists were tuples?",
+      "answer": "a is [1, 2, 3] because += on a list mutates it in place and both names share it. With tuples, b += (3,) creates a new tuple and rebinds b, so a stays (1, 2).",
+      "explanation": "This shows you understand that += calls __iadd__ when available (mutable types) and falls back to creating a new object for immutable types."
+    },
+    {
+      "question": "Are type hints enforced at run time? Why use them?",
+      "answer": "No. The interpreter stores them in __annotations__ but does not check them. They are used by static checkers (mypy, pyright), IDEs and frameworks such as FastAPI and pydantic, which read them deliberately to validate data.",
+      "explanation": "Mentioning that some libraries opt in to run-time validation shows current, practical knowledge."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Literal type inspector",
+    "difficulty": "Basic",
+    "objective": "Practise reasoning about the run-time type of values and whether each type is mutable.",
+    "statement": "Each input line contains one Python literal. For each line print the name of its type and whether that type is mutable or immutable. Parse literals safely with ast.literal_eval instead of eval. Treat list, dict and set as mutable; every other type produced by a literal is immutable.",
+    "language": "python",
+    "input_format": "The first line is N. Each of the next N lines holds one valid Python literal.",
+    "output_format": "N lines, each '<type name> <mutable|immutable>'.",
+    "example": {
+      "input": "4\n42\n'hello'\n[1, 2]\nNone\n",
+      "output": "int immutable\nstr immutable\nlist mutable\nNoneType immutable"
+    },
+    "constraints": [
+      "1 <= N <= 100.",
+      "Literals may be int, float, complex, str, bytes, bool, None, list, tuple, dict or set.",
+      "Use type(value).__name__ for the type name."
+    ],
+    "starter": "import ast\n\nn = int(input())\nfor _ in range(n):\n    value = ast.literal_eval(input().strip())\n    # TODO: print the type name and mutability\n",
+    "solution": "import ast\n\nMUTABLE = (list, dict, set)\n\nn = int(input())\nfor _ in range(n):\n    value = ast.literal_eval(input().strip())\n    kind = 'mutable' if isinstance(value, MUTABLE) else 'immutable'\n    print(type(value).__name__, kind)\n",
+    "explanation": [
+      "ast.literal_eval turns text such as \"[1, 2]\" into the real object without executing arbitrary code, which makes it safe for untrusted input.",
+      "type(value).__name__ gives the class name, for example 'int' or 'NoneType'.",
+      "isinstance with a tuple of the mutable built-in types decides the label.",
+      "True and False print as bool because type() reports the exact class, even though bool is a subclass of int."
+    ],
+    "tests": [
+      {
+        "input": "4\n42\n'hello'\n[1, 2]\nNone\n",
+        "output": "int immutable\nstr immutable\nlist mutable\nNoneType immutable"
+      },
+      {
+        "input": "3\nTrue\n3.5\n(1, 2)\n",
+        "output": "bool immutable\nfloat immutable\ntuple immutable"
+      },
+      {
+        "input": "3\n{'a': 1}\n{1, 2, 3}\n{}\n",
+        "output": "dict mutable\nset mutable\ndict mutable"
+      },
+      {
+        "input": "3\nb'raw'\n2+3j\n()\n",
+        "output": "bytes immutable\ncomplex immutable\ntuple immutable"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this list reference example print?",
+      "code": "a = [1, 2]\nb = a\nb.append(3)\nprint(a)",
+      "options": [
+        "[3]",
+        "An error, because a was not modified",
+        "[1, 2]",
+        "[1, 2, 3]"
+      ],
+      "answer": 3,
+      "explanation": "b = a binds a second name to the same list, so append through b is visible through a."
+    },
+    {
+      "type": "output",
+      "question": "What does this rebinding example print?",
+      "code": "x = 5\ny = x\ny += 1\nprint(x, y)",
+      "options": [
+        "5 6",
+        "6 6",
+        "5 5",
+        "6 5"
+      ],
+      "answer": 0,
+      "explanation": "Integers are immutable. y += 1 creates a new int 6 and rebinds y; x still refers to 5."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement best describes Python's type system?",
+      "options": [
+        "Dynamically and strongly typed",
+        "Statically and strongly typed",
+        "Dynamically and weakly typed",
+        "Statically and weakly typed"
+      ],
+      "answer": 0,
+      "explanation": "Types are checked at run time (dynamic), and unrelated types are not implicitly converted (strong): '3' + 4 raises TypeError."
+    },
+    {
+      "type": "output",
+      "question": "What do the == and is checks print?",
+      "code": "a = [1, 2]\nb = [1, 2]\nprint(a == b, a is b)",
+      "options": [
+        "False False",
+        "True False",
+        "False True",
+        "True True"
+      ],
+      "answer": 1,
+      "explanation": "The two lists have equal values but are separate objects, so == is True and is is False."
+    },
+    {
+      "type": "scenario",
+      "question": "A function returns None when a record is missing. Which check is the idiomatic way to test the result?",
+      "options": [
+        "if result is None:",
+        "if result.isnone():",
+        "if result == None:",
+        "if type(result) == 'None':"
+      ],
+      "answer": 0,
+      "explanation": "None is a singleton, so identity comparison with is is correct, fast and cannot be fooled by a custom __eq__."
+    }
+  ]
+}

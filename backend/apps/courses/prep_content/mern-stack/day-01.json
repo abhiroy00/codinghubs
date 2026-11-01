@@ -1,0 +1,242 @@
+{
+  "day": 1,
+  "title": "How the Web Works: DNS, HTTP and the Request-Response Cycle",
+  "module": "Web and JavaScript foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Describe every step between typing a URL and seeing a rendered page.",
+    "Explain the role of DNS, TCP, TLS and HTTP in a single page load.",
+    "Read and write a raw HTTP request and response, including methods, headers and status lines.",
+    "Distinguish HTTP/1.1, HTTP/2 and HTTP/3 and explain why keep-alive and multiplexing matter.",
+    "Place the MERN stack on this picture: React in the browser, Express on Node.js, MongoDB behind it."
+  ],
+  "definition": "The web is a client-server system: a client (usually a browser) sends an HTTP request to a server identified by a URL, and the server returns an HTTP response containing a status code, headers and an optional body such as HTML or JSON. Supporting protocols do the plumbing: DNS turns a domain name into an IP address, TCP (or QUIC for HTTP/3) delivers bytes reliably, and TLS encrypts them for HTTPS.",
+  "theory": [
+    {
+      "heading": "From URL to rendered page",
+      "body": "Interviewers love the question 'what happens when you type a URL and press Enter?' because it tests whether you understand the whole pipeline rather than one framework. A strong answer walks through the layers in order and mentions caching at each stage, since most real page loads are fast precisely because steps are skipped.",
+      "points": [
+        "URL parsing: the browser splits the URL into scheme (https), host (codinghub.in), port (443 by default), path and query string.",
+        "DNS lookup: browser cache, OS cache, router and finally a recursive resolver find the IP address; the answer is cached for its TTL.",
+        "Connection: a TCP three-way handshake, then a TLS handshake that verifies the server certificate and agrees encryption keys (HTTP/3 merges these over QUIC/UDP).",
+        "Request: the browser sends 'GET /path HTTP/1.1' with headers such as Host, Accept, Cookie and User-Agent.",
+        "Response: the server returns a status line, headers (Content-Type, Cache-Control, Set-Cookie) and a body.",
+        "Rendering: the browser parses HTML into the DOM, CSS into the CSSOM, runs JavaScript, builds the render tree, then lays out and paints pixels."
+      ]
+    },
+    {
+      "heading": "Anatomy of an HTTP message",
+      "body": "HTTP/1.1 is a text protocol, which makes it easy to inspect. A request starts with a request line (method, request target, version), then header lines in 'Name: value' form, then a blank line, then an optional body. A response has the same shape but starts with a status line such as 'HTTP/1.1 200 OK'. Header names are case-insensitive, which is why Node.js lower-cases them in req.headers.",
+      "points": [
+        "Methods express intent: GET reads, POST creates, PUT replaces, PATCH partially updates, DELETE removes.",
+        "Safe methods (GET, HEAD) do not change state; idempotent methods (GET, PUT, DELETE) give the same result when repeated.",
+        "The Host header is mandatory in HTTP/1.1 so one IP address can serve many websites (virtual hosting).",
+        "Content-Type tells the receiver how to parse the body, for example application/json or text/html; charset=utf-8.",
+        "The query string (after ?) carries key=value pairs separated by &; spaces arrive as %20 or + and must be decoded."
+      ]
+    },
+    {
+      "heading": "Statelessness, cookies and caching",
+      "body": "HTTP is stateless: each request carries everything the server needs, and the server does not remember earlier requests by default. State is layered on top with cookies (the server sets one with Set-Cookie and the browser sends it back automatically) or with tokens in the Authorization header. Caching headers let browsers and CDNs reuse responses instead of asking the server again.",
+      "points": [
+        "Cache-Control: max-age=3600 lets a response be reused for an hour without contacting the server.",
+        "ETag and If-None-Match let the server answer 304 Not Modified with no body when content is unchanged.",
+        "Statelessness is what makes horizontal scaling easy: any server instance can handle any request."
+      ]
+    },
+    {
+      "heading": "HTTP versions and connection reuse",
+      "body": "Opening a TCP and TLS connection costs several round trips, so reusing connections matters. HTTP/1.0 closed the connection after each response unless 'Connection: keep-alive' was sent; HTTP/1.1 keeps connections open by default unless 'Connection: close' is sent. HTTP/2 multiplexes many requests over one connection with binary framing and header compression, and HTTP/3 runs over QUIC on UDP to avoid TCP head-of-line blocking.",
+      "points": [
+        "HTTP/1.1: persistent connections by default, but one request at a time per connection.",
+        "HTTP/2: many concurrent streams on one connection; bundling assets matters less.",
+        "HTTP/3: QUIC combines transport and TLS handshakes and recovers from packet loss per stream."
+      ]
+    },
+    {
+      "heading": "Where the MERN stack fits",
+      "body": "In a MERN application, the browser downloads a React bundle (HTML, JavaScript, CSS) from a static host or CDN. React then calls the Express API on Node.js with fetch or axios, sending JSON over HTTPS. Express validates the request, talks to MongoDB through the Mongoose driver and returns JSON with an appropriate status code. Understanding the request-response cycle is what lets you debug CORS errors, wrong status codes and slow pages later in this course."
+    }
+  ],
+  "example": {
+    "title": "A raw request and its response",
+    "body": "This is what actually travels over the connection when React's fetch('/api/courses?level=beginner') runs. Notice the blank line separating headers from the body and the status line in the response. You can see the same data in the browser's DevTools Network tab or by running curl -v.",
+    "code": {
+      "language": "http",
+      "source": "GET /api/courses?level=beginner HTTP/1.1\nHost: api.codinghub.in\nAccept: application/json\nAuthorization: Bearer eyJhbGciOi...\n\nHTTP/1.1 200 OK\nContent-Type: application/json; charset=utf-8\nCache-Control: private, max-age=60\nContent-Length: 58\n\n[{\"id\":1,\"title\":\"MERN Stack\",\"level\":\"beginner\"}]"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Debugging failed API calls",
+      "description": "Reading the status code, response headers and body in the Network tab tells you whether a bug is in React, Express, CORS or the database."
+    },
+    {
+      "title": "Performance tuning",
+      "description": "Knowing DNS, TLS and caching costs explains why CDNs, Cache-Control headers and HTTP/2 make pages faster."
+    },
+    {
+      "title": "API design",
+      "description": "Choosing the right method and status code makes an API predictable for front-end and mobile clients."
+    },
+    {
+      "title": "Security reviews",
+      "description": "Understanding HTTPS, cookies and headers is the basis for CORS, CSRF and secure-cookie decisions."
+    }
+  ],
+  "demonstration": {
+    "description": "Use curl with -v (verbose) to see the DNS-resolved address, the TLS handshake and the raw request and response headers. Lines starting with > are sent by the client and lines starting with < are received from the server.",
+    "code": {
+      "language": "bash",
+      "source": "curl -v https://example.com/ -o /dev/null"
+    },
+    "output": "*   Trying 93.184.215.14:443...\n* SSL connection using TLSv1.3\n> GET / HTTP/2\n> Host: example.com\n> User-Agent: curl/8.5.0\n> Accept: */*\n< HTTP/2 200\n< content-type: text/html; charset=UTF-8\n< cache-control: max-age=604800"
+  },
+  "takeaways": [
+    "A page load is DNS lookup, connection (TCP + TLS or QUIC), HTTP request, HTTP response, then parsing and rendering.",
+    "HTTP messages are a start line, headers, a blank line and an optional body; header names are case-insensitive.",
+    "HTTP is stateless; cookies and tokens add identity on top of it.",
+    "HTTP/1.1 keeps connections alive by default; HTTP/2 multiplexes; HTTP/3 uses QUIC over UDP.",
+    "Caching headers (Cache-Control, ETag) avoid repeated work and are a cheap performance win.",
+    "In MERN, React talks to Express over HTTP with JSON, and Express talks to MongoDB."
+  ],
+  "interview": [
+    {
+      "question": "What happens when you type a URL into the browser and press Enter?",
+      "answer": "The browser parses the URL, resolves the domain to an IP via DNS (checking caches first), opens a TCP connection and performs a TLS handshake for HTTPS, sends an HTTP request, receives the response, then parses HTML into the DOM and CSS into the CSSOM, executes JavaScript, and lays out and paints the page. Further requests are made for images, scripts and stylesheets.",
+      "explanation": "Interviewers look for correct order and for depth on at least one step. Mentioning caches (DNS, HTTP cache, CDN) and that render-blocking CSS and JS delay the first paint shows real understanding."
+    },
+    {
+      "question": "What is the difference between GET and POST?",
+      "answer": "GET retrieves a resource, sends parameters in the URL, is safe and idempotent, and can be cached and bookmarked. POST submits data in the request body to create a resource or trigger processing, is neither safe nor idempotent, and is not cached by default.",
+      "explanation": "A strong answer avoids the myth that POST is 'secure': both are visible without HTTPS. Mention that sensitive data should not go in GET URLs because URLs end up in logs and browser history."
+    },
+    {
+      "question": "What does it mean that HTTP is stateless, and how do web apps keep users logged in?",
+      "answer": "Each request is independent and the server keeps no memory of previous requests by default. Applications add state with cookies holding a session id that maps to server-side data, or with tokens such as JWTs sent in a header or cookie on every request.",
+      "explanation": "Tie statelessness to scalability: any server behind a load balancer can serve any request, as long as session data lives in a shared store or in a token."
+    },
+    {
+      "question": "How does DNS resolution work?",
+      "answer": "The browser checks its own cache, then the OS cache and hosts file. If there is no answer, a recursive resolver (often the ISP or 8.8.8.8) queries a root server, then the TLD server (.in, .com) and then the domain's authoritative name server, which returns the A or AAAA record. Each answer is cached for its TTL.",
+      "explanation": "Mention record types (A, AAAA, CNAME, MX) and that a low TTL helps during migrations while a high TTL reduces lookups."
+    },
+    {
+      "question": "What are the main differences between HTTP/1.1, HTTP/2 and HTTP/3?",
+      "answer": "HTTP/1.1 is text-based with persistent connections but handles one request at a time per connection. HTTP/2 uses binary framing, multiplexes many streams over one TCP connection and compresses headers. HTTP/3 runs over QUIC on UDP, which removes TCP head-of-line blocking and makes connection setup faster.",
+      "explanation": "Good candidates connect this to practice: with HTTP/2, domain sharding and aggressive bundling matter less, and HTTP/3 helps most on lossy mobile networks."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Parse a raw HTTP request",
+    "difficulty": "Basic",
+    "objective": "Practise reading the structure of an HTTP/1.x message exactly as a server such as Node.js does before Express ever sees it.",
+    "statement": "The input is a raw HTTP request: a request line, header lines, a blank line and an optional body. Print the method in upper case, the path without the query string, the decoded query parameters, the Host header, whether the connection will be kept alive, and the body length. Header names are case-insensitive. In query strings '+' means a space and %XX sequences must be decoded. A parameter without '=' has an empty value. Connection rules: a Connection header of close or keep-alive (any case) wins; otherwise HTTP/1.0 means close and HTTP/1.1 means keep-alive.",
+    "language": "javascript",
+    "input_format": "Line 1: METHOD TARGET VERSION. Then zero or more 'Name: value' header lines, then an empty line, then an optional body. Trailing newlines after the body are not part of it.",
+    "output_format": "Six lines:\nMethod: <METHOD>\nPath: <path>\nQuery: <k=v pairs joined by ', '> or (none)\nHost: <host> or (missing)\nConnection: keep-alive | close\nBody length: <number of characters>",
+    "example": {
+      "input": "GET /search?q=node+js&page=2 HTTP/1.1\nHost: codinghub.in\nAccept: text/html\n\n",
+      "output": "Method: GET\nPath: /search\nQuery: q=node js, page=2\nHost: codinghub.in\nConnection: keep-alive\nBody length: 0"
+    },
+    "constraints": [
+      "The request line always has three space-separated parts.",
+      "Header values are trimmed; header names compare case-insensitively.",
+      "The body contains only ASCII characters."
+    ],
+    "starter": "const text = stdin.replace(/\\r/g, '');\nconst sep = text.indexOf('\\n\\n');\n\n// TODO: split head and body, parse the request line and headers,\n// decode the query string and print the six lines\n",
+    "solution": "const text = stdin.replace(/\\r/g, '');\nconst sep = text.indexOf('\\n\\n');\nconst head = sep === -1 ? text.trim() : text.slice(0, sep);\nconst body = sep === -1 ? '' : text.slice(sep + 2).replace(/\\n+$/, '');\nconst lines = head.split('\\n');\nconst [method, target, version] = lines[0].trim().split(' ');\n\nconst headers = {};\nfor (const line of lines.slice(1)) {\n  const i = line.indexOf(':');\n  if (i === -1) continue;\n  headers[line.slice(0, i).trim().toLowerCase()] = line.slice(i + 1).trim();\n}\n\nconst q = target.indexOf('?');\nconst path = q === -1 ? target : target.slice(0, q);\nconst query = q === -1 ? '' : target.slice(q + 1);\nconst decode = s => decodeURIComponent(s.replace(/\\+/g, ' '));\nconst pairs = query.split('&').filter(Boolean).map(part => {\n  const eq = part.indexOf('=');\n  const key = eq === -1 ? part : part.slice(0, eq);\n  const value = eq === -1 ? '' : part.slice(eq + 1);\n  return decode(key) + '=' + decode(value);\n});\n\nconst conn = (headers.connection || '').toLowerCase();\nlet keepAlive = version !== 'HTTP/1.0';\nif (conn === 'close') keepAlive = false;\nif (conn === 'keep-alive') keepAlive = true;\n\nconsole.log('Method: ' + method.toUpperCase());\nconsole.log('Path: ' + path);\nconsole.log('Query: ' + (pairs.length ? pairs.join(', ') : '(none)'));\nconsole.log('Host: ' + (headers.host || '(missing)'));\nconsole.log('Connection: ' + (keepAlive ? 'keep-alive' : 'close'));\nconsole.log('Body length: ' + body.length);\n",
+    "explanation": [
+      "Normalise line endings, then split the message at the first blank line into the head (request line plus headers) and the body.",
+      "Split the request line into method, target and version; the target may contain a query string after '?'.",
+      "Store headers in an object keyed by the lower-cased name, because HTTP header names are case-insensitive.",
+      "Decode each query parameter: replace '+' with a space first, then apply decodeURIComponent for %XX escapes.",
+      "Apply the connection rules: an explicit Connection header wins, otherwise HTTP/1.0 closes and HTTP/1.1 keeps the connection alive."
+    ],
+    "tests": [
+      {
+        "input": "GET /search?q=node+js&page=2 HTTP/1.1\nHost: codinghub.in\nAccept: text/html\n\n",
+        "output": "Method: GET\nPath: /search\nQuery: q=node js, page=2\nHost: codinghub.in\nConnection: keep-alive\nBody length: 0"
+      },
+      {
+        "input": "POST /api/login HTTP/1.1\nHOST: api.example.com\nContent-Type: application/json\nConnection: close\n\n{\"user\":\"asha\"}\n",
+        "output": "Method: POST\nPath: /api/login\nQuery: (none)\nHost: api.example.com\nConnection: close\nBody length: 15"
+      },
+      {
+        "input": "GET / HTTP/1.0\n\n",
+        "output": "Method: GET\nPath: /\nQuery: (none)\nHost: (missing)\nConnection: close\nBody length: 0"
+      },
+      {
+        "input": "get /files?name=my%20notes.pdf&download HTTP/1.1\nhost: cdn.example.com\nconnection: Keep-Alive\n\n",
+        "output": "Method: GET\nPath: /files\nQuery: name=my notes.pdf, download=\nHost: cdn.example.com\nConnection: keep-alive\nBody length: 0"
+      },
+      {
+        "input": "PUT /api/users/7?notify=true HTTP/1.0\nHost: localhost:5000\nConnection: keep-alive\n\nname=Ravi\n\n",
+        "output": "Method: PUT\nPath: /api/users/7\nQuery: notify=true\nHost: localhost:5000\nConnection: keep-alive\nBody length: 9"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which component translates a domain name such as codinghub.in into an IP address?",
+      "options": [
+        "DNS",
+        "TCP",
+        "The HTTP Host header",
+        "TLS"
+      ],
+      "answer": 0,
+      "explanation": "DNS (Domain Name System) resolves names to IP addresses. TLS encrypts, TCP transports and the Host header only names the site inside the request."
+    },
+    {
+      "type": "concept",
+      "question": "Which pair of HTTP methods is idempotent?",
+      "options": [
+        "PUT and DELETE",
+        "POST and DELETE",
+        "POST and PATCH",
+        "POST and PUT"
+      ],
+      "answer": 0,
+      "explanation": "Repeating PUT (replace with the same data) or DELETE leaves the server in the same state. POST typically creates a new resource each time."
+    },
+    {
+      "type": "scenario",
+      "question": "A browser revalidates a cached file by sending If-None-Match with the file's ETag, and the file has not changed. What should the server return?",
+      "options": [
+        "304 Not Modified with no body",
+        "200 OK with the full file",
+        "204 No Content",
+        "302 Found"
+      ],
+      "answer": 0,
+      "explanation": "304 tells the browser its cached copy is still valid, saving the bandwidth of resending the body."
+    },
+    {
+      "type": "concept",
+      "question": "Why is the Host header required in HTTP/1.1?",
+      "options": [
+        "So one IP address can serve many different websites",
+        "To encrypt the request body",
+        "To tell the server which port to use",
+        "To identify the user who sent the request"
+      ],
+      "answer": 0,
+      "explanation": "Virtual hosting puts many domains on one IP address; the Host header tells the server which site the request is for."
+    },
+    {
+      "type": "scenario",
+      "question": "A client sends an HTTP/1.1 request with no Connection header. What happens to the TCP connection after the response?",
+      "options": [
+        "It stays open for reuse by default",
+        "It is upgraded to HTTP/2 automatically",
+        "It switches to UDP",
+        "It is always closed"
+      ],
+      "answer": 0,
+      "explanation": "HTTP/1.1 connections are persistent by default; only 'Connection: close' asks for the connection to be closed."
+    }
+  ]
+}

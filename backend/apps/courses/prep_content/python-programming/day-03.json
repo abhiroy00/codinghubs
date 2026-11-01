@@ -1,0 +1,244 @@
+{
+  "day": 3,
+  "title": "Numbers and Strings: Slicing, Formatting and Methods",
+  "module": "Python foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Use int, float, complex and Decimal appropriately and explain floating-point error.",
+    "Slice strings with start, stop and step, including negative indices.",
+    "Format output with f-strings and format specifiers.",
+    "Apply common string methods: split, join, strip, replace, find, startswith, upper and title.",
+    "Explain why strings are immutable and why ''.join is preferred over += in loops."
+  ],
+  "definition": "Python's numeric types are int (arbitrary precision integers), float (64-bit IEEE 754 binary floating point) and complex, with Decimal and Fraction available in the standard library for exact arithmetic. A str is an immutable sequence of Unicode characters that supports indexing, slicing, a rich set of methods and formatted string literals (f-strings).",
+  "theory": [
+    {
+      "heading": "Numbers: int, float, Decimal",
+      "body": "Python ints never overflow: 2 ** 100 is computed exactly because ints grow as needed. Floats are binary approximations, so 0.1 + 0.2 is 0.30000000000000004 and equality tests on floats are unreliable. For money, store whole paise or cents as ints, or use decimal.Decimal built from strings. Compare floats with math.isclose. Division / always returns a float, // performs floor division and round() uses banker's rounding (round half to even), so round(2.5) is 2.",
+      "points": [
+        "int: unlimited size; float: about 15-17 significant digits.",
+        "math.isclose(a, b) for float comparison.",
+        "Decimal('0.1') is exact; Decimal(0.1) inherits the float's error.",
+        "int('42'), float('3.5') and str(7) convert explicitly; int('3.5') raises ValueError."
+      ]
+    },
+    {
+      "heading": "Indexing and slicing",
+      "body": "Strings are sequences, so s[i] returns one character and negative indices count from the end (s[-1] is the last character). A slice s[start:stop:step] returns a new string from start up to but not including stop. Missing values default to the beginning, end and step 1, and out-of-range slice bounds are clipped instead of raising errors. s[::-1] reverses a string, a common interview one-liner for palindrome checks.",
+      "points": [
+        "s[0:3] or s[:3]: first three characters.",
+        "s[-3:]: last three characters.",
+        "s[::2]: every second character.",
+        "s[10] on a short string raises IndexError, but s[10:20] returns ''."
+      ]
+    },
+    {
+      "heading": "Immutability and efficient building",
+      "body": "Strings cannot be changed in place: s[0] = 'J' raises TypeError, and every method such as upper() or replace() returns a new string. Building a large string with += in a loop can create many intermediate strings, which is quadratic in the worst case. Collect pieces in a list and call ''.join(pieces) once; it computes the total length and copies each piece only once.",
+      "points": [
+        "Methods return new strings; assign the result: s = s.strip().",
+        "Use sep.join(iterable_of_strings) to concatenate many parts.",
+        "Immutability makes strings hashable, so they can be dictionary keys."
+      ]
+    },
+    {
+      "heading": "Essential string methods",
+      "body": "Most text processing in interviews uses a small set of methods. split() without arguments splits on any run of whitespace and drops empty strings, while split(',') splits on every comma exactly. strip() removes surrounding whitespace, find() returns -1 when not found whereas index() raises ValueError, and in tests substring membership.",
+      "points": [
+        "Cleaning: strip, lstrip, rstrip, lower, upper, title, casefold.",
+        "Searching: in, find, index, count, startswith, endswith.",
+        "Transforming: replace, split, join, zfill, center.",
+        "Checking: isdigit, isalpha, isalnum, isspace."
+      ]
+    },
+    {
+      "heading": "Formatting output with f-strings",
+      "body": "f-strings (Python 3.6+) evaluate expressions inside braces at run time and accept a format specifier after a colon: {value:<width}, {value:>width}, {value:^width} for alignment, {value:.2f} for fixed decimals, {value:,} for thousands separators, {value:05d} for zero padding and {value:%} for percentages. Python 3.8 added the debugging form {x=}, which prints both the expression and its value.",
+      "points": [
+        "f'{price:.2f}' -> two decimal places.",
+        "f'{name:<10}|' -> left-align in 10 characters.",
+        "f'{1234567:,}' -> 1,234,567.",
+        "Older styles: '%s' % x and '{}'.format(x) still appear in legacy code."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Cleaning and formatting a user record",
+    "body": "Raw input often has stray spaces and inconsistent case. Chaining methods cleans it, slicing extracts parts and an f-string produces aligned output.",
+    "code": {
+      "language": "python",
+      "source": "raw = '   priya SHARMA , 9876543210 '\nname, phone = [part.strip() for part in raw.split(',')]\nname = name.title()                # 'Priya Sharma'\nmasked = '*' * 6 + phone[-4:]      # '******3210'\nprint(f'{name:<15}|{masked:>12}|')\nprint(f'{0.1 + 0.2 = }')            # debugging specifier (3.8+)\nprint(round(2.5), round(3.5))       # 2 4  (round half to even)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Data cleaning",
+      "description": "Stripping, case-normalising and splitting CSV or log lines before analysis."
+    },
+    {
+      "title": "Reports and invoices",
+      "description": "Aligned columns and fixed decimals with f-string format specifiers."
+    },
+    {
+      "title": "Financial calculations",
+      "description": "Using integer paise or Decimal to avoid floating-point rounding errors."
+    },
+    {
+      "title": "Validation",
+      "description": "Checking phone numbers, PIN codes and usernames with isdigit, len and slicing."
+    }
+  ],
+  "demonstration": {
+    "description": "Explore slicing, immutability and float behaviour in one short script.",
+    "code": {
+      "language": "python",
+      "source": "s = 'interview'\nprint(s[2:5], s[-3:], s[::-1])\nprint(s.upper(), s.count('i'), s.find('view'))\ntry:\n    s[0] = 'I'\nexcept TypeError as e:\n    print('TypeError:', e)\nprint(0.1 + 0.2 == 0.3)\nimport math\nprint(math.isclose(0.1 + 0.2, 0.3))\nprint(2 ** 70)\nprint(f'{1234567.891:,.2f}')"
+    },
+    "output": "ter iew weivretni\nINTERVIEW 2 5\nTypeError: 'str' object does not support item assignment\nFalse\nTrue\n1180591620717411303424\n1,234,567.89"
+  },
+  "takeaways": [
+    "ints have unlimited precision; floats are approximate, so compare them with math.isclose.",
+    "Use integer paise/cents or Decimal for money.",
+    "Slices exclude the stop index, accept negative indices and never raise IndexError.",
+    "Strings are immutable; methods return new strings.",
+    "Join many pieces with ''.join(list) instead of += in a loop.",
+    "f-strings with format specifiers handle alignment, decimals and separators."
+  ],
+  "interview": [
+    {
+      "question": "Why does 0.1 + 0.2 not equal 0.3 in Python?",
+      "answer": "Floats are stored in binary, and 0.1 and 0.2 have no exact binary representation, so the sum is 0.30000000000000004. Compare with math.isclose, or use Decimal or integers for exact values.",
+      "explanation": "Mention that this is IEEE 754 behaviour shared by most languages, not a Python bug."
+    },
+    {
+      "question": "How do you reverse a string in Python?",
+      "answer": "Use slicing with a step of -1: s[::-1]. Alternatively ''.join(reversed(s)).",
+      "explanation": "Interviewers often follow up with a palindrome check: s == s[::-1], possibly after normalising case and removing non-alphanumeric characters."
+    },
+    {
+      "question": "Why are strings immutable, and what are the consequences?",
+      "answer": "Immutability lets strings be hashed and used as dict keys and set members, makes them safe to share between names and threads, and enables interning. The consequence is that every modification creates a new string, so repeated += in a loop is inefficient compared with ''.join.",
+      "explanation": "Linking immutability to hashability and performance shows depth."
+    },
+    {
+      "question": "What is the difference between str.find and str.index?",
+      "answer": "Both return the lowest index of a substring. find returns -1 when it is not found; index raises ValueError.",
+      "explanation": "Choose find when absence is normal, index when absence is an error you want surfaced."
+    },
+    {
+      "question": "What does round(2.5) return, and why?",
+      "answer": "2. Python 3 uses round half to even (banker's rounding), so .5 cases round to the nearest even number. This reduces bias when many values are rounded. For commercial rounding use Decimal.quantize with ROUND_HALF_UP.",
+      "explanation": "A surprising-output question that tests attention to numeric details."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Aligned invoice formatter",
+    "difficulty": "Basic",
+    "objective": "Combine string methods, integer arithmetic for money and f-string alignment to produce a clean report.",
+    "statement": "Read invoice lines of the form item_name quantity unit_price. Item names use underscores instead of spaces and may have any case. For each line print the item name with underscores replaced by spaces in title case, left-aligned in 14 characters, then the quantity right-aligned in 4 characters, then the line amount right-aligned in 10 characters with exactly two decimals. Finally print TOTAL left-aligned in 18 characters followed by the grand total right-aligned in 10 characters. To avoid floating-point error, convert prices to integer paise before multiplying.",
+    "language": "python",
+    "input_format": "The first line is N. Each of the next N lines is 'name quantity price' where price has at most two decimals.",
+    "output_format": "N item lines followed by one TOTAL line, formatted as described.",
+    "example": {
+      "input": "2\nmasala_DOSA 2 85.50\ncold_coffee 1 120\n",
+      "output": "Masala Dosa      2    171.00\nCold Coffee      1    120.00\nTOTAL                 291.00"
+    },
+    "constraints": [
+      "1 <= N <= 100; 0 <= quantity <= 1000.",
+      "Prices are non-negative with at most two decimal places.",
+      "Format money as rupees.paise with exactly two digits after the point."
+    ],
+    "starter": "def to_paise(text):\n    # TODO: convert '85.50' or '120' to an integer number of paise\n    pass\n\ndef money(paise):\n    # TODO: return a string such as '171.00'\n    pass\n\nn = int(input())\n# TODO: read lines, print aligned rows and the total\n",
+    "solution": "def to_paise(text):\n    if '.' in text:\n        rupees, frac = text.split('.')\n        frac = (frac + '00')[:2]\n    else:\n        rupees, frac = text, '00'\n    return int(rupees or '0') * 100 + int(frac)\n\ndef money(paise):\n    return f'{paise // 100}.{paise % 100:02d}'\n\nn = int(input())\ntotal = 0\nfor _ in range(n):\n    name, qty, price = input().split()\n    qty = int(qty)\n    amount = qty * to_paise(price)\n    total += amount\n    label = name.replace('_', ' ').title()\n    print(f'{label:<14}{qty:>4}{money(amount):>10}')\nprint(f\"{'TOTAL':<18}{money(total):>10}\")\n",
+    "explanation": [
+      "Split the price on the decimal point and pad the fractional part to two digits, so '85.5' becomes 8550 paise and '120' becomes 12000.",
+      "Multiply integer paise by the quantity; integer arithmetic is exact, unlike 85.5 * 3 with floats.",
+      "money() uses // and % to split paise into rupees and a zero-padded two-digit remainder.",
+      "replace('_', ' ') then title() normalises the item name; format specifiers <14, >4 and >10 align the columns."
+    ],
+    "tests": [
+      {
+        "input": "2\nmasala_DOSA 2 85.50\ncold_coffee 1 120\n",
+        "output": "Masala Dosa      2    171.00\nCold Coffee      1    120.00\nTOTAL                 291.00"
+      },
+      {
+        "input": "1\npen 3 0.1\n",
+        "output": "Pen              3      0.30\nTOTAL                   0.30"
+      },
+      {
+        "input": "3\nNOTEBOOK 10 45.99\nGEL_pen 0 12.5\nbag 1 1499.05\n",
+        "output": "Notebook        10    459.90\nGel Pen          0      0.00\nBag              1   1499.05\nTOTAL                1958.95"
+      },
+      {
+        "input": "1\nlaptop_stand 1000 999.99\n",
+        "output": "Laptop Stand  1000 999990.00\nTOTAL              999990.00"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this slicing example print?",
+      "code": "s = 'interview'\nprint(s[2:5], s[-3:])",
+      "options": [
+        "terv ew",
+        "ter iew",
+        "nte iew",
+        "ter view"
+      ],
+      "answer": 1,
+      "explanation": "Index 2 is 't'; the slice stops before index 5, giving 'ter'. s[-3:] takes the last three characters, 'iew'."
+    },
+    {
+      "type": "output",
+      "question": "What does this round() example print?",
+      "code": "print(round(2.5), round(3.5))",
+      "options": [
+        "3 4",
+        "2 3",
+        "3 3",
+        "2 4"
+      ],
+      "answer": 3,
+      "explanation": "Python 3 rounds halves to the nearest even integer: 2.5 -> 2 and 3.5 -> 4."
+    },
+    {
+      "type": "output",
+      "question": "What does this f-string formatting print?",
+      "code": "print(f'{3.14159:.2f}|{42:05d}')",
+      "options": [
+        "3.14|00042",
+        "3.1|   42",
+        "3.14159|42",
+        "3.14|42000"
+      ],
+      "answer": 0,
+      "explanation": ".2f gives two decimal places; 05d pads the integer with zeros to width 5."
+    },
+    {
+      "type": "scenario",
+      "question": "You build a 100,000-line CSV report by doing report += line inside a loop. A reviewer asks for a change. What is the better approach?",
+      "options": [
+        "Append lines to a list and call ''.join(lines) once at the end",
+        "Use report = report + line instead of +=",
+        "Use a global variable for the report",
+        "Convert each line to bytes before adding it"
+      ],
+      "answer": 0,
+      "explanation": "Strings are immutable, so repeated concatenation may copy the growing string many times. join builds the result in a single pass."
+    },
+    {
+      "type": "code",
+      "question": "name = 'ravi'. Which statement raises an error?",
+      "options": [
+        "print(name[10:20])",
+        "name[0] = 'R'",
+        "name = 'R' + name[1:]",
+        "name = name.capitalize()"
+      ],
+      "answer": 1,
+      "explanation": "Strings are immutable, so item assignment raises TypeError. Slicing past the end returns an empty string rather than raising."
+    }
+  ]
+}

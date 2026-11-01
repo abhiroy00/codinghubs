@@ -1,0 +1,235 @@
+{
+  "day": 3,
+  "title": "Tags and Resource Locks for Organising and Protecting Resources",
+  "module": "Cloud and Azure foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Design a tagging strategy for cost reporting, ownership and automation.",
+    "Explain why tags are not inherited and how to enforce or inherit them with Azure Policy.",
+    "Compare CanNotDelete and ReadOnly locks and predict which operations each blocks.",
+    "Explain lock inheritance and who is allowed to create or remove locks.",
+    "Recognise the side effects of ReadOnly locks on real services."
+  ],
+  "definition": "Tags are name-value pairs attached to Azure resources, resource groups and subscriptions to add metadata such as cost centre, environment or owner. Resource locks are management-plane safeguards that prevent accidental deletion (CanNotDelete) or any change (ReadOnly) to a scope and everything beneath it, regardless of the user's RBAC role.",
+  "theory": [
+    {
+      "heading": "Why tags matter",
+      "body": "In a large estate, resource names alone cannot answer 'who owns this VM?' or 'how much does the payroll project cost?'. Tags carry that metadata. Cost Management can group and filter spend by tag, automation can shut down every VM tagged autoshutdown=true at 8 pm, and operations teams can find the owner of an alerting resource in seconds.",
+      "points": [
+        "Common tags: env, costCenter, owner, app, dataClassification.",
+        "Up to 50 tag name-value pairs per resource, resource group or subscription.",
+        "Tag names are case-insensitive for operations; tag values are case-sensitive.",
+        "Not every resource type supports tags, and some (classic resources) cannot be tagged."
+      ]
+    },
+    {
+      "heading": "Tags are not inherited",
+      "body": "A tag on a resource group is not copied to the resources inside it. This surprises many people when a cost report grouped by tag shows a large 'untagged' slice. The fix is Azure Policy: built-in definitions such as 'Require a tag on resources' block untagged deployments, and 'Inherit a tag from the resource group if missing' uses the Modify effect to copy the tag automatically, with a remediation task for existing resources.",
+      "points": [
+        "Require: use a Deny policy so untagged resources cannot be created.",
+        "Inherit: use a Modify policy with a managed identity and run remediation for existing resources.",
+        "Cost Management can also apply tag inheritance for cost data only, without changing resources."
+      ]
+    },
+    {
+      "heading": "Resource locks",
+      "body": "A lock overrides permissions: even an Owner cannot delete a resource with a CanNotDelete lock until the lock is removed. That extra deliberate step is the point; it stops a mistyped 'az group delete' from destroying production. Locks can be applied at subscription, resource group or resource scope and are inherited by all child resources. When different locks apply, the most restrictive one wins.",
+      "points": [
+        "CanNotDelete (portal: Delete): users can read and modify but not delete.",
+        "ReadOnly (portal: Read-only): users can read but not modify or delete.",
+        "Locks apply to control-plane operations sent to management.azure.com.",
+        "Creating or deleting locks requires Microsoft.Authorization/locks/* actions, held by Owner and User Access Administrator."
+      ]
+    },
+    {
+      "heading": "Side effects of ReadOnly locks",
+      "body": "Because ReadOnly blocks any POST or PUT on the management plane, some apparently harmless actions fail. Listing storage account keys is a POST operation, so a ReadOnly lock can break tools that connect with keys. A ReadOnly lock on a resource group prevents adding new resources to it, and on App Service it can block Visual Studio Server Explorer and scaling. Prefer CanNotDelete unless you truly want a resource frozen.",
+      "points": [
+        "Storage: ReadOnly blocks listKeys, which can break key-based access in the portal and tools.",
+        "Resource group: ReadOnly blocks creating new resources inside it.",
+        "Scale sets and App Service plans: ReadOnly blocks scaling operations.",
+        "Locks do not block data-plane operations such as writing rows to a database."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Tagging a resource group and locking production",
+    "body": "An administrator merges tags onto an existing resource group without removing other tags, then protects the group from deletion. The lock applies to every resource inside the group.",
+    "code": {
+      "language": "bash",
+      "source": "# Merge tags (keeps existing tags)\naz tag update --resource-id $(az group show -n rg-shop-prod-cin --query id -o tsv) \\\n  --operation Merge --tags costCenter=CC-104 owner=ops@contoso.in\n\n# Prevent deletion of the whole resource group\naz lock create --name lock-no-delete --lock-type CanNotDelete \\\n  --resource-group rg-shop-prod-cin --notes \"Production - raise a change request\"\n\naz lock list --resource-group rg-shop-prod-cin -o table"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Chargeback by cost centre",
+      "description": "Finance groups the monthly Azure bill by the costCenter tag to charge each department."
+    },
+    {
+      "title": "Automated shutdown",
+      "description": "A runbook stops every VM tagged env=dev at night, cutting compute cost for development."
+    },
+    {
+      "title": "Protecting shared networking",
+      "description": "A CanNotDelete lock on the hub virtual network resource group prevents an accidental delete that would cut connectivity for every spoke."
+    },
+    {
+      "title": "Freezing audited configuration",
+      "description": "A ReadOnly lock is placed on a compliance-critical resource during an audit window so no configuration drifts."
+    }
+  ],
+  "demonstration": {
+    "description": "Try to delete a locked resource group as an Owner. The request is rejected even though RBAC allows it; the lock must be removed first.",
+    "code": {
+      "language": "bash",
+      "source": "az group delete --name rg-shop-prod-cin --yes"
+    },
+    "output": "(ScopeLocked) The scope '/subscriptions/.../resourceGroups/rg-shop-prod-cin' cannot perform delete operation because following scope(s) are locked: '/subscriptions/.../resourceGroups/rg-shop-prod-cin'. Please remove the lock and try again."
+  },
+  "takeaways": [
+    "Tags are name-value metadata used for cost, ownership and automation.",
+    "Tags are not inherited; use Azure Policy (Deny or Modify) to require or inherit them.",
+    "CanNotDelete allows modify but blocks delete; ReadOnly blocks modify and delete.",
+    "Locks are inherited by child scopes and override RBAC, even for Owners.",
+    "Only roles with Microsoft.Authorization/locks/* (Owner, User Access Administrator) manage locks.",
+    "ReadOnly locks can break operations that use POST, such as listing storage keys."
+  ],
+  "interview": [
+    {
+      "question": "What are tags used for in Azure?",
+      "answer": "Tags are name-value pairs that add metadata to resources, resource groups and subscriptions. They are used to group costs, identify owners and environments, and drive automation and policy.",
+      "explanation": "Give a concrete tag set (env, owner, costCenter) and a use such as cost reports grouped by tag."
+    },
+    {
+      "question": "If you tag a resource group, do the resources inside get the tag?",
+      "answer": "No. Tags are not inherited. To get that behaviour you assign an Azure Policy such as 'Inherit a tag from the resource group if missing', which uses the Modify effect, and run a remediation task for existing resources.",
+      "explanation": "This is one of the most frequently asked AZ-104 points. Naming the Modify effect and remediation earns extra credit."
+    },
+    {
+      "question": "What is the difference between CanNotDelete and ReadOnly locks?",
+      "answer": "CanNotDelete lets authorised users read and modify a resource but not delete it. ReadOnly lets them only read it; both modification and deletion are blocked.",
+      "explanation": "Add that locks inherit downward and that the most restrictive lock applies."
+    },
+    {
+      "question": "An Owner cannot delete a resource. RBAC looks correct. What would you check?",
+      "answer": "Check for a resource lock on the resource, its resource group or the subscription, because locks override RBAC. Also check for deny assignments, for example from a managed application or a deployment stack.",
+      "explanation": "Interviewers like candidates who think beyond RBAC: locks and deny assignments both block Owners."
+    },
+    {
+      "question": "Why might a ReadOnly lock on a storage account break an application or the portal?",
+      "answer": "Listing account keys is a POST operation on the management plane, which ReadOnly blocks. Tools and portal blades that need the keys fail, even though no data is being changed.",
+      "explanation": "This shows you know locks act on management operations and that 'read' in the portal is not always a GET."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Evaluate resource locks for an operation",
+    "difficulty": "Basic",
+    "objective": "Simulate how Azure combines inherited locks and decides whether a read, write or delete is allowed.",
+    "statement": "Scopes are written as slash-separated paths, for example 'sub1/rg-web/vm1'. A lock on a scope applies to that scope and every path beneath it (whole segments only: a lock on 'sub1/rg' does not apply to 'sub1/rg-web'). Lock types are CanNotDelete (blocks delete) and ReadOnly (blocks write and delete). Reads are never blocked. For each operation, find all locks that apply; if any of them blocks the operation, print 'BLOCKED by <type> at <scope>' choosing ReadOnly before CanNotDelete and, among locks of the same type, the one closest to the top (fewest segments). Otherwise print 'ALLOWED'.",
+    "language": "python",
+    "input_format": "Line 1: L. Next L lines: '<scope> <type>'. Next line: Q. Next Q lines: '<operation> <path>' where operation is read, write or delete.",
+    "output_format": "One line per operation.",
+    "example": {
+      "input": "2\nsub1/rg-web CanNotDelete\nsub1/rg-web/st1 ReadOnly\n3\ndelete sub1/rg-web/vm1\nwrite sub1/rg-web/vm1\nwrite sub1/rg-web/st1\n",
+      "output": "BLOCKED by CanNotDelete at sub1/rg-web\nALLOWED\nBLOCKED by ReadOnly at sub1/rg-web/st1"
+    },
+    "constraints": [
+      "0 <= L <= 50, 1 <= Q <= 50.",
+      "Paths contain no spaces and no trailing slash.",
+      "Operation names are lowercase."
+    ],
+    "starter": "l = int(input())\nlocks = [input().split() for _ in range(l)]\nq = int(input())\nfor _ in range(q):\n    op, path = input().split()\n    # TODO: find applicable locks and decide\n",
+    "solution": "def applies(scope, path):\n    s = scope.split('/')\n    p = path.split('/')\n    return p[:len(s)] == s\n\nBLOCKS = {'ReadOnly': {'write', 'delete'}, 'CanNotDelete': {'delete'}}\nRANK = {'ReadOnly': 0, 'CanNotDelete': 1}\n\nl = int(input())\nlocks = [input().split() for _ in range(l)]\nq = int(input())\nfor _ in range(q):\n    op, path = input().split()\n    hits = [(RANK[t], len(s.split('/')), s, t) for s, t in locks\n            if applies(s, path) and op in BLOCKS[t]]\n    if hits:\n        _, _, scope, kind = min(hits)\n        print(f'BLOCKED by {kind} at {scope}')\n    else:\n        print('ALLOWED')\n",
+    "explanation": [
+      "A lock applies when its path segments are a prefix of the target path's segments; comparing segment lists avoids the 'rg' versus 'rg-web' trap.",
+      "Keep only locks that both apply and block the requested operation (reads are never blocked).",
+      "Sort candidates by restrictiveness first (ReadOnly before CanNotDelete) and then by depth, and report the first.",
+      "If nothing blocks the operation, it is allowed; RBAC would then decide in real Azure."
+    ],
+    "tests": [
+      {
+        "input": "2\nsub1/rg-web CanNotDelete\nsub1/rg-web/st1 ReadOnly\n3\ndelete sub1/rg-web/vm1\nwrite sub1/rg-web/vm1\nwrite sub1/rg-web/st1\n",
+        "output": "BLOCKED by CanNotDelete at sub1/rg-web\nALLOWED\nBLOCKED by ReadOnly at sub1/rg-web/st1"
+      },
+      {
+        "input": "1\nsub1/rg CanNotDelete\n2\ndelete sub1/rg-web/vm1\ndelete sub1/rg/vm1\n",
+        "output": "ALLOWED\nBLOCKED by CanNotDelete at sub1/rg"
+      },
+      {
+        "input": "2\nsub1 ReadOnly\nsub1/rg-a ReadOnly\n3\nread sub1/rg-a/vm\nwrite sub1/rg-a/vm\ndelete sub1\n",
+        "output": "ALLOWED\nBLOCKED by ReadOnly at sub1\nBLOCKED by ReadOnly at sub1"
+      },
+      {
+        "input": "0\n2\ndelete sub9/rg/x\nwrite sub9\n",
+        "output": "ALLOWED\nALLOWED"
+      },
+      {
+        "input": "2\nsub1 CanNotDelete\nsub1/rg-db/sql1 ReadOnly\n2\ndelete sub1/rg-db/sql1\nwrite sub1/rg-db/sql2\n",
+        "output": "BLOCKED by ReadOnly at sub1/rg-db/sql1\nALLOWED"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "scenario",
+      "question": "You add the tag costCenter=CC-104 to a resource group. A week later, a cost report grouped by costCenter shows the group's VMs as untagged. Why?",
+      "options": [
+        "Tag values are case-insensitive",
+        "Tags on a resource group are not inherited by its resources",
+        "Cost data takes a month to refresh",
+        "VM resources do not support tags"
+      ],
+      "answer": 1,
+      "explanation": "Tags are not inherited. Use a Modify policy to inherit the tag or enable tag inheritance in Cost Management."
+    },
+    {
+      "type": "concept",
+      "question": "Which lock type still allows an administrator to resize a VM but prevents the VM from being deleted?",
+      "options": [
+        "ReadOnly",
+        "CanNotDelete",
+        "NoWrite",
+        "DenyAll"
+      ],
+      "answer": 1,
+      "explanation": "CanNotDelete allows read and modify operations but blocks deletion. ReadOnly would block the resize too."
+    },
+    {
+      "type": "scenario",
+      "question": "A resource group has a CanNotDelete lock and a storage account inside it has a ReadOnly lock. What can a Contributor do to the storage account?",
+      "options": [
+        "Delete it, because Contributor overrides locks",
+        "Nothing, not even read",
+        "Read its configuration only",
+        "Change its configuration but not delete it"
+      ],
+      "answer": 2,
+      "explanation": "Locks are inherited and the most restrictive applies, so ReadOnly wins and only reads are possible."
+    },
+    {
+      "type": "concept",
+      "question": "Which built-in role can create and delete management locks?",
+      "options": [
+        "Contributor",
+        "Reader",
+        "User Access Administrator",
+        "Storage Account Contributor"
+      ],
+      "answer": 2,
+      "explanation": "Lock management needs Microsoft.Authorization/locks/* actions, included in Owner and User Access Administrator but not in Contributor."
+    },
+    {
+      "type": "scenario",
+      "question": "After a ReadOnly lock is placed on a storage account, users report that the portal cannot show the account's access keys. What is the cause?",
+      "options": [
+        "Keys are deleted when any lock is applied",
+        "The storage firewall was enabled by the lock",
+        "Listing keys is a POST operation that ReadOnly blocks",
+        "ReadOnly locks rotate the keys automatically"
+      ],
+      "answer": 2,
+      "explanation": "listKeys is a POST on the management plane, which ReadOnly locks block. Use CanNotDelete unless a full freeze is needed."
+    }
+  ]
+}

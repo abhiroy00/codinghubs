@@ -1,0 +1,233 @@
+{
+  "day": 18,
+  "title": "Building a RAG Pipeline",
+  "module": "Retrieval & agents",
+  "level": "Intermediate",
+  "objectives": [
+    "Assemble a simple RAG pipeline: load, chunk, embed, store, retrieve and answer.",
+    "Write a function that chunks text into overlapping pieces.",
+    "Retrieve the top-k most similar chunks for a query.",
+    "Build an augmented prompt that instructs the model to answer from context.",
+    "Explain how to evaluate whether the answer is grounded in the retrieved context."
+  ],
+  "definition": "A RAG pipeline connects a retrieval system to a generative model so answers are grounded in external documents. It loads documents, splits them into chunks, embeds and stores them, then at query time retrieves the most relevant chunks, inserts them into the prompt, and asks the model to answer using only that context. Each stage can be tested independently.",
+  "theory": [
+    {
+      "heading": "End-to-end RAG flow",
+      "body": "The pipeline runs in two phases. Offline: load documents, chunk them, embed each chunk and store vectors with metadata. Online: embed the user query, search the vector store for top-k chunks, build an augmented prompt with the chunks as context, and generate an answer. The answer should cite sources so the user can verify.",
+      "points": [
+        "Offline: load, chunk, embed, store.",
+        "Online: embed query, retrieve, augment, generate.",
+        "Cite sources so answers are verifiable."
+      ]
+    },
+    {
+      "heading": "Chunking with overlap",
+      "body": "Split each document into chunks of a target size, with a small overlap between adjacent chunks so no sentence is cut in half. Each chunk keeps its source document and position as metadata so the answer can cite where it came from.",
+      "points": [
+        "Choose chunk size and overlap deliberately.",
+        "Overlap preserves context across boundaries.",
+        "Metadata enables source citations."
+      ]
+    },
+    {
+      "heading": "Top-k retrieval",
+      "body": "Embed the query with the same model used for chunks, compute similarity to each stored chunk, and return the k highest-scoring chunks. k is a tuning parameter: too few chunks miss context, too many fill the context window and add noise.",
+      "points": [
+        "Embed the query with the same model as chunks.",
+        "Rank by cosine similarity and take the top k.",
+        "Tune k for context quality versus window size."
+      ]
+    },
+    {
+      "heading": "Augmented prompt",
+      "body": "The augmented prompt contains instructions, the retrieved chunks labelled as context, and the user question. It explicitly tells the model to answer using only the context and to say it does not know if the answer is not supported.",
+      "points": [
+        "Label chunks as context with source names.",
+        "Instruct the model to use only the context.",
+        "Allow \"I do not know\" when unsupported."
+      ]
+    },
+    {
+      "heading": "Grounding and verification",
+      "body": "An answer is grounded when every claim can be traced to a retrieved chunk. Check for claims not present in the context, and cite sources. Evaluation compares the answer against the chunks and a reference answer.",
+      "points": [
+        "Grounding means every claim is supported by context.",
+        "Citations let users verify sources.",
+        "Ungrounded claims are hallucinations to fix."
+      ]
+    }
+  ],
+  "example": {
+    "title": "RAG for an HR handbook",
+    "body": "Documents: the employee handbook. Chunks include leave policy, benefits and code of conduct. Query: 'How many sick days?' Retrieval returns the sick-leave chunk. The augmented prompt includes that chunk, and the model answers with the exact number and cites the handbook section.",
+    "code": {
+      "language": "python",
+      "source": "chunks = retrieve(query, top_k=3)\ncontext = '\\n'.join(f'[{c.source}] {c.text}' for c in chunks)\nprompt = f'''Answer using only the context below.\nContext:\n{context}\n\nQuestion: {query}\nAnswer:'''\nanswer = generate(prompt)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Company knowledge bot",
+      "description": "Answers employee questions from HR, IT and policy documents."
+    },
+    {
+      "title": "Product support assistant",
+      "description": "Answers customer questions from product docs and FAQs."
+    },
+    {
+      "title": "Research summariser",
+      "description": "Answers questions from a set of papers with citations."
+    },
+    {
+      "title": "Compliance checker",
+      "description": "Verifies whether a document follows a regulation by retrieving relevant clauses."
+    }
+  ],
+  "demonstration": {
+    "description": "Run the same query through a bare model (guesses) and through RAG (answers from a retrieved chunk with citation).",
+    "code": {
+      "language": "text",
+      "source": "Query: What is the travel allowance?\nBare model: Most companies give around 500 rupees per day.\nRAG: Context [handbook.txt] Travel allowance is 800 rupees per day.\nRAG answer: The travel allowance is 800 rupees per day. [Source: handbook.txt]"
+    },
+    "output": "Bare: generic guess.\nRAG: specific answer with source citation."
+  },
+  "takeaways": [
+    "RAG combines retrieval with generation so answers are grounded in documents.",
+    "Offline: load, chunk, embed, store; online: embed, retrieve, augment, generate.",
+    "Chunk with overlap and keep metadata for source citations.",
+    "Top-k retrieval selects the most relevant chunks for the query.",
+    "The augmented prompt instructs the model to use only the context.",
+    "Grounding means every answer claim traces to a retrieved chunk."
+  ],
+  "interview": [
+    {
+      "question": "What are the two phases of a RAG pipeline?",
+      "answer": "Offline indexing: load, chunk, embed and store documents. Online querying: embed the query, retrieve top-k chunks, augment the prompt and generate an answer.",
+      "explanation": "Emphasise that indexing happens once, querying happens per user request."
+    },
+    {
+      "question": "Why use overlap when chunking?",
+      "answer": "Overlap keeps related text together across chunk boundaries so no sentence or idea is split in half and lost.",
+      "explanation": "Mention chunk size and overlap as tuning parameters."
+    },
+    {
+      "question": "What is top-k retrieval?",
+      "answer": "Embed the query and return the k stored chunks with the highest similarity to it.",
+      "explanation": "Tune k so enough context is retrieved without filling the window."
+    },
+    {
+      "question": "What should an augmented prompt include?",
+      "answer": "Instructions, labelled context chunks and the user question, plus a directive to answer only from the context and say 'I do not know' when unsupported.",
+      "explanation": "Citations help users verify answers."
+    },
+    {
+      "question": "How do you tell if a RAG answer is grounded?",
+      "answer": "Every claim in the answer must be traceable to a retrieved chunk; unsupported claims are hallucinations.",
+      "explanation": "Citations and source checking are the practical check."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Chunk text with overlap",
+    "difficulty": "Basic",
+    "objective": "Implement overlapping text chunking, the first stage of a RAG pipeline.",
+    "statement": "Read a text string, a chunk size and an overlap size. Split the text into chunks of up to chunk_size characters, where consecutive chunks overlap by overlap characters. Print each chunk on its own line. If the text is empty, print nothing.",
+    "language": "python",
+    "input_format": "Line 1: the text.\nLine 2: chunk size (integer).\nLine 3: overlap size (integer).",
+    "output_format": "One chunk per line.",
+    "example": {
+      "input": "The quick brown fox jumps over the lazy dog.\n10\n3\n",
+      "output": "The quick\nck brown \nn fox jump\nps over th\nver the la\nzy dog."
+    },
+    "constraints": [
+      "chunk_size is between 1 and 200.",
+      "overlap is between 0 and chunk_size - 1.",
+      "The text may contain spaces and punctuation."
+    ],
+    "starter": "text = input()\nchunk_size = int(input())\noverlap = int(input())\n\n# TODO: produce overlapping chunks and print each on its own line\n",
+    "solution": "text = input()\nchunk_size = int(input())\noverlap = int(input())\n\nstep = chunk_size - overlap\nstart = 0\nwhile start < len(text):\n    print(text[start:start + chunk_size])\n    start += step\n",
+    "explanation": [
+      "Read the text, chunk size and overlap.",
+      "The step between chunk starts is chunk_size minus overlap.",
+      "Slide a window of chunk_size across the text, advancing by step each time.",
+      "Print each chunk until the start passes the end of the text."
+    ],
+    "tests": [
+      {
+        "input": "The quick brown fox jumps over the lazy dog.\n10\n3\n",
+        "output": "The quick\nck brown \nn fox jump\nps over th\nver the la\nzy dog."
+      },
+      {
+        "input": "hello world\n5\n0\n",
+        "output": "hello\n worl\nd"
+      },
+      {
+        "input": "abc\n2\n1\n",
+        "output": "ab\nbc\nc"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What happens in the offline phase of RAG?",
+      "options": [
+        "Generate the final answer",
+        "Show the answer to the user",
+        "Embed the user query",
+        "Load, chunk, embed and store documents"
+      ],
+      "answer": 3,
+      "explanation": "Offline indexing prepares documents once; online querying happens per request."
+    },
+    {
+      "type": "scenario",
+      "question": "A sentence is split across two chunks and its meaning is lost. What helps?",
+      "options": [
+        "Use fewer chunks",
+        "Increase top-k",
+        "Add chunk overlap",
+        "Raise temperature"
+      ],
+      "answer": 2,
+      "explanation": "Overlap ensures adjacent chunks share text so no sentence is cut in half."
+    },
+    {
+      "type": "concept",
+      "question": "What is top-k retrieval?",
+      "options": [
+        "The k most similar chunks to the query",
+        "The k longest chunks",
+        "The k first chunks in the file",
+        "The k most recent chunks"
+      ],
+      "answer": 1,
+      "explanation": "Top-k returns the k stored chunks ranked highest by similarity to the query embedding."
+    },
+    {
+      "type": "scenario",
+      "question": "The model answers with a fact not present in any retrieved chunk. What is this?",
+      "options": [
+        "A hallucination",
+        "A citation",
+        "A retrieval miss",
+        "Grounding"
+      ],
+      "answer": 0,
+      "explanation": "An answer claim not supported by the retrieved context is a hallucination."
+    },
+    {
+      "type": "concept",
+      "question": "Why keep metadata with each chunk?",
+      "options": [
+        "To increase the temperature",
+        "To reduce the context window",
+        "To make chunks longer",
+        "To cite the source in answers"
+      ],
+      "answer": 3,
+      "explanation": "Metadata such as source document and position lets answers cite where information came from."
+    }
+  ]
+}

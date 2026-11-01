@@ -1,0 +1,245 @@
+{
+  "day": 7,
+  "title": "Agent Memory: Short-Term Context and Long-Term Stores",
+  "module": "Memory and reflection",
+  "level": "Intermediate",
+  "objectives": [
+    "Distinguish short-term working memory from long-term memory in an agent.",
+    "Explain why the context window cannot be the only memory an agent uses.",
+    "Describe summarisation, retrieval and trimming as context-management strategies.",
+    "Choose what to write to a long-term store and when to read it back.",
+    "Manage a fixed token budget with a sliding-window policy in code."
+  ],
+  "definition": "Agent memory is the information an agent can use beyond the current model call. Short-term memory is the working context of the current task: the messages, tool results and notes inside the context window. Long-term memory is anything stored outside the model, such as a vector database, key-value store or file, and read back when relevant. Memory lets an agent act consistently across many steps and many sessions, which a stateless model cannot do on its own.",
+  "theory": [
+    {
+      "heading": "Two kinds of memory",
+      "body": "Short-term memory lives inside the context window and lasts for the current task. It holds the system prompt, the conversation so far, the latest observations and any scratchpad notes. Long-term memory lives outside the model and persists across tasks and sessions: past conversations, learned user preferences, documents and facts. The context window is fast but small and expensive; a long-term store is larger and persistent but must be searched, so an agent needs a policy for moving information between them.",
+      "points": [
+        "Short-term: the working context of the current run, lost when the run ends.",
+        "Long-term: external storage that survives across runs and sessions.",
+        "Semantic memory stores facts; episodic memory stores past events and interactions.",
+        "Moving information between the two is an explicit design decision."
+      ]
+    },
+    {
+      "heading": "Why the context window is not enough",
+      "body": "Every token in the context costs money and latency and counts against a hard limit, and models attend less reliably to facts buried in the middle of very long contexts. An agent that keeps appending observations will eventually overflow or degrade. It also forgets everything between runs, because the model is stateless. Long-term memory solves persistence, while context management solves the size and cost problem within a run.",
+      "points": [
+        "The window is a fixed budget shared by prompt, history, tools and output.",
+        "Long contexts are slower, pricier and less reliable in the middle.",
+        "Without external memory the agent restarts from zero every session."
+      ]
+    },
+    {
+      "heading": "Context-management strategies",
+      "body": "When the context fills up the agent must compress or drop content. Trimming keeps only the most recent messages, which is simple but can lose important early instructions. Summarisation replaces old turns with a shorter summary, keeping meaning at the cost of detail and an extra model call. Retrieval keeps the context small by fetching only the memories relevant to the current step. Production agents often combine all three: summarise old history, trim low-value messages and retrieve the few most relevant long-term items.",
+      "points": [
+        "Sliding window: keep the newest items that fit the budget.",
+        "Summarisation: compress old history into a running summary.",
+        "Retrieval: pull only the relevant stored memories into context.",
+        "Always reserve space for the model's own output."
+      ]
+    },
+    {
+      "heading": "Writing to and reading from long-term memory",
+      "body": "Long-term memory only helps if the agent decides what to store and when to recall it. Writing should capture durable, reusable facts such as user preferences, resolved issues and outcomes, rather than every raw message. Reading usually works by embedding the current situation and searching for similar stored items. Both directions need care: storing everything creates noise, and retrieving too much re-creates the overflow problem the store was meant to solve.",
+      "points": [
+        "Write durable facts and outcomes, not every transient message.",
+        "Embed and index memories so they can be searched by meaning.",
+        "Retrieve a small, ranked set of items per step.",
+        "Let the user inspect and delete stored memories for trust and compliance."
+      ]
+    },
+    {
+      "heading": "Limitations and risks",
+      "body": "Memory introduces new failure modes. A stale fact can contradict the present, a wrong memory can be retrieved confidently, and summarisation can drop the one detail that mattered. Writing the wrong thing to a shared store can leak one user's data to another. Good memory design therefore includes timestamps, scoping per user or tenant, validation before writing, and a way to expire or correct memories. In interviews, treat memory as a system with its own data lifecycle, not a single database call.",
+      "points": [
+        "Stale or incorrect memories cause confident errors.",
+        "Summaries lose detail and can omit critical facts.",
+        "Scope memories per user or tenant to prevent leaks.",
+        "Add expiry, correction and audit paths to the memory store."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A sliding window keeps the newest messages within budget",
+    "body": "An agent has a 10-token budget for history and four messages. Working backwards from the most recent, it keeps messages while the running total stays within budget. It keeps the weather question and the thanks message, then stops because adding 'how are you' would exceed the budget. The two oldest messages are dropped, and the kept messages are printed in their original order.",
+    "code": {
+      "language": "text",
+      "source": "budget = 10\nmessages (oldest first):\n  3 hello\n  4 how are you\n  5 what is the weather\n  2 thanks\n\nwalk newest to oldest: thanks(2), weather(2+5=7), stop at how are you (7+4=11 > 10)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Personal assistants",
+      "description": "Remember a user's preferences and past decisions so they do not have to repeat themselves in every session."
+    },
+    {
+      "title": "Long-running operations",
+      "description": "Carry findings from an investigation across many steps by summarising old observations and keeping only what matters."
+    },
+    {
+      "title": "Customer support",
+      "description": "Recall a customer's earlier tickets and resolutions to give consistent answers without re-reading the whole history."
+    },
+    {
+      "title": "Multi-session coding agents",
+      "description": "Store project conventions and past fixes so a new session starts informed instead of rediscovering the codebase."
+    }
+  ],
+  "demonstration": {
+    "description": "Apply a sliding-window policy to a conversation with a fixed token budget. Starting from the most recent message, messages are kept while the cumulative token count stays within budget; the first message that would overflow stops the walk. The kept messages are printed oldest first, followed by how many were kept and dropped.",
+    "code": {
+      "language": "text",
+      "source": "budget = 10\n4\n3 hello\n4 how are you\n5 what is the weather\n2 thanks"
+    },
+    "output": "5 what is the weather\n2 thanks\nKept: 2, Dropped: 2"
+  },
+  "takeaways": [
+    "Short-term memory is the current context; long-term memory persists outside the model.",
+    "The context window is a fixed, costly budget, not a durable store.",
+    "Trim, summarise and retrieve to keep the context small and relevant.",
+    "Write durable facts and outcomes to long-term memory, not every message.",
+    "Scope and expire memories, and let users inspect them.",
+    "Memory is a system with a lifecycle, not a single database call."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between short-term and long-term memory in an agent?",
+      "answer": "Short-term memory is the working context of the current run, such as messages, observations and notes inside the context window. Long-term memory is external storage that persists across runs, such as a vector store or database, and is read back when relevant.",
+      "explanation": "Add that short-term memory is fast but limited and ephemeral, while long-term memory is larger and persistent but must be searched."
+    },
+    {
+      "question": "Why can't the context window be the agent's only memory?",
+      "answer": "It is a fixed, expensive budget shared by the prompt, history, tools and output, models attend less reliably to long contexts, and it is cleared between runs because the model is stateless. External memory provides persistence and lets the agent keep the working context small.",
+      "explanation": "Mention cost, latency, the unreliable middle of long contexts and statelessness."
+    },
+    {
+      "question": "Describe three ways to keep the context from overflowing.",
+      "answer": "Trim old messages with a sliding window, summarise old history into a running summary, and retrieve only the few long-term memories relevant to the current step. Reserve space for the model's output and combine the strategies.",
+      "explanation": "Naming all three, and the need to reserve output space, shows practical context engineering."
+    },
+    {
+      "question": "What should an agent write to long-term memory?",
+      "answer": "Durable, reusable facts and outcomes such as user preferences, resolved issues and important results, rather than every raw message. Writing everything creates noise and retrieval problems.",
+      "explanation": "Add that memories should be scoped per user or tenant, timestamped, validated and expirable."
+    },
+    {
+      "question": "What new risks does adding a memory store create?",
+      "answer": "Stale or wrong memories can be retrieved confidently, summarisation can drop critical detail, and a shared store can leak one user's data to another. Mitigate with scoping, expiry, validation before writing and an audit or correction path.",
+      "explanation": "Treating memory as a system with a data lifecycle, not just a lookup, signals production maturity."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Sliding-window context management",
+    "difficulty": "Intermediate",
+    "objective": "Keep the most recent messages that fit a token budget, the way an agent trims its history to avoid overflowing the context window.",
+    "statement": "You are given a token budget and a list of messages, each with a token cost and a text. Starting from the most recent message and walking backwards, keep a message if the running total of kept tokens plus this message is at most the budget; the first message that would exceed the budget stops the walk (later, older messages are not considered). Print the kept messages in their original order, each as '<tokens> <text>'. Then print 'Kept: k, Dropped: d' where d is the number of messages not kept.",
+    "language": "python",
+    "input_format": "Line 1: budget (integer). Line 2: N. Next N lines: '<tokens> <text>' from oldest to newest.",
+    "output_format": "The kept messages oldest first, each '<tokens> <text>', then one line 'Kept: k, Dropped: d'.",
+    "example": {
+      "input": "10\n4\n3 hello\n4 how are you\n5 what is the weather\n2 thanks\n",
+      "output": "5 what is the weather\n2 thanks\nKept: 2, Dropped: 2"
+    },
+    "constraints": [
+      "0 <= budget <= 100000; 1 <= N <= 1000.",
+      "Each message costs at least 1 token.",
+      "A message is kept only if it fits within the remaining budget; the walk stops at the first that does not."
+    ],
+    "starter": "import sys\n\nlines = sys.stdin.read().splitlines()\nbudget = int(lines[0].strip())\nn = int(lines[1].strip())\nmessages = []\nfor i in range(2, 2 + n):\n    tokens, _, text = lines[i].partition(' ')\n    messages.append((int(tokens), text))\n# TODO: walk backwards within budget and print the kept messages and summary\n",
+    "solution": "import sys\n\nlines = sys.stdin.read().splitlines()\nbudget = int(lines[0].strip())\nn = int(lines[1].strip())\nmessages = []\nfor i in range(2, 2 + n):\n    tokens, _, text = lines[i].partition(' ')\n    messages.append((int(tokens), text))\n\nkept = []\ntotal = 0\nfor tokens, text in reversed(messages):\n    if total + tokens > budget:\n        break\n    total += tokens\n    kept.append((tokens, text))\nkept.reverse()\n\nfor tokens, text in kept:\n    print(f'{tokens} {text}')\nprint(f'Kept: {len(kept)}, Dropped: {n - len(kept)}')\n",
+    "explanation": [
+      "Parse the budget, the count and the messages in oldest-first order.",
+      "Walk the messages from newest to oldest, accumulating the token cost.",
+      "Keep a message only while the running total stays within budget, and stop at the first that overflows.",
+      "Reverse the kept list so it prints in original order, then print the kept and dropped counts."
+    ],
+    "tests": [
+      {
+        "input": "10\n4\n3 hello\n4 how are you\n5 what is the weather\n2 thanks\n",
+        "output": "5 what is the weather\n2 thanks\nKept: 2, Dropped: 2"
+      },
+      {
+        "input": "100\n3\n1 a\n1 b\n1 c\n",
+        "output": "1 a\n1 b\n1 c\nKept: 3, Dropped: 0"
+      },
+      {
+        "input": "0\n2\n1 a\n1 b\n",
+        "output": "Kept: 0, Dropped: 2"
+      },
+      {
+        "input": "6\n3\n1 a\n2 b\n3 c\n",
+        "output": "1 a\n2 b\n3 c\nKept: 3, Dropped: 0"
+      },
+      {
+        "input": "4\n3\n10 big\n1 x\n1 y\n",
+        "output": "1 x\n1 y\nKept: 2, Dropped: 1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which statement correctly separates short-term from long-term memory?",
+      "options": [
+        "Long-term memory is stored in the model's weights",
+        "Short-term memory survives across sessions",
+        "Both live inside the context window",
+        "Short-term is the current context; long-term persists outside the model"
+      ],
+      "answer": 3,
+      "explanation": "Short-term memory is the working context of a run, while long-term memory is external storage that survives across runs."
+    },
+    {
+      "type": "scenario",
+      "question": "An agent's context keeps overflowing after long tool outputs. Which combination best addresses this?",
+      "options": [
+        "Increase the temperature",
+        "Trim old messages, summarise history and retrieve only relevant memories",
+        "Remove all tools",
+        "Use a bigger tokenizer"
+      ],
+      "answer": 1,
+      "explanation": "Sliding-window trimming, summarisation and targeted retrieval keep the context small while preserving what matters."
+    },
+    {
+      "type": "concept",
+      "question": "Why is storing every raw message in long-term memory a bad idea?",
+      "options": [
+        "It reduces token costs",
+        "It creates noise that degrades retrieval and wastes storage",
+        "It makes the model faster",
+        "It removes the need for a database"
+      ],
+      "answer": 1,
+      "explanation": "Durable facts and outcomes are useful; storing everything buries the useful items and makes retrieval less precise."
+    },
+    {
+      "type": "output",
+      "question": "With a budget of 5 and messages of 3, 3 and 2 tokens from oldest to newest, which messages does the sliding window keep?",
+      "options": [
+        "The oldest two (3 and 3)",
+        "All three",
+        "The newest two (3 and 2)",
+        "Only the newest (2)"
+      ],
+      "answer": 2,
+      "explanation": "Walking newest first keeps the 2-token message, then the next 3-token message for a total of 5; the oldest 3-token message does not fit."
+    },
+    {
+      "type": "scenario",
+      "question": "A memory store mixes every user's facts in one namespace. What is the most serious consequence?",
+      "options": [
+        "The tokenizer changes",
+        "The model forgets tool schemas",
+        "Slower embeddings",
+        "One user's private data could be retrieved for another user"
+      ],
+      "answer": 3,
+      "explanation": "Memories must be scoped per user or tenant, otherwise retrieval can leak private data across accounts."
+    }
+  ]
+}

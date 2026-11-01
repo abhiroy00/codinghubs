@@ -1,0 +1,221 @@
+{
+  "day": 2,
+  "title": "The AWS Well-Architected Framework: Six Pillars of Good Design",
+  "module": "Cloud & AWS Foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Name the six Well-Architected pillars and the core question each one answers.",
+    "Apply key design principles such as 'design for failure', 'automate' and 'use managed services'.",
+    "Recognise trade-offs between pillars, for example cost versus reliability.",
+    "Use the Well-Architected Tool and Lenses to review a workload.",
+    "Structure any architecture interview answer around the pillars."
+  ],
+  "definition": "The AWS Well-Architected Framework is a set of design principles, questions and best practices for building secure, reliable, efficient, cost-effective and sustainable systems on AWS. It is organised into six pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization and Sustainability. Architects use it both to design new workloads and to review existing ones for risk.",
+  "theory": [
+    {
+      "heading": "Why a framework exists",
+      "body": "Without a shared vocabulary, design reviews become opinion contests. The framework gives teams consistent questions (for example 'How do you back up data?') and lets them record high-risk issues (HRIs) and improvement plans. The SAA-C03 exam is organised around four of the pillars (secure, resilient, high-performing and cost-optimised architectures), so thinking in pillars is also the fastest way to decode exam scenarios.",
+      "points": [
+        "It is not a compliance standard; it is a structured self-assessment.",
+        "Reviews are free with the AWS Well-Architected Tool in the console.",
+        "Lenses extend it for specific domains, such as Serverless, SaaS, Machine Learning and Financial Services."
+      ]
+    },
+    {
+      "heading": "The six pillars",
+      "body": "Each pillar has design principles and best-practice areas. Memorise one sentence and two or three concrete AWS mechanisms per pillar so you can move from principle to implementation in an interview.",
+      "points": [
+        "Operational Excellence: run and monitor systems and continually improve; infrastructure as code (CloudFormation), small reversible changes, runbooks, learning from failures.",
+        "Security: protect data and systems; strong identity foundation (least privilege), traceability (CloudTrail), security at every layer, encryption in transit and at rest.",
+        "Reliability: recover from failure and meet demand; Multi-AZ, automatic recovery, scaling horizontally, testing recovery procedures, managing service quotas.",
+        "Performance Efficiency: use resources efficiently as demand changes; right instance families, caching, CloudFront, serverless, experimenting often.",
+        "Cost Optimization: deliver value at the lowest price; pay only for what you use, rightsizing, Savings Plans, Spot, storage tiering, measuring with Cost Explorer.",
+        "Sustainability: minimise environmental impact; maximise utilisation, use managed services and efficient hardware such as Graviton, reduce unused data."
+      ]
+    },
+    {
+      "heading": "General design principles",
+      "body": "Beyond the pillars, the framework lists principles that the cloud makes possible. They explain why AWS architectures look different from on-premises ones: because capacity is elastic and infrastructure is code, you can test at production scale and replace rather than repair.",
+      "points": [
+        "Stop guessing your capacity needs.",
+        "Test systems at production scale, then tear the test environment down.",
+        "Automate with architectural experimentation in mind (infrastructure as code).",
+        "Consider evolutionary architectures rather than one big upfront design.",
+        "Drive architectures using data (metrics, not guesses).",
+        "Improve through game days that simulate failures."
+      ]
+    },
+    {
+      "heading": "Trade-offs between pillars",
+      "body": "Pillars sometimes pull in different directions. A Multi-Region active-active design maximises reliability but roughly doubles cost. Aggressive Spot usage minimises cost but needs fault-tolerant design. The architect's job is to make these trade-offs explicit and tied to business requirements such as RTO, RPO, budget and compliance. Security is the one pillar that is normally not traded away.",
+      "points": [
+        "Reliability vs cost: extra AZs, Regions and standby capacity cost money.",
+        "Performance vs cost: provisioned IOPS and larger instances improve latency at a price.",
+        "Operational excellence often reduces cost long-term by removing manual toil."
+      ]
+    },
+    {
+      "heading": "Running a Well-Architected review",
+      "body": "A review is a conversation with the workload team, not an audit. You define the workload, answer the questions for each pillar, identify high and medium risks, prioritise them and create an improvement plan. Milestones record progress over time. A good review ends with a short list of actions, for example 'enable Multi-AZ on the orders database' and 'move secrets from environment variables to Secrets Manager'.",
+      "points": [
+        "Define the workload and its business requirements first.",
+        "Answer pillar questions honestly; 'we do not do this yet' is a valid answer.",
+        "Prioritise risks by business impact, then track fixes as milestones."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Reviewing a single-server web application",
+    "body": "A coaching institute runs its student portal on one large EC2 instance with MySQL installed locally, SSH open to 0.0.0.0/0, no backups and manual deployments over FTP. A pillar-by-pillar review produces a clear, prioritised improvement plan instead of a vague 'move to best practices'.",
+    "code": {
+      "language": "text",
+      "source": "Pillar                  Risk found                              Improvement\nSecurity                SSH open to the world, root keys used   Use SSM Session Manager, IAM roles, MFA\nReliability             Single instance, no backups             ALB + Auto Scaling across 2 AZs, RDS Multi-AZ, AWS Backup\nOperational Excellence  Manual FTP deployments                  CloudFormation + CI/CD pipeline\nPerformance             Static files served by EC2              S3 + CloudFront\nCost                    m5.4xlarge running 24x7 at 8% CPU       Rightsize, Savings Plan for baseline\nSustainability          Idle capacity overnight                 Scheduled scaling, Graviton instances"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Pre-launch design review",
+      "description": "Teams review a new architecture against the pillars before go-live to catch single points of failure and missing encryption."
+    },
+    {
+      "title": "Periodic health checks",
+      "description": "Enterprises review critical workloads yearly and track improvements as milestones in the Well-Architected Tool."
+    },
+    {
+      "title": "Partner assessments",
+      "description": "AWS partners run Well-Architected reviews for customers and use the findings to plan remediation projects."
+    },
+    {
+      "title": "Interview answer structure",
+      "description": "Candidates walk through security, reliability, performance and cost for any design question, showing systematic thinking."
+    }
+  ],
+  "demonstration": {
+    "description": "Classify design decisions by the pillar they primarily serve. Practising this mapping makes exam scenarios faster to decode, because each question usually tests one pillar.",
+    "code": {
+      "language": "text",
+      "source": "1. Enable MFA for all IAM users\n2. Deploy the database with RDS Multi-AZ\n3. Buy a Compute Savings Plan for the steady baseline\n4. Put CloudFront in front of the website\n5. Define all infrastructure in CloudFormation\n6. Move to Graviton instances to use less energy per request"
+    },
+    "output": "1 -> Security\n2 -> Reliability\n3 -> Cost Optimization\n4 -> Performance Efficiency\n5 -> Operational Excellence\n6 -> Sustainability (also helps cost)"
+  },
+  "takeaways": [
+    "Six pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, Sustainability.",
+    "The framework is a review method with questions and best practices, not a certification standard.",
+    "Design for failure: assume components will fail and make recovery automatic.",
+    "Every architecture involves trade-offs; tie them to business requirements.",
+    "Use the Well-Architected Tool and Lenses to record risks and improvement plans.",
+    "Structuring answers by pillar is an easy way to sound like an architect in interviews."
+  ],
+  "interview": [
+    {
+      "question": "What are the six pillars of the AWS Well-Architected Framework?",
+      "answer": "Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization and Sustainability.",
+      "explanation": "Give a one-line purpose and one AWS example for each. Listing only names is a weak answer."
+    },
+    {
+      "question": "What is the difference between the Reliability and Performance Efficiency pillars?",
+      "answer": "Reliability is about the workload performing its intended function correctly and recovering from failures, for example Multi-AZ and backups. Performance Efficiency is about using the right resources to meet requirements efficiently as demand changes, for example selecting instance types and adding caching.",
+      "explanation": "Interviewers check you do not confuse 'stays up' with 'runs fast'. Auto Scaling touches both: it adds capacity for demand and replaces unhealthy instances."
+    },
+    {
+      "question": "Give an example of a trade-off between two pillars.",
+      "answer": "Running a warm standby in a second Region improves reliability but increases cost. Using Spot Instances lowers cost but requires a design that tolerates interruptions, which affects reliability.",
+      "explanation": "The strongest answers explain how business requirements such as RTO, RPO and budget decide the trade-off."
+    },
+    {
+      "question": "How would you implement the 'implement a strong identity foundation' principle?",
+      "answer": "Centralise identity with IAM Identity Center or federation, enforce least privilege, use IAM roles instead of long-term access keys, require MFA, and set organisation-wide guardrails with SCPs.",
+      "explanation": "Connect the principle to concrete services; this links forward to the IAM and Organizations lessons."
+    },
+    {
+      "question": "You inherit a workload with no documentation. How would you run a Well-Architected review on it?",
+      "answer": "Identify the business owner and requirements, map the architecture from the console and tags, walk through each pillar's questions with the team, record high-risk issues such as single points of failure or missing backups, prioritise by business impact, and create an improvement plan with milestones in the Well-Architected Tool.",
+      "explanation": "This tests process maturity: start from business context, involve the team, prioritise and track, rather than producing a long unranked list."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Well-Architected review of a food-delivery MVP",
+    "difficulty": "Basic",
+    "objective": "Practise identifying risks by pillar and proposing concrete AWS improvements with clear priorities.",
+    "statement": "A food-delivery startup in Bengaluru runs its MVP like this: one EC2 instance in a public subnet hosts the Node.js API, the React build and a MySQL database; the instance has an Elastic IP; SSH (22) and MySQL (3306) are open to 0.0.0.0/0; the developers share the root user's access keys; there are no backups or monitoring; deployments are done by copying files over SSH; the instance is an m5.2xlarge averaging 6% CPU. Traffic triples at lunch and dinner. Perform a Well-Architected review.",
+    "deliverable": "A table of at least one risk per pillar (six pillars), each with severity (High/Medium/Low) and a concrete AWS improvement, followed by the top three actions you would do first and why.",
+    "steps": [
+      "Write down the business requirements you will assume (availability, growth, budget).",
+      "Walk through each pillar and list the risks you see in the description.",
+      "Rate each risk by likelihood and impact.",
+      "Propose a specific AWS service or configuration change for each risk.",
+      "Choose the top three actions and justify the order."
+    ],
+    "checklist": [
+      "All six pillars are covered, including Sustainability.",
+      "Root-key sharing and open ports are treated as High risk.",
+      "Improvements name specific services or settings, not generic advice.",
+      "Trade-offs (for example cost of Multi-AZ) are acknowledged.",
+      "The top three actions are prioritised by business impact."
+    ],
+    "sample_answer": "Assumptions: 99.9% availability target, small team, cost-sensitive.\n\nSecurity (High): root access keys shared and ports 22/3306 open to the world. Fix: delete root access keys, enable MFA on root, create IAM Identity Center users; replace SSH with SSM Session Manager; move MySQL to a private subnet with a security group that only allows the API's security group.\nReliability (High): single instance, database on the same host, no backups. Fix: move data to RDS MySQL Multi-AZ with automated backups; run the API in an Auto Scaling group across two AZs behind an ALB.\nOperational Excellence (Medium): manual SSH deployments, no monitoring. Fix: CloudFormation or CDK for infrastructure, CodePipeline or GitHub Actions for deployments, CloudWatch alarms on 5xx errors and latency.\nPerformance Efficiency (Medium): React build served from the API server; lunch and dinner peaks. Fix: host the frontend on S3 + CloudFront; use target-tracking and scheduled scaling for meal-time peaks.\nCost Optimization (Medium): m5.2xlarge at 6% CPU. Fix: rightsize to smaller instances in the Auto Scaling group (for example t3/t4g or m7g.large), scale in at night, consider a Savings Plan for the baseline once usage is stable.\nSustainability (Low): idle capacity outside meal times. Fix: scale to minimum overnight, use Graviton instances, apply S3 lifecycle rules to old logs.\n\nTop three: (1) remove root keys and close 22/3306 because a breach could end the business; (2) move to RDS Multi-AZ with backups because data loss is unrecoverable; (3) ALB + Auto Scaling across two AZs to survive instance failure and meal-time peaks. Cost and sustainability improvements follow naturally from rightsizing during step 3."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which Well-Architected pillar focuses on minimising the environmental impact of running cloud workloads?",
+      "options": [
+        "Cost Optimization",
+        "Performance Efficiency",
+        "Operational Excellence",
+        "Sustainability"
+      ],
+      "answer": 3,
+      "explanation": "Sustainability, added as the sixth pillar in 2021, focuses on maximising utilisation and reducing the resources a workload consumes."
+    },
+    {
+      "type": "scenario",
+      "question": "A team deploys changes manually and cannot reproduce environments. Which pillar's best practice does adopting AWS CloudFormation most directly address?",
+      "options": [
+        "Sustainability",
+        "Cost Optimization",
+        "Operational Excellence",
+        "Security"
+      ],
+      "answer": 2,
+      "explanation": "Performing operations as code (infrastructure as code) is a core Operational Excellence design principle: repeatable, reviewable, reversible changes."
+    },
+    {
+      "type": "scenario",
+      "question": "An application must keep working if one Availability Zone fails. Which pillar does this requirement belong to?",
+      "options": [
+        "Performance Efficiency",
+        "Cost Optimization",
+        "Reliability",
+        "Operational Excellence"
+      ],
+      "answer": 2,
+      "explanation": "Recovering from infrastructure failure and meeting availability targets are Reliability concerns, usually solved with Multi-AZ designs."
+    },
+    {
+      "type": "concept",
+      "question": "What is the purpose of a 'lens' in the AWS Well-Architected Tool?",
+      "options": [
+        "It automatically fixes high-risk issues",
+        "It estimates the monthly bill of the workload",
+        "It encrypts the review results",
+        "It adds domain-specific questions and best practices, such as for serverless or machine learning workloads"
+      ],
+      "answer": 3,
+      "explanation": "Lenses extend the core framework with guidance for specific technologies or industries; they do not remediate or price anything."
+    },
+    {
+      "type": "scenario",
+      "question": "A review finds an application running on large instances at 5% average CPU, 24 hours a day. Which recommendation best addresses the Cost Optimization pillar?",
+      "options": [
+        "Enable Multi-AZ for the instances",
+        "Turn on CloudTrail in all Regions",
+        "Rightsize the instances and scale capacity with demand",
+        "Add a second Region for disaster recovery"
+      ],
+      "answer": 2,
+      "explanation": "Low utilisation signals over-provisioning. Rightsizing and elastic scaling reduce cost; the other options address reliability or security and add cost."
+    }
+  ]
+}

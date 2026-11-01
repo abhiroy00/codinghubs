@@ -1,0 +1,241 @@
+{
+  "day": 2,
+  "title": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
+  "module": "Web and JavaScript foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain the differences between var, let and const, including hoisting and the temporal dead zone.",
+    "Define a closure and use one to keep private state.",
+    "Use destructuring, spread/rest, template literals, optional chaining and nullish coalescing correctly.",
+    "Transform data with map, filter, reduce and sort without mutating the source.",
+    "Explain how arrow functions treat this differently from regular functions."
+  ],
+  "definition": "ES6 (ECMAScript 2015) and later versions added block-scoped variables, arrow functions, classes, modules, destructuring, spread syntax, promises and many array and object helpers to JavaScript. A closure is a function bundled with the variables of the scope it was created in, so it can read and update those variables even after the outer function has returned.",
+  "theory": [
+    {
+      "heading": "var, let and const",
+      "body": "var is function-scoped and hoisted with the value undefined, so it leaks out of blocks such as if and for. let and const are block-scoped; they are hoisted too, but reading them before the declaration line throws a ReferenceError (the temporal dead zone). const prevents reassignment of the binding, not mutation of the object it points to. Modern code uses const by default and let when the variable must be reassigned.",
+      "points": [
+        "const user = {}; user.name = 'Asha' is allowed; user = {} is not.",
+        "for (let i ...) creates a fresh i per iteration; for (var i ...) shares one i.",
+        "Avoid var in new code."
+      ]
+    },
+    {
+      "heading": "Closures",
+      "body": "Every function remembers the lexical environment where it was defined. When an inner function is returned or passed as a callback, it still has access to the outer variables. This is how JavaScript creates private state without classes, and it is the mechanism behind React hooks, event handlers, debounce utilities and module patterns. A classic bug is a stale closure: a callback captures an old value and keeps using it after the value has changed.",
+      "points": [
+        "Private state: a counter factory exposes increment() but hides count.",
+        "Function factories: makeMultiplier(3) returns a function that multiplies by 3.",
+        "Stale closures appear in React effects and timers that capture old state."
+      ]
+    },
+    {
+      "heading": "Modern syntax you will use daily",
+      "body": "Destructuring pulls values out of objects and arrays; spread copies or merges them; rest collects remaining items. Optional chaining (a?.b) stops at null or undefined instead of throwing, and nullish coalescing (x ?? fallback) uses the fallback only for null or undefined, unlike || which also replaces 0, '' and false. These features are everywhere in React props and API response handling.",
+      "points": [
+        "const { name, role = 'student' } = user; default applies only when the value is undefined.",
+        "const next = { ...state, count: state.count + 1 } makes a shallow copy.",
+        "res.data?.choices?.[0]?.message ?? 'No reply' guards a deeply nested API field.",
+        "Template literals: `Hello ${name}` with embedded expressions."
+      ]
+    },
+    {
+      "heading": "Array methods and immutability",
+      "body": "map transforms each item, filter keeps items that pass a test, reduce folds a list into one value, find returns the first match, and some/every test conditions. They return new values instead of modifying the input, which is exactly what React state updates require. Note that sort and reverse mutate the original array; use [...arr].sort() or the newer toSorted() to stay immutable.",
+      "points": [
+        "map → same length, transformed items.",
+        "filter → same or fewer items, unchanged.",
+        "reduce(fn, initial) → any shape: a number, an object, a grouped map.",
+        "sort compares as strings by default: [10, 9, 1].sort() gives [1, 10, 9]."
+      ]
+    },
+    {
+      "heading": "Arrow functions and this",
+      "body": "A regular function gets this from how it is called (obj.method() sets this to obj). An arrow function has no own this: it uses this from the surrounding scope. That makes arrows ideal for callbacks inside methods, but wrong as object methods that need the object as this. Arrows also have no arguments object and cannot be used with new.",
+      "points": [
+        "Use arrows for callbacks: items.map((x) => x * 2).",
+        "Use regular methods when you need the object as this."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A closure-based usage tracker",
+    "body": "This factory keeps a per-user token count private. Callers can add usage and read the total, but cannot change count directly because it only exists inside the closure.",
+    "code": {
+      "language": "javascript",
+      "source": "function createUsageTracker(limit) {\n  let used = 0;                       // private: only the inner functions can see it\n  return {\n    add(tokens) {\n      if (used + tokens > limit) return false;\n      used += tokens;\n      return true;\n    },\n    remaining: () => limit - used,\n  };\n}\n\nconst tracker = createUsageTracker(1000);\ntracker.add(400);\ntracker.add(700);                     // rejected: would exceed the limit\nconsole.log(tracker.remaining());     // 600\nconsole.log(tracker.used);            // undefined"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Shaping API responses",
+      "description": "map and filter turn a raw list of records into the exact props a React component needs."
+    },
+    {
+      "title": "Aggregations in the browser",
+      "description": "reduce groups items by category or sums prices in a cart without a library."
+    },
+    {
+      "title": "Encapsulated utilities",
+      "description": "Closures power debounce, throttle, memoize and per-user counters."
+    },
+    {
+      "title": "Safe access to nested data",
+      "description": "Optional chaining and ?? handle missing fields in LLM or third-party API responses without crashes."
+    }
+  ],
+  "demonstration": {
+    "description": "Group chat messages by role and count tokens per role with one reduce call, then show that the input array was not modified.",
+    "code": {
+      "language": "javascript",
+      "source": "const messages = [\n  { role: 'user', tokens: 12 },\n  { role: 'assistant', tokens: 140 },\n  { role: 'user', tokens: 9 },\n];\nconst totals = messages.reduce((acc, { role, tokens }) => {\n  acc[role] = (acc[role] ?? 0) + tokens;\n  return acc;\n}, {});\nconsole.log(totals);\nconsole.log(messages.length);"
+    },
+    "output": "{ user: 21, assistant: 140 }\n3"
+  },
+  "takeaways": [
+    "Prefer const, use let for reassignment, avoid var.",
+    "A closure keeps access to its outer variables; it enables private state and is behind React hooks.",
+    "?? falls back only for null/undefined; || also replaces 0, '' and false.",
+    "map, filter and reduce return new values; sort and reverse mutate unless you copy first.",
+    "Spread makes shallow copies: nested objects are still shared.",
+    "Arrow functions take this from the surrounding scope."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between var, let and const?",
+      "answer": "var is function-scoped and initialised to undefined when hoisted. let and const are block-scoped and sit in the temporal dead zone until declared. const cannot be reassigned, though an object it holds can still be mutated.",
+      "explanation": "Mention the loop example (var shares one variable across iterations) and that const is about the binding, not deep immutability."
+    },
+    {
+      "question": "What is a closure? Give a practical example.",
+      "answer": "A closure is a function that remembers variables from the scope where it was created. Example: a counter factory that returns increment and get functions sharing a private count, or a debounce function that remembers its timer ID between calls.",
+      "explanation": "A concrete use (private state, debounce, React hooks) is what separates a strong answer from a memorised definition."
+    },
+    {
+      "question": "What does this print, and why? for (var i = 0; i < 3; i++) setTimeout(() => console.log(i));",
+      "answer": "It prints 3, 3, 3. var creates one function-scoped i shared by all callbacks, and the callbacks run after the loop has finished. Changing var to let prints 0, 1, 2 because let creates a new binding per iteration.",
+      "explanation": "This classic question tests scope, closures and the event loop together. Explain both the cause and the fix."
+    },
+    {
+      "question": "When would you use reduce instead of map or filter?",
+      "answer": "Use reduce when the result has a different shape from the input, for example a total, an object keyed by category, or a lookup map. Use map for one-to-one transforms and filter for selecting items, because they are clearer.",
+      "explanation": "Interviewers like hearing that readability matters: chaining filter then map is often clearer than one clever reduce."
+    },
+    {
+      "question": "Is the spread operator a deep copy? Why does this matter in React?",
+      "answer": "No. Spread copies only the top level; nested objects and arrays are shared references. In React, mutating a nested object after spreading changes the old state too, which can cause missed re-renders or bugs. Copy every level you change, or use structuredClone or a helper like Immer.",
+      "explanation": "Connecting shallow copies to React's reference-equality checks shows you understand why immutability matters, not just the rule."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Course leaderboard with map, filter and reduce",
+    "difficulty": "Basic",
+    "objective": "Practise the parse → validate → group → aggregate pipeline using array methods and immutable sorting.",
+    "statement": "Each input line is 'name,course,score'. A record is valid when name and course are non-empty and score is a number from 0 to 100. Group valid records by course and, for each course in alphabetical order, print the average score (one decimal place), the top student (highest score; ties go to the alphabetically first name) and the number of students. Finally print how many lines were skipped as invalid. If there are no valid records, print 'No valid records' before the skipped count.",
+    "language": "javascript",
+    "input_format": "Zero or more non-empty lines 'name,course,score'. Surrounding spaces around each field are ignored.",
+    "output_format": "One line per course: '<course>: avg=<x.x> top=<name> (<score>) count=<n>', then 'Skipped: <k>'.",
+    "example": {
+      "input": "Asha,react,88\nRavi,react,92\nMeena,node,75\nKiran,node,75\nZoya,react,70\n",
+      "output": "node: avg=75.0 top=Kiran (75) count=2\nreact: avg=83.3 top=Ravi (92) count=3\nSkipped: 0"
+    },
+    "constraints": [
+      "Scores may be decimals; print them as JavaScript prints numbers (75, 99.5).",
+      "Course names are compared with plain string ordering.",
+      "Do not mutate the parsed array when sorting; copy it first."
+    ],
+    "starter": "const rows = stdin.split('\\n').map((l) => l.trim()).filter(Boolean);\n\n// TODO: parse each row into { name, course, score }\n// TODO: filter valid rows, group with reduce, print each course\n",
+    "solution": "const rows = stdin.split('\\n').map((l) => l.trim()).filter(Boolean);\n\nconst parsed = rows.map((line) => {\n  const [name = '', course = '', raw = ''] = line.split(',').map((s) => s.trim());\n  const score = raw === '' ? NaN : Number(raw);\n  return { name, course, score };\n});\n\nconst isValid = ({ name, course, score }) =>\n  name !== '' && course !== '' && Number.isFinite(score) && score >= 0 && score <= 100;\nconst valid = parsed.filter(isValid);\n\nconst byCourse = valid.reduce((acc, r) => {\n  (acc[r.course] = acc[r.course] || []).push(r);\n  return acc;\n}, {});\n\nconst courses = Object.keys(byCourse).sort();\nif (courses.length === 0) console.log('No valid records');\nfor (const course of courses) {\n  const list = byCourse[course];\n  const avg = list.reduce((sum, r) => sum + r.score, 0) / list.length;\n  const top = [...list].sort((a, b) => b.score - a.score || (a.name < b.name ? -1 : 1))[0];\n  console.log(`${course}: avg=${avg.toFixed(1)} top=${top.name} (${top.score}) count=${list.length}`);\n}\nconsole.log(`Skipped: ${parsed.length - valid.length}`);\n",
+    "explanation": [
+      "Split into trimmed, non-empty lines and map each to an object with destructuring defaults for missing fields.",
+      "Convert the score with Number, treating an empty string as NaN so it fails validation.",
+      "filter keeps valid records; reduce groups them into an object keyed by course.",
+      "For each course (sorted keys), compute the average with reduce and find the top student by sorting a copy with a two-level comparator.",
+      "The skipped count is the difference between parsed and valid lengths."
+    ],
+    "tests": [
+      {
+        "input": "Asha,react,88\nRavi,react,92\nMeena,node,75\nKiran,node,75\nZoya,react,70\n",
+        "output": "node: avg=75.0 top=Kiran (75) count=2\nreact: avg=83.3 top=Ravi (92) count=3\nSkipped: 0"
+      },
+      {
+        "input": "Dev,python,101\nNeha,python,64\nOm,python,abc\nIra,ai,99.5\n",
+        "output": "ai: avg=99.5 top=Ira (99.5) count=1\npython: avg=64.0 top=Neha (64) count=1\nSkipped: 2"
+      },
+      {
+        "input": "Ana,js,-5\n",
+        "output": "No valid records\nSkipped: 1"
+      },
+      {
+        "input": " Sam , react , 50 \nTia,react,50\n,react,90\nUma,,80\n",
+        "output": "react: avg=50.0 top=Sam (50) count=2\nSkipped: 2"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this code print?",
+      "code": "const fns = [];\nfor (let i = 0; i < 3; i++) fns.push(() => i);\nconsole.log(fns.map((f) => f()).join(','));",
+      "options": [
+        "3,3,3",
+        "0,1,2",
+        "undefined,undefined,undefined",
+        "0,0,0"
+      ],
+      "answer": 1,
+      "explanation": "let creates a new binding of i for each iteration, so each closure captures its own value."
+    },
+    {
+      "type": "output",
+      "question": "What is logged?",
+      "code": "const count = 0;\nconsole.log(count || 10, count ?? 10);",
+      "options": [
+        "0 10",
+        "10 0",
+        "0 0",
+        "10 10"
+      ],
+      "answer": 1,
+      "explanation": "|| treats 0 as falsy and returns 10; ?? only falls back for null or undefined, so it returns 0."
+    },
+    {
+      "type": "code",
+      "question": "Which line updates a React-style state object immutably, adding a tag to its tags array?",
+      "options": [
+        "const next = { ...state, tags: [...state.tags, 'ai'] };",
+        "state.tags.push('ai'); const next = state;",
+        "const next = state; next.tags = next.tags.concat('ai');",
+        "const next = { ...state }; next.tags.push('ai');"
+      ],
+      "answer": 3,
+      "explanation": "Only the first copies both the object and the nested array. The last one shares the original tags array, so push mutates old state."
+    },
+    {
+      "type": "concept",
+      "question": "Why can an arrow function be a poor choice for an object method that uses this?",
+      "options": [
+        "Arrow functions take this from the surrounding scope, not from the object",
+        "Arrow functions cannot read outer variables",
+        "Arrow functions cannot return objects",
+        "Arrow functions always run asynchronously"
+      ],
+      "answer": 0,
+      "explanation": "Arrows do not bind their own this, so inside an object literal this refers to the outer scope rather than the object."
+    },
+    {
+      "type": "output",
+      "question": "What does [10, 9, 1].sort() return?",
+      "options": [
+        "[1, 9, 10]",
+        "[1, 10, 9]",
+        "[10, 9, 1]",
+        "[9, 10, 1]"
+      ],
+      "answer": 1,
+      "explanation": "Without a comparator, sort converts items to strings: '1' < '10' < '9'. Use sort((a, b) => a - b) for numbers."
+    }
+  ]
+}

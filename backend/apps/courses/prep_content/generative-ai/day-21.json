@@ -1,0 +1,233 @@
+{
+  "day": 21,
+  "title": "Evaluating Fine-Tuned Models",
+  "module": "Fine-tuning & alignment",
+  "level": "Advanced",
+  "objectives": [
+    "Explain why fine-tuned models need evaluation on held-out data.",
+    "Describe common metrics: exact match, accuracy and LLM-as-a-judge.",
+    "Compare model output to a reference answer and check format validity.",
+    "Detect overfitting by comparing training and validation results.",
+    "Decide whether a fine-tuned model is ready to deploy."
+  ],
+  "definition": "Evaluation measures how well a fine-tuned model performs on data it has not seen during training. It compares the model's output to reference answers using metrics such as exact match or accuracy, and may use another LLM as a judge to rate quality. Evaluation on validation and test data reveals overfitting and tells whether the model is ready for production.",
+  "theory": [
+    {
+      "heading": "Why evaluate on held-out data",
+      "body": "Training performance can be high simply because the model memorised examples. Held-out validation and test data show whether the model generalises to new inputs. An evaluation set should mirror real usage and be kept separate from training data.",
+      "points": [
+        "Training performance can be misleading.",
+        "Held-out data measures real generalisation.",
+        "Keep evaluation data separate from training."
+      ]
+    },
+    {
+      "heading": "Exact match and accuracy",
+      "body": "Exact match checks whether the model's output equals the reference output character for character (often after normalising whitespace and case). Accuracy measures the fraction of examples where the output is correct. These work well for classification and structured output tasks.",
+      "points": [
+        "Exact match: output equals reference after normalisation.",
+        "Accuracy: fraction of correct outputs.",
+        "Good for labels, JSON keys and structured formats."
+      ]
+    },
+    {
+      "heading": "LLM-as-a-judge",
+      "body": "For open-ended outputs where no single answer is correct, another LLM rates the model's response against criteria such as helpfulness, tone and correctness. The judge receives the input, the model output and the rubric, and returns a score or explanation.",
+      "points": [
+        "A judge LLM scores quality on a rubric.",
+        "Useful for open-ended or creative tasks.",
+        "The judge itself should be checked for bias."
+      ]
+    },
+    {
+      "heading": "Format validity",
+      "body": "When the model should emit JSON or another structure, check that the output parses and contains the required fields. A model that produces correct content but invalid JSON still fails downstream. Report format validity alongside content accuracy.",
+      "points": [
+        "Check that JSON parses successfully.",
+        "Verify required fields and types are present.",
+        "Format errors count as failures."
+      ]
+    },
+    {
+      "heading": "Overfitting and readiness",
+      "body": "If validation metrics are far below training metrics, the model is overfitting. A model is ready to deploy when validation and test metrics are stable and meet the success criteria, and failures are understood and acceptable.",
+      "points": [
+        "Large train-validation gap means overfitting.",
+        "Deploy only when metrics meet criteria.",
+        "Understand the failure modes before shipping."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Evaluating invoice JSON extraction",
+    "body": "The model is fine-tuned to extract invoice fields as JSON. On 200 held-out invoices, exact match is 78% (all four fields correct), format validity is 95% (JSON parses), and an LLM judge rates field correctness at 90%. The remaining errors are mostly date-format variations, which can be fixed with more varied training data.",
+    "code": {
+      "language": "python",
+      "source": "exact_match = sum(1 for pred, ref in zip(predictions, references) if normalise(pred) == normalise(ref)) / len(references)\nformat_ok = sum(1 for p in predictions if valid_json(p)) / len(predictions)\nprint(f'exact_match={exact_match:.2f} format_ok={format_ok:.2f}')"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Classification",
+      "description": "Measure accuracy on labelled examples the model has not seen."
+    },
+    {
+      "title": "Structured extraction",
+      "description": "Measure exact match and JSON validity on held-out documents."
+    },
+    {
+      "title": "Chatbot quality",
+      "description": "Use an LLM judge to rate helpfulness and tone on test conversations."
+    },
+    {
+      "title": "Code generation",
+      "description": "Run generated code against unit tests on held-out problems."
+    }
+  ],
+  "demonstration": {
+    "description": "Show three outputs scored by exact match, format validity and an LLM judge, illustrating how different metrics capture different failure modes.",
+    "code": {
+      "language": "text",
+      "source": "Reference: {\"category\": \"Billing\", \"priority\": \"High\"}\nModel A: {\"category\": \"Billing\", \"priority\": \"High\"}   exact match: yes, format: yes\nModel B: {\"category\": \"billing\", \"priority\": \"high\"}   exact match: no (case), format: yes\nModel C: category: Billing, priority: High          exact match: no, format: no"
+    },
+    "output": "Different metrics reveal different issues: case sensitivity and invalid JSON."
+  },
+  "takeaways": [
+    "Evaluate on held-out validation and test data, not training data.",
+    "Use exact match and accuracy for structured or classification tasks.",
+    "Use LLM-as-a-judge for open-ended outputs with a rubric.",
+    "Check format validity when the model must emit JSON or a fixed structure.",
+    "A large train-validation gap signals overfitting.",
+    "Deploy only when metrics meet success criteria and failures are understood."
+  ],
+  "interview": [
+    {
+      "question": "Why evaluate on held-out data instead of training data?",
+      "answer": "Training data can be memorised; held-out data shows whether the model generalises to new inputs it has not seen.",
+      "explanation": "Memorisation gives high training scores but poor real-world performance."
+    },
+    {
+      "question": "What is exact match?",
+      "answer": "The model's output equals the reference output exactly, usually after normalising whitespace and case.",
+      "explanation": "Good for labels and structured output where there is one correct answer."
+    },
+    {
+      "question": "What is LLM-as-a-judge?",
+      "answer": "Another language model rates the model's output against a rubric such as helpfulness, correctness and tone.",
+      "explanation": "Use it when no single reference answer exists."
+    },
+    {
+      "question": "Why check format validity?",
+      "answer": "Correct content in invalid JSON still breaks downstream code; the output must parse and contain required fields.",
+      "explanation": "Report format validity alongside content accuracy."
+    },
+    {
+      "question": "What indicates overfitting in fine-tuning?",
+      "answer": "Training metrics are high but validation metrics are much lower: the model memorised training examples rather than learning the pattern.",
+      "explanation": "Add varied data, reduce training or use regularisation."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Score exact match with normalisation",
+    "difficulty": "Basic",
+    "objective": "Implement exact-match scoring with whitespace and case normalisation, as used to evaluate structured model output.",
+    "statement": "Read an integer N, then N pairs of lines: a predicted output and a reference output. Normalise each by stripping leading/trailing whitespace and converting to lowercase. Count how many pairs match after normalisation. Print the count.",
+    "language": "python",
+    "input_format": "Line 1: N.\nNext 2*N lines: prediction and reference alternately.",
+    "output_format": "A single integer: the number of matching pairs.",
+    "example": {
+      "input": "3\nHello\nhello\nWorld  \nworld\nFoo\nBar\n",
+      "output": "2"
+    },
+    "constraints": [
+      "N is between 1 and 100.",
+      "Each line may contain spaces and punctuation.",
+      "Normalisation: strip() then lower()."
+    ],
+    "starter": "n = int(input())\nmatches = 0\nfor _ in range(n):\n    pred = input()\n    ref = input()\n    # TODO: normalise and compare\n",
+    "solution": "n = int(input())\nmatches = 0\nfor _ in range(n):\n    pred = input().strip().lower()\n    ref = input().strip().lower()\n    if pred == ref:\n        matches += 1\nprint(matches)\n",
+    "explanation": [
+      "Read N, then loop N times reading a prediction and a reference.",
+      "Normalise each with strip() and lower().",
+      "Count pairs where the normalised strings are equal.",
+      "Print the total match count."
+    ],
+    "tests": [
+      {
+        "input": "3\nHello\nhello\nWorld  \nworld\nFoo\nBar\n",
+        "output": "2"
+      },
+      {
+        "input": "2\nABC\nabc\n  test  \ntest\n",
+        "output": "2"
+      },
+      {
+        "input": "1\nno\nyes\n",
+        "output": "0"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is held-out data in evaluation?",
+      "options": [
+        "Data the model has not seen during training",
+        "The system prompt",
+        "The API key",
+        "Data used to train the model"
+      ],
+      "answer": 0,
+      "explanation": "Held-out data (validation and test) was not used in training, so it measures real generalisation."
+    },
+    {
+      "type": "scenario",
+      "question": "Training exact match is 98% but validation exact match is 55%. What should you conclude?",
+      "options": [
+        "Add more training data immediately",
+        "Increase the temperature",
+        "The model is ready to deploy",
+        "The model is overfitting"
+      ],
+      "answer": 3,
+      "explanation": "A large gap between training and validation means memorisation, not learning."
+    },
+    {
+      "type": "concept",
+      "question": "What is LLM-as-a-judge?",
+      "options": [
+        "A static code checker",
+        "The model judges itself during training",
+        "Another LLM rates output quality against a rubric",
+        "A human reads every output"
+      ],
+      "answer": 2,
+      "explanation": "A judge LLM scores the model's response on criteria such as helpfulness and correctness."
+    },
+    {
+      "type": "scenario",
+      "question": "The model should emit JSON but sometimes produces invalid JSON. Which metric catches this?",
+      "options": [
+        "Exact match only",
+        "Format validity",
+        "Temperature",
+        "Top-p"
+      ],
+      "answer": 1,
+      "explanation": "Format validity checks that the output parses as JSON and contains required fields."
+    },
+    {
+      "type": "concept",
+      "question": "When is a fine-tuned model ready to deploy?",
+      "options": [
+        "When validation and test metrics meet success criteria and failures are understood",
+        "When it runs fast",
+        "When the loss decreases",
+        "When training accuracy is 100%"
+      ],
+      "answer": 0,
+      "explanation": "Readiness depends on held-out metrics meeting criteria and known, acceptable failure modes."
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "day": 2,
+  "title": "Python for Data Science: Core Structures, Comprehensions & Files",
+  "module": "Data science foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Choose the right built-in structure (list, tuple, dict, set) for a data task and explain the time complexity.",
+    "Write list, dict and set comprehensions and generator expressions for data transformations.",
+    "Read and parse CSV data safely with the csv module, including quoted fields.",
+    "Explain mutability, references and copying, a common source of data bugs.",
+    "Answer Python-for-data interview questions confidently."
+  ],
+  "definition": "Python is the main language of data science because it combines readable syntax with a huge ecosystem (NumPy, pandas, scikit-learn, PyTorch). Before those libraries, interviewers check core Python: built-in data structures, comprehensions, functions, file handling and the difference between mutable and immutable objects. These skills decide whether your pandas code is correct and efficient.",
+  "theory": [
+    {
+      "heading": "Built-in data structures and when to use them",
+      "body": "Lists are ordered, mutable sequences, good for row-like data you append to. Tuples are immutable and hashable, so they can be dictionary keys (for example a (city, month) group key). Dictionaries map keys to values with average O(1) lookup, the basis of grouping and counting. Sets store unique items with O(1) membership tests, ideal for deduplication and 'have I seen this ID?' checks.",
+      "points": [
+        "list: x in my_list is O(n); avoid it inside loops over large data.",
+        "set/dict: membership and lookup are O(1) on average because they use hashing.",
+        "tuple: immutable, hashable, lightweight records and composite keys.",
+        "collections.Counter and defaultdict simplify counting and grouping."
+      ]
+    },
+    {
+      "heading": "Comprehensions and generators",
+      "body": "A comprehension builds a new collection from an iterable in one readable expression: [x * 2 for x in nums if x > 0]. Dict and set comprehensions work the same way. A generator expression uses parentheses and yields items lazily, so sum(x for x in big_file) processes a huge file without loading it into memory. Interviewers often ask you to rewrite a loop as a comprehension or explain why a generator saves memory.",
+      "points": [
+        "List comprehension: eager, builds the full list in memory.",
+        "Generator expression: lazy, one item at a time, can be consumed only once.",
+        "Keep comprehensions simple; nested logic is clearer as a loop."
+      ]
+    },
+    {
+      "heading": "Mutability, references and copying",
+      "body": "Python variables are names bound to objects. b = a for a list does not copy it: both names point to the same list, so changing b changes a. copy() or a slice makes a shallow copy (inner objects are still shared) and copy.deepcopy copies everything. A classic bug is a mutable default argument, def f(x, acc=[]), which is created once and shared across calls. The same idea appears in pandas, where a slice may be a view or a copy.",
+      "points": [
+        "Immutable: int, float, str, tuple, frozenset.",
+        "Mutable: list, dict, set and most user-defined objects.",
+        "Use None as a default and create the list inside the function."
+      ]
+    },
+    {
+      "heading": "Reading data files correctly",
+      "body": "Splitting lines on commas breaks as soon as a field contains a quoted comma such as \"Rao, S\". The csv module handles quoting, and csv.DictReader maps each row to the header names. Real data also has blanks, wrong types and inconsistent case, so parsing code should validate each field, count the rows it rejects and normalise text (strip spaces, standardise case).",
+      "points": [
+        "Use with open(path, newline='', encoding='utf-8') as f: for files.",
+        "Wrap type conversion in try/except and count bad rows rather than crashing.",
+        "Normalise categories ('pune', 'Pune ') before grouping."
+      ]
+    },
+    {
+      "heading": "Functions, lambdas and sorting",
+      "body": "Small reusable functions keep data code testable. Lambdas are handy as keys: sorted(rows, key=lambda r: (-r['score'], r['name'])) sorts by score descending, then name ascending, a pattern used constantly for ranking with tie-breaks. Built-ins such as zip, enumerate, any, all, min and max with key= cover many interview tasks without extra libraries.",
+      "points": [
+        "Negating a numeric key reverses its order inside a tuple key.",
+        "sorted() returns a new list; list.sort() sorts in place and returns None.",
+        "Python's sort is stable, so equal keys keep their original order."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Grouping exam scores by city in pure Python",
+    "body": "This is the core of a groupby without pandas: parse rows, normalise the grouping key, collect values in a dictionary and compute an aggregate. The same pattern underlies pandas df.groupby('city')['score'].mean().",
+    "code": {
+      "language": "python",
+      "source": "from collections import defaultdict\n\nrows = [('Asha', 'Pune', 82), ('Ravi', 'Delhi', 74), ('Meera', 'pune', 91)]\nby_city = defaultdict(list)\nfor name, city, score in rows:\n    by_city[city.strip().title()].append(score)\n\naverages = {city: sum(s) / len(s) for city, s in by_city.items()}\nprint(averages)  # {'Pune': 86.5, 'Delhi': 74.0}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Log and event processing",
+      "description": "Parse millions of app events line by line with generators, counting users and actions with dicts and sets."
+    },
+    {
+      "title": "Data validation scripts",
+      "description": "Check incoming CSV files for missing columns, wrong types and duplicate IDs before they enter a pipeline."
+    },
+    {
+      "title": "Feature preparation",
+      "description": "Build lookup dictionaries (customer to segment, pin code to city) used when creating model features."
+    },
+    {
+      "title": "Interview coding rounds",
+      "description": "Many data science screens use pure Python tasks such as counting words, grouping records or finding top-k items."
+    }
+  ],
+  "demonstration": {
+    "description": "Run the practice program on a small CSV. Note that 'pune' and 'Pune' are merged after normalising case, and ties for the top student are broken alphabetically.",
+    "code": {
+      "language": "text",
+      "source": "name,city,score\nAsha,Pune,82\nRavi,Delhi,74\nMeera,pune,91\nKaran,Delhi,88\nIqbal,Mumbai,79"
+    },
+    "output": "Delhi: count=2 avg=81.00 top=Karan\nMumbai: count=1 avg=79.00 top=Iqbal\nPune: count=2 avg=86.50 top=Meera\nOverall top: Meera (91)\nSkipped: 0"
+  },
+  "takeaways": [
+    "Use dicts and sets for O(1) lookups; avoid repeated 'in list' checks on large data.",
+    "Comprehensions are concise; generators save memory for large streams.",
+    "Assignment never copies a list or dict; know shallow versus deep copy.",
+    "Never use a mutable default argument.",
+    "Parse CSV with the csv module, validate fields and count rejected rows.",
+    "Tuple sort keys with negation give multi-level ranking with tie-breaks."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between a list and a tuple?",
+      "answer": "A list is mutable and a tuple is immutable. Because tuples are immutable they are hashable (if their items are), so they can be dictionary keys or set members, and they signal fixed records such as (lat, lon).",
+      "explanation": "Add the practical use: tuples as composite group keys. Mentioning hashability shows deeper understanding than 'one uses brackets'."
+    },
+    {
+      "question": "Why is checking membership in a set faster than in a list?",
+      "answer": "A set is a hash table: Python hashes the item and jumps to its bucket, giving O(1) average time. A list must be scanned element by element, which is O(n).",
+      "explanation": "Give a data example: deduplicating 10 million user IDs with a list inside a loop becomes O(n²)."
+    },
+    {
+      "question": "What is the difference between a list comprehension and a generator expression?",
+      "answer": "A list comprehension builds the whole list in memory immediately. A generator expression produces items lazily on demand, uses constant memory and can be iterated only once.",
+      "explanation": "Mention when to prefer each: generators for streaming large files or feeding sum()/max(), lists when you need indexing or several passes."
+    },
+    {
+      "question": "What happens with def add(item, bucket=[]) when called twice?",
+      "answer": "The default list is created once when the function is defined, so both calls append to the same list and the second call sees the first item. Use bucket=None and create a new list inside the function.",
+      "explanation": "This is a favourite trick question; explain the reason (defaults evaluated at definition time), not just the fix."
+    },
+    {
+      "question": "Explain shallow versus deep copy and why it matters in data work.",
+      "answer": "A shallow copy creates a new outer container but shares the inner objects; a deep copy recursively copies everything. If you shallow-copy a list of dicts and modify a dict, the original changes too, silently corrupting data used elsewhere.",
+      "explanation": "Link it to pandas: df2 = df does not copy; use df.copy() before modifying, which also avoids SettingWithCopy problems."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "City-wise score summary from CSV",
+    "difficulty": "Basic",
+    "objective": "Parse CSV safely with the csv module and implement a group-by with dictionaries and sorting keys.",
+    "statement": "Read a CSV with header name,city,score from standard input. Strip spaces from names and cities and convert cities to title case. Skip a row (and count it) if the score is not a number or the name or city is empty. For each city in alphabetical order print the count, average score and the top student (highest score; ties broken by name alphabetically). Then print the overall top student with the same tie rule, and the number of skipped rows. If no row is valid, print 'No valid rows' instead of the overall line.",
+    "language": "python",
+    "input_format": "A header line name,city,score followed by data rows. Fields may be quoted and may contain commas.",
+    "output_format": "'<City>: count=<n> avg=<mean with 2 decimals> top=<name>' per city\n'Overall top: <name> (<score>)' using Python's :g format for the score, or 'No valid rows'\n'Skipped: <count>'",
+    "example": {
+      "input": "name,city,score\nAsha,Pune,82\nRavi,Delhi,74\nMeera,pune,91\nKaran,Delhi,88\nIqbal,Mumbai,79\n",
+      "output": "Delhi: count=2 avg=81.00 top=Karan\nMumbai: count=1 avg=79.00 top=Iqbal\nPune: count=2 avg=86.50 top=Meera\nOverall top: Meera (91)\nSkipped: 0"
+    },
+    "constraints": [
+      "Up to 10,000 rows.",
+      "Use the csv module so quoted fields such as \"Rao, S\" are parsed correctly.",
+      "Scores are real numbers; 'absent' or 'NA' are invalid."
+    ],
+    "starter": "import csv\nimport sys\n\nreader = csv.DictReader(sys.stdin)\ngroups = {}\nskipped = 0\nfor row in reader:\n    # TODO: clean name/city, convert score, group valid rows by city\n    pass\n\n# TODO: print per-city summary, overall top and skipped count\n",
+    "solution": "import csv\nimport sys\n\nreader = csv.DictReader(sys.stdin)\ngroups = {}\nskipped = 0\nbest = None\nfor row in reader:\n    name = (row.get('name') or '').strip()\n    city = (row.get('city') or '').strip().title()\n    try:\n        score = float(row.get('score') or '')\n    except ValueError:\n        skipped += 1\n        continue\n    if not name or not city:\n        skipped += 1\n        continue\n    groups.setdefault(city, []).append((name, score))\n    if best is None or (-score, name) < (-best[1], best[0]):\n        best = (name, score)\n\nfor city in sorted(groups):\n    people = groups[city]\n    avg = sum(s for _, s in people) / len(people)\n    top = min(people, key=lambda p: (-p[1], p[0]))[0]\n    print(f'{city}: count={len(people)} avg={avg:.2f} top={top}')\nif best:\n    print(f'Overall top: {best[0]} ({best[1]:g})')\nelse:\n    print('No valid rows')\nprint(f'Skipped: {skipped}')\n",
+    "explanation": [
+      "csv.DictReader reads the header and returns each row as a dict, handling quoted commas.",
+      "Normalise name and city, then convert the score inside try/except; count rows that fail any check.",
+      "Group valid (name, score) pairs in a dict keyed by city: this is a hand-written groupby.",
+      "For each city compute the mean and pick the top student with min() over (-score, name), which gives highest score and alphabetical tie-break.",
+      "Track the overall best with the same tuple comparison and print the summary lines."
+    ],
+    "tests": [
+      {
+        "input": "name,city,score\nAsha,Pune,82\nRavi,Delhi,74\nMeera,pune,91\nKaran,Delhi,88\nIqbal,Mumbai,79\n",
+        "output": "Delhi: count=2 avg=81.00 top=Karan\nMumbai: count=1 avg=79.00 top=Iqbal\nPune: count=2 avg=86.50 top=Meera\nOverall top: Meera (91)\nSkipped: 0"
+      },
+      {
+        "input": "name,city,score\nAnu,Chennai,70\nBala,Chennai,70\nChitra,Chennai,65\n",
+        "output": "Chennai: count=3 avg=68.33 top=Anu\nOverall top: Anu (70)\nSkipped: 0"
+      },
+      {
+        "input": "name,city,score\n\"Rao, S\",Hyderabad,90\nNeha,Hyderabad,absent\nTom,,50\nZoya,Kochi,90\n",
+        "output": "Hyderabad: count=1 avg=90.00 top=Rao, S\nKochi: count=1 avg=90.00 top=Zoya\nOverall top: Rao, S (90)\nSkipped: 2"
+      },
+      {
+        "input": "name,city,score\nX,Agra,NA\n",
+        "output": "No valid rows\nSkipped: 1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this list aliasing example print?",
+      "code": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(len(a))",
+      "options": [
+        "3",
+        "4",
+        "Error",
+        "None"
+      ],
+      "answer": 1,
+      "explanation": "b = a binds a second name to the same list object, so appending through b also changes a. Its length becomes 4."
+    },
+    {
+      "type": "concept",
+      "question": "Which structure gives O(1) average-time membership checks for deduplicating user IDs?",
+      "options": [
+        "str",
+        "set",
+        "list",
+        "tuple"
+      ],
+      "answer": 1,
+      "explanation": "Sets are hash-based, so 'id in seen' is O(1) on average, while lists and tuples require a linear scan."
+    },
+    {
+      "type": "scenario",
+      "question": "You need the total of a numeric column from a 20 GB log file on a laptop with 8 GB RAM. Which approach is most appropriate?",
+      "options": [
+        "sum(parse(line) for line in file) using a generator",
+        "Read all lines into a list first, then sum",
+        "Convert the file to a single string and split it",
+        "Load it into a dictionary keyed by line number"
+      ],
+      "answer": 0,
+      "explanation": "A generator processes one line at a time with constant memory; building a list of all lines would exceed RAM."
+    },
+    {
+      "type": "output",
+      "question": "In what order does this sorted() call print the names?",
+      "code": "rows = [('b', 5), ('a', 5), ('c', 9)]\nprint([r[0] for r in sorted(rows, key=lambda r: (-r[1], r[0]))])",
+      "options": [
+        "['c', 'a', 'b']",
+        "['c', 'b', 'a']",
+        "['b', 'a', 'c']",
+        "['a', 'b', 'c']"
+      ],
+      "answer": 0,
+      "explanation": "The key sorts by score descending (negated) then name ascending: c (9) first, then a and b, which tie on 5 and are ordered alphabetically."
+    },
+    {
+      "type": "code",
+      "question": "Why is line.split(',') a risky way to parse the CSV line '\"Rao, S\",Hyderabad,90'?",
+      "options": [
+        "split() cannot handle digits",
+        "It produces four fields because the comma inside quotes is also split",
+        "It removes the quotes but keeps the fields correct",
+        "split() only works on files, not strings"
+      ],
+      "answer": 1,
+      "explanation": "Plain split ignores quoting and breaks 'Rao, S' into two fields. The csv module understands quoted fields."
+    }
+  ]
+}

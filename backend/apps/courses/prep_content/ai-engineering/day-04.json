@@ -1,0 +1,249 @@
+{
+  "day": 4,
+  "title": "The Machine Learning Workflow: From Problem Framing to Baselines",
+  "module": "Foundations: Python and maths",
+  "level": "Beginner",
+  "objectives": [
+    "Describe the end-to-end ML lifecycle from problem framing to monitoring.",
+    "Frame a business problem as an ML task with a measurable target and metric.",
+    "Split data into train, validation and test sets correctly, including time-based splits.",
+    "Identify and prevent data leakage.",
+    "Build a simple baseline before training complex models."
+  ],
+  "definition": "The machine learning workflow is the repeatable sequence of steps used to turn a business problem into a working model: frame the problem, collect and understand data, prepare features, split the data, establish a baseline, train and tune models, evaluate on held-out data, deploy and monitor. Each step has typical failure modes, and most real-world ML failures come from data and process mistakes rather than from the choice of algorithm.",
+  "theory": [
+    {
+      "heading": "Problem framing comes first",
+      "body": "Before touching data, define what decision the model will support, what the prediction target is, how success is measured and what happens when the model is wrong. 'Reduce churn' becomes 'predict whether a subscriber cancels within 30 days, ranked by risk, so the retention team can call the top 500 each week'. This framing decides the label, the prediction time, the metric (for example precision in the top 500) and whether ML is even needed. Sometimes a rule or a SQL query is enough.",
+      "points": [
+        "Define the target, the prediction moment and the action taken on the prediction.",
+        "Pick a business metric and an offline ML metric that correlates with it.",
+        "Ask whether a simple rule would solve the problem first."
+      ]
+    },
+    {
+      "heading": "The lifecycle step by step",
+      "body": "A typical project loops through these stages many times. Exploratory data analysis reveals missing values, skew, label noise and imbalance. Feature engineering turns raw data into model inputs. Training and hyperparameter tuning happen on training and validation data. A final, untouched test set gives an unbiased estimate before deployment. After deployment, monitoring watches for data drift and performance decay, which triggers retraining.",
+      "points": [
+        "Collect and explore data (EDA).",
+        "Clean, engineer and encode features.",
+        "Split data; train, tune and compare against a baseline.",
+        "Evaluate once on the test set; deploy behind an API or batch job.",
+        "Monitor, collect feedback and retrain."
+      ]
+    },
+    {
+      "heading": "Train, validation and test splits",
+      "body": "The training set fits model parameters, the validation set chooses hyperparameters and models, and the test set is used once to report final performance. Reusing the test set for decisions slowly overfits to it. When samples are independent, random or stratified splits work; stratification keeps class proportions similar in each split. When data is ordered in time, such as transactions or demand, split by time: train on the past and test on the future, because that is how the model will be used.",
+      "points": [
+        "Common ratios: 70/15/15 or 80/10/10, adjusted for dataset size.",
+        "Use k-fold cross-validation when data is small.",
+        "Group-aware splits keep all rows from one user or patient in the same split."
+      ]
+    },
+    {
+      "heading": "Data leakage",
+      "body": "Leakage happens when information that would not be available at prediction time reaches the model during training. Classic examples are fitting a scaler on the full dataset before splitting, including a feature that is recorded after the outcome (such as 'refund issued' when predicting complaints), random splits on time-series data and duplicate rows across train and test. Leakage produces excellent offline scores and disappointing production performance.",
+      "points": [
+        "Fit all preprocessing inside the training fold only (scikit-learn Pipelines help).",
+        "Check every feature's timestamp against the prediction moment.",
+        "Deduplicate before splitting."
+      ]
+    },
+    {
+      "heading": "Baselines and iteration",
+      "body": "A baseline is the simplest reasonable predictor: the majority class for classification, the mean or last value for regression, or a simple heuristic. It sets the bar a model must clear and catches bugs: if a deep network barely beats predicting the majority class, either the problem is hard or something is wrong. Then iterate with simple models (logistic regression, gradient-boosted trees) before reaching for complex ones.",
+      "points": [
+        "Majority-class accuracy reveals class imbalance immediately.",
+        "Gradient-boosted trees are a strong default for tabular data.",
+        "Change one thing at a time and track every experiment."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A leak-free scikit-learn workflow",
+    "body": "A Pipeline bundles preprocessing and the model so that cross-validation fits the scaler only on each training fold. A DummyClassifier provides the majority-class baseline to compare against.",
+    "code": {
+      "language": "python",
+      "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split, cross_val_score\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.dummy import DummyClassifier\n\nX, y = load_breast_cancer(return_X_y=True)\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, stratify=y, random_state=0)\n\nbaseline = DummyClassifier(strategy='most_frequent').fit(X_tr, y_tr)\nmodel = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))\nprint('cv:', cross_val_score(model, X_tr, y_tr, cv=5).mean().round(3))\nmodel.fit(X_tr, y_tr)\nprint('baseline test:', round(baseline.score(X_te, y_te), 3))\nprint('model test:', round(model.score(X_te, y_te), 3))"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Churn prediction",
+      "description": "Framing churn as a 30-day binary target with a time-based split mirrors how the model is used each week."
+    },
+    {
+      "title": "Demand forecasting",
+      "description": "Train on past months and validate on later months, with a last-value baseline to beat."
+    },
+    {
+      "title": "Credit risk scoring",
+      "description": "Strict leakage checks ensure no post-application information enters the features."
+    },
+    {
+      "title": "Medical imaging",
+      "description": "Patient-level group splits stop images from the same patient appearing in train and test."
+    },
+    {
+      "title": "Support ticket routing",
+      "description": "A keyword rule baseline is compared with a text classifier before investing in ML."
+    }
+  ],
+  "demonstration": {
+    "description": "Show how leakage inflates scores: select the 'best' features using the whole dataset of pure noise, then cross-validate. Selecting features inside the pipeline gives the honest result near 50 percent.",
+    "code": {
+      "language": "python",
+      "source": "import numpy as np\nfrom sklearn.feature_selection import SelectKBest, f_classif\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.pipeline import make_pipeline\n\nrng = np.random.default_rng(0)\nX = rng.normal(size=(100, 5000)); y = rng.integers(0, 2, 100)\n\nX_leaky = SelectKBest(f_classif, k=20).fit_transform(X, y)\nprint('leaky:', cross_val_score(LogisticRegression(), X_leaky, y, cv=5).mean().round(2))\nhonest = make_pipeline(SelectKBest(f_classif, k=20), LogisticRegression())\nprint('honest:', cross_val_score(honest, X, y, cv=5).mean().round(2))"
+    },
+    "output": "leaky: about 0.9   (looks great, but the data is random noise)\nhonest: about 0.5   (chance level, the truth)"
+  },
+  "takeaways": [
+    "Frame the problem first: target, prediction moment, action and metric.",
+    "Train fits parameters, validation selects models, test is used once at the end.",
+    "Split by time for temporal data and by group for repeated entities.",
+    "Leakage gives great offline scores and poor production results; fit preprocessing on train only.",
+    "Always compare against a simple baseline such as the majority class.",
+    "The workflow is a loop: monitoring in production feeds the next iteration."
+  ],
+  "interview": [
+    {
+      "question": "Walk me through the steps of an ML project.",
+      "answer": "Frame the problem and metric, collect and explore data, clean and engineer features, split into train, validation and test, build a baseline, train and tune models, evaluate on the test set, deploy, then monitor and retrain.",
+      "explanation": "Interviewers want structure plus judgement: mention that most time goes into data and that monitoring closes the loop."
+    },
+    {
+      "question": "Why do we need both a validation set and a test set?",
+      "answer": "The validation set is used repeatedly to choose hyperparameters and models, so its score becomes optimistically biased. The test set is held back and used once to give an unbiased estimate of performance on new data.",
+      "explanation": "Mention cross-validation as an alternative to a fixed validation set when data is limited."
+    },
+    {
+      "question": "What is data leakage? Give two examples.",
+      "answer": "Leakage is when training uses information unavailable at prediction time. Examples: scaling or imputing with statistics from the full dataset before splitting, and using a feature recorded after the outcome, such as 'account closed date' when predicting churn.",
+      "explanation": "Strong answers also say how to prevent it: pipelines, time-aware splits, feature timestamp audits and deduplication."
+    },
+    {
+      "question": "How would you split data for a model that predicts next week's sales?",
+      "answer": "Use a time-based split: train on older periods and validate and test on later periods, ideally with rolling or expanding windows (walk-forward validation). A random split would let the model see the future.",
+      "explanation": "This tests whether you think about how the model is used in production, not just about the mechanics of splitting."
+    },
+    {
+      "question": "Your new model reaches 95 percent accuracy. Why might that not be impressive?",
+      "answer": "If 95 percent of samples belong to one class, predicting that class always also gives 95 percent. Compare against a majority-class baseline and use metrics suited to imbalance such as precision, recall, F1 or PR-AUC.",
+      "explanation": "This shows baseline thinking and leads naturally into evaluation metrics (Day 8)."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Time-based split with a majority-class baseline",
+    "difficulty": "Basic",
+    "objective": "Practise a leak-free split for time-ordered data and compute the baseline every model must beat.",
+    "statement": "Labels are given in time order. Hold out the last n_test labels as the test set, where n_test = floor(n * fraction), clamped to the range 1 to n - 1. Using the training labels only, find the majority class (break ties by choosing the alphabetically smallest label). Print the split sizes, the training label counts, the baseline label and the baseline's accuracy on the test set.",
+    "language": "python",
+    "input_format": "Line 1: the test fraction (a decimal between 0 and 1).\nLine 2: n labels separated by spaces, oldest first (n >= 2).",
+    "output_format": "train=<n_train> test=<n_test>\ntrain_counts=<label:count pairs sorted by label, separated by spaces>\nbaseline=<label>\ntest_accuracy=<accuracy with 2 decimals>",
+    "example": {
+      "input": "0.25\nno no yes no yes no no yes\n",
+      "output": "train=6 test=2\ntrain_counts=no:4 yes:2\nbaseline=no\ntest_accuracy=0.50"
+    },
+    "constraints": [
+      "2 <= n <= 10000.",
+      "Labels are non-empty strings without spaces.",
+      "Compute floor(n * fraction) with a small tolerance, e.g. int(n * fraction + 1e-9)."
+    ],
+    "starter": "frac = float(input())\nlabels = input().split()\n\n# TODO: compute n_test, split, count train labels, choose the baseline, score it\n",
+    "solution": "from collections import Counter\n\nfrac = float(input())\nlabels = input().split()\nn = len(labels)\nn_test = int(n * frac + 1e-9)\nn_test = max(1, min(n - 1, n_test))\ntrain, test = labels[:n - n_test], labels[n - n_test:]\n\ncounts = Counter(train)\nbaseline = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[0][0]\naccuracy = sum(1 for y in test if y == baseline) / len(test)\n\nprint(f'train={len(train)} test={len(test)}')\nprint('train_counts=' + ' '.join(f'{k}:{counts[k]}' for k in sorted(counts)))\nprint(f'baseline={baseline}')\nprint(f'test_accuracy={accuracy:.2f}')\n",
+    "explanation": [
+      "Compute the test size from the fraction and clamp it so both splits are non-empty.",
+      "Take the most recent labels as the test set; never shuffle time-ordered data.",
+      "Count labels on the training split only, so the baseline does not peek at the test set.",
+      "Sort by descending count, then by label, to break ties deterministically.",
+      "Accuracy is the share of test labels equal to the baseline prediction."
+    ],
+    "tests": [
+      {
+        "input": "0.25\nno no yes no yes no no yes\n",
+        "output": "train=6 test=2\ntrain_counts=no:4 yes:2\nbaseline=no\ntest_accuracy=0.50"
+      },
+      {
+        "input": "0.5\ncat dog cat dog\n",
+        "output": "train=2 test=2\ntrain_counts=cat:1 dog:1\nbaseline=cat\ntest_accuracy=0.50"
+      },
+      {
+        "input": "0.1\na a a\n",
+        "output": "train=2 test=1\ntrain_counts=a:2\nbaseline=a\ntest_accuracy=1.00"
+      },
+      {
+        "input": "0.9\nx y y\n",
+        "output": "train=1 test=2\ntrain_counts=x:1\nbaseline=x\ntest_accuracy=0.00"
+      },
+      {
+        "input": "0.3\nspam ham ham ham spam ham ham ham ham spam\n",
+        "output": "train=7 test=3\ntrain_counts=ham:5 spam:2\nbaseline=ham\ntest_accuracy=0.67"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which data split should be used only once, at the end, to report final performance?",
+      "options": [
+        "Training set",
+        "Validation set",
+        "Test set",
+        "Bootstrap sample"
+      ],
+      "answer": 2,
+      "explanation": "The test set gives an unbiased estimate only if it is not used to make modelling decisions."
+    },
+    {
+      "type": "scenario",
+      "question": "You fit a StandardScaler on all 10,000 rows, then split into train and test. What is the issue?",
+      "options": [
+        "Scaling must always happen after training",
+        "There is no issue as long as the split is random",
+        "Test statistics leak into training preprocessing",
+        "The scaler will fail on the test set"
+      ],
+      "answer": 2,
+      "explanation": "The scaler's mean and standard deviation include test rows, a subtle form of data leakage. Fit preprocessing on the training split only."
+    },
+    {
+      "type": "scenario",
+      "question": "You are predicting daily electricity demand. Which validation strategy is most appropriate?",
+      "options": [
+        "Random 80/20 split",
+        "Stratified k-fold by weekday",
+        "Leave-one-out on shuffled days",
+        "Walk-forward validation that trains on the past and tests on later dates"
+      ],
+      "answer": 3,
+      "explanation": "Temporal data must be validated forward in time, matching how the model predicts the future in production."
+    },
+    {
+      "type": "concept",
+      "question": "What is the main purpose of a baseline model?",
+      "options": [
+        "To tune hyperparameters automatically",
+        "To generate more training data",
+        "To replace the final model in production",
+        "To set a minimum bar and catch pipeline bugs"
+      ],
+      "answer": 3,
+      "explanation": "A simple baseline shows whether a complex model adds real value and quickly exposes broken pipelines."
+    },
+    {
+      "type": "output",
+      "question": "What baseline accuracy does this code print?",
+      "code": "from collections import Counter\ntrain = ['a', 'b', 'b', 'a', 'b']\ntest = ['a', 'b', 'a', 'a']\nbase = Counter(train).most_common(1)[0][0]\nprint(sum(y == base for y in test) / len(test))",
+      "options": [
+        "0.75",
+        "0.6",
+        "0.5",
+        "0.25"
+      ],
+      "answer": 3,
+      "explanation": "The majority training label is b; only one of four test labels is b, so accuracy is 0.25."
+    }
+  ]
+}

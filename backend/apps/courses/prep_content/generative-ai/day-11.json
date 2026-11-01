@@ -1,0 +1,247 @@
+{
+  "day": 11,
+  "title": "Few-Shot Prompting & Chain-of-Thought Patterns",
+  "module": "Transformers, prompting & APIs",
+  "level": "Intermediate",
+  "objectives": [
+    "Distinguish zero-shot, one-shot and few-shot prompting and when each is appropriate.",
+    "Explain in-context learning: why examples steer a model without any weight updates.",
+    "Apply chain-of-thought and self-consistency to multi-step reasoning tasks.",
+    "Recognise reusable prompt patterns such as role prompting, decomposition, ReAct and prompt chaining.",
+    "Decide whether to improve a prompt with better instructions, more examples or retrieval."
+  ],
+  "definition": "Few-shot prompting places a small number of worked examples, each an input paired with the desired output, directly in the prompt so the model infers the task and its exact format without any change to its weights. The model's ability to learn a task from these examples at run time is called in-context learning, and it underpins higher-level patterns such as chain-of-thought reasoning.",
+  "theory": [
+    {
+      "heading": "Zero-shot, one-shot and few-shot",
+      "body": "Zero-shot prompting gives only instructions, such as 'Classify the sentiment as positive or negative'. One-shot adds a single example; few-shot adds several. Examples communicate things that are hard to describe in words: the exact label set, the expected format, the level of detail and how edge cases should be handled. Few-shot usually improves accuracy on custom formats and reasoning tasks, but every example consumes context tokens, so there is a trade-off between more examples and room left for the actual input.",
+      "points": [
+        "Zero-shot: instructions only; fastest and cheapest, best for well-known tasks.",
+        "One-shot: one example; fixes the format and label conventions.",
+        "Few-shot: several examples; improves consistency and accuracy on unusual tasks."
+      ]
+    },
+    {
+      "heading": "Why examples work: in-context learning",
+      "body": "The model's weights never change when it reads your examples. Instead, the examples act as conditioning: they shift the probability distribution over the following tokens, so the model continues the implied pattern. This is why example quality and consistency matter so much. If the examples are labelled inconsistently, differ in format, or the final query is shaped differently from them, the model copies the noise. Order also matters a little: the most representative or hardest examples often work best placed near the end of the demonstration block.",
+      "points": [
+        "No gradient updates: it is conditioning, not training.",
+        "Consistent formatting of every example is essential.",
+        "Balance the label set; imbalanced examples bias the output."
+      ]
+    },
+    {
+      "heading": "Chain-of-thought and self-consistency",
+      "body": "For multi-step problems a model often fails when forced to jump straight to an answer. Chain-of-thought (CoT) prompting asks it to show intermediate reasoning before the final answer, for example by adding 'Think step by step.' Few-shot CoT supplies worked examples that already contain reasoning, which is even stronger. Self-consistency samples several independent reasoning paths at a temperature above zero and takes the majority final answer, which often beats a single greedy chain on maths and logic.",
+      "points": [
+        "CoT exposes intermediate steps, improving multi-step reasoning.",
+        "Few-shot CoT gives the model exemplars that already reason.",
+        "Self-consistency: sample many chains, then majority-vote the final answer."
+      ]
+    },
+    {
+      "heading": "Reusable prompt patterns",
+      "body": "Beyond examples, several patterns recur across applications. Role prompting sets expertise and tone. Task decomposition splits a hard job into ordered sub-tasks, sometimes as separate calls. ReAct interleaves reasoning with tool calls so the model can search or compute before answering. Prompt chaining feeds the output of one prompt into the next, which keeps each step simple and testable. Choosing a pattern is a design decision: match it to the failure you are actually seeing.",
+      "points": [
+        "Role prompting: 'You are a senior tax accountant...'",
+        "Decomposition: solve a big task as a sequence of smaller ones.",
+        "ReAct: alternate thought and tool use (covered further on Day 23).",
+        "Prompt chaining: one focused prompt per stage."
+      ]
+    },
+    {
+      "heading": "Improving a prompt: examples, instructions or retrieval?",
+      "body": "When a prompt underperforms, diagnose before adding examples. If the task is understood but the format is wrong, make the instructions and examples more explicit. If the model reasons poorly, add chain-of-thought or self-consistency. If the model lacks the facts, no number of examples will help: you need retrieval or tools. Adding many examples can even hurt by crowding out the real input or by teaching the model to copy irrelevant surface details.",
+      "points": [
+        "Wrong format -> clearer instructions plus format examples.",
+        "Weak reasoning -> chain-of-thought, decomposition or self-consistency.",
+        "Missing knowledge -> retrieval, not more examples.",
+        "Too many examples can dilute the query; test the count empirically."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Few-shot labelling of support tickets",
+    "body": "A classifier must assign one of three exact labels. Describing the labels in prose is vague; showing three labelled examples pins down the format and the boundary cases. The model then labels the new ticket by imitating the examples. Note the identical 'Ticket:' and 'Label:' format in every example.",
+    "code": {
+      "language": "text",
+      "source": "Classify each support ticket with exactly one label: Account, Billing or Delivery.\n\nTicket: I can't log in to my account\nLabel: Account\n\nTicket: I was charged twice this month\nLabel: Billing\n\nTicket: My order has not arrived yet\nLabel: Delivery\n\nTicket: I need to change the email on my profile\nLabel:"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Custom classification",
+      "description": "Assign a company's own category names by showing a few labelled examples instead of training a separate classifier."
+    },
+    {
+      "title": "Consistent data extraction",
+      "description": "Extract fields into an exact format by demonstrating the format on a handful of inputs."
+    },
+    {
+      "title": "Reasoning tasks",
+      "description": "Word problems, planning and logical puzzles improved with chain-of-thought and self-consistency."
+    },
+    {
+      "title": "Style transfer",
+      "description": "Rewrite text in a brand voice by supplying a few before-and-after examples."
+    },
+    {
+      "title": "Tool-using agents",
+      "description": "ReAct-style prompts that alternate reasoning with search or calculation steps."
+    }
+  ],
+  "demonstration": {
+    "description": "The same question is asked with zero examples and then with a chain-of-thought example. Without guidance the model jumps straight to an answer and can miss a step; with the pattern it lays out the steps first. Exact wording varies by model and run.",
+    "code": {
+      "language": "text",
+      "source": "Zero-shot:\nQ: A shop sells pens at 5 rupees each. Ravi buys 7 pens and pays with 100. How much change?\nA:\n\nFew-shot chain-of-thought:\nQ: A shop sells pencils at 3 rupees each. Meena buys 4 pencils and pays with 50. How much change?\nA: 4 pencils cost 4 * 3 = 12 rupees. Change = 50 - 12 = 38 rupees. Final answer: 38.\n\nQ: A shop sells pens at 5 rupees each. Ravi buys 7 pens and pays with 100. How much change?\nA:"
+    },
+    "output": "Zero-shot may answer '65' or '35' after a single mental step.\nFew-shot CoT: '7 pens cost 7 * 5 = 35 rupees. Change = 100 - 35 = 65 rupees. Final answer: 65.'"
+  },
+  "takeaways": [
+    "Few-shot prompting teaches a task through examples in the prompt, with no weight updates.",
+    "In-context learning is conditioning: consistent format and balanced labels matter.",
+    "Chain-of-thought improves multi-step reasoning; self-consistency majority-votes several chains.",
+    "Reusable patterns include role prompting, decomposition, ReAct and prompt chaining.",
+    "Diagnose failures before adding examples; retrieval fixes missing knowledge, not more examples.",
+    "More examples cost context tokens and can dilute the actual query."
+  ],
+  "interview": [
+    {
+      "question": "What is few-shot prompting and why does it work?",
+      "answer": "It means giving the model a few input-output examples in the prompt so it infers the task and the exact output format. It works through in-context learning: the examples condition the next-token distribution without changing the model's weights.",
+      "explanation": "Emphasise that no training happens; the examples steer a frozen model for this request."
+    },
+    {
+      "question": "How many examples should you use in a few-shot prompt?",
+      "answer": "Start with a handful (roughly three to eight), measure accuracy on a held-out set, and add more only while it keeps improving. Beyond that, examples usually add cost and context use without helping.",
+      "explanation": "Shows an empirical, test-driven mindset rather than a fixed rule."
+    },
+    {
+      "question": "What is chain-of-thought prompting?",
+      "answer": "It asks the model to produce intermediate reasoning steps before the final answer. It helps on multi-step arithmetic, logic and planning, and works best when the examples also demonstrate the reasoning. Self-consistency samples several chains and majority-votes the result.",
+      "explanation": "Mention the two variants: zero-shot 'think step by step' and few-shot reasoning exemplars."
+    },
+    {
+      "question": "When would you choose retrieval instead of more few-shot examples?",
+      "answer": "When the model lacks the required knowledge, such as private or recent facts. Examples teach a skill or format; retrieval supplies the missing content to reason over.",
+      "explanation": "This separates 'capability' failures from 'knowledge' failures, a key diagnostic skill."
+    },
+    {
+      "question": "What is prompt chaining?",
+      "answer": "Breaking a complex task into a sequence of focused prompts, where each step's output becomes the next step's input. It keeps instructions simple, makes every stage testable and often improves reliability over one giant prompt.",
+      "explanation": "Name a concrete example, such as extract -> validate -> summarise, to show practical use."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Build a few-shot prompt by selecting examples",
+    "difficulty": "Intermediate",
+    "objective": "Implement few-shot example selection by relevance and assemble a labelled prompt, the core step that makes in-context learning work.",
+    "statement": "Read k (the number of examples to include), the query, then N labelled examples in the form text|label. Score each example by how many distinct word tokens it shares with the query (word tokens are runs of letters and digits, compared in lowercase). Select the top k examples by score descending, breaking ties by the original order (earlier examples win). If k is larger than N, include every example. Print selected=<m>, then each selected example as two lines Input: <text> and Output: <label>, then Input: <query> and finally Output:.",
+    "language": "python",
+    "input_format": "Line 1: k.\nLine 2: the query.\nLine 3: N.\nNext N lines: text|label (split on the first '|'; trim spaces around both).",
+    "output_format": "selected=<m>\nThen for each selected example:\nInput: <text>\nOutput: <label>\nFinally:\nInput: <query>\nOutput:",
+    "example": {
+      "input": "2\nHow do I reset my password?\n3\nHow can I change my password?|Account\nWhere is my invoice?|Billing\nI forgot my login details|Account\n",
+      "output": "selected=2\nInput: How can I change my password?\nOutput: Account\nInput: I forgot my login details\nOutput: Account\nInput: How do I reset my password?\nOutput:"
+    },
+    "constraints": [
+      "0 <= k <= 50; 1 <= N <= 100.",
+      "Labels never contain '|'; text may contain spaces and punctuation.",
+      "Token matching is case-insensitive; only whole tokens count."
+    ],
+    "starter": "import re\n\nk = int(input())\nquery = input().strip()\nn = int(input())\nexamples = []\nfor _ in range(n):\n    text, label = input().split('|', 1)\n    examples.append((text.strip(), label.strip()))\n\ndef tokens(s):\n    return set(re.findall(r'[a-z0-9]+', s.lower()))\n\n# TODO: score each example by token overlap with the query, sort and print the prompt\n",
+    "solution": "import re\n\nk = int(input())\nquery = input().strip()\nn = int(input())\nexamples = []\nfor _ in range(n):\n    text, label = input().split('|', 1)\n    examples.append((text.strip(), label.strip()))\n\ndef tokens(s):\n    return set(re.findall(r'[a-z0-9]+', s.lower()))\n\nq = tokens(query)\nscored = [(len(tokens(text) & q), i, text, label) for i, (text, label) in enumerate(examples)]\nscored.sort(key=lambda row: (-row[0], row[1]))\nselected = scored[:k]\n\nprint(f'selected={len(selected)}')\nfor _, _, text, label in selected:\n    print(f'Input: {text}')\n    print(f'Output: {label}')\nprint(f'Input: {query}')\nprint('Output:')\n",
+    "explanation": [
+      "Parse k, the query and each example, splitting on the first '|' so a label cannot swallow text.",
+      "Tokenise by extracting runs of letters and digits and lowercasing, then take the size of the intersection with the query's tokens.",
+      "Sort by score descending then original index ascending so ties prefer the earlier example, and slice the first k (slicing safely returns all when k > N).",
+      "Emit the selected examples in that order with the exact Input/Output format the model should imitate, then append the real query with an empty Output line."
+    ],
+    "tests": [
+      {
+        "input": "2\nHow do I reset my password?\n3\nHow can I change my password?|Account\nWhere is my invoice?|Billing\nI forgot my login details|Account\n",
+        "output": "selected=2\nInput: How can I change my password?\nOutput: Account\nInput: I forgot my login details\nOutput: Account\nInput: How do I reset my password?\nOutput:"
+      },
+      {
+        "input": "1\nWhere is my invoice?\n3\nHow can I change my password?|Account\nWhere is my invoice?|Billing\nI forgot my login details|Account\n",
+        "output": "selected=1\nInput: Where is my invoice?\nOutput: Billing\nInput: Where is my invoice?\nOutput:"
+      },
+      {
+        "input": "5\npassword reset\n3\nHow can I change my password?|Account\nWhere is my invoice?|Billing\nI forgot my login details|Account\n",
+        "output": "selected=3\nInput: How can I change my password?\nOutput: Account\nInput: Where is my invoice?\nOutput: Billing\nInput: I forgot my login details\nOutput: Account\nInput: password reset\nOutput:"
+      },
+      {
+        "input": "0\nanything\n1\na|b\n",
+        "output": "selected=0\nInput: anything\nOutput:"
+      },
+      {
+        "input": "2\nReset PASSWORD, please!\n2\nreset your password now.|Account\nplease contact billing|Billing\n",
+        "output": "selected=2\nInput: reset your password now.\nOutput: Account\nInput: please contact billing\nOutput: Billing\nInput: Reset PASSWORD, please!\nOutput:"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does few-shot prompting mean?",
+      "options": [
+        "Running the same prompt several times and voting on the result",
+        "Restricting the model to a small vocabulary",
+        "Fine-tuning the model on a few labelled examples",
+        "Including a few worked examples in the prompt so the model imitates the pattern"
+      ],
+      "answer": 3,
+      "explanation": "Few-shot prompting supplies input-output examples inside the prompt itself; it does not change the model's weights."
+    },
+    {
+      "type": "concept",
+      "question": "Why can a few-shot prompt change a model's behaviour even though no weights are updated?",
+      "options": [
+        "The examples condition the next-token distribution, steering generation in context",
+        "The examples are stored permanently in the model's memory",
+        "The model secretly fine-tunes itself during each request",
+        "Examples enlarge the model's context window"
+      ],
+      "answer": 0,
+      "explanation": "This is in-context learning: the examples shift the probability distribution over the following tokens for this request only."
+    },
+    {
+      "type": "scenario",
+      "question": "A model keeps getting multi-step word problems wrong. Adding 'Think step by step before the final answer' most directly applies which technique?",
+      "options": [
+        "Role prompting",
+        "Chain-of-thought prompting",
+        "Temperature annealing",
+        "Retrieval augmentation"
+      ],
+      "answer": 1,
+      "explanation": "Chain-of-thought prompting asks the model to produce intermediate reasoning steps, which improves multi-step accuracy."
+    },
+    {
+      "type": "scenario",
+      "question": "A few-shot prompt produces inconsistent labels and you still have room in the context window. What usually helps most?",
+      "options": [
+        "Raising the temperature to 2.0",
+        "Removing all examples and relying on instructions only",
+        "Adding more well-chosen examples in a consistent format",
+        "Shortening the output format to one word"
+      ],
+      "answer": 2,
+      "explanation": "More consistent, representative examples reinforce the label convention the model is meant to imitate."
+    },
+    {
+      "type": "concept",
+      "question": "How does self-consistency improve chain-of-thought results?",
+      "options": [
+        "By setting the temperature to zero",
+        "By fine-tuning the model on reasoning data",
+        "By sampling several reasoning paths and taking the most common final answer",
+        "By forcing a single deterministic reasoning path"
+      ],
+      "answer": 2,
+      "explanation": "Self-consistency samples multiple chains at a higher temperature and majority-votes their final answers."
+    }
+  ]
+}

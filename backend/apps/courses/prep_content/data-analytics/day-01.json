@@ -1,0 +1,253 @@
+{
+  "day": 1,
+  "title": "The Data Analyst Role and the Analytics Lifecycle",
+  "module": "Analytics foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Describe what a data analyst does day to day and who they work with.",
+    "Distinguish a data analyst from a data scientist, data engineer and BI developer.",
+    "Explain each phase of the analytics lifecycle: Ask, Prepare, Process, Analyze, Share, Act.",
+    "Turn a vague business request into a clear, measurable analysis question.",
+    "Answer the opening 'tell me about the role' questions in a Data Analyst interview."
+  ],
+  "definition": "A data analyst collects, cleans and analyses data to answer business questions and support decisions. The analytics lifecycle is the repeatable sequence an analyst follows: understand the question (Ask), gather data (Prepare), clean it (Process), explore and calculate (Analyze), communicate the findings (Share) and help the business act on them (Act).",
+  "theory": [
+    {
+      "heading": "What a data analyst actually does",
+      "body": "An analyst sits between raw data and business decisions. A typical week mixes writing SQL queries, cleaning spreadsheets, building or refreshing dashboards, investigating why a metric moved and presenting the answer to managers. The job is less about fancy algorithms and more about asking the right question, getting trustworthy numbers and explaining them clearly. That is why interviewers test SQL, Excel, a BI tool, basic statistics and communication together.",
+      "points": [
+        "Core tools: SQL, Excel or Google Sheets, a BI tool (Power BI or Tableau), and often Python.",
+        "Typical outputs: reports, dashboards, ad-hoc analyses, metric definitions and recommendations.",
+        "Stakeholders: product managers, marketing, finance, operations and leadership.",
+        "Success is measured by decisions improved, not by the number of charts produced."
+      ]
+    },
+    {
+      "heading": "How the analyst role differs from neighbouring roles",
+      "body": "Data roles overlap, but their centre of gravity differs. Interviewers often ask this to check that you understand where your work starts and stops, and who you depend on.",
+      "points": [
+        "Data analyst: answers business questions with existing data; focuses on 'what happened and why'.",
+        "Data scientist: builds predictive or statistical models; focuses on 'what will happen'.",
+        "Data engineer: builds pipelines and warehouses so that clean data is available to everyone.",
+        "BI developer: designs semantic models, reports and governed dashboards at scale.",
+        "Business analyst: focuses on processes and requirements; may use less hands-on data work."
+      ]
+    },
+    {
+      "heading": "The analytics lifecycle, phase by phase",
+      "body": "Most companies describe the work as a cycle, because the result of one analysis usually raises the next question. A popular six-phase version is Ask, Prepare, Process, Analyze, Share and Act. CRISP-DM (business understanding, data understanding, data preparation, modelling, evaluation, deployment) describes the same idea for data-mining projects.",
+      "points": [
+        "Ask: clarify the business problem, the decision it supports, the stakeholders and the success metric.",
+        "Prepare: identify sources, check access, permissions and how the data was collected.",
+        "Process: clean duplicates, missing values, wrong types and inconsistent labels; document every change.",
+        "Analyze: aggregate, compare segments, look for trends, outliers and relationships.",
+        "Share: present findings with visuals and a clear recommendation tailored to the audience.",
+        "Act: the business makes a change; the analyst tracks the impact, which starts the next cycle."
+      ]
+    },
+    {
+      "heading": "Why the Ask phase matters most",
+      "body": "A technically perfect analysis of the wrong question is wasted effort. A request such as 'look into sales' is too vague; a good analyst turns it into 'Which regions caused the 8% drop in March revenue compared with February, and is the cause price, volume or product mix?'. A useful check is SMART: the question should be specific, measurable, action-oriented, relevant and time-bound.",
+      "points": [
+        "Ask 'What decision will this analysis change?' before touching data.",
+        "Agree on metric definitions early (for example, what counts as an active customer).",
+        "Confirm the time period, the granularity and the deadline."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations of a structured lifecycle",
+      "body": "Following a lifecycle keeps work reproducible and makes it easy to explain your process in interviews and to stakeholders. It is not strictly linear: cleaning often reveals that the question must change, and analysis can send you back to collect more data. Real projects loop between phases.",
+      "points": [
+        "Advantage: fewer surprises, because assumptions are agreed before analysis.",
+        "Advantage: easier hand-over and auditing because each step is documented.",
+        "Limitation: data cleaning frequently takes most of the time, so plan for it.",
+        "Limitation: findings are only as good as the data's quality and collection method."
+      ]
+    }
+  ],
+  "example": {
+    "title": "From a vague request to a lifecycle plan",
+    "body": "The marketing head of an online grocery says 'customers are leaving, look into it'. The analyst applies the lifecycle: Ask — define churn as 'no order in 60 days' and target the question 'Which customer segments churned most in Q2 and why?'. Prepare — pull orders, customers and support tickets from the warehouse. Process — remove test accounts and duplicate customer IDs. Analyze — compare churn by city, first-order channel and delivery delays. Share — a one-page summary showing that customers with two or more late deliveries churn at three times the average rate. Act — operations prioritises delivery slots in the worst areas, and the analyst tracks churn monthly.",
+    "code": {
+      "language": "text",
+      "source": "Ask      -> Define churn = no order in 60 days; question: which segments churned most in Q2?\nPrepare  -> orders, customers, support_tickets tables (Q1–Q2)\nProcess  -> drop test accounts, de-duplicate customer_id, fix city spellings\nAnalyze  -> churn rate by city, channel, number of late deliveries\nShare    -> 'Two or more late deliveries = 3x churn' + recommendation\nAct      -> fix delivery slots; monitor churn monthly (next cycle)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "E-commerce",
+      "description": "Track conversion, average order value and returns; explain weekly revenue changes to category managers."
+    },
+    {
+      "title": "Banking and fintech",
+      "description": "Monitor loan approvals, defaults and card spends; support risk and collections teams with segment reports."
+    },
+    {
+      "title": "Healthcare operations",
+      "description": "Analyse patient wait times, bed occupancy and appointment no-shows to improve scheduling."
+    },
+    {
+      "title": "Marketing",
+      "description": "Measure campaign performance, cost per acquisition and channel ROI to reallocate budget."
+    },
+    {
+      "title": "Supply chain",
+      "description": "Find delayed shipments, stock-outs and slow-moving inventory across warehouses."
+    }
+  ],
+  "demonstration": {
+    "description": "Rewrite three vague stakeholder requests as SMART analysis questions. Notice how each rewrite names a metric, a comparison, a time period and the decision it supports.",
+    "code": {
+      "language": "text",
+      "source": "1. 'Check app performance'\n2. 'Are our ads working?'\n3. 'Why is support so busy?'"
+    },
+    "output": "1. Did the 7-day retention of users who installed in October fall below September's 32%, and on which Android versions?\n2. Which paid channel had the lowest cost per first order in the last 30 days, so we can move 20% of budget to it?\n3. Which ticket categories grew most between August and October, and how many are caused by delivery delays?"
+  },
+  "takeaways": [
+    "A data analyst turns data into answers that change business decisions.",
+    "The lifecycle is Ask, Prepare, Process, Analyze, Share, Act, and it loops back on itself.",
+    "The Ask phase decides whether the whole analysis is useful; agree on metrics and scope first.",
+    "Data cleaning usually consumes the largest share of an analyst's time.",
+    "Analysts, scientists and engineers overlap but have different primary goals.",
+    "Interviewers test SQL, Excel, BI, statistics and communication because the role needs all five."
+  ],
+  "interview": [
+    {
+      "question": "What does a data analyst do?",
+      "answer": "A data analyst gathers, cleans and analyses data to answer business questions, then communicates findings through reports, dashboards and recommendations so that teams can make better decisions.",
+      "explanation": "Mention the full flow from question to decision and name the tools (SQL, Excel, a BI tool). Ending with 'decisions' shows you understand the purpose, not just the tasks."
+    },
+    {
+      "question": "How is a data analyst different from a data scientist?",
+      "answer": "An analyst mainly explains what happened and why using queries, aggregation and visualisation. A data scientist focuses more on predictive models, experimentation and algorithms. Both need clean data and business understanding, and the line between them varies by company.",
+      "explanation": "Give a concrete contrast, for example analysing last quarter's churn versus building a churn-prediction model, and acknowledge the overlap."
+    },
+    {
+      "question": "Walk me through the steps you follow in an analysis project.",
+      "answer": "I clarify the question and success metric with stakeholders, identify and access the data, clean and validate it, explore and analyse it, share findings with a clear recommendation, and then track what happens after the business acts.",
+      "explanation": "Structure the answer with the lifecycle and add one example from a project. Mentioning validation (checking totals against a trusted source) is a strong signal."
+    },
+    {
+      "question": "A manager asks you to 'look into falling sales'. What do you do first?",
+      "answer": "I ask clarifying questions: which product or region, compared with which period, how sales is defined (gross or net of returns), and what decision depends on the answer. Then I restate the problem as a specific, measurable question and confirm it before pulling data.",
+      "explanation": "Interviewers want to see that you do not jump straight into SQL. Scoping and agreeing on metric definitions prevents rework."
+    },
+    {
+      "question": "Which phase of the lifecycle usually takes the most time, and why?",
+      "answer": "Preparing and processing data usually takes the most time, because real data has duplicates, missing values, inconsistent formats and undocumented business rules that must be fixed and verified before analysis can be trusted.",
+      "explanation": "A strong answer explains the consequence: if cleaning is rushed, every chart and number downstream is wrong, so time spent here protects credibility."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Organise project tasks by lifecycle phase",
+    "difficulty": "Basic",
+    "objective": "Reinforce the order of the analytics lifecycle by grouping project tasks under the correct phase.",
+    "statement": "An analyst has a list of tasks tagged with a lifecycle phase. Print the tasks grouped by phase in lifecycle order: Ask, Prepare, Process, Analyze, Share, Act. Phase names are case-insensitive, and the British spelling 'Analyse' means Analyze. Within a phase, keep the input order. A line whose phase is not one of the six, or whose task is empty, is unrecognised.",
+    "language": "python",
+    "input_format": "First line: n, the number of tasks. Next n lines: phase|task.",
+    "output_format": "For each phase that has tasks, in lifecycle order: '<Phase>: task1; task2'. If no phase has tasks, print 'No tasks'. If any line was unrecognised, finish with 'Unrecognised: <count>'.",
+    "example": {
+      "input": "6\nAsk|Define churn with the marketing head\nProcess|Remove duplicate customer rows\nprepare|Pull last 12 months of orders\nShare|Present findings to leadership\nAnalyse|Compare churn by region\nAct|Launch retention offer in the South\n",
+      "output": "Ask: Define churn with the marketing head\nPrepare: Pull last 12 months of orders\nProcess: Remove duplicate customer rows\nAnalyze: Compare churn by region\nShare: Present findings to leadership\nAct: Launch retention offer in the South"
+    },
+    "constraints": [
+      "0 <= n <= 100",
+      "Trim spaces around the phase and the task.",
+      "Print phase names in their canonical form: Ask, Prepare, Process, Analyze, Share, Act."
+    ],
+    "starter": "n = int(input())\nphases = ['Ask', 'Prepare', 'Process', 'Analyze', 'Share', 'Act']\n\nfor _ in range(n):\n    phase, _, task = input().partition('|')\n    # TODO: normalise the phase name and collect the task\n\n# TODO: print the groups in lifecycle order\n",
+    "solution": "n = int(input())\nphases = ['Ask', 'Prepare', 'Process', 'Analyze', 'Share', 'Act']\ngroups = {p: [] for p in phases}\nunknown = 0\n\nfor _ in range(n):\n    phase, _, task = input().partition('|')\n    phase = phase.strip().capitalize()\n    if phase == 'Analyse':\n        phase = 'Analyze'\n    task = task.strip()\n    if phase in groups and task:\n        groups[phase].append(task)\n    else:\n        unknown += 1\n\nprinted = False\nfor p in phases:\n    if groups[p]:\n        print(p + ': ' + '; '.join(groups[p]))\n        printed = True\nif not printed:\n    print('No tasks')\nif unknown:\n    print(f'Unrecognised: {unknown}')\n",
+    "explanation": [
+      "Create an empty list for each of the six phases, keyed by the canonical name.",
+      "Split each line at the first '|' and normalise the phase with strip() and capitalize(), mapping 'Analyse' to 'Analyze'.",
+      "Append valid tasks to their phase; count lines with an unknown phase or an empty task.",
+      "Loop over the phases in lifecycle order (not input order) and print only non-empty groups.",
+      "Handle the edge cases: no valid tasks prints 'No tasks', and the unrecognised count is printed only when it is above zero."
+    ],
+    "tests": [
+      {
+        "input": "6\nAsk|Define churn with the marketing head\nProcess|Remove duplicate customer rows\nprepare|Pull last 12 months of orders\nShare|Present findings to leadership\nAnalyse|Compare churn by region\nAct|Launch retention offer in the South\n",
+        "output": "Ask: Define churn with the marketing head\nPrepare: Pull last 12 months of orders\nProcess: Remove duplicate customer rows\nAnalyze: Compare churn by region\nShare: Present findings to leadership\nAct: Launch retention offer in the South"
+      },
+      {
+        "input": "4\nAsk|Agree on the KPI\nDeploy|Ship model\nASK|Identify stakeholders\nShare|Build dashboard\n",
+        "output": "Ask: Agree on the KPI; Identify stakeholders\nShare: Build dashboard\nUnrecognised: 1"
+      },
+      {
+        "input": "0\n",
+        "output": "No tasks"
+      },
+      {
+        "input": "2\nPlan|Kick-off meeting\nProcess|\n",
+        "output": "No tasks\nUnrecognised: 2"
+      },
+      {
+        "input": "3\n  analyze  |  Segment customers by city \nAct|Track churn monthly\nanalyze|Check seasonality\n",
+        "output": "Analyze: Segment customers by city; Check seasonality\nAct: Track churn monthly"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which statement best describes the main goal of a data analyst?",
+      "options": [
+        "Training deep-learning models for production",
+        "Managing database servers and backups",
+        "Building data pipelines and warehouses",
+        "Turning data into answers that support business decisions"
+      ],
+      "answer": 3,
+      "explanation": "Analysts answer business questions with data. Pipelines are a data-engineering task and production models are usually a data-science task."
+    },
+    {
+      "type": "concept",
+      "question": "In the six-phase analytics lifecycle, which phase comes immediately after Process?",
+      "options": [
+        "Ask",
+        "Share",
+        "Prepare",
+        "Analyze"
+      ],
+      "answer": 3,
+      "explanation": "The order is Ask, Prepare, Process, Analyze, Share, Act. Data must be cleaned (Process) before it is analysed."
+    },
+    {
+      "type": "scenario",
+      "question": "A stakeholder says 'Give me numbers on customer engagement.' What should you do first?",
+      "options": [
+        "Build a dashboard with as many engagement charts as possible",
+        "Run a machine-learning model on the user table",
+        "Clarify how engagement is defined, for which period and what decision it supports",
+        "Export every table that mentions customers"
+      ],
+      "answer": 2,
+      "explanation": "The Ask phase comes first: agree on the metric definition, scope and purpose before pulling data."
+    },
+    {
+      "type": "scenario",
+      "question": "While cleaning data you discover that 'region' is missing for 40% of orders, so the regional question cannot be answered as asked. What is the best response?",
+      "options": [
+        "Silently drop the rows and continue",
+        "Fill every missing region with the most common region",
+        "Go back to the stakeholder, explain the gap and agree on an adjusted question or data source",
+        "Stop the project without telling anyone"
+      ],
+      "answer": 2,
+      "explanation": "The lifecycle is iterative. Data issues found during Process can send you back to Ask or Prepare; communicating the limitation keeps the analysis trustworthy."
+    },
+    {
+      "type": "concept",
+      "question": "Which task belongs to the Act phase?",
+      "options": [
+        "Writing a SQL query to join orders and customers",
+        "Agreeing on the definition of an active user",
+        "Removing duplicate customer records",
+        "Monitoring churn after a retention campaign is launched"
+      ],
+      "answer": 3,
+      "explanation": "Act is where the business changes something and the analyst tracks the impact, which feeds the next cycle."
+    }
+  ]
+}

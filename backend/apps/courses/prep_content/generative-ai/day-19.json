@@ -1,0 +1,215 @@
+{
+  "day": 19,
+  "title": "Fine-Tuning Fundamentals",
+  "module": "Fine-tuning & alignment",
+  "level": "Advanced",
+  "objectives": [
+    "Explain what fine-tuning is and how it differs from RAG and prompting.",
+    "Describe supervised fine-tuning on example input-output pairs.",
+    "Explain preference alignment and why it helps match model output to human expectations.",
+    "List the data needed for fine-tuning and how to prepare it.",
+    "Discuss the risks, cost and when fine-tuning is appropriate."
+  ],
+  "definition": "Fine-tuning adjusts a pre-trained model's weights by training it further on a smaller, task-specific dataset. Unlike RAG, which retrieves documents at runtime, fine-tuning changes the model itself so it learns a style, format or behaviour. Supervised fine-tuning uses input-output pairs; preference alignment teaches the model which outputs humans prefer.",
+  "theory": [
+    {
+      "heading": "Fine-tuning vs RAG vs prompting",
+      "body": "Prompting guides a frozen model without changing it. RAG gives the model external documents at query time. Fine-tuning changes the model's weights so the desired behaviour is baked in. Use prompting for quick trials, RAG for facts and documents, and fine-tuning for style, format or repeated tasks when data is available.",
+      "points": [
+        "Prompting: no weight change, fastest to try.",
+        "RAG: runtime documents, good for facts.",
+        "Fine-tuning: weight change, good for style and format."
+      ]
+    },
+    {
+      "heading": "Supervised fine-tuning",
+      "body": "Supervised fine-tuning trains the model on input-output pairs, such as question-answer or instruction-response examples. The model learns to produce the target output for a given input. This is useful for teaching a specific tone, output format or domain vocabulary.",
+      "points": [
+        "Train on input-output example pairs.",
+        "The model learns the mapping from input to target output.",
+        "Good for tone, format and specialised tasks."
+      ]
+    },
+    {
+      "heading": "Preference alignment",
+      "body": "Preference alignment (such as RLHF or DPO) trains the model to prefer outputs that humans rate higher. The model sees several candidate responses and learns to choose the style, helpfulness and safety humans prefer. This makes output more aligned with expectations after fine-tuning.",
+      "points": [
+        "Humans rank candidate responses.",
+        "The model learns to prefer higher-rated outputs.",
+        "Improves helpfulness, tone and safety."
+      ]
+    },
+    {
+      "heading": "Data preparation",
+      "body": "Fine-tuning data must be clean, consistent and representative. Each example needs a clear input and a high-quality target output. Duplicate, noisy or contradictory examples hurt the model. Data is split into train and validation sets to check that the model generalises rather than memorises.",
+      "points": [
+        "Clean and deduplicate examples.",
+        "Each example needs input and target output.",
+        "Split into train and validation sets."
+      ]
+    },
+    {
+      "heading": "Risks, cost and when to use",
+      "body": "Fine-tuning costs compute and time, and risks overfitting or losing general abilities (catastrophic forgetting). It is worth it when a consistent style or format is needed across many calls and prompting is not enough. It is not the right tool for adding facts; use RAG for that.",
+      "points": [
+        "Costs compute and time.",
+        "Risks overfitting and forgetting general skills.",
+        "Not for facts; use RAG to add knowledge."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Fine-tuning for JSON extraction",
+    "body": "A company wants the model to always extract invoice fields as JSON. Prompting works but the format varies. Fine-tuning on hundreds of invoice-to-JSON examples teaches the model to emit consistent JSON with the exact keys, so downstream code can parse it reliably.",
+    "code": {
+      "language": "json",
+      "source": "{\n  \"input\": \"Invoice #1023 for Acme Corp, amount 50000, dated 2025-01-10\",\n  \"output\": \"{\\\"invoice_number\\\": \\\"1023\\\", \\\"customer\\\": \\\"Acme Corp\\\", \\\"amount\\\": 50000, \\\"date\\\": \\\"2025-01-10\\\"}\"\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Brand voice",
+      "description": "Teach the model to write in a company's tone and style."
+    },
+    {
+      "title": "Output format",
+      "description": "Make the model emit consistent JSON or structured text."
+    },
+    {
+      "title": "Domain tasks",
+      "description": "Adapt a model to legal, medical or technical language."
+    },
+    {
+      "title": "Behaviour",
+      "description": "Teach a specific conversation flow or safety policy."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare a base model's inconsistent invoice output with a fine-tuned model's consistent JSON for the same input.",
+    "code": {
+      "language": "text",
+      "source": "Input: 'Invoice #1023 for Acme Corp, 50000, 2025-01-10'\nBase model: 'Here is the invoice info: 1023, Acme Corp, 50000 rupees on Jan 10.'\nFine-tuned: {\"invoice_number\": \"1023\", \"customer\": \"Acme Corp\", \"amount\": 50000, \"date\": \"2025-01-10\"}"
+    },
+    "output": "Base: free text, hard to parse.\nFine-tuned: consistent JSON, easy to parse."
+  },
+  "takeaways": [
+    "Fine-tuning changes the model's weights on a task-specific dataset.",
+    "Supervised fine-tuning learns input-to-output mappings from examples.",
+    "Preference alignment tunes output to what humans prefer.",
+    "Data must be clean, consistent and split into train and validation.",
+    "Fine-tuning is for style and format; RAG is for facts and documents.",
+    "It costs compute and risks overfitting or forgetting general skills."
+  ],
+  "interview": [
+    {
+      "question": "How is fine-tuning different from prompting?",
+      "answer": "Prompting guides a frozen model without changing it; fine-tuning updates the model's weights so the behaviour is learned and persists.",
+      "explanation": "Prompting is faster to try; fine-tuning needs data and compute."
+    },
+    {
+      "question": "What is supervised fine-tuning?",
+      "answer": "Training a model on input-output pairs so it learns to produce the target output for each input.",
+      "explanation": "Use it for tone, format and specialised tasks."
+    },
+    {
+      "question": "What is preference alignment?",
+      "answer": "Training the model to prefer outputs that humans rate higher, using ranked candidate responses.",
+      "explanation": "RLHF and DPO are common methods."
+    },
+    {
+      "question": "When should you NOT use fine-tuning?",
+      "answer": "To add new facts or private data; use RAG instead. Fine-tuning changes behaviour, not knowledge, and is costly.",
+      "explanation": "This distinction is a common interview checkpoint."
+    },
+    {
+      "question": "What is catastrophic forgetting?",
+      "answer": "When fine-tuning on a narrow dataset makes the model lose some of its general abilities.",
+      "explanation": "Validation data and balanced training help detect and reduce it."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design a fine-tuning dataset",
+    "difficulty": "Intermediate",
+    "objective": "Plan the input-output examples and validation split for fine-tuning a model on a real task.",
+    "statement": "Choose a task where consistent output format matters (for example, converting support tickets to structured categories). Describe: (1) the input and target output format, (2) how many examples you need and where they come from, (3) how you will clean and deduplicate them, (4) the train/validation split, and (5) how you will check that the model learned the format without overfitting.",
+    "deliverable": "A written design covering task, data source, cleaning, split and evaluation.",
+    "steps": [
+      "Pick a task where format consistency matters.",
+      "Define the input and target output format.",
+      "List the data source and example count.",
+      "Describe cleaning and deduplication.",
+      "Choose a train/validation split and success metric."
+    ],
+    "checklist": [
+      "Task and format are clearly defined.",
+      "Data source and size are stated.",
+      "Cleaning and deduplication are described.",
+      "Train/validation split is chosen.",
+      "Success is measured on validation data."
+    ],
+    "sample_answer": "Task: extract invoice fields as JSON. Input: invoice text; output: JSON with invoice_number, customer, amount, date. 800 examples from scanned invoices, labelled by the finance team. Remove duplicates and invalid JSON. Split 80/20. Success: validation examples produce valid JSON with all four fields correct."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does fine-tuning change?",
+      "options": [
+        "Only the API key",
+        "Only the system prompt",
+        "The model's weights",
+        "Only the context window"
+      ],
+      "answer": 2,
+      "explanation": "Fine-tuning updates the model's weights on a task-specific dataset."
+    },
+    {
+      "type": "scenario",
+      "question": "You need the model to always emit JSON with fixed keys. Prompting is inconsistent. What should you try?",
+      "options": [
+        "Fine-tuning on input-to-JSON examples",
+        "RAG with a JSON document",
+        "Raising the temperature",
+        "Using a longer system message"
+      ],
+      "answer": 0,
+      "explanation": "Fine-tuning teaches the model a consistent output format through examples."
+    },
+    {
+      "type": "concept",
+      "question": "What is preference alignment?",
+      "options": [
+        "Teaching the model to prefer outputs humans rate higher",
+        "Changing the model's temperature",
+        "Removing the validation set",
+        "Adding more training data"
+      ],
+      "answer": 0,
+      "explanation": "The model learns from ranked candidate responses which style and content humans prefer."
+    },
+    {
+      "type": "scenario",
+      "question": "You want to add a company's private HR policies to the model. Should you fine-tune or use RAG?",
+      "options": [
+        "Both at once",
+        "Neither",
+        "Fine-tune",
+        "Use RAG"
+      ],
+      "answer": 3,
+      "explanation": "RAG is for adding facts and documents; fine-tuning is not reliable for injecting knowledge."
+    },
+    {
+      "type": "concept",
+      "question": "Why split fine-tuning data into train and validation sets?",
+      "options": [
+        "To reduce the context window",
+        "To train faster",
+        "To check generalisation and detect overfitting",
+        "To increase the temperature"
+      ],
+      "answer": 2,
+      "explanation": "Validation data shows whether the model learned the pattern or just memorised the training examples."
+    }
+  ]
+}

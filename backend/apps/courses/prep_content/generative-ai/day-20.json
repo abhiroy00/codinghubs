@@ -1,0 +1,233 @@
+{
+  "day": 20,
+  "title": "Data Preparation for Fine-Tuning",
+  "module": "Fine-tuning & alignment",
+  "level": "Advanced",
+  "objectives": [
+    "Explain what makes fine-tuning data high quality.",
+    "Format examples as input-output pairs for supervised fine-tuning.",
+    "Clean, deduplicate and validate training examples.",
+    "Split data into train, validation and test sets.",
+    "Describe how to check that the model learned the format rather than memorised."
+  ],
+  "definition": "Fine-tuning data is a curated set of input-output examples that teach the model the desired input-to-output behaviour. High-quality data is clean, consistent, representative of real use and free of duplicates or contradictions. Each example pairs an input (such as a user request) with a target output (the ideal response), formatted so the model can learn the mapping.",
+  "theory": [
+    {
+      "heading": "Input-output pair format",
+      "body": "Each fine-tuning example has an input and a target output. For a classification task, the input is the text to classify and the output is the label. For a formatting task, the input is raw text and the output is structured JSON. The pair must be unambiguous: the same input should always map to the same output.",
+      "points": [
+        "Input: the user request or raw text.",
+        "Output: the ideal response or label.",
+        "The mapping must be consistent and unambiguous."
+      ]
+    },
+    {
+      "heading": "Data quality rules",
+      "body": "High-quality data is accurate, consistent and representative. Remove duplicates, fix typos, standardise formatting, and ensure target outputs are correct. Contradictory examples (same input, different outputs) confuse the model and must be resolved or removed.",
+      "points": [
+        "Accurate targets: every output is correct.",
+        "Consistent formatting: all examples follow the same style.",
+        "No duplicates or contradictions."
+      ]
+    },
+    {
+      "heading": "Train, validation and test splits",
+      "body": "Split data into training, validation and test sets. Training teaches the model, validation tunes decisions and detects overfitting, and test gives a final unbiased measure. A common split is 80/10/10 or 90/5/5. Never train on validation or test examples.",
+      "points": [
+        "Train: the model learns from these examples.",
+        "Validation: check generalisation and choose settings.",
+        "Test: final measure, used only once."
+      ]
+    },
+    {
+      "heading": "Detecting memorisation vs learning",
+      "body": "If the model performs well on training examples but poorly on validation examples, it is memorising rather than learning. Reduce training steps, simplify the task, add more varied data or use regularisation. The validation set is the signal for this.",
+      "points": [
+        "Good train, bad validation = memorisation (overfitting).",
+        "Good on both = real learning.",
+        "Add variety and reduce training if overfitting."
+      ]
+    },
+    {
+      "heading": "Data size and diversity",
+      "body": "More examples usually help, but variety matters more than raw count. Cover different phrasings, edge cases and rare situations so the model generalises. Too few examples cannot teach the pattern; too many near-duplicates waste compute.",
+      "points": [
+        "Variety beats raw volume.",
+        "Cover edge cases and rare situations.",
+        "Near-duplicates add little value."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Fine-tuning examples for ticket categorisation",
+    "body": "Input: 'I cannot log in to my account after resetting my password.' Output: {'category': 'Account', 'priority': 'High'}. Input: 'I was charged twice for the same order.' Output: {'category': 'Billing', 'priority': 'High'}. The same input always maps to the same label, and the format is identical across examples.",
+    "code": {
+      "language": "json",
+      "source": "[\n  {\"input\": \"I cannot log in to my account.\", \"output\": {\"category\": \"Account\", \"priority\": \"High\"}},\n  {\"input\": \"I was charged twice for the same order.\", \"output\": {\"category\": \"Billing\", \"priority\": \"High\"}}\n]"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Ticket routing",
+      "description": "Train examples that map support tickets to category and priority."
+    },
+    {
+      "title": "Data extraction",
+      "description": "Train examples that turn raw text into structured JSON fields."
+    },
+    {
+      "title": "Tone adaptation",
+      "description": "Train examples that rewrite customer replies in the brand voice."
+    },
+    {
+      "title": "Code conversion",
+      "description": "Train examples that translate code from one language to another."
+    }
+  ],
+  "demonstration": {
+    "description": "Show a clean example pair next to a noisy duplicate pair, and explain why the clean version trains better.",
+    "code": {
+      "language": "text",
+      "source": "Clean:\nInput: 'I cannot log in.'\nOutput: {\"category\": \"Account\", \"priority\": \"High\"}\n\nNoisy duplicate:\nInput: 'I cannot log in.'\nOutput: {\"category\": \"Account\", \"priority\": \"Low\"}\nInput: 'i cannot log in'\nOutput: {\"category\": \"account\", \"priority\": \"high\"}"
+    },
+    "output": "Clean pairs teach one consistent mapping; noisy duplicates confuse the model."
+  },
+  "takeaways": [
+    "Fine-tuning data is input-output pairs teaching a consistent mapping.",
+    "Targets must be accurate, formatting consistent and duplicates removed.",
+    "Split into train, validation and test; never train on validation or test.",
+    "Good training but poor validation means memorisation, not learning.",
+    "Variety and edge cases matter more than raw example count.",
+    "Contradictory examples must be resolved or removed."
+  ],
+  "interview": [
+    {
+      "question": "What is an input-output pair in fine-tuning data?",
+      "answer": "One example consisting of an input (the user request) and a target output (the ideal response) that the model should learn to produce.",
+      "explanation": "Give a concrete example such as ticket text to category label."
+    },
+    {
+      "question": "Why remove contradictory examples?",
+      "answer": "The same input with two different outputs confuses the model and prevents it from learning a reliable mapping.",
+      "explanation": "Contradictions must be resolved or removed before training."
+    },
+    {
+      "question": "What is the validation set used for?",
+      "answer": "To check generalisation, detect overfitting and tune decisions without touching the final test set.",
+      "explanation": "Never train on validation data."
+    },
+    {
+      "question": "What does good training but poor validation performance indicate?",
+      "answer": "Memorisation or overfitting: the model learned the training examples but not the underlying pattern.",
+      "explanation": "Reduce training steps or add varied data."
+    },
+    {
+      "question": "Why does variety matter in fine-tuning data?",
+      "answer": "Different phrasings and edge cases teach the model to generalise rather than memorise exact strings.",
+      "explanation": "Near-duplicates add little value compared to diverse examples."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Validate and deduplicate fine-tuning examples",
+    "difficulty": "Basic",
+    "objective": "Practise cleaning fine-tuning data by checking required fields and removing duplicate inputs.",
+    "statement": "Read an integer N, then N JSON lines each with fields 'input' and 'output'. Keep only examples where both fields are non-empty strings, and keep only the first occurrence of each input. Print the number of valid, deduplicated examples.",
+    "language": "python",
+    "input_format": "Line 1: N.\nNext N lines: one JSON object per line with 'input' and 'output'.",
+    "output_format": "A single integer: the count of valid, unique examples.",
+    "example": {
+      "input": "4\n{\"input\": \"hi\", \"output\": \"hello\"}\n{\"input\": \"\", \"output\": \"bye\"}\n{\"input\": \"hi\", \"output\": \"hello\"}\n{\"input\": \"hey\", \"output\": \"\"}\n",
+      "output": "1"
+    },
+    "constraints": [
+      "N is between 1 and 100.",
+      "Each line is valid JSON with 'input' and 'output' fields.",
+      "Inputs are compared exactly as strings (case-sensitive)."
+    ],
+    "starter": "import json\n\nn = int(input())\nseen = set()\ncount = 0\nfor _ in range(n):\n    data = json.loads(input())\n    # TODO: validate and deduplicate\n",
+    "solution": "import json\n\nn = int(input())\nseen = set()\ncount = 0\nfor _ in range(n):\n    data = json.loads(input())\n    inp = data.get('input')\n    out = data.get('output')\n    if isinstance(inp, str) and inp and isinstance(out, str) and out:\n        if inp not in seen:\n            seen.add(inp)\n            count += 1\nprint(count)\n",
+    "explanation": [
+      "Read N, then loop reading one JSON example at a time.",
+      "Keep an example only if input and output are both non-empty strings.",
+      "Use a set to track seen inputs and count only the first occurrence of each.",
+      "Print the final count of valid, unique examples."
+    ],
+    "tests": [
+      {
+        "input": "4\n{\"input\": \"hi\", \"output\": \"hello\"}\n{\"input\": \"\", \"output\": \"bye\"}\n{\"input\": \"hi\", \"output\": \"hello\"}\n{\"input\": \"hey\", \"output\": \"\"}\n",
+        "output": "1"
+      },
+      {
+        "input": "3\n{\"input\": \"a\", \"output\": \"b\"}\n{\"input\": \"c\", \"output\": \"d\"}\n{\"input\": \"e\", \"output\": \"f\"}\n",
+        "output": "3"
+      },
+      {
+        "input": "2\n{\"input\": \"x\", \"output\": \"y\"}\n{\"input\": \"x\", \"output\": \"z\"}\n",
+        "output": "1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is fine-tuning data?",
+      "options": [
+        "Random text from the internet",
+        "Input-output example pairs",
+        "The model's weights",
+        "API keys"
+      ],
+      "answer": 1,
+      "explanation": "Fine-tuning data consists of examples pairing an input with the target output the model should learn."
+    },
+    {
+      "type": "scenario",
+      "question": "Two examples have the same input but different outputs. What should you do?",
+      "options": [
+        "Remove both or resolve the contradiction",
+        "Keep only the first",
+        "Ignore the problem",
+        "Keep both"
+      ],
+      "answer": 0,
+      "explanation": "Contradictory examples confuse the model; resolve them or remove them."
+    },
+    {
+      "type": "concept",
+      "question": "What is the test set used for?",
+      "options": [
+        "Choosing the learning rate",
+        "Storing duplicates",
+        "Training the model",
+        "A final unbiased measure of performance"
+      ],
+      "answer": 3,
+      "explanation": "The test set is held out and used once to report final performance."
+    },
+    {
+      "type": "scenario",
+      "question": "Training accuracy is high but validation accuracy is low. What is happening?",
+      "options": [
+        "Data is too large",
+        "Underfitting",
+        "Overfitting / memorisation",
+        "Good generalisation"
+      ],
+      "answer": 2,
+      "explanation": "The model memorised training examples but did not learn the general pattern."
+    },
+    {
+      "type": "concept",
+      "question": "Why should validation data not be used for training?",
+      "options": [
+        "It is too small",
+        "It would no longer be an unbiased measure of generalisation",
+        "It slows down training",
+        "It increases the temperature"
+      ],
+      "answer": 1,
+      "explanation": "Training on validation data makes it useless for detecting overfitting."
+    }
+  ]
+}

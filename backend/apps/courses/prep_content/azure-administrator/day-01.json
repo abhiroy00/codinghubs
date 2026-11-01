@@ -1,0 +1,249 @@
+{
+  "day": 1,
+  "title": "Cloud Computing and Azure Global Infrastructure",
+  "module": "Cloud and Azure foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain cloud computing and the CapEx-to-OpEx shift in plain terms.",
+    "Compare IaaS, PaaS and SaaS and apply the shared responsibility model.",
+    "Describe Azure geographies, regions, region pairs and availability zones.",
+    "Choose a region using latency, compliance, service availability and price.",
+    "Answer the opening questions of an Azure administrator interview with confidence."
+  ],
+  "definition": "Cloud computing is the on-demand delivery of compute, storage, networking and software over the internet with pay-as-you-go pricing. Microsoft Azure is Microsoft's public cloud: a global network of datacentres grouped into regions, on which you create resources through a single management layer instead of buying and racking your own hardware.",
+  "theory": [
+    {
+      "heading": "Why organisations move to the cloud",
+      "body": "On-premises IT requires large up-front capital expenditure (CapEx) on servers, storage and datacentre space that must be sized for peak demand and then sits idle most of the time. The cloud converts this into operational expenditure (OpEx): you pay for what you consume, scale up for a festival sale and scale back down the next day. Administrators care about this because it changes their job from replacing failed disks to designing for elasticity, governance and cost control.",
+      "points": [
+        "High availability: services are designed to keep running despite component failures.",
+        "Scalability and elasticity: add or remove capacity manually (scale) or automatically (elastic).",
+        "Agility: provision a VM or database in minutes, not weeks.",
+        "Global reach: deploy close to users in many countries.",
+        "Consumption-based pricing: no idle hardware bill, but you must watch for waste."
+      ]
+    },
+    {
+      "heading": "Service models: IaaS, PaaS and SaaS",
+      "body": "The service model decides how much of the stack you manage. In IaaS (Azure Virtual Machines) you manage the operating system, patching, runtime and application while Microsoft manages the physical host. In PaaS (App Service, Azure SQL Database) Microsoft also manages the OS and runtime, so you focus on code, configuration and data. In SaaS (Microsoft 365) you only consume the application and manage your data, users and devices.",
+      "points": [
+        "IaaS: most control, most responsibility (VMs, managed disks, virtual networks).",
+        "PaaS: platform handles OS patching and scaling plumbing (App Service, Azure SQL, Functions).",
+        "SaaS: finished software delivered over the internet (Microsoft 365, Dynamics 365).",
+        "Serverless (Functions, Logic Apps) is a PaaS style billed per execution."
+      ]
+    },
+    {
+      "heading": "The shared responsibility model",
+      "body": "Security and operations are split between Microsoft and the customer. Microsoft always owns physical datacentres, hosts and the physical network. The customer always owns their data, endpoints (devices) and accounts and identities, in every model. Everything in between moves from the customer towards Microsoft as you go from IaaS to PaaS to SaaS. This is why a breached password is always the customer's problem, even on SaaS.",
+      "points": [
+        "Always customer: information and data, devices, accounts and identities.",
+        "Always Microsoft: physical hosts, physical network, physical datacentre.",
+        "Operating system: customer in IaaS, Microsoft in PaaS and SaaS.",
+        "Applications and network controls: customer in IaaS, shared in PaaS, Microsoft in SaaS.",
+        "Identity and directory infrastructure: customer in IaaS, shared in PaaS and SaaS."
+      ]
+    },
+    {
+      "heading": "Azure global infrastructure",
+      "body": "A region is a set of datacentres within a latency-defined perimeter, such as Central India (Pune) or South India (Chennai). Regions are grouped into geographies that respect data-residency and compliance boundaries. Many regions have a paired region in the same geography; Azure staggers platform updates across pairs and prioritises recovery of one region in each pair during a wide outage. Availability zones are physically separate datacentres (independent power, cooling and networking) inside one region, normally three per supported region.",
+      "points": [
+        "Region: where your resource physically runs; choose it per resource.",
+        "Availability zone: protects against a datacentre failure inside a region.",
+        "Region pair: protects against a whole-region disaster; used by GRS storage replication.",
+        "Sovereign clouds (Azure Government, Azure operated by 21Vianet in China) are isolated instances.",
+        "Not every service or VM size is available in every region; check before designing."
+      ]
+    },
+    {
+      "heading": "Choosing a region",
+      "body": "Interviewers often ask how you would pick a region. A strong answer weighs four factors in order: compliance and data residency (Indian banking data may need to stay in India), latency to users, availability of the required services and zones, and price, which varies between regions for the same VM size.",
+      "points": [
+        "Compliance first: some data must not leave the country.",
+        "Latency: put workloads near users; test with tools such as Azure speed tests.",
+        "Capability: zones, specific VM series or services may be missing in smaller regions.",
+        "Cost: the same SKU can cost noticeably more in one region than another."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Listing regions and zone support with Azure CLI",
+    "body": "Before choosing where to deploy, an administrator checks which regions exist and which VM sizes support zones in a region. The CLI queries Azure Resource Manager, so the answer reflects your subscription's actual access.",
+    "code": {
+      "language": "bash",
+      "source": "# All regions available to the subscription\naz account list-locations --query \"[].{name:name, display:displayName, pair:metadata.pairedRegion[0].name}\" -o table\n\n# Which zones a VM size supports in Central India\naz vm list-skus --location centralindia --size Standard_D2s_v5 --zone -o table"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Seasonal retail",
+      "description": "An e-commerce site scales out web servers for a sale weekend and scales back in afterwards, paying only for the extra hours."
+    },
+    {
+      "title": "Data residency",
+      "description": "An Indian fintech keeps customer data in Central India with disaster recovery in South India to satisfy regulator guidance."
+    },
+    {
+      "title": "Datacentre exit",
+      "description": "A company lifts and shifts ageing servers to Azure VMs (IaaS) before modernising to App Service (PaaS)."
+    },
+    {
+      "title": "Global SaaS",
+      "description": "A start-up serves customers in India, Europe and the US by deploying the same template to three regions."
+    }
+  ],
+  "demonstration": {
+    "description": "Map common tasks to the party responsible under each service model. This is the reasoning interviewers want when they ask 'who patches the OS on App Service?'.",
+    "code": {
+      "language": "text",
+      "source": "Task                         IaaS (VM)   PaaS (App Service)   SaaS (Microsoft 365)\nPatch the guest OS           Customer    Microsoft            Microsoft\nConfigure app network rules  Customer    Shared               Microsoft\nProtect user passwords       Customer    Customer             Customer\nReplace a failed disk        Microsoft   Microsoft            Microsoft"
+    },
+    "output": "Data, devices and identities stay with the customer in every model; physical infrastructure stays with Microsoft; the OS moves to Microsoft as soon as you use PaaS."
+  },
+  "takeaways": [
+    "Cloud turns up-front CapEx into consumption-based OpEx and adds elasticity.",
+    "IaaS gives most control and most responsibility; SaaS gives the least of both.",
+    "Data, devices and identities are always the customer's responsibility.",
+    "Availability zones protect against datacentre failure; region pairs protect against regional disasters.",
+    "Pick regions by compliance, latency, service availability and price, in that order.",
+    "Not every VM size or service exists in every region."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between IaaS, PaaS and SaaS? Give an Azure example of each.",
+      "answer": "IaaS provides virtual infrastructure where you manage the OS and above, for example Azure Virtual Machines. PaaS provides a managed platform where you deploy code and data, for example Azure App Service or Azure SQL Database. SaaS is complete software you consume, for example Microsoft 365.",
+      "explanation": "A strong answer ties each model to who patches the operating system, which shows you understand the operational consequence, not just the acronym."
+    },
+    {
+      "question": "Explain the shared responsibility model.",
+      "answer": "Security duties are split between the cloud provider and the customer. Microsoft always secures the physical datacentre, hosts and network. The customer always owns data, devices and identities. Responsibility for the OS, network controls and applications shifts towards Microsoft as you move from IaaS to PaaS to SaaS.",
+      "explanation": "Mention the 'always customer' items explicitly; many candidates wrongly say SaaS makes Microsoft responsible for everything."
+    },
+    {
+      "question": "What is the difference between a region, an availability zone and a region pair?",
+      "answer": "A region is a geographic area containing one or more datacentres. An availability zone is a physically separate datacentre group inside a region with independent power, cooling and network. A region pair links two regions in the same geography for disaster recovery, staggered updates and prioritised recovery.",
+      "explanation": "Link each to the failure it protects against: zone for a datacentre failure, pair for a regional disaster."
+    },
+    {
+      "question": "How would you choose an Azure region for a new workload?",
+      "answer": "First confirm compliance and data-residency requirements, then pick the region with the lowest latency to users that offers the required services, VM sizes and availability zones, and finally compare price between the shortlisted regions.",
+      "explanation": "Ordering the factors shows judgement; compliance is a hard constraint while price is a trade-off."
+    },
+    {
+      "question": "What is the difference between scalability and elasticity?",
+      "answer": "Scalability is the ability to add capacity, either vertically (a bigger VM) or horizontally (more instances). Elasticity is scaling automatically in both directions in response to demand, such as autoscale rules on a scale set.",
+      "explanation": "Interviewers like the vertical versus horizontal distinction and a concrete Azure feature for elasticity."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Shared responsibility lookup",
+    "difficulty": "Basic",
+    "objective": "Encode the Azure shared responsibility model and use it to answer 'who owns this?' questions for any service model.",
+    "statement": "Read a service model (IaaS, PaaS or SaaS, case-insensitive) and a list of responsibility layers. For each layer print who is responsible: Customer, Microsoft or Shared. Use this model: data, devices and accounts are always Customer; physical is always Microsoft; os is Customer for IaaS and Microsoft otherwise; applications and network are Customer for IaaS, Shared for PaaS and Microsoft for SaaS; identity is Customer for IaaS and Shared for PaaS and SaaS. Any other layer name prints Unknown. If the model itself is not one of the three, print only 'Invalid model'.",
+    "language": "python",
+    "input_format": "Line 1: the service model. Line 2: N, the number of layers. Next N lines: one layer name each (case-insensitive).",
+    "output_format": "For each layer, one line '<layer>: <owner>' with the layer in lowercase, or a single line 'Invalid model'.",
+    "example": {
+      "input": "PaaS\n3\nos\ndata\nnetwork\n",
+      "output": "os: Microsoft\ndata: Customer\nnetwork: Shared"
+    },
+    "constraints": [
+      "0 <= N <= 20.",
+      "Trim spaces around every line.",
+      "Layer names are compared in lowercase."
+    ],
+    "starter": "model = input().strip().lower()\nn = int(input())\nlayers = [input().strip().lower() for _ in range(n)]\n\n# TODO: build a table of layer -> (IaaS, PaaS, SaaS) owners and print each answer\n",
+    "solution": "TABLE = {\n    'data': ('Customer', 'Customer', 'Customer'),\n    'devices': ('Customer', 'Customer', 'Customer'),\n    'accounts': ('Customer', 'Customer', 'Customer'),\n    'identity': ('Customer', 'Shared', 'Shared'),\n    'applications': ('Customer', 'Shared', 'Microsoft'),\n    'network': ('Customer', 'Shared', 'Microsoft'),\n    'os': ('Customer', 'Microsoft', 'Microsoft'),\n    'physical': ('Microsoft', 'Microsoft', 'Microsoft'),\n}\nMODELS = {'iaas': 0, 'paas': 1, 'saas': 2}\n\nmodel = input().strip().lower()\nn = int(input())\nlayers = [input().strip().lower() for _ in range(n)]\n\nif model not in MODELS:\n    print('Invalid model')\nelse:\n    col = MODELS[model]\n    for layer in layers:\n        owner = TABLE[layer][col] if layer in TABLE else 'Unknown'\n        print(f'{layer}: {owner}')\n",
+    "explanation": [
+      "Store the model as a dictionary from layer to a tuple of owners for IaaS, PaaS and SaaS.",
+      "Map the service model to a column index; reject anything else with 'Invalid model'.",
+      "For each layer, look up the owner in the chosen column, falling back to 'Unknown'.",
+      "Notice that the 'always customer' rows never change: that is the key interview point."
+    ],
+    "tests": [
+      {
+        "input": "PaaS\n3\nos\ndata\nnetwork\n",
+        "output": "os: Microsoft\ndata: Customer\nnetwork: Shared"
+      },
+      {
+        "input": "iaas\n4\nOS\nPhysical\nidentity\napplications\n",
+        "output": "os: Customer\nphysical: Microsoft\nidentity: Customer\napplications: Customer"
+      },
+      {
+        "input": "SAAS\n5\naccounts\nnetwork\nidentity\ndevices\nbilling\n",
+        "output": "accounts: Customer\nnetwork: Microsoft\nidentity: Shared\ndevices: Customer\nbilling: Unknown"
+      },
+      {
+        "input": "FaaS\n1\nos\n",
+        "output": "Invalid model"
+      },
+      {
+        "input": "paas\n1\n  applications  \n",
+        "output": "applications: Shared"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Under the shared responsibility model, which item remains the customer's responsibility even for a SaaS application such as Microsoft 365?",
+      "options": [
+        "Maintaining the physical network",
+        "Replacing failed datacentre hardware",
+        "Patching the application servers",
+        "Securing user accounts and identities"
+      ],
+      "answer": 3,
+      "explanation": "Accounts and identities, data and devices are always the customer's responsibility. Infrastructure and, in SaaS, the application are Microsoft's."
+    },
+    {
+      "type": "scenario",
+      "question": "Your company wants its web application to survive the failure of a single datacentre in Central India without moving to another region. What should you use?",
+      "options": [
+        "A region pair",
+        "A second subscription",
+        "A management group",
+        "Availability zones"
+      ],
+      "answer": 3,
+      "explanation": "Availability zones are physically separate datacentres within one region, so a zone-redundant deployment survives a single datacentre failure."
+    },
+    {
+      "type": "concept",
+      "question": "Which Azure service is an example of Platform as a Service (PaaS)?",
+      "options": [
+        "Microsoft 365",
+        "Azure Dedicated Host",
+        "Azure App Service",
+        "Azure Virtual Machines"
+      ],
+      "answer": 2,
+      "explanation": "App Service runs your code on a platform where Microsoft manages the OS and runtime. VMs and Dedicated Host are IaaS; Microsoft 365 is SaaS."
+    },
+    {
+      "type": "scenario",
+      "question": "A bank must keep customer data inside India and wants the lowest latency for users in Mumbai. Which factor must be satisfied before comparing prices between regions?",
+      "options": [
+        "The number of availability zones",
+        "Whether the region has the newest VM series",
+        "Data residency and compliance requirements",
+        "The size of the region's datacentres"
+      ],
+      "answer": 2,
+      "explanation": "Compliance and residency are hard constraints. Only regions that satisfy them should then be compared on latency, capability and price."
+    },
+    {
+      "type": "concept",
+      "question": "What is a benefit of Azure region pairs?",
+      "options": [
+        "They remove the need for backups",
+        "They make every resource zone-redundant automatically",
+        "They share a single IP address space",
+        "Planned platform updates are rolled out to one region of the pair at a time"
+      ],
+      "answer": 3,
+      "explanation": "Azure staggers planned updates across the two regions of a pair and prioritises recovering one region of each pair in a widespread outage."
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "day": 4,
+  "title": "ReAct: Interleaving Reasoning and Acting",
+  "module": "Core agent patterns",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain how the ReAct pattern interleaves thoughts, actions and observations.",
+    "Describe why an explicit reasoning trace improves tool selection and error recovery.",
+    "Compare ReAct with act-only and reason-only prompting.",
+    "Recognise when ReAct's extra tokens are worth the reliability gain.",
+    "Parse and summarise a ReAct trajectory in code."
+  ],
+  "definition": "ReAct (Reason + Act) is a prompting and control pattern in which the model alternates between a short natural-language reasoning trace, called a thought, and an action such as a tool call. After each action the environment returns an observation, which becomes the next input, and the cycle repeats until the model emits a final answer. The thought helps the model plan and track state, while the action grounds the next thought in real feedback so the agent corrects course instead of hallucinating a result.",
+  "theory": [
+    {
+      "heading": "What ReAct adds to the plain loop",
+      "body": "Day 3 showed a loop that perceives, reasons and acts, but the reasoning step can be a single opaque decision. ReAct makes that reasoning explicit: before choosing a tool the model writes a thought such as 'I need the population of France before I can halve it'. That sentence is stored in the context and influences every later step. The action and observation then ground the trace in real data, which is exactly the feedback loop the plain agent needs but does not guarantee.",
+      "points": [
+        "Thought: a short plan, hypothesis or note about what to do next.",
+        "Action: a tool call or another defined action.",
+        "Observation: the result returned by the environment.",
+        "The trace accumulates, so the model can see what it already tried."
+      ]
+    },
+    {
+      "heading": "The thought-action-observation cycle",
+      "body": "In a ReAct agent each iteration appends three kinds of text to the transcript. The model first writes a Thought that states its current understanding and the next goal. It then emits an Action, usually a tool name with arguments. The runtime executes the action and appends an Observation containing the result. The model reads the whole transcript on the next call, so the thought becomes evidence of intent and the observation becomes evidence of fact. The loop ends when the model writes a Final Answer or a safety limit fires.",
+      "points": [
+        "One cycle produces a thought, one action and one observation.",
+        "The transcript is the agent's working memory within the task.",
+        "A final answer should be backed by observations, not by the model's memory alone."
+      ]
+    },
+    {
+      "heading": "Why reasoning traces improve reliability",
+      "body": "Forcing the model to state its plan before acting reduces two common failures. First, it improves tool selection because the model must justify the choice, which makes it less likely to reach for an irrelevant tool. Second, it improves recovery because after an error the model can read its own earlier thought and adjust the plan rather than repeating the same call. Studies of ReAct on question-answering and decision tasks found fewer hallucinations than reason-only prompting, because claims that lack an observation become visible in the trace.",
+      "points": [
+        "Thoughts expose the model's plan so mistakes are easier to spot.",
+        "Observations provide grounding that pure chain-of-thought lacks.",
+        "The trace is also valuable for debugging and evaluation."
+      ]
+    },
+    {
+      "heading": "Variants and limitations",
+      "body": "ReAct sits between reason-only methods such as chain-of-thought and act-only methods such as plain tool calling. Variants include adding a self-reflection step after a failure, or restricting the agent to a fixed set of tools. The main cost is tokens: every thought is extra input and output on every iteration, so long traces inflate cost and latency and can crowd the context window. Thoughts can also be confidently wrong, so ReAct does not remove the need for validation and stopping conditions.",
+      "points": [
+        "Reason-only: strong reasoning, no grounding in the environment.",
+        "Act-only: grounded but prone to acting on a wrong assumption.",
+        "ReAct: grounded reasoning at the cost of more tokens per step.",
+        "Reflection and planning patterns build on top of ReAct."
+      ]
+    },
+    {
+      "heading": "ReAct in practice and in interviews",
+      "body": "Most modern tool-calling frameworks implement a ReAct-like loop, even when they hide the word 'thought': the model may emit a private reasoning field, then a tool call, then read the result. When you describe ReAct in an interview, connect it to the agent loop from Day 3 and note the trade-off between reliability and token cost. A strong answer also mentions that the thought is not magic, it is just text that conditions the next model call, and that structured tool calls have largely replaced free-text actions for safety.",
+      "points": [
+        "ReAct is a pattern, not a specific library or model feature.",
+        "Structured tool calling is the production form of the action step.",
+        "Mention cost, context growth and validation when discussing trade-offs."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A ReAct transcript for a two-step question",
+    "body": "The agent must answer 'what is half the population of France?'. It writes a thought, searches, reads the observation, writes a second thought, computes, and finally answers. Each line is appended to the transcript, so by the last call the model sees the whole reasoning trail plus the two grounded observations.",
+    "code": {
+      "language": "text",
+      "source": "Thought: I need the population of France before I can halve it.\nAction: search[population of France]\nObservation: about 68 million\nThought: I have 68 million, so half is 34 million. Let me confirm with the calculator.\nAction: calculator[68 / 2]\nObservation: 34\nThought: Both facts are grounded, so I can answer.\nFinal Answer: about 34 million"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Multi-hop question answering",
+      "description": "Answer questions that need several lookups by reasoning about what is missing, searching, and using each result to decide the next query."
+    },
+    {
+      "title": "Debugging assistants",
+      "description": "State a hypothesis about a bug, run a command or test to check it, read the output, and refine the hypothesis instead of guessing."
+    },
+    {
+      "title": "Web and API navigation",
+      "description": "Plan a click or request, observe the returned page or payload, and adjust the plan when the expected element is missing."
+    },
+    {
+      "title": "Data investigation",
+      "description": "Inspect a dataset, form a question about an anomaly, query the data, and let the result steer the next question."
+    }
+  ],
+  "demonstration": {
+    "description": "Parse a ReAct transcript line by line. Every Thought, Action, Observation and Final Answer is classified; each Action is paired with the Observation that immediately follows it. The summary shows how many of each line type the trajectory contains.",
+    "code": {
+      "language": "text",
+      "source": "Thought: find the exchange rate\nAction: search[USD to EUR rate]\nObservation: 0.92\nThought: multiply 100 by 0.92\nAction: calculator[100 * 0.92]\nObservation: 92\nFinal Answer: 92 EUR"
+    },
+    "output": "step 1: search -> 0.92\nstep 2: calculator -> 92\nThoughts: 2\nActions: 2\nObservations: 2"
+  },
+  "takeaways": [
+    "ReAct interleaves a reasoning trace with tool actions and their observations.",
+    "The explicit thought improves tool selection and makes the plan auditable.",
+    "Observations ground the reasoning, which reduces hallucination.",
+    "Every thought and observation is extra context, so ReAct costs more tokens.",
+    "ReAct is a pattern; structured tool calling is how production systems implement the action step.",
+    "Always pair a reasoning trace with validation and stopping conditions."
+  ],
+  "interview": [
+    {
+      "question": "What is the ReAct pattern?",
+      "answer": "ReAct alternates a natural-language reasoning trace with an action and its observation, repeating until the model reaches a final answer. The thought conditions the next decision and the observation grounds it in the environment.",
+      "explanation": "Name the three parts, thought, action and observation, and connect the pattern to the agent loop from Day 3."
+    },
+    {
+      "question": "Why does writing a thought before acting improve agent reliability?",
+      "answer": "It forces the model to commit to a plan and justify its tool choice, which reduces irrelevant tool calls, and it leaves a trace the model can read after an error so it can change approach instead of repeating a failing action.",
+      "explanation": "Mention both better tool selection and better error recovery, and note that the thought is just conditioning text."
+    },
+    {
+      "question": "How does ReAct differ from chain-of-thought prompting?",
+      "answer": "Chain-of-thought produces reasoning with no interaction with the world. ReAct adds actions and observations, so each reasoning step can be checked against real tool output rather than relying on the model's memory.",
+      "explanation": "The key difference is grounding. Reason-only methods cannot detect a wrong assumption until the final answer is wrong."
+    },
+    {
+      "question": "What are the main costs of ReAct?",
+      "answer": "Extra tokens on every iteration for the thoughts and observations, higher latency, faster context growth, and the risk that a confident but wrong thought steers the agent off course.",
+      "explanation": "Trade-off answers are strong. Add mitigations such as concise thoughts, context trimming and validation of actions."
+    },
+    {
+      "question": "Would you use free-text ReAct actions or structured tool calls in production, and why?",
+      "answer": "Structured tool calls, because the runtime validates the tool name and arguments against a schema, which prevents malformed actions and injection through free text. The reasoning trace can still be kept as a private thought field.",
+      "explanation": "This bridges to Day 5 and shows you understand the safety and reliability advantages of schema-bound actions."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Parse and summarise a ReAct trajectory",
+    "difficulty": "Intermediate",
+    "objective": "Read a ReAct transcript, pair each action with the observation that follows it, and count the lines of each type.",
+    "statement": "A ReAct transcript contains lines that begin with 'Thought:', 'Action:', 'Observation:' or 'Final Answer:'. For each Action, in order, print 'step k: <tool>(<arg>) -> <observation>' where the observation is the text of the next line if that line starts with 'Observation:', otherwise '(none)'. An Action is written as 'Action: <tool>[<arg>]'. After all action lines, print the counts of Thought, Action and Observation lines. Blank lines are ignored.",
+    "language": "python",
+    "input_format": "One or more lines, each beginning with one of the four prefixes. Blank lines may appear and are ignored.",
+    "output_format": "One 'step k: ...' line per action, then three summary lines 'Thoughts: <n>', 'Actions: <n>' and 'Observations: <n>'.",
+    "example": {
+      "input": "Thought: I need the capital of France\nAction: search[capital of France]\nObservation: Paris is the capital of France\nThought: I can answer now\nFinal Answer: Paris\n",
+      "output": "step 1: search(capital of France) -> Paris is the capital of France\nThoughts: 2\nActions: 1\nObservations: 1"
+    },
+    "constraints": [
+      "At most 200 non-blank lines.",
+      "Tool names contain no spaces or brackets; the argument is everything between '[' and the final ']'.",
+      "An action with no immediately following observation is reported with '(none)'."
+    ],
+    "starter": "import sys\n\nlines = [ln.strip() for ln in sys.stdin.read().splitlines() if ln.strip()]\n\n# TODO: count thoughts, actions and observations; pair actions with the next observation\n",
+    "solution": "import sys\n\nlines = [ln.strip() for ln in sys.stdin.read().splitlines() if ln.strip()]\n\nthoughts = actions = observations = 0\nstep = 0\nfor i, line in enumerate(lines):\n    if line.startswith('Thought:'):\n        thoughts += 1\n    elif line.startswith('Observation:'):\n        observations += 1\n    elif line.startswith('Action:'):\n        actions += 1\n        step += 1\n        body = line[len('Action:'):].strip()\n        if '[' in body and body.endswith(']'):\n            tool = body[:body.index('[')].strip()\n            arg = body[body.index('[') + 1:-1].strip()\n        else:\n            tool, arg = body, ''\n        if i + 1 < len(lines) and lines[i + 1].startswith('Observation:'):\n            obs = lines[i + 1][len('Observation:'):].strip()\n        else:\n            obs = '(none)'\n        print(f'step {step}: {tool}({arg}) -> {obs}')\nprint(f'Thoughts: {thoughts}')\nprint(f'Actions: {actions}')\nprint(f'Observations: {observations}')\n",
+    "explanation": [
+      "Split the input into non-blank stripped lines.",
+      "Classify each line by its prefix, incrementing the matching counter.",
+      "For an Action, parse the tool name before '[' and the argument between the brackets.",
+      "Pair the action with the next line only when it is an Observation; otherwise use '(none)'.",
+      "Print the step lines first, then the three summary counts."
+    ],
+    "tests": [
+      {
+        "input": "Thought: I need the capital of France\nAction: search[capital of France]\nObservation: Paris is the capital of France\nThought: I can answer now\nFinal Answer: Paris\n",
+        "output": "step 1: search(capital of France) -> Paris is the capital of France\nThoughts: 2\nActions: 1\nObservations: 1"
+      },
+      {
+        "input": "Thought: find population\nAction: search[population of France]\nObservation: 68 million\nAction: calculator[68 / 2]\nObservation: 34\nFinal Answer: 34 million\n",
+        "output": "step 1: search(population of France) -> 68 million\nstep 2: calculator(68 / 2) -> 34\nThoughts: 1\nActions: 2\nObservations: 2"
+      },
+      {
+        "input": "Thought: try a search\nAction: search[weather]\nFinal Answer: unknown\n",
+        "output": "step 1: search(weather) -> (none)\nThoughts: 1\nActions: 1\nObservations: 0"
+      },
+      {
+        "input": "Thought: easy\nFinal Answer: 42\n",
+        "output": "Thoughts: 1\nActions: 0\nObservations: 0"
+      },
+      {
+        "input": "Thought: plan\nAction: lookup[order 1]\nAction: lookup[order 2]\nObservation: shipped\n",
+        "output": "step 1: lookup(order 1) -> (none)\nstep 2: lookup(order 2) -> shipped\nThoughts: 1\nActions: 2\nObservations: 1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which sequence best describes one ReAct iteration?",
+      "options": [
+        "Observation, final answer, thought",
+        "Thought, action, observation",
+        "Action, action, action",
+        "Thought, thought, final answer"
+      ],
+      "answer": 1,
+      "explanation": "ReAct interleaves a reasoning thought, an action such as a tool call, and the resulting observation before deciding again."
+    },
+    {
+      "type": "scenario",
+      "question": "A ReAct agent searches for the wrong thing, gets an unhelpful result, then searches more precisely. What made the correction possible?",
+      "options": [
+        "A larger vocabulary",
+        "Removing the reasoning trace",
+        "Raising the temperature",
+        "The observation from the failed search appeared in the transcript"
+      ],
+      "answer": 3,
+      "explanation": "Observations ground the trace, so a bad result is visible and the model can adjust its next thought and action."
+    },
+    {
+      "type": "concept",
+      "question": "What is the main added cost of ReAct compared with a single tool call?",
+      "options": [
+        "Extra tokens for thoughts and observations on every iteration",
+        "A larger embedding model",
+        "A mandatory database",
+        "Lower accuracy by design"
+      ],
+      "answer": 0,
+      "explanation": "Each thought and observation is appended to the context and resent on later calls, increasing token cost and latency."
+    },
+    {
+      "type": "output",
+      "question": "A ReAct transcript has two Thought lines, two Action lines and two Observation lines. How many complete thought-action-observation cycles does it contain?",
+      "options": [
+        "2",
+        "6",
+        "0",
+        "1"
+      ],
+      "answer": 0,
+      "explanation": "Each cycle contributes one of each line type, so two of each means two cycles."
+    },
+    {
+      "type": "scenario",
+      "question": "Why do production systems often replace free-text ReAct actions with schema-bound tool calls?",
+      "options": [
+        "Free text is slower to type",
+        "Tool calls cannot be logged",
+        "Thoughts are illegal in production",
+        "Schemas validate the tool name and arguments and block malformed or injected actions"
+      ],
+      "answer": 3,
+      "explanation": "Structured calls let the runtime check names and argument types, which is safer and more reliable than parsing free text."
+    }
+  ]
+}

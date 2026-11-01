@@ -1,0 +1,245 @@
+{
+  "day": 1,
+  "title": "What Vibe Coding Is: Promise, Workflow and Risks",
+  "module": "Foundations of AI-assisted development",
+  "level": "Beginner",
+  "objectives": [
+    "Define vibe coding and distinguish it from disciplined AI-assisted engineering.",
+    "Describe the basic loop: describe, generate, run, inspect, refine.",
+    "Explain where vibe coding shines (prototypes, glue code) and where it is dangerous (auth, payments, data).",
+    "List the main risks of accepting code you have not read: bugs, security holes, licence and maintenance debt.",
+    "Answer interview questions about your personal policy for using AI-generated code."
+  ],
+  "definition": "Vibe coding is a style of building software where you describe what you want in natural language and let an AI assistant write most of the code, judging progress mainly by whether the result runs and looks right. The term was popularised by Andrej Karpathy in early 2025. In professional settings it is a starting point: engineers still own the code, so they read, test and review what the AI produces before it ships.",
+  "theory": [
+    {
+      "heading": "From autocomplete to describing whole features",
+      "body": "Early coding assistants completed a line or a function as you typed. Modern assistants can take a paragraph of requirements and produce several files, run commands and fix their own errors. This shifts the developer's job from typing every line to specifying intent, steering the assistant and verifying the result. Vibe coding is the extreme end of this spectrum: you mostly accept what the model writes and react to what you see.",
+      "points": [
+        "Inline completion: suggests the next lines inside the editor.",
+        "Chat assistants: answer questions and generate snippets you paste in.",
+        "Agentic assistants: edit multiple files, run tests and iterate with less supervision.",
+        "The more autonomy the tool has, the more important review and tests become."
+      ]
+    },
+    {
+      "heading": "The vibe coding loop",
+      "body": "The workflow is a fast feedback loop. You state a goal, the assistant generates code, you run it, observe what happens and describe the next change or the error. The loop is powerful because each iteration is cheap. It becomes risky when the only check is 'it seems to work', because many defects (security, edge cases, performance) are invisible in a quick manual test.",
+      "points": [
+        "Describe: state the goal, constraints and context.",
+        "Generate: let the assistant write or edit code.",
+        "Run: execute the app or tests.",
+        "Inspect: read the diff and the behaviour, not just the screen.",
+        "Refine: give precise feedback or roll back and try again."
+      ]
+    },
+    {
+      "heading": "Where it works well and where it does not",
+      "body": "Vibe coding is excellent for throwaway prototypes, internal tools, learning a new library, boilerplate and UI experiments, because the cost of a hidden bug is low and speed matters most. It is a poor fit for authentication, payments, personal data, concurrency and anything regulated, because a subtle mistake can leak data or lose money and the person who accepted the code may not understand it well enough to fix it.",
+      "points": [
+        "Good fit: prototypes, demos, scripts, scaffolding, exploring an unfamiliar API.",
+        "Poor fit without careful review: auth, payments, data migrations, security-sensitive logic.",
+        "Rule of thumb: the higher the cost of a bug, the more you must read and test."
+      ]
+    },
+    {
+      "heading": "Risks of accepting unread code",
+      "body": "Language models predict plausible code; plausible is not the same as correct. Generated code can call functions that do not exist, use outdated APIs, skip input validation, hard-code secrets, add unnecessary dependencies or duplicate logic. Over time a codebase built from unreviewed generations becomes hard to change because nobody holds a mental model of it.",
+      "points": [
+        "Correctness: off-by-one errors, missed edge cases, invented APIs (hallucinations).",
+        "Security: injection, missing authorisation checks, exposed keys.",
+        "Supply chain: unknown or even non-existent packages suggested by the model.",
+        "Maintainability: inconsistent style, duplicated code, no tests.",
+        "Ownership: you are accountable for every line you merge, whoever wrote it."
+      ]
+    },
+    {
+      "heading": "Responsible AI-assisted engineering",
+      "body": "Teams that use AI well keep the speed and add guardrails: small changes, version control checkpoints, automated tests, linters, code review and security scanning. The engineer acts as an editor and reviewer. Interviewers increasingly ask how you use AI, and the strongest answer shows both productivity and judgement.",
+      "points": [
+        "Work in small, reviewable steps and commit often.",
+        "Ask for tests alongside code and run them.",
+        "Read every diff; ask the AI to explain anything unclear.",
+        "Scale review effort with risk."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A prototype that works but is not production-ready",
+    "body": "A student asks an assistant: 'Build a page where users sign up with email and password and see a dashboard.' Within minutes the page works in the browser. A review then finds that passwords are stored in plain text in localStorage, there is no server-side check, and the dashboard is visible to anyone who edits a flag in the browser. The demo is fine for a hackathon; shipping it would be a security incident. The fix is to move authentication to a server, hash passwords and check sessions on every request.",
+    "code": {
+      "language": "javascript",
+      "source": "// Generated quickly: works in a demo, unsafe in production\nfunction signUp(email, password) {\n  localStorage.setItem('user', JSON.stringify({ email, password })); // plain-text password in the browser\n  localStorage.setItem('isLoggedIn', 'true'); // any visitor can set this flag\n}\n\n// What review should ask for instead:\n// - send credentials to a server over HTTPS\n// - hash passwords on the server (e.g. bcrypt or argon2)\n// - issue a session cookie and verify it on every protected request"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Hackathon prototypes",
+      "description": "Turn an idea into a clickable demo in hours to test whether users care, accepting that the code may be rewritten."
+    },
+    {
+      "title": "Internal tools and scripts",
+      "description": "Generate a CSV cleaner or a small admin page where the audience is small and the blast radius of a bug is limited."
+    },
+    {
+      "title": "Learning a new framework",
+      "description": "Ask the assistant to scaffold a feature, then read and question the code to learn the framework's patterns."
+    },
+    {
+      "title": "Boilerplate in production apps",
+      "description": "Generate forms, types, tests and configuration, with normal code review before merge."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare a 'pure vibe' request with a disciplined one for the same feature. The second prompt states constraints and asks for tests, which makes the output easier to verify.",
+    "code": {
+      "language": "text",
+      "source": "Vibe prompt:\n  Make a function that validates Indian phone numbers.\n\nDisciplined prompt:\n  Write a JavaScript function isValidIndianMobile(s) that returns true for 10-digit\n  numbers starting with 6-9, optionally prefixed by +91 or 0, ignoring spaces.\n  Return false for anything else. Include 6 example calls with expected results,\n  covering an empty string and a number with letters."
+    },
+    "output": "Vibe prompt -> a regex that may or may not handle +91, spaces or a leading 0; you cannot tell without testing.\nDisciplined prompt -> a function plus explicit cases such as isValidIndianMobile('+91 98765 43210') === true and isValidIndianMobile('12345') === false, which you can run immediately."
+  },
+  "takeaways": [
+    "Vibe coding means describing intent and letting AI write the code, judging by results.",
+    "The core loop is describe, generate, run, inspect and refine.",
+    "It is ideal for prototypes and low-risk code, risky for auth, payments and data.",
+    "Plausible code is not proven code: read diffs and run tests.",
+    "You own every line you merge, regardless of who or what wrote it.",
+    "Scale the amount of review with the cost of a bug."
+  ],
+  "interview": [
+    {
+      "question": "What is vibe coding?",
+      "answer": "It is building software by describing what you want in natural language and letting an AI assistant generate most of the code, iterating based on whether the result works, rather than writing and reasoning about every line yourself.",
+      "explanation": "A strong answer adds that it is great for speed and prototypes, and that professional use adds review and testing on top."
+    },
+    {
+      "question": "How do you use AI coding tools in your own work?",
+      "answer": "I use them for scaffolding, boilerplate, exploring unfamiliar APIs and drafting tests. I keep changes small, read every diff, run tests and ask the assistant to explain code I do not understand. For security-sensitive code I review line by line.",
+      "explanation": "Interviewers want evidence of judgement. Mention concrete practices (small diffs, tests, review) rather than just 'I use Copilot'."
+    },
+    {
+      "question": "What are the main risks of shipping AI-generated code without review?",
+      "answer": "Hidden bugs and missed edge cases, security flaws such as injection or missing authorisation, hallucinated or outdated APIs and packages, leaked secrets, and code nobody on the team understands well enough to maintain.",
+      "explanation": "Group risks into correctness, security, supply chain and maintainability; that structure signals senior thinking."
+    },
+    {
+      "question": "When would you deliberately choose a fast vibe-coding approach?",
+      "answer": "For a prototype to validate an idea, a one-off script, or a demo where speed matters more than long-term quality, as long as it is clearly labelled and not deployed with real user data.",
+      "explanation": "Showing you can match rigour to risk is better than saying 'never' or 'always'."
+    },
+    {
+      "question": "A teammate merged a large AI-generated pull request that 'works'. What would you check?",
+      "answer": "Whether there are tests and they pass, input validation and authorisation on any endpoints, secrets in code or config, new dependencies and their legitimacy, error handling, and whether the change can be split into smaller reviewable parts.",
+      "explanation": "This scenario tests review habits. Prioritise by risk and suggest process improvements such as size limits on AI-generated PRs."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Triage AI-generated changes by risk",
+    "difficulty": "Basic",
+    "objective": "Turn the idea 'scale review effort with risk' into a simple, explicit scoring rule.",
+    "statement": "A team receives several AI-generated changes. Each change has a name, a number of changed lines, an area and whether it includes tests. Score each change: area weight ui=1, logic=2, data=3, auth=4, payments=4 (any other area counts as 2). Add 2 if more than 400 lines changed, otherwise add 1 if more than 100 lines changed. Add 2 if the change has no tests. A score of 6 or more is HIGH, 4 or 5 is MEDIUM, anything lower is LOW. Print each change's level, then the change to review first (highest score; on a tie, the earliest one).",
+    "language": "javascript",
+    "input_format": "First line: N (number of changes). Next N lines: name|lines|area|tests where tests is yes or no.",
+    "output_format": "N lines of the form '<name>: <LEVEL> (score <s>)', then one line 'Review first: <name>'.",
+    "example": {
+      "input": "4\nnavbar|40|ui|yes\ncheckout|250|payments|no\nlogin|80|auth|yes\nreport|500|data|yes\n",
+      "output": "navbar: LOW (score 1)\ncheckout: HIGH (score 7)\nlogin: MEDIUM (score 4)\nreport: MEDIUM (score 5)\nReview first: checkout"
+    },
+    "constraints": [
+      "1 <= N <= 100; line counts are non-negative integers.",
+      "Area and the tests flag are case-insensitive; trim spaces around fields.",
+      "The input is a global string named stdin; print with console.log."
+    ],
+    "starter": "const lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst weights = { ui: 1, logic: 2, data: 3, auth: 4, payments: 4 };\n\n// TODO: score each change, print its level, then the change to review first\n",
+    "solution": "const lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst weights = { ui: 1, logic: 2, data: 3, auth: 4, payments: 4 };\nlet best = null;\nfor (let i = 1; i <= n; i++) {\n  const [name, size, area, tests] = lines[i].split('|').map(s => s.trim());\n  const count = parseInt(size, 10);\n  let score = weights[area.toLowerCase()] || 2;\n  if (count > 400) score += 2;\n  else if (count > 100) score += 1;\n  if (tests.toLowerCase() !== 'yes') score += 2;\n  const level = score >= 6 ? 'HIGH' : score >= 4 ? 'MEDIUM' : 'LOW';\n  console.log(`${name}: ${level} (score ${score})`);\n  if (!best || score > best.score) best = { name, score };\n}\nconsole.log(`Review first: ${best.name}`);\n",
+    "explanation": [
+      "Split the input into lines and read N from the first line.",
+      "For each change, split on '|' and trim every field.",
+      "Start from the area weight (default 2), then add size and missing-test penalties.",
+      "Map the score to HIGH, MEDIUM or LOW with two thresholds.",
+      "Track the highest score using a strict '>' so the earliest change wins ties."
+    ],
+    "tests": [
+      {
+        "input": "4\nnavbar|40|ui|yes\ncheckout|250|payments|no\nlogin|80|auth|yes\nreport|500|data|yes\n",
+        "output": "navbar: LOW (score 1)\ncheckout: HIGH (score 7)\nlogin: MEDIUM (score 4)\nreport: MEDIUM (score 5)\nReview first: checkout"
+      },
+      {
+        "input": "1\nhelper|10|logic|no\n",
+        "output": "helper: MEDIUM (score 4)\nReview first: helper"
+      },
+      {
+        "input": "2\nwidget|101|misc|YES\napi | 401 | Auth | No\n",
+        "output": "widget: LOW (score 3)\napi: HIGH (score 8)\nReview first: api"
+      },
+      {
+        "input": "2\na|100|data|no\nb|150|auth|yes\n",
+        "output": "a: MEDIUM (score 5)\nb: MEDIUM (score 5)\nReview first: a"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which description best matches vibe coding?",
+      "options": [
+        "Describing intent in natural language and letting AI generate most of the code, judging by results",
+        "Pair programming with another human over video",
+        "Compiling code without running any tests",
+        "Writing every line by hand and using AI only for documentation"
+      ],
+      "answer": 0,
+      "explanation": "Vibe coding relies on natural-language intent and AI generation, with progress judged mainly by whether the result works."
+    },
+    {
+      "type": "scenario",
+      "question": "Which task is the safest fit for a fast, lightly reviewed vibe-coding approach?",
+      "options": [
+        "A throwaway prototype to show a UI idea to classmates",
+        "A database migration on production customer data",
+        "Payment refund logic for a live store",
+        "Password reset flow for a banking app"
+      ],
+      "answer": 0,
+      "explanation": "A throwaway prototype has a low cost of failure. The others can lose money or leak data if a subtle bug slips through."
+    },
+    {
+      "type": "concept",
+      "question": "Why is 'it runs and looks right' an insufficient check for AI-generated code?",
+      "options": [
+        "AI-generated code cannot be version controlled",
+        "Many defects such as missing authorisation or edge-case bugs are invisible in a quick manual test",
+        "Generated code always fails to compile",
+        "Browsers cannot run AI-generated JavaScript"
+      ],
+      "answer": 1,
+      "explanation": "Security flaws, edge cases and performance problems often do not show up when you click through the happy path."
+    },
+    {
+      "type": "code",
+      "question": "A generated signup stores this in the browser. What is the most serious problem?",
+      "code": "localStorage.setItem('user', JSON.stringify({ email, password }));\nlocalStorage.setItem('isLoggedIn', 'true');",
+      "options": [
+        "JSON.stringify is slower than string concatenation",
+        "localStorage keys must be uppercase",
+        "The email should be stored before the password",
+        "The password is stored in plain text and login state is a client-side flag anyone can set"
+      ],
+      "answer": 3,
+      "explanation": "Plain-text passwords in the browser and a forgeable login flag mean there is no real authentication. Auth must be verified on a server."
+    },
+    {
+      "type": "scenario",
+      "question": "Your team wants to keep AI speed but reduce risk. Which practice helps most?",
+      "options": [
+        "Keep changes small, commit often and require tests plus review before merge",
+        "Disable linters because AI code has its own style",
+        "Let the assistant choose and install any packages it suggests",
+        "Accept large multi-file generations in one commit to save time"
+      ],
+      "answer": 0,
+      "explanation": "Small reviewable steps with tests and review keep the fast loop while catching mistakes early."
+    }
+  ]
+}

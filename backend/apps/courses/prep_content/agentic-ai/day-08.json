@@ -1,0 +1,245 @@
+{
+  "day": 8,
+  "title": "Reflection and Self-Critique: Learning From the Last Attempt",
+  "module": "Memory and reflection",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain what reflection adds after a failed or imperfect attempt.",
+    "Describe the actor-evaluator-reflection loop from the Reflexion pattern.",
+    "Write useful critique feedback instead of vague self-praise.",
+    "Use reflection memory to improve the next attempt without repeating mistakes.",
+    "Simulate an iterative self-critique loop that converges on a quality bar in code."
+  ],
+  "definition": "Reflection is an agent technique in which, after an attempt, the agent critiques its own output or trajectory, records the critique as feedback, and uses it to improve the next attempt. It usually runs as an actor-evaluator-reflection loop: the actor produces an answer or action, an evaluator scores it, and a reflection step writes what went wrong and how to fix it. The feedback is stored in memory so a later attempt does not repeat the same mistake.",
+  "theory": [
+    {
+      "heading": "Why agents reflect",
+      "body": "A single pass often falls short: the answer is incomplete, the code fails a test or the plan missed a constraint. Reflection turns that failure into learning within the same task. Instead of blindly retrying, the agent studies what happened, states the specific problem and forms a rule for the next attempt. This is the same self-correction loop from Day 3, but made explicit and stored, so progress compounds across attempts rather than resetting.",
+      "points": [
+        "Reflection converts a failure signal into an actionable critique.",
+        "It improves the next attempt within the same task.",
+        "It reduces repeated mistakes by keeping the lesson in memory."
+      ]
+    },
+    {
+      "heading": "The actor-evaluator-reflection loop",
+      "body": "The Reflexion pattern has three roles. The actor attempts the task and produces a trajectory or answer. The evaluator judges the result, either with a programmatic signal such as a failing test or with a model-based score. The reflection step then writes a short lesson in natural language, such as 'the query was too broad; narrow it by date next time'. That lesson is added to memory and shown to the actor on the next attempt, which is where the improvement comes from.",
+      "points": [
+        "Actor: produces the attempt or answer.",
+        "Evaluator: scores the attempt, ideally with an external check.",
+        "Reflection: writes specific, actionable feedback.",
+        "Memory: carries the feedback into the next attempt."
+      ]
+    },
+    {
+      "heading": "Critique quality matters",
+      "body": "Reflection only helps if the critique is specific and correct. Vague feedback such as 'make it better' gives the model nothing to act on, while a precise note such as 'step 3 used the wrong currency; convert to EUR first' guides the fix. A weak evaluator can also reward the wrong thing and push the agent in a bad direction, which is why programmatic checks like tests, schemas and unit comparisons are preferred over asking the model to grade itself.",
+      "points": [
+        "Specific feedback beats generic encouragement.",
+        "Ground the critique in evidence from the attempt.",
+        "Prefer programmatic evaluators over self-grading when possible.",
+        "Bad critique can make the agent worse, not better."
+      ]
+    },
+    {
+      "heading": "Storing and using reflection memory",
+      "body": "The lesson from reflection should be stored so it can help later attempts and, in some systems, later tasks. Short-term reflection memory holds the critiques for the current task, while long-term reflection memory can hold generalised lessons such as 'this API returns paginated results'. This is a natural fit with the memory ideas from Day 7: write durable lessons, retrieve the relevant ones, and expire anything stale so old advice does not mislead the agent.",
+      "points": [
+        "Store reflections so later attempts can read them.",
+        "Keep them short and specific, not a full retelling.",
+        "Generalise lessons that apply beyond the current task.",
+        "Expire stale lessons that no longer match reality."
+      ]
+    },
+    {
+      "heading": "Limitations and costs",
+      "body": "Reflection is not free. Each round adds model calls for evaluation and critique, so it increases latency and token cost, and it can get stuck improving a fundamentally wrong approach. It also risks over-correcting a good answer because the evaluator is uncertain. Bound the number of rounds, require measurable improvement before continuing, and keep a fixed stopping rule, otherwise reflection becomes an expensive loop that never converges.",
+      "points": [
+        "Extra calls raise cost and latency.",
+        "Reflection can fixate on a wrong approach.",
+        "Over-correction can damage a good answer.",
+        "Bound the rounds and require measurable improvement."
+      ]
+    }
+  ],
+  "example": {
+    "title": "An evaluator scores each attempt and reflection improves the next",
+    "body": "The agent must reach a quality score of 100. The evaluator returns 40 on the first attempt. Reflection notes that the answer missed key details, so the next attempt addresses half the remaining gap, and each round closes half of what is left. The score climbs 70, 85, 92, 96, 98, 99, 100 and the agent stops as soon as it passes the bar, instead of running to the round limit.",
+    "code": {
+      "language": "text",
+      "source": "quality bar = 100, start score = 40\nround 1: close half of 60 -> 70\nround 2: close half of 30 -> 85\nround 3: close half of 15 -> 92\n...\nround 7: score 100 -> pass"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Self-correcting code agents",
+      "description": "Run tests, read the failure, reflect on the bug and edit the code, repeating until the tests pass."
+    },
+    {
+      "title": "Writing and editing",
+      "description": "Draft an answer, critique it against the brief, and revise the weak sections before delivering."
+    },
+    {
+      "title": "SQL and data queries",
+      "description": "Execute a query, inspect the error or unexpected result, reflect and rewrite the query with the correction."
+    },
+    {
+      "title": "Planning refinement",
+      "description": "Review a plan against constraints, note what is missing and produce an improved plan on the next pass."
+    }
+  ],
+  "demonstration": {
+    "description": "Simulate a reflection loop that improves a quality score towards a threshold. Each round the agent addresses half of the remaining gap to the bar, with a minimum improvement of one point so it always progresses. The loop stops as soon as the score meets the bar or the round limit is reached.",
+    "code": {
+      "language": "text",
+      "source": "start=40 threshold=100 max_rounds=10\nround: score += max(1, (threshold - score) // 2)"
+    },
+    "output": "Round 1: score 70\nRound 2: score 85\nRound 3: score 92\nRound 4: score 96\nRound 5: score 98\nRound 6: score 99\nRound 7: score 100\nPassed after 7 rounds"
+  },
+  "takeaways": [
+    "Reflection critiques an attempt and feeds the lesson into the next one.",
+    "The Reflexion loop has an actor, an evaluator and a reflection step.",
+    "Specific, evidence-based critique improves the agent; vague praise does not.",
+    "Prefer programmatic evaluators such as tests over self-grading.",
+    "Store reflections in memory so later attempts do not repeat mistakes.",
+    "Bound the number of reflection rounds and require measurable improvement."
+  ],
+  "interview": [
+    {
+      "question": "What is reflection in an agent?",
+      "answer": "After an attempt, the agent critiques its own output or trajectory, writes specific feedback about what went wrong and how to fix it, and uses that feedback to improve the next attempt within the same task.",
+      "explanation": "Frame it as turning a failure signal into a stored lesson, not just retrying."
+    },
+    {
+      "question": "Describe the actor-evaluator-reflection loop.",
+      "answer": "The actor produces an attempt, the evaluator scores it, ideally with a programmatic check like a test, and the reflection step writes a short, specific lesson that is stored in memory and shown to the actor on the next attempt.",
+      "explanation": "Name the three roles and stress that the reflection memory is what carries the improvement forward."
+    },
+    {
+      "question": "Why is self-grading by the same model risky?",
+      "answer": "The model may reward the wrong thing or be unable to see its own error, so a weak evaluator can push the agent in a bad direction. External checks such as tests, schemas or a separate verifier are more trustworthy.",
+      "explanation": "Mention that evaluation quality bounds the benefit of reflection, so invest in the evaluator."
+    },
+    {
+      "question": "What are the costs and failure modes of reflection?",
+      "answer": "Extra model calls for evaluation and critique raise latency and token cost, the loop can fixate on a wrong approach, and it can over-correct a good answer. Bound the rounds and require measurable improvement.",
+      "explanation": "A good answer treats reflection as a trade-off and includes stopping rules."
+    },
+    {
+      "question": "How does reflection relate to memory?",
+      "answer": "The reflection output is stored so later attempts, and sometimes later tasks, can read it. Short-term reflection memory helps the current task; generalised lessons can be written to long-term memory and retrieved when relevant.",
+      "explanation": "This ties Day 8 back to Day 7 and shows memory and reflection as complementary."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Simulate a reflection loop towards a quality bar",
+    "difficulty": "Intermediate",
+    "objective": "Model an iterative self-critique loop that closes half the remaining gap each round and stops when it meets the quality bar or the round limit.",
+    "statement": "An agent starts with a quality score and tries to reach a threshold. Each reflection round the evaluator notes the remaining gap, and the next attempt improves the score by half of that gap rounded down, but by at least 1 point. Print 'Round k: score s' after each round. Stop as soon as the score reaches the threshold, or when the maximum number of rounds is reached. Then print 'Passed after k rounds' if the bar was met, otherwise 'Failed after M rounds, score s' where M is the round limit and s is the final score.",
+    "language": "python",
+    "input_format": "One line with three integers: start threshold max_rounds.",
+    "output_format": "One 'Round k: score s' line per round, then a final 'Passed after k rounds' or 'Failed after M rounds, score s' line.",
+    "example": {
+      "input": "40 100 10\n",
+      "output": "Round 1: score 70\nRound 2: score 85\nRound 3: score 92\nRound 4: score 96\nRound 5: score 98\nRound 6: score 99\nRound 7: score 100\nPassed after 7 rounds"
+    },
+    "constraints": [
+      "0 <= start, threshold <= 100000; 0 <= max_rounds <= 1000.",
+      "Each round adds max(1, (threshold - score) // 2) using integer division.",
+      "If the score already meets the threshold, no rounds run."
+    ],
+    "starter": "import sys\n\nstart, threshold, max_rounds = map(int, sys.stdin.read().split())\nscore = start\nrounds = 0\n# TODO: run the reflection loop and print the result\n",
+    "solution": "import sys\n\nstart, threshold, max_rounds = map(int, sys.stdin.read().split())\nscore = start\nrounds = 0\nwhile score < threshold and rounds < max_rounds:\n    gap = threshold - score\n    score += max(1, gap // 2)\n    rounds += 1\n    print(f'Round {rounds}: score {score}')\nif score >= threshold:\n    print(f'Passed after {rounds} rounds')\nelse:\n    print(f'Failed after {max_rounds} rounds, score {score}')\n",
+    "explanation": [
+      "Read the starting score, the threshold and the round limit.",
+      "While the score is below the bar and rounds remain, compute the gap to the threshold.",
+      "Improve the score by half the gap rounded down, but at least 1 point, and count the round.",
+      "Stop when the bar is met; report success with the number of rounds or failure with the final score."
+    ],
+    "tests": [
+      {
+        "input": "40 100 10\n",
+        "output": "Round 1: score 70\nRound 2: score 85\nRound 3: score 92\nRound 4: score 96\nRound 5: score 98\nRound 6: score 99\nRound 7: score 100\nPassed after 7 rounds"
+      },
+      {
+        "input": "90 80 5\n",
+        "output": "Passed after 0 rounds"
+      },
+      {
+        "input": "0 100 2\n",
+        "output": "Round 1: score 50\nRound 2: score 75\nFailed after 2 rounds, score 75"
+      },
+      {
+        "input": "95 100 5\n",
+        "output": "Round 1: score 97\nRound 2: score 98\nRound 3: score 99\nRound 4: score 100\nPassed after 4 rounds"
+      },
+      {
+        "input": "50 50 3\n",
+        "output": "Passed after 0 rounds"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does the reflection step add to an agent's retry loop?",
+      "options": [
+        "A random new attempt",
+        "A specific critique that tells the next attempt what to fix",
+        "A larger context window",
+        "A faster tokenizer"
+      ],
+      "answer": 1,
+      "explanation": "Reflection turns a failure into actionable feedback that guides the next attempt instead of blindly retrying."
+    },
+    {
+      "type": "scenario",
+      "question": "Which critique is most useful to an agent trying to improve?",
+      "options": [
+        "Step 3 used the wrong currency; convert to EUR before summing",
+        "The answer is wrong",
+        "Try harder next time",
+        "Good job overall"
+      ],
+      "answer": 0,
+      "explanation": "Specific, evidence-based feedback tells the agent exactly what to change, which is what makes reflection effective."
+    },
+    {
+      "type": "concept",
+      "question": "Why is a programmatic evaluator such as a test preferred over asking the model to grade itself?",
+      "options": [
+        "It is always faster",
+        "It removes the need for tools",
+        "It gives an objective signal and avoids the model missing or rewarding its own errors",
+        "It uses fewer tokens by definition"
+      ],
+      "answer": 2,
+      "explanation": "A weak evaluator bounds how much reflection can help, and an external check is more trustworthy than self-grading."
+    },
+    {
+      "type": "output",
+      "question": "A reflection loop starts at 40 and the bar is 100, closing half the gap each round with a minimum of 1. What is the score after two rounds?",
+      "options": [
+        "85",
+        "90",
+        "60",
+        "70"
+      ],
+      "answer": 0,
+      "explanation": "Round one closes half of 60 to reach 70, then round two closes half of 30 to reach 85."
+    },
+    {
+      "type": "scenario",
+      "question": "A reflection loop keeps rewriting a plan without ever finishing. What safeguard is missing?",
+      "options": [
+        "A bigger model",
+        "More tools",
+        "A higher temperature",
+        "A bound on the number of rounds and a requirement of measurable improvement"
+      ],
+      "answer": 3,
+      "explanation": "Unbounded reflection can loop forever, so it needs a round limit and a check that each round actually improves the result."
+    }
+  ]
+}

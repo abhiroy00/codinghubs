@@ -1,0 +1,239 @@
+{
+  "day": 2,
+  "title": "The this Keyword, Prototypes and ES6 Classes",
+  "module": "JavaScript core",
+  "level": "Beginner",
+  "objectives": [
+    "Apply the four binding rules that decide the value of this, plus the arrow-function exception.",
+    "Use call, apply and bind and explain when each is useful.",
+    "Explain the prototype chain and how property lookup and shadowing work.",
+    "Relate ES6 classes, extends and super to the prototypes underneath them.",
+    "Diagnose the 'lost this' bug when a method is passed as a callback."
+  ],
+  "definition": "this is a special value set when a function is called; it usually refers to the object the function was called on. Every JavaScript object also has an internal link to another object, its prototype, and property lookups that fail on the object continue along this prototype chain. ES6 classes are cleaner syntax over the same prototype mechanism.",
+  "theory": [
+    {
+      "heading": "How this is decided: call-site rules",
+      "body": "For a normal function, this is not fixed when the function is written; it is decided by how the function is called. The rules are checked in priority order. Getting this right matters in Node and React code, where methods are often passed around as callbacks and lose their object.",
+      "points": [
+        "new binding: new User() sets this to the freshly created object.",
+        "Explicit binding: fn.call(obj, a, b), fn.apply(obj, [a, b]) or fn.bind(obj) sets this to obj.",
+        "Implicit binding: user.greet() sets this to user, the object before the dot.",
+        "Default binding: a plain call greet() gives undefined in strict mode (modules and classes are strict) or the global object in sloppy mode."
+      ]
+    },
+    {
+      "heading": "Arrow functions and lexical this",
+      "body": "Arrow functions do not have their own this. They use the this of the scope in which they were defined, and call, apply or bind cannot change it. This makes arrows ideal for callbacks inside methods, such as array.map inside a class method, but wrong as object methods that need the object, because an arrow defined in an object literal takes this from the surrounding module or function, not the object.",
+      "points": [
+        "Use arrows for callbacks that should keep the outer this.",
+        "Do not use arrows for object methods or prototype methods that rely on this.",
+        "Arrow functions also lack arguments and cannot be used with new."
+      ]
+    },
+    {
+      "heading": "The prototype chain",
+      "body": "When you read obj.prop, the engine checks obj's own properties first. If the property is missing, it follows obj's [[Prototype]] link (available through Object.getPrototypeOf) and checks there, continuing until it finds the property or reaches null, in which case the result is undefined. Writing obj.prop = value normally creates an own property on obj, shadowing the inherited one without changing the prototype. Methods placed on a prototype are shared by every instance, which saves memory.",
+      "points": [
+        "Object.create(proto) makes a new object whose prototype is proto.",
+        "obj.hasOwnProperty(key) or Object.hasOwn(obj, key) tells own from inherited properties.",
+        "Arrays inherit from Array.prototype, which inherits from Object.prototype, whose prototype is null."
+      ]
+    },
+    {
+      "heading": "ES6 classes are prototypes with better syntax",
+      "body": "class User { greet() {} } creates a constructor function User and puts greet on User.prototype. extends links Child.prototype to Parent.prototype, and super(...) must be called in a derived constructor before using this. Class bodies run in strict mode. Fields declared as handle = () => {} are created per instance and capture this lexically, which is a common way to avoid binding issues in React class components and event emitters.",
+      "points": [
+        "typeof User is 'function'; classes are not a new object model.",
+        "Static methods live on the class itself, not on instances.",
+        "#private fields are truly private and are not on the prototype."
+      ]
+    },
+    {
+      "heading": "The lost-this bug",
+      "body": "const fn = user.greet; fn(); separates the method from its object, so the call-site rule becomes the default binding and this is undefined in strict code. The same happens with setTimeout(user.greet, 100) or passing a class method as an Express route handler or React onClick. Fixes are bind in the constructor, an arrow wrapper () => user.greet(), or a class field arrow function.",
+      "points": [
+        "The function is the same; only the call site changed.",
+        "bind returns a new function with this permanently fixed."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Prototype-based inheritance with a class",
+    "body": "Admin extends User. An admin instance finds describe on User.prototype through the chain, while canDelete is found on Admin.prototype. The extracted method shows the lost-this bug and its fix with bind.",
+    "code": {
+      "language": "javascript",
+      "source": "class User {\n  constructor(name) { this.name = name; }\n  describe() { return `${this.name} (user)`; }\n}\nclass Admin extends User {\n  canDelete() { return true; }\n}\n\nconst a = new Admin('Riya');\nconsole.log(a.describe());                                  // Riya (user)\nconsole.log(Object.getPrototypeOf(a) === Admin.prototype);  // true\nconsole.log(Object.hasOwn(a, 'describe'));                  // false: inherited\n\nconst detached = a.describe;\ntry { detached(); } catch (e) { console.log(e.constructor.name); } // TypeError\nconst bound = a.describe.bind(a);\nconsole.log(bound());                                       // Riya (user)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Mongoose models",
+      "description": "Mongoose schema methods are added to the model's prototype, and they use this to reach the document, which is why they must be normal functions, not arrows."
+    },
+    {
+      "title": "Express controllers as classes",
+      "description": "Passing controller.getUser as a route handler loses this unless the method is bound or written as a class-field arrow."
+    },
+    {
+      "title": "Custom error classes",
+      "description": "class NotFoundError extends Error sets name and status so a central error handler can respond correctly."
+    },
+    {
+      "title": "Event emitters",
+      "description": "Node's EventEmitter calls listeners with this set to the emitter for normal functions, but not for arrow listeners."
+    }
+  ],
+  "demonstration": {
+    "description": "Call one function four different ways and observe how this changes. The module is in strict mode, so a plain call gives undefined.",
+    "code": {
+      "language": "javascript",
+      "source": "'use strict';\nfunction who() { return this ? this.label : 'undefined'; }\nconst x = { label: 'x', who };\nconst y = { label: 'y' };\n\nconsole.log(who());            // default binding\nconsole.log(x.who());          // implicit binding\nconsole.log(who.call(y));      // explicit binding\nconst Ctor = function () { this.label = 'new'; this.r = who.call(this); };\nconsole.log(new Ctor().r);     // new binding"
+    },
+    "output": "undefined\nx\ny\nnew"
+  },
+  "takeaways": [
+    "this depends on the call site: new, explicit, implicit, then default.",
+    "Arrow functions take this from their defining scope and ignore call/apply/bind.",
+    "Property lookup walks the prototype chain until it reaches null.",
+    "Assigning a property creates an own property that shadows the inherited one.",
+    "Classes are syntax over constructor functions and prototypes.",
+    "Passing a method as a callback loses this; fix it with bind or an arrow wrapper."
+  ],
+  "interview": [
+    {
+      "question": "How is the value of this determined in JavaScript?",
+      "answer": "By the call site. With new it is the new object; with call, apply or bind it is the given object; with obj.method() it is obj; otherwise it is undefined in strict mode or the global object in sloppy mode. Arrow functions ignore these rules and use the enclosing scope's this.",
+      "explanation": "List the rules in priority order and add the arrow exception. A quick example of each rule shows real understanding."
+    },
+    {
+      "question": "What is the difference between call, apply and bind?",
+      "answer": "call invokes the function immediately with a given this and arguments listed individually; apply does the same with arguments as an array; bind does not invoke but returns a new function with this (and optionally leading arguments) permanently fixed.",
+      "explanation": "Mention a use for bind such as fixing a callback, and that a bound function cannot be re-bound."
+    },
+    {
+      "question": "Explain prototypal inheritance.",
+      "answer": "Each object has an internal prototype link. When a property is not found on the object, the engine looks it up on the prototype, then the prototype's prototype, until null. Shared methods live on the prototype, so all instances reuse them.",
+      "explanation": "Strong answers mention Object.create, Object.getPrototypeOf and shadowing, and contrast this with copying in classical inheritance."
+    },
+    {
+      "question": "Are ES6 classes different from constructor functions?",
+      "answer": "They use the same prototype model, but classes add guarantees: the body is strict, the class cannot be called without new, methods are non-enumerable, extends and super wire up the chain, and private #fields are supported.",
+      "explanation": "Interviewers check that you know classes are syntactic sugar but not identical, and can name the practical differences."
+    },
+    {
+      "question": "Why should a Mongoose schema method not be an arrow function?",
+      "answer": "Mongoose calls the method with this set to the document. An arrow function ignores that binding and uses the this of the module scope, so this.name would be undefined.",
+      "explanation": "Links today's theory to MERN code; the same reasoning applies to pre-save hooks."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Trace the prototype chain",
+    "difficulty": "Basic",
+    "objective": "Build objects with Object.create and report where a property is found during prototype lookup.",
+    "statement": "Process commands:\n- obj <name> <parent|null> [key=value ...]: create an object whose prototype is the named parent object (or null) with the given own properties.\n- set <name> <key=value>: assign a property on that object (it becomes an own property).\n- get <name> <key>: print <name>.<key> = <value> (own) if the property is the object's own, <name>.<key> = <value> (from <owner>) if it was inherited from object <owner>, or <name>.<key> = undefined if no object in the chain has it.\nUse real prototypes: create objects with Object.create and walk the chain with Object.getPrototypeOf.",
+    "language": "javascript",
+    "input_format": "One command per line. A parent is always defined before its children.",
+    "output_format": "One line per get command.",
+    "example": {
+      "input": "obj animal null speak=generic legs=4\nobj dog animal speak=woof\nobj puppy dog age=1\nget puppy speak\nget puppy legs\nget puppy fly\nset puppy speak=yip\nget puppy speak\nget dog speak\n",
+      "output": "puppy.speak = woof (from dog)\npuppy.legs = 4 (from animal)\npuppy.fly = undefined\npuppy.speak = yip (own)\ndog.speak = woof (own)"
+    },
+    "constraints": [
+      "Names, keys and values contain no spaces or '=' characters other than the separator.",
+      "Values are stored as strings.",
+      "Objects created with parent null must not inherit anything (not even toString)."
+    ],
+    "starter": "const objects = new Map();\nconst names = new Map(); // object -> name\nconst out = [];\n\nfunction ownerOf(obj, key) {\n  // TODO: walk the chain with Object.getPrototypeOf until null\n}\n\nfor (const raw of stdin.split('\\n')) {\n  const parts = raw.trim().split(' ').filter(Boolean);\n  if (!parts.length) continue;\n  // TODO: handle obj, set and get\n}\nconsole.log(out.join('\\n'));\n",
+    "solution": "const objects = new Map();\nconst names = new Map();\nconst out = [];\n\nfunction ownerOf(obj, key) {\n  let current = obj;\n  while (current !== null) {\n    if (Object.prototype.hasOwnProperty.call(current, key)) return current;\n    current = Object.getPrototypeOf(current);\n  }\n  return null;\n}\n\nfor (const raw of stdin.split('\\n')) {\n  const parts = raw.trim().split(' ').filter(Boolean);\n  if (!parts.length) continue;\n  const cmd = parts[0];\n  if (cmd === 'obj') {\n    const [, name, parentName, ...props] = parts;\n    const parent = parentName === 'null' ? null : objects.get(parentName);\n    const obj = Object.create(parent);\n    for (const p of props) {\n      const [k, v] = p.split('=');\n      obj[k] = v;\n    }\n    objects.set(name, obj);\n    names.set(obj, name);\n  } else if (cmd === 'set') {\n    const [k, v] = parts[2].split('=');\n    objects.get(parts[1])[k] = v;\n  } else if (cmd === 'get') {\n    const name = parts[1];\n    const key = parts[2];\n    const obj = objects.get(name);\n    const owner = ownerOf(obj, key);\n    if (!owner) out.push(`${name}.${key} = undefined`);\n    else if (owner === obj) out.push(`${name}.${key} = ${obj[key]} (own)`);\n    else out.push(`${name}.${key} = ${obj[key]} (from ${names.get(owner)})`);\n  }\n}\nconsole.log(out.join('\\n'));\n",
+    "explanation": [
+      "Object.create(parent) sets the new object's prototype; Object.create(null) gives an object with no prototype at all.",
+      "Own properties are assigned directly, so later assignments shadow inherited values instead of changing the parent.",
+      "ownerOf checks own properties with Object.prototype.hasOwnProperty.call (safe even for null-prototype objects), then moves up with Object.getPrototypeOf.",
+      "obj[key] performs the engine's own lookup; ownerOf only identifies which object supplied the value."
+    ],
+    "tests": [
+      {
+        "input": "obj animal null speak=generic legs=4\nobj dog animal speak=woof\nobj puppy dog age=1\nget puppy speak\nget puppy legs\nget puppy fly\nset puppy speak=yip\nget puppy speak\nget dog speak\n",
+        "output": "puppy.speak = woof (from dog)\npuppy.legs = 4 (from animal)\npuppy.fly = undefined\npuppy.speak = yip (own)\ndog.speak = woof (own)"
+      },
+      {
+        "input": "obj base null\nget base toString\nobj child base\nset base toString=custom\nget child toString\n",
+        "output": "base.toString = undefined\nchild.toString = custom (from base)"
+      },
+      {
+        "input": "obj a null x=1\nobj b a\nobj c b\nobj d c\nget d x\nset b x=2\nget d x\nget a x\n",
+        "output": "d.x = 1 (from a)\nd.x = 2 (from b)\na.x = 1 (own)"
+      },
+      {
+        "input": "obj config null env=dev\nobj prod config env=prod debug=false\nget prod env\nget prod debug\nget config debug\n",
+        "output": "prod.env = prod (own)\nprod.debug = false (own)\nconfig.debug = undefined"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What is logged in an ES module (strict mode)?",
+      "code": "const user = {\n  name: 'Asha',\n  greet() { return this?.name; }\n};\nconst fn = user.greet;\nconsole.log(fn());",
+      "options": [
+        "undefined",
+        "It throws a SyntaxError",
+        "Asha",
+        "An empty string"
+      ],
+      "answer": 0,
+      "explanation": "fn() is a plain call, so this is undefined in strict mode; optional chaining returns undefined instead of throwing."
+    },
+    {
+      "type": "concept",
+      "question": "Which method returns a new function with this permanently fixed, without calling it?",
+      "options": [
+        "Object.create",
+        "bind",
+        "call",
+        "apply"
+      ],
+      "answer": 1,
+      "explanation": "bind returns a new bound function; call and apply invoke the function immediately."
+    },
+    {
+      "type": "scenario",
+      "question": "A class method passed as onClick={this.handleSave} throws 'Cannot read properties of undefined'. What is the most direct fix?",
+      "options": [
+        "Rename the method to start with on",
+        "Convert the class to use var",
+        "Call super() in the method",
+        "Define handleSave as a class-field arrow function or bind it in the constructor"
+      ],
+      "answer": 3,
+      "explanation": "Passing the method detaches it from the instance. Binding or a class-field arrow keeps this pointing at the instance."
+    },
+    {
+      "type": "output",
+      "question": "What does this print?",
+      "code": "const base = { role: 'user' };\nconst admin = Object.create(base);\nadmin.role = 'admin';\nconsole.log(base.role, admin.role);",
+      "options": [
+        "user admin",
+        "user user",
+        "undefined admin",
+        "admin admin"
+      ],
+      "answer": 0,
+      "explanation": "Assigning role on admin creates an own property that shadows the inherited one; base is not changed."
+    },
+    {
+      "type": "concept",
+      "question": "Where does a method defined in a class body, such as greet() {}, live?",
+      "options": [
+        "On the class's prototype object, shared by instances",
+        "In a hidden global registry",
+        "On each instance as an own property",
+        "On the class constructor as a static property"
+      ],
+      "answer": 0,
+      "explanation": "Class methods are placed on ClassName.prototype; only class fields are created per instance."
+    }
+  ]
+}

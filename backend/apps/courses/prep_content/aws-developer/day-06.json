@@ -1,0 +1,195 @@
+{
+  "day": 6,
+  "title": "AWS CloudWatch Monitoring",
+  "module": "Cloud foundations and IAM",
+  "level": "Beginner",
+  "objectives": [
+    "Explain the key ideas behind AWS CloudWatch Monitoring.",
+    "Describe why AWS CloudWatch Monitoring matters in AWS Developer Associate.",
+    "Apply AWS CloudWatch Monitoring to a realistic scenario.",
+    "Identify common pitfalls and how to avoid them.",
+    "Answer interview questions about AWS CloudWatch Monitoring."
+  ],
+  "definition": "AWS CloudWatch Monitoring is a core concept in AWS Developer Associate. It refers to the techniques, principles and practices that let a practitioner work effectively with this topic in real systems.",
+  "theory": [
+    {
+      "heading": "What AWS CloudWatch Monitoring is",
+      "body": "AWS CloudWatch Monitoring describes the methods and patterns used within AWS Developer Associate to achieve reliable, maintainable results. Understanding it is the foundation for everything built later in this course.",
+      "points": [
+        "AWS CloudWatch Monitoring is a named, repeatable concept.",
+        "It has a clear purpose and scope.",
+        "It connects to other course topics."
+      ]
+    },
+    {
+      "heading": "Why AWS CloudWatch Monitoring matters",
+      "body": "Without AWS CloudWatch Monitoring, systems built with AWS Developer Associate are harder to debug, extend and operate. Teams that master this topic ship fewer defects and communicate more clearly about design decisions.",
+      "points": [
+        "Improves reliability and maintainability.",
+        "Reduces debugging time.",
+        "Supports team alignment."
+      ]
+    },
+    {
+      "heading": "How AWS CloudWatch Monitoring works",
+      "body": "The mechanism behind AWS CloudWatch Monitoring follows a repeatable sequence: understand the requirement, apply the principle, verify the result and refine based on feedback. Each step has checks that keep the work on track.",
+      "points": [
+        "Start from the requirement.",
+        "Apply the core principle of AWS CloudWatch Monitoring.",
+        "Verify the outcome.",
+        "Refine using feedback."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations of AWS CloudWatch Monitoring",
+      "body": "AWS CloudWatch Monitoring offers structure, clarity and consistency, but it also adds overhead and may be overkill for trivial tasks. Use it when the benefit in reliability outweighs the added effort.",
+      "points": [
+        "Advantages: structure, clarity, consistency.",
+        "Limitations: added overhead, not always needed.",
+        "Apply judiciously."
+      ]
+    }
+  ],
+  "example": {
+    "title": "AWS CloudWatch Monitoring in practice",
+    "body": "A concrete illustration of AWS CloudWatch Monitoring shows the principle applied to a small, realistic input so the learner can see cause and effect before scaling up.",
+    "code": {
+      "language": "python",
+      "source": "# Example illustrating AWS CloudWatch Monitoring\nprint('See the worked walk-through above.')"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Production systems",
+      "description": "Applied in real AWS Developer Associate systems to keep behaviour predictable."
+    },
+    {
+      "title": "Debugging",
+      "description": "Helps identify where AWS CloudWatch Monitoring-related assumptions break down."
+    },
+    {
+      "title": "Interviews",
+      "description": "A common topic for AWS Developer Associate interview questions."
+    }
+  ],
+  "demonstration": {
+    "description": "A short walk-through of AWS CloudWatch Monitoring with expected input and output, showing the principle end to end.",
+    "code": {
+      "language": "python",
+      "source": "# Demonstration of AWS CloudWatch Monitoring\nprint('walkthrough output')"
+    },
+    "output": "expected demonstration output"
+  },
+  "takeaways": [
+    "AWS CloudWatch Monitoring is a foundational concept in AWS Developer Associate.",
+    "It follows a clear, repeatable mechanism.",
+    "It improves reliability when applied appropriately.",
+    "Know the advantages and limitations before using it."
+  ],
+  "interview": [
+    {
+      "question": "What is AWS CloudWatch Monitoring?",
+      "answer": "AWS CloudWatch Monitoring is a core concept in AWS Developer Associate that describes the techniques used to work effectively with this area.",
+      "explanation": "Give a concise, accurate definition and one example."
+    },
+    {
+      "question": "Why is AWS CloudWatch Monitoring important?",
+      "answer": "It improves reliability, maintainability and clarity in AWS Developer Associate systems.",
+      "explanation": "Connect to a concrete benefit."
+    },
+    {
+      "question": "What are the limitations of AWS CloudWatch Monitoring?",
+      "answer": "It adds overhead and may be unnecessary for simple cases; apply it judiciously.",
+      "explanation": "Show balanced judgment."
+    },
+    {
+      "question": "How would you explain AWS CloudWatch Monitoring to a junior teammate?",
+      "answer": "Start with the definition, show a small example, then walk through a realistic use case and its trade-offs.",
+      "explanation": "Structure the explanation from simple to applied."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Apply: AWS CloudWatch Monitoring",
+    "difficulty": "Basic",
+    "objective": "Apply AWS CloudWatch Monitoring through a practical exercise.",
+    "statement": "Complete a practical exercise that demonstrates AWS CloudWatch Monitoring. Describe your approach, the steps you took and how you verified the result.",
+    "deliverable": "A short written answer or artefact showing your work on AWS CloudWatch Monitoring.",
+    "steps": [
+      "Restate the goal of AWS CloudWatch Monitoring in your own words.",
+      "List the inputs, steps and expected outputs for AWS CloudWatch Monitoring.",
+      "Work through one concrete example by hand or with code.",
+      "Note one edge case and how you handle it.",
+      "Write a one-paragraph summary of what you learned."
+    ],
+    "checklist": [
+      "The deliverable addresses the stated goal.",
+      "Steps are concrete and reproducible.",
+      "At least one edge case is identified and handled.",
+      "The summary reflects genuine understanding."
+    ],
+    "sample_answer": "Sample answer: Explain AWS CloudWatch Monitoring with a definition, one worked example, an edge case and a real-world use case. The answer shows the learner can apply AWS CloudWatch Monitoring in AWS Developer Associate."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is AWS CloudWatch Monitoring?",
+      "options": [
+        "The core idea of AWS CloudWatch Monitoring",
+        "An unrelated concept",
+        "A hardware device",
+        "A programming language"
+      ],
+      "answer": 0,
+      "explanation": "AWS CloudWatch Monitoring is defined as the core idea above."
+    },
+    {
+      "type": "concept",
+      "question": "Why is AWS CloudWatch Monitoring important?",
+      "options": [
+        "It is never used",
+        "It is only theory",
+        "It improves reliability",
+        "It slows things down"
+      ],
+      "answer": 2,
+      "explanation": "AWS CloudWatch Monitoring improves reliability and clarity."
+    },
+    {
+      "type": "scenario",
+      "question": "A system ignores AWS CloudWatch Monitoring. What is the likely result?",
+      "options": [
+        "More defects",
+        "Faster performance",
+        "No effect",
+        "Lower cost"
+      ],
+      "answer": 0,
+      "explanation": "Ignoring AWS CloudWatch Monitoring leads to more defects."
+    },
+    {
+      "type": "output",
+      "question": "What does a correct AWS CloudWatch Monitoring implementation produce?",
+      "options": [
+        "An error",
+        "Nothing",
+        "A reliable result",
+        "Random output"
+      ],
+      "answer": 2,
+      "explanation": "A correct implementation produces a reliable result."
+    },
+    {
+      "type": "concept",
+      "question": "Which is a limitation of AWS CloudWatch Monitoring?",
+      "options": [
+        "Added overhead",
+        "No benefit",
+        "Always required",
+        "No cost"
+      ],
+      "answer": 0,
+      "explanation": "AWS CloudWatch Monitoring adds overhead but brings reliability."
+    }
+  ]
+}

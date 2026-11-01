@@ -1,0 +1,219 @@
+{
+  "day": 30,
+  "title": "System Design and Capstone Project",
+  "module": "Evaluation & deployment",
+  "level": "Advanced",
+  "objectives": [
+    "Design a small end-to-end generative AI system with models, tools and safety.",
+    "Choose the right technique for each part: prompting, RAG, fine-tuning or agents.",
+    "Sketch the architecture: frontend, backend proxy, model API and vector store.",
+    "Plan evaluation, monitoring and human review.",
+    "Present a capstone design covering the full 30-day curriculum."
+  ],
+  "definition": "System design for generative AI means choosing models, tools, data flows and safety controls so the application is useful, reliable and safe. A capstone design brings together the whole course: prompting for behaviour, RAG for facts, agents for actions, evaluation for quality, and deployment controls for safety. The design should state the goal, components, data flow, techniques used and how success is measured.",
+  "theory": [
+    {
+      "heading": "Choosing techniques per part",
+      "body": "Use prompting for quick behaviour and tone. Use RAG when answers must come from documents or private data. Use fine-tuning when a consistent format or style is needed across many calls. Use agents when the task needs multiple tool-assisted steps. Do not use fine-tuning to add facts; use RAG for that.",
+      "points": [
+        "Prompting: behaviour, tone, fast trials.",
+        "RAG: facts, documents, private data.",
+        "Fine-tuning: consistent format or style.",
+        "Agents: multi-step, tool-using tasks."
+      ]
+    },
+    {
+      "heading": "Architecture sketch",
+      "body": "A typical architecture: frontend sends requests to a backend proxy; the backend holds the API key, calls the model or vector store, validates input and sanitises output; the vector store holds embedded documents for RAG; a cache stores repeated generations. Draw boxes for each part and arrows for data flow.",
+      "points": [
+        "Frontend: user interface.",
+        "Backend proxy: keys, validation, sanitisation.",
+        "Model API: generation.",
+        "Vector store: RAG documents.",
+        "Cache: repeated generations."
+      ]
+    },
+    {
+      "heading": "Data flow",
+      "body": "The user sends a request. The backend validates it, retrieves context from the vector store if needed, builds a prompt, calls the model, sanitises the answer and returns it. Logs and metrics are recorded at each step for monitoring.",
+      "points": [
+        "Request → validate → retrieve → prompt → generate → sanitise → respond.",
+        "Log each step for monitoring.",
+        "Record metrics: latency, errors, token use."
+      ]
+    },
+    {
+      "heading": "Evaluation and monitoring",
+      "body": "Hold out an evaluation set and score the system before release. In production, monitor error rates, latency, user feedback and unsafe outputs. Set alerts and a rollback plan.",
+      "points": [
+        "Evaluate on a held-out set before release.",
+        "Monitor errors, latency and feedback.",
+        "Alert and roll back on problems."
+      ]
+    },
+    {
+      "heading": "Safety and humans in the loop",
+      "body": "Validate inputs, sanitise outputs, rate-limit users, and keep API keys secret. For high-stakes outputs, require human review and offer escalation. State the system's limits clearly to users.",
+      "points": [
+        "Validate input, sanitise output.",
+        "Rate-limit and protect keys.",
+        "Human review for high-stakes decisions."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A company HR assistant capstone",
+    "body": "Goal: answer employee questions from the HR handbook. Components: frontend chat, backend proxy, vector store with handbook chunks, LLM for answers, escalation button. Flow: user asks → backend retrieves handbook chunks → builds RAG prompt → LLM answers → sanitise → show. Evaluation: 50 held-out Q&A pairs scored by exact match and LLM judge. Safety: rate limit, PII redaction, human HR contact for disputes.",
+    "code": {
+      "language": "text",
+      "source": "Frontend (chat) → Backend proxy (key, validate)\n         → Vector store (handbook chunks)\n         → LLM (RAG answer)\n         → Sanitise → User\n         ↓ Escalation → Human HR"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Internal knowledge bot",
+      "description": "Employees ask policy questions answered from documents."
+    },
+    {
+      "title": "Customer support agent",
+      "description": "Answers product questions with human escalation."
+    },
+    {
+      "title": "Document Q&A",
+      "description": "Users upload documents and ask questions about them."
+    },
+    {
+      "title": "Personal productivity assistant",
+      "description": "Summarises notes, drafts emails and schedules tasks."
+    }
+  ],
+  "demonstration": {
+    "description": "Walk through the capstone design for the HR assistant, mapping each course day to a part of the system.",
+    "code": {
+      "language": "text",
+      "source": "Days 1-5: foundations → choose LLM and prompt style.\nDays 6-11: prompting → write system prompt and templates.\nDays 12-15: APIs → backend proxy and function calling.\nDays 16-18: RAG → vector store with handbook chunks.\nDays 19-21: fine-tuning/evaluation → held-out Q&A set and scoring.\nDays 22-24: agents → optional escalation agent.\nDays 25-27: multimodal → optional image upload for forms.\nDays 28-29: evaluation/deployment → scoring, monitoring, safety.\nDay 30: capstone → full design presented."
+    },
+    "output": "Each course day maps to a decision in the final system design."
+  },
+  "takeaways": [
+    "Choose prompting, RAG, fine-tuning or agents based on the need.",
+    "Sketch architecture: frontend, backend proxy, model API, vector store, cache.",
+    "Data flow: validate, retrieve, prompt, generate, sanitise, respond.",
+    "Evaluate on a held-out set before release; monitor in production.",
+    "Safety: validate input, sanitise output, rate-limit, protect keys.",
+    "Humans review high-stakes decisions; users can escalate."
+  ],
+  "interview": [
+    {
+      "question": "How do you choose between prompting, RAG, fine-tuning and agents?",
+      "answer": "Prompting for behaviour, RAG for documents and facts, fine-tuning for consistent format or style, agents for multi-step tool-using tasks.",
+      "explanation": "Justify each choice with the part of the system it serves."
+    },
+    {
+      "question": "What components go in a generative AI architecture?",
+      "answer": "Frontend, backend proxy (keys and validation), model API, vector store for RAG, and a cache.",
+      "explanation": "Draw data flow arrows between them."
+    },
+    {
+      "question": "How do you evaluate before release?",
+      "answer": "Score the system on a held-out evaluation set using exact match, ROUGE or an LLM judge, and spot-check failures.",
+      "explanation": "Set release thresholds and compare options."
+    },
+    {
+      "question": "What safety controls are needed in production?",
+      "answer": "Input validation, output sanitisation, rate limiting, protected API keys, human review for high-stakes decisions and escalation.",
+      "explanation": "Monitor and have a rollback plan."
+    },
+    {
+      "question": "How does each course day feed the capstone?",
+      "answer": "Foundations pick the model, prompting shapes behaviour, APIs build the proxy, RAG adds documents, evaluation scores quality and deployment adds safety.",
+      "explanation": "The capstone is the integration of all 29 days."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design your capstone generative AI system",
+    "difficulty": "Advanced",
+    "objective": "Integrate the whole 30-day curriculum into a single system design.",
+    "statement": "Choose a real application such as an HR assistant, a support bot or a study companion. Write a capstone design document with: (1) the goal and users, (2) the techniques used for each part and why, (3) the architecture sketch with components and data flow, (4) the evaluation plan with metrics and a held-out set, and (5) the safety controls and human-review points.",
+    "deliverable": "A written capstone design covering goal, techniques, architecture, evaluation and safety.",
+    "steps": [
+      "Choose an application and its users.",
+      "State the goal clearly.",
+      "Assign a technique to each part and justify it.",
+      "Sketch components and data flow.",
+      "Plan evaluation metrics and a held-out set.",
+      "List safety controls and human-review points."
+    ],
+    "checklist": [
+      "Goal and users are stated.",
+      "At least two techniques are named and justified.",
+      "Architecture and data flow are described.",
+      "Evaluation plan with metrics and held-out set.",
+      "Safety controls and human review are listed."
+    ],
+    "sample_answer": "Goal: a study companion that answers questions from course notes. Users: students. Techniques: RAG for notes, prompting for a tutor tone, agents for optional web search. Architecture: frontend, backend proxy, vector store, LLM. Evaluation: 40 held-out questions, exact match and LLM judge. Safety: rate limit, no personal data, teacher escalation."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which technique is best for adding private document facts?",
+      "options": [
+        "Prompting only",
+        "Agents only",
+        "Fine-tuning",
+        "RAG"
+      ],
+      "answer": 3,
+      "explanation": "RAG retrieves documents at runtime so the model answers from private facts."
+    },
+    {
+      "type": "concept",
+      "question": "What does the backend proxy do?",
+      "options": [
+        "Replaces the frontend",
+        "Trains the model",
+        "Holds API keys, validates input and sanitises output",
+        "Generates images only"
+      ],
+      "answer": 2,
+      "explanation": "The proxy protects keys and enforces validation and sanitisation."
+    },
+    {
+      "type": "scenario",
+      "question": "You need consistent JSON output across thousands of calls. Prompting is inconsistent. What should you use?",
+      "options": [
+        "RAG",
+        "Fine-tuning",
+        "Agents",
+        "Higher temperature"
+      ],
+      "answer": 1,
+      "explanation": "Fine-tuning teaches a consistent output format through examples."
+    },
+    {
+      "type": "concept",
+      "question": "What should a release decision be based on?",
+      "options": [
+        "Held-out evaluation scores meeting thresholds",
+        "The developer's intuition",
+        "The model's size",
+        "One example"
+      ],
+      "answer": 0,
+      "explanation": "Release when held-out evaluation scores meet defined thresholds."
+    },
+    {
+      "type": "concept",
+      "question": "Why keep humans in the loop for high-stakes decisions?",
+      "answer": 2,
+      "explanation": "AI supports decisions; humans make them in high-stakes contexts.",
+      "options": [
+        "AI always needs help",
+        "Humans write better code",
+        "AI can be biased or wrong",
+        "Humans are faster"
+      ]
+    }
+  ]
+}

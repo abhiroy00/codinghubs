@@ -1,0 +1,241 @@
+{
+  "day": 3,
+  "title": "Array Methods: map, filter, reduce and Friends",
+  "module": "JavaScript essentials for React",
+  "level": "Beginner",
+  "objectives": [
+    "Use map, filter, reduce, find, some and every to transform data declaratively.",
+    "Distinguish methods that return new arrays from methods that mutate the original.",
+    "Group and aggregate data with reduce and Object.groupBy-style logic.",
+    "Use non-mutating alternatives such as toSorted, toReversed and with in React state.",
+    "Explain why rendering lists in JSX is built on map."
+  ],
+  "definition": "Array methods are built-in functions on Array.prototype that process each element through a callback. Methods such as map, filter and reduce return new values instead of changing the original array, which lets you describe what result you want (declarative style) and fits React's rule of never mutating state.",
+  "theory": [
+    {
+      "heading": "The core trio: map, filter, reduce",
+      "body": "map transforms every element and returns a new array of the same length. filter keeps the elements whose callback returns a truthy value. reduce walks the array carrying an accumulator and returns a single result, which can be a number, an object, or even another array. Almost any data transformation for a UI (formatting, searching, totals, grouping) is a combination of these three.",
+      "points": [
+        "map: same length, transformed items — used to turn data into JSX elements.",
+        "filter: same items, possibly fewer — used for search boxes and tabs.",
+        "reduce: any shape — totals, counts, lookup objects keyed by id.",
+        "Always give reduce an initial value to avoid errors on empty arrays."
+      ]
+    },
+    {
+      "heading": "Searching and testing",
+      "body": "find returns the first matching element (or undefined) and findIndex its position. some answers 'does at least one match?' and every answers 'do all match?'; both stop early as soon as the answer is known. includes checks for a primitive value using SameValueZero, so it works with NaN but not with objects that merely look equal.",
+      "points": [
+        "find vs filter: find stops at the first match and returns an element, not an array.",
+        "every on an empty array returns true; some returns false."
+      ]
+    },
+    {
+      "heading": "Mutating versus non-mutating methods",
+      "body": "push, pop, shift, unshift, splice, sort, reverse and fill change the array in place, which is dangerous on React state. ES2023 added copying versions: toSorted, toReversed, toSpliced and with(index, value), which return a new array and leave the original alone. Before these existed, developers wrote [...arr].sort(), which is still common in codebases.",
+      "points": [
+        "Unsafe on state: sort, reverse, splice, push.",
+        "Safe on state: map, filter, slice, concat, toSorted, toReversed, with.",
+        "sort compares as strings by default: [10, 9, 1].sort() gives [1, 10, 9]; pass (a, b) => a - b for numbers."
+      ]
+    },
+    {
+      "heading": "Chaining and derived data in React",
+      "body": "Because each method returns a new array, they chain naturally: products.filter(p => p.inStock).map(p => p.price). In React, values that can be computed from props or state, such as a filtered list or a cart total, should be derived during render with these methods rather than stored in separate state that must be kept in sync. Only when the computation is genuinely expensive do you wrap it in useMemo.",
+      "points": [
+        "Derive, do not duplicate: store the source list and the filter text, compute the visible list.",
+        "Chaining creates intermediate arrays; for huge lists a single reduce or a loop may be faster."
+      ]
+    },
+    {
+      "heading": "flat, flatMap and grouping",
+      "body": "flat removes nesting levels and flatMap maps then flattens one level, handy when one item produces zero or many outputs. Grouping (category -> items) is classically written with reduce; modern runtimes also provide Object.groupBy(items, item => item.category), which returns a null-prototype object of arrays.",
+      "points": [
+        "flatMap can filter and map in one pass by returning [] for skipped items.",
+        "Object.groupBy is widely supported in current browsers and Node 21+."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Cart summary with chained array methods",
+    "body": "A cart component derives everything from the items array: the visible lines, the total and whether checkout is allowed. Nothing is stored twice, so nothing can go out of sync.",
+    "code": {
+      "language": "javascript",
+      "source": "const cart = [\n  { id: 1, name: 'Keyboard', price: 1500, qty: 1, inStock: true },\n  { id: 2, name: 'Mouse', price: 600, qty: 2, inStock: true },\n  { id: 3, name: 'Monitor', price: 9000, qty: 1, inStock: false }\n];\n\nconst available = cart.filter(item => item.inStock);\nconst lines = available.map(item => `${item.name} x${item.qty}`);\nconst total = available.reduce((sum, item) => sum + item.price * item.qty, 0);\nconst canCheckout = available.length > 0 && cart.every(item => item.qty > 0);\n\nconsole.log(lines);       // ['Keyboard x1', 'Mouse x2']\nconsole.log(total);       // 2700\nconsole.log(canCheckout); // true"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Rendering lists",
+      "description": "{products.map(p => <ProductCard key={p.id} product={p} />)} turns data into elements."
+    },
+    {
+      "title": "Search and filters",
+      "description": "A search input filters a product list by name and category on every keystroke."
+    },
+    {
+      "title": "Dashboards",
+      "description": "reduce computes totals, averages and per-category breakdowns for charts."
+    },
+    {
+      "title": "Normalising API data",
+      "description": "reduce turns an array into an object keyed by id for O(1) lookups in a store."
+    },
+    {
+      "title": "Validation",
+      "description": "every checks that all form fields are valid before enabling a submit button."
+    }
+  ],
+  "demonstration": {
+    "description": "Show the default sort trap and the non-mutating alternative. The original array is preserved when toSorted is used with a numeric comparator.",
+    "code": {
+      "language": "javascript",
+      "source": "const scores = [10, 9, 100, 1];\nconst sorted = scores.toSorted((a, b) => a - b);\nconsole.log([...scores].sort());\nconsole.log(sorted);\nconsole.log(scores);"
+    },
+    "output": "[ 1, 10, 100, 9 ]\n[ 1, 9, 10, 100 ]\n[ 10, 9, 100, 1 ]"
+  },
+  "takeaways": [
+    "map transforms, filter selects, reduce aggregates into any shape.",
+    "Give reduce an initial value; it also defines the result type.",
+    "sort, reverse and splice mutate; prefer toSorted, toReversed, toSpliced or a spread copy for state.",
+    "Default sort compares strings; always pass a comparator for numbers.",
+    "Derive filtered lists and totals during render instead of storing them in extra state.",
+    "find returns one element, filter returns an array; some and every short-circuit."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between map and forEach?",
+      "answer": "map returns a new array built from the callback's return values; forEach returns undefined and is used only for side effects. In JSX you must use map because you need the returned array of elements.",
+      "explanation": "Mentioning why forEach cannot render a list in JSX shows you connect the JavaScript to React."
+    },
+    {
+      "question": "How does reduce work? Write a sum and a group-by.",
+      "answer": "reduce calls the callback with (accumulator, current) for each element and passes the returned value as the next accumulator, starting from the initial value. Sum: arr.reduce((s, x) => s + x, 0). Group-by: arr.reduce((acc, x) => { (acc[x.type] ||= []).push(x); return acc; }, {}).",
+      "explanation": "Interviewers like to see the initial value and an explanation of what happens on an empty array without one (TypeError)."
+    },
+    {
+      "question": "Which array methods mutate the original array, and why does that matter in React?",
+      "answer": "push, pop, shift, unshift, splice, sort, reverse, fill and copyWithin mutate. Mutating state keeps the same reference, so React may not re-render and memoised components may show stale data. Use map, filter, slice, concat, spread or the ES2023 toSorted/toReversed/toSpliced/with methods.",
+      "explanation": "Listing the ES2023 copying methods signals up-to-date knowledge."
+    },
+    {
+      "question": "Why does [10, 9, 1].sort() return [1, 10, 9]?",
+      "answer": "Without a comparator, sort converts elements to strings and compares them by UTF-16 code units, so '10' comes before '9'. Pass (a, b) => a - b for ascending numeric order.",
+      "explanation": "A classic trick question; also note that sort mutates the array."
+    },
+    {
+      "question": "Should a filtered list be stored in state?",
+      "answer": "Usually not. Store the source list and the filter criteria, and compute the filtered list during render. Storing both duplicates data and risks them getting out of sync. If filtering is expensive, memoise it with useMemo.",
+      "explanation": "This 'derive, don't sync' principle is a common senior-level signal."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Order analytics with map, filter and reduce",
+    "difficulty": "Basic",
+    "objective": "Compute dashboard numbers from raw records using only declarative array methods.",
+    "statement": "Each order has an id, customer, category, integer amount and status (delivered, pending or cancelled). Print: the number of delivered orders; the revenue of delivered orders; delivered revenue per category sorted by revenue descending (ties by name ascending); the customer with the highest delivered revenue (ties by name ascending) with their amount; and whether any order is cancelled.",
+    "language": "javascript",
+    "input_format": "First line: N. Next N lines: 'id customer category amount status' separated by spaces.",
+    "output_format": "delivered: <count>\nrevenue: <sum>\nby category: <cat>=<sum>, <cat>=<sum> ... (or 'none')\ntop customer: <name> (<sum>) (or 'none')\nany cancelled: yes|no",
+    "example": {
+      "input": "5\n101 asha books 300 delivered\n102 ravi electronics 1500 delivered\n103 asha electronics 700 cancelled\n104 meera books 450 delivered\n105 ravi toys 200 pending\n",
+      "output": "delivered: 3\nrevenue: 2250\nby category: electronics=1500, books=750\ntop customer: ravi (1500)\nany cancelled: yes"
+    },
+    "constraints": [
+      "1 <= N <= 10000; amounts are non-negative integers.",
+      "Use filter, map, reduce and some rather than manual index loops for the calculations.",
+      "Do not mutate the parsed orders array."
+    ],
+    "starter": "const lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst orders = lines.slice(1, n + 1).map(line => {\n  const [id, customer, category, amount, status] = line.trim().split(/\\s+/);\n  return { id, customer, category, amount: Number(amount), status };\n});\n// TODO: filter delivered, reduce totals, rank groups, print five lines\n",
+    "solution": "const lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst orders = lines.slice(1, n + 1).map(line => {\n  const [id, customer, category, amount, status] = line.trim().split(/\\s+/);\n  return { id, customer, category, amount: Number(amount), status };\n});\n\nconst delivered = orders.filter(o => o.status === 'delivered');\nconst revenue = delivered.reduce((sum, o) => sum + o.amount, 0);\nconst sumBy = key => delivered.reduce((acc, o) => {\n  acc[o[key]] = (acc[o[key]] || 0) + o.amount;\n  return acc;\n}, {});\nconst rank = totals => Object.entries(totals).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));\nconst categories = rank(sumBy('category'));\nconst customers = rank(sumBy('customer'));\n\nconsole.log('delivered: ' + delivered.length);\nconsole.log('revenue: ' + revenue);\nconsole.log('by category: ' + (categories.length ? categories.map(([k, v]) => k + '=' + v).join(', ') : 'none'));\nconsole.log('top customer: ' + (customers.length ? customers[0][0] + ' (' + customers[0][1] + ')' : 'none'));\nconsole.log('any cancelled: ' + (orders.some(o => o.status === 'cancelled') ? 'yes' : 'no'));\n",
+    "explanation": [
+      "map parses each line into an order object.",
+      "filter keeps delivered orders; reduce with initial value 0 sums their amounts.",
+      "A reusable sumBy(key) reduce builds a { key: total } object for categories and customers.",
+      "Object.entries plus a comparator (revenue desc, name asc) ranks the groups; Object.entries creates a new array, so sorting it is safe.",
+      "some answers the cancelled question and stops at the first match."
+    ],
+    "tests": [
+      {
+        "input": "5\n101 asha books 300 delivered\n102 ravi electronics 1500 delivered\n103 asha electronics 700 cancelled\n104 meera books 450 delivered\n105 ravi toys 200 pending\n",
+        "output": "delivered: 3\nrevenue: 2250\nby category: electronics=1500, books=750\ntop customer: ravi (1500)\nany cancelled: yes"
+      },
+      {
+        "input": "2\n1 a books 100 pending\n2 b toys 50 pending\n",
+        "output": "delivered: 0\nrevenue: 0\nby category: none\ntop customer: none\nany cancelled: no"
+      },
+      {
+        "input": "4\n1 zoya toys 200 delivered\n2 arjun books 200 delivered\n3 zoya books 0 delivered\n4 kiran toys 10 cancelled\n",
+        "output": "delivered: 3\nrevenue: 400\nby category: books=200, toys=200\ntop customer: arjun (200)\nany cancelled: yes"
+      },
+      {
+        "input": "3\n7 dev music 999 delivered\n8 dev music 1 delivered\n9 dev games 1000 delivered\n",
+        "output": "delivered: 3\nrevenue: 2000\nby category: games=1000, music=1000\ntop customer: dev (2000)\nany cancelled: no"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this filter/map chain print?",
+      "code": "const r = [1, 2, 3, 4].filter(n => n % 2 === 0).map(n => n * 10);\nconsole.log(r);",
+      "options": [
+        "[20, 40]",
+        "[10, 30]",
+        "[10, 20, 30, 40]",
+        "[2, 4]"
+      ],
+      "answer": 0,
+      "explanation": "filter keeps 2 and 4, then map multiplies each by 10."
+    },
+    {
+      "type": "concept",
+      "question": "Which method returns undefined and is therefore unsuitable for rendering a list inside JSX?",
+      "options": [
+        "map",
+        "forEach",
+        "filter",
+        "flatMap"
+      ],
+      "answer": 1,
+      "explanation": "forEach is for side effects and returns undefined; JSX needs the array that map returns."
+    },
+    {
+      "type": "scenario",
+      "question": "You need to sort a products array stored in React state by price for display. Which is safest?",
+      "options": [
+        "products.sort((a, b) => a.price - b.price)",
+        "products.reverse()",
+        "products.sort()",
+        "products.toSorted((a, b) => a.price - b.price)"
+      ],
+      "answer": 3,
+      "explanation": "toSorted returns a new array and leaves state untouched; sort mutates, and sort() without a comparator compares strings."
+    },
+    {
+      "type": "output",
+      "question": "What does [].reduce((a, b) => a + b) do?",
+      "options": [
+        "Throws a TypeError",
+        "Returns an empty array",
+        "Returns 0",
+        "Returns undefined"
+      ],
+      "answer": 0,
+      "explanation": "reduce on an empty array with no initial value throws 'Reduce of empty array with no initial value'."
+    },
+    {
+      "type": "concept",
+      "question": "What does [3, 5, 8].some(n => n > 4) return, and how many elements does it check?",
+      "options": [
+        "[5, 8]",
+        "false, after checking all three",
+        "true, stopping after the second element",
+        "true, after checking all three"
+      ],
+      "answer": 2,
+      "explanation": "some short-circuits as soon as a callback returns true, which happens at 5."
+    }
+  ]
+}

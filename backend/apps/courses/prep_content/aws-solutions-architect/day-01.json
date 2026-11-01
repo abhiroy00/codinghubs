@@ -1,0 +1,249 @@
+{
+  "day": 1,
+  "title": "Cloud Computing Concepts and the AWS Shared Responsibility Model",
+  "module": "Cloud & AWS Foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Define cloud computing and its five essential characteristics.",
+    "Compare IaaS, PaaS and SaaS and the deployment models (public, private, hybrid).",
+    "Explain the six advantages of cloud computing that AWS highlights, including the CapEx-to-OpEx shift.",
+    "Apply the shared responsibility model to EC2, RDS, Lambda and S3.",
+    "Answer the foundational questions that open almost every cloud architecture interview."
+  ],
+  "definition": "Cloud computing is the on-demand delivery of compute, storage, databases, networking and other IT resources over the internet with pay-as-you-go pricing. Instead of buying and running data-centre hardware, you rent capacity from a provider such as AWS, provision it in minutes through an API, and release it when you no longer need it. Security in the cloud is split between AWS (security OF the cloud) and the customer (security IN the cloud): this split is the shared responsibility model.",
+  "theory": [
+    {
+      "heading": "What makes something 'cloud'",
+      "body": "Not every hosted server is cloud computing. The NIST definition, which interviewers often reference, lists five essential characteristics. A system that lacks self-service provisioning or metered billing is simply outsourced hosting. These characteristics are what let architects design for elasticity rather than buying for peak demand.",
+      "points": [
+        "On-demand self-service: provision resources through a console or API without a human at the provider.",
+        "Broad network access: resources are reachable over standard networks from many client types.",
+        "Resource pooling: the provider serves many customers from shared, multi-tenant infrastructure.",
+        "Rapid elasticity: capacity scales out and in quickly, often automatically.",
+        "Measured service: usage is metered and billed, for example per second, per request or per GB."
+      ]
+    },
+    {
+      "heading": "Service models and deployment models",
+      "body": "Service models describe how much of the stack the provider manages. The more the provider manages, the less operational work you do, but the less control you have. Deployment models describe where the infrastructure runs. Most enterprises are hybrid during a migration, keeping some systems on premises while moving others to AWS.",
+      "points": [
+        "IaaS: you get virtual machines, networks and disks (Amazon EC2, Amazon VPC, Amazon EBS) and manage the OS upwards.",
+        "PaaS / managed services: the provider runs the OS and platform (Amazon RDS, AWS Elastic Beanstalk); you manage data and configuration.",
+        "SaaS: complete applications consumed by end users (for example Amazon WorkMail or a third-party CRM).",
+        "Serverless sits between PaaS and SaaS: you deploy code or configuration (AWS Lambda, Amazon S3, Amazon DynamoDB) and never see servers.",
+        "Deployment models: public cloud, private cloud (on-premises virtualisation) and hybrid (connected with VPN or Direct Connect)."
+      ]
+    },
+    {
+      "heading": "Why organisations move to AWS",
+      "body": "AWS summarises the business case as six advantages. In interviews, connect each one to an architectural behaviour: for example, 'stop guessing capacity' is why we use Auto Scaling instead of sizing for Diwali-sale peak traffic all year.",
+      "points": [
+        "Trade fixed expense (CapEx) for variable expense (OpEx).",
+        "Benefit from massive economies of scale: AWS buys hardware at a scale no single company can.",
+        "Stop guessing capacity: scale with demand instead of over-provisioning.",
+        "Increase speed and agility: new resources are minutes away, so experiments are cheap.",
+        "Stop spending money running and maintaining data centres.",
+        "Go global in minutes: deploy in multiple Regions close to users."
+      ]
+    },
+    {
+      "heading": "The shared responsibility model",
+      "body": "AWS is responsible for security OF the cloud: the physical data centres, hardware, the global network and the virtualisation layer. The customer is responsible for security IN the cloud: what they put in and how they configure it. The dividing line moves with the service type. For EC2 (infrastructure), you patch the guest OS, configure security groups and manage applications. For RDS (a managed 'container' service), AWS patches the OS and database engine, while you manage database users, network access and encryption settings. For abstracted services such as S3, DynamoDB and Lambda, AWS operates almost everything below your data, code and IAM policies.",
+      "points": [
+        "Always AWS: physical security, hardware, networking infrastructure, hypervisor.",
+        "Always customer: data, IAM users and permissions, choosing to enable encryption, application logic.",
+        "Shared controls: patch management, configuration management and awareness and training apply to both, each at their own layer.",
+        "A public S3 bucket or an unpatched EC2 OS is a customer failure, not an AWS failure."
+      ]
+    },
+    {
+      "heading": "Pricing fundamentals",
+      "body": "Almost every AWS service follows three cost drivers: compute (time or requests), storage (GB-month) and data transfer. Data transfer INTO AWS is generally free, while data transfer OUT to the internet is charged per GB, and traffic between Availability Zones is also charged. Understanding these drivers early explains many later design choices, such as putting CloudFront in front of S3 or keeping chatty services in the same AZ.",
+      "points": [
+        "Pay-as-you-go with no upfront commitment by default.",
+        "Discounts for commitment (Savings Plans, Reserved Instances) and for spare capacity (Spot).",
+        "The AWS Pricing Calculator estimates cost; AWS Budgets and Cost Explorer track it."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Who patches what? A three-tier app on EC2 vs RDS",
+    "body": "A startup runs its web servers on EC2 and its MySQL database first on EC2, then migrates the database to Amazon RDS. On EC2, the team must patch Ubuntu, upgrade MySQL, configure backups and replication themselves. After moving to RDS, AWS patches the OS and engine during the maintenance window the team chooses, and automated backups are a setting. The team still owns database users, the security group that allows port 3306 only from the web tier, enabling encryption at rest, and the data itself. The responsibility moved; it did not disappear.",
+    "code": {
+      "language": "text",
+      "source": "Layer                     EC2 self-managed DB    Amazon RDS\nPhysical / hypervisor     AWS                    AWS\nGuest OS patching         Customer               AWS\nDB engine patching        Customer               AWS (in your maintenance window)\nSecurity group rules      Customer               Customer\nDB users and data         Customer               Customer\nEncryption at rest        Customer configures    Customer enables (KMS)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Seasonal e-commerce",
+      "description": "An Indian retailer scales from 10 to 200 servers during festival sales and back down afterwards, paying only for what it used."
+    },
+    {
+      "title": "Startup launch",
+      "description": "A two-person team launches globally using managed services, avoiding hardware purchases and data-centre staff."
+    },
+    {
+      "title": "Data-centre exit",
+      "description": "An enterprise migrates ageing on-premises servers to AWS to stop paying for hardware refreshes and facilities."
+    },
+    {
+      "title": "Compliance-driven workloads",
+      "description": "Banks use the shared responsibility model and AWS Artifact compliance reports to show auditors which controls AWS covers and which they implement."
+    }
+  ],
+  "demonstration": {
+    "description": "Map responsibilities for one layer across four services to see the dividing line move as services become more abstracted.",
+    "code": {
+      "language": "text",
+      "source": "Question: Who is responsible for patching the operating system?\nEC2     -> ?\nRDS     -> ?\nLambda  -> ?\nS3      -> ?"
+    },
+    "output": "EC2     -> Customer (you manage the guest OS)\nRDS     -> AWS (managed service)\nLambda  -> AWS (you supply only code and configuration)\nS3      -> AWS (abstracted service; no OS is visible to you)"
+  },
+  "takeaways": [
+    "Cloud computing means on-demand, self-service, elastic, metered resources delivered over a network.",
+    "IaaS gives the most control and the most responsibility; serverless gives the least of both.",
+    "AWS secures the cloud itself; customers secure everything they put in it and configure.",
+    "Data, IAM and encryption choices are always the customer's responsibility.",
+    "The CapEx-to-OpEx shift and 'stop guessing capacity' explain why elastic architectures exist.",
+    "Compute, storage and data transfer out are the three main cost drivers."
+  ],
+  "interview": [
+    {
+      "question": "What is cloud computing, in one or two sentences?",
+      "answer": "It is on-demand delivery of IT resources such as compute, storage and databases over the internet with pay-as-you-go pricing, so you provision in minutes and pay only for what you use instead of owning hardware.",
+      "explanation": "Strong answers mention self-service, elasticity and metered billing, which distinguish cloud from traditional hosting."
+    },
+    {
+      "question": "Explain IaaS, PaaS and SaaS with an AWS example of each.",
+      "answer": "IaaS provides raw infrastructure such as EC2 instances and VPCs; PaaS provides a managed platform where you deploy code or data, such as Elastic Beanstalk or RDS; SaaS is a finished application such as Amazon WorkMail. Moving from IaaS to SaaS, the provider manages more of the stack.",
+      "explanation": "Interviewers check that you understand the control-versus-responsibility trade-off, not just the acronyms."
+    },
+    {
+      "question": "Describe the AWS shared responsibility model.",
+      "answer": "AWS is responsible for security of the cloud: facilities, hardware, network and hypervisor. The customer is responsible for security in the cloud: data, identity and access, OS and application patching where applicable, network configuration such as security groups, and encryption settings.",
+      "explanation": "Add that the line shifts by service type: on EC2 you patch the OS; on RDS or Lambda AWS does. That nuance separates strong candidates."
+    },
+    {
+      "question": "A customer's S3 bucket with personal data was exposed publicly. Whose responsibility was it?",
+      "answer": "The customer's. Bucket policies, ACLs and Block Public Access settings are configuration in the cloud. AWS provides secure defaults (Block Public Access is on for new buckets) but cannot decide who should access customer data.",
+      "explanation": "Mention preventive controls you would add: account-level Block Public Access, SCPs, AWS Config rules and Macie for sensitive-data discovery."
+    },
+    {
+      "question": "Why might moving to the cloud not reduce cost, and how would you address it?",
+      "answer": "A lift-and-shift that keeps oversized servers running 24x7 can cost more than owned hardware. Savings come from rightsizing, scaling with demand, using managed services, choosing the right purchase options and storage classes, and turning off idle resources.",
+      "explanation": "This shows you understand cost as an architectural property, a theme of the Cost Optimization pillar covered later."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Shared responsibility lookup",
+    "difficulty": "Basic",
+    "objective": "Encode the shared responsibility model as data and apply it to different AWS service categories.",
+    "statement": "Write a program that reads an AWS service name and a comma-separated list of security layers, then prints who owns each layer. Services belong to three categories: infrastructure (EC2), container (RDS, EMR, ElasticBeanstalk) and abstracted (S3, DynamoDB, Lambda, SQS). Ownership by category (infrastructure / container / abstracted): physical AWS/AWS/AWS; hypervisor AWS/AWS/AWS; guest-os Customer/AWS/AWS; platform Customer/AWS/AWS; firewall Customer/Customer/AWS; application Customer/Customer/Customer; data Customer/Customer/Customer; iam Customer/Customer/Customer. Service names and layers are case-insensitive.",
+    "language": "python",
+    "input_format": "Line 1: a service name. Line 2: comma-separated layer names (spaces around commas allowed).",
+    "output_format": "If the service is unknown, print only 'Unknown service: <name as typed>'. Otherwise print 'Service: <NAME IN UPPERCASE> (<category> service)', then one line per layer in input order: '<layer>: AWS' or '<layer>: Customer' (layer in lowercase), or '<layer>: unknown layer'. Finish with 'Customer-managed layers: <c>/<k>' where k counts only known layers.",
+    "example": {
+      "input": "EC2\nphysical, guest-os, firewall, data\n",
+      "output": "Service: EC2 (infrastructure service)\nphysical: AWS\nguest-os: Customer\nfirewall: Customer\ndata: Customer\nCustomer-managed layers: 3/4"
+    },
+    "constraints": [
+      "1 to 10 layers per input.",
+      "Ignore empty entries produced by stray commas.",
+      "Use only the Python standard library."
+    ],
+    "starter": "service = input().strip()\nlayers = [x.strip().lower() for x in input().split(',') if x.strip()]\n\n# TODO: map the service to a category, then look up each layer\n",
+    "solution": "RESP = {\n    'physical': ('AWS', 'AWS', 'AWS'),\n    'hypervisor': ('AWS', 'AWS', 'AWS'),\n    'guest-os': ('Customer', 'AWS', 'AWS'),\n    'platform': ('Customer', 'AWS', 'AWS'),\n    'firewall': ('Customer', 'Customer', 'AWS'),\n    'application': ('Customer', 'Customer', 'Customer'),\n    'data': ('Customer', 'Customer', 'Customer'),\n    'iam': ('Customer', 'Customer', 'Customer'),\n}\nCATEGORY = {'ec2': 0, 'rds': 1, 'emr': 1, 'elasticbeanstalk': 1,\n            's3': 2, 'dynamodb': 2, 'lambda': 2, 'sqs': 2}\nNAMES = ('infrastructure', 'container', 'abstracted')\n\nservice = input().strip()\nlayers = [x.strip().lower() for x in input().split(',') if x.strip()]\nkey = service.lower()\nif key not in CATEGORY:\n    print('Unknown service: ' + service)\nelse:\n    c = CATEGORY[key]\n    print('Service: ' + service.upper() + ' (' + NAMES[c] + ' service)')\n    known = 0\n    customer = 0\n    for layer in layers:\n        if layer in RESP:\n            owner = RESP[layer][c]\n            known += 1\n            if owner == 'Customer':\n                customer += 1\n            print(layer + ': ' + owner)\n        else:\n            print(layer + ': unknown layer')\n    print('Customer-managed layers: ' + str(customer) + '/' + str(known))\n",
+    "explanation": [
+      "Store the model as a dictionary of layer -> (infrastructure, container, abstracted) owners so the rules live in data, not in if-statements.",
+      "Map the service name (lowercased) to a category index; stop with a message if it is unknown.",
+      "For each layer, look up the owner for that category, counting known and customer-owned layers.",
+      "Print the summary ratio, which shows how responsibility shrinks as services become more abstracted."
+    ],
+    "tests": [
+      {
+        "input": "EC2\nphysical, guest-os, firewall, data\n",
+        "output": "Service: EC2 (infrastructure service)\nphysical: AWS\nguest-os: Customer\nfirewall: Customer\ndata: Customer\nCustomer-managed layers: 3/4"
+      },
+      {
+        "input": "rds\nguest-os,platform,firewall,iam\n",
+        "output": "Service: RDS (container service)\nguest-os: AWS\nplatform: AWS\nfirewall: Customer\niam: Customer\nCustomer-managed layers: 2/4"
+      },
+      {
+        "input": "Lambda\nhypervisor,GUEST-OS,firewall,application,data\n",
+        "output": "Service: LAMBDA (abstracted service)\nhypervisor: AWS\nguest-os: AWS\nfirewall: AWS\napplication: Customer\ndata: Customer\nCustomer-managed layers: 2/5"
+      },
+      {
+        "input": "Lightsail\nphysical\n",
+        "output": "Unknown service: Lightsail"
+      },
+      {
+        "input": "s3\ndata,,backups,physical\n",
+        "output": "Service: S3 (abstracted service)\ndata: Customer\nbackups: unknown layer\nphysical: AWS\nCustomer-managed layers: 1/2"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Under the AWS shared responsibility model, which task is AWS responsible for when a customer uses Amazon EC2?",
+      "options": [
+        "Configuring security group rules",
+        "Encrypting data stored on EBS volumes",
+        "Patching the guest operating system",
+        "Securing the physical hosts and the hypervisor"
+      ],
+      "answer": 3,
+      "explanation": "On EC2, AWS secures facilities, hardware and virtualisation. The guest OS, security groups and the choice to encrypt are customer responsibilities."
+    },
+    {
+      "type": "scenario",
+      "question": "A company moves its self-managed PostgreSQL database from EC2 to Amazon RDS. Which responsibility moves from the company to AWS?",
+      "options": [
+        "Creating database users and grants",
+        "Deciding which IP ranges can reach the database",
+        "Applying minor database engine patches",
+        "Classifying the data stored in the database"
+      ],
+      "answer": 2,
+      "explanation": "RDS is a managed service, so AWS patches the OS and database engine (in a maintenance window you choose). Users, network access and data classification remain with the customer."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement best describes the 'trade fixed expense for variable expense' advantage of cloud computing?",
+      "options": [
+        "You must sign a three-year contract to use AWS",
+        "Variable costs are eliminated because AWS absorbs them",
+        "You pay for resources as you consume them instead of investing heavily in data centres up front",
+        "AWS fixes the price of every service for the life of your account"
+      ],
+      "answer": 2,
+      "explanation": "Cloud converts capital expenditure on hardware into operational expenditure that tracks usage. Commitments are optional discounts, not requirements."
+    },
+    {
+      "type": "scenario",
+      "question": "A developer deploys a function on AWS Lambda. Which item remains the developer's responsibility?",
+      "options": [
+        "Scaling the underlying servers",
+        "Patching the runtime's operating system",
+        "Maintaining the physical network",
+        "The function code and the IAM permissions of its execution role"
+      ],
+      "answer": 3,
+      "explanation": "For abstracted services, AWS manages servers, OS and scaling. The customer still owns code, configuration, IAM permissions and data."
+    },
+    {
+      "type": "concept",
+      "question": "Which characteristic distinguishes cloud computing from traditional managed hosting?",
+      "options": [
+        "A third party owns the hardware",
+        "Applications are accessed over the internet",
+        "Servers are located in a data centre",
+        "Resources can be provisioned through self-service and are billed by measured usage"
+      ],
+      "answer": 3,
+      "explanation": "Hosting also uses third-party data centres and the internet. On-demand self-service, rapid elasticity and measured service are what make it cloud."
+    }
+  ]
+}

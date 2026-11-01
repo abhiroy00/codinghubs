@@ -1,0 +1,237 @@
+{
+  "day": 17,
+  "title": "Vector Embeddings and Similarity Search",
+  "module": "Retrieval & agents",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain what an embedding is and how it represents text as a vector.",
+    "Describe cosine similarity and how it compares two embeddings.",
+    "Explain how a vector store indexes and searches embeddings.",
+    "Distinguish embedding models from generation models.",
+    "Discuss when semantic search is better than keyword search."
+  ],
+  "definition": "An embedding is a vector (a list of numbers) that represents the meaning of a piece of text. Texts with similar meanings have embeddings close together in vector space. Similarity search compares a query embedding to stored embeddings using measures such as cosine similarity, and returns the most similar items. A vector store indexes these embeddings so search is fast even with millions of documents.",
+  "theory": [
+    {
+      "heading": "What embeddings represent",
+      "body": "An embedding model turns text into a fixed-length vector. Words, sentences or documents with related meanings produce nearby vectors, while unrelated texts produce distant vectors. The same model must be used for the query and the stored documents so their vectors live in the same space and can be compared.",
+      "points": [
+        "Text becomes a list of numbers (a vector).",
+        "Similar meaning means nearby vectors.",
+        "One model must embed both query and documents."
+      ]
+    },
+    {
+      "heading": "Cosine similarity",
+      "body": "Cosine similarity measures the angle between two vectors, ignoring their length. A value of 1 means identical direction, 0 means orthogonal, and -1 means opposite. In retrieval, the query vector is compared to every stored vector and the highest cosine scores are returned as the most relevant results.",
+      "points": [
+        "Cosine similarity ranges from -1 to 1.",
+        "Higher means more similar direction.",
+        "It ignores vector magnitude, focusing on direction."
+      ]
+    },
+    {
+      "heading": "Vector stores and indexes",
+      "body": "A vector store stores embeddings together with their text and metadata. It builds an index so a query does not have to scan every vector. Common indexes include flat (exact scan), IVF (clusters) and HNSW (graph-based), trading exactness for speed and memory.",
+      "points": [
+        "Store vector, text and metadata together.",
+        "An index makes search fast at scale.",
+        "Flat is exact but slow; IVF and HNSW are approximate and fast."
+      ]
+    },
+    {
+      "heading": "Embedding vs generation models",
+      "body": "An embedding model produces vectors for comparison; a generation model produces text. They are different models and often from different families. Embedding models are smaller, faster and cheaper, and are run for every chunk during indexing and for every query during retrieval.",
+      "points": [
+        "Embedding model: vectors for search.",
+        "Generation model: text for answers.",
+        "Embedding models are smaller and cheaper to run."
+      ]
+    },
+    {
+      "heading": "Semantic vs keyword search",
+      "body": "Keyword search matches exact words, so it misses synonyms and related terms. Semantic search matches meaning via embeddings, so 'car' can match 'automobile'. Hybrid search combines both: keywords for exact terms and embeddings for meaning.",
+      "points": [
+        "Keyword search: exact word match.",
+        "Semantic search: meaning match via vectors.",
+        "Hybrid: keywords plus embeddings for the best of both."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Finding a refund policy by meaning",
+    "body": "A customer asks 'Can I get my money back?' Keyword search for 'money' misses the policy, which says 'refund'. Semantic search compares the query embedding to stored chunks and finds the refund-policy chunk because 'money back' and 'refund' are close in meaning, even though the words differ.",
+    "code": {
+      "language": "text",
+      "source": "Query: Can I get my money back?\nChunk A: 'Refunds are issued within 30 days of purchase.' (cosine 0.82)\nChunk B: 'Shipping takes 3-5 business days.' (cosine 0.31)\nResult: Chunk A is returned as the most similar."
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Semantic document search",
+      "description": "Find documents by meaning, not just exact words."
+    },
+    {
+      "title": "Duplicate detection",
+      "description": "Find near-duplicate tickets or documents by comparing embeddings."
+    },
+    {
+      "title": "Recommendation",
+      "description": "Suggest articles or products similar to what a user is viewing."
+    },
+    {
+      "title": "Clustering",
+      "description": "Group similar support tickets or feedback items together."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare keyword and semantic results for the same query. Keyword finds nothing; semantic finds the right chunk by meaning.",
+    "code": {
+      "language": "text",
+      "source": "Query: refund policy\nKeyword search for 'refund': no match in chunk 'Money back within 30 days.'\nSemantic search: 'Money back within 30 days.' matches 'refund policy' by meaning (cosine 0.78)."
+    },
+    "output": "Keyword: no results.\nSemantic: the refund chunk is found despite different wording."
+  },
+  "takeaways": [
+    "An embedding turns text into a vector that captures meaning.",
+    "Cosine similarity compares vectors by angle, returning the closest matches.",
+    "A vector store indexes embeddings for fast search at scale.",
+    "The same embedding model must be used for queries and documents.",
+    "Semantic search finds meaning; keyword search finds exact words.",
+    "Hybrid search combines both for stronger results."
+  ],
+  "interview": [
+    {
+      "question": "What is an embedding?",
+      "answer": "An embedding is a vector of numbers representing the meaning of text; similar meanings produce nearby vectors.",
+      "explanation": "Mention that the same model must embed queries and documents."
+    },
+    {
+      "question": "What does cosine similarity measure?",
+      "answer": "It measures the angle between two vectors, from -1 (opposite) to 1 (identical direction), ignoring length. Higher means more similar.",
+      "explanation": "Use it to rank retrieved chunks by relevance to the query."
+    },
+    {
+      "question": "What is a vector store?",
+      "answer": "A database that stores embeddings with their text and metadata, and indexes them for fast similarity search.",
+      "explanation": "Mention flat, IVF and HNSW as index types."
+    },
+    {
+      "question": "How is semantic search different from keyword search?",
+      "answer": "Keyword search matches exact words; semantic search matches meaning through embeddings, so it finds synonyms and related concepts.",
+      "explanation": "Hybrid search combines both approaches."
+    },
+    {
+      "question": "Why must the same embedding model be used for queries and documents?",
+      "answer": "Their vectors must live in the same space so cosine similarity is meaningful; different models produce incompatible vectors.",
+      "explanation": "Cross-model vectors cannot be compared directly."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Compute cosine similarity between two vectors",
+    "difficulty": "Basic",
+    "objective": "Implement cosine similarity in Python to understand how retrieval ranks chunks.",
+    "statement": "Read two vectors as space-separated floats on two lines. Compute cosine similarity: dot product divided by the product of their magnitudes. Print the result rounded to 4 decimal places. If either vector has zero magnitude, print 0.0000.",
+    "language": "python",
+    "input_format": "Line 1: vector A, space-separated floats.\nLine 2: vector B, space-separated floats.",
+    "output_format": "One number rounded to 4 decimal places.",
+    "example": {
+      "input": "1 0 0\n0 1 0\n",
+      "output": "0.0000"
+    },
+    "constraints": [
+      "Both vectors have the same length, between 1 and 100.",
+      "All values are floats.",
+      "Round the result to exactly 4 decimal places."
+    ],
+    "starter": "a = list(map(float, input().split()))\nb = list(map(float, input().split()))\n\n# TODO: compute cosine similarity and print rounded to 4 decimals\n",
+    "solution": "a = list(map(float, input().split()))\nb = list(map(float, input().split()))\n\ndot = sum(x * y for x, y in zip(a, b))\nma = sum(x * x for x in a) ** 0.5\nmb = sum(y * y for y in b) ** 0.5\n\nif ma == 0 or mb == 0:\n    print('0.0000')\nelse:\n    print(f'{dot / (ma * mb):.4f}')\n",
+    "explanation": [
+      "Read both vectors as lists of floats.",
+      "Compute the dot product and each vector's magnitude.",
+      "If either magnitude is zero, print 0.0000 to avoid division by zero.",
+      "Otherwise divide the dot product by the product of magnitudes and format to 4 decimals."
+    ],
+    "tests": [
+      {
+        "input": "1 0 0\n0 1 0\n",
+        "output": "0.0000"
+      },
+      {
+        "input": "1 1\n1 1\n",
+        "output": "1.0000"
+      },
+      {
+        "input": "1 0\n-1 0\n",
+        "output": "-1.0000"
+      },
+      {
+        "input": "0 0\n1 2\n",
+        "output": "0.0000"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does an embedding represent?",
+      "options": [
+        "The meaning of text as a vector",
+        "The model's training loss",
+        "The response time",
+        "A single number"
+      ],
+      "answer": 0,
+      "explanation": "An embedding is a vector that captures the meaning of text so similar texts are nearby."
+    },
+    {
+      "type": "concept",
+      "question": "What does cosine similarity of 1 mean?",
+      "options": [
+        "No relationship",
+        "Zero length",
+        "Opposite meaning",
+        "Identical direction"
+      ],
+      "answer": 3,
+      "explanation": "A cosine of 1 means the two vectors point in the same direction, indicating very similar meaning."
+    },
+    {
+      "type": "scenario",
+      "question": "Keyword search fails to find 'automobile' when the user searches 'car'. Which search type helps?",
+      "options": [
+        "Higher temperature",
+        "Keyword search",
+        "Semantic search",
+        "Longer prompts"
+      ],
+      "answer": 2,
+      "explanation": "Semantic search matches by meaning via embeddings, so 'car' matches 'automobile'."
+    },
+    {
+      "type": "concept",
+      "question": "Why must the same embedding model be used for queries and documents?",
+      "options": [
+        "It is cheaper",
+        "Their vectors must be in the same space to compare",
+        "It is faster",
+        "The API requires it"
+      ],
+      "answer": 1,
+      "explanation": "Different models produce vectors in incompatible spaces; cosine similarity would not be meaningful."
+    },
+    {
+      "type": "concept",
+      "question": "What is a vector store used for?",
+      "options": [
+        "Storing and searching embeddings quickly",
+        "Generating text",
+        "Storing API keys",
+        "Training LLMs"
+      ],
+      "answer": 0,
+      "explanation": "A vector store indexes embeddings so similarity search is fast even with millions of items."
+    }
+  ]
+}

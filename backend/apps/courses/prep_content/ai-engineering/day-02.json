@@ -1,0 +1,246 @@
+{
+  "day": 2,
+  "title": "Linear Algebra Essentials: Vectors, Matrices and the Dot Product",
+  "module": "Foundations: Python and maths",
+  "level": "Beginner",
+  "objectives": [
+    "Represent data, model weights and embeddings as vectors and matrices.",
+    "Compute and interpret dot products, norms and cosine similarity.",
+    "Apply the shape rule for matrix multiplication and spot shape errors quickly.",
+    "Explain transpose, identity, inverse, rank and eigenvectors at an interview level.",
+    "Implement matrix multiplication by hand with a shape check."
+  ],
+  "definition": "Linear algebra is the mathematics of vectors (ordered lists of numbers) and matrices (rectangular grids of numbers) and the linear operations on them. In AI, a data point is a vector of features, a dataset is a matrix, a neural-network layer is a matrix multiplication followed by a non-linearity, and an embedding is a vector whose direction encodes meaning.",
+  "theory": [
+    {
+      "heading": "Why AI engineers need linear algebra",
+      "body": "Almost every model computes something of the form y = Wx + b. A batch of 64 images flattened to 784 pixels is a (64, 784) matrix; a dense layer with 128 units is a (784, 128) weight matrix; the forward pass is a single matrix product producing (64, 128). GPUs exist largely to do these products fast. Understanding shapes lets you read model code, debug errors such as 'mat1 and mat2 shapes cannot be multiplied' and estimate compute cost.",
+      "points": [
+        "Scalar: a single number. Vector: shape (n,). Matrix: shape (m, n). Tensor: any number of dimensions.",
+        "Datasets are matrices with rows as samples and columns as features.",
+        "Layer weights, attention scores and embeddings are all matrices."
+      ]
+    },
+    {
+      "heading": "Dot product, norms and cosine similarity",
+      "body": "The dot product a · b = sum of a_i * b_i measures how much two vectors point in the same direction, scaled by their lengths. The L2 norm ||a|| = sqrt(a · a) is a vector's length; the L1 norm is the sum of absolute values. Cosine similarity divides the dot product by both norms, giving a value from -1 to 1 that ignores length and compares only direction. This is exactly how semantic search compares text embeddings.",
+      "points": [
+        "a · b = ||a|| ||b|| cos(theta).",
+        "Orthogonal vectors have dot product 0: they share no direction.",
+        "L2 norms appear in regularisation (weight decay) and in normalising embeddings."
+      ]
+    },
+    {
+      "heading": "Matrix multiplication and the shape rule",
+      "body": "For A with shape (m, n) and B with shape (n, p), the product AB has shape (m, p) and each entry is the dot product of a row of A with a column of B. The inner dimensions must match. Matrix multiplication is associative but not commutative: AB is usually not equal to BA, and BA may not even be defined. Multiplying an (m, n) by an (n, p) matrix costs about m * n * p multiply-adds, which is how you estimate FLOPs for a layer.",
+      "points": [
+        "Inner dimensions must match; outer dimensions give the result shape.",
+        "Element-wise (Hadamard) product A * B is different from matrix product A @ B.",
+        "Transpose swaps rows and columns: (AB)^T = B^T A^T."
+      ]
+    },
+    {
+      "heading": "Special matrices, rank and inverse",
+      "body": "The identity matrix I leaves vectors unchanged. A square matrix is invertible when its columns are linearly independent, meaning its rank equals its size; otherwise information is lost and no inverse exists. The rank is the number of independent directions a matrix can produce. Low rank is central to modern AI: LoRA fine-tuning represents a weight update as the product of two thin matrices, which has low rank and far fewer parameters.",
+      "points": [
+        "Rank = number of linearly independent rows or columns.",
+        "In practice we solve linear systems with stable solvers rather than computing inverses.",
+        "Low-rank factorisation compresses matrices (SVD, LoRA)."
+      ]
+    },
+    {
+      "heading": "Eigenvectors, SVD and where they appear",
+      "body": "An eigenvector v of a square matrix A satisfies Av = lambda v: A only stretches it by the eigenvalue lambda without changing its direction. Principal Component Analysis finds the eigenvectors of the data covariance matrix, which are the directions of greatest variance. Singular Value Decomposition (A = U Sigma V^T) generalises this to any matrix and underlies PCA, recommender systems and low-rank approximation.",
+      "points": [
+        "PCA: project data onto the top eigenvectors to reduce dimensions.",
+        "SVD exists for every matrix, square or not.",
+        "Large singular values carry most of the information in a matrix."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A dense layer is one matrix product",
+    "body": "A batch of 4 samples with 3 features passes through a layer with 2 output units. The weight matrix has shape (3, 2) and the bias has shape (2,). The output shape (4, 2) follows from the shape rule, and the bias is broadcast to every row.",
+    "code": {
+      "language": "python",
+      "source": "import numpy as np\n\nX = np.array([[1.0, 0.5, -1.0],\n              [0.0, 2.0, 1.0],\n              [3.0, -1.0, 0.0],\n              [1.0, 1.0, 1.0]])   # (4, 3)\nW = np.array([[0.2, -0.5],\n              [0.1, 0.3],\n              [-0.4, 0.8]])        # (3, 2)\nb = np.array([0.1, 0.0])           # (2,)\n\nY = X @ W + b                      # (4, 2)\nprint(Y.shape)                     # (4, 2)\n\nq = np.array([1.0, 2.0]); d = np.array([2.0, 4.0])\ncos = q @ d / (np.linalg.norm(q) * np.linalg.norm(d))\nprint(round(float(cos), 4))        # 1.0: same direction"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Neural-network layers",
+      "description": "Every dense, attention and output layer is built from matrix multiplications on batches of vectors."
+    },
+    {
+      "title": "Semantic search",
+      "description": "Cosine similarity between query and document embeddings ranks results in vector databases."
+    },
+    {
+      "title": "Dimensionality reduction",
+      "description": "PCA and SVD compress high-dimensional features for visualisation or faster models."
+    },
+    {
+      "title": "Recommendation systems",
+      "description": "Matrix factorisation represents users and items as vectors whose dot product predicts a rating."
+    },
+    {
+      "title": "Efficient fine-tuning",
+      "description": "LoRA learns low-rank matrices instead of updating full weight matrices."
+    }
+  ],
+  "demonstration": {
+    "description": "Check the shape rule and non-commutativity on small matrices. A is (2, 3) and B is (3, 2), so AB is (2, 2) while BA is (3, 3): different shapes, so they cannot be equal.",
+    "code": {
+      "language": "python",
+      "source": "import numpy as np\nA = np.array([[1, 2, 3], [4, 5, 6]])\nB = np.array([[7, 8], [9, 10], [11, 12]])\nprint(A @ B)\nprint((B @ A).shape)\nprint(np.linalg.matrix_rank(np.array([[1, 2], [2, 4]])))"
+    },
+    "output": "[[ 58  64]\n [139 154]]\n(3, 3)\n1"
+  },
+  "takeaways": [
+    "Data, weights and embeddings are vectors and matrices; check shapes first when debugging.",
+    "(m, n) @ (n, p) gives (m, p); inner dimensions must match.",
+    "Dot product measures alignment; cosine similarity compares direction only.",
+    "Matrix multiplication is not commutative and is different from element-wise multiplication.",
+    "Rank counts independent directions; low-rank ideas power PCA, SVD and LoRA.",
+    "A layer's compute cost is roughly m * n * p multiply-adds."
+  ],
+  "interview": [
+    {
+      "question": "What is a dot product and what does it tell you?",
+      "answer": "It is the sum of element-wise products of two equal-length vectors. Its sign and size show how aligned the vectors are: positive when they point the same way, zero when orthogonal, negative when opposite, scaled by their lengths.",
+      "explanation": "Link it to ML: neurons compute dot products of inputs and weights, and attention scores are dot products of queries and keys."
+    },
+    {
+      "question": "Why is cosine similarity preferred over raw dot product for comparing text embeddings?",
+      "answer": "Cosine similarity normalises by vector length, so it compares meaning (direction) rather than magnitude, which can depend on text length or model quirks. If embeddings are already L2-normalised, dot product and cosine give the same ranking.",
+      "explanation": "Mentioning the normalised-embedding shortcut shows you understand how vector databases are configured in practice."
+    },
+    {
+      "question": "A layer has input (32, 512) and weights (512, 256). What is the output shape and roughly how many multiply-adds are needed?",
+      "answer": "The output is (32, 256). The cost is about 32 * 512 * 256 = 4,194,304 multiply-adds.",
+      "explanation": "Interviewers check that you can apply the shape rule and estimate compute, a skill used when sizing models and hardware."
+    },
+    {
+      "question": "What is the rank of a matrix and why does low rank matter in AI?",
+      "answer": "Rank is the number of linearly independent rows or columns. A low-rank matrix can be written as the product of two thin matrices, so it can be stored and learned with far fewer parameters. LoRA uses this to fine-tune large models cheaply, and PCA uses it to compress data.",
+      "explanation": "Connecting an abstract concept to a modern technique such as LoRA is what distinguishes a strong answer."
+    },
+    {
+      "question": "What are eigenvectors and how does PCA use them?",
+      "answer": "An eigenvector of a square matrix keeps its direction when multiplied by the matrix; it is only scaled by its eigenvalue. PCA computes eigenvectors of the covariance matrix (or uses SVD of centred data); the eigenvectors with the largest eigenvalues are the directions of greatest variance and become the principal components.",
+      "explanation": "A strong answer notes that data must be centred first and that the explained variance ratio is used to choose how many components to keep."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Matrix multiplication with a shape check",
+    "difficulty": "Basic",
+    "objective": "Implement the core operation behind every neural-network layer and practise the shape rule.",
+    "statement": "Read matrix A (m x n) and matrix B (n2 x p) of integers. If n is not equal to n2, print shape mismatch: (m,n) @ (n2,p). Otherwise compute C = A @ B, print its shape, its rows, and its trace (sum of the main diagonal) if C is square, or trace=n/a if it is not.",
+    "language": "python",
+    "input_format": "Line 1: m n. Next m lines: n integers each (rows of A).\nNext line: n2 p. Next n2 lines: p integers each (rows of B).",
+    "output_format": "Either the single line shape mismatch: (m,n) @ (n2,p)\nor: shape <m> x <p>, then m lines with the row values separated by spaces, then trace=<value> or trace=n/a.",
+    "example": {
+      "input": "2 3\n1 2 3\n4 5 6\n3 2\n7 8\n9 10\n11 12\n",
+      "output": "shape 2 x 2\n58 64\n139 154\ntrace=212"
+    },
+    "constraints": [
+      "1 <= m, n, n2, p <= 20.",
+      "Entries are integers between -1000 and 1000.",
+      "Do not use any library; use nested loops or comprehensions."
+    ],
+    "starter": "import sys\n\ndata = sys.stdin.read().split()\n# TODO: parse A and B, check shapes, multiply, print shape, rows and trace\n",
+    "solution": "import sys\n\ndata = sys.stdin.read().split()\npos = 0\n\ndef read_matrix():\n    global pos\n    r, c = int(data[pos]), int(data[pos + 1])\n    pos += 2\n    rows = []\n    for _ in range(r):\n        rows.append([int(v) for v in data[pos:pos + c]])\n        pos += c\n    return r, c, rows\n\nm, n, A = read_matrix()\nn2, p, B = read_matrix()\nif n != n2:\n    print(f'shape mismatch: ({m},{n}) @ ({n2},{p})')\nelse:\n    C = [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(p)] for i in range(m)]\n    print(f'shape {m} x {p}')\n    for row in C:\n        print(' '.join(str(v) for v in row))\n    if m == p:\n        print(f'trace={sum(C[i][i] for i in range(m))}')\n    else:\n        print('trace=n/a')\n",
+    "explanation": [
+      "Read all tokens at once and parse each matrix by its declared shape.",
+      "Check the inner dimensions first; this is the same rule PyTorch enforces.",
+      "Each C[i][j] is the dot product of row i of A and column j of B.",
+      "The result has the outer dimensions (m, p); compute the trace only when m equals p."
+    ],
+    "tests": [
+      {
+        "input": "2 3\n1 2 3\n4 5 6\n3 2\n7 8\n9 10\n11 12\n",
+        "output": "shape 2 x 2\n58 64\n139 154\ntrace=212"
+      },
+      {
+        "input": "2 2\n1 2\n3 4\n3 1\n1\n2\n3\n",
+        "output": "shape mismatch: (2,2) @ (3,1)"
+      },
+      {
+        "input": "2 2\n1 0\n0 1\n2 2\n5 -3\n2 7\n",
+        "output": "shape 2 x 2\n5 -3\n2 7\ntrace=12"
+      },
+      {
+        "input": "1 3\n1 2 3\n3 1\n4\n5\n6\n",
+        "output": "shape 1 x 1\n32\ntrace=32"
+      },
+      {
+        "input": "3 1\n1\n2\n3\n1 2\n4 5\n",
+        "output": "shape 3 x 2\n4 5\n8 10\n12 15\ntrace=n/a"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "A is (8, 5) and B is (5, 3). What is the shape of A @ B?",
+      "options": [
+        "(5, 5)",
+        "(8, 3)",
+        "(3, 8)",
+        "The product is undefined"
+      ],
+      "answer": 1,
+      "explanation": "Inner dimensions (5 and 5) match, and the result takes the outer dimensions (8, 3)."
+    },
+    {
+      "type": "output",
+      "question": "What does this print?",
+      "code": "a = [1, 2, 3]\nb = [4, -2, 0]\nprint(sum(x * y for x, y in zip(a, b)))",
+      "options": [
+        "0",
+        "-4",
+        "12",
+        "4"
+      ],
+      "answer": 0,
+      "explanation": "1*4 + 2*(-2) + 3*0 = 4 - 4 + 0 = 0, so the vectors are orthogonal."
+    },
+    {
+      "type": "concept",
+      "question": "Two embedding vectors have cosine similarity close to -1. What does that indicate?",
+      "options": [
+        "They point in nearly opposite directions",
+        "They are identical",
+        "They are orthogonal",
+        "One of them has zero length"
+      ],
+      "answer": 0,
+      "explanation": "Cosine similarity ranges from -1 to 1; values near -1 mean opposite directions."
+    },
+    {
+      "type": "scenario",
+      "question": "PyTorch raises 'mat1 and mat2 shapes cannot be multiplied (64x784 and 512x10)'. What is the most likely fix?",
+      "options": [
+        "Use element-wise multiplication instead",
+        "Make the layer's input size 784 so its weight is (784, 10)",
+        "Transpose the input batch",
+        "Change the batch size to 512"
+      ],
+      "answer": 1,
+      "explanation": "The inner dimensions 784 and 512 do not match; the layer expects 512 features but receives 784, so its input size must be 784."
+    },
+    {
+      "type": "concept",
+      "question": "Which technique relies most directly on low-rank matrix factorisation to reduce trainable parameters?",
+      "options": [
+        "Dropout",
+        "Batch normalisation",
+        "LoRA",
+        "Max pooling"
+      ],
+      "answer": 2,
+      "explanation": "LoRA represents a weight update as the product of two thin matrices, a low-rank factorisation with far fewer parameters."
+    }
+  ]
+}

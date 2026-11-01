@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from . import views
+from . import prep_views, views
 
 urlpatterns = [
     path('login/', views.AdminLoginView.as_view(), name='admin-login'),
@@ -19,5 +19,11 @@ urlpatterns = [
     path('questions/', views.QuestionListView.as_view(), name='admin-questions'),
     path('questions/<int:pk>/', views.QuestionDetailView.as_view(), name='admin-question'),
     path('tutors/', include('apps.tutors.admin_urls')),
+    path('prep/', prep_views.CurriculumListView.as_view(), name='admin-prep'),
+    path('prep/<int:pk>/', prep_views.CurriculumDetailView.as_view(), name='admin-prep-curriculum'),
+    path('prep/<int:pk>/upload-pdf/', prep_views.CurriculumPdfUploadView.as_view(), name='admin-prep-pdf'),
+    path('prep/<int:pk>/swap/', prep_views.LessonSwapView.as_view(), name='admin-prep-swap'),
+    path('prep/<int:pk>/lessons/<int:day>/', prep_views.LessonDetailView.as_view(), name='admin-prep-lesson'),
+    path('prep/<int:pk>/lessons/<int:day>/reset/', prep_views.LessonResetView.as_view(), name='admin-prep-lesson-reset'),
     path('jobs/', include('apps.jobs.admin_urls')),
 ]

@@ -1,0 +1,245 @@
+{
+  "day": 2,
+  "title": "Types of Analytics: Descriptive, Diagnostic, Predictive and Prescriptive",
+  "module": "Analytics foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Define the four types of analytics and the question each one answers.",
+    "Classify a business question into the correct type of analytics.",
+    "Explain how value and complexity increase from descriptive to prescriptive analytics.",
+    "Compute simple descriptive, diagnostic and naive predictive figures from a monthly series.",
+    "Answer interview questions that ask for examples of each type."
+  ],
+  "definition": "Analytics is commonly grouped into four types by the question it answers. Descriptive analytics tells you what happened, diagnostic analytics explains why it happened, predictive analytics estimates what is likely to happen, and prescriptive analytics recommends what to do about it. Most data-analyst work is descriptive and diagnostic, with simple predictive elements.",
+  "theory": [
+    {
+      "heading": "Descriptive analytics: what happened?",
+      "body": "Descriptive analytics summarises historical data into totals, averages, counts, rates and trends. Monthly sales reports, KPI dashboards and website traffic summaries are descriptive. It is the foundation for everything else: you cannot explain or predict a change you have not measured correctly.",
+      "points": [
+        "Techniques: aggregation (SUM, COUNT, AVG), grouping, period comparisons, simple charts.",
+        "Example: 'Revenue in March was ₹12.8 lakh, 5% lower than February.'",
+        "Tools: SQL, Excel pivot tables, Power BI or Tableau dashboards."
+      ]
+    },
+    {
+      "heading": "Diagnostic analytics: why did it happen?",
+      "body": "Diagnostic analytics digs below a headline number to find its drivers. The analyst breaks the metric down by segment (region, product, channel, customer type), compares periods, checks correlations and rules out data errors. A revenue drop might be explained by fewer orders, lower order value or a mix shift towards cheaper products.",
+      "points": [
+        "Techniques: drill-down, segmentation, variance (bridge) analysis, correlation, root-cause analysis.",
+        "Example: 'The drop came almost entirely from Pune, where a competitor opened two stores.'",
+        "Always check data quality first: a broken tracking tag can look like a business problem."
+      ]
+    },
+    {
+      "heading": "Predictive analytics: what is likely to happen?",
+      "body": "Predictive analytics uses historical patterns to estimate future values or the probability of an event. It ranges from a moving-average forecast in Excel to regression and machine-learning models. Analysts often build simple forecasts; complex models are usually the domain of data scientists.",
+      "points": [
+        "Techniques: moving averages, trend lines, regression, time-series forecasting, classification models.",
+        "Example: 'Next month's demand is expected to be about 14,100 units.'",
+        "Predictions carry uncertainty, so present ranges or confidence where possible."
+      ]
+    },
+    {
+      "heading": "Prescriptive analytics: what should we do?",
+      "body": "Prescriptive analytics recommends an action by combining predictions with business rules, constraints and objectives. Route optimisation, dynamic pricing and inventory reorder points are prescriptive. It delivers the most value but needs the most mature data and the strongest trust from decision-makers.",
+      "points": [
+        "Techniques: optimisation, simulation, what-if scenarios, decision rules, recommendation engines.",
+        "Example: 'Reorder 1,200 units of SKU A by Friday to keep the stock-out risk under 5%.'",
+        "Excel Solver and scenario analysis are entry-level prescriptive tools."
+      ]
+    },
+    {
+      "heading": "How the four types relate",
+      "body": "The four types form a ladder of increasing complexity and business value, sometimes drawn as the Gartner analytics ascendancy model. In practice they are combined: a dashboard (descriptive) shows a dip, a drill-down (diagnostic) finds the cause, a forecast (predictive) estimates next month, and a recommendation (prescriptive) proposes the fix. They are not strictly sequential; a company can run prescriptive pricing while its reporting is still weak, but that is risky.",
+      "points": [
+        "Hindsight: descriptive and diagnostic. Foresight: predictive and prescriptive.",
+        "Complexity, data needs and value all rise up the ladder.",
+        "Some frameworks add a fifth type, cognitive analytics, for self-learning systems."
+      ]
+    }
+  ],
+  "example": {
+    "title": "One business problem, four types of analytics",
+    "body": "A food-delivery company sees fewer weekend orders. Descriptive: weekend orders fell 9% month on month. Diagnostic: the fall is concentrated in two cities where average delivery time rose from 32 to 47 minutes after a rider shortage. Predictive: if delivery times stay at this level, weekend orders are expected to fall another 6% next month. Prescriptive: add 80 weekend riders in those cities with a surge incentive, which the model shows is cheaper than the lost margin.",
+    "code": {
+      "language": "text",
+      "source": "Question                                  Type\nHow many weekend orders did we get?       Descriptive\nWhy did weekend orders drop?              Diagnostic\nHow many orders will we get next month?   Predictive\nHow many riders should we add, and where? Prescriptive"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Retail sales reporting",
+      "description": "Descriptive weekly sales by store and category, with diagnostic drill-downs when a store underperforms."
+    },
+    {
+      "title": "Demand forecasting",
+      "description": "Predictive forecasts of SKU demand so that procurement can plan purchases before festivals."
+    },
+    {
+      "title": "Credit risk",
+      "description": "Predictive default scores combined with prescriptive approval rules and credit limits."
+    },
+    {
+      "title": "Marketing budget allocation",
+      "description": "Diagnostic channel attribution followed by prescriptive reallocation of spend to the best channels."
+    },
+    {
+      "title": "Logistics",
+      "description": "Prescriptive route optimisation that minimises delivery time given riders, traffic and order locations."
+    }
+  ],
+  "demonstration": {
+    "description": "Use a six-month revenue series to produce one figure of each kind. The descriptive figures summarise, the diagnostic figure points to the month that needs explaining, and a naive three-month average acts as a first predictive estimate.",
+    "code": {
+      "language": "python",
+      "source": "months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']\nrevenue = [120000, 135000, 128000, 150000, 132000, 141000]\n\nprint('Total:', sum(revenue))                       # descriptive\nchanges = [(revenue[i] - revenue[i-1]) / revenue[i-1] * 100 for i in range(1, 6)]\nworst = min(range(5), key=lambda i: changes[i])\nprint('Biggest drop:', months[worst + 1], round(changes[worst], 2))  # diagnostic starting point\nprint('Forecast:', sum(revenue[-3:]) / 3)            # naive predictive"
+    },
+    "output": "Total: 806000\nBiggest drop: May -12.0\nForecast: 141000.0"
+  },
+  "takeaways": [
+    "Descriptive = what happened; diagnostic = why; predictive = what will happen; prescriptive = what to do.",
+    "Value and complexity increase from descriptive to prescriptive.",
+    "Diagnostic work relies on segmentation and comparison, and starts by ruling out data errors.",
+    "Predictions are estimates with uncertainty; communicate ranges, not false precision.",
+    "Real analyses combine several types to move from a number to a decision."
+  ],
+  "interview": [
+    {
+      "question": "What are the four types of analytics?",
+      "answer": "Descriptive (what happened), diagnostic (why it happened), predictive (what is likely to happen) and prescriptive (what action to take).",
+      "explanation": "Pair each type with its guiding question and one example. That shows understanding rather than recall of four words."
+    },
+    {
+      "question": "Give an example of diagnostic analytics from a project or a realistic scenario.",
+      "answer": "Monthly app sign-ups fell 15%. I split sign-ups by acquisition channel and device and found the drop came only from Android users arriving via paid ads, which coincided with a broken deep link in a new app release. Fixing the link restored sign-ups.",
+      "explanation": "A strong answer shows a structured drill-down (by channel, device, region, time) and a verified root cause, not just a guess."
+    },
+    {
+      "question": "Is a moving-average forecast predictive analytics? What are its limits?",
+      "answer": "Yes, it is a simple predictive method because it estimates a future value from historical data. It lags behind trends, ignores seasonality and external drivers, and gives no uncertainty range on its own.",
+      "explanation": "Interviewers like candidates who know simple methods and their limitations, and who can say when a more robust model would be needed."
+    },
+    {
+      "question": "Which type of analytics adds the most value, and why don't companies always start there?",
+      "answer": "Prescriptive analytics usually adds the most value because it directly recommends actions. Companies rarely start there because it depends on reliable descriptive data, trusted predictions, clear objectives and constraints, and stakeholder buy-in.",
+      "explanation": "Mention data maturity: without trustworthy descriptive reporting, recommendations cannot be validated or trusted."
+    },
+    {
+      "question": "A dashboard shows conversion dropped yesterday. How do you move from descriptive to diagnostic?",
+      "answer": "First verify the data (tracking, pipeline delays, definition changes). Then break conversion into funnel steps and segments such as device, browser, channel and geography to locate where the drop happens, and check for releases, outages, price changes or campaign changes on that date.",
+      "explanation": "Ruling out data problems first and then decomposing the metric is exactly what a senior analyst does; say both."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Monthly revenue: describe, diagnose, forecast",
+    "difficulty": "Basic",
+    "objective": "Produce descriptive, diagnostic and naive predictive figures from one time series.",
+    "statement": "Read monthly revenue figures in time order. Print the total and the average; the best month (first one if tied); the month with the largest percentage drop compared with the previous month (ignore months whose previous value is 0); and a naive forecast for next month equal to the average of the last three months (or of all months if fewer than three).",
+    "language": "python",
+    "input_format": "First line: n (at least 1). Next n lines: month_name amount.",
+    "output_format": "Total: <x>\nAverage: <x>\nBest month: <month> (<amount>)\nBiggest drop: <month> (<pct>%)  or  Biggest drop: none\nForecast next month: <x>\nAll numbers use exactly 2 decimal places; the percentage is negative.",
+    "example": {
+      "input": "6\nJan 120000\nFeb 135000\nMar 128000\nApr 150000\nMay 132000\nJun 141000\n",
+      "output": "Total: 806000.00\nAverage: 134333.33\nBest month: Apr (150000.00)\nBiggest drop: May (-12.00%)\nForecast next month: 141000.00"
+    },
+    "constraints": [
+      "1 <= n <= 60",
+      "Amounts are non-negative numbers and may contain decimals.",
+      "Print 'none' when no month is lower than its previous month."
+    ],
+    "starter": "n = int(input())\nmonths, values = [], []\nfor _ in range(n):\n    name, amount = input().split()\n    months.append(name)\n    values.append(float(amount))\n\n# TODO: total, average, best month, biggest drop, forecast\n",
+    "solution": "n = int(input())\nmonths, values = [], []\nfor _ in range(n):\n    name, amount = input().split()\n    months.append(name)\n    values.append(float(amount))\n\ntotal = sum(values)\nprint(f'Total: {total:.2f}')\nprint(f'Average: {total / n:.2f}')\n\nbest = max(range(n), key=lambda i: (values[i], -i))\nprint(f'Best month: {months[best]} ({values[best]:.2f})')\n\nworst_i, worst_pct = None, 0.0\nfor i in range(1, n):\n    prev = values[i - 1]\n    if prev == 0:\n        continue\n    pct = (values[i] - prev) / prev * 100\n    if pct < worst_pct:\n        worst_i, worst_pct = i, pct\nif worst_i is None:\n    print('Biggest drop: none')\nelse:\n    print(f'Biggest drop: {months[worst_i]} ({worst_pct:.2f}%)')\n\nlast = values[-3:]\nprint(f'Forecast next month: {sum(last) / len(last):.2f}')\n",
+    "explanation": [
+      "Descriptive: the total and average summarise the whole period.",
+      "Find the best month with max(); the key (value, -index) makes the earliest month win a tie.",
+      "Diagnostic starting point: compute each month-over-month percentage change and keep the most negative one, skipping a zero previous value to avoid division by zero.",
+      "Predictive: a naive forecast averages the last three values; slicing values[-3:] also works when there are fewer than three months.",
+      "Format every number with :.2f so the output is deterministic."
+    ],
+    "tests": [
+      {
+        "input": "6\nJan 120000\nFeb 135000\nMar 128000\nApr 150000\nMay 132000\nJun 141000\n",
+        "output": "Total: 806000.00\nAverage: 134333.33\nBest month: Apr (150000.00)\nBiggest drop: May (-12.00%)\nForecast next month: 141000.00"
+      },
+      {
+        "input": "1\nJan 5000\n",
+        "output": "Total: 5000.00\nAverage: 5000.00\nBest month: Jan (5000.00)\nBiggest drop: none\nForecast next month: 5000.00"
+      },
+      {
+        "input": "4\nJan 100\nFeb 200\nMar 300\nApr 400\n",
+        "output": "Total: 1000.00\nAverage: 250.00\nBest month: Apr (400.00)\nBiggest drop: none\nForecast next month: 300.00"
+      },
+      {
+        "input": "4\nJan 1000\nFeb 800\nMar 600\nApr 300\n",
+        "output": "Total: 2700.00\nAverage: 675.00\nBest month: Jan (1000.00)\nBiggest drop: Apr (-50.00%)\nForecast next month: 566.67"
+      },
+      {
+        "input": "3\nJan 0\nFeb 500\nMar 400\n",
+        "output": "Total: 900.00\nAverage: 300.00\nBest month: Feb (500.00)\nBiggest drop: Mar (-20.00%)\nForecast next month: 300.00"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which question does diagnostic analytics answer?",
+      "options": [
+        "What will happen next quarter?",
+        "What should we do next?",
+        "Why did it happen?",
+        "What happened last month?"
+      ],
+      "answer": 2,
+      "explanation": "Diagnostic analytics explains the causes behind a result, typically through drill-down and segmentation."
+    },
+    {
+      "type": "scenario",
+      "question": "A bank recommends a credit limit for each applicant using a risk score and business rules. Which type of analytics is this?",
+      "options": [
+        "Diagnostic",
+        "Exploratory only",
+        "Prescriptive",
+        "Descriptive"
+      ],
+      "answer": 2,
+      "explanation": "Recommending a specific action (the credit limit) based on predictions and constraints is prescriptive analytics."
+    },
+    {
+      "type": "scenario",
+      "question": "A weekly report shows total orders, average order value and top products for the last seven days. What type of analytics is it?",
+      "options": [
+        "Predictive",
+        "Prescriptive",
+        "Diagnostic",
+        "Descriptive"
+      ],
+      "answer": 3,
+      "explanation": "Summarising what already happened is descriptive analytics."
+    },
+    {
+      "type": "output",
+      "question": "Revenue for three months is 200, 150 and 180. What is the percentage change from the first to the second month?",
+      "options": [
+        "+20.00%",
+        "-16.67%",
+        "-33.33%",
+        "-25.00%"
+      ],
+      "answer": 3,
+      "explanation": "(150 - 200) / 200 × 100 = -25%. Percentage change always divides by the earlier (base) value."
+    },
+    {
+      "type": "concept",
+      "question": "Why should an analyst check data quality before starting a diagnostic investigation?",
+      "options": [
+        "Because diagnostic analytics does not use real data",
+        "Because predictive models require it by law",
+        "Because a tracking or pipeline error can look like a real business change",
+        "Because data quality only matters for prescriptive analytics"
+      ],
+      "answer": 2,
+      "explanation": "Many 'drops' are caused by broken tracking, late data loads or definition changes. Ruling these out first prevents chasing a false cause."
+    }
+  ]
+}

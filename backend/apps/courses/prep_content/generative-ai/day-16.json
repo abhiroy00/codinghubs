@@ -1,0 +1,225 @@
+{
+  "day": 16,
+  "title": "RAG Fundamentals",
+  "module": "Retrieval & agents",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain what RAG is and why it grounds LLM answers in external documents.",
+    "Describe the RAG pipeline: index, retrieve, augment and generate.",
+    "Distinguish parametric memory (model weights) from non-parametric memory (documents).",
+    "Explain chunking and why documents are split before indexing.",
+    "Name the benefits and limitations of RAG."
+  ],
+  "definition": "Retrieval-Augmented Generation (RAG) is a pattern that gives an LLM access to external documents at query time. The system retrieves relevant chunks from a knowledge base, adds them to the prompt as context, and asks the model to answer using only that context. This grounds answers in supplied facts, reduces hallucinations and lets the model answer about private or recent information it was not trained on.",
+  "theory": [
+    {
+      "heading": "What RAG is and why it helps",
+      "body": "An LLM's knowledge is frozen in its weights after training. RAG supplements this by fetching relevant documents at runtime and providing them in the prompt. The model then reasons over the retrieved evidence instead of relying only on memory, which improves accuracy on private, recent or domain-specific questions.",
+      "points": [
+        "Parametric memory: facts stored in model weights.",
+        "Non-parametric memory: external documents fetched at runtime.",
+        "RAG combines both: retrieve evidence, then generate from it."
+      ]
+    },
+    {
+      "heading": "The RAG pipeline",
+      "body": "RAG has four stages. Index: load documents, split into chunks, convert to vectors and store them. Retrieve: convert the user query to a vector and find the most similar stored chunks. Augment: insert the retrieved chunks into the prompt as context. Generate: ask the model to answer using the context, citing sources where possible.",
+      "points": [
+        "Index: documents become searchable vectors.",
+        "Retrieve: the query matches stored chunks by similarity.",
+        "Augment: retrieved chunks become prompt context.",
+        "Generate: the model answers from the retrieved evidence."
+      ]
+    },
+    {
+      "heading": "Chunking",
+      "body": "Documents are split into chunks before embedding because context windows are limited and similarity works best on focused text. Each chunk should be self-contained enough to be useful, and chunks often overlap slightly so a sentence is not cut in half across two chunks.",
+      "points": [
+        "Chunk size balances context and precision.",
+        "Overlap keeps related text together across chunk boundaries.",
+        "Each chunk should carry metadata such as source and page."
+      ]
+    },
+    {
+      "heading": "Benefits and limitations",
+      "body": "RAG reduces hallucinations, supports private data and keeps answers up to date without retraining. Limitations include retrieval failures (the right chunk is not found), poor chunking (context is split awkwardly), added latency and cost, and dependence on document quality.",
+      "points": [
+        "Benefits: grounded answers, private data, up-to-date facts.",
+        "Limitations: retrieval misses, bad chunking, latency, cost.",
+        "Document quality directly affects answer quality."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Answering from an employee handbook",
+    "body": "An employee asks 'How many leave days do I get?' The model was not trained on this company's handbook. RAG retrieves the leave-policy chunk from the handbook, adds it to the prompt, and the model answers 'You get 24 paid leave days per year,' citing the handbook section.",
+    "code": {
+      "language": "text",
+      "source": "Query: How many leave days do I get?\nRetrieved chunk: 'Employees are entitled to 24 paid leave days per year, accrued monthly.'\nAugmented prompt: 'Answer using only this context: Employees are entitled to 24 paid leave days per year, accrued monthly. Question: How many leave days do I get?'\nAnswer: You get 24 paid leave days per year."
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Employee self-service",
+      "description": "Answers HR and policy questions from internal documents."
+    },
+    {
+      "title": "Customer support",
+      "description": "Answers product questions from a company knowledge base."
+    },
+    {
+      "title": "Legal and compliance",
+      "description": "Finds relevant clauses in contracts and regulations."
+    },
+    {
+      "title": "Research assistance",
+      "description": "Summarises findings from a collection of papers or reports."
+    }
+  ],
+  "demonstration": {
+    "description": "Ask the same question with and without retrieval. Without retrieval the model guesses; with retrieval it quotes the handbook chunk. Exact wording varies by model.",
+    "code": {
+      "language": "text",
+      "source": "Without RAG:\nQ: How many leave days?\nA: Most companies offer around 20 days.\n\nWith RAG:\nContext: Employees are entitled to 24 paid leave days per year.\nQ: How many leave days?\nA: You get 24 paid leave days per year."
+    },
+    "output": "Without RAG: a generic, possibly wrong answer.\nWith RAG: a specific answer grounded in the retrieved document."
+  },
+  "takeaways": [
+    "RAG grounds LLM answers in external documents fetched at query time.",
+    "The pipeline is index, retrieve, augment and generate.",
+    "Chunking splits documents into focused, searchable pieces with overlap.",
+    "RAG reduces hallucinations and supports private or recent data.",
+    "Retrieval quality and document quality directly affect answers.",
+    "RAG adds latency and cost compared to a plain model call."
+  ],
+  "interview": [
+    {
+      "question": "What is RAG and why use it?",
+      "answer": "RAG retrieves relevant documents at query time and adds them to the prompt so the model answers from supplied evidence. It reduces hallucinations and supports private or recent data.",
+      "explanation": "Contrast parametric memory with non-parametric retrieval."
+    },
+    {
+      "question": "What are the four stages of a RAG pipeline?",
+      "answer": "Index documents into vectors, retrieve relevant chunks for the query, augment the prompt with those chunks, and generate an answer from the context.",
+      "explanation": "Give one sentence per stage."
+    },
+    {
+      "question": "Why chunk documents instead of embedding whole files?",
+      "answer": "context windows are limited and similarity search works best on focused, self-contained chunks; overlap prevents cutting sentences across boundaries.",
+      "explanation": "Mention chunk size and overlap trade-offs."
+    },
+    {
+      "question": "What is a limitation of RAG?",
+      "answer": "If retrieval misses the right chunk, the model cannot answer correctly. RAG also adds latency, cost and depends on document quality.",
+      "explanation": "Name retrieval failure and document quality as key risks."
+    },
+    {
+      "question": "How does RAG reduce hallucinations?",
+      "answer": "By giving the model retrieved evidence to reason over and instructing it to answer only from that context, the model is less likely to invent facts.",
+      "explanation": "Mention citing sources as a further check."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Simulate vector retrieval by keyword overlap",
+    "difficulty": "Basic",
+    "objective": "Model the retrieval step of RAG by matching a query to document chunks using shared words.",
+    "statement": "Read a query, then an integer N, then N document chunks. Score each chunk by how many distinct words it shares with the query (case-insensitive, split on whitespace). Print the 1-based index of the chunk with the highest score. If there is a tie, print the smallest index. If no chunk shares any word with the query, print -1.",
+    "language": "python",
+    "input_format": "Line 1: the query.\nLine 2: N.\nNext N lines: one document chunk each.",
+    "output_format": "One integer: the 1-based index of the best chunk, or -1.",
+    "example": {
+      "input": "leave days policy\n3\nEmployees get 24 paid leave days per year.\nThe office is open from 9 to 5.\nPayroll is processed on the last Friday.\n",
+      "output": "1"
+    },
+    "constraints": [
+      "1 <= N <= 100.",
+      "Words are split on whitespace and compared in lowercase.",
+      "The query is non-empty."
+    ],
+    "starter": "query = input().strip()\nn = int(input())\nchunks = [input().strip() for _ in range(n)]\n\n# TODO: score each chunk by shared words and print the best index or -1\n",
+    "solution": "query = input().strip()\nn = int(input())\nchunks = [input().strip() for _ in range(n)]\n\nqwords = set(query.lower().split())\nbest_idx = -1\nbest_score = 0\nfor i, chunk in enumerate(chunks, start=1):\n    cwords = set(chunk.lower().split())\n    score = len(qwords & cwords)\n    if score > best_score:\n        best_score = score\n        best_idx = i\nprint(best_idx)\n",
+    "explanation": [
+      "Read the query and split it into lowercase words.",
+      "Read N chunks, then score each by the size of the word intersection with the query.",
+      "Track the highest score and its 1-based index, keeping the first index on ties.",
+      "If no chunk shares a word, best_idx stays -1."
+    ],
+    "tests": [
+      {
+        "input": "leave days policy\n3\nEmployees get 24 paid leave days per year.\nThe office is open from 9 to 5.\nPayroll is processed on the last Friday.\n",
+        "output": "1"
+      },
+      {
+        "input": "coffee\n3\nTea is served in the morning.\nThe break room has coffee.\nWater is available.\n",
+        "output": "2"
+      },
+      {
+        "input": "zebra\n3\nThe cat sleeps.\nDogs bark loudly.\nBirds sing.\n",
+        "output": "-1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does RAG stand for?",
+      "options": [
+        "Retrieval-Augmented Generation",
+        "Rapid Automatic Generation",
+        "Retrieved AI Grounding",
+        "Real-time AI Generation"
+      ],
+      "answer": 0,
+      "explanation": "RAG is Retrieval-Augmented Generation: retrieve documents, then generate an answer from them."
+    },
+    {
+      "type": "scenario",
+      "question": "A user asks about a company policy that the model was never trained on. Which approach lets the model answer accurately?",
+      "options": [
+        "Use RAG to retrieve the policy document",
+        "Use a longer system message",
+        "Ask the user to retrain the model",
+        "Increase the temperature"
+      ],
+      "answer": 0,
+      "explanation": "RAG fetches the relevant document at query time so the model can answer from it."
+    },
+    {
+      "type": "concept",
+      "question": "What is chunking in RAG?",
+      "answer": 2,
+      "explanation": "Mention overlap and metadata as practical considerations.",
+      "options": [
+        "Increasing the context window",
+        "Deleting old data",
+        "Splitting documents into smaller pieces",
+        "Training the model longer"
+      ]
+    },
+    {
+      "type": "scenario",
+      "question": "Retrieval returns a chunk that does not actually answer the question. What is this called?",
+      "options": [
+        "A token limit",
+        "A hallucination",
+        "A retrieval miss",
+        "A context overflow"
+      ],
+      "answer": 2,
+      "explanation": "A retrieval miss means the right evidence was not found, so the model lacks the needed context."
+    },
+    {
+      "type": "concept",
+      "question": "Which memory source does RAG add to an LLM?",
+      "options": [
+        "Parametric memory only",
+        "Non-parametric memory from external documents",
+        "More model weights",
+        "A larger context window"
+      ],
+      "answer": 1,
+      "explanation": "RAG adds non-parametric memory: documents retrieved at runtime rather than stored in weights."
+    }
+  ]
+}

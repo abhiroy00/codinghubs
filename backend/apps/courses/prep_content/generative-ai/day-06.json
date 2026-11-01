@@ -1,0 +1,242 @@
+{
+  "day": 6,
+  "title": "Tokens, Tokenization & Context Windows",
+  "module": "GenAI foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what a token is and why LLMs work on tokens rather than characters or words.",
+    "Describe subword tokenisation algorithms such as BPE, WordPiece and SentencePiece.",
+    "Estimate token counts and explain why the same text costs different tokens in different languages.",
+    "Define the context window and how input and output tokens share it.",
+    "Apply strategies for handling text that does not fit in the context window."
+  ],
+  "definition": "A token is the basic unit of text an LLM reads and writes: a whole word, part of a word, a punctuation mark or a byte sequence. Tokenisation is the process of converting text into a sequence of token IDs from the model's fixed vocabulary. The context window is the maximum number of tokens, prompt plus generated output, that the model can handle in a single request.",
+  "theory": [
+    {
+      "heading": "Why tokens and not words or characters",
+      "body": "Using whole words would need an enormous vocabulary and still fail on new words, names and typos. Using single characters makes sequences very long, which makes attention expensive and learning harder. Subword tokenisation is the compromise: common words become one token, rare words are split into meaningful pieces ('unbelievable' might become 'un', 'believ', 'able'), and any text can still be represented. Vocabularies typically hold 30,000 to 200,000 tokens.",
+      "points": [
+        "Common words: usually one token, often including the leading space (' the').",
+        "Rare words, names and code identifiers: several tokens.",
+        "Rough English rule of thumb: 1 token ≈ 4 characters ≈ 0.75 words."
+      ]
+    },
+    {
+      "heading": "How subword tokenisers are built",
+      "body": "Byte Pair Encoding (BPE), used by GPT-style models, starts from bytes or characters and repeatedly merges the most frequent adjacent pair into a new token until the vocabulary reaches the target size. WordPiece, used by BERT, chooses merges that most increase the likelihood of the training data and marks word continuations with '##'. SentencePiece treats the input as a raw stream including spaces (shown as '▁'), which suits languages without spaces; Unigram is one of its algorithms. The tokeniser is trained once and fixed for the model's life.",
+      "points": [
+        "BPE / byte-level BPE: GPT models (tiktoken), Llama 3.",
+        "WordPiece: BERT and its variants.",
+        "SentencePiece (BPE or Unigram): T5, Gemma, many multilingual models."
+      ]
+    },
+    {
+      "heading": "Tokens, languages and cost",
+      "body": "Tokenisers are trained mostly on English-heavy data, so English is encoded efficiently while Hindi, Tamil or other Indic scripts may need several times more tokens for the same meaning. Since API pricing, rate limits and context capacity are all measured in tokens, this directly affects cost and how much text fits. Numbers and code can also tokenise unexpectedly, which partly explains why LLMs struggle with character-level tasks like counting letters or reversing strings.",
+      "points": [
+        "Always count tokens with the model's own tokeniser (for example tiktoken for OpenAI models).",
+        "Non-English text can cost 2–4x more tokens.",
+        "Character-level puzzles are hard because the model never 'sees' individual letters."
+      ]
+    },
+    {
+      "heading": "The context window",
+      "body": "Every request must fit within the context window: system prompt + conversation history + retrieved documents + the user message + the generated answer. Windows have grown from 2,048 tokens in early GPT-3 to 128K, 200K and even 1M+ tokens in current models. Larger windows are not free: cost grows with input length, latency increases, and models can miss information buried in the middle of very long contexts ('lost in the middle').",
+      "points": [
+        "Input tokens + max output tokens must not exceed the window.",
+        "Exceeding it causes an error or silent truncation, depending on the API.",
+        "Long context does not guarantee the model uses all of it equally well."
+      ]
+    },
+    {
+      "heading": "Handling text that does not fit",
+      "body": "When content is too long, you choose what goes into the window. Common strategies are truncating the oldest chat turns, summarising history, chunking documents and retrieving only the relevant chunks (RAG), or map-reduce summarisation where each chunk is summarised separately and the summaries are combined. Good systems reserve a token budget for the answer before filling the rest with context.",
+      "points": [
+        "Sliding window: keep the most recent N turns.",
+        "Summarisation memory: compress older turns into a summary.",
+        "Retrieval: include only the most relevant chunks."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Counting tokens with tiktoken",
+    "body": "OpenAI's tiktoken library exposes the exact tokeniser of its models. The snippet counts tokens for an English and a Hindi sentence with similar meaning. The exact numbers depend on the encoding, but the Hindi sentence typically needs noticeably more tokens.",
+    "code": {
+      "language": "python",
+      "source": "import tiktoken\n\nenc = tiktoken.get_encoding('o200k_base')   # encoding used by GPT-4o family models\nfor text in ['How are you today?', 'आज आप कैसे हैं?']:\n    ids = enc.encode(text)\n    print(len(ids), ids[:6])\n\nprint([enc.decode([i]) for i in enc.encode('tokenization')])\n# e.g. ['token', 'ization']  (exact split depends on the encoding)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Cost forecasting",
+      "description": "Count tokens per request to estimate API bills before launch."
+    },
+    {
+      "title": "Chat memory management",
+      "description": "Trim or summarise old messages so long conversations stay within the window."
+    },
+    {
+      "title": "Document Q&A",
+      "description": "Decide chunk sizes and how many retrieved chunks fit alongside the question and answer."
+    },
+    {
+      "title": "Multilingual products",
+      "description": "Budget more tokens for Indian-language users and choose models with efficient multilingual tokenisers."
+    }
+  ],
+  "demonstration": {
+    "description": "Check whether a request fits a model with an 8,192-token window when 1,024 tokens are reserved for the answer. The input budget is the window minus the reserved output.",
+    "code": {
+      "language": "text",
+      "source": "Context window:          8,192\nReserved for output:     1,024\nSystem prompt:             350\nChat history:            4,900\nRetrieved documents:     2,600\nUser question:              60"
+    },
+    "output": "Input budget = 8,192 - 1,024 = 7,168\nInput total  = 350 + 4,900 + 2,600 + 60 = 7,910\nDoes not fit: over by 742 tokens -> summarise history or retrieve fewer documents."
+  },
+  "takeaways": [
+    "LLMs read and write tokens, usually subword pieces from a fixed vocabulary.",
+    "BPE, WordPiece and SentencePiece are the main subword tokenisation families.",
+    "Roughly 4 English characters per token; other languages often need more tokens.",
+    "The context window covers prompt and output together; reserve space for the answer.",
+    "Long contexts cost more, are slower and can 'lose' information in the middle.",
+    "Use truncation, summarisation or retrieval when content is too long."
+  ],
+  "interview": [
+    {
+      "question": "What is a token in an LLM?",
+      "answer": "A token is a unit of text from the model's vocabulary, typically a word or a word piece, mapped to an integer ID. Models process and generate sequences of these IDs.",
+      "explanation": "Give the rule of thumb (about 4 English characters per token) and mention that pricing and limits are in tokens."
+    },
+    {
+      "question": "Why do LLMs use subword tokenisation?",
+      "answer": "It balances vocabulary size and sequence length: frequent words stay whole, rare words split into reusable pieces, and no input is ever out-of-vocabulary.",
+      "explanation": "Contrast with word-level (huge vocabulary, OOV issues) and character-level (very long sequences)."
+    },
+    {
+      "question": "How does BPE build its vocabulary?",
+      "answer": "Start with characters or bytes, count adjacent pairs across the corpus, merge the most frequent pair into a new token, and repeat until the target vocabulary size is reached. Encoding applies the learned merges in order.",
+      "explanation": "Interviewers may ask you to perform two or three merges by hand on a tiny corpus; practise this."
+    },
+    {
+      "question": "What is a context window, and what happens when you exceed it?",
+      "answer": "It is the maximum number of tokens, prompt plus output, the model can handle per request. Exceeding it causes an API error or truncation, so the application must trim, summarise or retrieve selectively.",
+      "explanation": "Mention reserving output tokens and the 'lost in the middle' effect for very long inputs."
+    },
+    {
+      "question": "Why might an LLM fail to count the letter 'r' in 'strawberry'?",
+      "answer": "The model sees tokens such as 'str', 'aw', 'berry', not individual characters, so letter-level information is not directly visible to it.",
+      "explanation": "A popular question that tests whether you truly understand tokenisation. Mention workarounds: spell the word out first or use a code tool."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Toy tokeniser and context-window check",
+    "difficulty": "Basic",
+    "objective": "Count tokens with a simple subword rule and check a prompt against a context window with reserved output tokens.",
+    "statement": "Implement a toy tokeniser. First split the text into words (runs of letters, digits or underscores) and punctuation marks (every other non-space character is its own piece). Each punctuation mark is one token. Each word is split into pieces of 4 characters from the left (the last piece may be shorter), and each piece is one token. Print the pieces joined by '|', the token count, the input budget (window minus reserved output) and whether the prompt fits.",
+    "language": "python",
+    "input_format": "Line 1: W R (context window and tokens reserved for output).\nRemaining lines: the prompt text (may span several lines or be empty).",
+    "output_format": "pieces=<p1|p2|...> (empty after '=' if there are no tokens)\ntokens=<n>\nbudget=<W-R>\nThen fits=yes remaining=<budget-n> or fits=no over_by=<n-budget>",
+    "example": {
+      "input": "20 5\nTokenization matters, a lot!\n",
+      "output": "pieces=Toke|niza|tion|matt|ers|,|a|lot|!\ntokens=9\nbudget=15\nfits=yes remaining=6"
+    },
+    "constraints": [
+      "0 <= R <= W <= 1000000.",
+      "The prompt may contain any printable characters; whitespace only separates words.",
+      "A prompt that uses exactly the whole budget fits."
+    ],
+    "starter": "import re\nimport sys\n\nw, r = map(int, sys.stdin.readline().split())\ntext = sys.stdin.read()\nraw = re.findall(r'\\w+|[^\\w\\s]', text)\n\n# TODO: split words into 4-character pieces, count and check the budget\n",
+    "solution": "import re\nimport sys\n\nw, r = map(int, sys.stdin.readline().split())\ntext = sys.stdin.read()\nraw = re.findall(r'\\w+|[^\\w\\s]', text)\n\npieces = []\nfor piece in raw:\n    if re.fullmatch(r'\\w+', piece):\n        pieces.extend(piece[i:i + 4] for i in range(0, len(piece), 4))\n    else:\n        pieces.append(piece)\n\nn = len(pieces)\nbudget = w - r\nprint('pieces=' + '|'.join(pieces))\nprint(f'tokens={n}')\nprint(f'budget={budget}')\nif n <= budget:\n    print(f'fits=yes remaining={budget - n}')\nelse:\n    print(f'fits=no over_by={n - budget}')\n",
+    "explanation": [
+      "Read the window and reserve from the first line, and the rest of stdin as the prompt.",
+      "Use the regex \\w+|[^\\w\\s] to get words and individual punctuation marks; whitespace is dropped.",
+      "Slice each word into 4-character chunks, mimicking how subword tokenisers split long or rare words.",
+      "The input budget is the window minus the tokens reserved for the answer; compare the count with it.",
+      "Report the remaining space or how many tokens must be removed."
+    ],
+    "tests": [
+      {
+        "input": "20 5\nTokenization matters, a lot!\n",
+        "output": "pieces=Toke|niza|tion|matt|ers|,|a|lot|!\ntokens=9\nbudget=15\nfits=yes remaining=6"
+      },
+      {
+        "input": "10 4\nThe quick brown fox jumps.\n",
+        "output": "pieces=The|quic|k|brow|n|fox|jump|s|.\ntokens=9\nbudget=6\nfits=no over_by=3"
+      },
+      {
+        "input": "100 100\n",
+        "output": "pieces=\ntokens=0\nbudget=0\nfits=yes remaining=0"
+      },
+      {
+        "input": "8 0\nGPT-4o costs $5\nper 1M tokens\n",
+        "output": "pieces=GPT|-|4o|cost|s|$|5|per|1M|toke|ns\ntokens=11\nbudget=8\nfits=no over_by=3"
+      },
+      {
+        "input": "6 1\nhello world\n",
+        "output": "pieces=hell|o|worl|d\ntokens=4\nbudget=5\nfits=yes remaining=1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Roughly how many English characters does one token represent on average?",
+      "options": [
+        "1",
+        "4",
+        "20",
+        "100"
+      ],
+      "answer": 1,
+      "explanation": "A common rule of thumb is about 4 characters, or 0.75 words, per token for English text."
+    },
+    {
+      "type": "output",
+      "question": "A model has a 16,000-token context window. You reserve 2,000 tokens for the answer. Your prompt is 15,000 tokens. What happens?",
+      "options": [
+        "It exceeds the budget by 1,000 tokens",
+        "The window automatically doubles",
+        "It fits with 1,000 tokens to spare",
+        "It fits exactly"
+      ],
+      "answer": 0,
+      "explanation": "The input budget is 16,000 - 2,000 = 14,000 tokens; 15,000 exceeds it by 1,000."
+    },
+    {
+      "type": "concept",
+      "question": "In BPE tokeniser training, what happens at each step?",
+      "options": [
+        "The most frequent adjacent pair of symbols is merged into a new token",
+        "Rare words are deleted from the corpus",
+        "Each word is assigned a random ID",
+        "Sentences are split at full stops"
+      ],
+      "answer": 0,
+      "explanation": "BPE repeatedly merges the most frequent adjacent pair until the target vocabulary size is reached."
+    },
+    {
+      "type": "scenario",
+      "question": "Your chatbot serves Hindi and English users. Hindi requests cost much more. What is the most likely reason?",
+      "options": [
+        "The temperature is higher for Hindi",
+        "The tokeniser splits Hindi text into more tokens for the same meaning",
+        "Hindi users ask longer questions on purpose",
+        "The API charges by language"
+      ],
+      "answer": 1,
+      "explanation": "Tokenisers trained on English-heavy data encode Indic scripts less efficiently, so the same content uses more tokens."
+    },
+    {
+      "type": "concept",
+      "question": "What does the context window limit include?",
+      "options": [
+        "Only the user's latest message",
+        "Prompt tokens plus generated output tokens",
+        "Only the system prompt",
+        "The number of requests per minute"
+      ],
+      "answer": 1,
+      "explanation": "Everything the model reads and writes in one request, including the generated answer, must fit in the window."
+    }
+  ]
+}

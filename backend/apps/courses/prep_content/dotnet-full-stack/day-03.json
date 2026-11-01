@@ -1,0 +1,245 @@
+{
+  "day": 3,
+  "title": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
+  "module": ".NET and C# fundamentals",
+  "level": "Beginner",
+  "objectives": [
+    "Explain why strings are immutable and what that means for performance.",
+    "Decide when to use StringBuilder instead of string concatenation.",
+    "Use ref, out, in and params parameters correctly and explain their differences.",
+    "Apply the TryParse-style 'Try' pattern with out parameters.",
+    "Compare strings correctly using ordinal and culture-aware comparisons."
+  ],
+  "definition": "A C# string is an immutable sequence of UTF-16 characters: every operation that seems to change it (ToUpper, Replace, +) returns a new string. StringBuilder is a mutable buffer for building text efficiently in loops. Method parameters are passed by value by default; the ref, out and in modifiers pass a variable by reference, and params lets a method accept a variable number of arguments.",
+  "theory": [
+    {
+      "heading": "String immutability and interning",
+      "body": "Once created, a string object never changes. s.ToUpper() returns a new string and leaves s untouched, which is a classic interview trap. Immutability makes strings thread-safe and safe to use as dictionary keys, and it lets the runtime intern literals: identical string literals in an assembly share one object. The cost is that repeated concatenation in a loop creates a new string each time, copying all previous characters, which is O(n^2) work for n appends.",
+      "points": [
+        "s = s + x creates a new string; the old one becomes garbage.",
+        "Literals and compile-time constant expressions are interned automatically.",
+        "string.Concat, string.Join and interpolation are fine for a fixed, small number of parts.",
+        "Use string.IsNullOrWhiteSpace to validate input."
+      ]
+    },
+    {
+      "heading": "StringBuilder",
+      "body": "StringBuilder keeps an internal resizable character buffer. Append writes into the buffer and only ToString() creates the final string, so building text in a loop becomes linear. Use it when the number of appends is large or unknown, such as generating CSV rows, reports or SQL in a loop. For two or three pieces, plain concatenation or interpolation is clearer and the compiler already optimises it.",
+      "points": [
+        "Append, AppendLine, Insert, Remove, Replace and Clear modify the buffer in place.",
+        "Pass an initial capacity when you know the approximate size to avoid resizes.",
+        "StringBuilder is not thread-safe; do not share one across threads."
+      ]
+    },
+    {
+      "heading": "ref, out, in and params",
+      "body": "ref passes a variable by reference: the method can read and replace the caller's variable, and the caller must initialise it first. out is also by reference but the method must assign it before returning, and the caller need not initialise it; it is used to return extra values, as in int.TryParse(text, out int n). in passes by reference read-only, which avoids copying large structs. params lets callers pass a comma-separated list that arrives as an array, as in string.Join(\",\", a, b, c).",
+      "points": [
+        "ref: two-way, must be initialised by the caller.",
+        "out: one-way out, must be assigned by the method.",
+        "in: read-only reference, useful for large readonly structs.",
+        "params must be the last parameter, and only one is allowed.",
+        "Optional parameters and named arguments: Send(to, subject: \"Hi\", urgent: true)."
+      ]
+    },
+    {
+      "heading": "The Try pattern",
+      "body": "The .NET convention for operations that can fail in expected ways is a Try method that returns bool and gives the result through an out parameter: int.TryParse, Dictionary.TryGetValue, Enum.TryParse. It avoids using exceptions for normal control flow, which is both faster and clearer. Use the throwing version (int.Parse) only when invalid input is truly exceptional.",
+      "points": [
+        "if (int.TryParse(input, out int qty)) { ... } else { show validation error }",
+        "Exceptions are expensive and should not drive ordinary branching."
+      ]
+    },
+    {
+      "heading": "Comparing strings correctly",
+      "body": "== on strings compares contents ordinally (character codes). For case-insensitive checks use string.Equals(a, b, StringComparison.OrdinalIgnoreCase) rather than a.ToLower() == b.ToLower(), which allocates two strings and can behave unexpectedly in some cultures (the Turkish 'I' problem). Use culture-aware comparison only for text displayed and sorted for humans; use ordinal comparison for identifiers, keys, file paths and protocol values.",
+      "points": [
+        "StringComparison.Ordinal / OrdinalIgnoreCase for technical strings.",
+        "StringComparison.CurrentCulture for user-facing sorting.",
+        "new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase) gives case-insensitive keys."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Concatenation in a loop vs StringBuilder",
+    "body": "Both methods build the same text. The first allocates a new, longer string on every iteration; the second appends into one buffer and allocates the final string once.",
+    "code": {
+      "language": "csharp",
+      "source": "using System;\nusing System.Text;\n\nclass Program\n{\n    static string Slow(int n)\n    {\n        string s = \"\";\n        for (int i = 0; i < n; i++) s += i + \",\";   // n new strings\n        return s;\n    }\n\n    static string Fast(int n)\n    {\n        var sb = new StringBuilder(n * 4);\n        for (int i = 0; i < n; i++) sb.Append(i).Append(',');\n        return sb.ToString();                          // one final string\n    }\n\n    static void Main()\n    {\n        Console.WriteLine(Slow(5)); // 0,1,2,3,4,\n        Console.WriteLine(Fast(5) == Slow(5)); // True\n    }\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Report and CSV generation",
+      "description": "Build thousands of rows with StringBuilder before writing a file or HTTP response."
+    },
+    {
+      "title": "Input validation",
+      "description": "Use int.TryParse and DateTime.TryParse on form or query-string values instead of catching exceptions."
+    },
+    {
+      "title": "Case-insensitive lookups",
+      "description": "Compare HTTP header names, usernames or file extensions with OrdinalIgnoreCase."
+    },
+    {
+      "title": "Helper APIs",
+      "description": "Expose params arrays for convenience methods such as Log(string format, params object[] args)."
+    }
+  ],
+  "demonstration": {
+    "description": "Swap two integers with ref, divide with an out remainder and sum a params list.",
+    "code": {
+      "language": "csharp",
+      "source": "static void Swap(ref int a, ref int b) { int t = a; a = b; b = t; }\nstatic int Divide(int a, int b, out int remainder) { remainder = a % b; return a / b; }\nstatic int Sum(params int[] values) { int s = 0; foreach (int v in values) s += v; return s; }\n\nint x = 1, y = 2;\nSwap(ref x, ref y);\nConsole.WriteLine(x + \" \" + y);\nint q = Divide(17, 5, out int r);\nConsole.WriteLine(q + \" r \" + r);\nConsole.WriteLine(Sum(1, 2, 3, 4));"
+    },
+    "output": "2 1\n3 r 2\n10"
+  },
+  "takeaways": [
+    "Strings are immutable: methods like ToUpper return a new string.",
+    "Use StringBuilder for many or unknown numbers of appends; plain concatenation for a few.",
+    "ref needs an initialised variable; out must be assigned by the method; in is a read-only reference.",
+    "Prefer the Try pattern (TryParse, TryGetValue) over exceptions for expected failures.",
+    "Use ordinal comparisons for technical strings and culture-aware ones for display text."
+  ],
+  "interview": [
+    {
+      "question": "Why are strings immutable in .NET?",
+      "answer": "Immutability makes strings thread-safe, safe as dictionary keys and hash codes, and allows interning so identical literals share memory. The trade-off is that every modification creates a new string.",
+      "explanation": "Give the benefits and the cost; then mention StringBuilder as the solution to the cost."
+    },
+    {
+      "question": "When should you use StringBuilder?",
+      "answer": "When building a string from many pieces, especially in a loop where the count is large or unknown. For a handful of pieces, concatenation or interpolation is just as fast and more readable.",
+      "explanation": "Saying 'always use StringBuilder' is a red flag. Explaining the O(n^2) copying of repeated concatenation is a strong answer."
+    },
+    {
+      "question": "What is the difference between ref and out?",
+      "answer": "Both pass a variable by reference. ref requires the caller to initialise the variable and lets the method read and change it. out does not require initialisation, but the method must assign it before returning; it is used to return additional values.",
+      "explanation": "Add in (read-only by reference) for completeness, and cite int.TryParse as the standard out example."
+    },
+    {
+      "question": "How do you compare two strings case-insensitively, and why not use ToLower()?",
+      "answer": "Use string.Equals(a, b, StringComparison.OrdinalIgnoreCase). ToLower() allocates new strings and is culture-sensitive, which can give wrong results (for example the Turkish dotted and dotless I).",
+      "explanation": "Mentioning the culture issue and allocation cost shows production awareness."
+    },
+    {
+      "question": "Explain string interning. Is (object)\"he\" + \"llo\" == (object)\"hello\" true?",
+      "answer": "Interning stores one shared instance per distinct literal. \"he\" + \"llo\" is a compile-time constant, so it is folded to the literal \"hello\" and interned; the reference comparison is true. A string built at run time (for example with StringBuilder or from user input) is not interned automatically, so a reference comparison would be false, although == on strings still compares contents.",
+      "explanation": "This advanced follow-up checks whether you know the difference between reference equality and string's overloaded ==."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Run-length compression with the Try pattern",
+    "difficulty": "Basic",
+    "objective": "Build strings efficiently with StringBuilder and return a result through an out parameter using the .NET Try pattern.",
+    "statement": "Implement static bool TryCompress(string input, out string compressed). Compress runs of the same character as the character followed by the run length, for example aabcccccaaa becomes a2b1c5a3. Run lengths can have several digits. If the compressed text is strictly shorter than the input, return true and give the compressed text; otherwise return false and give the original input in compressed. Comparison is case-sensitive. For each input line print the result and either (saved k), where k is the number of characters saved, or (unchanged).",
+    "language": "csharp",
+    "input_format": "First line: N. Next N lines: one non-empty string of letters each.",
+    "output_format": "N lines: '<compressed> (saved <k>)' or '<original> (unchanged)'.",
+    "example": {
+      "input": "3\naabcccccaaa\nabc\naaaaaaaaaaaa\n",
+      "output": "a2b1c5a3 (saved 3)\nabc (unchanged)\na12 (saved 9)"
+    },
+    "constraints": [
+      "1 <= N <= 100",
+      "1 <= length of each string <= 10000",
+      "Use StringBuilder; repeated string concatenation would be quadratic for long inputs."
+    ],
+    "starter": "using System;\nusing System.Text;\n\nclass Program\n{\n    static bool TryCompress(string input, out string compressed)\n    {\n        // TODO: build the run-length text with a StringBuilder\n        compressed = input;\n        return false;\n    }\n\n    static void Main()\n    {\n        string[] lines = Console.In.ReadToEnd().Replace(\"\\r\", \"\").Split('\\n');\n        int n = int.Parse(lines[0].Trim());\n        for (int i = 1; i <= n; i++)\n        {\n            string s = lines[i].Trim();\n            // TODO: call TryCompress and print the result\n        }\n    }\n}\n",
+    "solution": "using System;\nusing System.Text;\n\nclass Program\n{\n    static bool TryCompress(string input, out string compressed)\n    {\n        var sb = new StringBuilder(input.Length);\n        int i = 0;\n        while (i < input.Length)\n        {\n            char c = input[i];\n            int j = i;\n            while (j < input.Length && input[j] == c) j++;\n            sb.Append(c).Append(j - i);\n            i = j;\n        }\n        compressed = sb.ToString();\n        if (compressed.Length < input.Length) return true;\n        compressed = input;\n        return false;\n    }\n\n    static void Main()\n    {\n        string[] lines = Console.In.ReadToEnd().Replace(\"\\r\", \"\").Split('\\n');\n        int n = int.Parse(lines[0].Trim());\n        for (int i = 1; i <= n; i++)\n        {\n            string s = lines[i].Trim();\n            string result;\n            if (TryCompress(s, out result))\n                Console.WriteLine(result + \" (saved \" + (s.Length - result.Length) + \")\");\n            else\n                Console.WriteLine(result + \" (unchanged)\");\n        }\n    }\n}\n",
+    "explanation": [
+      "Walk the string with two indexes: i marks the start of a run and j advances while the character repeats.",
+      "Append the character and the run length (j - i) to a StringBuilder; Append(int) handles multi-digit counts.",
+      "Only call ToString() once at the end, so the work is linear in the input length.",
+      "Assign the out parameter on every path, as the compiler requires: the compressed text when it is shorter, otherwise the original.",
+      "In Main, branch on the bool result and print the saved count or (unchanged)."
+    ],
+    "tests": [
+      {
+        "input": "3\naabcccccaaa\nabc\naaaaaaaaaaaa\n",
+        "output": "a2b1c5a3 (saved 3)\nabc (unchanged)\na12 (saved 9)"
+      },
+      {
+        "input": "2\naabb\nAAAaaa\n",
+        "output": "aabb (unchanged)\nA3a3 (saved 2)"
+      },
+      {
+        "input": "1\nz\n",
+        "output": "z (unchanged)"
+      },
+      {
+        "input": "2\nxxxxxxxxxxyyyyyyyyyyyz\nabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\n",
+        "output": "x10y11z1 (saved 14)\na1b110 (saved 105)"
+      },
+      {
+        "input": "1\nabababab\n",
+        "output": "abababab (unchanged)"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this string immutability example print?",
+      "code": "string s = \"abc\";\ns.ToUpper();\nConsole.WriteLine(s);",
+      "options": [
+        "Abc",
+        "An empty line",
+        "ABC",
+        "abc"
+      ],
+      "answer": 3,
+      "explanation": "Strings are immutable. ToUpper returns a new string, which is discarded here, so s is still abc."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement about out parameters is correct?",
+      "options": [
+        "The caller must initialise the variable before the call",
+        "The method may return without assigning it",
+        "The method must assign it before returning",
+        "out parameters are read-only inside the method"
+      ],
+      "answer": 2,
+      "explanation": "out passes by reference and requires the method to assign the parameter on every path. Callers do not need to initialise it."
+    },
+    {
+      "type": "scenario",
+      "question": "A loop appends 50,000 log lines into one report string. What is the best approach?",
+      "options": [
+        "Convert each line to a char[] and back",
+        "Append each line to a StringBuilder and call ToString() once",
+        "Use string += in the loop",
+        "Use string.Format inside the loop on the growing string"
+      ],
+      "answer": 1,
+      "explanation": "Repeated concatenation copies the growing string each time (quadratic). StringBuilder appends into a buffer in linear time."
+    },
+    {
+      "type": "code",
+      "question": "Which is the recommended way to check that a username equals \"admin\" regardless of case?",
+      "options": [
+        "string.Equals(name, \"admin\", StringComparison.OrdinalIgnoreCase)",
+        "name.ToLower() == \"admin\"",
+        "name.ToUpper().Equals(\"ADMIN\") == true",
+        "name == \"admin\" || name == \"ADMIN\""
+      ],
+      "answer": 0,
+      "explanation": "OrdinalIgnoreCase does not allocate new strings and avoids culture-specific casing rules. The last option misses mixed case such as Admin."
+    },
+    {
+      "type": "output",
+      "question": "What does this params call print?",
+      "code": "static int Sum(params int[] v) { int s = 0; foreach (var x in v) s += x; return s; }\nConsole.WriteLine(Sum() + Sum(2, 3));",
+      "options": [
+        "0",
+        "23",
+        "It does not compile because Sum() has no arguments",
+        "5"
+      ],
+      "answer": 3,
+      "explanation": "params accepts zero or more arguments. Sum() receives an empty array and returns 0; Sum(2, 3) returns 5; 0 + 5 is 5."
+    }
+  ]
+}

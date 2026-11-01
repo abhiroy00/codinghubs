@@ -1,0 +1,245 @@
+{
+  "day": 3,
+  "title": "The Agent Loop: Perceive, Reason, Act",
+  "module": "Foundations of agentic systems",
+  "level": "Beginner",
+  "objectives": [
+    "Describe the perceive–reason–act cycle and map it to LLM agent code.",
+    "Explain the role of observations, state and feedback in each iteration.",
+    "Design stopping conditions: goal reached, step limit, budget and error exits.",
+    "Explain why agents can loop forever and how to prevent it.",
+    "Implement a bounded control loop that reacts to a changing environment."
+  ],
+  "definition": "The agent loop is the repeating cycle at the heart of every agent: perceive the current state of the environment, reason about what to do next given the goal, act by calling a tool or producing output, then observe the result and repeat. The loop ends when the goal is met or a safety condition such as a step limit, budget or error stops it.",
+  "theory": [
+    {
+      "heading": "The three phases",
+      "body": "Perception gathers the information the agent needs: the user request, the latest tool result, memory and any environment signals. Reasoning is the LLM call, which turns that context into a decision, usually a tool call or a final answer. Action executes the decision in the real world through code, and its result becomes the next perception. The loop exists because one decision rarely completes a non-trivial goal; the agent must see the consequences of its actions to choose the next one.",
+      "points": [
+        "Perceive: build the context from goal, history, observations and memory.",
+        "Reason: the model selects the next action or decides to finish.",
+        "Act: the runtime executes the action and captures the result.",
+        "Observe: the result is appended to state and feeds the next iteration."
+      ]
+    },
+    {
+      "heading": "From the classic AI agent to the LLM agent",
+      "body": "Classic AI textbooks describe an agent as anything that perceives its environment through sensors and acts on it through actuators, from a thermostat to a robot. LLM agents keep the same structure, but the 'sensors' are tool outputs and messages, the 'actuators' are API calls, and the policy that maps perceptions to actions is a language model guided by a prompt instead of hand-written rules or a trained controller.",
+      "points": [
+        "Reflex agents react to the current percept only.",
+        "Goal-based agents choose actions that move towards a goal.",
+        "LLM agents are goal-based agents whose policy is expressed in natural language."
+      ]
+    },
+    {
+      "heading": "State and feedback",
+      "body": "Each iteration must carry state forward: what has been tried, what was observed and what remains. In simple agents state is just the message history. Without feedback the agent cannot correct mistakes; with it, an agent that sees a failing test or an empty search result can change approach. This closed loop is what lets agents handle environments that change while they work, such as a queue that refills or a file another process edits.",
+      "points": [
+        "Include tool errors in the observation so the model can react to them.",
+        "Keep observations concise; huge raw outputs crowd out the goal.",
+        "Record each step for debugging and evaluation (trajectories)."
+      ]
+    },
+    {
+      "heading": "Stopping conditions",
+      "body": "An agent needs explicit exits. The happy path is the model declaring the task done, ideally after a check that the goal really is met. Safety exits include a maximum number of steps, a token or money budget, a wall-clock timeout, repeated identical actions (a sign of a loop) and unrecoverable errors. When a safety exit fires, the agent should return a clear partial result rather than silently failing.",
+      "points": [
+        "Goal check: verify success rather than trusting the model's claim alone.",
+        "Step limit and timeout: bound runaway loops.",
+        "Budget limit: cap tokens or cost per task.",
+        "Loop detection: stop if the same action and arguments repeat without new information."
+      ]
+    },
+    {
+      "heading": "Limitations of the naive loop",
+      "body": "A plain loop is easy to build but has weaknesses: each iteration resends a growing history, so cost and latency rise; the model can fixate on a wrong approach; and one bad action can corrupt later steps. Later days add structure on top of the loop: ReAct prompting, planning, memory management, state machines and graphs, retries and human approval.",
+      "points": [
+        "Cost grows with iterations and history length.",
+        "Wrong early decisions propagate.",
+        "Structure (plans, graphs, checks) makes loops more reliable."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A minimal LLM agent loop",
+    "body": "The loop below is model-agnostic. `call_model` returns either a tool request or a final answer. The runtime executes tools, appends observations, and enforces a step limit. Notice that tool errors are returned to the model as observations rather than crashing the loop, so the model can try something else.",
+    "code": {
+      "language": "python",
+      "source": "def run_agent(goal, call_model, tools, max_steps=10):\n    messages = [{'role': 'user', 'content': goal}]          # perceive: initial state\n    for step in range(max_steps):\n        decision = call_model(messages)                    # reason\n        if decision['type'] == 'final':\n            return decision['content']\n        name, args = decision['tool'], decision['args']\n        try:\n            result = tools[name](**args)                   # act\n        except Exception as exc:\n            result = f'error: {exc}'\n        messages.append({'role': 'assistant', 'content': f'call {name} {args}'})\n        messages.append({'role': 'tool', 'content': str(result)})  # observe\n    return 'Stopped: step limit reached without a final answer.'"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Test-fix cycles",
+      "description": "A coding agent runs tests, reads failures, edits code and reruns until all tests pass or the step limit is hit."
+    },
+    {
+      "title": "Monitoring and remediation",
+      "description": "An operations agent checks a metric, applies a fix, re-checks and escalates if the metric does not recover."
+    },
+    {
+      "title": "Web or app navigation",
+      "description": "A browser agent observes the page, clicks or types, and observes the new page until the form is submitted."
+    },
+    {
+      "title": "Data cleaning",
+      "description": "An agent profiles a dataset, applies a transformation, re-profiles and continues until quality checks pass."
+    }
+  ],
+  "demonstration": {
+    "description": "A simple goal-seeking agent must move a counter from 0 to 10, changing it by at most 4 per action. After its second action the environment pushes the value down by 3. Because the agent re-perceives before every decision, it adapts and still reaches the goal.",
+    "code": {
+      "language": "text",
+      "source": "start=0 target=10 max_change=4 max_steps=5\ndisturbances after each action: 0 -3 0"
+    },
+    "output": "Step 1: saw 0, acted +4, now 4\nStep 2: saw 4, acted +4, now 5\nStep 3: saw 5, acted +4, now 9\nStep 4: saw 9, acted +1, now 10\nGoal reached after 4 actions"
+  },
+  "takeaways": [
+    "Every agent runs a perceive–reason–act–observe cycle.",
+    "The LLM is the policy that turns context into the next action.",
+    "Feedback from observations is what lets agents correct course.",
+    "Always define explicit stopping conditions: goal check, step limit, budget, timeout.",
+    "Return tool errors to the model as observations instead of crashing.",
+    "Long loops cost more, so keep observations concise and steps purposeful."
+  ],
+  "interview": [
+    {
+      "question": "Explain the agent loop.",
+      "answer": "The agent repeatedly perceives the current state (goal, history, latest observation), asks the model to reason about the next action, executes that action through a tool, and feeds the result back as a new observation, until the goal is reached or a stop condition fires.",
+      "explanation": "Name each phase and the stop conditions. Sketching the loop as code is a strong signal."
+    },
+    {
+      "question": "How do you stop an agent from looping forever?",
+      "answer": "Set a maximum step count and a timeout, cap tokens or cost per task, detect repeated identical tool calls, and stop on unrecoverable errors. When a limit triggers, return a partial result and the reason.",
+      "explanation": "Interviewers listen for several independent safety exits, not just 'the model will say it is done'."
+    },
+    {
+      "question": "Should a tool error crash the agent?",
+      "answer": "Usually no. Return a structured error as the observation so the model can retry with different arguments or choose another tool. Only crash or escalate for errors the agent cannot recover from, such as missing credentials.",
+      "explanation": "Mention that errors should be informative but not leak secrets or stack traces to the model or user."
+    },
+    {
+      "question": "How does the agent loop relate to classic AI agent definitions?",
+      "answer": "Classic agents perceive through sensors and act through actuators using a policy. In LLM agents the sensors are messages and tool results, the actuators are tool calls and the policy is the prompted model.",
+      "explanation": "This shows you understand agents as a general concept, not just a framework feature."
+    },
+    {
+      "question": "Why might you verify the goal outside the model rather than trust the model saying it is done?",
+      "answer": "Models can claim success prematurely or hallucinate completion. An external check such as running tests, validating output against a schema or re-querying a system confirms the goal is actually met.",
+      "explanation": "Programmatic verification is one of the biggest reliability wins in production agents."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "A bounded goal-seeking loop",
+    "difficulty": "Basic",
+    "objective": "Implement perceive–reason–act with a goal check and a step limit, in an environment that changes between steps.",
+    "statement": "An agent controls a value. Each iteration: perceive the current value; if it equals the target, stop with success; if the agent has already taken max_steps actions, stop with failure. Otherwise reason: move towards the target by min(max_change, distance) in the right direction. Act: apply the move, then apply the environment disturbance for that action (the i-th number on the second line, or 0 if there is none). Print a line per action and a final status line.",
+    "language": "python",
+    "input_format": "Line 1: start target max_change max_steps (integers). Line 2 (may be empty or missing): space-separated disturbance integers.",
+    "output_format": "For each action: 'Step k: saw <v>, acted <+m or -m>, now <w>'. Then 'Goal reached after <k> actions' or 'Stopped: step limit <max_steps> reached at <value>'.",
+    "example": {
+      "input": "0 10 4 5\n0 -3 0\n",
+      "output": "Step 1: saw 0, acted +4, now 4\nStep 2: saw 4, acted +4, now 5\nStep 3: saw 5, acted +4, now 9\nStep 4: saw 9, acted +1, now 10\nGoal reached after 4 actions"
+    },
+    "constraints": [
+      "-1000 <= start, target <= 1000; 1 <= max_change <= 100; 0 <= max_steps <= 100.",
+      "The goal check happens before the step-limit check.",
+      "Print the move with an explicit sign, for example +4 or -3."
+    ],
+    "starter": "import sys\n\nlines = sys.stdin.read().split('\\n')\nstart, target, max_change, max_steps = map(int, lines[0].split())\ndisturbances = list(map(int, lines[1].split())) if len(lines) > 1 else []\n\n# TODO: run the loop\n",
+    "solution": "import sys\n\nlines = sys.stdin.read().split('\\n')\nstart, target, max_change, max_steps = map(int, lines[0].split())\ndisturbances = list(map(int, lines[1].split())) if len(lines) > 1 else []\n\nvalue = start\nsteps = 0\nwhile True:\n    seen = value                                   # perceive\n    if seen == target:\n        print(f'Goal reached after {steps} actions')\n        break\n    if steps == max_steps:\n        print(f'Stopped: step limit {max_steps} reached at {seen}')\n        break\n    distance = target - seen                       # reason\n    move = min(max_change, abs(distance)) * (1 if distance > 0 else -1)\n    value = seen + move                            # act\n    if steps < len(disturbances):\n        value += disturbances[steps]               # environment changes\n    steps += 1\n    print(f'Step {steps}: saw {seen}, acted {move:+d}, now {value}')\n",
+    "explanation": [
+      "Read the configuration and the optional disturbance list.",
+      "At the start of every iteration perceive the value and check the goal first, then the step limit.",
+      "Choose a move bounded by max_change in the direction of the target.",
+      "Apply the action and the disturbance, then print the step so the trajectory is visible.",
+      "Re-perceiving each time lets the agent recover from disturbances and overshoots."
+    ],
+    "tests": [
+      {
+        "input": "0 10 4 5\n0 -3 0\n",
+        "output": "Step 1: saw 0, acted +4, now 4\nStep 2: saw 4, acted +4, now 5\nStep 3: saw 5, acted +4, now 9\nStep 4: saw 9, acted +1, now 10\nGoal reached after 4 actions"
+      },
+      {
+        "input": "0 10 4 5\n\n",
+        "output": "Step 1: saw 0, acted +4, now 4\nStep 2: saw 4, acted +4, now 8\nStep 3: saw 8, acted +2, now 10\nGoal reached after 3 actions"
+      },
+      {
+        "input": "7 7 3 5\n",
+        "output": "Goal reached after 0 actions"
+      },
+      {
+        "input": "20 0 3 2\n1 1\n",
+        "output": "Step 1: saw 20, acted -3, now 18\nStep 2: saw 18, acted -3, now 16\nStopped: step limit 2 reached at 16"
+      },
+      {
+        "input": "5 8 5 4\n2\n",
+        "output": "Step 1: saw 5, acted +3, now 10\nStep 2: saw 10, acted -2, now 8\nGoal reached after 2 actions"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "In an LLM agent, which part plays the role of the policy that maps perceptions to actions?",
+      "options": [
+        "The HTTP client",
+        "The logging system",
+        "The vector database",
+        "The prompted language model"
+      ],
+      "answer": 3,
+      "explanation": "The model, guided by its instructions and context, decides which action to take next."
+    },
+    {
+      "type": "scenario",
+      "question": "An agent keeps calling the same search tool with identical arguments and gets the same empty result. What safeguard addresses this?",
+      "options": [
+        "Increasing the context window",
+        "Raising the temperature to 2",
+        "Removing the search tool description",
+        "Repeated-action detection combined with a step limit"
+      ],
+      "answer": 3,
+      "explanation": "Detecting identical repeated calls, plus a hard step cap, stops unproductive loops."
+    },
+    {
+      "type": "code",
+      "question": "In the loop below, what happens when a tool raises an exception?",
+      "code": "try:\n    result = tools[name](**args)\nexcept Exception as exc:\n    result = f'error: {exc}'\nmessages.append({'role': 'tool', 'content': result})",
+      "options": [
+        "The tool is retried forever",
+        "The message history is cleared",
+        "The error text is returned to the model as an observation",
+        "The agent process crashes"
+      ],
+      "answer": 2,
+      "explanation": "Catching the exception and appending it as an observation lets the model react, for example by fixing the arguments."
+    },
+    {
+      "type": "concept",
+      "question": "Why is it better to verify task completion programmatically when possible?",
+      "options": [
+        "It removes the need for tools",
+        "It makes the model faster",
+        "Models can claim success that has not actually happened",
+        "It reduces the size of the tokenizer"
+      ],
+      "answer": 2,
+      "explanation": "External checks such as tests or schema validation catch premature or hallucinated completion claims."
+    },
+    {
+      "type": "output",
+      "question": "A loop starts at 0 with target 6, moves at most 4 per step and has no disturbances. How many actions does it take to reach the goal?",
+      "options": [
+        "3",
+        "6",
+        "1",
+        "2"
+      ],
+      "answer": 3,
+      "explanation": "It moves +4 to 4, then +2 to 6, so two actions."
+    }
+  ]
+}

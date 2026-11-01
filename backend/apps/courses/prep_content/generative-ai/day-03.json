@@ -1,0 +1,231 @@
+{
+  "day": 3,
+  "title": "Generative AI vs Predictive AI",
+  "module": "GenAI foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Define predictive (discriminative) AI and generative AI and state the core difference.",
+    "Explain the difference in terms of what each model learns: P(y|x) versus P(x) or P(x, y).",
+    "Compare outputs, evaluation methods, data needs and risks of both approaches.",
+    "Decide which approach suits a given business problem, or how to combine them.",
+    "Recognise hybrid systems where a predictive model and a generative model work together."
+  ],
+  "definition": "Predictive AI uses historical data to estimate an outcome for a new input, such as a class label, a probability or a number: 'Will this customer churn?'. Generative AI learns the patterns of the data itself so it can produce new content, such as text, images or code: 'Write a retention email to this customer.' Predictive models answer questions about data; generative models create data.",
+  "theory": [
+    {
+      "heading": "What each approach learns",
+      "body": "In probability terms, a predictive (discriminative) model learns the conditional probability P(y | x): given an input x, how likely is each label y? It focuses only on the boundary between classes. A generative model learns how the data is distributed, P(x) or the joint P(x, y), so it can sample new x that look like the training data. A large language model learns P(next token | previous tokens) and generates text by sampling from that distribution one token at a time.",
+      "points": [
+        "Predictive: learns decision boundaries, outputs a label, score or number.",
+        "Generative: learns the data distribution, outputs new samples (sentences, images, audio).",
+        "An LLM is technically trained with a predictive objective (next-token prediction) but used generatively, by chaining predictions."
+      ]
+    },
+    {
+      "heading": "Output, evaluation and correctness",
+      "body": "Predictive outputs are usually checkable against a known answer, so they are evaluated with metrics such as accuracy, precision, recall, F1, AUC or RMSE on a labelled test set. Generative outputs are open-ended: many different summaries can be correct. They are evaluated with human review, rubric-based LLM-as-judge scoring, reference-overlap metrics (BLEU, ROUGE) or task success rates. This difference shapes how you test and monitor each system in production.",
+      "points": [
+        "Predictive: one correct answer per input; objective metrics.",
+        "Generative: many acceptable answers; quality, faithfulness and safety must be judged.",
+        "Generative outputs can be fluent but wrong (hallucinations), which predictive models do not produce in the same way."
+      ]
+    },
+    {
+      "heading": "Data, cost and explainability",
+      "body": "Predictive models are often trained on a company's own labelled, structured data and can be small, cheap and explainable (feature importance, SHAP values). Generative foundation models are pre-trained on huge unlabelled corpora by a few providers, then adapted by prompting, retrieval or fine-tuning. They are expensive to run per request and harder to explain. In regulated domains such as lending or insurance, the explainability of predictive models is often a legal requirement.",
+      "points": [
+        "Predictive: labelled task-specific data, low inference cost, easier to audit.",
+        "Generative: massive pre-training, higher per-request cost, harder to audit.",
+        "Generative models can create synthetic training data to help predictive models when labels are scarce."
+      ]
+    },
+    {
+      "heading": "Combining both in one product",
+      "body": "Most real products use both. An e-commerce site predicts which products a user will buy (predictive recommendation) and then writes a personalised product description or email (generative). A support desk classifies a ticket's urgency (predictive) and drafts a reply (generative). A useful interview framing is: predictive AI decides or ranks, generative AI communicates or creates.",
+      "points": [
+        "Fraud: predictive model scores the transaction; LLM writes the analyst summary.",
+        "HR: predictive model screens attrition risk; LLM drafts the stay-interview questions.",
+        "Routing a request to the right model is itself often a predictive step."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Same customer, two questions",
+    "body": "A telecom company holds a customer's usage history. A predictive model, for example logistic regression, outputs a churn probability of 0.82. Because the probability is high, the system asks a generative model to write a friendly retention offer. The predictive model chose who to contact; the generative model chose what to say. The code shows the shape of both calls.",
+    "code": {
+      "language": "python",
+      "source": "# Predictive step: a trained classifier returns a probability\nfrom sklearn.linear_model import LogisticRegression\nX = [[2, 1], [30, 0], [5, 1], [25, 0]]   # [months_active, complaints_last_month]\ny = [1, 0, 1, 0]                          # 1 = churned\nclf = LogisticRegression().fit(X, y)\nrisk = clf.predict_proba([[3, 1]])[0][1]\nprint(f'churn risk: {risk:.2f}')          # a high probability, e.g. 0.8+\n\n# Generative step: only if risk is high, build a prompt for an LLM\nif risk > 0.7:\n    prompt = ('Write a short, friendly SMS offering a 20% discount to a customer '\n              'who joined 3 months ago and complained last month.')\n    print(prompt)  # send this to any LLM API; the reply text varies per run"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Predictive: credit and fraud",
+      "description": "Credit scoring, transaction fraud detection and insurance claim risk, where decisions must be accurate and explainable."
+    },
+    {
+      "title": "Predictive: forecasting",
+      "description": "Demand forecasting, inventory planning, predictive maintenance and price estimation."
+    },
+    {
+      "title": "Generative: content and communication",
+      "description": "Emails, reports, product descriptions, chat replies and meeting summaries."
+    },
+    {
+      "title": "Generative: software and design",
+      "description": "Code generation, test creation, UI mock-ups and image or video assets."
+    },
+    {
+      "title": "Hybrid: customer support",
+      "description": "Classify ticket priority and sentiment, then generate a draft reply grounded in the knowledge base."
+    }
+  ],
+  "demonstration": {
+    "description": "Feed one product review to both kinds of model. The predictive model returns a fixed label and a confidence; the generative model returns new text. Running the generative prompt again can give different wording, while the classifier returns the same score every time.",
+    "code": {
+      "language": "text",
+      "source": "Review: \"Battery dies in 3 hours and support never replied.\"\n\nPredictive model (sentiment classifier) -> label + probability\nGenerative model prompt -> \"Write a polite reply apologising and offering a replacement.\""
+    },
+    "output": "Classifier: negative (0.97)\nLLM: \"We're sorry about the battery issue and the delay in our response. We'd like to send you a replacement right away...\" (wording varies)"
+  },
+  "takeaways": [
+    "Predictive AI estimates an outcome (label, probability, number); generative AI creates new content.",
+    "Predictive models learn P(y|x); generative models learn the data distribution P(x) or P(x, y).",
+    "Predictive outputs have one correct answer and objective metrics; generative outputs need quality and faithfulness evaluation.",
+    "Predictive models are usually cheaper and easier to explain, which matters in regulated decisions.",
+    "Most products combine both: predictive to decide, generative to communicate."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between generative and predictive AI?",
+      "answer": "Predictive AI estimates an outcome for an input, such as a class or a number. Generative AI creates new content, such as text or images, by learning the patterns of the training data.",
+      "explanation": "Give one example each (fraud scoring vs drafting an email). Strong answers also mention the output type: a label or score versus open-ended content."
+    },
+    {
+      "question": "Explain discriminative vs generative models in probability terms.",
+      "answer": "A discriminative model learns P(y|x), the probability of a label given the input. A generative model learns P(x) or P(x, y), the distribution of the data, so it can sample new inputs.",
+      "explanation": "Classic examples: logistic regression is discriminative; Naive Bayes is generative. Interviewers like this precise framing for ML roles."
+    },
+    {
+      "question": "An LLM is trained to predict the next token. Is it predictive or generative?",
+      "answer": "Its training objective is a prediction (the next-token distribution), but by repeatedly sampling a token and feeding it back it generates new sequences, so it is used as a generative model.",
+      "explanation": "This catches candidates who think the two are completely separate. The key idea is autoregressive generation built from repeated prediction."
+    },
+    {
+      "question": "How would you evaluate a churn model versus a summarisation model?",
+      "answer": "The churn model is evaluated on labelled data with precision, recall, F1 or AUC. The summariser needs human or LLM-as-judge ratings for faithfulness, coverage and fluency, optionally with ROUGE against reference summaries.",
+      "explanation": "Shows that evaluation strategy depends on whether the output has a single correct answer, a frequent production concern."
+    },
+    {
+      "question": "When should you NOT use generative AI?",
+      "answer": "When the task is a structured decision with a single correct answer, needs strict explainability or very low latency and cost, or when errors are unacceptable without review. A predictive model or rules is usually safer there.",
+      "explanation": "Interviewers value judgement over hype. Mention cost, determinism, explainability and hallucination risk."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Route tasks to predictive or generative AI",
+    "difficulty": "Basic",
+    "objective": "Practise recognising whether a task asks for a decision or estimate (predictive) or for new content (generative), the first design choice in any AI project.",
+    "statement": "Read task descriptions and classify each one by its verbs. Split the text into words (lowercase, letters only; treat any non-letter as a separator). Generative verbs: write, draft, generate, summarize, summarise, translate, compose, rewrite, create. Predictive verbs: classify, predict, detect, forecast, estimate, score, flag, rank. If a task contains verbs from both lists, it is hybrid; from only one list, it is generative or predictive; from neither, it is unclear. Finally print how many tasks fell into each class.",
+    "language": "python",
+    "input_format": "First line: N. Next N lines: one task description each.",
+    "output_format": "For each task: <index>. <class> where index starts at 1 and class is generative, predictive, hybrid or unclear.\nThen: generative=<g> predictive=<p> hybrid=<h> unclear=<u>",
+    "example": {
+      "input": "3\nPredict which customers will churn next month\nWrite a welcome email for new users\nDetect fraud and draft an alert message for the analyst\n",
+      "output": "1. predictive\n2. generative\n3. hybrid\ngenerative=1 predictive=1 hybrid=1 unclear=0"
+    },
+    "constraints": [
+      "1 <= N <= 100.",
+      "Matching is on whole words only: 'scored' does not match 'score'.",
+      "Words are case-insensitive."
+    ],
+    "starter": "import re\n\nGENERATIVE = {'write', 'draft', 'generate', 'summarize', 'summarise', 'translate', 'compose', 'rewrite', 'create'}\nPREDICTIVE = {'classify', 'predict', 'detect', 'forecast', 'estimate', 'score', 'flag', 'rank'}\n\nn = int(input())\nfor i in range(1, n + 1):\n    words = set(re.findall(r'[a-z]+', input().lower()))\n    # TODO: decide the class and count it\n",
+    "solution": "import re\n\nGENERATIVE = {'write', 'draft', 'generate', 'summarize', 'summarise', 'translate', 'compose', 'rewrite', 'create'}\nPREDICTIVE = {'classify', 'predict', 'detect', 'forecast', 'estimate', 'score', 'flag', 'rank'}\n\nn = int(input())\ncounts = {'generative': 0, 'predictive': 0, 'hybrid': 0, 'unclear': 0}\nfor i in range(1, n + 1):\n    words = set(re.findall(r'[a-z]+', input().lower()))\n    gen = bool(words & GENERATIVE)\n    pred = bool(words & PREDICTIVE)\n    if gen and pred:\n        label = 'hybrid'\n    elif gen:\n        label = 'generative'\n    elif pred:\n        label = 'predictive'\n    else:\n        label = 'unclear'\n    counts[label] += 1\n    print(f'{i}. {label}')\nprint(' '.join(f'{k}={v}' for k, v in counts.items()))\n",
+    "explanation": [
+      "Lowercase the line and extract runs of letters with a regular expression, so punctuation and digits act as separators.",
+      "Put the words in a set and intersect it with each verb set; a non-empty intersection means that kind of verb is present.",
+      "Both present means hybrid, one present decides the class, none means unclear.",
+      "Keep a counter per class and print the summary in a fixed order."
+    ],
+    "tests": [
+      {
+        "input": "3\nPredict which customers will churn next month\nWrite a welcome email for new users\nDetect fraud and draft an alert message for the analyst\n",
+        "output": "1. predictive\n2. generative\n3. hybrid\ngenerative=1 predictive=1 hybrid=1 unclear=0"
+      },
+      {
+        "input": "4\nSUMMARISE the board meeting notes.\nForecast sales for Q3, then rank stores\nOrganise the team offsite\nThe model scored 0.9 yesterday\n",
+        "output": "1. generative\n2. predictive\n3. unclear\n4. unclear\ngenerative=1 predictive=1 hybrid=0 unclear=2"
+      },
+      {
+        "input": "2\nTranslate this FAQ into Hindi\nFlag-and-classify spam; then rewrite the subject line\n",
+        "output": "1. generative\n2. hybrid\ngenerative=1 predictive=0 hybrid=1 unclear=0"
+      },
+      {
+        "input": "1\nCreate 5 product images\n",
+        "output": "1. generative\ngenerative=1 predictive=0 hybrid=0 unclear=0"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "A discriminative (predictive) classifier primarily learns which quantity?",
+      "options": [
+        "The next image pixel",
+        "A random sample of training data",
+        "P(x), the distribution of inputs",
+        "P(y | x), the label given the input"
+      ],
+      "answer": 3,
+      "explanation": "Discriminative models learn the conditional probability of the label given the input, i.e. the decision boundary."
+    },
+    {
+      "type": "scenario",
+      "question": "An insurer must decide whether to approve claims and explain each decision to a regulator. Which approach is the most suitable core?",
+      "options": [
+        "An image generation model",
+        "A text-to-speech model",
+        "An explainable predictive model, with GenAI only for drafting letters",
+        "A generative model that writes the decision freely"
+      ],
+      "answer": 2,
+      "explanation": "The decision is a structured, regulated prediction that needs explainability; generative AI can help communicate it."
+    },
+    {
+      "type": "concept",
+      "question": "Why is evaluating a summarisation model harder than evaluating a spam classifier?",
+      "options": [
+        "Spam classifiers have no test data",
+        "Summarisation models never make mistakes",
+        "Many different summaries can be correct, so there is no single right answer",
+        "Summaries cannot be read by humans"
+      ],
+      "answer": 2,
+      "explanation": "Open-ended outputs need judgement on faithfulness and quality, while a classifier is compared with one correct label."
+    },
+    {
+      "type": "scenario",
+      "question": "A retailer predicts which users will buy running shoes, then sends each a personalised message written by an LLM. What kind of system is this?",
+      "options": [
+        "Purely predictive",
+        "Purely generative",
+        "Rule-based only",
+        "Hybrid: predictive targeting plus generative content"
+      ],
+      "answer": 3,
+      "explanation": "The targeting is a prediction and the message is generated content, so the system combines both approaches."
+    },
+    {
+      "type": "concept",
+      "question": "Which risk is specific to generative models rather than predictive classifiers?",
+      "options": [
+        "Needing labelled data",
+        "Class imbalance",
+        "Overfitting to training data",
+        "Producing fluent but fabricated content (hallucination)"
+      ],
+      "answer": 3,
+      "explanation": "Hallucination, confident invented content, arises because generative models produce open-ended outputs."
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "day": 1,
+  "title": "Introduction to Generative AI: Definition, Working & Applications",
+  "module": "GenAI foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Define Generative AI in simple, technically accurate terms.",
+    "Explain the basic process a generative model follows to produce content.",
+    "Identify the main types of Generative AI and well-known tools for each.",
+    "Recognise real-world applications, benefits and limitations.",
+    "Experiment with prompts and answer foundational interview questions."
+  ],
+  "definition": "Generative Artificial Intelligence (Generative AI) is a branch of AI that creates new content, such as text, images, audio, video, music or computer code, by learning patterns from existing training data. Instead of only classifying or predicting, a generative model produces new outputs in response to an instruction called a prompt.",
+  "theory": [
+    {
+      "heading": "What Generative AI means",
+      "body": "Traditional AI systems are usually built to analyse data: they classify an email as spam, predict a price or detect an anomaly. Generative AI systems learn the structure of their training data well enough to produce new examples that follow the same patterns. A language model that has learned how sentences are formed can write a new paragraph; an image model that has learned visual patterns can create a new picture from a description.",
+      "points": [
+        "Generative AI is a category within AI, built with machine learning and deep learning.",
+        "It produces new content rather than only a label or a number.",
+        "Outputs are guided by a prompt: the instruction, question or context given to the model."
+      ]
+    },
+    {
+      "heading": "How Generative AI works",
+      "body": "A generative system is built in two phases. In training, the model learns patterns, relationships and structure from a large dataset. In generation (inference), it receives a prompt and uses its learned parameters to produce an output step by step. For a text model, each step predicts a likely next piece of text given everything so far.",
+      "points": [
+        "Data collection: gather relevant text, images, audio, video or code.",
+        "Data preprocessing: clean, filter and prepare the data.",
+        "Model training: learn patterns with machine-learning or deep-learning methods.",
+        "User prompt: receive an instruction or input.",
+        "Content generation: produce an output from the prompt and the learned parameters.",
+        "Output: return generated text, images, audio, video or code."
+      ]
+    },
+    {
+      "heading": "Types of Generative AI",
+      "body": "Generative models are grouped by the kind of content they produce. Many modern systems are multimodal: they accept and produce more than one type of content, for example a text question about an uploaded image.",
+      "points": [
+        "Text generation: human-like text such as answers, summaries and emails (chat assistants).",
+        "Image generation: images from text prompts (text-to-image tools).",
+        "Code generation: code suggestions and complete functions (coding assistants).",
+        "Audio generation: speech, sound or music (text-to-speech tools).",
+        "Video generation: new or transformed video (text-to-video tools).",
+        "Multimodal generation: works across several input and output types."
+      ]
+    },
+    {
+      "heading": "Generative AI vs traditional (discriminative) AI",
+      "body": "Discriminative or predictive models learn the boundary between categories and answer questions such as 'Is this email spam?'. Generative models learn how the data itself is formed and answer requests such as 'Draft a reply to this email.' The two approaches are complementary: a support system can use a classifier to route a ticket and a generative model to draft the response.",
+      "points": [
+        "Traditional AI: classifies, predicts or detects patterns (e.g. spam detection).",
+        "Generative AI: creates new content from learned patterns (e.g. drafting an email).",
+        "Generative AI does not replace all traditional methods; they are often combined."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations",
+      "body": "Generative AI can automate repetitive drafting, speed up summarising and ideation, personalise content and assist developers. Its outputs, however, are probabilistic: a model can produce fluent text that is wrong. Responsible use means verifying important facts, protecting private data and being aware of bias, licensing and cost.",
+      "points": [
+        "Advantages: automation, productivity, creativity, personalisation, developer support, accessibility.",
+        "Hallucinations: convincing but incorrect or fabricated information.",
+        "Bias: outputs can reflect biases in training data or system design.",
+        "Privacy: do not enter sensitive data without checking the tool's data policy.",
+        "Copyright and cost: ownership questions and significant compute requirements."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Generating code from a prompt",
+    "body": "A learner types: 'Write a Python program to check whether a number is prime.' A text-and-code model returns a function, explains the logic (a prime has no divisors other than 1 and itself, so it is enough to test divisors up to the square root) and shows sample output. The learner should still run and test the code, because generated code can contain mistakes.",
+    "code": {
+      "language": "python",
+      "source": "def is_prime(n):\n    if n < 2:\n        return False\n    d = 2\n    while d * d <= n:\n        if n % d == 0:\n            return False\n        d += 1\n    return True\n\nprint(is_prime(7))   # True\nprint(is_prime(12))  # False"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Education",
+      "description": "AI tutors, lesson summaries and personalised practice material adapted to a learner's level."
+    },
+    {
+      "title": "Software development",
+      "description": "Code generation, debugging assistance, test generation and documentation drafts."
+    },
+    {
+      "title": "Customer support and banking",
+      "description": "Drafting replies, summarising conversations and processing documents, with human review for important decisions."
+    },
+    {
+      "title": "Marketing and e-commerce",
+      "description": "Campaign drafts, advertisement variations, product descriptions and shopping assistants."
+    },
+    {
+      "title": "Healthcare and cybersecurity",
+      "description": "Clinical documentation assistance, research support and threat-intelligence summaries, where accuracy checks are essential."
+    }
+  ],
+  "demonstration": {
+    "description": "Send the same request to a generative model while changing only the audience. The structure of the prompt stays the same; the output changes in vocabulary, depth and examples. Exact wording varies between models and runs.",
+    "code": {
+      "language": "text",
+      "source": "Prompt A: Explain Python programming in simple words to a 12-year-old. Give three real-world examples.\nPrompt B: Explain Python programming to a software engineer moving from Java. Give three real-world examples."
+    },
+    "output": "Prompt A → short sentences and everyday examples (making games, automating homework reminders, drawing pictures).\nPrompt B → mentions dynamic typing and libraries, with examples such as automation scripts, web back ends (Django) and data analysis (pandas)."
+  },
+  "takeaways": [
+    "Generative AI creates new content from patterns learned during training.",
+    "It is built with machine-learning and deep-learning techniques; LLMs are used for language tasks.",
+    "A prompt guides the output: changing audience, tone or detail changes the result.",
+    "Generative and traditional AI solve different problems and are often combined.",
+    "Outputs can be wrong (hallucinations) or biased, so verify important information.",
+    "Applications span education, software, support, marketing, healthcare and security."
+  ],
+  "interview": [
+    {
+      "question": "What is Generative AI?",
+      "answer": "Generative AI is a type of AI that creates new content such as text, images, audio, video or code by learning patterns from training data.",
+      "explanation": "Interviewers expect the key contrast: it generates new content rather than only labelling or predicting. Mention that output is guided by a prompt."
+    },
+    {
+      "question": "How is Generative AI different from traditional AI?",
+      "answer": "Traditional AI usually classifies, predicts or detects patterns, for example spam detection. Generative AI produces new content, for example drafting an email. Many real systems combine both.",
+      "explanation": "Give one example of each and note they are complementary, which shows practical understanding rather than a memorised definition."
+    },
+    {
+      "question": "What is a prompt, and why does it matter?",
+      "answer": "A prompt is the instruction, question or context given to a model. Its wording, context and constraints strongly influence the quality and format of the output.",
+      "explanation": "Strong answers add that a good prompt states the task, audience, format and constraints; this leads into prompt engineering (Days 10–12)."
+    },
+    {
+      "question": "What is an AI hallucination, and how would you reduce its impact?",
+      "answer": "A hallucination is generated information that is incorrect, unsupported or fabricated, even though it sounds plausible. Its impact is reduced by verifying facts against reliable sources, grounding the model in trusted documents and keeping a human review step for important outputs.",
+      "explanation": "Naming mitigations (verification, grounding with retrieval, human review) shows awareness of production risks, not just the definition."
+    },
+    {
+      "question": "Name some Generative AI tools and what they generate.",
+      "answer": "Chat assistants such as ChatGPT, Gemini and Claude generate text and code; DALL·E generates images; GitHub Copilot assists with code; Sora generates video.",
+      "explanation": "Group tools by modality and note that capabilities change quickly, so the categories matter more than the brand names."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Build a reusable prompt template",
+    "difficulty": "Basic",
+    "objective": "Practise structuring a prompt with an explicit task, audience, tone and output format, the levers that change a generative model's output.",
+    "statement": "Write a program that reads a topic, an audience, a tone and a number of examples, then prints a well-structured prompt. The tone must be one of formal, friendly or simple; any other value is replaced by friendly. The number of examples must be between 1 and 5; values outside that range are clamped to the nearest limit.",
+    "language": "python",
+    "input_format": "Four lines: topic, audience, tone, number of examples (an integer).",
+    "output_format": "Exactly four lines:\nTask: Explain <topic>.\nAudience: <audience>\nTone: <tone>\nFormat: Give <n> real-world example(s) as a numbered list.\nUse 'example' when n is 1 and 'examples' otherwise.",
+    "example": {
+      "input": "Python programming\na 12-year-old student\nsimple\n3\n",
+      "output": "Task: Explain Python programming.\nAudience: a 12-year-old student\nTone: simple\nFormat: Give 3 real-world examples as a numbered list."
+    },
+    "constraints": [
+      "Topic and audience are non-empty lines; trim surrounding spaces.",
+      "Tone comparison is case-insensitive; print the tone in lowercase.",
+      "The number of examples is an integer; clamp it to the range 1–5."
+    ],
+    "starter": "topic = input().strip()\naudience = input().strip()\ntone = input().strip().lower()\nn = int(input())\n\n# TODO: validate the tone and clamp n, then print the four lines\n",
+    "solution": "topic = input().strip()\naudience = input().strip()\ntone = input().strip().lower()\nn = int(input())\n\nif tone not in ('formal', 'friendly', 'simple'):\n    tone = 'friendly'\nn = max(1, min(5, n))\nnoun = 'example' if n == 1 else 'examples'\n\nprint(f'Task: Explain {topic}.')\nprint(f'Audience: {audience}')\nprint(f'Tone: {tone}')\nprint(f'Format: Give {n} real-world {noun} as a numbered list.')\n",
+    "explanation": [
+      "Read the four inputs, trimming spaces and lowercasing the tone so 'Formal' and 'formal' are treated the same.",
+      "Replace any tone outside the allowed set with the default 'friendly'.",
+      "Clamp the number of examples with max(1, min(5, n)) so the prompt never asks for zero or too many.",
+      "Choose the singular or plural noun, then print the four labelled lines: task, audience, tone and format."
+    ],
+    "tests": [
+      {
+        "input": "Python programming\na 12-year-old student\nsimple\n3\n",
+        "output": "Task: Explain Python programming.\nAudience: a 12-year-old student\nTone: simple\nFormat: Give 3 real-world examples as a numbered list."
+      },
+      {
+        "input": "machine learning\nbank managers\nFORMAL\n1\n",
+        "output": "Task: Explain machine learning.\nAudience: bank managers\nTone: formal\nFormat: Give 1 real-world example as a numbered list."
+      },
+      {
+        "input": "cloud computing\ncollege students\nsarcastic\n9\n",
+        "output": "Task: Explain cloud computing.\nAudience: college students\nTone: friendly\nFormat: Give 5 real-world examples as a numbered list."
+      },
+      {
+        "input": "  neural networks  \n  doctors \nfriendly\n0\n",
+        "output": "Task: Explain neural networks.\nAudience: doctors\nTone: friendly\nFormat: Give 1 real-world example as a numbered list."
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is the primary purpose of Generative AI?",
+      "options": [
+        "Storing large datasets efficiently",
+        "Replacing all traditional AI methods",
+        "Sorting data into fixed categories",
+        "Creating new content from learned patterns"
+      ],
+      "answer": 3,
+      "explanation": "Generative AI produces new content such as text, images or code. It complements rather than replaces traditional AI."
+    },
+    {
+      "type": "concept",
+      "question": "In Generative AI, what is a prompt?",
+      "options": [
+        "The model's training dataset",
+        "A measure of model accuracy",
+        "The instruction or input given to the model",
+        "The hardware used to run the model"
+      ],
+      "answer": 2,
+      "explanation": "A prompt is the instruction, question or context that guides what the model generates."
+    },
+    {
+      "type": "scenario",
+      "question": "A team needs to automatically flag fraudulent card transactions. Which approach fits this task best?",
+      "options": [
+        "A text-to-video model",
+        "A generative model that writes marketing copy",
+        "A predictive (discriminative) model that classifies transactions",
+        "A text-to-image model"
+      ],
+      "answer": 2,
+      "explanation": "Flagging fraud is a classification task, the classic use of predictive AI. Generative AI is better suited to creating content."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these is an AI hallucination?",
+      "options": [
+        "A model refusing an unsafe request",
+        "A slow response from the model",
+        "A model answering in a different language",
+        "A confident answer citing a research paper that does not exist"
+      ],
+      "answer": 3,
+      "explanation": "A hallucination is plausible-sounding but incorrect or fabricated output, such as an invented citation."
+    },
+    {
+      "type": "scenario",
+      "question": "You ask a model to explain machine learning to a 12-year-old, then to a data engineer. Why do the answers differ?",
+      "options": [
+        "Generative AI always returns random text",
+        "The second prompt used a different file format",
+        "The model was retrained between the two prompts",
+        "The audience in the prompt changes the vocabulary, depth and examples"
+      ],
+      "answer": 3,
+      "explanation": "Prompts guide the output. Changing the audience changes the level of detail and the examples the model chooses."
+    }
+  ]
+}

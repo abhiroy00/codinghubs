@@ -1,8 +1,10 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 
-from .models import Course, CourseCategory
+from django.core.management import call_command
+
+from .models import Course, CourseCategory, PrepCurriculum, PrepLesson
 
 
 class CourseApiTests(TestCase):
@@ -42,8 +44,9 @@ class CourseApiTests(TestCase):
         saved = self.client.put('/api/courses/learning/progress/generative-ai/', {
             'current_day': 4,
             'completed_days': [1, 2, 3],
-            'quiz_scores': {'1': 4, '2': 5},
-            'completed_challenges': [1, 2],
+            'quiz_scores': {'1': 4, '2': 5, '3': 3},
+            'completed_challenges': [1, 2, 3],
+            'completed_theory': [1, 2, 3],
         }, format='json')
         self.assertEqual(saved.status_code, 200)
         self.assertEqual(saved.data['current_day'], 4)
@@ -52,16 +55,58 @@ class CourseApiTests(TestCase):
         self.assertEqual(listed.data[0]['course_slug'], 'generative-ai')
         self.assertEqual(listed.data[0]['completed_days'], [1, 2, 3])
 
+    @override_settings(PREP_REQUIRE_SEQUENTIAL_UNLOCK=True)
     def test_learning_days_unlock_sequentially_per_user(self):
         first = get_user_model().objects.create_user(username='first', password='test-password')
         second = get_user_model().objects.create_user(username='second', password='test-password')
         self.client.force_authenticate(user=first)
         skipped = self.client.put('/api/courses/learning/progress/generative-ai/', {'completed_days': [1, 3]}, format='json')
         self.assertEqual(skipped.status_code, 400)
-        saved = self.client.put('/api/courses/learning/progress/generative-ai/', {'completed_days': [1], 'current_day': 5}, format='json')
+        unfinished = self.client.put('/api/courses/learning/progress/generative-ai/', {'completed_days': [1], 'completed_theory': [1], 'completed_challenges': [1], 'quiz_scores': {'1': 2}}, format='json')
+        self.assertEqual(unfinished.status_code, 400)
+        saved = self.client.put('/api/courses/learning/progress/generative-ai/', {'completed_days': [1], 'current_day': 5, 'completed_theory': [1], 'completed_challenges': [1], 'quiz_scores': {'1': 3}}, format='json')
         self.assertEqual(saved.status_code, 200)
         self.assertEqual(saved.data['current_day'], 2)
         self.client.force_authenticate(user=second)
         other = self.client.get('/api/courses/learning/progress/generative-ai/')
         self.assertEqual(other.data['completed_days'], [])
         self.assertEqual(other.data['current_day'], 1)
+
+    def test_learning_days_can_be_completed_out_of_order_while_unlocked(self):
+        user = get_user_model().objects.create_user(username='open', password='test-password')
+        self.client.force_authenticate(user=user)
+        saved = self.client.put('/api/courses/learning/progress/generative-ai/', {
+            'completed_days': [5], 'current_day': 5,
+            'completed_theory': [5], 'completed_challenges': [5], 'quiz_scores': {'5': 4},
+        }, format='json')
+        self.assertEqual(saved.status_code, 200)
+        self.assertEqual(saved.data['completed_days'], [5])
+        self.assertEqual(saved.data['current_day'], 5)
+
+
+class PrepContentTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_seeded_lessons_are_served_and_admin_edits_survive_reseeding(self):
+        call_command('seed_prep_content', verbosity=0)
+        outline = self.client.get('/api/courses/prep/generative-ai/')
+        self.assertEqual(outline.status_code, 200)
+        self.assertEqual(outline.data['days'][0]['title'], 'Introduction to Generative AI: Definition, Working & Applications')
+        lesson = self.client.get('/api/courses/prep/generative-ai/1/')
+        self.assertEqual(lesson.status_code, 200)
+        self.assertEqual(len(lesson.data['quiz']), 5)
+        self.assertEqual(lesson.data['practice']['kind'], 'coding')
+        self.assertEqual(self.client.get('/api/courses/prep/no-such-course/').status_code, 404)
+
+        edited = PrepLesson.objects.get(curriculum__slug='generative-ai', day=1)
+        edited.title = 'Edited title'
+        edited.edited_in_admin = True
+        edited.save()
+        call_command('seed_prep_content', verbosity=0)
+        edited.refresh_from_db()
+        self.assertEqual(edited.title, 'Edited title')
+
+    def test_curriculum_is_shared_by_its_courses(self):
+        PrepCurriculum.objects.create(slug='aws-sa', title='AWS SA', course_slugs=['aws-solutions-architect', 'aws-certified-solutions-architect'])
+        self.assertEqual(self.client.get('/api/courses/prep/aws-certified-solutions-architect/').data['curriculum'], 'aws-sa')

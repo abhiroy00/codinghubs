@@ -1,0 +1,245 @@
+{
+  "day": 3,
+  "title": "Built-in Data Structures and Comprehensions",
+  "module": "Core Python",
+  "level": "Beginner",
+  "objectives": [
+    "Choose between list, tuple, dict and set based on behaviour and time complexity.",
+    "Write list, dict and set comprehensions and generator expressions.",
+    "Use collections helpers such as Counter, defaultdict and deque.",
+    "Explain shallow versus deep copies of nested structures.",
+    "Sort complex data with key functions and multiple sort criteria."
+  ],
+  "definition": "Python's built-in data structures are list (ordered, mutable sequence), tuple (ordered, immutable sequence), dict (insertion-ordered mapping of hashable keys to values, backed by a hash table) and set (unordered collection of unique hashable items). Comprehensions are concise expressions that build these collections from an iterable with optional filtering.",
+  "theory": [
+    {
+      "heading": "Lists and tuples",
+      "body": "A list is a dynamic array: indexing and append are O(1) (append is amortised), but inserting or deleting at the front is O(n) because elements must shift, and x in list is an O(n) scan. A tuple is an immutable sequence; because it cannot change it is hashable when its items are, so it can be a dict key, and it signals 'fixed record' to readers, for example a (lat, lng) pair or a database row.",
+      "points": [
+        "list.append, list.pop() and indexing: O(1).",
+        "list.insert(0, x), list.pop(0) and x in list: O(n).",
+        "Tuple unpacking: name, age = row.",
+        "Use collections.deque for O(1) appends and pops at both ends (queues)."
+      ]
+    },
+    {
+      "heading": "Dictionaries and sets",
+      "body": "dict and set are hash tables. Lookup, insertion and membership tests are O(1) on average, which is why converting a list to a set before many membership checks can turn an O(n*m) algorithm into O(n+m). Keys must be hashable. Since Python 3.7 dicts preserve insertion order as a language guarantee. Sets support mathematical operations: union |, intersection &, difference - and symmetric difference ^.",
+      "points": [
+        "d.get(key, default) avoids KeyError for missing keys.",
+        "d.setdefault(key, []).append(v) groups values in one line.",
+        "d1 | d2 merges dictionaries (Python 3.9+); {**d1, **d2} works on older versions.",
+        "A set removes duplicates but does not keep order; dict.fromkeys(items) dedupes while keeping order."
+      ]
+    },
+    {
+      "heading": "Comprehensions and generator expressions",
+      "body": "A comprehension builds a collection in a single readable expression: [f(x) for x in items if cond(x)]. Dict comprehensions use {k: v for ...} and set comprehensions use {x for ...}. Using parentheses instead creates a generator expression, which produces items lazily without building a list in memory, ideal for sum(x * x for x in big_range). Keep comprehensions simple; nested logic belongs in a regular loop.",
+      "points": [
+        "squares = [n * n for n in range(5)]",
+        "by_id = {u['id']: u for u in users}",
+        "Comprehension variables do not leak into the surrounding scope in Python 3."
+      ]
+    },
+    {
+      "heading": "The collections module",
+      "body": "Counter counts hashable items and has most_common(n). defaultdict creates a default value for missing keys, removing if-key-not-in-dict boilerplate. deque is a double-ended queue for BFS and sliding windows. namedtuple and dataclasses give lightweight records with named fields. Knowing these saves time in coding interviews and shows idiomatic Python.",
+      "points": [
+        "Counter('banana') gives Counter({'a': 3, 'n': 2, 'b': 1}).",
+        "defaultdict(list) groups items; defaultdict(int) counts.",
+        "deque(maxlen=3) keeps only the last three items."
+      ]
+    },
+    {
+      "heading": "Copying and sorting",
+      "body": "Assignment never copies. list(x), x.copy() and x[:] make shallow copies: a new outer container whose items are the same objects, so nested lists are still shared. copy.deepcopy recursively copies nested objects. sorted() returns a new list and list.sort() sorts in place; both are stable and accept key= and reverse=. For multiple criteria return a tuple from the key, for example key=lambda p: (-p.score, p.name) for score descending then name ascending.",
+      "points": [
+        "Shallow copy: new container, shared items.",
+        "Deep copy: everything duplicated recursively.",
+        "Sorting is O(n log n) with Timsort and is stable."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Grouping orders with defaultdict and a comprehension",
+    "body": "Group order amounts by city, then build a summary dict with a comprehension. This is the same shape of work a Django view does after fetching rows, before passing a context to a template.",
+    "code": {
+      "language": "python",
+      "source": "from collections import defaultdict\n\norders = [('Delhi', 450), ('Pune', 300), ('Delhi', 120), ('Pune', 80), ('Goa', 999)]\n\nby_city = defaultdict(list)\nfor city, amount in orders:\n    by_city[city].append(amount)\n\nsummary = {city: sum(vals) for city, vals in by_city.items()}\nprint(summary)  # {'Delhi': 570, 'Pune': 380, 'Goa': 999}\n\ntop = sorted(summary.items(), key=lambda kv: -kv[1])[0]\nprint(top)      # ('Goa', 999)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Fast lookups",
+      "description": "Index records by id in a dict so a view or API handler can find them in O(1)."
+    },
+    {
+      "title": "Deduplication",
+      "description": "Sets remove duplicate emails or tags before saving to the database."
+    },
+    {
+      "title": "Counting and analytics",
+      "description": "Counter for page views, error codes or most common search terms."
+    },
+    {
+      "title": "Queues",
+      "description": "deque for breadth-first search, job queues and recent-history buffers."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare a shallow and a deep copy of a nested list to see which changes are shared.",
+    "code": {
+      "language": "python",
+      "source": "import copy\n\ngrid = [[1, 2], [3, 4]]\nshallow = grid.copy()\ndeep = copy.deepcopy(grid)\n\ngrid[0].append(99)\nprint(shallow[0])  # shares inner lists\nprint(deep[0])     # independent\nprint({1, 2, 3} & {2, 3, 4}, {1, 2} | {5})"
+    },
+    "output": "[1, 2, 99]\n[1, 2]\n{2, 3} {1, 2, 5}"
+  },
+  "takeaways": [
+    "Lists are dynamic arrays; front insertions and membership tests are O(n).",
+    "Dicts and sets are hash tables with average O(1) lookup; keys must be hashable.",
+    "Dicts keep insertion order since Python 3.7.",
+    "Comprehensions build collections; generator expressions produce items lazily.",
+    "Counter, defaultdict and deque remove a lot of boilerplate.",
+    "Shallow copies share nested objects; use deepcopy when you need full independence."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between a list and a tuple?",
+      "answer": "A list is mutable and a tuple is immutable. Because of that a tuple of hashable items is hashable (usable as a dict key), slightly smaller and faster to create, and communicates a fixed-size record. Lists are for homogeneous collections that grow or change.",
+      "explanation": "Go beyond 'one is mutable': mention hashability and intent (records versus collections)."
+    },
+    {
+      "question": "Why is checking membership in a set faster than in a list?",
+      "answer": "A set is a hash table: Python hashes the value and jumps to its bucket, giving average O(1). A list must compare items one by one, which is O(n).",
+      "explanation": "Mention the practical trick of converting a list to a set before repeated membership tests, and that worst-case hash collisions degrade to O(n)."
+    },
+    {
+      "question": "Are Python dictionaries ordered?",
+      "answer": "Yes. Since Python 3.7 insertion order is guaranteed by the language specification (it was an implementation detail of CPython 3.6). Iteration returns keys in the order they were first inserted.",
+      "explanation": "Interviewers check whether your knowledge is current; mention OrderedDict still exists for move_to_end and order-sensitive equality."
+    },
+    {
+      "question": "What is the difference between a shallow copy and a deep copy?",
+      "answer": "A shallow copy creates a new outer container but references the same inner objects. A deep copy recursively copies all nested objects, so changes to inner lists or dicts are not shared.",
+      "explanation": "Give the nested list example; this ties into bugs when copying configuration dicts or default data."
+    },
+    {
+      "question": "How would you find the k most frequent words in a text, breaking ties alphabetically?",
+      "answer": "Normalise the words, count them with collections.Counter (O(n)), then sort the items with key=lambda kv: (-kv[1], kv[0]) and take the first k. For very large vocabularies heapq.nsmallest(k, items, key=...) avoids sorting everything.",
+      "explanation": "This combines dicts, sorting with tuple keys and complexity analysis, a common screening question."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Top-k word frequency",
+    "difficulty": "Basic",
+    "objective": "Use Counter, string normalisation and multi-key sorting to rank words.",
+    "statement": "Read k on the first line and then any number of lines of text. Split the text on whitespace, strip the punctuation characters . , ! ? ; : ( ) from both ends of each word, convert to lowercase and ignore empty results. Print the number of distinct words, then the k most frequent words with their counts. Sort by count descending, then alphabetically. If there are fewer than k distinct words, print them all. If there are no words, print only 'No words'.",
+    "language": "python",
+    "input_format": "First line: integer k (k >= 1). Remaining lines: free text (may be empty).",
+    "output_format": "'Unique: N' followed by up to k lines 'word count', or 'No words'.",
+    "example": {
+      "input": "3\nthe cat and the hat. The cat sat!\n",
+      "output": "Unique: 5\nthe 3\ncat 2\nand 1"
+    },
+    "constraints": [
+      "1 <= k <= 1000",
+      "Text is ASCII and may span several lines.",
+      "Words that become empty after stripping punctuation are ignored."
+    ],
+    "starter": "import sys\nfrom collections import Counter\n\nlines = sys.stdin.read().splitlines()\nk = int(lines[0])\ntext = ' '.join(lines[1:])\n\n# TODO: normalise words, count them and print the result\n",
+    "solution": "import sys\nfrom collections import Counter\n\nlines = sys.stdin.read().splitlines()\nk = int(lines[0])\ntext = ' '.join(lines[1:])\n\nwords = [w.strip('.,!?;:()').lower() for w in text.split()]\ncounts = Counter(w for w in words if w)\n\nif not counts:\n    print('No words')\nelse:\n    print(f'Unique: {len(counts)}')\n    ranked = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))\n    for word, count in ranked[:k]:\n        print(word, count)\n",
+    "explanation": [
+      "Join all text lines so words on different lines are counted together.",
+      "Normalise each word with strip and lower in a list comprehension.",
+      "Counter counts the non-empty words in one pass.",
+      "Sort with a tuple key (-count, word): negative count gives descending frequency, the word breaks ties alphabetically.",
+      "Slicing ranked[:k] safely returns fewer items when there are fewer than k words."
+    ],
+    "tests": [
+      {
+        "input": "3\nthe cat and the hat. The cat sat!\n",
+        "output": "Unique: 5\nthe 3\ncat 2\nand 1"
+      },
+      {
+        "input": "5\n",
+        "output": "No words"
+      },
+      {
+        "input": "10\nB b a A, c\n",
+        "output": "Unique: 3\na 2\nb 2\nc 1"
+      },
+      {
+        "input": "1\n!!! ... ,,,\n",
+        "output": "No words"
+      },
+      {
+        "input": "2\nDjango is great\ndjango, flask; FastAPI\nis it?\n",
+        "output": "Unique: 6\ndjango 2\nis 2"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is the average time complexity of checking x in a set?",
+      "options": [
+        "O(n log n)",
+        "O(n)",
+        "O(log n)",
+        "O(1)"
+      ],
+      "answer": 3,
+      "explanation": "Sets are hash tables, so membership is an average O(1) hash lookup."
+    },
+    {
+      "type": "output",
+      "question": "What does this comprehension with a condition print?",
+      "code": "print([n * n for n in range(6) if n % 2 == 0])",
+      "options": [
+        "[1, 9, 25]",
+        "[0, 4, 16]",
+        "[0, 2, 4]",
+        "[0, 4, 16, 36]"
+      ],
+      "answer": 1,
+      "explanation": "range(6) gives 0 to 5; the even numbers 0, 2, 4 are squared."
+    },
+    {
+      "type": "scenario",
+      "question": "You need to group a list of (city, user) pairs into a dict of city to list of users with the least code. Which tool fits best?",
+      "options": [
+        "A tuple of tuples",
+        "A frozenset",
+        "collections.defaultdict(list)",
+        "collections.deque"
+      ],
+      "answer": 2,
+      "explanation": "defaultdict(list) creates an empty list for each new key, so you can append directly."
+    },
+    {
+      "type": "code",
+      "question": "Which key sorts players by score descending and then by name ascending?",
+      "options": [
+        "key=lambda p: p['score'] + p['name']",
+        "key=lambda p: max(p['score'], p['name'])",
+        "key=lambda p: (-p['score'], p['name'])",
+        "key=lambda p: (p['score'], p['name']), reverse=True"
+      ],
+      "answer": 2,
+      "explanation": "Negating the numeric score reverses its order while leaving the name ascending; reverse=True would reverse both."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these can be used as a dictionary key?",
+      "options": [
+        "{1, 2}",
+        "[1, 2]",
+        "{'a': 1}",
+        "(1, 2)"
+      ],
+      "answer": 3,
+      "explanation": "Keys must be hashable; a tuple of immutable items is hashable, while lists, dicts and sets are not."
+    }
+  ]
+}

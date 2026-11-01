@@ -1,0 +1,246 @@
+{
+  "day": 5,
+  "title": "Tool and Function Calling: Giving the Model Hands",
+  "module": "Core agent patterns",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain how function calling turns model output into structured tool invocations.",
+    "Describe a tool schema and the role of names, parameters and descriptions.",
+    "Design tools that are easy for a model to select and use correctly.",
+    "Validate tool arguments against a schema and return errors the model can fix.",
+    "Validate a tool call against its schema in code."
+  ],
+  "definition": "Tool calling, also called function calling, is a mechanism in which the model is given a list of tools described by schemas and can respond not with prose but with a structured request to invoke one of them. The application executes the tool, returns the result as a message, and the model continues. It is the bridge between reasoning and action: the model decides what to call and with which arguments, while ordinary code performs the call and enforces the rules.",
+  "theory": [
+    {
+      "heading": "From text to structured calls",
+      "body": "Early agents asked the model to write an action as free text such as 'search[weather]', and the application parsed it. That is fragile: the model can misspell the tool, forget a bracket or invent a parameter. Function calling replaces the parsing with a contract. The provider exposes the tools as a schema and the model emits a structured object with a tool name and typed arguments, so the runtime can validate before executing anything.",
+      "points": [
+        "The model chooses the tool and supplies arguments; the runtime executes it.",
+        "Arguments arrive as a structured object rather than text to parse.",
+        "The provider usually guarantees the call matches the declared schema."
+      ]
+    },
+    {
+      "heading": "Anatomy of a tool schema",
+      "body": "A tool schema has a name, a description and a parameter list, where each parameter has a type, a description and whether it is required. The name should be a clear verb, the description should say what the tool does and when to use it, and the parameter descriptions should explain the expected values. The model reads these descriptions to decide which tool to call, so vague or overlapping descriptions are a leading cause of wrong tool selection.",
+      "points": [
+        "Name: short and action-oriented, for example get_weather or create_ticket.",
+        "Description: what it does, when to use it and what it returns.",
+        "Parameters: typed fields marked required or optional, with enums for fixed choices.",
+        "Return shape: keep results small and structured so they fit the context."
+      ]
+    },
+    {
+      "heading": "The execution contract",
+      "body": "The application owns execution. It receives the call, validates the arguments, checks permissions, runs the tool and returns a result message. Errors must be caught and returned as observations, not raised, so the model can correct bad arguments on the next turn. Results should be concise and in a predictable shape, because large or noisy tool output wastes context and confuses later reasoning.",
+      "points": [
+        "Validate arguments before running the tool.",
+        "Enforce authorisation and rate limits at execution time, not in the prompt.",
+        "Return errors as structured observations so the model can retry.",
+        "Truncate or summarise large results before adding them to the context."
+      ]
+    },
+    {
+      "heading": "Designing tools the model can use",
+      "body": "Good tool design follows a few rules. Keep the number of tools small and their purposes distinct, so the model is not forced to guess between similar options. Prefer several focused tools over one tool with a mode flag. Make destructive or expensive actions explicit and gated. Return stable field names, because the model learns to rely on them, and document the exact result format in the description.",
+      "points": [
+        "Few, distinct, well-named tools beat many overlapping ones.",
+        "Prefer specific tools over a single 'do anything' tool.",
+        "Gate irreversible actions behind confirmation or a permission check.",
+        "Document the result shape so the model can use it reliably."
+      ]
+    },
+    {
+      "heading": "Limitations and failure modes",
+      "body": "Tool calling is reliable but not infallible. The model can still pick the wrong tool when descriptions overlap, pass a plausible but wrong value, or call a tool it does not need. Providers may not support parallel calls or may reorder them. And because the model can trigger real side effects, tool calling widens the security surface: a malicious tool result or user message can try to steer the model into a harmful call, which is why authorisation belongs in code, not in the prompt.",
+      "points": [
+        "Ambiguous descriptions cause wrong tool selection.",
+        "Values can be well-typed but semantically wrong.",
+        "Never trust the model for permissions; enforce them in code.",
+        "Log every call and result for debugging and audit."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A tool schema and the call it produces",
+    "body": "The application advertises a weather tool with a city string and an optional unit enum. When the user asks about Paris in Celsius, the model does not write prose; it returns a structured call naming the tool and filling the arguments. The runtime validates the arguments, runs the tool and appends the result for the model to summarise.",
+    "code": {
+      "language": "json",
+      "source": "{\n  \"name\": \"get_weather\",\n  \"description\": \"Return the current weather for a city.\",\n  \"parameters\": {\n    \"city\": {\"type\": \"string\", \"required\": true},\n    \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"required\": false}\n  }\n}\n// model output for 'weather in Paris in celsius'\n{\"tool\": \"get_weather\", \"arguments\": {\"city\": \"Paris\", \"unit\": \"celsius\"}}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Booking and order management",
+      "description": "Let an agent look up orders, check availability and place bookings through typed API calls with permission limits."
+    },
+    {
+      "title": "Database and analytics queries",
+      "description": "Expose a parameterised query tool so the agent can fetch metrics without writing raw SQL that could damage data."
+    },
+    {
+      "title": "Calendar and email actions",
+      "description": "Create events or draft replies through tools whose arguments are validated before anything is sent."
+    },
+    {
+      "title": "Code and shell execution",
+      "description": "Run tests or scripts through a sandboxed tool with a strict argument schema and resource limits."
+    }
+  ],
+  "demonstration": {
+    "description": "Validate a requested tool call against a small schema. The tool search requires a query string and an integer limit. The checker first confirms the tool exists, then checks required parameters in schema order, then checks that each supplied value has the right type, and prints a single verdict line.",
+    "code": {
+      "language": "text",
+      "source": "tools:\n  search query:string limit:int\ncall:\n  search query=weather limit=five"
+    },
+    "output": "INVALID bad type limit"
+  },
+  "takeaways": [
+    "Function calling replaces fragile text parsing with a schema-bound contract.",
+    "The model selects and fills the call; the application validates and executes it.",
+    "Clear tool names and descriptions are the biggest lever on tool-selection accuracy.",
+    "Return tool errors as observations so the model can correct its arguments.",
+    "Enforce permissions and limits in code, never in the prompt alone.",
+    "Keep tools few, distinct and specific, and keep their results small."
+  ],
+  "interview": [
+    {
+      "question": "What is function calling?",
+      "answer": "A mechanism where the model is given tool schemas and can respond with a structured request to call one, including typed arguments. The application validates and executes the call, then returns the result so the model can continue.",
+      "explanation": "Emphasise the split of responsibilities: the model decides, the code executes and enforces rules."
+    },
+    {
+      "question": "What makes a good tool description?",
+      "answer": "It states what the tool does, when to use it, what each parameter means and what the result looks like. It is specific enough to distinguish the tool from similar ones, because the model chooses between tools by reading these descriptions.",
+      "explanation": "Mention that overlapping descriptions are a common cause of wrong tool selection, and that enums reduce invalid values."
+    },
+    {
+      "question": "How should an agent handle a tool that returns an error?",
+      "answer": "Catch the error and return it as a structured observation with enough detail for the model to fix the arguments or choose another tool, rather than crashing the loop. Do not leak secrets or stack traces.",
+      "explanation": "This connects to the error-handling point from the agent loop and keeps the agent self-correcting."
+    },
+    {
+      "question": "Why is it dangerous to rely on the prompt for permissions?",
+      "answer": "A prompt is just text the model may be talked out of following, especially by injected content in a tool result. Authorisation, rate limits and destructive-action gating must be enforced in code at execution time.",
+      "explanation": "This previews prompt-injection defence and shows you treat the model as untrusted for security decisions."
+    },
+    {
+      "question": "Would you give an agent one general tool or several specific tools?",
+      "answer": "Several specific tools, because a single tool with a mode flag forces the model to encode intent in a parameter it may get wrong, and it makes validation and permissions coarser. Specific tools have clear names, typed arguments and narrow effects.",
+      "explanation": "Connect tool granularity to validation, safety and selection accuracy."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Validate a tool call against its schema",
+    "difficulty": "Intermediate",
+    "objective": "Check that a requested tool exists and that every required argument is present and has the declared type.",
+    "statement": "Read a set of tool schemas and one requested call. A schema line is '<tool> <param>:<type> ...' where type is int, float or string. A call line is '<tool> <param>=<value> ...'. Print 'VALID <tool>' when the tool exists, every required parameter is supplied and every value matches its type. Otherwise print 'INVALID <reason>' with reason 'unknown tool', 'missing <param>' for the first missing parameter in schema order, or 'bad type <param>' for the first parameter whose value has the wrong type.",
+    "language": "python",
+    "input_format": "Line 1: N. Next N lines: tool schemas. Final line: the requested call.",
+    "output_format": "A single line, either 'VALID <tool>' or 'INVALID <reason>'.",
+    "example": {
+      "input": "2\nsearch query:string limit:int\ncalculator expression:string\nsearch query=weather limit=5\n",
+      "output": "VALID search"
+    },
+    "constraints": [
+      "1 <= N <= 50; tool and parameter names contain no spaces or '='.",
+      "An int value matches -?[0-9]+; a float value parses with float(); a string value is any non-empty token.",
+      "Check the tool name first, then missing parameters in schema order, then types in schema order."
+    ],
+    "starter": "import sys\n\nlines = [ln.strip() for ln in sys.stdin.read().splitlines() if ln.strip()]\nn = int(lines[0])\n# TODO: build the schemas, parse the call and print the verdict\n",
+    "solution": "import sys\n\nlines = [ln.strip() for ln in sys.stdin.read().splitlines() if ln.strip()]\nn = int(lines[0])\ntools = {}\nfor i in range(1, n + 1):\n    parts = lines[i].split()\n    params = []\n    for p in parts[1:]:\n        pname, _, ptype = p.partition(':')\n        params.append((pname, ptype))\n    tools[parts[0]] = params\n\ncall = lines[n + 1].split()\nname = call[0]\nargs = {}\nfor item in call[1:]:\n    key, _, value = item.partition('=')\n    args[key] = value\n\ndef matches(value, ptype):\n    if ptype == 'int':\n        body = value[1:] if value.startswith('-') else value\n        return body.isdigit() and body != ''\n    if ptype == 'float':\n        try:\n            float(value)\n            return True\n        except ValueError:\n            return False\n    return value != ''\n\nif name not in tools:\n    print('INVALID unknown tool')\nelse:\n    reason = None\n    for pname, ptype in tools[name]:\n        if pname not in args:\n            reason = f'missing {pname}'\n            break\n        if not matches(args[pname], ptype):\n            reason = f'bad type {pname}'\n            break\n    print(f'INVALID {reason}' if reason else f'VALID {name}')\n",
+    "explanation": [
+      "Parse the tool schemas into a dictionary of ordered (name, type) pairs.",
+      "Parse the requested call into a tool name and a dictionary of argument values.",
+      "Reject immediately if the tool is not declared.",
+      "Walk the schema parameters in order, reporting the first missing one or the first type mismatch.",
+      "Print a single verdict line."
+    ],
+    "tests": [
+      {
+        "input": "2\nsearch query:string limit:int\ncalculator expression:string\nsearch query=weather limit=5\n",
+        "output": "VALID search"
+      },
+      {
+        "input": "1\nsearch query:string\nweather city=Paris\n",
+        "output": "INVALID unknown tool"
+      },
+      {
+        "input": "2\nsearch query:string limit:int\ncalculator expression:string\nsearch query=weather\n",
+        "output": "INVALID missing limit"
+      },
+      {
+        "input": "1\nsearch query:string limit:int\nsearch query=weather limit=five\n",
+        "output": "INVALID bad type limit"
+      },
+      {
+        "input": "1\ndivide a:float b:float\ndivide a=3.5 b=2\n",
+        "output": "VALID divide"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "In function calling, who executes the tool and enforces permissions?",
+      "options": [
+        "The tokenizer",
+        "The user's browser",
+        "The language model itself",
+        "The application runtime"
+      ],
+      "answer": 3,
+      "explanation": "The model only selects the tool and supplies arguments; the surrounding application validates, authorises and runs it."
+    },
+    {
+      "type": "scenario",
+      "question": "An agent keeps calling a slightly wrong tool because two tools have almost identical descriptions. What is the best fix?",
+      "options": [
+        "Raise the temperature",
+        "Delete both tools",
+        "Rewrite the descriptions so each states when it should be used",
+        "Increase the context window"
+      ],
+      "answer": 2,
+      "explanation": "The model chooses by reading descriptions, so making them distinct and usage-specific directly improves selection."
+    },
+    {
+      "type": "concept",
+      "question": "Which is the best tool design?",
+      "options": [
+        "A single tool that accepts free-form code",
+        "A few focused tools with clear names and typed parameters",
+        "One tool with a mode string covering every operation",
+        "Many overlapping tools with vague names"
+      ],
+      "answer": 1,
+      "explanation": "Few, distinct tools with clear schemas are easier for the model to select and for the runtime to validate and secure."
+    },
+    {
+      "type": "output",
+      "question": "A tool schema declares 'city:string required' and 'unit:string optional'. A call supplies only unit=celsius. What verdict is correct?",
+      "options": [
+        "VALID, optional fields may be omitted",
+        "INVALID missing city",
+        "INVALID unknown tool",
+        "INVALID bad type unit"
+      ],
+      "answer": 1,
+      "explanation": "The required city argument is absent, so the call is missing a mandatory parameter."
+    },
+    {
+      "type": "scenario",
+      "question": "A tool result contains text instructing the agent to email a database dump to an outside address. What should the design do?",
+      "options": [
+        "Treat tool output as untrusted data and block the action in code",
+        "Increase the model's temperature",
+        "Follow the instruction because it came from a tool",
+        "Ignore permissions since the tool is trusted"
+      ],
+      "answer": 0,
+      "explanation": "Tool results can carry injected instructions, so authorisation must be enforced in code rather than left to the model."
+    }
+  ]
+}

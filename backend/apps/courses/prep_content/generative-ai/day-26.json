@@ -1,0 +1,233 @@
+{
+  "day": 26,
+  "title": "Working with Image and Audio Models",
+  "module": "Multimodal AI",
+  "level": "Advanced",
+  "objectives": [
+    "Explain how text-to-image models generate pictures from prompts.",
+    "Describe how speech-to-text and text-to-speech models work.",
+    "Show how to call an image or audio API with parameters.",
+    "Discuss image generation parameters such as size, style and negative prompts.",
+    "Cover copyright, safety and cost of media generation."
+  ],
+  "definition": "Image and audio models generate or understand media. Text-to-image models create pictures from a text prompt; speech-to-text converts audio into text; text-to-speech converts text into spoken audio. These models are usually called through APIs with parameters such as prompt, size, voice and language.",
+  "theory": [
+    {
+      "heading": "Text-to-image generation",
+      "body": "A text-to-image model starts from random noise and gradually refines it into an image that matches the prompt. Parameters include the prompt, image size, number of steps and a negative prompt that describes what to avoid. The same prompt can produce different images each time due to randomness.",
+      "points": [
+        "Prompt describes the desired image.",
+        "Size and steps control resolution and quality.",
+        "Negative prompt excludes unwanted content."
+      ]
+    },
+    {
+      "heading": "Speech-to-text",
+      "body": "Speech-to-text (automatic speech recognition) converts spoken audio into written text. It handles different languages, accents and background noise with varying accuracy. Output is a transcript, often with timestamps and confidence scores.",
+      "points": [
+        "Input: audio; output: text transcript.",
+        "Accuracy depends on language, accent and noise.",
+        "Timestamps show when each word was spoken."
+      ]
+    },
+    {
+      "heading": "Text-to-speech",
+      "body": "Text-to-speech converts written text into spoken audio. Parameters include voice, language, speed and style. It is used for assistants, audiobooks and accessibility. Quality ranges from robotic to near-human.",
+      "points": [
+        "Input: text; output: audio.",
+        "Voice, speed and style can be chosen.",
+        "Used for assistants and accessibility."
+      ]
+    },
+    {
+      "heading": "Calling media APIs",
+      "body": "Media generation is usually an API call with a JSON body: prompt, model, size and options. The response contains a URL to the generated image or audio file, or the audio bytes. Generation is slower and more expensive than text, so cache results when possible.",
+      "points": [
+        "POST a JSON request with prompt and options.",
+        "Response gives a file URL or audio bytes.",
+        "Cache repeated generations to save cost."
+      ]
+    },
+    {
+      "heading": "Copyright, safety and cost",
+      "body": "Generated images and audio may resemble copyrighted works or real people. Do not generate deepfakes, violent or sexual content, and respect copyright. Media generation costs more than text and takes longer, so use it only when needed.",
+      "points": [
+        "Avoid generating real people or copyrighted characters.",
+        "No deepfakes, violence or sexual content.",
+        "Media generation is slower and costlier than text."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Generating a product image",
+    "body": "A marketer prompts 'A minimalist coffee mug on a wooden table, soft natural light, product photography.' The model returns an image URL. Parameters: size 1024x1024, style photography, negative prompt 'blurry, distorted, text, watermark'.",
+    "code": {
+      "language": "python",
+      "source": "payload = {\n    'prompt': 'A minimalist coffee mug on a wooden table, soft natural light, product photography',\n    'size': '1024x1024',\n    'negative_prompt': 'blurry, distorted, text, watermark',\n    'model': 'dall-e-3'\n}\nresponse = requests.post(image_api_url, headers=headers, json=payload)\nimage_url = response.json()['data'][0]['url']"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Product photography",
+      "description": "Generate mock images for catalogues and ads."
+    },
+    {
+      "title": "Voice assistants",
+      "description": "Speak responses in a chosen voice."
+    },
+    {
+      "title": "Accessibility",
+      "description": "Convert text to speech for users with vision impairment."
+    },
+    {
+      "title": "Content creation",
+      "description": "Produce illustrations and voiceovers for videos."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare two image prompts: one vague and one specific, showing how detail shapes the result.",
+    "code": {
+      "language": "text",
+      "source": "Prompt A: 'a cat' → random cat, random style.\nPrompt B: 'a fluffy orange cat sleeping on a blue cushion, digital art, soft lighting' → specific, styled image.\nExact output varies by model and run."
+    },
+    "output": "Specific prompts give more controlled, predictable results."
+  },
+  "takeaways": [
+    "Text-to-image models turn prompts into pictures through gradual refinement.",
+    "Speech-to-text converts audio to text; text-to-speech converts text to audio.",
+    "Media APIs take prompt, size, voice and options and return a file or URL.",
+    "Image parameters include size, steps, style and negative prompts.",
+    "Generated media raises copyright, safety and consent issues.",
+    "Media generation is slower and costlier than text; cache results."
+  ],
+  "interview": [
+    {
+      "question": "How does a text-to-image model work?",
+      "answer": "It starts from random noise and refines it into an image that matches the text prompt, guided by parameters such as size, steps and negative prompt.",
+      "explanation": "Mention randomness means different outputs each time."
+    },
+    {
+      "question": "What is speech-to-text used for?",
+      "answer": "Converting spoken audio into a written transcript, useful for captions, meetings and voice input.",
+      "explanation": "Accuracy depends on language, accent and noise."
+    },
+    {
+      "question": "What is a negative prompt?",
+      "answer": "A description of content to avoid in the generated image, such as blurry, distorted or watermarked content.",
+      "explanation": "It steers the model away from unwanted results."
+    },
+    {
+      "question": "What safety issues apply to image generation?",
+      "answer": "Avoid deepfakes, real people, copyrighted characters and violent or sexual content; respect consent and copyright.",
+      "explanation": "Generated media can harm real people if misused."
+    },
+    {
+      "question": "Why cache media generation results?",
+      "answer": "Image and audio generation are slow and expensive; caching repeated prompts saves cost and time.",
+      "explanation": "Only regenerate when the prompt or parameters change."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Validate image generation parameters",
+    "difficulty": "Basic",
+    "objective": "Practise checking and sanitising image generation request parameters in Python.",
+    "statement": "Read a width, height and style. Width and height must be integers between 256 and 1024 inclusive; if outside, clamp to the nearest limit. Style must be one of 'photography', 'digital art' or '3d render'; otherwise use 'photography'. Print the final width, height and style on one line separated by spaces.",
+    "language": "python",
+    "input_format": "Line 1: width.\nLine 2: height.\nLine 3: style.",
+    "output_format": "One line: width height style.",
+    "example": {
+      "input": "2000\n800\noil painting\n",
+      "output": "1024 800 photography"
+    },
+    "constraints": [
+      "Width and height are integers.",
+      "Style comparison is case-insensitive.",
+      "Output uses the lowercase style."
+    ],
+    "starter": "width = int(input())\nheight = int(input())\nstyle = input().strip()\n\n# TODO: clamp and validate, then print\n",
+    "solution": "width = int(input())\nheight = int(input())\nstyle = input().strip().lower()\n\nwidth = max(256, min(1024, width))\nheight = max(256, min(1024, height))\n\nif style not in ('photography', 'digital art', '3d render'):\n    style = 'photography'\n\nprint(f'{width} {height} {style}')\n",
+    "explanation": [
+      "Read width, height and style.",
+      "Clamp width and height to 256-1024.",
+      "Lowercase the style and check it against the allowed set; default to photography.",
+      "Print the final width, height and style separated by spaces."
+    ],
+    "tests": [
+      {
+        "input": "2000\n800\noil painting\n",
+        "output": "1024 800 photography"
+      },
+      {
+        "input": "512\n512\nDIGITAL ART\n",
+        "output": "512 512 digital art"
+      },
+      {
+        "input": "100\n100\n3d render\n",
+        "output": "256 256 3d render"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does a text-to-image model produce?",
+      "options": [
+        "Audio from text",
+        "Text from audio",
+        "Text from an image",
+        "An image from a text prompt"
+      ],
+      "answer": 3,
+      "explanation": "A text-to-image model generates an image matching a text prompt."
+    },
+    {
+      "type": "concept",
+      "question": "What is speech-to-text?",
+      "options": [
+        "Text to image",
+        "Text to audio",
+        "Audio to text",
+        "Image to text"
+      ],
+      "answer": 2,
+      "explanation": "Speech-to-text converts spoken audio into a written transcript."
+    },
+    {
+      "type": "scenario",
+      "question": "You want an image in a specific style. Which parameter helps most?",
+      "options": [
+        "Width only",
+        "Prompt plus style parameter",
+        "Negative prompt only",
+        "More width"
+      ],
+      "answer": 1,
+      "explanation": "The prompt describes the content and the style parameter controls the visual style."
+    },
+    {
+      "type": "concept",
+      "question": "What is a negative prompt?",
+      "options": [
+        "Content to avoid in the result",
+        "The image size",
+        "The model name",
+        "The main image description"
+      ],
+      "answer": 0,
+      "explanation": "A negative prompt tells the model what not to include, such as blur or watermarks."
+    },
+    {
+      "type": "concept",
+      "question": "Why is media generation costlier than text generation?",
+      "options": [
+        "It needs no API key",
+        "It is always cached",
+        "It uses fewer tokens",
+        "It produces images/audio, which is slower and more compute-intensive"
+      ],
+      "answer": 3,
+      "explanation": "Generating media requires more compute and time than generating text."
+    }
+  ]
+}

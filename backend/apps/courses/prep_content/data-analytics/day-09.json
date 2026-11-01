@@ -1,0 +1,195 @@
+{
+  "day": 9,
+  "title": "Data Pipeline Scheduling",
+  "module": "Analytics foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain the key ideas behind Data Pipeline Scheduling.",
+    "Describe why Data Pipeline Scheduling matters in Data Analytics.",
+    "Apply Data Pipeline Scheduling to a realistic scenario.",
+    "Identify common pitfalls and how to avoid them.",
+    "Answer interview questions about Data Pipeline Scheduling."
+  ],
+  "definition": "Data Pipeline Scheduling is a core concept in Data Analytics. It refers to the techniques, principles and practices that let a practitioner work effectively with this topic in real systems.",
+  "theory": [
+    {
+      "heading": "What Data Pipeline Scheduling is",
+      "body": "Data Pipeline Scheduling describes the methods and patterns used within Data Analytics to achieve reliable, maintainable results. Understanding it is the foundation for everything built later in this course.",
+      "points": [
+        "Data Pipeline Scheduling is a named, repeatable concept.",
+        "It has a clear purpose and scope.",
+        "It connects to other course topics."
+      ]
+    },
+    {
+      "heading": "Why Data Pipeline Scheduling matters",
+      "body": "Without Data Pipeline Scheduling, systems built with Data Analytics are harder to debug, extend and operate. Teams that master this topic ship fewer defects and communicate more clearly about design decisions.",
+      "points": [
+        "Improves reliability and maintainability.",
+        "Reduces debugging time.",
+        "Supports team alignment."
+      ]
+    },
+    {
+      "heading": "How Data Pipeline Scheduling works",
+      "body": "The mechanism behind Data Pipeline Scheduling follows a repeatable sequence: understand the requirement, apply the principle, verify the result and refine based on feedback. Each step has checks that keep the work on track.",
+      "points": [
+        "Start from the requirement.",
+        "Apply the core principle of Data Pipeline Scheduling.",
+        "Verify the outcome.",
+        "Refine using feedback."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations of Data Pipeline Scheduling",
+      "body": "Data Pipeline Scheduling offers structure, clarity and consistency, but it also adds overhead and may be overkill for trivial tasks. Use it when the benefit in reliability outweighs the added effort.",
+      "points": [
+        "Advantages: structure, clarity, consistency.",
+        "Limitations: added overhead, not always needed.",
+        "Apply judiciously."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Data Pipeline Scheduling in practice",
+    "body": "A concrete illustration of Data Pipeline Scheduling shows the principle applied to a small, realistic input so the learner can see cause and effect before scaling up.",
+    "code": {
+      "language": "python",
+      "source": "# Example illustrating Data Pipeline Scheduling\nprint('See the worked walk-through above.')"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Production systems",
+      "description": "Applied in real Data Analytics systems to keep behaviour predictable."
+    },
+    {
+      "title": "Debugging",
+      "description": "Helps identify where Data Pipeline Scheduling-related assumptions break down."
+    },
+    {
+      "title": "Interviews",
+      "description": "A common topic for Data Analytics interview questions."
+    }
+  ],
+  "demonstration": {
+    "description": "A short walk-through of Data Pipeline Scheduling with expected input and output, showing the principle end to end.",
+    "code": {
+      "language": "python",
+      "source": "# Demonstration of Data Pipeline Scheduling\nprint('walkthrough output')"
+    },
+    "output": "expected demonstration output"
+  },
+  "takeaways": [
+    "Data Pipeline Scheduling is a foundational concept in Data Analytics.",
+    "It follows a clear, repeatable mechanism.",
+    "It improves reliability when applied appropriately.",
+    "Know the advantages and limitations before using it."
+  ],
+  "interview": [
+    {
+      "question": "What is Data Pipeline Scheduling?",
+      "answer": "Data Pipeline Scheduling is a core concept in Data Analytics that describes the techniques used to work effectively with this area.",
+      "explanation": "Give a concise, accurate definition and one example."
+    },
+    {
+      "question": "Why is Data Pipeline Scheduling important?",
+      "answer": "It improves reliability, maintainability and clarity in Data Analytics systems.",
+      "explanation": "Connect to a concrete benefit."
+    },
+    {
+      "question": "What are the limitations of Data Pipeline Scheduling?",
+      "answer": "It adds overhead and may be unnecessary for simple cases; apply it judiciously.",
+      "explanation": "Show balanced judgment."
+    },
+    {
+      "question": "How would you explain Data Pipeline Scheduling to a junior teammate?",
+      "answer": "Start with the definition, show a small example, then walk through a realistic use case and its trade-offs.",
+      "explanation": "Structure the explanation from simple to applied."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Apply: Data Pipeline Scheduling",
+    "difficulty": "Basic",
+    "objective": "Apply Data Pipeline Scheduling through a practical exercise.",
+    "statement": "Complete a practical exercise that demonstrates Data Pipeline Scheduling. Describe your approach, the steps you took and how you verified the result.",
+    "deliverable": "A short written answer or artefact showing your work on Data Pipeline Scheduling.",
+    "steps": [
+      "Restate the goal of Data Pipeline Scheduling in your own words.",
+      "List the inputs, steps and expected outputs for Data Pipeline Scheduling.",
+      "Work through one concrete example by hand or with code.",
+      "Note one edge case and how you handle it.",
+      "Write a one-paragraph summary of what you learned."
+    ],
+    "checklist": [
+      "The deliverable addresses the stated goal.",
+      "Steps are concrete and reproducible.",
+      "At least one edge case is identified and handled.",
+      "The summary reflects genuine understanding."
+    ],
+    "sample_answer": "Sample answer: Explain Data Pipeline Scheduling with a definition, one worked example, an edge case and a real-world use case. The answer shows the learner can apply Data Pipeline Scheduling in Data Analytics."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is Data Pipeline Scheduling?",
+      "options": [
+        "A hardware device",
+        "A programming language",
+        "The core idea of Data Pipeline Scheduling",
+        "An unrelated concept"
+      ],
+      "answer": 2,
+      "explanation": "Data Pipeline Scheduling is defined as the core idea above."
+    },
+    {
+      "type": "concept",
+      "question": "Why is Data Pipeline Scheduling important?",
+      "options": [
+        "It improves reliability",
+        "It slows things down",
+        "It is never used",
+        "It is only theory"
+      ],
+      "answer": 0,
+      "explanation": "Data Pipeline Scheduling improves reliability and clarity."
+    },
+    {
+      "type": "scenario",
+      "question": "A system ignores Data Pipeline Scheduling. What is the likely result?",
+      "options": [
+        "No effect",
+        "Lower cost",
+        "More defects",
+        "Faster performance"
+      ],
+      "answer": 2,
+      "explanation": "Ignoring Data Pipeline Scheduling leads to more defects."
+    },
+    {
+      "type": "output",
+      "question": "What does a correct Data Pipeline Scheduling implementation produce?",
+      "options": [
+        "A reliable result",
+        "Random output",
+        "An error",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explanation": "A correct implementation produces a reliable result."
+    },
+    {
+      "type": "concept",
+      "question": "Which is a limitation of Data Pipeline Scheduling?",
+      "options": [
+        "Always required",
+        "No cost",
+        "Added overhead",
+        "No benefit"
+      ],
+      "answer": 2,
+      "explanation": "Data Pipeline Scheduling adds overhead but brings reliability."
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "day": 1,
+  "title": "JVM, JRE and JDK: How Java Runs and Manages Memory",
+  "module": "Core Java foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Distinguish the JDK, JRE and JVM and explain what each one contains.",
+    "Trace the path from a .java file to running machine code (compile, class loading, interpretation, JIT).",
+    "Describe the JVM memory areas: heap, thread stacks, metaspace and the PC register.",
+    "Explain how garbage collection decides which objects can be freed, including objects in reference cycles.",
+    "Diagnose StackOverflowError and OutOfMemoryError from their causes."
+  ],
+  "definition": "The Java Virtual Machine (JVM) is the runtime engine that loads compiled bytecode (.class files), verifies it and executes it, translating it to native machine code. The JRE (Java Runtime Environment) is the JVM plus the core class libraries needed to run programs, and the JDK (Java Development Kit) is the JRE plus development tools such as the javac compiler, jshell, javadoc and jdb. The JVM also manages memory automatically: objects live on a shared heap and are reclaimed by the garbage collector when nothing can reach them.",
+  "theory": [
+    {
+      "heading": "JDK vs JRE vs JVM",
+      "body": "Think of the three as nested boxes. The JVM executes bytecode; the JRE wraps the JVM with the standard library (java.lang, java.util, java.io and so on); the JDK wraps the JRE with tools for building programs. Since Java 11, Oracle and most vendors no longer ship a separate JRE download; you install a JDK, and tools such as jlink can build a trimmed runtime image for deployment.",
+      "points": [
+        "JVM: class loader, bytecode verifier, interpreter, JIT compiler, garbage collector.",
+        "JRE: JVM + core libraries; enough to run, not to compile.",
+        "JDK: JRE + javac, jar, jshell, javadoc, jdb, jconsole, jcmd and more.",
+        "The JVM is platform-specific; bytecode is platform-independent. That is the meaning of 'write once, run anywhere'."
+      ]
+    },
+    {
+      "heading": "From source code to running program",
+      "body": "javac compiles Main.java into Main.class containing bytecode, an instruction set for the JVM rather than for a real CPU. At runtime the class loader subsystem loads classes on demand using parent delegation (Bootstrap, then Platform, then Application class loader), the verifier checks that the bytecode is safe, and the execution engine runs it. HotSpot starts by interpreting bytecode and profiles which methods run often; hot methods are compiled to optimised native code by the JIT (Just-In-Time) compiler. This is why Java services get faster after a short warm-up.",
+      "points": [
+        "Loading → Linking (verify, prepare, resolve) → Initialization (static blocks run).",
+        "Parent delegation stops an application from replacing core classes such as java.lang.String.",
+        "Tiered compilation: C1 compiles quickly, C2 compiles hot code aggressively."
+      ]
+    },
+    {
+      "heading": "JVM memory areas",
+      "body": "Every thread gets its own stack, made of frames: one frame per method call, holding local variables, parameters and partial results. Primitive locals live directly in the frame; for objects the frame holds only a reference, while the object itself is created on the heap, which all threads share. Class metadata (method bytecode, field layouts, the runtime constant pool) lives in Metaspace, which uses native memory and replaced PermGen in Java 8. Each thread also has a program counter register and a native method stack.",
+      "points": [
+        "Stack: per thread, LIFO frames, freed automatically when a method returns, fast.",
+        "Heap: shared, holds all objects and arrays, managed by the garbage collector.",
+        "Metaspace: class metadata in native memory (tune with -XX:MaxMetaspaceSize).",
+        "Deep or infinite recursion fills the stack → StackOverflowError.",
+        "Too many live objects for -Xmx → OutOfMemoryError: Java heap space."
+      ]
+    },
+    {
+      "heading": "How garbage collection works",
+      "body": "The collector does not count references. It starts from GC roots (local variables in active stack frames, static fields, active threads, JNI references) and marks every object it can reach by following references. Anything not marked is garbage, even if unreachable objects still point at each other in a cycle. Most collectors are generational because most objects die young: new objects go to the young generation (Eden plus two survivor spaces), survivors of several minor collections are promoted to the old generation, and the old generation is collected less often.",
+      "points": [
+        "Mark: find live objects from the roots. Sweep/compact: reclaim the rest and reduce fragmentation.",
+        "Minor GC cleans the young generation; major/full GC cleans the old generation too.",
+        "G1 is the default collector since Java 9; ZGC and Shenandoah target very short pauses on large heaps.",
+        "System.gc() is only a hint; never rely on it, and finalize() is deprecated."
+      ]
+    },
+    {
+      "heading": "Why this matters in interviews and production",
+      "body": "Memory questions test whether you understand what your code costs. A Spring Boot service that caches everything in a static map leaks memory because static fields are GC roots; a recursive tree walk on deep data can overflow the stack; a container started without heap limits may be killed by the orchestrator. Knowing the memory model lets you read a heap dump, choose -Xms/-Xmx sensibly and explain a production incident clearly."
+    }
+  ],
+  "example": {
+    "title": "Where each value lives",
+    "body": "In the method below, the int count and the reference variable name are stored in the stack frame of main. The String object \"Asha\" lives in the heap (in the string pool), and the Student object is allocated on the heap with its fields inside it. When main returns, the frame is popped; the Student object becomes unreachable and is eligible for garbage collection.",
+    "code": {
+      "language": "java",
+      "source": "public class Main {\n    static class Student {\n        String name;   // reference stored inside the heap object\n        int marks;     // primitive stored inside the heap object\n        Student(String name, int marks) { this.name = name; this.marks = marks; }\n    }\n\n    public static void main(String[] args) {\n        int count = 1;                       // stack: primitive value\n        String name = \"Asha\";                // stack: reference -> pooled String on heap\n        Student s = new Student(name, 91);   // stack: reference -> Student on heap\n        System.out.println(s.name + \" \" + s.marks + \" \" + count);\n        s = null;                            // Student object now unreachable -> GC eligible\n    }\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Sizing a Spring Boot container",
+      "description": "Setting -Xmx or -XX:MaxRAMPercentage so the heap fits inside a Docker memory limit and leaves room for metaspace and thread stacks."
+    },
+    {
+      "title": "Diagnosing a memory leak",
+      "description": "Taking a heap dump with jcmd or on OutOfMemoryError and finding a static collection or cache that keeps objects reachable."
+    },
+    {
+      "title": "Reducing latency spikes",
+      "description": "Reading GC logs, then choosing G1 pause targets or ZGC for services where long stop-the-world pauses hurt users."
+    },
+    {
+      "title": "Fixing a StackOverflowError",
+      "description": "Replacing deep recursion (for example walking a large category tree) with an explicit stack or iteration."
+    },
+    {
+      "title": "Portable deployments",
+      "description": "Shipping the same JAR to Windows developer laptops and Linux servers because only the JVM is platform-specific."
+    }
+  ],
+  "demonstration": {
+    "description": "Compile and run a program from the command line, then trigger both memory errors on purpose to see the difference between running out of stack and running out of heap.",
+    "code": {
+      "language": "text",
+      "source": "$ javac Main.java          # JDK tool: produces Main.class (bytecode)\n$ java Main                # JVM loads Main.class and runs main()\nAsha 91 1\n\n// recurse() { recurse(); }  with no base case\n$ java Recurse\nException in thread \"main\" java.lang.StackOverflowError\n\n// keep adding 1 MB arrays to a static List\n$ java -Xmx64m Hoard\nException in thread \"main\" java.lang.OutOfMemoryError: Java heap space"
+    },
+    "output": "The first error comes from one thread's stack filling with frames; the second comes from the shared heap filling with objects that stay reachable through a static field, so the GC cannot free them."
+  },
+  "takeaways": [
+    "JDK ⊃ JRE ⊃ JVM: compile with the JDK, run on the JVM.",
+    "Bytecode is portable; the JVM is the platform-specific part, and the JIT makes hot code fast.",
+    "Primitive locals and references live on the thread's stack; objects and arrays live on the shared heap.",
+    "GC frees objects that are unreachable from GC roots, so reference cycles are collected too.",
+    "Static fields are GC roots: an ever-growing static collection is the classic Java memory leak.",
+    "StackOverflowError means too-deep calls; OutOfMemoryError: Java heap space means too many live objects."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between the JDK, the JRE and the JVM?",
+      "answer": "The JVM executes bytecode. The JRE is the JVM plus the standard class libraries needed to run applications. The JDK is the JRE plus development tools such as javac, jar, jshell and debuggers, so you need the JDK to compile and the JVM to run.",
+      "explanation": "Describe them as nested layers and add that the JVM is platform-specific while bytecode is platform-independent. Mentioning that modern Java ships only JDKs (with jlink for slim runtimes) shows current knowledge."
+    },
+    {
+      "question": "Is Java compiled or interpreted?",
+      "answer": "Both. javac compiles source to bytecode ahead of time. At runtime the JVM first interprets the bytecode and then the JIT compiler compiles frequently executed methods into native machine code, using profiling data to optimise them.",
+      "explanation": "A strong answer names the JIT, explains warm-up and mentions tiered compilation (C1/C2). That shows you know why Java performance improves after start-up."
+    },
+    {
+      "question": "Explain the difference between stack and heap memory in Java.",
+      "answer": "Each thread has its own stack containing frames for method calls, with local primitives and object references; it is freed automatically when methods return. The heap is shared by all threads and stores every object and array; it is managed by the garbage collector. A too-deep call chain causes StackOverflowError, while too many live objects cause OutOfMemoryError.",
+      "explanation": "Interviewers look for thread ownership (stack per thread, heap shared), what lives where (references vs objects) and the matching error for each. Noting that heap objects need synchronization when shared is a bonus."
+    },
+    {
+      "question": "How does the garbage collector decide an object can be collected? What about two objects that reference each other?",
+      "answer": "An object is eligible when it is not reachable from any GC root: local variables of live frames, static fields, active threads and JNI references. The collector marks everything reachable from the roots and reclaims the rest. Two objects that only reference each other are unreachable from the roots, so both are collected; Java does not use reference counting.",
+      "explanation": "The cycle question checks that you understand reachability rather than counting references. Mention mark, sweep and compact phases for depth."
+    },
+    {
+      "question": "What is generational garbage collection, and which collector does modern Java use by default?",
+      "answer": "Most objects die young, so the heap is split into a young generation (Eden and survivor spaces) collected often and cheaply, and an old generation for long-lived objects collected less often. G1 has been the default since Java 9; it divides the heap into regions and aims for a configurable pause target. ZGC and Shenandoah offer very low pauses for large heaps.",
+      "explanation": "Linking the weak generational hypothesis to the design shows reasoning, not memorisation. Naming tuning flags such as -Xmx and -XX:MaxGCPauseMillis adds practical credibility."
+    },
+    {
+      "question": "Your Spring Boot service's memory grows until it crashes with OutOfMemoryError. How would you investigate?",
+      "answer": "Enable -XX:+HeapDumpOnOutOfMemoryError (or take a dump with jcmd GC.heap_dump), analyse it in a tool such as Eclipse MAT or VisualVM, and look at the dominator tree and paths to GC roots. Common culprits are static or unbounded caches, listeners never removed, ThreadLocals in thread pools and loading whole tables into memory. Fix the retention, bound caches, then verify with GC logs.",
+      "explanation": "This scenario tests production maturity. Good answers give a method (dump, analyse, find the root path, fix, verify) instead of just 'increase -Xmx'."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Mark-and-sweep garbage collection simulator",
+    "difficulty": "Basic",
+    "objective": "Model how the JVM decides which objects are garbage: everything reachable from GC roots survives, everything else, including cycles, is collected.",
+    "statement": "You are given the objects on a heap, the GC roots and the references between objects. Perform the mark phase by following references from every root, then report which objects are reachable and which would be collected by the sweep phase. Objects that reference each other but cannot be reached from a root must be collected.",
+    "language": "java",
+    "input_format": "Line 1: object names separated by spaces.\nLine 2: the root objects separated by spaces, or a single '-' if there are no roots.\nEach remaining line: two names 'A B' meaning object A holds a reference to object B. There may be no reference lines.",
+    "output_format": "Two lines:\nReachable: <names in the order of line 1, space-separated, or 'none'>\nCollected: <names in the order of line 1, space-separated, or 'none'>",
+    "example": {
+      "input": "A B C D E\nA\nA B\nB C\nD E\nE D\n",
+      "output": "Reachable: A B C\nCollected: D E"
+    },
+    "constraints": [
+      "1 ≤ number of objects ≤ 1000; names are unique and contain no spaces.",
+      "References may form cycles; an object may reference itself.",
+      "Every root and every reference uses names from line 1."
+    ],
+    "starter": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        List<String> lines = new ArrayList<>();\n        String line;\n        while ((line = br.readLine()) != null) {\n            if (!line.trim().isEmpty()) lines.add(line.trim());\n        }\n        // TODO: build the reference graph, mark from the roots, then print both lines\n    }\n}\n",
+    "solution": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        List<String> lines = new ArrayList<>();\n        String line;\n        while ((line = br.readLine()) != null) {\n            if (!line.trim().isEmpty()) lines.add(line.trim());\n        }\n        String[] objects = lines.get(0).split(\"\\\\s+\");\n        Map<String, List<String>> refs = new HashMap<>();\n        for (String o : objects) refs.put(o, new ArrayList<>());\n\n        for (int i = 2; i < lines.size(); i++) {\n            String[] p = lines.get(i).split(\"\\\\s+\");\n            if (refs.containsKey(p[0]) && refs.containsKey(p[1])) refs.get(p[0]).add(p[1]);\n        }\n\n        // Mark phase: iterative DFS from every root\n        Set<String> marked = new HashSet<>();\n        Deque<String> stack = new ArrayDeque<>();\n        if (lines.size() > 1 && !lines.get(1).equals(\"-\")) {\n            for (String root : lines.get(1).split(\"\\\\s+\")) {\n                if (refs.containsKey(root) && marked.add(root)) stack.push(root);\n            }\n        }\n        while (!stack.isEmpty()) {\n            String current = stack.pop();\n            for (String next : refs.get(current)) {\n                if (marked.add(next)) stack.push(next);\n            }\n        }\n\n        // Sweep phase: anything unmarked is garbage\n        StringBuilder live = new StringBuilder();\n        StringBuilder dead = new StringBuilder();\n        for (String o : objects) {\n            StringBuilder target = marked.contains(o) ? live : dead;\n            if (target.length() > 0) target.append(' ');\n            target.append(o);\n        }\n        System.out.println(\"Reachable: \" + (live.length() == 0 ? \"none\" : live.toString()));\n        System.out.println(\"Collected: \" + (dead.length() == 0 ? \"none\" : dead.toString()));\n    }\n}\n",
+    "explanation": [
+      "Read all non-empty lines so trailing blank lines or missing reference lines do not break the program.",
+      "Build an adjacency list: for each object, the list of objects it references.",
+      "Mark phase: push every root onto a stack and do an iterative depth-first search, adding each newly seen object to the marked set. The set's add() returning false stops infinite loops on cycles.",
+      "Sweep phase: walk the objects in input order and split them into reachable (marked) and collected (unmarked).",
+      "Print 'none' for an empty group. Note that D and E in the example reference each other but are still collected, because Java uses reachability, not reference counting."
+    ],
+    "tests": [
+      {
+        "input": "A B C D E\nA\nA B\nB C\nD E\nE D\n",
+        "output": "Reachable: A B C\nCollected: D E"
+      },
+      {
+        "input": "X Y Z\n-\nX Y\n",
+        "output": "Reachable: none\nCollected: X Y Z"
+      },
+      {
+        "input": "S1 S2 H1 H2 H3\nS1 S2\nS1 H1\nS2 H1\nH1 H2\nH2 H1\n",
+        "output": "Reachable: S1 S2 H1 H2\nCollected: H3"
+      },
+      {
+        "input": "A B C\nA C\n",
+        "output": "Reachable: A C\nCollected: B"
+      },
+      {
+        "input": "Root Node1 Node2 Node3\nRoot\nRoot Node1\nNode1 Node2\nNode2 Node3\nNode3 Root\n",
+        "output": "Reachable: Root Node1 Node2 Node3\nCollected: none"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "A developer only needs to compile a .java file into bytecode. Which installation provides the javac tool?",
+      "options": [
+        "The JVM alone",
+        "The JDK",
+        "The JIT compiler",
+        "The JRE"
+      ],
+      "answer": 1,
+      "explanation": "javac is a development tool shipped with the JDK. The JRE and JVM can run bytecode but cannot compile source code."
+    },
+    {
+      "type": "concept",
+      "question": "Where is the value of a local variable `int total = 5;` declared inside a method stored?",
+      "options": [
+        "In Metaspace with the class metadata",
+        "In the string constant pool",
+        "In the heap, inside a wrapper object",
+        "In the stack frame of the method's thread"
+      ],
+      "answer": 3,
+      "explanation": "Primitive local variables live directly in the current method's stack frame, which belongs to the executing thread."
+    },
+    {
+      "type": "scenario",
+      "question": "A recursive method that calculates a factorial has no base case. What happens when it runs?",
+      "options": [
+        "The JIT compiler turns it into a loop and it never ends",
+        "java.lang.StackOverflowError",
+        "java.lang.OutOfMemoryError: Java heap space",
+        "It returns 0 after an integer overflow"
+      ],
+      "answer": 1,
+      "explanation": "Each call pushes a new frame onto the thread's stack. Without a base case the stack fills up and the JVM throws StackOverflowError."
+    },
+    {
+      "type": "code",
+      "question": "After these three lines run, is the object created on line 1 eligible for garbage collection?",
+      "code": "Object a = new Object();\nObject b = a;\na = null;",
+      "options": [
+        "Yes, because a was set to null",
+        "Yes, because local objects are collected immediately",
+        "No, because only System.gc() can free it",
+        "No, because b still references it"
+      ],
+      "answer": 3,
+      "explanation": "Setting a to null removes one reference, but b still points to the same object, so it remains reachable from a GC root (the local variable b)."
+    },
+    {
+      "type": "concept",
+      "question": "In Java 8, which memory area replaced PermGen for storing class metadata?",
+      "options": [
+        "Metaspace, allocated in native memory",
+        "The old generation of the heap",
+        "The thread stack",
+        "The young generation"
+      ],
+      "answer": 0,
+      "explanation": "Java 8 removed PermGen and moved class metadata into Metaspace, which uses native memory and grows dynamically unless limited with -XX:MaxMetaspaceSize."
+    }
+  ]
+}

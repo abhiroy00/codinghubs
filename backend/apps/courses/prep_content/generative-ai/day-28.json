@@ -1,0 +1,233 @@
+{
+  "day": 28,
+  "title": "Evaluation and Benchmarking",
+  "module": "Evaluation & deployment",
+  "level": "Advanced",
+  "objectives": [
+    "Explain why generative AI needs systematic evaluation.",
+    "Describe common metrics: BLEU, ROUGE, exact match and LLM-as-a-judge.",
+    "Build a small evaluation set and score model outputs.",
+    "Compare two models or prompts on the same set.",
+    "Discuss how evaluation results guide improvements."
+  ],
+  "definition": "Evaluation and benchmarking measure generative AI quality systematically. A benchmark is a fixed set of examples with reference answers; the model's outputs are scored against them using metrics such as exact match, BLEU, ROUGE or an LLM judge. Evaluation reveals regressions, compares prompts or models, and guides what to improve next.",
+  "theory": [
+    {
+      "heading": "Why evaluate generative AI",
+      "body": "Generative output is probabilistic and hard to judge by eye at scale. Evaluation gives a repeatable score so you can tell whether a change helped or hurt. Without it, you are guessing based on a few examples.",
+      "points": [
+        "Output varies between runs.",
+        "Scores make improvement measurable.",
+        "Evaluation catches regressions."
+      ]
+    },
+    {
+      "heading": "Common metrics",
+      "body": "Exact match scores whether output equals the reference. BLEU and ROUGE measure word overlap for translation and summarisation. LLM-as-a-judge scores quality on a rubric. Choose the metric that fits the task: exact for labels, ROUGE for summaries, judge for open answers.",
+      "points": [
+        "Exact match: output equals reference.",
+        "BLEU/ROUGE: word overlap for translation and summarisation.",
+        "LLM judge: quality on a rubric."
+      ]
+    },
+    {
+      "heading": "Building an evaluation set",
+      "body": "An evaluation set has inputs and reference answers, separate from training data. It should cover common cases and edge cases. Keep it fixed so you can compare different models or prompts on the same examples.",
+      "points": [
+        "Inputs plus reference answers.",
+        "Separate from training data.",
+        "Fixed across comparisons."
+      ]
+    },
+    {
+      "heading": "Comparing models and prompts",
+      "body": "Run the same evaluation set through two models or two prompts and compare scores. Statistical significance matters: a small difference on a tiny set may be noise. Report scores with the set size so results are interpretable.",
+      "points": [
+        "Same set for both models or prompts.",
+        "Compare scores directly.",
+        "Note the set size for context."
+      ]
+    },
+    {
+      "heading": "Using results to improve",
+      "body": "Evaluation tells you what to fix: low exact match means the format or content is wrong; low judge scores on tone mean the prompt needs adjustment. Iterate: change the prompt or data, re-evaluate, and check that the score goes up without regressions elsewhere.",
+      "points": [
+        "Low scores show where to improve.",
+        "Change one thing at a time.",
+        "Re-evaluate to confirm the gain."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Comparing two prompt styles for summaries",
+    "body": "An evaluation set has 50 news articles with reference summaries. Prompt A scores ROUGE-1 0.62; Prompt B scores 0.68. Prompt B is better on this set, so it is adopted. A human spot-check confirms the improvement is real, not just word overlap.",
+    "code": {
+      "language": "python",
+      "source": "score_a = evaluate(model_a, eval_set)\nscore_b = evaluate(model_b, eval_set)\nprint(f'Prompt A: {score_a:.3f}  Prompt B: {score_b:.3f}')\n# Adopt the higher-scoring prompt after spot-checking."
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Prompt comparison",
+      "description": "Score two prompts on the same set to pick the better one."
+    },
+    {
+      "title": "Model selection",
+      "description": "Compare a small and large model on quality, cost and speed."
+    },
+    {
+      "title": "Regression testing",
+      "description": "Re-run the evaluation set after every change to catch declines."
+    },
+    {
+      "title": "Release criteria",
+      "description": "Ship only when evaluation scores meet thresholds."
+    }
+  ],
+  "demonstration": {
+    "description": "Score two summaries against a reference using word overlap, showing how the metric reflects similarity.",
+    "code": {
+      "language": "text",
+      "source": "Reference: 'The cat sat on the mat.'\nSummary A: 'A cat is sitting on a mat.' → overlap high.\nSummary B: 'The dog ran in the park.' → overlap low.\nROUGE-1 A ≈ 0.83, B ≈ 0.00."
+    },
+    "output": "Higher overlap means a higher score and a better summary."
+  },
+  "takeaways": [
+    "Evaluation makes generative AI quality measurable and repeatable.",
+    "Use exact match, BLEU/ROUGE or LLM-as-a-judge depending on the task.",
+    "An evaluation set has inputs and references, separate from training data.",
+    "Compare models or prompts on the same fixed set.",
+    "Use results to target improvements and iterate one change at a time.",
+    "Note set size so scores are interpretable."
+  ],
+  "interview": [
+    {
+      "question": "Why evaluate generative AI systematically?",
+      "answer": "Output is probabilistic, so a repeatable score shows whether a change helped or hurt, instead of guessing from a few examples.",
+      "explanation": "Evaluation catches regressions and measures progress."
+    },
+    {
+      "question": "What is the difference between BLEU and ROUGE?",
+      "answer": "BLEU measures precision of word overlap, common for translation. ROUGE measures recall of word overlap, common for summarisation.",
+      "explanation": "Both score n-gram overlap against a reference."
+    },
+    {
+      "question": "What is LLM-as-a-judge?",
+      "answer": "Another LLM scores output quality against a rubric such as helpfulness, correctness and tone.",
+      "explanation": "Use it for open-ended answers without a single reference."
+    },
+    {
+      "question": "Why keep the evaluation set fixed?",
+      "answer": "so the same examples can be used to compare different models or prompts fairly.",
+      "explanation": "Changing the set makes scores incomparable."
+    },
+    {
+      "question": "How do evaluation results guide improvement?",
+      "answer": "Low scores reveal the failure mode; you change one thing (prompt or data), re-evaluate, and confirm the score rises without regressions.",
+      "explanation": "Iterate one change at a time."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Score exact match over an evaluation set",
+    "difficulty": "Basic",
+    "objective": "Implement exact-match scoring for a batch of predictions and references, as used in benchmarking.",
+    "statement": "Read an integer N, then N pairs of lines: a prediction and a reference. Normalise each by stripping whitespace and lowercasing. Count exact matches after normalisation. Print the match count and the fraction correct as a decimal rounded to 2 places, separated by a space.",
+    "language": "python",
+    "input_format": "Line 1: N.\nNext 2*N lines: prediction and reference alternately.",
+    "output_format": "Two values: match count and fraction, e.g. '3 0.60'.",
+    "example": {
+      "input": "5\ncat\ncat\ndog\nDog\nbird\nfish\ntree\nTree\ncar\nbike\n",
+      "output": "4 0.80"
+    },
+    "constraints": [
+      "N is between 1 and 100.",
+      "Normalise with strip() and lower().",
+      "Print fraction rounded to exactly 2 decimal places."
+    ],
+    "starter": "n = int(input())\nmatches = 0\nfor _ in range(n):\n    pred = input()\n    ref = input()\n    # TODO: normalise, compare, and print count and fraction\n",
+    "solution": "n = int(input())\nmatches = 0\nfor _ in range(n):\n    pred = input().strip().lower()\n    ref = input().strip().lower()\n    if pred == ref:\n        matches += 1\nprint(f'{matches} {matches / n:.2f}')\n",
+    "explanation": [
+      "Read N, then loop reading prediction-reference pairs.",
+      "Normalise each with strip() and lower().",
+      "Count exact matches.",
+      "Print the count and matches/n formatted to 2 decimals."
+    ],
+    "tests": [
+      {
+        "input": "5\ncat\ncat\ndog\nDog\nbird\nfish\ntree\nTree\ncar\nbike\n",
+        "output": "4 0.80"
+      },
+      {
+        "input": "3\nHi\nhi\nBye\nbye\nNo\nYes\n",
+        "output": "2 0.67"
+      },
+      {
+        "input": "1\nsame\nsame\n",
+        "output": "1 1.00"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is an evaluation set?",
+      "options": [
+        "Training data",
+        "Inputs with reference answers, separate from training",
+        "The model's weights",
+        "A system prompt"
+      ],
+      "answer": 1,
+      "explanation": "An evaluation set pairs inputs with reference answers and is kept separate from training data."
+    },
+    {
+      "type": "concept",
+      "question": "Which metric is common for summarisation?",
+      "options": [
+        "ROUGE",
+        "Exact match only",
+        "Temperature",
+        "BLEU only"
+      ],
+      "answer": 0,
+      "explanation": "ROUGE measures recall of word overlap and is common for summarisation."
+    },
+    {
+      "type": "scenario",
+      "question": "Prompt A scores 0.61 and Prompt B scores 0.63 on a 10-example set. Can you conclude B is better?",
+      "options": [
+        "Only if A is cheaper",
+        "Only if B is slower",
+        "Yes, always",
+        "No, the set is too small to be reliable"
+      ],
+      "answer": 3,
+      "explanation": "A 0.02 difference on 10 examples may be noise; use a larger set before concluding."
+    },
+    {
+      "type": "concept",
+      "question": "What does exact match measure?",
+      "options": [
+        "Token cost",
+        "Word overlap",
+        "Whether output equals reference after normalisation",
+        "Model speed"
+      ],
+      "answer": 2,
+      "explanation": "Exact match checks if the prediction equals the reference, typically after strip and lowercase."
+    },
+    {
+      "type": "concept",
+      "question": "Why note the evaluation set size?",
+      "options": [
+        "To bill the user",
+        "So scores are interpretable and reliable",
+        "To choose the model",
+        "To set the temperature"
+      ],
+      "answer": 1,
+      "explanation": "Small sets make scores noisy; set size tells you how much to trust them."
+    }
+  ]
+}

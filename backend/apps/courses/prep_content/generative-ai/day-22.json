@@ -1,0 +1,218 @@
+{
+  "day": 22,
+  "title": "AI Agents Fundamentals",
+  "module": "Agents & tools",
+  "level": "Advanced",
+  "objectives": [
+    "Explain what an AI agent is and how it differs from a plain LLM call.",
+    "Describe the agent loop: think, act, observe and repeat.",
+    "Name common tools an agent can use, such as search, calculator and APIs.",
+    "Explain why agents need bounds, approvals and safety limits.",
+    "Compare single-step prompting with multi-step agent execution."
+  ],
+  "definition": "An AI agent is a language model wrapped in a loop that can decide which actions to take, use tools to perform them, observe the results, and continue until the task is complete. Unlike a single LLM call that answers once, an agent can take multiple steps, call external tools and correct itself based on what it observes.",
+  "theory": [
+    {
+      "heading": "Agent vs plain LLM call",
+      "body": "A plain LLM call takes a prompt and returns one answer. An agent takes a goal, plans steps, calls tools such as search or a calculator, reads the results, and decides the next step. It can recover from mistakes by trying a different tool or approach.",
+      "points": [
+        "LLM call: one prompt, one answer.",
+        "Agent: goal, planning, tools, observation, iteration.",
+        "Agents can act across multiple steps."
+      ]
+    },
+    {
+      "heading": "The agent loop",
+      "body": "The agent loop repeats: think (decide what to do next), act (call a tool), observe (read the result), and repeat or finish. Each iteration uses the previous observations as context. The loop ends when the task is complete or a step limit is reached.",
+      "points": [
+        "Think: plan the next action.",
+        "Act: call the chosen tool.",
+        "Observe: read the tool result.",
+        "Repeat or finish when done."
+      ]
+    },
+    {
+      "heading": "Common tools",
+      "body": "Agents use tools such as web search, calculators, databases, APIs and code executors. Each tool has a name, a description and a schema for its arguments, so the model knows when and how to call it. Tool results are fed back to the model as observations.",
+      "points": [
+        "Search: find current information.",
+        "Calculator: do arithmetic accurately.",
+        "APIs: send emails, query databases, create records.",
+        "Code executor: run and test code."
+      ]
+    },
+    {
+      "heading": "Safety and bounds",
+      "body": "Agents can act on the real world, so they need limits: a maximum number of steps, allowed tools only, human approval for consequential actions and no access to sensitive data by default. Never let an agent send emails or delete records without review.",
+      "points": [
+        "Cap the number of steps to avoid infinite loops.",
+        "Allow only approved tools.",
+        "Require human approval for destructive actions."
+      ]
+    },
+    {
+      "heading": "Single-step vs multi-step",
+      "body": "Simple questions need one LLM call. Complex tasks such as 'research a topic and write a report' need multiple steps: search, read pages, summarise, draft and review. Agents excel at multi-step work where each step depends on the previous result.",
+      "points": [
+        "One step: simple questions.",
+        "Multiple steps: research, planning and execution.",
+        "Agents chain dependent steps together."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Travel planning agent",
+    "body": "A user asks 'Plan a two-day trip to Jaipur under 15000 rupees.' The agent searches for hotels, calls a calculator to check the budget, searches for train times, and drafts an itinerary. If the hotel is too expensive, it searches again for a cheaper option before finalising.",
+    "code": {
+      "language": "text",
+      "source": "Goal: Plan a two-day Jaipur trip under 15000 rupees.\nStep 1: search hotels in Jaipur → result: Hotel A, 4000/night\nStep 2: calculator: 2 * 4000 = 8000, remaining 7000\nStep 3: search trains to Jaipur → result: 1200 round trip\nStep 4: remaining 5800 for food and entry fees\nStep 5: draft itinerary and present to user"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Research assistant",
+      "description": "Search the web, read sources and write a cited brief."
+    },
+    {
+      "title": "Customer support",
+      "description": "Look up orders, check policies and reply to the customer."
+    },
+    {
+      "title": "Coding assistant",
+      "description": "Run code, read errors and fix bugs iteratively."
+    },
+    {
+      "title": "Personal assistant",
+      "description": "Check calendar, book appointments and send reminders."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare a plain LLM answer (guesses the weather) with an agent (calls a weather tool and reports the actual forecast).",
+    "code": {
+      "language": "text",
+      "source": "Plain LLM: 'It is probably sunny in Delhi today.'\nAgent: think → call weather_tool('Delhi') → observe '32°C, sunny' → act: report 'It is 32°C and sunny in Delhi.'"
+    },
+    "output": "Plain: a guess.\nAgent: a verified, tool-based answer."
+  },
+  "takeaways": [
+    "An agent loops: think, act with tools, observe, repeat until done.",
+    "Agents differ from single LLM calls by taking multiple tool-assisted steps.",
+    "Tools include search, calculators, databases, APIs and code executors.",
+    "Agents need step limits, allowed-tool lists and human approval for risky actions.",
+    "Multi-step tasks such as research and booking suit agents best.",
+    "Agents can self-correct by observing tool results."
+  ],
+  "interview": [
+    {
+      "question": "What is an AI agent?",
+      "answer": "A language model in a loop that plans steps, calls tools, observes results and continues until a goal is complete.",
+      "explanation": "Contrast with a single LLM call that returns one answer."
+    },
+    {
+      "question": "What are the steps of the agent loop?",
+      "answer": "Think (plan), act (call a tool), observe (read the result), then repeat or finish.",
+      "explanation": "Each iteration uses prior observations as context."
+    },
+    {
+      "question": "Why do agents need safety bounds?",
+      "answer": "Agents can act on the real world, so they need step limits, allowed tools and human approval for consequential or destructive actions.",
+      "explanation": "Never let an agent delete data or send email unreviewed."
+    },
+    {
+      "question": "When is an agent better than a single LLM call?",
+      "answer": "For multi-step tasks where each step depends on the previous result, such as research, booking or debugging.",
+      "explanation": "Simple questions need one call; complex work needs an agent."
+    },
+    {
+      "question": "How does an agent recover from a mistake?",
+      "answer": "It observes the tool result, realises the approach failed, and chooses a different tool or step in the next iteration.",
+      "explanation": "Self-correction is a key advantage of agents."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design an agent for a real task",
+    "difficulty": "Intermediate",
+    "objective": "Plan an agent's goal, tools, loop and safety bounds for a chosen real-world task.",
+    "statement": "Choose a task such as booking appointments, researching a topic, or processing orders. Describe: (1) the agent's goal, (2) the tools it needs and what each does, (3) the agent loop steps in order, (4) the safety bounds and human-approval points, and (5) how you know the task is complete.",
+    "deliverable": "A written design covering goal, tools, loop steps, safety bounds and completion check.",
+    "steps": [
+      "Choose a real-world multi-step task.",
+      "Define the agent's goal.",
+      "List the tools and what each does.",
+      "Order the agent loop steps.",
+      "State safety bounds and human-approval points.",
+      "Define how completion is recognised."
+    ],
+    "checklist": [
+      "Goal is clearly stated.",
+      "At least one tool is listed with its purpose.",
+      "Loop steps are in order.",
+      "Safety bounds and approvals are included.",
+      "Completion condition is defined."
+    ],
+    "sample_answer": "Goal: book a doctor appointment. Tools: clinic search (finds doctors), calendar check (availability), booking API (books the slot). Loop: search doctors → check availability → confirm with user → book → confirm. Safety: max 6 steps, human must approve before booking. Complete when a confirmed booking exists."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is the agent loop?",
+      "options": [
+        "Train, test, deploy",
+        "Read, write, delete",
+        "One prompt, one answer",
+        "Think, act, observe, repeat"
+      ],
+      "answer": 3,
+      "explanation": "The agent loop plans, calls a tool, reads the result, and continues until the goal is met."
+    },
+    {
+      "type": "scenario",
+      "question": "An agent needs to check today's weather before advising the user. Which tool should it use?",
+      "options": [
+        "Email sender",
+        "Calculator",
+        "Weather API",
+        "Code editor"
+      ],
+      "answer": 2,
+      "explanation": "A weather API provides current weather data for the agent to observe and act on."
+    },
+    {
+      "type": "concept",
+      "question": "Why give an agent a maximum step limit?",
+      "options": [
+        "To make it answer faster",
+        "To prevent infinite loops and runaway cost",
+        "To improve its memory",
+        "To choose a model"
+      ],
+      "answer": 1,
+      "explanation": "Without a limit, an agent could keep looping and waste time and money."
+    },
+    {
+      "type": "scenario",
+      "question": "An agent should not delete customer records without approval. Where should the approval happen?",
+      "options": [
+        "Before the destructive tool call",
+        "Never",
+        "In the model's weights",
+        "After the deletion"
+      ],
+      "answer": 0,
+      "explanation": "Human approval must happen before the agent performs a destructive action."
+    },
+    {
+      "type": "concept",
+      "question": "How does an agent differ from a single LLM call?",
+      "answer": 3,
+      "explanation": "Agents suit multi-step work; single calls suit simple questions.",
+      "options": [
+        "Train, test, deploy",
+        "Read, write, delete",
+        "One prompt, one answer",
+        "Think, act, observe, repeat"
+      ]
+    }
+  ]
+}

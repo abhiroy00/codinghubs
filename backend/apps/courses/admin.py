@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 
 from .course_catalog import COURSE_CHOICES
-from .models import Course, CourseCategory, CourseCertificate, CourseQuestion
+from .models import Course, CourseCategory, CourseCertificate, CourseQuestion, PrepCurriculum, PrepLesson
 
 
 @admin.register(CourseCategory)
@@ -77,3 +77,16 @@ class CourseCertificateAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+
+@admin.register(PrepCurriculum)
+class PrepCurriculumAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'source', 'updated_at')
+    search_fields = ('title', 'slug')
+
+
+@admin.register(PrepLesson)
+class PrepLessonAdmin(admin.ModelAdmin):
+    list_display = ('curriculum', 'day', 'title', 'level', 'edited_in_admin', 'updated_at')
+    list_filter = ('curriculum', 'level', 'edited_in_admin')
+    search_fields = ('title',)

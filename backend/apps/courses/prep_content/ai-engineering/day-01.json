@@ -1,0 +1,252 @@
+{
+  "day": 1,
+  "title": "Python for AI: Data Structures, NumPy Thinking and Clean Data Code",
+  "module": "Foundations: Python and maths",
+  "level": "Beginner",
+  "objectives": [
+    "Explain why Python dominates AI engineering and where its performance limits are.",
+    "Choose the right built-in structure (list, tuple, dict, set) for a data task.",
+    "Describe vectorisation and broadcasting in NumPy and why they are faster than loops.",
+    "Distinguish views from copies and avoid common mutation bugs in data code.",
+    "Write a small, robust preprocessing step that handles missing values."
+  ],
+  "definition": "Python for AI is the subset of Python skills an AI engineer uses every day: core data structures, functions and generators, and the scientific stack (NumPy, pandas) that stores numbers in contiguous typed arrays and runs operations in compiled code. The goal is code that is readable, correct with messy data and fast enough because heavy numeric work is pushed into vectorised libraries instead of Python loops.",
+  "theory": [
+    {
+      "heading": "Why Python is the language of AI",
+      "body": "Python itself is slow for tight numeric loops, but it is an excellent glue language. NumPy, PyTorch, TensorFlow and scikit-learn implement their heavy maths in C, C++ or CUDA and expose a Python API. An AI engineer writes the orchestration in Python and lets the libraries do the arithmetic. This is why interviewers care less about clever loops and more about whether you know how to keep work inside the fast libraries.",
+      "points": [
+        "Huge ecosystem: NumPy, pandas, scikit-learn, PyTorch, Hugging Face, FastAPI.",
+        "Readable syntax makes experiments and reviews quick.",
+        "Performance comes from compiled back ends, not from the interpreter."
+      ]
+    },
+    {
+      "heading": "Built-in data structures and when to use each",
+      "body": "Lists are ordered and mutable, good for building sequences. Tuples are immutable, so they can be dictionary keys and signal fixed records such as (height, width). Dictionaries give average O(1) lookup by key and are ideal for vocabularies (token to id) and configuration. Sets give O(1) membership tests and remove duplicates, for example checking whether a word is a stop word.",
+      "points": [
+        "list: ordered, mutable, O(1) append, O(n) membership test.",
+        "tuple: immutable, hashable when its items are hashable.",
+        "dict: key to value mapping, insertion ordered since Python 3.7.",
+        "set: unique items, fast membership and set algebra."
+      ]
+    },
+    {
+      "heading": "Vectorisation and broadcasting",
+      "body": "A NumPy array stores values of one dtype in a contiguous block of memory. An expression such as (X - X.mean(axis=0)) / X.std(axis=0) runs one optimised C loop over the whole array instead of millions of Python-level operations, which is often 10 to 100 times faster. Broadcasting lets arrays of different shapes combine: a (1000, 3) matrix minus a (3,) vector subtracts the vector from every row without copying it 1000 times. Shapes are compared from the right; each pair of dimensions must be equal or one of them must be 1.",
+      "points": [
+        "Prefer array expressions over Python for loops for numeric work.",
+        "Know your shapes: most bugs in ML code are shape bugs.",
+        "axis=0 reduces over rows (one result per column); axis=1 reduces over columns."
+      ]
+    },
+    {
+      "heading": "Views, copies and mutation pitfalls",
+      "body": "Basic NumPy slicing returns a view that shares memory with the original, so writing to the slice changes the source array. Fancy indexing (with a list or boolean mask) returns a copy. In plain Python, assigning a list to a new name does not copy it, and a mutable default argument such as def f(x=[]) is shared across calls. These bugs silently corrupt training data, so call .copy() when you need independence.",
+      "points": [
+        "arr[1:3] is a view; arr[[1, 2]] and arr[arr > 0] are copies.",
+        "Never use a mutable object as a default argument; use None and create it inside.",
+        "pandas may warn about chained assignment; use .loc for clear, single-step writes."
+      ]
+    },
+    {
+      "heading": "Handling large data and missing values",
+      "body": "Real datasets do not fit in memory and contain gaps. Generators (yield) stream records one at a time, so a 50 GB log file can be processed with constant memory. Missing values must be handled deliberately: drop them, impute them (mean, median, a constant) or add an indicator column. Imputation statistics must be computed on training data only and reused on validation and test data, otherwise information leaks from the evaluation set.",
+      "points": [
+        "Use generators or chunked reads (pandas read_csv with chunksize) for big files.",
+        "NaN propagates through arithmetic; np.nanmean ignores it.",
+        "Fit preprocessing on the training split, then apply it everywhere."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Standardising features with broadcasting",
+    "body": "Standardisation rescales each feature to mean 0 and standard deviation 1 so that features measured in different units (age in years, income in rupees) contribute comparably to distance-based or gradient-based models. With NumPy the whole matrix is standardised in one line, and the statistics are computed on the training split only.",
+    "code": {
+      "language": "python",
+      "source": "import numpy as np\n\nX_train = np.array([[25, 30000.0], [32, 52000.0], [47, 91000.0]])\nX_test = np.array([[29, 40000.0]])\n\nmu = X_train.mean(axis=0)          # shape (2,)\nsigma = X_train.std(axis=0)        # shape (2,)\nsigma[sigma == 0] = 1.0            # avoid division by zero\n\nX_train_s = (X_train - mu) / sigma  # (3, 2) - (2,) broadcasts per row\nX_test_s = (X_test - mu) / sigma    # reuse training statistics\nprint(X_train_s.round(2))\nprint(X_test_s.round(2))"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Feature preprocessing",
+      "description": "Scaling, encoding and imputing tabular features before training a model with scikit-learn or PyTorch."
+    },
+    {
+      "title": "Tokeniser vocabularies",
+      "description": "Dictionaries map tokens to integer ids and sets hold special tokens or stop words for fast lookup."
+    },
+    {
+      "title": "Streaming data loaders",
+      "description": "Generators yield batches from huge files or object storage so training never loads the full dataset into RAM."
+    },
+    {
+      "title": "Evaluation scripts",
+      "description": "Vectorised NumPy code computes metrics over millions of predictions in milliseconds."
+    },
+    {
+      "title": "Serving glue code",
+      "description": "Python with FastAPI wraps a compiled model, validates inputs and formats outputs."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare a Python loop with a vectorised NumPy expression on one million numbers. Both compute the same sum of squares, but the vectorised version runs in compiled code. Exact timings depend on the machine; the ratio is what matters.",
+    "code": {
+      "language": "python",
+      "source": "import time\nimport numpy as np\n\nx = np.random.default_rng(0).random(1_000_000)\n\nt = time.perf_counter()\ntotal = 0.0\nfor v in x:\n    total += v * v\nloop_s = time.perf_counter() - t\n\nt = time.perf_counter()\ntotal_np = float(np.dot(x, x))\nvec_s = time.perf_counter() - t\n\nprint(round(total, 3) == round(total_np, 3))\nprint(f'loop {loop_s:.3f}s, vectorised {vec_s:.4f}s')"
+    },
+    "output": "True\nloop 0.250s, vectorised 0.0007s   (typical laptop: the vectorised call is hundreds of times faster)"
+  },
+  "takeaways": [
+    "Python is the glue; NumPy, PyTorch and similar libraries do the heavy maths in compiled code.",
+    "Pick data structures by access pattern: dict and set for fast lookup, list for order, tuple for fixed records.",
+    "Vectorise numeric work and learn broadcasting rules; check shapes constantly.",
+    "Slices are views and fancy indexing makes copies; copy explicitly when you need independence.",
+    "Stream large data with generators and compute preprocessing statistics on training data only.",
+    "Handle missing values deliberately and document the choice."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between a list and a NumPy array?",
+      "answer": "A list holds references to arbitrary Python objects of any type, so each element is boxed and operations run in the interpreter. A NumPy array holds one fixed dtype in contiguous memory, supports element-wise maths and broadcasting, and runs operations in optimised C, which makes it far faster and more memory-efficient for numbers.",
+      "explanation": "Strong answers mention contiguous memory, a single dtype and vectorised execution, then give a quick example such as adding two arrays without a loop."
+    },
+    {
+      "question": "What is broadcasting? Give an example.",
+      "answer": "Broadcasting is NumPy's rule for combining arrays of different shapes without copying data. Shapes are aligned from the right and each dimension must match or be 1. For example, a (100, 3) matrix minus a (3,) vector of column means subtracts the means from every row.",
+      "explanation": "Mention the alignment rule and a realistic ML use such as feature centring or adding a bias vector to a batch of activations."
+    },
+    {
+      "question": "Why should you avoid a mutable default argument such as def add(item, bucket=[])?",
+      "answer": "Default values are evaluated once when the function is defined, so every call that omits bucket shares and mutates the same list. Use bucket=None and create a new list inside the function.",
+      "explanation": "This is a classic Python screening question; explaining when defaults are evaluated shows real understanding."
+    },
+    {
+      "question": "How would you process a 40 GB CSV file on a machine with 16 GB of RAM?",
+      "answer": "Stream it: read in chunks (pandas read_csv with chunksize, or a generator over lines), aggregate or transform each chunk and write results incrementally. Alternatives include columnar formats such as Parquet with only the needed columns, or engines such as Polars, DuckDB or Spark.",
+      "explanation": "Interviewers look for constant-memory thinking, choosing only needed columns and knowing when to switch to an out-of-core tool."
+    },
+    {
+      "question": "Does the GIL stop Python from being useful for parallel ML workloads?",
+      "answer": "The Global Interpreter Lock lets only one thread run Python bytecode at a time, which limits CPU-bound pure-Python threads. NumPy and PyTorch release the GIL inside compiled kernels, I/O-bound work benefits from threads or asyncio, and CPU-bound Python work can use multiprocessing (as PyTorch DataLoader workers do).",
+      "explanation": "A strong answer separates CPU-bound from I/O-bound work and notes that heavy maths already runs outside the GIL. Mentioning that free-threaded Python builds now exist is a bonus."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Impute and standardise a feature column",
+    "difficulty": "Basic",
+    "objective": "Practise the everyday preprocessing step of handling missing values and computing z-scores, the operation StandardScaler performs.",
+    "statement": "Read one line of comma-separated values for a single numeric feature. Some values are the text NA (missing). Compute the mean and the population standard deviation of the present values only. Replace each NA with that mean, then convert every value to a z-score: (value - mean) / std. If std is 0, every z-score is 0. If no values are present, print only the line no data.",
+    "language": "python",
+    "input_format": "One line of comma-separated tokens; each token is a number or NA (spaces around tokens may appear).",
+    "output_format": "Four lines:\ncount=<present> missing=<missing>\nmean=<mean with 2 decimals>\nstd=<std with 2 decimals>\nthe z-scores with 2 decimals separated by single spaces (print 0.00, never -0.00).\nOr the single line no data.",
+    "example": {
+      "input": "10,20,NA,40,50\n",
+      "output": "count=4 missing=1\nmean=30.00\nstd=15.81\n-1.26 -0.63 0.00 0.63 1.26"
+    },
+    "constraints": [
+      "1 to 1000 tokens.",
+      "NA is matched case-insensitively after trimming spaces.",
+      "Use the population standard deviation (divide by the number of present values)."
+    ],
+    "starter": "tokens = [t.strip() for t in input().split(',')]\n\n# TODO: separate present values from NA, compute mean and std,\n# impute, then print the four required lines\n",
+    "solution": "import math\n\ntokens = [t.strip() for t in input().split(',')]\nvalues = [None if t.upper() == 'NA' else float(t) for t in tokens]\npresent = [v for v in values if v is not None]\n\ndef fmt(v):\n    s = f'{v:.2f}'\n    return '0.00' if s == '-0.00' else s\n\nif not present:\n    print('no data')\nelse:\n    mean = sum(present) / len(present)\n    std = math.sqrt(sum((v - mean) ** 2 for v in present) / len(present))\n    filled = [mean if v is None else v for v in values]\n    z = [(v - mean) / std if std > 0 else 0.0 for v in filled]\n    print(f'count={len(present)} missing={len(values) - len(present)}')\n    print(f'mean={fmt(mean)}')\n    print(f'std={fmt(std)}')\n    print(' '.join(fmt(v) for v in z))\n",
+    "explanation": [
+      "Split on commas, trim each token and map NA to None and everything else to float.",
+      "Compute the mean and population standard deviation from present values only, so missing entries do not distort the statistics.",
+      "Impute each missing value with the mean, which gives it a z-score of exactly 0.",
+      "Guard the division: a constant column has std 0, so all z-scores are 0.",
+      "Format with two decimals and normalise -0.00 to 0.00 for clean output."
+    ],
+    "tests": [
+      {
+        "input": "10,20,NA,40,50\n",
+        "output": "count=4 missing=1\nmean=30.00\nstd=15.81\n-1.26 -0.63 0.00 0.63 1.26"
+      },
+      {
+        "input": "7,7,7,7\n",
+        "output": "count=4 missing=0\nmean=7.00\nstd=0.00\n0.00 0.00 0.00 0.00"
+      },
+      {
+        "input": "NA, na ,NA\n",
+        "output": "no data"
+      },
+      {
+        "input": "-2, 0, 2\n",
+        "output": "count=3 missing=0\nmean=0.00\nstd=1.63\n-1.22 0.00 1.22"
+      },
+      {
+        "input": "5\n",
+        "output": "count=1 missing=0\nmean=5.00\nstd=0.00\n0.00"
+      },
+      {
+        "input": "1,na,3,NA\n",
+        "output": "count=2 missing=2\nmean=2.00\nstd=1.00\n-1.00 0.00 1.00 0.00"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which Python structure gives average O(1) membership tests and automatically removes duplicates?",
+      "options": [
+        "set",
+        "string",
+        "list",
+        "tuple"
+      ],
+      "answer": 0,
+      "explanation": "A set is a hash table of unique items, so membership checks are O(1) on average and duplicates are dropped."
+    },
+    {
+      "type": "output",
+      "question": "What does this NumPy slice code print?",
+      "code": "import numpy as np\na = np.array([1, 2, 3, 4])\nb = a[1:3]\nb[0] = 99\nprint(a)",
+      "options": [
+        "[ 1 99  3  4]",
+        "[1 2 3 4]",
+        "[99  2  3  4]",
+        "An error is raised"
+      ],
+      "answer": 0,
+      "explanation": "Basic slicing returns a view that shares memory, so changing b[0] changes a[1]."
+    },
+    {
+      "type": "concept",
+      "question": "A matrix X has shape (500, 4) and m has shape (4,). What is the shape of X - m?",
+      "options": [
+        "It raises a broadcasting error",
+        "(500, 4)",
+        "(4,)",
+        "(4, 500)"
+      ],
+      "answer": 1,
+      "explanation": "Shapes align from the right: 4 matches 4, and m is broadcast across all 500 rows."
+    },
+    {
+      "type": "scenario",
+      "question": "You compute the mean for imputing missing ages using the full dataset before splitting into train and test. What is the problem?",
+      "options": [
+        "The mean will always be zero",
+        "Information from the test set leaks into training",
+        "Imputation is never allowed in ML",
+        "Means cannot be computed with missing values"
+      ],
+      "answer": 1,
+      "explanation": "Preprocessing statistics must be fitted on training data only; using test rows leaks information and inflates evaluation scores."
+    },
+    {
+      "type": "code",
+      "question": "Which function signature avoids the shared-state bug when collecting items across calls?",
+      "options": [
+        "def collect(x, out=None):  # then out = [] if out is None",
+        "def collect(x, out=[None]):",
+        "def collect(x, out=[]):",
+        "def collect(x, out=list()):"
+      ],
+      "answer": 0,
+      "explanation": "Defaults are evaluated once at definition time. Using None and creating a new list inside the function gives each call its own list."
+    }
+  ]
+}

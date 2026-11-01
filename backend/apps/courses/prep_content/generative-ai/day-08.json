@@ -1,0 +1,244 @@
+{
+  "day": 8,
+  "title": "Transformer Architecture Explained",
+  "module": "Transformers, prompting & APIs",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain why Transformers replaced RNNs and LSTMs for language tasks.",
+    "Trace the data flow through a Transformer: embeddings, positional information, attention, feed-forward layers, residual connections and normalisation.",
+    "Compare encoder-only, decoder-only and encoder-decoder architectures with model examples.",
+    "Implement sinusoidal positional encoding and layer normalisation by hand.",
+    "Discuss the computational cost of Transformers and common modern refinements."
+  ],
+  "definition": "The Transformer is a neural-network architecture, introduced in the 2017 paper 'Attention Is All You Need', that processes a whole sequence in parallel and uses self-attention to let every token gather information from every other token. It is built from stacked blocks of multi-head attention and feed-forward layers, joined by residual connections and layer normalisation, and it is the foundation of virtually all modern LLMs.",
+  "theory": [
+    {
+      "heading": "Why Transformers replaced RNNs",
+      "body": "Recurrent networks (RNNs, LSTMs) read text one token at a time, passing a hidden state forward. This is slow to train because steps cannot run in parallel, and information from early tokens fades over long distances. Transformers remove recurrence: all tokens are processed at once, and attention connects any two positions directly in a single step. This parallelism maps perfectly onto GPUs and made it practical to train models with billions of parameters on trillions of tokens.",
+      "points": [
+        "Parallel training across the sequence instead of step-by-step recurrence.",
+        "Direct connections between distant tokens: no vanishing information path.",
+        "Scales smoothly with more data, parameters and compute."
+      ]
+    },
+    {
+      "heading": "Inside one Transformer block",
+      "body": "Input tokens are converted to embedding vectors and combined with positional information, because attention by itself has no sense of order. Each block then applies two sub-layers. Multi-head self-attention mixes information across tokens. A position-wise feed-forward network (two linear layers with a non-linearity such as GELU or SwiGLU, typically 4x wider than the model dimension) transforms each token independently. Each sub-layer is wrapped in a residual connection (x + sublayer(x)) and layer normalisation, which keep gradients stable in deep stacks. LLMs stack dozens of these blocks.",
+      "points": [
+        "Token embedding + positional encoding -> N x [attention -> add & norm -> feed-forward -> add & norm].",
+        "Residual connections let gradients flow through very deep networks.",
+        "Modern LLMs use pre-norm (normalise before each sub-layer), often RMSNorm."
+      ]
+    },
+    {
+      "heading": "Positional information",
+      "body": "The original Transformer added fixed sinusoidal vectors to the embeddings: PE(pos, 2i) = sin(pos / 10000^(2i/d)) and PE(pos, 2i+1) = cos(pos / 10000^(2i/d)). Different dimensions oscillate at different frequencies, giving each position a unique pattern and making relative offsets easy to learn. BERT and GPT-2 used learned position embeddings. Most current LLMs (Llama, Qwen, Mistral) use Rotary Position Embedding (RoPE), which rotates query and key vectors according to position and extends better to long contexts.",
+      "points": [
+        "Without positions, 'dog bites man' and 'man bites dog' look identical to attention.",
+        "Sinusoidal: fixed, no parameters. Learned: trained table. RoPE: rotation applied inside attention.",
+        "Context-extension techniques often work by rescaling RoPE frequencies."
+      ]
+    },
+    {
+      "heading": "Three architecture families",
+      "body": "Encoder-only models (BERT, RoBERTa) use bidirectional attention: every token sees the whole input, which is ideal for understanding tasks such as classification, NER and embeddings. Decoder-only models (GPT, Llama, Claude, Gemini) use causal (masked) attention: each token sees only earlier tokens, which suits next-token generation. Encoder-decoder models (original Transformer, T5, BART) encode the input bidirectionally and then generate output with a decoder that also attends to the encoder through cross-attention, useful for translation and summarisation.",
+      "points": [
+        "Encoder-only: understanding, embeddings, classification.",
+        "Decoder-only: open-ended generation; the dominant LLM design today.",
+        "Encoder-decoder: sequence-to-sequence tasks with distinct input and output."
+      ]
+    },
+    {
+      "heading": "Cost and limitations",
+      "body": "Self-attention compares every token with every other token, so its compute and memory grow quadratically with sequence length (O(n^2)). This is the main reason long contexts are expensive. Engineering advances such as FlashAttention (memory-efficient exact attention), grouped-query attention (fewer key/value heads), the KV cache, and Mixture-of-Experts layers (activating only some feed-forward experts per token) make large Transformers practical to train and serve.",
+      "points": [
+        "Quadratic attention cost in sequence length.",
+        "Parameters mostly live in the feed-forward layers and embeddings.",
+        "Alternatives such as state-space models (Mamba) aim for linear-time sequence processing."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Inspecting a real Transformer's configuration",
+    "body": "Hugging Face exposes each model's architecture settings. Loading only the configuration (no weights) shows the number of layers, hidden size, attention heads and maximum positions. For GPT-2 small: 12 layers, a hidden size of 768, 12 heads and 1,024 positions.",
+    "code": {
+      "language": "python",
+      "source": "from transformers import AutoConfig\n\ncfg = AutoConfig.from_pretrained('gpt2')\nprint(cfg.n_layer, cfg.n_embd, cfg.n_head, cfg.n_positions)\n# 12 768 12 1024\n\ncfg = AutoConfig.from_pretrained('bert-base-uncased')\nprint(cfg.num_hidden_layers, cfg.hidden_size, cfg.num_attention_heads)\n# 12 768 12  (encoder-only)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Text generation",
+      "description": "Decoder-only Transformers power chat assistants, coding assistants and content tools."
+    },
+    {
+      "title": "Understanding and search",
+      "description": "Encoder-only models produce embeddings and classify text for search, moderation and routing."
+    },
+    {
+      "title": "Translation and summarisation",
+      "description": "Encoder-decoder models such as T5 and mBART map an input sequence to a different output sequence."
+    },
+    {
+      "title": "Beyond text",
+      "description": "Vision Transformers treat image patches as tokens; audio and protein models use the same block design."
+    }
+  ],
+  "demonstration": {
+    "description": "Follow the shape of the data through a tiny decoder-only Transformer with a model dimension of 512 for a 6-token input. Shapes stay the same through every block until the final projection to vocabulary logits.",
+    "code": {
+      "language": "text",
+      "source": "Input text: \"Transformers changed natural language processing\" -> 6 token IDs\nEmbedding lookup         : (6,) -> (6, 512)\n+ positional information : (6, 512)\nBlock 1..N (attention + FFN, residual, norm): (6, 512) -> (6, 512)\nFinal norm + output projection: (6, 512) -> (6, 50000)"
+    },
+    "output": "One row of 50,000 logits per position. During generation only the last row is used: softmax over it gives the next-token distribution."
+  },
+  "takeaways": [
+    "Transformers process sequences in parallel and connect all tokens with self-attention.",
+    "A block = multi-head attention + feed-forward network, each with a residual connection and normalisation.",
+    "Positional information (sinusoidal, learned or RoPE) supplies word order.",
+    "Encoder-only for understanding, decoder-only for generation, encoder-decoder for seq2seq.",
+    "Attention cost grows quadratically with sequence length; FlashAttention, GQA and the KV cache help.",
+    "Most LLM parameters sit in feed-forward layers and embeddings."
+  ],
+  "interview": [
+    {
+      "question": "What problem did the Transformer solve compared with RNNs?",
+      "answer": "RNNs process tokens sequentially, which prevents parallel training and weakens long-range dependencies. Transformers use self-attention over all tokens at once, enabling parallel training on GPUs and direct connections between distant tokens.",
+      "explanation": "Mention both parallelism and long-range dependencies; these are the two points interviewers look for."
+    },
+    {
+      "question": "Describe the components of a Transformer block.",
+      "answer": "Multi-head self-attention followed by a position-wise feed-forward network, each wrapped with a residual connection and layer normalisation. Input embeddings carry positional information.",
+      "explanation": "A strong answer also notes pre-norm vs post-norm and that modern LLMs use RMSNorm and SwiGLU."
+    },
+    {
+      "question": "Why does a Transformer need positional encoding?",
+      "answer": "Self-attention treats its input as a set: it is permutation-invariant. Positional encodings inject order so the model can distinguish 'dog bites man' from 'man bites dog'.",
+      "explanation": "Name the three main approaches: sinusoidal, learned absolute and rotary (RoPE)."
+    },
+    {
+      "question": "Compare BERT, GPT and T5 architecturally.",
+      "answer": "BERT is encoder-only with bidirectional attention, trained with masked language modelling. GPT is decoder-only with causal attention, trained on next-token prediction. T5 is encoder-decoder, framing every task as text-to-text.",
+      "explanation": "Link each architecture to the tasks it suits best; this is one of the most common GenAI interview questions."
+    },
+    {
+      "question": "What is the computational complexity of self-attention and why does it matter?",
+      "answer": "O(n^2 * d) for sequence length n and dimension d, because every token attends to every other. Doubling context length roughly quadruples attention compute and memory, which drives the cost of long-context models.",
+      "explanation": "Mention mitigations (FlashAttention, sliding-window or sparse attention, KV cache) to show awareness of production concerns."
+    },
+    {
+      "question": "What is the role of residual connections and layer normalisation?",
+      "answer": "Residual connections add each sub-layer's input to its output, giving gradients a direct path and letting deep stacks train. Layer normalisation rescales activations per token to zero mean and unit variance, stabilising training.",
+      "explanation": "Advanced candidates mention that pre-norm placement trains more stably at depth, which is why modern LLMs use it."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Positional encoding and layer normalisation",
+    "difficulty": "Intermediate",
+    "objective": "Implement two building blocks of a Transformer: adding sinusoidal positional encodings to embeddings and applying layer normalisation.",
+    "statement": "You receive n token embeddings of dimension d (d is even). For each position pos (starting at 0) compute the sinusoidal positional encoding: PE[2i] = sin(pos / 10000^(2i/d)) and PE[2i+1] = cos(pos / 10000^(2i/d)) for i = 0 .. d/2 - 1. Add it to the embedding to get x. Then apply layer normalisation without learnable parameters: ln = (x - mean(x)) / sqrt(var(x) + 1e-5), where var is the population variance over the d values. Print x and ln for every position.",
+    "language": "python",
+    "input_format": "Line 1: n d.\nNext n lines: d numbers, the embedding of each token.",
+    "output_format": "For each position p, two lines:\nx<p>: <d values with 4 decimals, space-separated>\nln<p>: <d values with 4 decimals, space-separated>\nNever print -0.0000.",
+    "example": {
+      "input": "2 4\n0.1 0.2 0.3 0.4\n1 0 1 0\n",
+      "output": "x0: 0.1000 1.2000 0.3000 1.4000\nln0: -1.1627 0.8050 -0.8050 1.1627\nx1: 1.8415 0.5403 1.0100 1.0000\nln1: 1.5842 -1.1881 -0.1873 -0.2088"
+    },
+    "constraints": [
+      "1 <= n <= 50; d is even, 2 <= d <= 64.",
+      "Use natural trigonometric functions (radians).",
+      "Round each printed value to 4 decimals."
+    ],
+    "starter": "import math\n\nn, d = map(int, input().split())\nrows = [list(map(float, input().split())) for _ in range(n)]\n\ndef fmt(values):\n    return ' '.join(f'{round(v, 4) + 0.0:.4f}' for v in values)\n\n# TODO: for each position, add the positional encoding, then layer-normalise\n",
+    "solution": "import math\n\nn, d = map(int, input().split())\nrows = [list(map(float, input().split())) for _ in range(n)]\n\ndef fmt(values):\n    return ' '.join(f'{round(v, 4) + 0.0:.4f}' for v in values)\n\ndef positional_encoding(pos, d):\n    pe = [0.0] * d\n    for i in range(d // 2):\n        angle = pos / (10000 ** (2 * i / d))\n        pe[2 * i] = math.sin(angle)\n        pe[2 * i + 1] = math.cos(angle)\n    return pe\n\nfor pos, emb in enumerate(rows):\n    x = [e + p for e, p in zip(emb, positional_encoding(pos, d))]\n    mean = sum(x) / d\n    var = sum((v - mean) ** 2 for v in x) / d\n    ln = [(v - mean) / math.sqrt(var + 1e-5) for v in x]\n    print(f'x{pos}: {fmt(x)}')\n    print(f'ln{pos}: {fmt(ln)}')\n",
+    "explanation": [
+      "For each pair of dimensions (2i, 2i+1) compute one angle pos / 10000^(2i/d); even indices take its sine and odd indices its cosine.",
+      "Low dimensions oscillate quickly and high dimensions slowly, so each position gets a unique fingerprint.",
+      "Add the encoding element-wise to the token embedding, exactly as the original Transformer does before the first block.",
+      "Layer normalisation subtracts the mean of the d values and divides by the standard deviation (with a small epsilon for stability).",
+      "Format with rounding and + 0.0 so a tiny negative number does not print as -0.0000."
+    ],
+    "tests": [
+      {
+        "input": "2 4\n0.1 0.2 0.3 0.4\n1 0 1 0\n",
+        "output": "x0: 0.1000 1.2000 0.3000 1.4000\nln0: -1.1627 0.8050 -0.8050 1.1627\nx1: 1.8415 0.5403 1.0100 1.0000\nln1: 1.5842 -1.1881 -0.1873 -0.2088"
+      },
+      {
+        "input": "1 2\n0 0\n",
+        "output": "x0: 0.0000 1.0000\nln0: -1.0000 1.0000"
+      },
+      {
+        "input": "3 2\n0 0\n0 0\n0 0\n",
+        "output": "x0: 0.0000 1.0000\nln0: -1.0000 1.0000\nx1: 0.8415 0.5403\nln1: 0.9998 -0.9998\nx2: 0.9093 -0.4161\nln2: 1.0000 -1.0000"
+      },
+      {
+        "input": "1 6\n0.5 -0.5 0.25 -0.25 0 1\n",
+        "output": "x0: 0.5000 0.5000 0.2500 0.7500 0.0000 2.0000\nln0: -0.2604 -0.2604 -0.6509 0.1302 -1.0415 2.0830"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which property of Transformers made large-scale training on GPUs practical?",
+      "options": [
+        "They process all tokens of a sequence in parallel",
+        "They use recurrent hidden states",
+        "They have no parameters",
+        "They only work on short sentences"
+      ],
+      "answer": 0,
+      "explanation": "Removing recurrence lets all positions be computed at once, which maps well onto GPU parallelism."
+    },
+    {
+      "type": "concept",
+      "question": "Which model is encoder-only?",
+      "options": [
+        "T5",
+        "BERT",
+        "GPT-4",
+        "Llama 3"
+      ],
+      "answer": 1,
+      "explanation": "BERT uses only the encoder stack with bidirectional attention; GPT and Llama are decoder-only, and T5 is encoder-decoder."
+    },
+    {
+      "type": "output",
+      "question": "Using sinusoidal positional encoding, what is the value of dimension 0 (the first sine) at position 0?",
+      "options": [
+        "1",
+        "0.5",
+        "0",
+        "-1"
+      ],
+      "answer": 2,
+      "explanation": "PE(0, 0) = sin(0 / 10000^0) = sin(0) = 0. The paired cosine dimension would be 1."
+    },
+    {
+      "type": "scenario",
+      "question": "You double a model's input length from 4K to 8K tokens. Roughly how does the self-attention compute change?",
+      "options": [
+        "It halves",
+        "It doubles exactly, like the feed-forward layers",
+        "It stays the same",
+        "It roughly quadruples"
+      ],
+      "answer": 3,
+      "explanation": "Attention is quadratic in sequence length: (2n)^2 = 4n^2."
+    },
+    {
+      "type": "code",
+      "question": "In a Transformer block, what does the expression x + attention(norm(x)) implement?",
+      "code": "def block(x):\n    x = x + attention(norm(x))\n    x = x + ffn(norm(x))\n    return x",
+      "options": [
+        "Positional encoding",
+        "A causal mask",
+        "A pre-norm residual connection around the attention sub-layer",
+        "Tokenisation"
+      ],
+      "answer": 2,
+      "explanation": "The input is normalised, passed through attention and added back to the original x: a residual connection in pre-norm style."
+    }
+  ]
+}

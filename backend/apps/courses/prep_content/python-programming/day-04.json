@@ -1,0 +1,241 @@
+{
+  "day": 4,
+  "title": "Operators, Expressions and Precedence",
+  "module": "Python foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Use arithmetic operators correctly, including floor division and modulo with negative numbers.",
+    "Explain short-circuit evaluation and why and/or return operands rather than booleans.",
+    "Read chained comparisons and operator precedence without guessing.",
+    "Apply bitwise operators to classic interview tasks.",
+    "Use the walrus operator := and augmented assignment appropriately."
+  ],
+  "definition": "An operator is a symbol or keyword that combines values (operands) into an expression that Python evaluates to a single object. Python groups operators into arithmetic, comparison, logical, bitwise, identity, membership and assignment operators, and evaluates them according to fixed precedence and associativity rules.",
+  "theory": [
+    {
+      "heading": "Arithmetic: /, //, % and **",
+      "body": "The / operator always performs true division and returns a float, even for 6 / 3. Floor division // rounds toward negative infinity, not toward zero, so -7 // 2 is -4. The modulo operator % is defined so that (a // b) * b + (a % b) == a, which means the result takes the sign of the divisor: -7 % 2 is 1. This differs from C and Java, and it is why Python's % is convenient for wrapping indices and clock arithmetic. divmod(a, b) returns both results at once.",
+      "points": [
+        "7 / 2 = 3.5, 7 // 2 = 3, -7 // 2 = -4.",
+        "7 % 3 = 1, -7 % 3 = 2, 7 % -3 = -2.",
+        "** is right-associative: 2 ** 3 ** 2 = 2 ** 9 = 512.",
+        "Unary minus binds looser than **: -2 ** 2 = -4."
+      ]
+    },
+    {
+      "heading": "Comparison and chaining",
+      "body": "Comparisons return True or False and can be chained: a < b < c means a < b and b < c, with b evaluated only once. Chaining works with any comparison operators, so 1 < 3 > 2 is True even though it reads oddly. Comparing incompatible types such as 3 < 'a' raises TypeError in Python 3, unlike Python 2.",
+      "points": [
+        "0 <= index < len(items) is the idiomatic range check.",
+        "== compares values, is compares identity, in tests membership.",
+        "Sequences compare lexicographically: [1, 2] < [1, 3] and 'apple' < 'banana'."
+      ]
+    },
+    {
+      "heading": "Logical operators and short-circuiting",
+      "body": "and, or and not work on truthiness. and returns the first falsy operand or the last operand; or returns the first truthy operand or the last operand. Evaluation stops as soon as the result is known, which is called short-circuiting. That is why name = user_input or 'Guest' supplies a default, and why items and items[0] is safe for an empty list. not always returns a real bool.",
+      "points": [
+        "0 or 'x' -> 'x';  3 and 5 -> 5;  [] and 5 -> [].",
+        "Falsy values: None, False, 0, 0.0, '', [], (), {}, set().",
+        "Put cheap or guarding conditions first: if user and user.is_admin."
+      ]
+    },
+    {
+      "heading": "Bitwise operators",
+      "body": "&, |, ^, ~, << and >> operate on the binary representation of integers. They appear in interview questions about flags, permissions and tricks: n & 1 tests odd or even, n & (n - 1) clears the lowest set bit (so it is 0 exactly when a positive n is a power of two), x ^ x is 0 (used to find the single non-duplicated number), and n << k multiplies by 2 to the power k. ~n equals -n - 1 because Python ints behave like infinite two's complement.",
+      "points": [
+        "bin(10) -> '0b1010'; int('1010', 2) -> 10.",
+        "Count set bits: bin(n).count('1') (or n.bit_count() in 3.10+).",
+        "a ^ b ^ a == b: XOR cancels pairs."
+      ]
+    },
+    {
+      "heading": "Precedence, assignment expressions and augmented assignment",
+      "body": "From highest to lowest the key levels are: ** ; unary - and ~ ; * / // % ; + - ; shifts ; & ; ^ ; | ; comparisons (including in and is) ; not ; and ; or ; the conditional expression ; and finally :=. When in doubt, add parentheses: readable code beats clever code. The walrus operator := (Python 3.8) assigns inside an expression, for example while (line := f.readline()):. Augmented assignment such as x += 1 may mutate in place for mutable types.",
+      "points": [
+        "not a == b means not (a == b).",
+        "a if condition else b is Python's ternary expression.",
+        "Walrus avoids computing a value twice: if (n := len(data)) > 10: print(n)."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Wrapping indices with modulo",
+    "body": "Because % takes the sign of the divisor, moving backwards around a circular list never produces a negative index. This is a common trick in rotation and circular-buffer problems.",
+    "code": {
+      "language": "python",
+      "source": "days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']\ntoday = 1                       # Tue\nprint(days[(today - 3) % 7])    # Sat: (-2) % 7 == 5\nprint(days[(today + 10) % 7])   # Fri: 11 % 7 == 4\nhours, minutes = divmod(135, 60)\nprint(hours, minutes)           # 2 15"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Defaults and guards",
+      "description": "or supplies fallback values and and guards attribute access on possibly-None objects."
+    },
+    {
+      "title": "Permissions and flags",
+      "description": "Bitwise | combines flags and & tests them, as in file modes and feature toggles."
+    },
+    {
+      "title": "Time and pagination maths",
+      "description": "divmod converts seconds into minutes and seconds or item counts into pages."
+    },
+    {
+      "title": "Range validation",
+      "description": "Chained comparisons such as 18 <= age < 60 express business rules clearly."
+    }
+  ],
+  "demonstration": {
+    "description": "Evaluate a set of expressions whose results often surprise candidates.",
+    "code": {
+      "language": "python",
+      "source": "print(-7 // 2, -7 % 2)\nprint(2 ** 3 ** 2, -2 ** 2)\nprint(0 or 'default', 3 and 5, [] and 5)\nprint(1 < 3 > 2, not 1 == 2)\nprint(12 & 10, 12 | 10, 12 ^ 10, ~5, 1 << 4)\nn = 64\nprint(n > 0 and n & (n - 1) == 0)"
+    },
+    "output": "-4 1\n512 -4\ndefault 5 []\nTrue True\n8 14 6 -6 16\nTrue"
+  },
+  "takeaways": [
+    "/ always returns a float; // floors toward negative infinity.",
+    "% takes the sign of the divisor, so it wraps negative indices cleanly.",
+    "** is right-associative and binds tighter than unary minus.",
+    "and/or short-circuit and return one of their operands, not necessarily a bool.",
+    "n & (n - 1) == 0 (with n > 0) detects powers of two.",
+    "Use parentheses whenever precedence is not obvious to a reader."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between / and // in Python 3?",
+      "answer": "/ is true division and always returns a float. // is floor division: it rounds the result down toward negative infinity, returning an int for int operands, so -7 // 2 is -4.",
+      "explanation": "Mentioning the negative-number behaviour separates a strong answer from a memorised one."
+    },
+    {
+      "question": "What does 'a or b' return?",
+      "answer": "It returns a if a is truthy, otherwise b. It does not convert the result to a bool, and b is not evaluated when a is truthy.",
+      "explanation": "Link it to idioms such as name = value or 'default', and warn that 0 or '' are also replaced, which may be unintended."
+    },
+    {
+      "question": "How do you check whether a number is a power of two without loops?",
+      "answer": "n > 0 and n & (n - 1) == 0. A power of two has exactly one set bit, and subtracting 1 flips that bit and all lower bits, so the AND is zero.",
+      "explanation": "Explaining why the trick works is more important than the formula itself."
+    },
+    {
+      "question": "What does 1 < 3 > 2 evaluate to, and why?",
+      "answer": "True. Python chains comparisons, so it means 1 < 3 and 3 > 2, both of which are true.",
+      "explanation": "Shows you know chaining is a language feature, not left-to-right evaluation of booleans."
+    },
+    {
+      "question": "What is the walrus operator and when would you use it?",
+      "answer": "The assignment expression := (Python 3.8) binds a name as part of an expression. It avoids repeating a computation, for example while (chunk := f.read(1024)): process(chunk) or [y for x in data if (y := f(x)) > 0].",
+      "explanation": "Mention it should be used where it improves clarity, not to cram logic into one line."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Bitwise number inspector",
+    "difficulty": "Basic",
+    "objective": "Apply bitwise operators to answer classic questions about an integer's binary form.",
+    "statement": "For each non-negative integer, print: the number, its binary representation without the 0b prefix, the count of 1 bits, 'yes' or 'no' for whether it is a power of two (using n & (n - 1)), and 'even' or 'odd' decided with n & 1.",
+    "language": "python",
+    "input_format": "The first line is N. The second line holds N space-separated non-negative integers.",
+    "output_format": "N lines: '<n> <binary> <ones> <yes|no> <even|odd>'.",
+    "example": {
+      "input": "3\n12 16 7\n",
+      "output": "12 1100 2 no even\n16 10000 1 yes even\n7 111 3 no odd"
+    },
+    "constraints": [
+      "1 <= N <= 1000; 0 <= value <= 10^18.",
+      "0 is not a power of two.",
+      "Use bitwise operators for the power-of-two and parity checks."
+    ],
+    "starter": "n = int(input())\nvalues = list(map(int, input().split()))\nfor v in values:\n    # TODO: binary, number of ones, power of two, parity\n    pass\n",
+    "solution": "n = int(input())\nvalues = list(map(int, input().split()))\nfor v in values:\n    binary = bin(v)[2:]\n    ones = binary.count('1')\n    power = 'yes' if v > 0 and v & (v - 1) == 0 else 'no'\n    parity = 'odd' if v & 1 else 'even'\n    print(v, binary, ones, power, parity)\n",
+    "explanation": [
+      "bin(v) returns a string such as '0b1100'; slicing [2:] removes the prefix.",
+      "Counting '1' characters gives the population count (int.bit_count() also works on 3.10+).",
+      "v & (v - 1) clears the lowest set bit; the result is 0 only when exactly one bit was set. The v > 0 guard excludes zero.",
+      "v & 1 is 1 for odd numbers because the lowest bit is set."
+    ],
+    "tests": [
+      {
+        "input": "3\n12 16 7\n",
+        "output": "12 1100 2 no even\n16 10000 1 yes even\n7 111 3 no odd"
+      },
+      {
+        "input": "2\n0 1\n",
+        "output": "0 0 0 no even\n1 1 1 yes odd"
+      },
+      {
+        "input": "1\n1024\n",
+        "output": "1024 10000000000 1 yes even"
+      },
+      {
+        "input": "2\n255 1000000000000000000\n",
+        "output": "255 11111111 8 no odd\n1000000000000000000 110111100000101101101011001110100111011001000000000000000000 24 no even"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What do the floor-division and modulo operators print?",
+      "code": "print(-7 // 2, -7 % 2)",
+      "options": [
+        "-3 -1",
+        "-4 1",
+        "-3 1",
+        "-4 -1"
+      ],
+      "answer": 1,
+      "explanation": "Floor division rounds toward negative infinity, giving -4. Then -7 - (-4 * 2) = 1, so the remainder is 1."
+    },
+    {
+      "type": "output",
+      "question": "What does this exponent expression print?",
+      "code": "print(2 ** 3 ** 2)",
+      "options": [
+        "36",
+        "512",
+        "12",
+        "64"
+      ],
+      "answer": 1,
+      "explanation": "** is right-associative: 3 ** 2 is evaluated first (9), then 2 ** 9 = 512."
+    },
+    {
+      "type": "output",
+      "question": "What do the or and and operators print?",
+      "code": "print(0 or 'default', 3 and 5)",
+      "options": [
+        "0 3",
+        "default 5",
+        "False True",
+        "True 5"
+      ],
+      "answer": 1,
+      "explanation": "or returns the first truthy operand ('default'); and returns the last operand when all are truthy (5)."
+    },
+    {
+      "type": "scenario",
+      "question": "user may be None. Which condition safely checks the user's is_admin attribute without raising AttributeError?",
+      "options": [
+        "if (user, user.is_admin):",
+        "if user is not None and user.is_admin:",
+        "if user.is_admin and user is not None:",
+        "if user.is_admin or user:"
+      ],
+      "answer": 1,
+      "explanation": "and short-circuits: when the first condition is False, user.is_admin is never evaluated."
+    },
+    {
+      "type": "concept",
+      "question": "What does the walrus operator := do?",
+      "options": [
+        "Compares two values for identity",
+        "Declares a constant that cannot be reassigned",
+        "Assigns a value to a name as part of a larger expression",
+        "Performs integer division with rounding"
+      ],
+      "answer": 2,
+      "explanation": "The assignment expression, added in Python 3.8, binds a name and also evaluates to the value, e.g. while (line := f.readline()):."
+    }
+  ]
+}

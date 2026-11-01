@@ -54,6 +54,7 @@ class LearningProgress(models.Model):
     completed_challenges = models.JSONField(default=list, blank=True)
     completed_questions = models.JSONField(default=list, blank=True)
     completed_projects = models.JSONField(default=list, blank=True)
+    completed_theory = models.JSONField(default=list, blank=True)
     last_learning_date = models.DateField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -115,3 +116,46 @@ class CourseCertificate(models.Model):
 
     def __str__(self):
         return f'{self.user} · {self.course_slug} · {self.certificate_id}'
+
+
+class PrepCurriculum(models.Model):
+    """A 30-day interview-prep curriculum, shared by one or more course pages (seeded from prep_content/)."""
+    slug = models.SlugField(max_length=80, unique=True)
+    title = models.CharField(max_length=160)
+    summary = models.TextField(blank=True)
+    source = models.CharField(max_length=200, blank=True, help_text='Syllabus PDF name, or "authored".')
+    source_pdf = models.CharField(max_length=500, blank=True, help_text='Uploaded syllabus PDF (/media/ path).')
+    course_slugs = models.JSONField(default=list, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
+    @classmethod
+    def for_course(cls, course_slug):
+        return next((c for c in cls.objects.all() if course_slug in c.course_slugs), None)
+
+
+class PrepLesson(models.Model):
+    """One day of a curriculum. `content` holds the remaining lesson fields described in prep_content/README.md."""
+    curriculum = models.ForeignKey(PrepCurriculum, on_delete=models.CASCADE, related_name='lessons')
+    day = models.PositiveSmallIntegerField()
+    title = models.CharField(max_length=200)
+    module = models.CharField(max_length=160)
+    level = models.CharField(max_length=20)
+    content = models.JSONField(default=dict)
+    edited_in_admin = models.BooleanField(default=False, help_text='Edited lessons are not overwritten by the seed command.')
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['curriculum', 'day']
+        constraints = [models.UniqueConstraint(fields=['curriculum', 'day'], name='unique_curriculum_day')]
+
+    def __str__(self):
+        return f'{self.curriculum} · Day {self.day} · {self.title}'
+
+    def as_lesson(self):
+        return {'day': self.day, 'title': self.title, 'module': self.module, 'level': self.level, **self.content}

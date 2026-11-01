@@ -1,0 +1,240 @@
+{
+  "day": 2,
+  "title": "How AI Coding Assistants Work: Tokens, Context and Prediction",
+  "module": "Foundations of AI-assisted development",
+  "level": "Beginner",
+  "objectives": [
+    "Explain that a large language model generates code by predicting the next token.",
+    "Describe tokens, the context window and why context size limits what the model can 'see'.",
+    "Explain how assistants build context from open files, search results and instructions.",
+    "Relate temperature and training cut-off to non-determinism and outdated APIs.",
+    "Choose which files to give an assistant when the context budget is limited."
+  ],
+  "definition": "An AI coding assistant is an application built on a large language model (LLM), a neural network trained on huge amounts of text and code to predict the next token given the tokens before it. The assistant collects relevant context (your prompt, open files, project rules, search results), sends it to the model, and turns the predicted tokens into suggestions, chat answers or file edits. The model has no live view of your project beyond what fits in that context.",
+  "theory": [
+    {
+      "heading": "Next-token prediction",
+      "body": "LLMs are trained to predict the next token in a sequence. During generation the model repeatedly picks a likely next token, appends it and predicts again. Because it has seen millions of programs, the most likely continuation of a function signature is often a correct body. But the model optimises for likelihood, not truth, so it can confidently produce code that calls functions which do not exist or that matches an older version of a library.",
+      "points": [
+        "Generation is autoregressive: one token at a time, each conditioned on the previous ones.",
+        "Fluent output is not evidence of correctness.",
+        "Common patterns are reproduced well; rare or new APIs are more error-prone."
+      ]
+    },
+    {
+      "heading": "Tokens and the context window",
+      "body": "Text is split into tokens, which are word pieces. In English text and code a token is roughly three to four characters on average, though this varies by tokenizer and language. The context window is the maximum number of tokens the model can consider in one request, including your prompt, the files sent and the answer it writes. Anything outside the window simply does not exist for the model, which is why assistants sometimes 'forget' earlier instructions in a long chat.",
+      "points": [
+        "Context includes system instructions, chat history, attached files and the output.",
+        "Larger windows help, but irrelevant context can still distract the model.",
+        "Pricing and latency usually grow with the number of tokens processed."
+      ]
+    },
+    {
+      "heading": "How an assistant builds context",
+      "body": "The tool, not the model, decides what to send. Inline completion typically sends the code around your cursor plus snippets from related open files. Chat and agent tools may search the repository, read files, include project rule files (such as a rules or instructions markdown file) and add tool results like test output. Better context usually beats a cleverer prompt: if the model sees your existing types and helper functions, it reuses them instead of inventing new ones.",
+      "points": [
+        "Cursor context: the file you are editing and nearby code.",
+        "Retrieval: search over the repository to find relevant files.",
+        "Project instructions: conventions, commands and do-not-touch rules.",
+        "Tool feedback: compiler errors, test results and terminal output fed back into the loop."
+      ]
+    },
+    {
+      "heading": "Sampling, temperature and non-determinism",
+      "body": "Instead of always choosing the single most likely token, models sample from a probability distribution. Temperature controls how spread out that sampling is: low values give more predictable output, higher values give more variety. This is why the same prompt can return different code on different runs. For code, teams usually prefer low variability and rely on tests to verify whichever version they keep.",
+      "points": [
+        "Same prompt, different runs, possibly different code.",
+        "Low temperature is common for code generation.",
+        "Reproducibility comes from tests and version control, not from the model."
+      ]
+    },
+    {
+      "heading": "Training cut-off and agents",
+      "body": "A model's knowledge stops at its training cut-off, so it may suggest deprecated APIs or miss a library's newest version. Agentic assistants reduce this by calling tools: reading documentation, running the code and reacting to errors. An agent is the same model in a loop that can take actions, observe results and decide the next step, which is powerful but needs limits on what it may change or run.",
+      "points": [
+        "Check versions: ask which library version the code targets.",
+        "Paste current documentation when using new APIs.",
+        "Agents loop over plan, act, observe; give them a sandbox and review their diffs."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Why the assistant invented a helper",
+    "body": "A developer asks an assistant in a fresh chat to 'add a function to format prices like the rest of the app'. The model has not seen the existing formatPrice helper in utils/money.js, so it writes a new one using toFixed(2) and the dollar sign. After the developer attaches utils/money.js, the assistant reuses formatPrice and the rupee format. The model was not 'wrong'; it lacked context.",
+    "code": {
+      "language": "javascript",
+      "source": "// utils/money.js (existing helper the model had not seen)\nexport function formatPrice(paise) {\n  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(paise / 100);\n}\n\n// With the file in context, the generated code reuses it:\nimport { formatPrice } from './utils/money.js';\nconsole.log(formatPrice(129900)); // ₹1,299.00"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Inline completion",
+      "description": "Predicts the next lines from the surrounding code, ideal for repetitive patterns and boilerplate."
+    },
+    {
+      "title": "Repository-aware chat",
+      "description": "Answers questions such as 'where is the session checked?' by retrieving relevant files into context."
+    },
+    {
+      "title": "Agentic edits",
+      "description": "Plans a multi-file change, edits files, runs tests and iterates on failures under developer supervision."
+    },
+    {
+      "title": "Code explanation",
+      "description": "Summarises unfamiliar code for onboarding, using the file itself as context."
+    }
+  ],
+  "demonstration": {
+    "description": "Estimate whether a set of files fits in a context budget using the rough rule of about four characters per token. Real tokenizers differ, so treat this as an estimate and leave room for the model's answer.",
+    "code": {
+      "language": "javascript",
+      "source": "const files = [\n  { path: 'src/app.js', chars: 12000 },\n  { path: 'src/db.js', chars: 6000 },\n  { path: 'package-lock.json', chars: 400000 }\n];\nconst estimate = chars => Math.ceil(chars / 4);\nfor (const f of files) console.log(f.path, estimate(f.chars), 'tokens');\nconst total = files.reduce((sum, f) => sum + estimate(f.chars), 0);\nconsole.log('total', total);"
+    },
+    "output": "src/app.js 3000 tokens\nsrc/db.js 1500 tokens\npackage-lock.json 100000 tokens\ntotal 104500\n\nThe lock file alone dwarfs the useful code, so it should be left out of the context."
+  },
+  "takeaways": [
+    "LLMs generate code token by token by predicting likely continuations.",
+    "The context window limits what the model can see; outside it, information does not exist.",
+    "Assistants build context from cursor code, retrieval, project rules and tool output.",
+    "Sampling makes output vary between runs; tests make results trustworthy.",
+    "Training cut-offs cause outdated API suggestions; supply current docs when it matters.",
+    "Relevant, focused context improves output more than long, noisy context."
+  ],
+  "interview": [
+    {
+      "question": "How does an LLM generate code?",
+      "answer": "It predicts the next token from the tokens before it, appends the chosen token and repeats until it finishes. It learned which continuations are likely from training on large amounts of code and text.",
+      "explanation": "Mention that it optimises for likelihood, not correctness; that explains hallucinated APIs."
+    },
+    {
+      "question": "What is a context window and why does it matter for coding assistants?",
+      "answer": "It is the maximum number of tokens the model can process in one request, including the prompt, files and the answer. Code outside the window is invisible to the model, so it may duplicate helpers or ignore conventions it cannot see.",
+      "explanation": "Strong answers connect context limits to practical behaviour such as forgetting instructions in long chats."
+    },
+    {
+      "question": "Why does the same prompt sometimes give different code?",
+      "answer": "Models sample tokens from a probability distribution, and settings such as temperature add variation. Context differences between runs also change the result.",
+      "explanation": "Add that this is why you verify with tests rather than expecting identical output."
+    },
+    {
+      "question": "Why might an assistant suggest a deprecated API, and how do you prevent it?",
+      "answer": "Its knowledge stops at its training cut-off and older usage is often more common in training data. Specify versions, paste current documentation or let an agent read the docs, and verify by running the code.",
+      "explanation": "Naming a concrete mitigation such as pinning versions in the prompt shows practical experience."
+    },
+    {
+      "question": "What makes an agentic coding assistant different from autocomplete?",
+      "answer": "An agent runs the model in a loop with tools: it can read and edit files, run commands and tests, observe results and decide the next step. Autocomplete only predicts text at the cursor.",
+      "explanation": "Mention the extra responsibility: sandboxing, permission prompts and reviewing the final diff."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Pack files into a context budget",
+    "difficulty": "Basic",
+    "objective": "Practise choosing context for an assistant when the token budget is limited.",
+    "statement": "You have a token budget and a list of files. Estimate each file's tokens as ceil(chars / 4). Consider files in order of priority (1 is most important); files with equal priority keep their input order. Include a file if it fits in the remaining budget, otherwise skip it and continue with the next file. Print the included files, the skipped files and the tokens used.",
+    "language": "javascript",
+    "input_format": "First line: budget B. Each following line: path|chars|priority.",
+    "output_format": "Three lines:\nIncluded: <paths in the order considered, comma-separated, or none>\nSkipped: <paths in the order considered, or none>\nTokens used: <used>/<B>",
+    "example": {
+      "input": "1000\nsrc/app.js|2000|1\nREADME.md|1200|3\nsrc/db.js|1600|2\ntests/app.test.js|800|2\n",
+      "output": "Included: src/app.js, src/db.js\nSkipped: tests/app.test.js, README.md\nTokens used: 900/1000"
+    },
+    "constraints": [
+      "1 <= B <= 10^7; chars and priority are non-negative integers.",
+      "There is at least one file.",
+      "Separate names with a comma and a space."
+    ],
+    "starter": "const lines = stdin.trim().split('\\n');\nconst budget = parseInt(lines[0], 10);\nconst files = lines.slice(1).map((line, index) => {\n  const [path, chars, priority] = line.split('|');\n  return { path: path.trim(), tokens: Math.ceil(Number(chars) / 4), priority: Number(priority), index };\n});\n\n// TODO: sort by priority (stable), then include files greedily\n",
+    "solution": "const lines = stdin.trim().split('\\n');\nconst budget = parseInt(lines[0], 10);\nconst files = lines.slice(1).map((line, index) => {\n  const [path, chars, priority] = line.split('|');\n  return { path: path.trim(), tokens: Math.ceil(Number(chars) / 4), priority: Number(priority), index };\n});\nfiles.sort((a, b) => a.priority - b.priority || a.index - b.index);\nlet used = 0;\nconst included = [];\nconst skipped = [];\nfor (const f of files) {\n  if (used + f.tokens <= budget) {\n    used += f.tokens;\n    included.push(f.path);\n  } else {\n    skipped.push(f.path);\n  }\n}\nconsole.log('Included: ' + (included.length ? included.join(', ') : 'none'));\nconsole.log('Skipped: ' + (skipped.length ? skipped.join(', ') : 'none'));\nconsole.log(`Tokens used: ${used}/${budget}`);\n",
+    "explanation": [
+      "Parse each file and estimate tokens with Math.ceil(chars / 4).",
+      "Sort by priority, breaking ties by the original index so the order is stable.",
+      "Walk the sorted list and include a file only if it fits in the remaining budget.",
+      "Skipped files do not stop the loop: a later, smaller file may still fit.",
+      "Print 'none' for empty lists and the used/total budget."
+    ],
+    "tests": [
+      {
+        "input": "1000\nsrc/app.js|2000|1\nREADME.md|1200|3\nsrc/db.js|1600|2\ntests/app.test.js|800|2\n",
+        "output": "Included: src/app.js, src/db.js\nSkipped: tests/app.test.js, README.md\nTokens used: 900/1000"
+      },
+      {
+        "input": "100\nbig.txt|401|1\n",
+        "output": "Included: none\nSkipped: big.txt\nTokens used: 0/100"
+      },
+      {
+        "input": "50\na|10|5\nb|200|1\nc|1|1\n",
+        "output": "Included: b\nSkipped: c, a\nTokens used: 50/50"
+      },
+      {
+        "input": "300\nx|400|2\ny|399|1\n",
+        "output": "Included: y, x\nSkipped: none\nTokens used: 200/300"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "At its core, how does a large language model produce code?",
+      "options": [
+        "It predicts the next token repeatedly, each time conditioned on previous tokens",
+        "It runs every possible program and returns the fastest",
+        "It looks up complete programs in a database",
+        "It compiles the prompt into machine code"
+      ],
+      "answer": 0,
+      "explanation": "LLMs are autoregressive next-token predictors; code emerges one token at a time."
+    },
+    {
+      "type": "concept",
+      "question": "What counts toward the context window of a single request?",
+      "options": [
+        "Only the model's training data",
+        "Only the user's latest message",
+        "System instructions, chat history, attached files and the generated answer",
+        "Only the files on disk in the project"
+      ],
+      "answer": 2,
+      "explanation": "Everything the model processes in the request, including its own output, uses the window."
+    },
+    {
+      "type": "scenario",
+      "question": "An assistant keeps writing a new date-formatting helper even though the project already has one. What is the most likely fix?",
+      "options": [
+        "Increase the temperature",
+        "Ask the same question again until it changes",
+        "Switch off syntax highlighting",
+        "Include the existing helper file or project conventions in the context"
+      ],
+      "answer": 3,
+      "explanation": "The model can only reuse code it can see. Supplying the helper in context solves the duplication."
+    },
+    {
+      "type": "output",
+      "question": "Using the rough four-characters-per-token estimate with rounding up, how many tokens does a 1,001-character file use?",
+      "code": "Math.ceil(1001 / 4)",
+      "options": [
+        "250",
+        "1001",
+        "4",
+        "251"
+      ],
+      "answer": 3,
+      "explanation": "1001 / 4 = 250.25, and Math.ceil rounds up to 251."
+    },
+    {
+      "type": "scenario",
+      "question": "The assistant suggests a function that was removed in the latest major version of a library. Why does this happen?",
+      "options": [
+        "The context window was too large",
+        "JavaScript does not support new library versions",
+        "The editor's font is outdated",
+        "The model's knowledge is limited by its training cut-off and older usage is common in its data"
+      ],
+      "answer": 3,
+      "explanation": "Training cut-off and the prevalence of older examples cause outdated suggestions. Provide current docs and versions."
+    }
+  ]
+}

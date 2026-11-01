@@ -1,0 +1,246 @@
+{
+  "day": 1,
+  "title": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
+  "module": "Web and JavaScript foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what happens between typing a URL and seeing a rendered page.",
+    "Describe the structure of an HTTP request and response, including methods, headers and status codes.",
+    "Map each MEAN layer (MongoDB, Express, Angular, Node.js) to its role in a request.",
+    "Distinguish client-side rendering, server-side rendering and APIs.",
+    "Parse a raw HTTP request and reason about its parts."
+  ],
+  "definition": "The web is a client-server system in which a browser (the client) sends HTTP requests to a server and receives HTTP responses containing HTML, JSON, images or other resources. The MEAN stack is a JavaScript-everywhere architecture for such systems: Angular runs in the browser, Node.js with Express handles HTTP on the server, and MongoDB stores data as JSON-like documents.",
+  "theory": [
+    {
+      "heading": "From URL to rendered page",
+      "body": "When a user opens https://codinghub.in/courses, the browser first resolves the domain to an IP address with DNS, opens a TCP connection (or QUIC for HTTP/3), performs a TLS handshake for HTTPS, and then sends an HTTP request. The server replies with a response; the browser parses the HTML, builds the DOM, downloads CSS and JavaScript, builds the CSSOM, runs scripts and paints pixels. Interviewers ask this question to see whether you understand every layer rather than only the framework you use.",
+      "points": [
+        "DNS lookup: domain name to IP address (with browser, OS and resolver caches).",
+        "Connection: TCP plus TLS handshake, or QUIC for HTTP/3.",
+        "HTTP request and response exchange.",
+        "Parsing and rendering: DOM, CSSOM, render tree, layout, paint.",
+        "JavaScript execution, which in a single-page app then fetches data from APIs."
+      ]
+    },
+    {
+      "heading": "Anatomy of HTTP",
+      "body": "HTTP is a stateless, text-oriented request-response protocol (HTTP/2 and HTTP/3 frame it in binary, but the semantics are the same). A request has a method, a target path with optional query string, a protocol version, headers and an optional body. A response has a status code, headers and an optional body. Statelessness is why sessions, cookies and tokens exist: each request must carry whatever the server needs to identify the user.",
+      "points": [
+        "Methods: GET (read), POST (create), PUT (replace), PATCH (partial update), DELETE (remove), OPTIONS (CORS preflight).",
+        "Status classes: 2xx success, 3xx redirect, 4xx client error, 5xx server error.",
+        "Important headers: Host, Content-Type, Authorization, Cookie, Cache-Control, Accept.",
+        "Safe methods do not change state; idempotent methods give the same result when repeated (GET, PUT, DELETE)."
+      ]
+    },
+    {
+      "heading": "The MEAN architecture",
+      "body": "In a MEAN application the Angular single-page app is downloaded once and then talks to a REST or GraphQL API over HTTP, usually exchanging JSON. Express is a minimal framework on top of Node.js's http module that maps routes to handler functions. Node.js runs JavaScript on the server with a non-blocking event loop, which suits I/O-heavy APIs. MongoDB stores documents in BSON, so data can flow from database to browser with little transformation.",
+      "points": [
+        "Angular: UI, routing in the browser, forms, calling the API with HttpClient.",
+        "Express: routing, middleware (auth, validation, logging), error handling.",
+        "Node.js: the runtime, event loop, file and network I/O.",
+        "MongoDB: document storage, indexes, aggregation; accessed through Mongoose or the native driver."
+      ]
+    },
+    {
+      "heading": "Rendering strategies",
+      "body": "A classic Angular app uses client-side rendering (CSR): the server sends an almost empty index.html plus JavaScript bundles, and the browser builds the page. This gives app-like navigation but a slower first paint and weaker SEO. Angular SSR renders the first view on a Node.js server and then hydrates it in the browser, improving first contentful paint and crawlability. Static pre-rendering (SSG) generates HTML at build time for pages that rarely change.",
+      "points": [
+        "CSR: fast navigation after load, heavier first load.",
+        "SSR with hydration: better first paint and SEO, needs a Node server.",
+        "SSG/prerendering: cheapest to serve, only for mostly static content."
+      ]
+    },
+    {
+      "heading": "Why full-stack JavaScript matters, and its limits",
+      "body": "Using one language across the stack lets teams share types (with TypeScript), validation logic and developers. JSON is native to every layer. The trade-offs are real: Node.js is not ideal for CPU-heavy work without worker threads, MongoDB's flexible schema needs discipline (Mongoose schemas, validation) and Angular has a steeper learning curve than lighter libraries. Good candidates mention these trade-offs instead of claiming MEAN is best for everything.",
+      "points": [
+        "Advantages: one language, shared models, JSON end to end, large ecosystem.",
+        "Limitations: CPU-bound work, schema discipline, framework complexity."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A request travelling through the MEAN layers",
+    "body": "An Angular component asks a service for courses. The service calls HttpClient, which sends GET /api/courses?page=2. Express matches the route, a handler queries MongoDB through Mongoose, and the JSON response flows back to the component, which renders it. Each layer has a single responsibility.",
+    "code": {
+      "language": "typescript",
+      "source": "// Angular service (browser)\n@Injectable({ providedIn: 'root' })\nexport class CourseService {\n  private http = inject(HttpClient);\n  list(page: number) {\n    return this.http.get<Course[]>('/api/courses', { params: { page } });\n  }\n}\n\n// Express route (Node.js server)\napp.get('/api/courses', async (req, res) => {\n  const page = Number(req.query.page ?? 1);\n  const courses = await Course.find().skip((page - 1) * 10).limit(10).lean();\n  res.status(200).json(courses);\n});"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Learning platforms",
+      "description": "An Angular dashboard for students, an Express API for enrolments and MongoDB for flexible course documents."
+    },
+    {
+      "title": "E-commerce admin panels",
+      "description": "Data-heavy forms and tables in Angular with a JSON API and product catalogues whose attributes vary by category."
+    },
+    {
+      "title": "Real-time dashboards",
+      "description": "Node.js handles many concurrent WebSocket connections cheaply; Angular updates charts as events arrive."
+    },
+    {
+      "title": "Internal enterprise tools",
+      "description": "Angular's opinionated structure and TypeScript suit large teams building long-lived business applications."
+    }
+  ],
+  "demonstration": {
+    "description": "Inspect a real exchange with curl -v. The lines starting with > are the request the client sends, and < lines are the server's response. Notice the request line, the Host header, the status line and the Content-Type of the JSON body.",
+    "code": {
+      "language": "text",
+      "source": "$ curl -v https://api.example.com/api/courses?page=2\n> GET /api/courses?page=2 HTTP/1.1\n> Host: api.example.com\n> Accept: */*\n>\n< HTTP/1.1 200 OK\n< Content-Type: application/json; charset=utf-8\n< Cache-Control: no-store\n<\n[{\"_id\":\"66a1\",\"title\":\"MEAN Stack\"}]"
+    },
+    "output": "Request line: method GET, target /api/courses?page=2, version HTTP/1.1.\nResponse: status 200 with a JSON array body that Angular's HttpClient parses automatically."
+  },
+  "takeaways": [
+    "A page load involves DNS, connection and TLS setup, HTTP exchange, then parsing and rendering.",
+    "HTTP is stateless; cookies or tokens carry identity between requests.",
+    "Know the main methods, status code classes and which methods are safe or idempotent.",
+    "MEAN = Angular in the browser, Express on Node.js for the API, MongoDB for documents.",
+    "CSR, SSR with hydration and prerendering trade first-load speed, SEO and server cost.",
+    "Mention the limits of MEAN (CPU-heavy work, schema discipline) to show balanced judgement."
+  ],
+  "interview": [
+    {
+      "question": "What happens when you type a URL into the browser and press Enter?",
+      "answer": "The browser checks caches and resolves the domain with DNS, opens a TCP (or QUIC) connection, completes a TLS handshake for HTTPS, sends an HTTP request, receives the response, parses HTML into the DOM and CSS into the CSSOM, runs JavaScript, then performs layout and paint.",
+      "explanation": "A strong answer is ordered and mentions caching, TLS and the rendering pipeline. For a MEAN role, add that an Angular SPA then makes API calls for data."
+    },
+    {
+      "question": "What is the difference between PUT and PATCH?",
+      "answer": "PUT replaces the whole resource with the representation sent and is idempotent. PATCH applies a partial update; it is not guaranteed to be idempotent (for example an 'increment' patch).",
+      "explanation": "Interviewers look for the replace-versus-partial distinction and correct use of the word idempotent."
+    },
+    {
+      "question": "Explain 401 versus 403.",
+      "answer": "401 Unauthorized means the request lacks valid authentication (no token or an expired one). 403 Forbidden means the user is authenticated but not allowed to perform the action.",
+      "explanation": "Linking it to practice helps: an Angular interceptor redirects to login on 401 but shows an 'access denied' message on 403."
+    },
+    {
+      "question": "Why is HTTP called stateless, and how do web apps keep users logged in?",
+      "answer": "Each request is independent; the server keeps no memory of earlier requests at the protocol level. Apps add state with session cookies (server-side session store) or tokens such as JWTs sent in a header or cookie on every request.",
+      "explanation": "Mentioning both server sessions and tokens, and that the choice affects scaling, sets up the authentication discussion later."
+    },
+    {
+      "question": "When would you add server-side rendering to an Angular application?",
+      "answer": "When first-load performance or SEO matters, such as public marketing or catalogue pages. Angular SSR renders HTML on the server and hydrates it in the browser. For logged-in dashboards, CSR is often enough.",
+      "explanation": "Good answers weigh the cost (a Node server, browser-only APIs must be guarded) against the benefit, rather than recommending SSR everywhere."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Parse a raw HTTP request",
+    "difficulty": "Basic",
+    "objective": "Understand the parts of an HTTP request (request line, query string, headers, body) by parsing one the way a server such as Node's http module does.",
+    "statement": "The global string stdin holds a raw HTTP request: a request line, header lines, an empty line, then an optional body. Print the method, the path without the query string, the query parameters, the Host header, the Content-Type header and the body length. Header names are case-insensitive. Query values must be URL-decoded ('+' means a space). If the request line does not have exactly three parts or the third part is not an HTTP version (HTTP/ followed by a digit), print only '400 Bad Request'.",
+    "language": "javascript",
+    "input_format": "Request line, then 'Name: value' header lines, then an empty line, then optional body text. The empty line may be missing when there are no headers or body.",
+    "output_format": "Six lines:\nMETHOD <method>\nPATH <path>\nQUERY <k=v pairs joined by '; '> or QUERY none\nHOST <host> or HOST missing\nCONTENT-TYPE <value> or CONTENT-TYPE none\nBODY <number of characters in the body>",
+    "example": {
+      "input": "GET /api/courses?page=2&sort=title HTTP/1.1\nHost: codinghub.in\nAccept: application/json\n\n",
+      "output": "METHOD GET\nPATH /api/courses\nQUERY page=2; sort=title\nHOST codinghub.in\nCONTENT-TYPE none\nBODY 0"
+    },
+    "constraints": [
+      "Treat CRLF and LF line endings the same.",
+      "Trailing newlines at the end of the body are not counted.",
+      "A query parameter without '=' has an empty value.",
+      "Do not use require or process; read the global stdin string."
+    ],
+    "starter": "const text = stdin.replace(/\\r\\n/g, '\\n');\n// TODO: split head and body at the first empty line\n// TODO: validate the request line, then print the six lines\n",
+    "solution": "const text = stdin.replace(/\\r\\n/g, '\\n');\nconst blank = text.indexOf('\\n\\n');\nconst head = blank === -1 ? text.replace(/\\n+$/, '') : text.slice(0, blank);\nconst body = blank === -1 ? '' : text.slice(blank + 2).replace(/\\n+$/, '');\nconst lines = head.split('\\n');\nconst parts = lines[0].trim().split(/\\s+/);\nif (parts.length !== 3 || !/^HTTP\\/[0-9]/.test(parts[2])) {\n  console.log('400 Bad Request');\n} else {\n  const method = parts[0];\n  const target = parts[1];\n  const q = target.indexOf('?');\n  const path = q === -1 ? target : target.slice(0, q);\n  const query = q === -1 ? '' : target.slice(q + 1);\n  const pairs = query.split('&').filter(Boolean).map(p => {\n    const i = p.indexOf('=');\n    if (i === -1) return p + '=';\n    return p.slice(0, i) + '=' + decodeURIComponent(p.slice(i + 1).replace(/\\+/g, ' '));\n  });\n  const headers = {};\n  for (const line of lines.slice(1)) {\n    const i = line.indexOf(':');\n    if (i > 0) headers[line.slice(0, i).trim().toLowerCase()] = line.slice(i + 1).trim();\n  }\n  console.log('METHOD ' + method);\n  console.log('PATH ' + path);\n  console.log('QUERY ' + (pairs.length ? pairs.join('; ') : 'none'));\n  console.log('HOST ' + (headers['host'] || 'missing'));\n  console.log('CONTENT-TYPE ' + (headers['content-type'] || 'none'));\n  console.log('BODY ' + body.length);\n}\n",
+    "explanation": [
+      "Normalise line endings, then split the text at the first empty line: everything before is the head, everything after is the body.",
+      "Split the request line on whitespace; it must have three parts and the third must start with HTTP/ and a digit, otherwise answer 400.",
+      "Separate path and query at the first '?', and decode each value (turning '+' into a space first).",
+      "Store headers in an object keyed by the lower-cased name, because HTTP header names are case-insensitive.",
+      "Print the six labelled lines, using defaults when a header or the query is absent."
+    ],
+    "tests": [
+      {
+        "input": "GET /api/courses?page=2&sort=title HTTP/1.1\nHost: codinghub.in\nAccept: application/json\n\n",
+        "output": "METHOD GET\nPATH /api/courses\nQUERY page=2; sort=title\nHOST codinghub.in\nCONTENT-TYPE none\nBODY 0"
+      },
+      {
+        "input": "POST /api/students HTTP/1.1\nhost: api.codinghub.in\ncontent-type: application/json\n\n{\"name\":\"Asha\"}\n",
+        "output": "METHOD POST\nPATH /api/students\nQUERY none\nHOST api.codinghub.in\nCONTENT-TYPE application/json\nBODY 15"
+      },
+      {
+        "input": "GET /\n",
+        "output": "400 Bad Request"
+      },
+      {
+        "input": "GET /search?q=angular+signals&lang=en%2Dus&debug HTTP/2\n\n",
+        "output": "METHOD GET\nPATH /search\nQUERY q=angular signals; lang=en-us; debug=\nHOST missing\nCONTENT-TYPE none\nBODY 0"
+      },
+      {
+        "input": "DELETE /api/courses/42 FTP/1.0\nHost: x\n\n",
+        "output": "400 Bad Request"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which HTTP status code best fits a request with a valid token from a user who lacks permission for the resource?",
+      "options": [
+        "403 Forbidden",
+        "404 Not Found",
+        "500 Internal Server Error",
+        "401 Unauthorized"
+      ],
+      "answer": 0,
+      "explanation": "403 means the identity is known but not allowed. 401 is for missing or invalid authentication."
+    },
+    {
+      "type": "concept",
+      "question": "In the MEAN stack, which layer is responsible for matching URL paths to handler functions on the server?",
+      "options": [
+        "Express",
+        "The browser's DNS cache",
+        "MongoDB",
+        "Angular"
+      ],
+      "answer": 0,
+      "explanation": "Express provides server-side routing and middleware on top of Node.js. Angular's router works in the browser."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these HTTP methods is idempotent?",
+      "options": [
+        "None of them",
+        "PUT",
+        "POST",
+        "PATCH (an increment operation)"
+      ],
+      "answer": 1,
+      "explanation": "Repeating the same PUT leaves the resource in the same state. POST creates a new resource each time, and an increment PATCH changes the result on repeat."
+    },
+    {
+      "type": "scenario",
+      "question": "A public Angular product catalogue ranks poorly in search engines and shows a blank page for a second on slow phones. What change helps most?",
+      "options": [
+        "Switch MongoDB to a relational database",
+        "Add more Express middleware",
+        "Increase the HTTP cache time of the API",
+        "Enable Angular SSR with hydration for those pages"
+      ],
+      "answer": 3,
+      "explanation": "SSR sends rendered HTML, improving first paint and crawlability; hydration then makes it interactive."
+    },
+    {
+      "type": "output",
+      "question": "Given the request line 'GET /api/users?role=admin HTTP/1.1', what does Express put in req.path and req.query.role?",
+      "options": [
+        "'/api/users' and 'admin'",
+        "'/api' and 'users'",
+        "'/api/users' and ['admin']",
+        "'/api/users?role=admin' and undefined"
+      ],
+      "answer": 0,
+      "explanation": "req.path excludes the query string, and Express's query parser maps role=admin to the string 'admin'."
+    }
+  ]
+}

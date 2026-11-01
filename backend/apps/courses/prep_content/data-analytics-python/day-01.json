@@ -1,0 +1,246 @@
+{
+  "day": 1,
+  "title": "Python Data Types and Core Structures for Analysts",
+  "module": "Python foundations for analysts",
+  "level": "Beginner",
+  "objectives": [
+    "Explain Python's built-in scalar types (int, float, str, bool, None) and when an analyst meets each one.",
+    "Choose between list, tuple, dict and set for a given data task and justify the choice.",
+    "Describe mutability and why aliasing a list can silently change data.",
+    "Convert raw text values into numbers safely and treat bad values as missing.",
+    "Answer common interview questions on float precision, None and type conversion."
+  ],
+  "definition": "Python data types describe what kind of value a variable holds and which operations are allowed on it. Analysts work mostly with numbers (int, float), text (str), true/false flags (bool), the missing marker None, and four containers: list (ordered, changeable), tuple (ordered, fixed), dict (key to value lookup) and set (unique items). pandas and NumPy are built on top of these ideas, so understanding them explains much of how those libraries behave.",
+  "theory": [
+    {
+      "heading": "Scalar types an analyst uses every day",
+      "body": "Every value read from a file starts life as a string. Turning '1,250' or '3.5' into numbers is the analyst's first job, and mistakes here flow into every later calculation. Integers have unlimited precision in Python, while floats follow the IEEE 754 double-precision standard, which cannot represent most decimal fractions exactly.",
+      "points": [
+        "int: whole numbers such as order counts; unlimited size.",
+        "float: decimals such as prices; 0.1 + 0.2 gives 0.30000000000000004.",
+        "str: text such as city names; immutable, so methods return new strings.",
+        "bool: True/False flags; True behaves as 1 in arithmetic, so sum(flags) counts True values.",
+        "None: Python's 'no value' marker; pandas shows missing numbers as NaN instead."
+      ]
+    },
+    {
+      "heading": "Containers: list, tuple, dict and set",
+      "body": "The container you pick decides how fast lookups are and whether data can change. A list keeps order and allows duplicates, which suits a column of values. A dict maps keys to values with average O(1) lookup, which suits counts per category or a row represented as column-to-value. A set removes duplicates and answers membership questions quickly. A tuple is a fixed record, useful as a dictionary key such as (city, month).",
+      "points": [
+        "list: [120, 85, 97]; ordered, mutable, allows duplicates.",
+        "tuple: ('Pune', 2024); ordered, immutable, hashable if its items are.",
+        "dict: {'Pune': 120}; key lookup, insertion order preserved since Python 3.7.",
+        "set: {'Pune', 'Delhi'}; unique items, fast 'in' checks, no order."
+      ]
+    },
+    {
+      "heading": "Mutability and aliasing",
+      "body": "Assigning a list to another name does not copy it; both names point to the same object. If you append to one, the other changes too. This is the same reason pandas warns about modifying a slice of a DataFrame: you must know whether you hold a view or a copy. Use list(x), x.copy() or copy.deepcopy(x) when you need an independent copy.",
+      "points": [
+        "Mutable: list, dict, set. Immutable: int, float, str, tuple, bool.",
+        "b = a shares the object; b = a.copy() makes a shallow copy.",
+        "Default arguments such as def f(x=[]) are created once and shared between calls."
+      ]
+    },
+    {
+      "heading": "Type conversion and missing values",
+      "body": "Real data contains blanks, 'NA', 'null' and typing errors. Calling float() on such text raises ValueError, so analysts wrap conversion in try/except and count failures as missing rather than crashing. The string 'nan' does convert to a float NaN, and NaN is not equal to itself, which is why missing-value checks use special functions (math.isnan, pandas isna) instead of ==.",
+      "points": [
+        "int('42') works; int('4.5') raises ValueError; int(float('4.5')) truncates to 4.",
+        "float('nan') != float('nan') is True.",
+        "Decide explicitly whether missing values are skipped, filled or reported."
+      ]
+    },
+    {
+      "heading": "Why this matters in pandas",
+      "body": "pandas columns have a dtype such as int64, float64, object, bool or datetime64. A single text value in a numeric column turns it into object dtype, which is slower and breaks arithmetic. An integer column with a missing value becomes float64 because NaN is a float, unless you use the nullable Int64 dtype. Knowing the underlying Python types lets you predict and fix these surprises.",
+      "points": [
+        "One bad string makes a column object dtype.",
+        "Missing values in an int column turn it into float64.",
+        "Nullable dtypes (Int64, boolean, string) keep a proper missing marker, pd.NA."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Cleaning a raw list of order amounts",
+    "body": "A store exports order amounts as text, with some blanks and typing errors. We convert what we can to floats, count what we cannot, and compute a safe average. The same steps happen inside pd.to_numeric(errors='coerce').",
+    "code": {
+      "language": "python",
+      "source": "raw = ['1250', '980.5', '', 'NA', '1100', 'abc']\nvalues, missing = [], 0\nfor item in raw:\n    try:\n        values.append(float(item))\n    except ValueError:\n        missing += 1\n\nprint(values)                  # [1250.0, 980.5, 1100.0]\nprint(missing)                 # 3\nprint(round(sum(values) / len(values), 2))  # 1110.17"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Data import checks",
+      "description": "Converting text columns from CSV exports into numbers and counting values that failed conversion before analysis starts."
+    },
+    {
+      "title": "Category counts",
+      "description": "Using a dict to count orders per city or a set to find the distinct products sold."
+    },
+    {
+      "title": "Composite keys",
+      "description": "Using tuples such as (region, month) as dictionary keys to store monthly totals per region."
+    },
+    {
+      "title": "Flag columns",
+      "description": "Storing booleans like is_returned and summing them to count returns, the same trick used on pandas boolean masks."
+    }
+  ],
+  "demonstration": {
+    "description": "Run these lines in a Python shell to see the behaviours interviewers ask about: float precision, aliasing, NaN comparison and set deduplication.",
+    "code": {
+      "language": "python",
+      "source": "print(0.1 + 0.2 == 0.3)\nprint(round(0.1 + 0.2, 2) == 0.3)\na = [1, 2]\nb = a\nb.append(3)\nprint(a)\nx = float('nan')\nprint(x == x)\nprint(len({'Pune', 'Delhi', 'Pune'}))\nprint(sum([True, False, True, True]))"
+    },
+    "output": "False\nTrue\n[1, 2, 3]\nFalse\n2\n3"
+  },
+  "takeaways": [
+    "Everything read from a file starts as text; convert deliberately and count failures.",
+    "Floats are approximate, so compare with rounding or math.isclose, never with == on computed values.",
+    "Pick the container by the question: order (list), fixed record (tuple), lookup (dict), uniqueness (set).",
+    "Assignment shares mutable objects; copy when you need independence.",
+    "NaN is not equal to itself; use dedicated functions to detect missing values.",
+    "pandas dtypes mirror these types, which explains object columns and int-to-float conversions."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between a list and a tuple, and when would you use each?",
+      "answer": "Both are ordered sequences. A list is mutable, so it suits a collection that grows or changes, such as values read from a file. A tuple is immutable and hashable when its items are, so it suits fixed records and dictionary keys such as (city, month).",
+      "explanation": "A strong answer mentions immutability, hashability and a concrete analytics use, not just syntax differences."
+    },
+    {
+      "question": "Why does 0.1 + 0.2 not equal 0.3 in Python?",
+      "answer": "Floats are stored in binary using IEEE 754 double precision, and 0.1 and 0.2 have no exact binary representation, so the sum is 0.30000000000000004. Compare with math.isclose or round, and use decimal.Decimal for money when exactness matters.",
+      "explanation": "Interviewers want the cause (binary representation) and the practical fix, especially for financial data."
+    },
+    {
+      "question": "When would you use a dict instead of a list?",
+      "answer": "When you need to look up values by a key, for example totals per region. Dict lookups are O(1) on average, while finding an item in a list is O(n).",
+      "explanation": "Mentioning time complexity and a realistic grouping example shows you think about performance."
+    },
+    {
+      "question": "What is the difference between None and NaN?",
+      "answer": "None is Python's object meaning 'no value'. NaN is a special float value meaning 'not a number', used by NumPy and pandas for missing numeric data. NaN is not equal to itself, so missing values are detected with functions such as pd.isna rather than ==.",
+      "explanation": "Good answers connect this to pandas: a float column stores missing values as NaN, while an object column can hold None."
+    },
+    {
+      "question": "Why does a pandas integer column become float when it has missing values, and how can you avoid it?",
+      "answer": "The classic NaN marker is a float, and NumPy int64 has no missing marker, so pandas upcasts the column to float64. Use the nullable 'Int64' dtype (capital I), which stores missing values as pd.NA while keeping integers.",
+      "explanation": "This advanced question checks whether you understand dtypes rather than only using pandas functions."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Summarise a column of raw values",
+    "difficulty": "Basic",
+    "objective": "Convert raw text values into numbers safely, count missing entries and compute basic summary statistics, as you would before trusting a column.",
+    "statement": "A single line contains comma-separated values from one spreadsheet column. A value is valid if it converts to a float and is not NaN; everything else (blank, NA, null, text, nan) counts as missing. Print the number of valid and missing values, then the sum, minimum, maximum and mean of the valid values, each with two decimals. If there are no valid values, print the two counts and then 'summary: not available'.",
+    "language": "python",
+    "input_format": "One line of comma-separated values. Spaces around values should be ignored.",
+    "output_format": "count: <n>\nmissing: <m>\nsum: <x.xx>\nmin: <x.xx>\nmax: <x.xx>\nmean: <x.xx>\nor, when n is 0, the two count lines followed by 'summary: not available'.",
+    "example": {
+      "input": "12, 7.5, NA, 3, , abc\n",
+      "output": "count: 3\nmissing: 3\nsum: 22.50\nmin: 3.00\nmax: 12.00\nmean: 7.50"
+    },
+    "constraints": [
+      "The line has between 1 and 1000 comma-separated tokens.",
+      "Treat the token 'nan' (any case) as missing even though float() accepts it.",
+      "Format every number with exactly two decimals."
+    ],
+    "starter": "line = input()\nvalues, missing = [], 0\n\nfor token in line.split(','):\n    token = token.strip()\n    # TODO: convert to float, count missing values\n\n# TODO: print the summary\n",
+    "solution": "import math\n\nline = input()\nvalues, missing = [], 0\nfor token in line.split(','):\n    token = token.strip()\n    try:\n        number = float(token)\n    except ValueError:\n        missing += 1\n        continue\n    if math.isnan(number):\n        missing += 1\n    else:\n        values.append(number)\n\nprint(f'count: {len(values)}')\nprint(f'missing: {missing}')\nif values:\n    total = sum(values)\n    print(f'sum: {total:.2f}')\n    print(f'min: {min(values):.2f}')\n    print(f'max: {max(values):.2f}')\n    print(f'mean: {total / len(values):.2f}')\nelse:\n    print('summary: not available')\n",
+    "explanation": [
+      "Split the line on commas and strip spaces from each token.",
+      "Try float(); a ValueError means the token is missing. Also treat NaN as missing because float('nan') succeeds.",
+      "Keep valid numbers in a list and count the rest.",
+      "If any values exist, compute sum, min, max and mean and format them with two decimals; otherwise print the fallback line."
+    ],
+    "tests": [
+      {
+        "input": "12, 7.5, NA, 3, , abc\n",
+        "output": "count: 3\nmissing: 3\nsum: 22.50\nmin: 3.00\nmax: 12.00\nmean: 7.50"
+      },
+      {
+        "input": "10,20,25\n",
+        "output": "count: 3\nmissing: 0\nsum: 55.00\nmin: 10.00\nmax: 25.00\nmean: 18.33"
+      },
+      {
+        "input": "NA,,null\n",
+        "output": "count: 0\nmissing: 3\nsummary: not available"
+      },
+      {
+        "input": "-4.5, 2, NaN, 8\n",
+        "output": "count: 3\nmissing: 1\nsum: 5.50\nmin: -4.50\nmax: 8.00\nmean: 1.83"
+      },
+      {
+        "input": "42\n",
+        "output": "count: 1\nmissing: 0\nsum: 42.00\nmin: 42.00\nmax: 42.00\nmean: 42.00"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this list aliasing code print?",
+      "code": "a = [10, 20]\nb = a\nb.append(30)\nprint(len(a))",
+      "options": [
+        "Error",
+        "None",
+        "2",
+        "3"
+      ],
+      "answer": 3,
+      "explanation": "b = a makes both names refer to the same list, so appending through b also changes a, which now has 3 items."
+    },
+    {
+      "type": "concept",
+      "question": "Which container is the best choice for counting how many orders came from each city?",
+      "options": [
+        "A tuple of city names",
+        "A set of city names",
+        "A dict mapping city to count",
+        "A string of city names joined by commas"
+      ],
+      "answer": 2,
+      "explanation": "A dict gives O(1) lookup and update per city. A set loses the counts and a tuple cannot be updated."
+    },
+    {
+      "type": "output",
+      "question": "What does this NaN comparison print?",
+      "code": "x = float('nan')\nprint(x == x)",
+      "options": [
+        "nan",
+        "ValueError",
+        "False",
+        "True"
+      ],
+      "answer": 2,
+      "explanation": "By the IEEE 754 standard NaN is not equal to anything, including itself, so the comparison is False."
+    },
+    {
+      "type": "scenario",
+      "question": "A pandas column of customer ages is int64. After loading a new file with two blank ages, the column becomes float64. Why?",
+      "options": [
+        "pandas always stores ages as floats",
+        "The CSV reader rounds all numbers",
+        "Blank cells are read as zero",
+        "Missing values are stored as NaN, which is a float, so the column is upcast"
+      ],
+      "answer": 3,
+      "explanation": "NumPy int64 cannot hold NaN, so pandas upcasts to float64. The nullable Int64 dtype avoids this."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these can be used as a dictionary key?",
+      "options": [
+        "{'Pune': 2024}",
+        "{'Pune', 2024}",
+        "['Pune', 2024]",
+        "('Pune', 2024)"
+      ],
+      "answer": 3,
+      "explanation": "Dictionary keys must be hashable. A tuple of immutable items is hashable; lists, dicts and sets are mutable and are not."
+    }
+  ]
+}

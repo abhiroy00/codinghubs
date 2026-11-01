@@ -1,0 +1,241 @@
+{
+  "day": 2,
+  "title": "Context Windows, Token Budgets and Conversation Memory",
+  "module": "How LLMs read prompts",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what a context window is and how input and output share it.",
+    "Describe why chat models appear to remember and how history is actually resent.",
+    "Plan a token budget for system prompt, history, retrieved context and output.",
+    "Compare truncation, summarisation and retrieval as strategies for long conversations.",
+    "Explain the 'lost in the middle' effect and how prompt layout addresses it."
+  ],
+  "definition": "A context window is the maximum number of tokens a model can consider in one request, counting the system prompt, conversation history, any documents or examples, and the tokens it generates in reply. Anything outside the window is invisible to the model, so applications must decide what to include, what to compress and what to leave out.",
+  "theory": [
+    {
+      "heading": "What the context window contains",
+      "body": "Every request is assembled fresh by the application. A typical chat request contains a system prompt, the earlier turns of the conversation, any retrieved documents or tool results, the new user message and room for the answer. Model APIs are stateless: the model does not keep yesterday's chat in memory. The application resends whatever history it wants the model to see, so 'memory' is really a prompt-assembly decision.",
+      "points": [
+        "Input tokens + output tokens must fit within the window.",
+        "A separate max output setting caps how long the answer may be.",
+        "If a request is too long, the API either rejects it or the application must trim it first."
+      ]
+    },
+    {
+      "heading": "Why bigger windows do not solve everything",
+      "body": "Modern models accept anywhere from tens of thousands to over a million tokens, but filling the window has costs. You pay for every input token on every call, latency rises with prompt length, and models do not use all positions equally well. Research such as 'Lost in the Middle' (Liu et al., 2023) found that models retrieve facts placed at the start or end of a long context more reliably than facts buried in the middle.",
+      "points": [
+        "Cost: long history is billed again on every turn.",
+        "Latency: more input tokens means a slower time to first token.",
+        "Attention dilution: irrelevant text can distract the model and lower accuracy.",
+        "Place key instructions and the question where the model attends well, typically at the start and the end."
+      ]
+    },
+    {
+      "heading": "Budgeting tokens",
+      "body": "Treat the window like a budget with reserved slices. Reserve the output first (for example 1,000 tokens), keep the system prompt fixed, then share the rest between recent history and retrieved context. When the total would overflow, a policy decides what to drop. Writing this policy down is part of designing the prompt, not an afterthought.",
+      "points": [
+        "Fixed: system prompt and output reservation.",
+        "Variable: history, retrieved chunks, tool outputs.",
+        "Always keep the system prompt and the latest user message."
+      ]
+    },
+    {
+      "heading": "Strategies for long conversations and documents",
+      "body": "Three common strategies keep requests inside the budget. A sliding window keeps only the most recent turns. Summarisation replaces old turns with a short running summary written by the model. Retrieval stores past turns or documents outside the prompt and fetches only the relevant pieces for each new question. Production assistants often combine them: a summary of older turns, the last few turns verbatim and retrieved facts.",
+      "points": [
+        "Sliding window: simple and cheap, but forgets early facts such as the user's name.",
+        "Running summary: preserves gist, but loses detail and can introduce errors.",
+        "Retrieval memory: scales well, but depends on search quality."
+      ]
+    },
+    {
+      "heading": "Related concepts",
+      "body": "Prompt caching lets providers reuse the processed form of an unchanged prompt prefix, reducing cost and latency for long, repeated system prompts (Day 26). Chunking splits long documents to fit retrieval systems (Day 18). Output limits matter too: if the answer is cut off by the maximum output setting, the API reports a length stop reason and the text is incomplete.",
+      "points": [
+        "Check the stop or finish reason to detect truncated answers.",
+        "Stable prefixes first and variable content last makes caching effective."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Budgeting a support-bot request",
+    "body": "A support bot runs on a model with a 32,000-token window. The team reserves 1,000 tokens for the answer and 1,500 for the system prompt, leaves up to 6,000 tokens for retrieved help-centre articles and gives the remaining room to history. When a long chat exceeds the budget, the oldest turns are replaced by a summary, but the system prompt and the newest user message are never dropped.",
+    "code": {
+      "language": "python",
+      "source": "WINDOW = 32_000\nreserve_output = 1_000\nsystem_prompt = 1_500\nretrieved = 6_000\nhistory_budget = WINDOW - reserve_output - system_prompt - retrieved\nprint(history_budget)  # 23500 tokens available for conversation history"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Multi-turn chat assistants",
+      "description": "Sliding windows plus a running summary keep long customer conversations within budget without losing key facts."
+    },
+    {
+      "title": "Long-document question answering",
+      "description": "Contracts or policy manuals are chunked and only relevant sections are placed in the window."
+    },
+    {
+      "title": "Coding assistants",
+      "description": "Tools pick the open file, related definitions and recent edits rather than the whole repository."
+    },
+    {
+      "title": "Cost control",
+      "description": "Trimming history and capping output length directly reduces per-request token spend."
+    }
+  ],
+  "demonstration": {
+    "description": "A sliding-window trimmer keeps the system message and then walks backwards from the newest message, adding turns while they fit. The newest turns survive; the oldest are dropped first.",
+    "code": {
+      "language": "text",
+      "source": "Budget: 20 tokens (cost = words + 2 per message)\nsystem: You are a helpful tutor.            -> 7\nuser: What is a token?                      -> 6\nassistant: A sub-word unit the model reads. -> 8\nuser: And a context window?                 -> 6"
+    },
+    "output": "Kept: system (7) + latest user (6) = 13 tokens.\nAdding the assistant turn would make 21 > 20, so it and everything older are dropped.\nThe model now cannot see the earlier answer, which is why summaries or retrieval are often added."
+  },
+  "takeaways": [
+    "The context window holds input and output together; both are counted in tokens.",
+    "APIs are stateless: the application resends history it wants the model to see.",
+    "Long prompts cost more, run slower and can bury important facts in the middle.",
+    "Reserve output tokens first, keep the system prompt and latest user message always.",
+    "Combine sliding windows, summaries and retrieval for long conversations.",
+    "Check the finish reason to catch answers truncated by the output limit."
+  ],
+  "interview": [
+    {
+      "question": "What is a context window?",
+      "answer": "The maximum number of tokens the model can attend to in one request, including system prompt, history, documents and the generated output.",
+      "explanation": "Mention explicitly that output tokens share the window; many candidates forget this."
+    },
+    {
+      "question": "How does a chatbot remember earlier messages if the model is stateless?",
+      "answer": "The application stores the conversation and resends the relevant history with every request. The model only knows what is in the current prompt.",
+      "explanation": "This shows you understand that memory is an application design choice, which leads naturally to trimming and summarisation strategies."
+    },
+    {
+      "question": "Your conversation exceeds the context window. What are your options?",
+      "answer": "Drop the oldest turns with a sliding window, replace them with a running summary, move past turns or documents into a retrieval store and fetch only relevant pieces, or switch to a model with a larger window if cost allows.",
+      "explanation": "A strong answer covers trade-offs: sliding windows forget early facts, summaries lose detail, retrieval depends on search quality."
+    },
+    {
+      "question": "What is the 'lost in the middle' problem and how do you design around it?",
+      "answer": "Models tend to use information at the beginning and end of a long context more reliably than information in the middle. Put key instructions first, the question last, keep context focused and order retrieved chunks so the most relevant are near the edges.",
+      "explanation": "Citing the finding and turning it into concrete layout rules shows applied knowledge rather than trivia."
+    },
+    {
+      "question": "If a model supports a million tokens, why not send the whole knowledge base every time?",
+      "answer": "Every input token is billed and adds latency on every call, irrelevant text can distract the model and reduce accuracy, and the knowledge base changes. Retrieval of relevant chunks is usually cheaper, faster and more accurate; long context suits one-off analysis of a single large document.",
+      "explanation": "Interviewers look for cost, latency and quality reasoning, plus a fair note on when long context is the right tool."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Trim chat history to fit a token budget",
+    "difficulty": "Basic",
+    "objective": "Implement the sliding-window policy that real chat applications use to keep requests inside the context window.",
+    "statement": "Each message costs (number of whitespace-separated words in its text) + 2 tokens. If the first message has role system, it must always be kept. Then walk backwards from the newest message, keeping messages while the running total stays within the budget; stop at the first message that does not fit so the kept history stays contiguous. Print the kept messages in their original order and a summary line. If the system message alone exceeds the budget, print only: ERROR: system prompt does not fit",
+    "language": "python",
+    "input_format": "First line: integer budget B. Each following non-empty line is a message in the form role: text (split at the first colon; trim spaces).",
+    "output_format": "Kept messages as 'role: text', one per line, oldest first, then a line 'Kept: <k> of <n>, tokens: <t>'. Or the single ERROR line.",
+    "example": {
+      "input": "20\nsystem: You are a helpful tutor.\nuser: What is a token?\nassistant: A sub-word unit the model reads.\nuser: And a context window?\n",
+      "output": "system: You are a helpful tutor.\nuser: And a context window?\nKept: 2 of 4, tokens: 13"
+    },
+    "constraints": [
+      "1 <= number of messages <= 1000; 0 <= B <= 10^6.",
+      "Only the first message can be a system message.",
+      "Blank lines are ignored."
+    ],
+    "starter": "import sys\n\nlines = sys.stdin.read().split('\\n')\nbudget = int(lines[0])\nmessages = []\nfor line in lines[1:]:\n    if line.strip():\n        role, text = line.split(':', 1)\n        messages.append((role.strip(), text.strip()))\n\n# TODO: keep the system message, then add newest messages while they fit\n",
+    "solution": "import sys\n\nlines = sys.stdin.read().split('\\n')\nbudget = int(lines[0])\nmessages = []\nfor line in lines[1:]:\n    if line.strip():\n        role, text = line.split(':', 1)\n        messages.append((role.strip(), text.strip()))\n\ndef cost(msg):\n    return len(msg[1].split()) + 2\n\nkept_front = []\nrest = messages\ntotal = 0\nif messages and messages[0][0] == 'system':\n    total = cost(messages[0])\n    if total > budget:\n        print('ERROR: system prompt does not fit')\n        sys.exit(0)\n    kept_front = [messages[0]]\n    rest = messages[1:]\n\nkept_tail = []\nfor msg in reversed(rest):\n    c = cost(msg)\n    if total + c > budget:\n        break\n    total += c\n    kept_tail.append(msg)\nkept = kept_front + list(reversed(kept_tail))\n\nfor role, text in kept:\n    print(f'{role}: {text}')\nprint(f'Kept: {len(kept)} of {len(messages)}, tokens: {total}')\n",
+    "explanation": [
+      "Parse each line into (role, text) by splitting at the first colon only, so colons inside the text survive.",
+      "If the first message is a system message, charge it first; if it alone is over budget, report the error.",
+      "Walk the remaining messages from newest to oldest, adding each while it fits and stopping at the first that does not.",
+      "Reverse the collected tail to restore chronological order and print the kept messages with the totals."
+    ],
+    "tests": [
+      {
+        "input": "20\nsystem: You are a helpful tutor.\nuser: What is a token?\nassistant: A sub-word unit the model reads.\nuser: And a context window?\n",
+        "output": "system: You are a helpful tutor.\nuser: And a context window?\nKept: 2 of 4, tokens: 13"
+      },
+      {
+        "input": "100\nsystem: You are a helpful tutor.\nuser: What is a token?\nassistant: A sub-word unit the model reads.\nuser: And a context window?\n",
+        "output": "system: You are a helpful tutor.\nuser: What is a token?\nassistant: A sub-word unit the model reads.\nuser: And a context window?\nKept: 4 of 4, tokens: 27"
+      },
+      {
+        "input": "10\nuser: hi there\nassistant: hello\nuser: explain RAG briefly please\n",
+        "output": "assistant: hello\nuser: explain RAG briefly please\nKept: 2 of 3, tokens: 9"
+      },
+      {
+        "input": "5\nsystem: You must always answer in formal English.\nuser: hello\n",
+        "output": "ERROR: system prompt does not fit"
+      },
+      {
+        "input": "7\nsystem: Be brief.\nuser: one two three\n",
+        "output": "system: Be brief.\nKept: 1 of 2, tokens: 4"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which tokens count towards a model's context window?",
+      "options": [
+        "Prompt tokens and generated output tokens together",
+        "Only tokens generated by the model",
+        "Only the user's latest message",
+        "Only the system prompt and history"
+      ],
+      "answer": 0,
+      "explanation": "The window covers everything in the request plus the tokens generated in reply."
+    },
+    {
+      "type": "concept",
+      "question": "Why does a chat model seem to remember earlier turns?",
+      "options": [
+        "Earlier turns are cached permanently in the tokenizer",
+        "The application resends earlier turns as part of each new prompt",
+        "The model updates its weights after every message",
+        "The provider stores a private memory inside the model"
+      ],
+      "answer": 1,
+      "explanation": "Model APIs are stateless. Apparent memory comes from history the application includes in each request."
+    },
+    {
+      "type": "scenario",
+      "question": "In a 60-turn chat, the bot forgets the user's name given in turn 1. The app uses a pure sliding window. What is the best fix?",
+      "options": [
+        "Raise the temperature",
+        "Ask the user to repeat their name every turn",
+        "Delete the system prompt to free space",
+        "Keep a running summary or stored key facts that are always included"
+      ],
+      "answer": 3,
+      "explanation": "A sliding window drops old turns. A running summary or a small always-included memory of key facts preserves important early information."
+    },
+    {
+      "type": "concept",
+      "question": "According to the 'lost in the middle' finding, where is a key fact least reliably used in a long prompt?",
+      "options": [
+        "Buried in the middle",
+        "At the very end",
+        "Inside the system prompt",
+        "At the very beginning"
+      ],
+      "answer": 0,
+      "explanation": "Models tend to use information at the start and end of long contexts better than information in the middle."
+    },
+    {
+      "type": "output",
+      "question": "Messages cost words + 2 tokens. With a budget of 10, a system message 'Be concise.' and a user message 'Explain tokens in detail please', what does the sliding-window trimmer keep?",
+      "options": [
+        "Only the system message, 4 tokens",
+        "Nothing; it reports an error",
+        "Both messages, 11 tokens",
+        "Only the user message"
+      ],
+      "answer": 0,
+      "explanation": "System costs 2 + 2 = 4. The user message costs 5 + 2 = 7, and 4 + 7 = 11 exceeds 10, so only the system message is kept."
+    }
+  ]
+}

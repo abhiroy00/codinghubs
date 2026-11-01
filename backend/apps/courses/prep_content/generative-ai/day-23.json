@@ -1,0 +1,237 @@
+{
+  "day": 23,
+  "title": "ReAct and Tool-Using Agents",
+  "module": "Agents & tools",
+  "level": "Advanced",
+  "objectives": [
+    "Explain the ReAct pattern: reasoning and acting interleaved.",
+    "Show how an agent alternates thought, action and observation.",
+    "Describe how tool results are fed back into the prompt.",
+    "Implement a simple ReAct loop in Python with a tool.",
+    "Discuss failure modes such as infinite loops and tool errors."
+  ],
+  "definition": "ReAct (Reason + Act) is an agent pattern where the model interleaves reasoning (thought) with action (tool calls) and observation. It writes a thought about what to do, calls a tool, reads the result, and uses that observation to inform the next thought. This makes the agent's reasoning visible and lets it adjust based on real results.",
+  "theory": [
+    {
+      "heading": "The ReAct pattern",
+      "body": "ReAct alternates Thought, Action and Observation. The Thought explains the reasoning and what to try next. The Action names a tool and its arguments. The Observation is the tool's result. This cycle repeats, with each observation becoming part of the context for the next thought.",
+      "points": [
+        "Thought: reasoning and plan.",
+        "Action: tool name and arguments.",
+        "Observation: tool result fed back.",
+        "Repeat until the answer is found."
+      ]
+    },
+    {
+      "heading": "Interleaving reasoning and action",
+      "body": "Instead of planning all steps up front, ReAct decides each step after seeing the previous result. If a search returns nothing, the agent's next thought tries a different query. This adaptability makes ReAct robust for uncertain or multi-step tasks.",
+      "points": [
+        "Decide the next step after each observation.",
+        "Change approach if a tool fails or returns little.",
+        "Reasoning is visible in the thought trace."
+      ]
+    },
+    {
+      "heading": "Feeding observations back",
+      "body": "Each tool result is inserted into the prompt as an observation so the model can reason over it. The prompt grows with each step: question, thought-action-observation pairs, then the next thought. The model uses the full history to decide the final answer.",
+      "points": [
+        "Observations become context for later thoughts.",
+        "The prompt accumulates the full trace.",
+        "The model sees what worked and what did not."
+      ]
+    },
+    {
+      "heading": "Simple ReAct loop in code",
+      "body": "A basic ReAct loop calls the model, parses its thought/action/observation, runs the tool, appends the result, and repeats. The loop stops when the model produces a final answer or the step limit is reached.",
+      "points": [
+        "Call the model and parse the response.",
+        "Run the named tool with the given arguments.",
+        "Append the observation and repeat.",
+        "Stop on a final answer or step limit."
+      ]
+    },
+    {
+      "heading": "Failure modes",
+      "body": "ReAct can loop forever if the agent keeps choosing the same failing tool. It can also pick the wrong tool, misparse a result, or exceed the context window. Step limits, tool retries and a final-answer format prevent the worst failures.",
+      "points": [
+        "Step limits stop infinite loops.",
+        "Retry or switch tools after failures.",
+        "Require a final-answer format to end the loop."
+      ]
+    }
+  ],
+  "example": {
+    "title": "ReAct for a math word problem",
+    "body": "Question: 'A shop sells pens at 5 rupees each. Ravi buys 7 pens and pays with 100. How much change?' Thought: I need to multiply 7 by 5. Action: calculator(7*5). Observation: 35. Thought: Now subtract from 100. Action: calculator(100-35). Observation: 65. Final answer: 65 rupees.",
+    "code": {
+      "language": "text",
+      "source": "Thought: I need the total cost of 7 pens at 5 rupees each.\nAction: calculator(7 * 5)\nObservation: 35\nThought: Now subtract 35 from 100 to get the change.\nAction: calculator(100 - 35)\nObservation: 65\nFinal answer: 65 rupees"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Math and reasoning",
+      "description": "Use a calculator tool for arithmetic steps in word problems."
+    },
+    {
+      "title": "Research",
+      "description": "Search, read pages, and synthesise findings across sources."
+    },
+    {
+      "title": "Database QA",
+      "description": "Query a database, inspect results, and refine the query."
+    },
+    {
+      "title": "Coding",
+      "description": "Run code, read errors and patch until it passes tests."
+    }
+  ],
+  "demonstration": {
+    "description": "Show a ReAct trace for a lookup task where the first search fails and the second succeeds.",
+    "code": {
+      "language": "text",
+      "source": "Thought: Search for the company's refund policy.\nAction: search('refund policy')\nObservation: No results found.\nThought: Try a different query.\nAction: search('money back guarantee')\nObservation: Refunds within 30 days.\nFinal answer: Refunds are available within 30 days."
+    },
+    "output": "The agent recovers from a failed search by trying a different query."
+  },
+  "takeaways": [
+    "ReAct interleaves Thought, Action and Observation in a loop.",
+    "Each observation shapes the next thought, making the agent adaptive.",
+    "Tool results are inserted into the prompt as context.",
+    "A simple loop parses the model's output, runs the tool and repeats.",
+    "Step limits and a final-answer format prevent infinite loops.",
+    "ReAct works well for math, research and tool-based tasks."
+  ],
+  "interview": [
+    {
+      "question": "What does ReAct stand for?",
+      "answer": "Reason and Act: the model interleaves reasoning (thought) with actions (tool calls) and observations.",
+      "explanation": "ReAct makes reasoning visible and adaptable."
+    },
+    {
+      "question": "How does ReAct differ from planning all steps up front?",
+      "answer": "ReAct decides each step after seeing the previous result, so it can change approach when a tool fails or returns unexpected data.",
+      "explanation": "This adaptability is the key advantage."
+    },
+    {
+      "question": "How are tool results fed back to the model?",
+      "answer": "Each observation is appended to the prompt so the model can reason over it in the next thought.",
+      "explanation": "The prompt accumulates the full thought-action-observation trace."
+    },
+    {
+      "question": "What failure mode can ReAct have?",
+      "answer": "It can loop forever choosing the same failing tool, pick the wrong tool, or exceed the context window. Step limits and final-answer formats prevent this.",
+      "explanation": "Mention step limits as the main defence."
+    },
+    {
+      "question": "When is ReAct useful?",
+      "answer": "For tasks needing reasoning plus tool use, such as math word problems, research and database QA.",
+      "explanation": "Simple factual questions do not need ReAct."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Simulate a ReAct calculator loop",
+    "difficulty": "Intermediate",
+    "objective": "Implement a tiny ReAct loop that parses calculator actions and computes results until a final answer is given.",
+    "statement": "Read lines until a line starting with 'Final answer:'. Each earlier line is either 'Thought: ...' (ignore), 'Action: calculator(<expression>)' (evaluate the expression and print 'Observation: <result>'), or invalid (print 'Observation: error'). Stop at the 'Final answer:' line and print it unchanged.",
+    "language": "python",
+    "input_format": "Multiple lines: Thought/Action lines, then one 'Final answer: ...' line.",
+    "output_format": "For each Action line, print 'Observation: <result>' or 'Observation: error'. Finally print the 'Final answer:' line unchanged.",
+    "example": {
+      "input": "Thought: I need to add 2 and 3.\nAction: calculator(2 + 3)\nThought: Now multiply by 4.\nAction: calculator(5 * 4)\nFinal answer: 20\n",
+      "output": "Observation: 5\nObservation: 20\nFinal answer: 20"
+    },
+    "constraints": [
+      "Expressions contain only integers, +, -, *, / and parentheses.",
+      "Division produces a float; print it as Python would.",
+      "Invalid expressions print 'Observation: error'.",
+      "At most 20 lines of input."
+    ],
+    "starter": "while True:\n    line = input()\n    if line.startswith('Final answer:'):\n        print(line)\n        break\n    # TODO: parse Action lines and evaluate calculator\n",
+    "solution": "while True:\n    line = input()\n    if line.startswith('Final answer:'):\n        print(line)\n        break\n    if line.startswith('Action: calculator(') and line.endswith(')'):\n        expr = line[len('Action: calculator('):-1]\n        try:\n            result = eval(expr, {'__builtins__': {}})\n            print(f'Observation: {result}')\n        except Exception:\n            print('Observation: error')\n    else:\n        print('Observation: error')\n",
+    "explanation": [
+      "Read lines until 'Final answer:'.",
+      "For Action lines, extract the expression inside calculator(...).",
+      "Evaluate the expression safely and print the observation.",
+      "On any error, print 'Observation: error'.",
+      "Print the final answer line unchanged and stop."
+    ],
+    "tests": [
+      {
+        "input": "Thought: I need to add 2 and 3.\nAction: calculator(2 + 3)\nThought: Now multiply by 4.\nAction: calculator(5 * 4)\nFinal answer: 20\n",
+        "output": "Observation: 5\nObservation: 20\nFinal answer: 20"
+      },
+      {
+        "input": "Action: calculator(10 / 3)\nFinal answer: 3.3333333333333335\n",
+        "output": "Observation: 3.3333333333333335\nFinal answer: 3.3333333333333335"
+      },
+      {
+        "input": "Action: calculator(1 / 0)\nFinal answer: cannot divide\n",
+        "output": "Observation: error\nFinal answer: cannot divide"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does ReAct stand for?",
+      "options": [
+        "Reason and Answer",
+        "Reason and Act",
+        "Read and Act",
+        "Run and Act"
+      ],
+      "answer": 1,
+      "explanation": "ReAct is Reason and Act: interleaving thought, tool calls and observation."
+    },
+    {
+      "type": "concept",
+      "question": "What are the three parts of a ReAct step?",
+      "options": [
+        "Input, output, error",
+        "Thought, Action, Observation",
+        "Train, validate, test",
+        "Prompt, model, response"
+      ],
+      "answer": 1,
+      "explanation": "ReAct alternates Thought (reasoning), Action (tool call) and Observation (tool result)."
+    },
+    {
+      "type": "scenario",
+      "question": "A search tool returns no results. What should a ReAct agent do next?",
+      "options": [
+        "Try a different search query in the next thought",
+        "Repeat the same search",
+        "Use a calculator",
+        "Stop and guess"
+      ],
+      "answer": 0,
+      "explanation": "The observation shapes the next thought, so the agent tries a different approach."
+    },
+    {
+      "type": "concept",
+      "question": "How are observations used in the next ReAct step?",
+      "options": [
+        "Sent to the user",
+        "Stored in weights",
+        "Discarded",
+        "Added to the prompt as context"
+      ],
+      "answer": 3,
+      "explanation": "Each observation is appended to the prompt so the model can reason over it next."
+    },
+    {
+      "type": "concept",
+      "question": "What prevents a ReAct agent from looping forever?",
+      "options": [
+        "Higher temperature",
+        "A larger model",
+        "A step limit and a final-answer format",
+        "More tools"
+      ],
+      "answer": 2,
+      "explanation": "Step limits cap iterations and a final-answer format gives a clean exit."
+    }
+  ]
+}

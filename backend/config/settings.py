@@ -128,6 +128,10 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': False,
 }
 
+# Interview-prep days unlock one at a time once the previous day is complete. Set True to restore that rule;
+# while False, learners can open and complete any day (used while the daily content is still being authored).
+PREP_REQUIRE_SEQUENTIAL_UNLOCK = config('PREP_REQUIRE_SEQUENTIAL_UNLOCK', default=False, cast=bool)
+
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID', default='')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='')
 RAZORPAY_WEBHOOK_SECRET = config('RAZORPAY_WEBHOOK_SECRET', default='')

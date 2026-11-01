@@ -1,0 +1,242 @@
+{
+  "day": 5,
+  "title": "How LLMs Work: Training, Inference & Prediction",
+  "module": "GenAI foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Describe the LLM lifecycle: pre-training, supervised fine-tuning and preference alignment.",
+    "Explain how the training loss (cross-entropy on the next token) drives learning.",
+    "Walk through inference step by step: tokenise, forward pass, logits, softmax, decode, repeat.",
+    "Explain decoding settings such as greedy, temperature, top-k and top-p and their effect on output.",
+    "Discuss why inference cost and latency depend on input and output length."
+  ],
+  "definition": "Training is the phase in which an LLM's parameters are adjusted, using huge amounts of text, so that it assigns high probability to the actual next token. Inference is the phase in which the trained, frozen model receives a prompt and generates a response token by token. At each step the model predicts a probability distribution over its vocabulary, and a decoding strategy picks the next token.",
+  "theory": [
+    {
+      "heading": "Stage 1: pre-training",
+      "body": "Pre-training is self-supervised: the labels come from the text itself. For every position in a document the model predicts the next token, and the loss is the cross-entropy between its predicted distribution and the true token, that is, minus the log of the probability it gave to the correct token. Gradients from this loss are back-propagated and an optimiser such as AdamW updates billions of weights. Repeated over trillions of tokens, the model absorbs grammar, facts, reasoning patterns and coding conventions.",
+      "points": [
+        "No human labelling needed: the next token is the label.",
+        "Loss = -log P(correct next token); lower loss means better predictions.",
+        "This is the most expensive stage, taking thousands of GPUs for weeks or months."
+      ]
+    },
+    {
+      "heading": "Stage 2 and 3: fine-tuning and alignment",
+      "body": "Supervised fine-tuning (SFT) continues training on curated prompt-response pairs, teaching the model to follow instructions and use a chat format. Preference alignment then teaches it which of two responses humans prefer, using RLHF (a reward model plus reinforcement learning, often PPO) or simpler direct methods such as DPO. Some recent reasoning models also add reinforcement learning on verifiable tasks such as maths and code, rewarding correct final answers.",
+      "points": [
+        "SFT: thousands to millions of high-quality demonstrations.",
+        "RLHF/DPO: aligns tone, helpfulness and safety with human preferences.",
+        "These stages are far cheaper than pre-training but shape behaviour strongly."
+      ]
+    },
+    {
+      "heading": "Inference: from prompt to token",
+      "body": "At inference time the weights are frozen. The prompt is tokenised into IDs, converted to embeddings and passed through every Transformer layer. The final layer produces a vector of logits, one raw score per vocabulary token (often 30,000 to 200,000 tokens). Softmax turns logits into probabilities, a decoding rule picks one token, the token is appended to the input and the loop repeats until an end-of-sequence token or a max-token limit is reached.",
+      "points": [
+        "Prefill: the whole prompt is processed in parallel once.",
+        "Decode: output tokens are produced one at a time, each depending on all previous ones.",
+        "A KV cache stores past attention keys and values so earlier tokens are not recomputed."
+      ]
+    },
+    {
+      "heading": "Decoding strategies",
+      "body": "Greedy decoding always picks the highest-probability token: repeatable but can be dull or repetitive. Sampling picks randomly according to the probabilities. Temperature divides the logits before softmax: values below 1 sharpen the distribution (more focused), above 1 flatten it (more varied), and 0 is treated as greedy. Top-k keeps only the k most likely tokens; top-p (nucleus) keeps the smallest set whose probabilities sum to p. Production systems often use low temperature for extraction and code, and higher for brainstorming.",
+      "points": [
+        "softmax(z_i / T) = exp(z_i / T) / sum_j exp(z_j / T).",
+        "Top-k and top-p remove the unlikely tail that causes nonsense.",
+        "Beam search keeps several candidate sequences; common in translation, rare in chat."
+      ]
+    },
+    {
+      "heading": "Cost, latency and limits",
+      "body": "Because decode runs once per output token, long answers take longer than long prompts of the same size. Providers therefore price input and output tokens separately, with output usually costing more. Latency is described as time-to-first-token (dominated by prefill) and tokens-per-second (decode speed). Understanding this helps you design prompts and choose models sensibly.",
+      "points": [
+        "Limit max output tokens to control cost and latency.",
+        "Streaming returns tokens as they are generated, improving perceived speed.",
+        "Prompt caching can reuse prefill work for repeated prefixes."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Computing the training loss for one prediction",
+    "body": "Suppose the training text is 'Mumbai is a coastal city' and the model must predict the token after 'Mumbai is a'. If it gives the correct token 'coastal' a probability of 0.6, the loss for that position is -ln(0.6), about 0.51. If a later checkpoint gives it 0.9, the loss drops to about 0.105. Training repeats this over trillions of positions and nudges the weights to lower the average loss.",
+    "code": {
+      "language": "python",
+      "source": "import math\n\nfor p_correct in (0.1, 0.6, 0.9, 0.99):\n    loss = -math.log(p_correct)\n    print(f'P(correct)={p_correct:<5} loss={loss:.3f}')\n\n# P(correct)=0.1   loss=2.303\n# P(correct)=0.6   loss=0.511\n# P(correct)=0.9   loss=0.105\n# P(correct)=0.99  loss=0.010"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Choosing decoding settings",
+      "description": "Use temperature 0 to 0.3 for data extraction, SQL and code; 0.7 to 1.0 for creative writing and brainstorming."
+    },
+    {
+      "title": "Cost estimation",
+      "description": "Estimate monthly spend from average input and output tokens per request multiplied by volume and per-token prices."
+    },
+    {
+      "title": "Latency tuning",
+      "description": "Stream tokens to the UI, cap max tokens and cache shared prompt prefixes to make chat feel fast."
+    },
+    {
+      "title": "Fine-tuning decisions",
+      "description": "Knowing that SFT and preference tuning shape behaviour helps decide when to fine-tune instead of only prompting."
+    }
+  ],
+  "demonstration": {
+    "description": "Apply temperature to the same logits. With low temperature the top token dominates; with high temperature the distribution flattens, so sampling picks less likely tokens more often.",
+    "code": {
+      "language": "python",
+      "source": "import math\n\nlogits = {'Paris': 4.0, 'Lyon': 2.0, 'London': 1.0}\nfor T in (0.5, 1.0, 2.0):\n    exps = {t: math.exp(z / T) for t, z in logits.items()}\n    total = sum(exps.values())\n    print(T, {t: round(e / total, 3) for t, e in exps.items()})"
+    },
+    "output": "0.5 {'Paris': 0.98, 'Lyon': 0.018, 'London': 0.002}\n1.0 {'Paris': 0.844, 'Lyon': 0.114, 'London': 0.042}\n2.0 {'Paris': 0.629, 'Lyon': 0.231, 'London': 0.14}"
+  },
+  "takeaways": [
+    "Pre-training minimises cross-entropy on the next token over massive unlabelled text.",
+    "SFT teaches instruction following; RLHF or DPO aligns outputs with human preferences.",
+    "Inference: tokenise, forward pass, logits, softmax, decode, append, repeat.",
+    "Temperature reshapes probabilities; top-k and top-p cut the unlikely tail; greedy is the most repeatable.",
+    "Output tokens are generated sequentially, so they dominate latency and usually cost more.",
+    "The KV cache and streaming are key inference optimisations."
+  ],
+  "interview": [
+    {
+      "question": "What are the main stages of training an LLM like ChatGPT?",
+      "answer": "Self-supervised pre-training on large text corpora with next-token prediction, supervised fine-tuning on instruction-response pairs, and preference alignment with RLHF or DPO.",
+      "explanation": "Name each stage, its data and its purpose. Mentioning that pre-training dominates the cost while alignment shapes behaviour is a strong addition."
+    },
+    {
+      "question": "What does temperature do?",
+      "answer": "It divides the logits before softmax. Low temperature sharpens the distribution so the most likely token dominates; high temperature flattens it so less likely tokens are sampled more. Temperature 0 is effectively greedy decoding.",
+      "explanation": "Give the formula and a use: low for factual extraction or code, higher for creative tasks."
+    },
+    {
+      "question": "Explain top-k versus top-p sampling.",
+      "answer": "Top-k keeps a fixed number k of most likely tokens and renormalises. Top-p keeps the smallest set of tokens whose cumulative probability reaches p, so the candidate set grows or shrinks with the model's confidence.",
+      "explanation": "The key insight is that top-p adapts to the shape of the distribution while top-k does not."
+    },
+    {
+      "question": "Why are output tokens slower and often more expensive than input tokens?",
+      "answer": "Input tokens are processed in parallel in one prefill pass, but output tokens are generated one at a time, each needing a forward pass. Decode is memory-bandwidth bound and occupies the GPU longer per token.",
+      "explanation": "Mention prefill vs decode and the KV cache. This shows you understand serving, not only modelling."
+    },
+    {
+      "question": "What is the KV cache?",
+      "answer": "During generation the attention keys and values of previous tokens are stored, so each new step only computes them for the newest token. It trades GPU memory for much faster decoding.",
+      "explanation": "Advanced candidates note that KV-cache memory grows with context length and batch size, which limits how many requests a GPU can serve."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Next-token distribution with temperature and top-k",
+    "difficulty": "Basic",
+    "objective": "Implement the final steps of inference: turning logits into a filtered probability distribution and choosing the greedy token.",
+    "statement": "Given a temperature T, a top-k value and a list of candidate tokens with logits: keep only the k tokens with the highest logits (k = 0 means keep all; ties in logit are broken alphabetically by token). Convert the kept logits to probabilities with softmax(logit / T). If T is 0, give probability 1 to the highest-logit token (alphabetically first on ties) and 0 to the others. Print the kept tokens sorted by probability descending (ties alphabetically), then the greedy choice.",
+    "language": "python",
+    "input_format": "Line 1: T k (a float and an integer).\nLine 2: N, the number of candidate tokens.\nNext N lines: token logit",
+    "output_format": "One line per kept token: <token> <probability with 3 decimals>\nLast line: greedy=<token>",
+    "example": {
+      "input": "1.0 0\n3\nParis 4.0\nLyon 2.0\nLondon 1.0\n",
+      "output": "Paris 0.844\nLyon 0.114\nLondon 0.042\ngreedy=Paris"
+    },
+    "constraints": [
+      "0 <= T <= 5; 0 <= k <= N; 1 <= N <= 50.",
+      "Tokens are unique and contain no spaces.",
+      "Use a numerically stable softmax (subtract the maximum before exponentiating)."
+    ],
+    "starter": "import math\n\nT, k = input().split()\nT, k = float(T), int(k)\nn = int(input())\ncands = []\nfor _ in range(n):\n    tok, logit = input().split()\n    cands.append((tok, float(logit)))\n\n# TODO: top-k filter, temperature softmax, print sorted probabilities and greedy token\n",
+    "solution": "import math\n\nT, k = input().split()\nT, k = float(T), int(k)\nn = int(input())\ncands = []\nfor _ in range(n):\n    tok, logit = input().split()\n    cands.append((tok, float(logit)))\n\ncands.sort(key=lambda c: (-c[1], c[0]))\nif k > 0:\n    cands = cands[:k]\n\nif T == 0:\n    probs = {tok: (1.0 if i == 0 else 0.0) for i, (tok, _) in enumerate(cands)}\nelse:\n    top = cands[0][1]\n    exps = {tok: math.exp((z - top) / T) for tok, z in cands}\n    total = sum(exps.values())\n    probs = {tok: e / total for tok, e in exps.items()}\n\nfor tok, p in sorted(probs.items(), key=lambda item: (-item[1], item[0])):\n    print(f'{tok} {p:.3f}')\nprint(f'greedy={cands[0][0]}')\n",
+    "explanation": [
+      "Sort candidates by logit descending (ties alphabetically); the first element is then the greedy token.",
+      "Apply top-k by slicing the sorted list when k > 0.",
+      "For T > 0, compute exp((z - max) / T) for each kept token; subtracting the maximum avoids overflow and does not change the result.",
+      "Divide by the sum to renormalise over the kept tokens only, which is exactly what top-k sampling does.",
+      "Handle T = 0 separately as greedy decoding: all probability on the top token."
+    ],
+    "tests": [
+      {
+        "input": "1.0 0\n3\nParis 4.0\nLyon 2.0\nLondon 1.0\n",
+        "output": "Paris 0.844\nLyon 0.114\nLondon 0.042\ngreedy=Paris"
+      },
+      {
+        "input": "0.5 2\n4\nblue 1.0\nred 3.0\ngreen 2.5\nyellow -1\n",
+        "output": "red 0.731\ngreen 0.269\ngreedy=red"
+      },
+      {
+        "input": "0 0\n3\nyes 2.0\nno 2.0\nmaybe 0.5\n",
+        "output": "no 1.000\nmaybe 0.000\nyes 0.000\ngreedy=no"
+      },
+      {
+        "input": "2.0 0\n2\ncat 1000\ndog 999\n",
+        "output": "cat 0.622\ndog 0.378\ngreedy=cat"
+      },
+      {
+        "input": "1.0 1\n3\na 0.1\nb 0.2\nc 0.3\n",
+        "output": "c 1.000\ngreedy=c"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Where do the training labels come from during LLM pre-training?",
+      "options": [
+        "The text itself: each next token is the label",
+        "User feedback in the chat app",
+        "Human annotators label every sentence",
+        "A separate classifier"
+      ],
+      "answer": 0,
+      "explanation": "Pre-training is self-supervised; the correct next token in the document serves as the target."
+    },
+    {
+      "type": "output",
+      "question": "The model assigns probability 0.5 to the correct next token. Using natural log, what is the cross-entropy loss for that position, approximately?",
+      "options": [
+        "0.693",
+        "0.5",
+        "1.0",
+        "0.25"
+      ],
+      "answer": 0,
+      "explanation": "Loss = -ln(0.5) ≈ 0.693. A perfect prediction (probability 1) would give loss 0."
+    },
+    {
+      "type": "scenario",
+      "question": "Your invoice-extraction service returns slightly different JSON values each run. Which setting change helps most?",
+      "options": [
+        "Increase top-k to the full vocabulary",
+        "Remove the max-token limit",
+        "Increase temperature to 1.5",
+        "Lower temperature towards 0"
+      ],
+      "answer": 3,
+      "explanation": "Low temperature (near-greedy decoding) makes outputs focused and repeatable, which suits extraction."
+    },
+    {
+      "type": "concept",
+      "question": "What does top-p (nucleus) sampling keep at each step?",
+      "options": [
+        "Exactly p tokens",
+        "Only tokens with probability above p",
+        "The p least likely tokens",
+        "The smallest set of top tokens whose probabilities sum to at least p"
+      ],
+      "answer": 3,
+      "explanation": "Nucleus sampling keeps the most likely tokens until their cumulative probability reaches p, then renormalises."
+    },
+    {
+      "type": "concept",
+      "question": "Which stage teaches a model which of two answers humans prefer?",
+      "options": [
+        "Preference alignment such as RLHF or DPO",
+        "Prefill",
+        "Tokenisation",
+        "Pre-training"
+      ],
+      "answer": 0,
+      "explanation": "RLHF and DPO train on human preference comparisons to align tone, helpfulness and safety."
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "day": 5,
+  "title": "Control Flow: Conditionals, Loops and Loop Control",
+  "module": "Python foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Write if/elif/else chains that choose between mutually exclusive branches.",
+    "Iterate over sequences and ranges with for loops and use while for sentinel-driven repetition.",
+    "Use break, continue and the loop else clause to control iteration precisely.",
+    "Explain when the else attached to a loop runs and why it pairs with break.",
+    "Recognise pitfalls such as mutating a list while iterating over it."
+  ],
+  "definition": "Control flow is the order in which a program's statements run. Python selects a branch with the conditional statement if/elif/else, which tests truthiness, and repeats work with two loops: for, which visits each item of an iterable in turn, and while, which repeats as long as a condition stays true. break, continue and the optional else clause attached to a loop give fine-grained control over how iteration ends.",
+  "theory": [
+    {
+      "heading": "Conditionals and truthiness",
+      "body": "An if statement runs its block only when the condition is truthy. Because every object has a truth value, you rarely need to compare against True or False: empty collections, 0, 0.0, None and the empty string are falsy and most other objects are truthy. Use elif for additional mutually exclusive tests and a final else for the fallback. Python has no switch statement, so a chain of elif or a dictionary that maps keys to functions is the usual replacement. The conditional expression value_if_true if condition else value_if_false is a compact single-expression form.",
+      "points": [
+        "Falsy values: None, False, 0, 0.0, '', [], (), {}, set().",
+        "Order matters: test the most specific condition first.",
+        "Guard clauses (early return) keep deep nesting out of functions.",
+        "a if cond else b selects a value, not a block of statements."
+      ]
+    },
+    {
+      "heading": "for loops and range",
+      "body": "A for loop iterates directly over any iterable, asking it for the next item until it is exhausted, so for item in items is clearer and safer than indexing. range(stop), range(start, stop) and range(start, stop, step) produce a lazy sequence of integers and never include stop. When you need both the index and the value, use enumerate(iterable, start=0); when you need to walk two sequences together, use zip. The loop target can unpack tuples, for example for key, value in pairs:. Iterating directly also works on strings, dictionaries, sets, files and generators.",
+      "points": [
+        "range(3) yields 0, 1, 2.",
+        "enumerate gives (index, value) pairs without a manual counter.",
+        "zip stops at the shortest of its inputs.",
+        "Unpacking in the loop target mirrors tuple assignment."
+      ]
+    },
+    {
+      "heading": "while loops and sentinels",
+      "body": "A while loop re-tests its condition before every pass, so it fits situations where the number of iterations is unknown: reading until end of input, retrying until success, or advancing a value until it reaches a target. Always make sure something inside the body moves the loop toward termination, otherwise it runs forever. A common pattern is while True: with an explicit break, and while (line := reader.readline()): to stop at an empty string. Remember that the condition is re-evaluated each time, unlike a one-off if test.",
+      "points": [
+        "Update the loop variable inside the body so the loop can end.",
+        "while True plus break is a readable loop-until-done idiom.",
+        "continue skips the rest of a pass and re-tests the condition.",
+        "Avoid busy loops that spin without doing useful work."
+      ]
+    },
+    {
+      "heading": "break, continue and the loop else clause",
+      "body": "break exits the innermost loop immediately, continue skips the remaining statements of the current pass but keeps looping, and both affect only the nearest enclosing loop. Python's unusual loop else clause runs only if the loop finished normally, that is without hitting a break. It is the idiomatic way to express searched for something and did not find it, because code after the loop cannot tell whether a break occurred. In nested loops break leaves only one level, so a flag variable or a function with return is often cleaner.",
+      "points": [
+        "break ends the loop; continue starts the next iteration.",
+        "The else block is skipped whenever break runs.",
+        "Use a search loop with else instead of a found flag.",
+        "return inside a function exits the whole function, not just the loop."
+      ]
+    },
+    {
+      "heading": "Common pitfalls",
+      "body": "Removing items from a list while iterating over it skips elements because the indices shift; iterate over a copy, build a new list, or collect the items to delete first. Off-by-one errors are common when translating between range and inclusive bounds. Changing the size of a dictionary or set during iteration raises RuntimeError. Finally, a for loop over an empty iterable simply does nothing, yet its else clause still runs, which can surprise people who expect the block to be tied to the body executing.",
+      "points": [
+        "Iterate over list(items) when deleting, or build a filtered list.",
+        "range(n) covers 0 to n-1, not n.",
+        "A for loop over an empty sequence runs zero times but its else still runs.",
+        "break in a nested loop exits only the inner loop."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A search loop with break and else",
+    "body": "This program searches a list for the first valid code and stops as soon as it finds one. The else clause reports failure only when no item ever broke the loop, which is exactly how a search should behave.",
+    "code": {
+      "language": "python",
+      "source": "codes = ['A12', 'B7', 'X9', 'C3']\n\nfor code in codes:\n    if len(code) == 2 and code[0].isalpha():\n        print('accepted:', code)\n        break\n    print('rejected:', code)\nelse:\n    print('no valid code found')\n\nn = 5\nwhile n > 0:\n    if n == 3:\n        n -= 1\n        continue\n    print('count', n)\n    n -= 1"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Input validation",
+      "description": "Repeat a prompt with a while loop until the user supplies acceptable data or gives up."
+    },
+    {
+      "title": "Searching collections",
+      "description": "Break out of a for loop as soon as the target is found and use else to report a miss."
+    },
+    {
+      "title": "Batch processing",
+      "description": "Loop over lines from a file, an API page or a query result and skip malformed records with continue."
+    },
+    {
+      "title": "Retry and polling",
+      "description": "while loops repeat an operation until it succeeds or a retry limit is reached."
+    }
+  ],
+  "demonstration": {
+    "description": "Find the first multiple of five with break, let the loop else report that none matched, and use continue to print only the odd values.",
+    "code": {
+      "language": "python",
+      "source": "values = [4, 8, 15, 16, 23, 42]\n\nfor v in values:\n    if v % 5 == 0:\n        print('first multiple of 5:', v)\n        break\nelse:\n    print('no multiple of 5')\n\nprint('--- odds ---')\nfor v in values:\n    if v % 2 == 0:\n        continue\n    print(v)\n\ncount = 0\nwhile count < 3:\n    count += 1\n    print('pass', count)"
+    },
+    "output": "first multiple of 5: 15\n--- odds ---\n15\n23\npass 1\npass 2\npass 3"
+  },
+  "takeaways": [
+    "if/elif/else selects exactly one branch; truthiness avoids comparisons with True.",
+    "Use for over iterables and while when the number of iterations is unknown.",
+    "break stops the innermost loop; continue skips to the next pass.",
+    "A loop else runs only when no break occurred, making it ideal for searches.",
+    "Never mutate a list while iterating it; iterate over a copy or build a new list."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between break and continue?",
+      "answer": "break exits the innermost loop immediately. continue skips the remaining statements of the current iteration and moves straight to the next pass, where the loop condition is tested again.",
+      "explanation": "Mention that neither statement affects an outer loop, which is a common follow-up question about nested loops."
+    },
+    {
+      "question": "What does the else clause on a for or while loop do?",
+      "answer": "It runs after the loop finishes normally, meaning only if the loop was not exited with break. It is typically used to handle the not-found case of a search without a flag variable.",
+      "explanation": "A strong answer contrasts it with the if/else else and gives a search example such as for/else over a list of records."
+    },
+    {
+      "question": "How do you loop with an index in Python, and why avoid range(len(items))?",
+      "answer": "Use for i, item in enumerate(items). range(len(items)) works but is less readable and error-prone because you index the sequence yourself and lose the direct reference to the item.",
+      "explanation": "enumerate also accepts a start value, which is handy for numbering lines starting at one."
+    },
+    {
+      "question": "Why does deleting items from a list while looping over it skip elements?",
+      "answer": "Removing an element shifts every later element one position left, but the iterator's internal index still moves forward, so the element that slid into the current position is never visited. Iterate over a copy, delete in reverse, or build a new list instead.",
+      "explanation": "The same class of bug affects any sequence whose length changes during iteration."
+    },
+    {
+      "question": "When would you choose while over for?",
+      "answer": "When the number of iterations is not known in advance, for example reading until a sentinel value, retrying an operation until it succeeds, or advancing a value until some condition holds. for is preferable whenever you are walking over the items of an iterable.",
+      "explanation": "Interviewers like to hear that for loops are implemented on top of the iterator protocol and handling IndexError manually is not idiomatic."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Collatz sequence length",
+    "difficulty": "Basic",
+    "objective": "Use a while loop to iterate a numeric process until it reaches a fixed point and count the steps.",
+    "statement": "The Collatz process maps an even number n to n / 2 and an odd number n to 3 * n + 1, repeating until n reaches 1. For each starting value print the starting value and the number of steps needed to reach 1. A starting value of 1 takes zero steps.",
+    "language": "python",
+    "input_format": "The first line is N. The second line holds N space-separated positive integers.",
+    "output_format": "N lines, each '<start> <steps>'.",
+    "example": {
+      "input": "3\n1 6 7\n",
+      "output": "1 0\n6 8\n7 16"
+    },
+    "constraints": [
+      "1 <= N <= 1000.",
+      "1 <= start <= 1000000.",
+      "Count one step for each application of the rule.",
+      "Use integer division // for the even case so the value stays an int."
+    ],
+    "starter": "n = int(input())\nvalues = list(map(int, input().split()))\nfor start in values:\n    steps = 0\n    # TODO: apply the Collatz rule until start reaches 1\n    print(start, steps)\n",
+    "solution": "n = int(input())\nvalues = list(map(int, input().split()))\nfor start in values:\n    current = start\n    steps = 0\n    while current != 1:\n        if current % 2 == 0:\n            current //= 2\n        else:\n            current = 3 * current + 1\n        steps += 1\n    print(start, steps)\n",
+    "explanation": [
+      "Read all starting values once and loop over them with a for loop.",
+      "Copy each value into current so the loop works on a local variable without destroying the original.",
+      "The while loop keeps applying the rule until current is 1, incrementing steps once per application.",
+      "Starting at 1 the loop body never runs, so steps stays 0."
+    ],
+    "tests": [
+      {
+        "input": "3\n1 6 7\n",
+        "output": "1 0\n6 8\n7 16"
+      },
+      {
+        "input": "2\n2 3\n",
+        "output": "2 1\n3 7"
+      },
+      {
+        "input": "1\n27\n",
+        "output": "27 111"
+      },
+      {
+        "input": "2\n4 1\n",
+        "output": "4 2\n1 0"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this loop print?",
+      "code": "for i in range(3):\n    if i == 1:\n        continue\n    print(i)",
+      "options": [
+        "0 1",
+        "0 2",
+        "1 2",
+        "0 1 2"
+      ],
+      "answer": 1,
+      "explanation": "continue skips the print when i is 1, so the loop prints 0 and then 2."
+    },
+    {
+      "type": "output",
+      "question": "What does this for/else example print?",
+      "code": "for x in [2, 4, 6]:\n    if x == 5:\n        break\nelse:\n    print('done')",
+      "options": [
+        "5",
+        "an error",
+        "done",
+        "nothing"
+      ],
+      "answer": 2,
+      "explanation": "The value 5 is never found, so break never runs and the else clause prints done."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement about the else clause of a loop is correct?",
+      "options": [
+        "It runs only if the loop was not exited by break.",
+        "It always runs after the loop.",
+        "It runs only if the loop body was skipped.",
+        "It runs before the loop starts."
+      ],
+      "answer": 0,
+      "explanation": "The loop else runs after normal completion and is skipped whenever the loop exits through break."
+    },
+    {
+      "type": "scenario",
+      "question": "You need to remove every even number from a list while looping over it. Which approach avoids skipping elements?",
+      "options": [
+        "Delete items from the list during the same for loop.",
+        "Loop over the list in reverse and delete by index.",
+        "Set the matching items to None.",
+        "Call list.clear() inside the loop."
+      ],
+      "answer": 1,
+      "explanation": "Deleting in reverse keeps the remaining indices valid; building a new list or iterating over a copy also works."
+    },
+    {
+      "type": "concept",
+      "question": "Why is 'for i, item in enumerate(items)' preferred over 'for i in range(len(items))'?",
+      "options": [
+        "enumerate is faster because it avoids indexing.",
+        "range(len()) is not allowed on lists.",
+        "enumerate sorts the items first.",
+        "enumerate yields the index and value together, which is clearer and less error-prone."
+      ],
+      "answer": 3,
+      "explanation": "enumerate gives you both the position and the object directly, removing manual indexing and off-by-one mistakes."
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "day": 1,
+  "title": "LLM Recap for Agent Builders: Tokens, Context Windows and Sampling",
+  "module": "Foundations of agentic systems",
+  "level": "Beginner",
+  "objectives": [
+    "Explain how a large language model generates text one token at a time.",
+    "Describe tokens, the context window and why both limit what an agent can do.",
+    "Explain temperature and greedy decoding and choose sensible settings for agents.",
+    "Explain why an LLM is stateless and what that means for building agents.",
+    "Compute a temperature-scaled softmax over next-token scores."
+  ],
+  "definition": "A large language model (LLM) is a neural network, usually a transformer, trained to predict the next token in a sequence. At inference time it repeatedly turns the text so far into a probability distribution over its vocabulary, picks a token, appends it and repeats. Every agent in this course uses an LLM as its reasoning engine, so its limits (context size, cost per token, randomness and lack of memory) shape every design decision.",
+  "theory": [
+    {
+      "heading": "Tokens and next-token prediction",
+      "body": "Models do not read characters or whole words; they read tokens, which are sub-word pieces produced by a tokenizer. In English one token is roughly four characters, while Hindi or code can use more tokens per word. Generation is autoregressive: the model scores every token in its vocabulary, converts the scores (logits) into probabilities with softmax, chooses one token and feeds the longer sequence back in. This is why output is produced left to right and why long answers take longer and cost more.",
+      "points": [
+        "Pricing, rate limits and context sizes are all measured in tokens.",
+        "Input tokens (the prompt) and output tokens (the answer) are usually priced differently; output is more expensive.",
+        "Latency grows with the number of output tokens because they are generated one after another."
+      ]
+    },
+    {
+      "heading": "The context window",
+      "body": "The context window is the maximum number of tokens the model can attend to in one call, counting the system prompt, conversation history, tool definitions, tool results and the answer being generated. An agent fills its context quickly because every tool call and observation is appended to the history. When the limit is reached, something must be dropped or summarised, and models also attend less reliably to facts buried in the middle of very long contexts.",
+      "points": [
+        "Budget = system prompt + tool schemas + history + retrieved data + space reserved for output.",
+        "Large windows help but cost more per call and do not guarantee the model uses everything well.",
+        "Context management (Days 11–13) is a core agent-engineering skill."
+      ]
+    },
+    {
+      "heading": "Sampling: temperature, greedy decoding and top-p",
+      "body": "Softmax with temperature T computes p_i = exp(z_i / T) / sum_j exp(z_j / T). A low temperature sharpens the distribution so the most likely token dominates; a high temperature flattens it and increases variety. Temperature 0 is treated as greedy decoding: always pick the highest-scoring token. Top-p (nucleus) sampling keeps only the smallest set of tokens whose probabilities add up to p. Agents that must emit valid tool calls or JSON usually run at low temperature for consistency, while brainstorming steps can use higher values.",
+      "points": [
+        "Low temperature: more deterministic, better for tool calls, extraction and classification.",
+        "High temperature: more diverse, useful for ideation or generating several candidate plans.",
+        "Even at temperature 0, hosted models are not guaranteed to be bit-for-bit identical across runs."
+      ]
+    },
+    {
+      "heading": "Statelessness and what an LLM cannot do alone",
+      "body": "An LLM API call is stateless: the model remembers nothing between calls, so the application must resend the relevant history every time. A bare model also has a training cut-off, cannot browse, run code, query a database or take actions, and can hallucinate confident but wrong facts. Agentic systems exist to close exactly these gaps: they wrap the model in a loop that supplies memory, calls tools, observes results and checks progress.",
+      "points": [
+        "Memory is an application feature, not a model feature.",
+        "Tools give access to fresh data and the ability to act.",
+        "Verification steps and grounding reduce the impact of hallucinations."
+      ]
+    },
+    {
+      "heading": "Why this matters in agent interviews",
+      "body": "Interviewers often start an agent discussion by checking these basics, because poor answers here lead to poor designs: an engineer who forgets that every loop iteration resends the whole history will underestimate cost and latency, and one who runs tool selection at high temperature will see flaky behaviour. Connect each LLM property to an agent design consequence when you answer.",
+      "points": [
+        "Tokens drive cost and latency of every step in an agent loop.",
+        "Context limits drive memory and summarisation strategies.",
+        "Randomness drives the need for validation, retries and evaluation."
+      ]
+    }
+  ],
+  "example": {
+    "title": "How one agent step consumes the context window",
+    "body": "A support agent has a 1,200-token system prompt, 800 tokens of tool schemas and a 3,000-token conversation. It calls an order-lookup tool that returns 1,500 tokens of JSON. The next model call must include all 6,500 tokens plus room for the answer. If the agent loops five times, it resends a growing history each time, so the total input tokens for the task can be several times the size of any single call. The code estimates this with a rough four-characters-per-token rule.",
+    "code": {
+      "language": "python",
+      "source": "def estimate_tokens(text):\n    # Rough rule of thumb for English; use the provider's tokenizer for exact counts.\n    return max(1, len(text) // 4)\n\nhistory = ['system prompt ' * 300, 'tool schemas ' * 250]\ntotal_input = 0\nfor step in range(1, 6):\n    history.append('tool result ' * 120)          # each step adds an observation\n    call_tokens = sum(estimate_tokens(m) for m in history)\n    total_input += call_tokens\n    print(f'step {step}: {call_tokens} input tokens')\nprint('total input tokens for the task:', total_input)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Choosing a model for an agent",
+      "description": "Comparing context size, price per million tokens and tool-calling quality before committing to a model for a production agent."
+    },
+    {
+      "title": "Tuning tool-calling reliability",
+      "description": "Lowering temperature for steps that must produce valid function calls or JSON, and raising it only for creative sub-tasks."
+    },
+    {
+      "title": "Cost forecasting",
+      "description": "Estimating how many tokens a multi-step task consumes so that product teams can price a feature or set per-user limits."
+    },
+    {
+      "title": "Debugging forgotten instructions",
+      "description": "Recognising that a long tool result pushed early instructions out of the window or into the poorly attended middle of the context."
+    }
+  ],
+  "demonstration": {
+    "description": "Apply temperature-scaled softmax to three candidate next tokens with logits Paris = 2.0, Lyon = 1.0 and Delhi = 0.0. Lower temperature concentrates probability on the top token; higher temperature spreads it out; temperature 0 becomes greedy decoding.",
+    "code": {
+      "language": "python",
+      "source": "import math\n\ndef softmax(logits, t):\n    scaled = [z / t for z in logits]\n    m = max(scaled)\n    exps = [math.exp(s - m) for s in scaled]   # subtract max for numerical stability\n    total = sum(exps)\n    return [e / total for e in exps]\n\nfor t in (0.5, 1.0, 2.0):\n    print(t, [round(p, 3) for p in softmax([2.0, 1.0, 0.0], t)])"
+    },
+    "output": "0.5 [0.867, 0.117, 0.016]\n1.0 [0.665, 0.245, 0.09]\n2.0 [0.506, 0.307, 0.186]"
+  },
+  "takeaways": [
+    "LLMs generate text one token at a time from a probability distribution over the vocabulary.",
+    "Tokens determine cost, latency and how much fits in the context window.",
+    "The context window holds everything: instructions, tools, history, observations and the answer.",
+    "Low temperature suits tool calls and structured output; higher temperature suits ideation.",
+    "LLM calls are stateless, so agents must manage memory explicitly.",
+    "Agents exist to give models memory, tools, feedback and verification they lack on their own."
+  ],
+  "interview": [
+    {
+      "question": "How does an LLM generate a response?",
+      "answer": "It tokenizes the input, computes a score for every token in its vocabulary, converts the scores to probabilities with softmax, selects a token (greedily or by sampling), appends it and repeats until a stop token or length limit is reached.",
+      "explanation": "Use the words autoregressive, logits and softmax. Linking token-by-token generation to latency and cost shows you understand the practical consequences."
+    },
+    {
+      "question": "What is a context window, and why does it matter more for agents than for a single chat reply?",
+      "answer": "It is the maximum number of tokens a model can process in one call, including the prompt, history, tool definitions, tool results and output. Agents append every action and observation, so their context grows each loop and hits the limit far sooner than a simple chat.",
+      "explanation": "Strong answers mention reserving space for output and strategies such as trimming, summarising or retrieving only relevant memory."
+    },
+    {
+      "question": "What temperature would you use for an agent that selects tools, and why?",
+      "answer": "A low value, often 0 to 0.3, so the model consistently chooses the most likely tool and produces valid arguments. Higher temperature adds variety, which is a risk when the output must match a schema.",
+      "explanation": "Add that low temperature does not guarantee correctness, so outputs still need schema validation and retries."
+    },
+    {
+      "question": "LLM APIs are stateless. How then does a chatbot remember the conversation?",
+      "answer": "The application stores the history and sends the relevant messages with every request. The model only sees what is in the current call's context.",
+      "explanation": "This is the foundation of agent memory. Mention that resending history increases token cost, which motivates summarisation and retrieval."
+    },
+    {
+      "question": "Why is a raw LLM not an agent?",
+      "answer": "A raw LLM maps one input to one output. It cannot observe the world, call tools, remember across calls or decide to keep working until a goal is met. An agent wraps the model in a loop with tools, memory and stopping logic so it can pursue a goal over several steps.",
+      "explanation": "This bridges to Day 2. Interviewers like the framing that the LLM is the reasoning engine while the surrounding system supplies perception, action and control."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Temperature-scaled next-token probabilities",
+    "difficulty": "Basic",
+    "objective": "Implement the softmax-with-temperature step every LLM uses to choose the next token, including the greedy special case used for reliable tool calls.",
+    "statement": "Read a temperature and a list of candidate tokens with their logits. Convert the logits to probabilities with softmax(z / T) and print each token with its probability, most likely first. When the temperature is 0, use greedy decoding: the highest-logit token gets probability 1 and every other token gets 0 (if several tokens share the highest logit, the first one in the input wins). Tokens with equal probability keep their input order.",
+    "language": "python",
+    "input_format": "First line: temperature T (a non-negative number). Each following line: a token and its logit separated by a space.",
+    "output_format": "One line per token: '<token> <probability>' with the probability to 3 decimal places, sorted by probability descending, ties in input order.",
+    "example": {
+      "input": "1\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+      "output": "Paris 0.665\nLyon 0.245\nDelhi 0.090"
+    },
+    "constraints": [
+      "1 to 50 tokens; tokens contain no spaces.",
+      "Logits are between -50 and 50.",
+      "0 <= T <= 10. Subtract the maximum scaled logit before exponentiating for numerical stability."
+    ],
+    "starter": "import math\nimport sys\n\nlines = sys.stdin.read().splitlines()\nt = float(lines[0])\npairs = [line.split() for line in lines[1:] if line.strip()]\n\n# TODO: compute probabilities (greedy when t == 0), sort and print\n",
+    "solution": "import math\nimport sys\n\nlines = sys.stdin.read().splitlines()\nt = float(lines[0])\npairs = [line.split() for line in lines[1:] if line.strip()]\ntokens = [p[0] for p in pairs]\nlogits = [float(p[1]) for p in pairs]\n\nif t == 0:\n    best = logits.index(max(logits))\n    probs = [1.0 if i == best else 0.0 for i in range(len(tokens))]\nelse:\n    scaled = [z / t for z in logits]\n    m = max(scaled)\n    exps = [math.exp(s - m) for s in scaled]\n    total = sum(exps)\n    probs = [e / total for e in exps]\n\norder = sorted(range(len(tokens)), key=lambda i: (-probs[i], i))\nfor i in order:\n    print(f'{tokens[i]} {probs[i]:.3f}')\n",
+    "explanation": [
+      "Parse the temperature and the token/logit pairs.",
+      "For T = 0, give probability 1 to the first token with the maximum logit (greedy decoding).",
+      "Otherwise divide each logit by T, subtract the maximum to avoid overflow, exponentiate and normalise.",
+      "Sort by probability descending, using the input index as a tie-breaker, and print with three decimals."
+    ],
+    "tests": [
+      {
+        "input": "1\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+        "output": "Paris 0.665\nLyon 0.245\nDelhi 0.090"
+      },
+      {
+        "input": "0\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+        "output": "Paris 1.000\nLyon 0.000\nDelhi 0.000"
+      },
+      {
+        "input": "0.5\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+        "output": "Paris 0.867\nLyon 0.117\nDelhi 0.016"
+      },
+      {
+        "input": "2\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+        "output": "Paris 0.506\nLyon 0.307\nDelhi 0.186"
+      },
+      {
+        "input": "1\nx 0.5\ny 3.0\nz 0.5\n",
+        "output": "y 0.859\nx 0.071\nz 0.071"
+      },
+      {
+        "input": "0\nsearch 4\ncalculator 4\nfinish 1\n",
+        "output": "search 1.000\ncalculator 0.000\nfinish 0.000"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which items count against an LLM's context window during an agent step?",
+      "options": [
+        "The system prompt, tool definitions, history, tool results and the generated output",
+        "Only the tool definitions",
+        "Only the user's latest message",
+        "Only the generated answer"
+      ],
+      "answer": 0,
+      "explanation": "Everything the model reads in the call and everything it writes shares the same token limit."
+    },
+    {
+      "type": "concept",
+      "question": "What happens to a softmax distribution as temperature is lowered towards 0?",
+      "options": [
+        "It becomes sharper and the top token dominates",
+        "It becomes uniform across all tokens",
+        "It reverses the token ranking",
+        "It has no effect on probabilities"
+      ],
+      "answer": 0,
+      "explanation": "Dividing logits by a small T magnifies differences between them, so the highest-scoring token takes almost all the probability."
+    },
+    {
+      "type": "scenario",
+      "question": "A chatbot forgets what the user said two turns ago after a code change. What is the most likely cause?",
+      "options": [
+        "The tokenizer was changed",
+        "The application stopped sending earlier messages with each request",
+        "The model's weights were reset",
+        "The temperature was set too low"
+      ],
+      "answer": 1,
+      "explanation": "LLM calls are stateless; the model only knows the history the application includes in each call."
+    },
+    {
+      "type": "output",
+      "question": "Logits are A = 1.0 and B = 1.0 at temperature 1. What probability does softmax give token A?",
+      "options": [
+        "1.0",
+        "0.5",
+        "0.0",
+        "0.73"
+      ],
+      "answer": 1,
+      "explanation": "Equal logits produce equal exponentials, so each of the two tokens gets half the probability."
+    },
+    {
+      "type": "scenario",
+      "question": "An agent frequently emits malformed tool-call arguments. Which change should you try first?",
+      "options": [
+        "Lower the temperature and validate arguments against the tool schema",
+        "Switch to a model with a smaller context window",
+        "Raise the temperature to 1.5",
+        "Remove the tool descriptions to save tokens"
+      ],
+      "answer": 0,
+      "explanation": "Lower temperature reduces random deviations, and schema validation catches the errors that remain so they can be retried."
+    }
+  ]
+}

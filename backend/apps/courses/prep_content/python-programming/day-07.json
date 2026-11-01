@@ -1,0 +1,245 @@
+{
+  "day": 7,
+  "title": "Scope, Namespaces and Closures",
+  "module": "Functions and scope",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain the LEGB rule for resolving names: local, enclosing, global and built-in.",
+    "Use global and nonlocal to rebind names in outer scopes and explain why it is usually avoided.",
+    "Describe how a closure captures free variables and keeps them alive after the outer call returns.",
+    "Demonstrate late binding of a loop variable inside closures and apply the default-argument fix.",
+    "Diagnose UnboundLocalError from the rule that assignment makes a name local for the whole function."
+  ],
+  "definition": "A namespace is a mapping from names to objects; a scope is the region of code where a name is visible. When Python resolves a name it searches, in order, the local scope, any enclosing function scopes, the module global scope and finally the built-ins. The global and nonlocal statements let a function rebind a name in an outer namespace instead of creating a new local one, and a nested function that references a variable from its enclosing scope forms a closure.",
+  "theory": [
+    {
+      "heading": "Namespaces and the LEGB rule",
+      "body": "Every module has a global namespace, every function call has a local namespace, and each block does not create a new scope, which is why variables assigned inside an if or for stay in the surrounding function. Name resolution follows LEGB: Local, then Enclosing function scopes from the inside out, then Global (the module), then Built-in. A name is looked up each time it is used, not bound in advance, so a function sees the current value of a global at call time. Shadowing happens when a local name hides one in an outer scope.",
+      "points": [
+        "Local -> enclosing -> global -> built-in, checked in that order.",
+        "if, for and while do not create a new scope in Python.",
+        "globals() and locals() expose the current namespaces as dictionaries.",
+        "Shadowing is legal but can confuse readers; choose distinct names."
+      ]
+    },
+    {
+      "heading": "global and nonlocal",
+      "body": "By default, assigning to a name inside a function makes that name local for the entire function, even before the assignment line. The global statement tells Python that the name refers to the module namespace, and nonlocal tells it to refer to the nearest enclosing function scope. Reading a global needs no declaration; only rebinding does. Both should be used sparingly because they hide data flow and make functions hard to test. Passing values in as arguments and returning results out is almost always clearer.",
+      "points": [
+        "global counter makes counter refer to the module-level variable.",
+        "nonlocal total rebinds total in the nearest enclosing function.",
+        "Reading globals is fine; rebinding triggers the need for global.",
+        "Prefer arguments and return values over hidden shared state."
+      ]
+    },
+    {
+      "heading": "Closures and free variables",
+      "body": "A closure is a nested function that refers to variables from its enclosing function. Those variables, called free variables, are captured in a cell object and kept alive even after the outer function returns. Closures are the mechanism behind decorators, callbacks and factory functions that produce configured behaviour. As long as the inner function exists, the captured objects are reachable, so they are not garbage collected. Python shows the captured names in the inner function's __closure__ and code.co_freevars attributes.",
+      "points": [
+        "A closure keeps its enclosing variables alive after the outer call ends.",
+        "nonlocal lets the inner function assign to a captured variable.",
+        "Factory functions use closures to bake in configuration.",
+        "Decorators rely on closures to wrap a function with extra behaviour."
+      ]
+    },
+    {
+      "heading": "Late binding and the default-argument idiom",
+      "body": "Names inside a function body are looked up when the function runs, not when it is defined. In a loop that creates several lambdas or inner functions sharing one variable, they all see the final value of that variable, because they capture the variable rather than its value at creation time. This is called late binding. The fix is to give each function its own binding by capturing the value as a default argument, for example [lambda i=i: i for i in range(3)], or to use functools.partial.",
+      "points": [
+        "[lambda: i for i in range(3)] makes three closures all returning the final i.",
+        "[lambda i=i: i for i in range(3)] captures the current value.",
+        "functools.partial(func, i) binds arguments eagerly.",
+        "The same applies to functools.partial used as a callback factory."
+      ]
+    },
+    {
+      "heading": "Common pitfalls and recursion",
+      "body": "UnboundLocalError appears when a function assigns to a name and then reads it before that assignment, because the name is considered local throughout the function. NameError appears when no scope contains the name at all. Rebinding a global inside a function without declaring it creates a separate local, which is a frequent bug. Functions can call themselves, which is recursion; Python has a default recursion limit of about 1000 frames, and deep recursion can raise RecursionError, so iterative solutions may be preferable for large inputs.",
+      "points": [
+        "Assignment anywhere in a function makes the name local everywhere in it.",
+        "Declare global or nonlocal before any use of the name.",
+        "sys.setrecursionlimit only raises the limit; it does not add stack memory.",
+        "Convert deep recursion to iteration to avoid RecursionError."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A closure-based counter",
+    "body": "make_counter returns an inner function that remembers its own count. nonlocal lets that inner function rebind value in the enclosing scope instead of creating a local copy, so each counter keeps independent state.",
+    "code": {
+      "language": "python",
+      "source": "def make_counter(start=0):\n    value = start\n    def step():\n        nonlocal value\n        value += 1\n        return value\n    return step\n\nc1 = make_counter()\nc2 = make_counter(10)\nprint(c1(), c1(), c2())   # 1 2 11\nprint(c1())               # 3\nprint(c1.__closure__[0].cell_contents)  # 3"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Decorators",
+      "description": "A decorator is a closure that wraps a function, capturing the original function and any configuration."
+    },
+    {
+      "title": "Callbacks with configuration",
+      "description": "Factory functions capture a threshold or connection and return handlers that use it later."
+    },
+    {
+      "title": "Encapsulated state",
+      "description": "Closures keep counters, accumulators and caches private without a class."
+    },
+    {
+      "title": "Avoiding globals",
+      "description": "Passing and returning values instead of rebinding module-level names keeps functions testable."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare late binding with the default-argument fix, and show how a nonlocal accumulator survives after the outer function returns.",
+    "code": {
+      "language": "python",
+      "source": "funcs = [lambda: i for i in range(3)]\nprint([f() for f in funcs])          # [2, 2, 2] late binding\n\nfixed = [lambda i=i: i for i in range(3)]\nprint([f() for f in fixed])          # [0, 1, 2]\n\ndef running_total():\n    total = 0\n    def add(n):\n        nonlocal total\n        total += n\n        return total\n    return add\n\nadd = running_total()\nprint(add(5), add(10), add(-3))      # 5 15 12"
+    },
+    "output": "[2, 2, 2]\n[0, 1, 2]\n5 15 12"
+  },
+  "takeaways": [
+    "Python resolves names with the LEGB rule: local, enclosing, global, built-in.",
+    "Assigning to a name anywhere in a function makes it local for the whole function.",
+    "global rebinds a module name; nonlocal rebinds a name in the nearest enclosing function.",
+    "A closure captures free variables and keeps them alive after the outer function returns.",
+    "Functions capture variables, not their values, which causes late binding in loops.",
+    "Capture a loop value with a default argument (lambda i=i: ...) to avoid late binding."
+  ],
+  "interview": [
+    {
+      "question": "What is the LEGB rule?",
+      "answer": "It is the order Python searches for a name: Local, then Enclosing function scopes, then Global (module) names, then Built-in names. The first scope that contains the name wins.",
+      "explanation": "Note that if, for and while bodies do not introduce a new scope, so their variables live in the enclosing function."
+    },
+    {
+      "question": "When do you need the global and nonlocal keywords?",
+      "answer": "global is needed when a function assigns to a module-level name; nonlocal is needed when a nested function assigns to a variable in an enclosing function. Reading without assigning needs neither.",
+      "explanation": "A strong answer adds that both hide data flow, so arguments and return values are usually the better design."
+    },
+    {
+      "question": "What is a closure?",
+      "answer": "A closure is a nested function that references variables from its enclosing function. Those free variables are captured in cell objects and remain available after the outer function returns, which is how counters and decorators keep state.",
+      "explanation": "You can inspect closures with func.__closure__ and func.__code__.co_freevars."
+    },
+    {
+      "question": "Why do list comprehensions of lambdas all return the last value?",
+      "answer": "Because the lambdas capture the loop variable itself, not its value at each iteration, and the value is looked up when the lambda is called, after the loop has finished. Capture the current value with a default argument, as in lambda i=i: i.",
+      "explanation": "This late-binding behaviour is a favourite follow-up in interviews about closures and callbacks."
+    },
+    {
+      "question": "What causes UnboundLocalError inside a function?",
+      "answer": "If a name is assigned anywhere in a function, Python treats it as local for the whole function. Reading it before the assignment line raises UnboundLocalError, even if a global with the same name exists.",
+      "explanation": "The fix is to declare global or nonlocal, or better, pass the value in as a parameter."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Stateful command processor",
+    "difficulty": "Intermediate",
+    "objective": "Build a small state machine driven by commands, using a closure to hold state between calls.",
+    "statement": "Start from an initial value. Then process N commands in order: 'ADD k' adds k, 'SUB k' subtracts k, 'MUL k' multiplies by k, and 'RESET' returns the value to the initial one. Print the value after each command on its own line. Implement the mutable state inside a factory function using a nested function and nonlocal so the state stays private.",
+    "language": "python",
+    "input_format": "The first line is the initial integer. The second line is N. Each of the next N lines is a command: 'ADD k', 'SUB k', 'MUL k' or 'RESET'.",
+    "output_format": "N lines, one value per command after it is applied.",
+    "example": {
+      "input": "10\n3\nADD 5\nMUL 2\nRESET\n",
+      "output": "15\n30\n10"
+    },
+    "constraints": [
+      "0 <= N <= 1000.",
+      "-10^9 <= initial value and k <= 10^9.",
+      "RESET takes no argument.",
+      "Keep the running value in a closure using nonlocal."
+    ],
+    "starter": "def make_processor(start):\n    value = start\n    def apply(command):\n        nonlocal value\n        # TODO: update value from the command and return it\n        return value\n    return apply\n\nstart = int(input())\nn = int(input())\napply = make_processor(start)\nfor _ in range(n):\n    print(apply(input().strip()))\n",
+    "solution": "def make_processor(start):\n    value = start\n    def apply(command):\n        nonlocal value\n        parts = command.split()\n        op = parts[0]\n        if op == 'ADD':\n            value += int(parts[1])\n        elif op == 'SUB':\n            value -= int(parts[1])\n        elif op == 'MUL':\n            value *= int(parts[1])\n        else:\n            value = start\n        return value\n    return apply\n\nstart = int(input())\nn = int(input())\napply = make_processor(start)\nfor _ in range(n):\n    print(apply(input().strip()))\n",
+    "explanation": [
+      "make_processor keeps start and value in its own namespace; the returned apply function is a closure over both.",
+      "nonlocal lets the inner function rebind value in the enclosing scope instead of shadowing it with a new local name.",
+      "Each command is split into an operation and an optional argument, so RESET simply has one part.",
+      "On RESET the closure restores value from the captured start variable."
+    ],
+    "tests": [
+      {
+        "input": "10\n3\nADD 5\nMUL 2\nRESET\n",
+        "output": "15\n30\n10"
+      },
+      {
+        "input": "0\n4\nADD 3\nSUB 5\nMUL -1\nRESET\n",
+        "output": "3\n-2\n2\n0"
+      },
+      {
+        "input": "7\n2\nRESET\nADD 100\n",
+        "output": "7\n107"
+      },
+      {
+        "input": "-5\n3\nMUL 3\nADD 15\nSUB 10\n",
+        "output": "-15\n0\n-10"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which order does Python use to resolve a name?",
+      "options": [
+        "Global, local, built-in, enclosing",
+        "Built-in, global, enclosing, local",
+        "Local, enclosing, global, built-in",
+        "Local, global, built-in, enclosing"
+      ],
+      "answer": 2,
+      "explanation": "The LEGB rule checks the local scope, then enclosing function scopes, then module globals, then built-ins."
+    },
+    {
+      "type": "output",
+      "question": "What does this function scope example print?",
+      "code": "x = 10\ndef f():\n    x = 20\n    return x\nprint(f(), x)",
+      "options": [
+        "20 20",
+        "10 20",
+        "20 10",
+        "10 10"
+      ],
+      "answer": 2,
+      "explanation": "The assignment inside f makes x local to f, so f returns 20 while the module-level x stays 10."
+    },
+    {
+      "type": "concept",
+      "question": "When is the nonlocal keyword required?",
+      "options": [
+        "To declare a variable as a constant",
+        "To import a name from another module",
+        "To reassign a variable defined in an enclosing function from a nested function",
+        "To read a global variable inside a function"
+      ],
+      "answer": 2,
+      "explanation": "nonlocal binds the name to the nearest enclosing function scope so the inner function can rebind it."
+    },
+    {
+      "type": "output",
+      "question": "What does this late-binding example print?",
+      "code": "funcs = [lambda: i for i in range(3)]\nprint(funcs[0](), funcs[2]())",
+      "options": [
+        "0 0",
+        "1 2",
+        "0 2",
+        "2 2"
+      ],
+      "answer": 3,
+      "explanation": "Each lambda captures the variable i, not its value, so after the loop both calls see the final value 2."
+    },
+    {
+      "type": "scenario",
+      "question": "Inside a function you write total += 1, where total is a module-level name, and the call raises UnboundLocalError. What is the cause?",
+      "options": [
+        "Module-level names are never visible inside functions.",
+        "Because total is assigned somewhere in the function, Python treats it as local for the whole function.",
+        "total is read-only at module level.",
+        "The += operator cannot be used with names from other scopes."
+      ],
+      "answer": 1,
+      "explanation": "Assignment makes a name local for the entire function, so reading it before rebinding raises UnboundLocalError; declare global or pass the value in."
+    }
+  ]
+}

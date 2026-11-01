@@ -1,0 +1,241 @@
+{
+  "day": 4,
+  "title": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+  "module": "Core Python",
+  "level": "Beginner",
+  "objectives": [
+    "Define classes with instance attributes, class attributes, methods and properties.",
+    "Use inheritance, method overriding and super() and explain the MRO.",
+    "Implement dunder methods such as __init__, __str__, __repr__, __eq__ and __lt__.",
+    "Distinguish instance methods, @classmethod and @staticmethod.",
+    "Apply polymorphism to remove type-checking if/elif chains."
+  ],
+  "definition": "Object-oriented programming (OOP) organises code around objects that bundle data (attributes) with behaviour (methods). In Python a class is a blueprint created with the class keyword, an object is an instance of that class, and special 'dunder' (double underscore) methods let your objects plug into built-in syntax such as printing, comparison, len() and +.",
+  "theory": [
+    {
+      "heading": "Classes, instances and attributes",
+      "body": "__init__ initialises a new instance; self is the instance itself, passed automatically. Attributes assigned on self are per instance, while attributes defined in the class body are shared by all instances. A common bug is a mutable class attribute (items = []) that every instance accidentally shares. Python has no private keyword: a single underscore (_balance) means 'internal by convention' and a double underscore triggers name mangling to avoid clashes in subclasses.",
+      "points": [
+        "Instance attribute: self.balance = 0 inside __init__.",
+        "Class attribute: interest_rate = 0.04 in the class body.",
+        "@property exposes a computed or validated attribute with attribute syntax.",
+        "__slots__ can restrict attributes and save memory for many small objects."
+      ]
+    },
+    {
+      "heading": "The four pillars in Python terms",
+      "body": "Encapsulation keeps state and the rules that change it together (a withdraw method that enforces a minimum balance). Abstraction exposes a simple interface and hides details; abc.ABC with @abstractmethod formalises it. Inheritance lets a subclass reuse and specialise a parent class. Polymorphism means different classes respond to the same method call in their own way, so calling code does not need if type == ... branches. Python also embraces duck typing: if an object has the right methods, its class does not matter.",
+      "points": [
+        "Encapsulation: methods guard invariants.",
+        "Abstraction: abstract base classes define required methods.",
+        "Inheritance: class Savings(Account).",
+        "Polymorphism: account.available() behaves differently per subclass."
+      ]
+    },
+    {
+      "heading": "Inheritance, super() and the MRO",
+      "body": "A subclass overrides a method by defining one with the same name, and super().method() calls the next implementation in the Method Resolution Order. Python supports multiple inheritance and resolves lookups with the C3 linearisation, visible through ClassName.__mro__. Django uses this heavily: class-based views combine mixins such as LoginRequiredMixin with ListView, and the order of base classes matters.",
+      "points": [
+        "super().__init__(...) lets the parent initialise its part of the object.",
+        "Put mixins to the left of the main base class.",
+        "Favour composition over deep inheritance trees."
+      ]
+    },
+    {
+      "heading": "Dunder (magic) methods",
+      "body": "Dunder methods connect your class to Python's syntax and built-ins. __str__ gives a readable string for users (print), while __repr__ gives an unambiguous developer representation (the REPL, logs, containers). __eq__ defines ==; if you define __eq__ you must also define __hash__ (or the object becomes unhashable). __lt__ enables sorting; functools.total_ordering fills in the rest of the comparisons. __len__, __getitem__, __iter__, __contains__, __add__, __enter__/__exit__ and __call__ let objects behave like containers, numbers, context managers or functions.",
+      "points": [
+        "print(obj) uses __str__, falling back to __repr__.",
+        "sorted(objs) needs __lt__.",
+        "Defining __eq__ sets __hash__ to None unless you define it.",
+        "@dataclass generates __init__, __repr__ and __eq__ for you."
+      ]
+    },
+    {
+      "heading": "Instance, class and static methods",
+      "body": "Instance methods receive self and work with one object. @classmethod receives the class (cls) and is used for alternative constructors such as User.from_dict(data), which also work correctly for subclasses. @staticmethod receives neither and is a plain function placed in the class namespace for organisation. Django model managers and form classes use all three patterns.",
+      "points": [
+        "Alternative constructor: datetime.fromtimestamp is a classmethod.",
+        "Static method: a helper that does not need instance or class state."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A Money value object with dunder methods",
+    "body": "Money stores amounts as integer paise, supports + and comparisons, has a readable __str__ and a debuggable __repr__, and stays hashable because equality and hash use the same fields.",
+    "code": {
+      "language": "python",
+      "source": "from functools import total_ordering\n\n@total_ordering\nclass Money:\n    def __init__(self, paise, currency='INR'):\n        self.paise = paise\n        self.currency = currency\n\n    @classmethod\n    def from_rupees(cls, rupees):\n        return cls(round(rupees * 100))\n\n    def __add__(self, other):\n        if self.currency != other.currency:\n            raise ValueError('currency mismatch')\n        return Money(self.paise + other.paise, self.currency)\n\n    def __eq__(self, other):\n        return (self.paise, self.currency) == (other.paise, other.currency)\n\n    def __lt__(self, other):\n        return self.paise < other.paise\n\n    def __hash__(self):\n        return hash((self.paise, self.currency))\n\n    def __repr__(self):\n        return f'Money({self.paise}, {self.currency!r})'\n\n    def __str__(self):\n        return f'Rs {self.paise / 100:.2f}'\n\nprice = Money.from_rupees(199.5) + Money(50)\nprint(price, repr(price), price > Money(100))\n# Rs 200.00 Money(20000, 'INR') True"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Django models",
+      "description": "Every model is a class inheriting from models.Model; __str__ controls how rows appear in the admin."
+    },
+    {
+      "title": "Class-based views",
+      "description": "Views inherit from View or generic views and override methods such as get_queryset."
+    },
+    {
+      "title": "Domain objects",
+      "description": "Value objects like Money or Address enforce business rules in one place."
+    },
+    {
+      "title": "Plug-in systems",
+      "description": "Polymorphic payment gateways or notification channels share one interface."
+    }
+  ],
+  "demonstration": {
+    "description": "Inspect the MRO of a class built from a mixin and a base class, and see super() follow it.",
+    "code": {
+      "language": "python",
+      "source": "class Base:\n    def hello(self):\n        return 'Base'\n\nclass LoggingMixin:\n    def hello(self):\n        return 'Logged ' + super().hello()\n\nclass Service(LoggingMixin, Base):\n    pass\n\nprint([c.__name__ for c in Service.__mro__])\nprint(Service().hello())"
+    },
+    "output": "['Service', 'LoggingMixin', 'Base', 'object']\nLogged Base"
+  },
+  "takeaways": [
+    "self is the instance; class attributes are shared by all instances.",
+    "Use super() so cooperative inheritance follows the MRO.",
+    "__str__ is for users, __repr__ is for developers.",
+    "Defining __eq__ requires defining __hash__ if objects must be hashable.",
+    "@classmethod is ideal for alternative constructors; @staticmethod for related helpers.",
+    "Polymorphism replaces type-checking branches with overridden methods."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between __str__ and __repr__?",
+      "answer": "__str__ returns a readable, user-facing string used by print() and str(). __repr__ returns an unambiguous developer-facing string, ideally one that could recreate the object, used by the REPL, logs and containers. If __str__ is missing Python falls back to __repr__.",
+      "explanation": "Mention that a list of objects prints each item's __repr__, which is why defining __repr__ helps debugging."
+    },
+    {
+      "question": "What is the difference between @classmethod and @staticmethod?",
+      "answer": "A classmethod receives the class as cls and can create or inspect instances of that class or its subclasses, making it ideal for alternative constructors. A staticmethod receives neither self nor cls and is just a function grouped inside the class.",
+      "explanation": "An example like User.from_json(data) returning cls(...) shows why cls matters with inheritance."
+    },
+    {
+      "question": "What does super() do, and what is the MRO?",
+      "answer": "super() returns a proxy that delegates method calls to the next class in the Method Resolution Order, the linearised list of base classes Python computes with C3. It makes cooperative multiple inheritance and mixins work.",
+      "explanation": "Relate it to Django mixins: class MyView(LoginRequiredMixin, ListView) works because LoginRequiredMixin.dispatch calls super().dispatch()."
+    },
+    {
+      "question": "If you override __eq__ in a class, what happens to hashing?",
+      "answer": "Python sets __hash__ to None, so instances become unhashable and cannot be used in sets or as dict keys. If the object should be hashable, define __hash__ using the same immutable fields used for equality.",
+      "explanation": "This catches many candidates. Objects that are equal must have equal hashes; mutable objects usually should not be hashable."
+    },
+    {
+      "question": "Explain polymorphism with an example from a web application.",
+      "answer": "Different classes implement the same interface, and the caller uses them interchangeably. For example, EmailNotifier, SmsNotifier and PushNotifier each implement send(user, message); the order service loops over configured notifiers and calls send without checking types.",
+      "explanation": "Concrete, domain-relevant examples score better than 'Dog and Cat both speak'. Mention duck typing as Python's flavour of polymorphism."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Bank accounts with inheritance",
+    "difficulty": "Basic",
+    "objective": "Model accounts with a base class, two subclasses that override one method, and dunder methods for printing and sorting.",
+    "statement": "Simulate a small bank. A Savings account must keep at least 500 after a withdrawal. A Current account may go into overdraft down to -1000. Both start at 0. Commands: 'OPEN savings|current <owner>', 'DEPOSIT <owner> <amount>', 'WITHDRAW <owner> <amount>' and 'REPORT'. After a successful DEPOSIT or WITHDRAW print '<owner> balance: <balance>'. OPEN prints 'Opened <Kind> account for <owner>' where Kind is Savings or Current. REPORT prints every account as '<Kind> <owner>: <balance>' sorted by balance descending, keeping opening order for equal balances, or 'No accounts' if none exist. Errors print 'Error: <message>' with message 'account exists for <owner>', 'no account for <owner>', 'amount must be positive' or 'insufficient funds'.",
+    "language": "python",
+    "input_format": "One command per line until end of input.",
+    "output_format": "One or more lines per command as described.",
+    "example": {
+      "input": "OPEN savings asha\nDEPOSIT asha 2000\nWITHDRAW asha 1600\nWITHDRAW asha 1500\nOPEN current ravi\nWITHDRAW ravi 800\nREPORT\n",
+      "output": "Opened Savings account for asha\nasha balance: 2000\nError: insufficient funds\nasha balance: 500\nOpened Current account for ravi\nravi balance: -800\nSavings asha: 500\nCurrent ravi: -800"
+    },
+    "constraints": [
+      "Amounts are integers; zero or negative amounts are errors.",
+      "Owner names are unique single words.",
+      "Implement the withdrawal limit by overriding one method in each subclass, not with type checks."
+    ],
+    "starter": "import sys\n\nclass Account:\n    kind = 'Basic'\n\n    def __init__(self, owner):\n        self.owner = owner\n        self.balance = 0\n\n    def available(self):\n        return self.balance\n\n    # TODO: deposit, withdraw, __str__, __lt__\n\nclass SavingsAccount(Account):\n    kind = 'Savings'\n    # TODO: override available()\n\nclass CurrentAccount(Account):\n    kind = 'Current'\n    # TODO: override available()\n",
+    "solution": "import sys\n\nclass Account:\n    kind = 'Basic'\n\n    def __init__(self, owner):\n        self.owner = owner\n        self.balance = 0\n\n    def available(self):\n        return self.balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError('amount must be positive')\n        self.balance += amount\n\n    def withdraw(self, amount):\n        if amount <= 0:\n            raise ValueError('amount must be positive')\n        if amount > self.available():\n            raise ValueError('insufficient funds')\n        self.balance -= amount\n\n    def __str__(self):\n        return f'{self.kind} {self.owner}: {self.balance}'\n\n    def __lt__(self, other):\n        return self.balance < other.balance\n\nclass SavingsAccount(Account):\n    kind = 'Savings'\n    MIN_BALANCE = 500\n\n    def available(self):\n        return self.balance - self.MIN_BALANCE\n\nclass CurrentAccount(Account):\n    kind = 'Current'\n    OVERDRAFT = 1000\n\n    def available(self):\n        return self.balance + self.OVERDRAFT\n\nTYPES = {'savings': SavingsAccount, 'current': CurrentAccount}\naccounts = {}\n\nfor line in sys.stdin:\n    parts = line.split()\n    if not parts:\n        continue\n    cmd = parts[0].upper()\n    try:\n        if cmd == 'OPEN':\n            kind, owner = parts[1].lower(), parts[2]\n            if owner in accounts:\n                raise ValueError(f'account exists for {owner}')\n            accounts[owner] = TYPES[kind](owner)\n            print(f'Opened {accounts[owner].kind} account for {owner}')\n        elif cmd in ('DEPOSIT', 'WITHDRAW'):\n            owner, amount = parts[1], int(parts[2])\n            acc = accounts.get(owner)\n            if acc is None:\n                raise ValueError(f'no account for {owner}')\n            if cmd == 'DEPOSIT':\n                acc.deposit(amount)\n            else:\n                acc.withdraw(amount)\n            print(f'{owner} balance: {acc.balance}')\n        elif cmd == 'REPORT':\n            if not accounts:\n                print('No accounts')\n            for acc in sorted(accounts.values(), reverse=True):\n                print(acc)\n    except ValueError as exc:\n        print(f'Error: {exc}')\n",
+    "explanation": [
+      "The base class holds shared state and the deposit/withdraw rules; withdraw asks self.available() how much may be taken.",
+      "Each subclass overrides only available(): Savings subtracts the minimum balance, Current adds the overdraft. That is polymorphism, with no type checks.",
+      "__str__ formats an account for REPORT, and __lt__ lets sorted() order accounts by balance.",
+      "sorted(..., reverse=True) is stable, so accounts with equal balances keep their opening order (dicts preserve insertion order).",
+      "Business-rule violations raise ValueError, and one except block turns them into error lines."
+    ],
+    "tests": [
+      {
+        "input": "OPEN savings asha\nDEPOSIT asha 2000\nWITHDRAW asha 1600\nWITHDRAW asha 1500\nOPEN current ravi\nWITHDRAW ravi 800\nREPORT\n",
+        "output": "Opened Savings account for asha\nasha balance: 2000\nError: insufficient funds\nasha balance: 500\nOpened Current account for ravi\nravi balance: -800\nSavings asha: 500\nCurrent ravi: -800"
+      },
+      {
+        "input": "DEPOSIT ghost 100\nOPEN current meena\nOPEN savings meena\nDEPOSIT meena 0\nWITHDRAW meena 1000\nWITHDRAW meena 1\n",
+        "output": "Error: no account for ghost\nOpened Current account for meena\nError: account exists for meena\nError: amount must be positive\nmeena balance: -1000\nError: insufficient funds"
+      },
+      {
+        "input": "REPORT\n",
+        "output": "No accounts"
+      },
+      {
+        "input": "OPEN savings a\nOPEN current b\nDEPOSIT a 700\nDEPOSIT b 700\nOPEN current c\nDEPOSIT c 900\nREPORT\n",
+        "output": "Opened Savings account for a\nOpened Current account for b\na balance: 700\nb balance: 700\nOpened Current account for c\nc balance: 900\nCurrent c: 900\nSavings a: 700\nCurrent b: 700"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which method does print(obj) call first?",
+      "options": [
+        "__repr__",
+        "__str__",
+        "__format__ only",
+        "__print__"
+      ],
+      "answer": 1,
+      "explanation": "print uses str(obj), which calls __str__ and falls back to __repr__ if __str__ is not defined."
+    },
+    {
+      "type": "scenario",
+      "question": "You need User.from_dict(data) to build instances, and subclasses such as AdminUser should get AdminUser objects from it. How should it be defined?",
+      "options": [
+        "As a @staticmethod returning User(...)",
+        "As a module-level function",
+        "As a @classmethod returning cls(...)",
+        "As an instance method"
+      ],
+      "answer": 2,
+      "explanation": "A classmethod receives the class it was called on, so cls(...) creates the right subclass."
+    },
+    {
+      "type": "output",
+      "question": "What does this code with a shared class attribute print?",
+      "code": "class Cart:\n    items = []\na, b = Cart(), Cart()\na.items.append('pen')\nprint(len(b.items))",
+      "options": [
+        "AttributeError",
+        "None",
+        "1",
+        "0"
+      ],
+      "answer": 2,
+      "explanation": "items is a class attribute shared by every instance, so appending through a is visible through b."
+    },
+    {
+      "type": "concept",
+      "question": "A class defines __eq__ but not __hash__. What happens when you put an instance in a set?",
+      "options": [
+        "The set silently ignores it",
+        "It works using id()",
+        "It works using __eq__ only",
+        "TypeError: unhashable type"
+      ],
+      "answer": 3,
+      "explanation": "Defining __eq__ sets __hash__ to None, which makes instances unhashable."
+    },
+    {
+      "type": "code",
+      "question": "class Admin(LoginRequiredMixin, ListView) calls dispatch(). Which class's dispatch runs first?",
+      "options": [
+        "ListView",
+        "View",
+        "object",
+        "LoginRequiredMixin"
+      ],
+      "answer": 3,
+      "explanation": "The MRO lists LoginRequiredMixin before ListView, so its dispatch runs first and calls super().dispatch()."
+    }
+  ]
+}

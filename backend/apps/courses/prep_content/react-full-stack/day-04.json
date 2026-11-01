@@ -1,0 +1,249 @@
+{
+  "day": 4,
+  "title": "ES Modules, Promises, async/await and the Event Loop",
+  "module": "JavaScript essentials for React",
+  "level": "Beginner",
+  "objectives": [
+    "Use named and default ES module exports and explain how bundlers use them for tree shaking.",
+    "Explain the event loop, the call stack, the microtask queue and the task (macrotask) queue.",
+    "Write asynchronous code with promises and async/await, including error handling.",
+    "Choose between Promise.all, allSettled, race and any for parallel requests.",
+    "Predict the output order of mixed synchronous, promise and timer code."
+  ],
+  "definition": "ES modules (import/export) are JavaScript's standard way to split code into files with explicit dependencies. Asynchronous JavaScript lets a single-threaded program start slow work, such as a network request, and continue running; the result arrives later through a promise, and the event loop schedules the callback when the call stack is empty. async/await is syntax on top of promises that makes asynchronous code read like synchronous code.",
+  "theory": [
+    {
+      "heading": "ES modules",
+      "body": "A module has its own scope and exposes values with export. Named exports (export function Button) are imported with braces and the exact name; a default export (export default App) can be imported under any name. Imports are static and resolved before code runs, which lets bundlers such as Vite, webpack and Rollup analyse the dependency graph and drop unused exports (tree shaking). Dynamic import('./Chart.js') returns a promise and is the basis of code splitting and React.lazy.",
+      "points": [
+        "Named exports: many per file, imported as import { a, b } from './x.js'.",
+        "Default export: one per file, imported as import Anything from './x.js'.",
+        "Modules run once and are cached; every importer shares the same instance.",
+        "Static imports enable tree shaking; dynamic import() enables lazy loading."
+      ]
+    },
+    {
+      "heading": "The event loop",
+      "body": "JavaScript runs one piece of code at a time on the call stack. Browser or Node APIs (timers, network, I/O) do the slow work elsewhere and queue callbacks when done. When the stack is empty, the event loop first drains the entire microtask queue (promise reactions, queueMicrotask, await continuations) and only then takes the next task such as a setTimeout callback or a UI event. Rendering in the browser happens between tasks, so a long synchronous loop freezes the page.",
+      "points": [
+        "Synchronous code always finishes first.",
+        "Microtasks (then, await) run before the next macrotask (setTimeout, events).",
+        "setTimeout(fn, 0) means 'as soon as possible after at least 0 ms', not immediately.",
+        "Long tasks block input and painting; split them up or move them to a Web Worker."
+      ]
+    },
+    {
+      "heading": "Promises and async/await",
+      "body": "A promise is an object representing a value that is pending, then fulfilled or rejected exactly once. then returns a new promise, which allows chaining, and catch handles rejections anywhere earlier in the chain. An async function always returns a promise; await pauses that function (not the whole program) until the awaited promise settles, and a rejected await throws, so try/catch works naturally.",
+      "points": [
+        "Unhandled rejections are bugs: always catch or let a caller handle them.",
+        "fetch only rejects on network failure; check response.ok for HTTP errors such as 404 or 500.",
+        "Sequential awaits in a loop are slow when requests are independent; start them together."
+      ]
+    },
+    {
+      "heading": "Running work in parallel",
+      "body": "Promise combinators coordinate several promises. Promise.all fulfils with all results in input order or rejects as soon as any input rejects (fail fast). Promise.allSettled waits for everything and reports each outcome. Promise.race settles like whichever input settles first, which is handy for timeouts. Promise.any fulfils with the first success and rejects with an AggregateError only if all fail.",
+      "points": [
+        "all: dashboard widgets that all must load.",
+        "allSettled: batch uploads where partial success is acceptable.",
+        "race: a request versus a timeout promise.",
+        "any: the fastest of several mirrors or CDNs."
+      ]
+    },
+    {
+      "heading": "Async in React components",
+      "body": "Component functions must be synchronous in client React, so data loading happens in effects, event handlers or a data library. Because results arrive later, code must handle loading and error states and ignore responses that arrive after the component has moved on (race conditions), typically with AbortController or an 'ignore' flag in the effect cleanup. React 19 and Server Components add use() and async server components, but the same promise rules apply.",
+      "points": [
+        "Effects cannot be async functions directly; define an async function inside and call it.",
+        "Abort or ignore stale requests in the cleanup to prevent out-of-order updates."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Loading two resources in parallel with error handling",
+    "body": "The profile and orders requests do not depend on each other, so they start together. Promise.all waits for both, and a single try/catch handles network errors and non-OK HTTP responses.",
+    "code": {
+      "language": "javascript",
+      "source": "// api.js\nexport async function getJSON(url, signal) {\n  const res = await fetch(url, { signal });\n  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);\n  return res.json();\n}\n\n// dashboard.js\nimport { getJSON } from './api.js';\n\nexport default async function loadDashboard(userId, signal) {\n  try {\n    const [profile, orders] = await Promise.all([\n      getJSON(`/api/users/${userId}`, signal),\n      getJSON(`/api/users/${userId}/orders`, signal)\n    ]);\n    return { profile, orders };\n  } catch (err) {\n    if (err.name === 'AbortError') return null; // component unmounted\n    throw err;\n  }\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Code splitting",
+      "description": "Dynamic import() loads a heavy chart library only when the user opens the analytics page."
+    },
+    {
+      "title": "Parallel data loading",
+      "description": "Promise.all loads independent widgets of a dashboard at the same time."
+    },
+    {
+      "title": "Request timeouts",
+      "description": "Promise.race or AbortSignal.timeout(5000) cancels a slow API call."
+    },
+    {
+      "title": "Batch operations",
+      "description": "Promise.allSettled uploads many files and reports which ones failed."
+    },
+    {
+      "title": "Shared utilities",
+      "description": "Named exports from a utils module let bundlers include only the functions a page uses."
+    }
+  ],
+  "demonstration": {
+    "description": "Predict the order of synchronous code, a timer and promise callbacks. Synchronous logs run first, then all microtasks, then the timer task.",
+    "code": {
+      "language": "javascript",
+      "source": "console.log('1 sync start');\nsetTimeout(() => console.log('5 timeout'), 0);\nPromise.resolve()\n  .then(() => console.log('3 microtask A'))\n  .then(() => console.log('4 microtask B'));\n(async () => {\n  await null;\n  console.log('3b after await');\n})();\nconsole.log('2 sync end');"
+    },
+    "output": "1 sync start\n2 sync end\n3 microtask A\n3b after await\n4 microtask B\n5 timeout"
+  },
+  "takeaways": [
+    "Named exports are explicit and tree-shakeable; default exports allow any import name.",
+    "Dynamic import() returns a promise and powers lazy loading.",
+    "Order: synchronous code, then all microtasks, then the next macrotask.",
+    "async functions always return promises; await rejections throw and can be caught.",
+    "fetch does not reject on HTTP errors; check response.ok.",
+    "Use all for fail-fast, allSettled for every outcome, race for timeouts and any for the first success."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between named and default exports?",
+      "answer": "A module can have many named exports, imported with braces and matching names, and at most one default export, imported with any name. Named exports make refactoring and auto-imports more reliable; default exports are common for a file's main component or for React.lazy targets.",
+      "explanation": "Mention that React.lazy expects a module with a default export, or a .then that maps a named export to default."
+    },
+    {
+      "question": "Explain the JavaScript event loop.",
+      "answer": "JavaScript executes on a single call stack. Asynchronous APIs hand their callbacks to queues when ready. When the stack is empty, the event loop runs all queued microtasks (promise callbacks), then takes one macrotask (such as a timer or event), and repeats, with the browser rendering between tasks.",
+      "explanation": "Strong answers state the microtask-before-macrotask rule and its practical consequence: long synchronous work blocks rendering."
+    },
+    {
+      "question": "What is the difference between Promise.all and Promise.allSettled?",
+      "answer": "Promise.all fulfils with an array of results when every promise fulfils and rejects immediately when any rejects. Promise.allSettled never rejects; it waits for all promises and returns objects with status 'fulfilled' or 'rejected' plus the value or reason.",
+      "explanation": "Give a use case for each and add that Promise.all does not cancel the other requests when it rejects; they keep running."
+    },
+    {
+      "question": "Why can't you pass an async function directly to useEffect?",
+      "answer": "useEffect expects its callback to return either nothing or a cleanup function. An async function always returns a promise, which React would treat as an invalid cleanup. Declare an async function inside the effect and call it, and use the cleanup to abort or ignore the request.",
+      "explanation": "Mentioning race conditions and AbortController shows production experience."
+    },
+    {
+      "question": "How would you add a timeout to a fetch request?",
+      "answer": "Pass an AbortSignal: fetch(url, { signal: AbortSignal.timeout(5000) }), or create an AbortController and call abort() from a setTimeout. Promise.race against a rejecting timer also works but does not cancel the underlying request.",
+      "explanation": "The distinction between cancelling the request and merely ignoring it is what interviewers look for."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Simulate the promise combinators",
+    "difficulty": "Basic",
+    "objective": "Reason precisely about how Promise.all, allSettled, race and any settle, including timing and failure behaviour.",
+    "statement": "You are given tasks, each with a name, a duration in milliseconds and whether it succeeds (ok) or fails (fail). All tasks start at time 0. For each query (all, allSettled, race or any) print what the combinator would settle with and when. Tasks finishing at the same time settle in input order. Formats: all -> 'fulfilled at <max>: [n1, n2, ...]' (input order) or 'rejected at <t>: <first failing name>'; allSettled -> 'settled at <max>: n1=fulfilled, n2=rejected, ...'; race -> '<fulfilled|rejected> at <t>: <name>' for the first to settle; any -> 'fulfilled at <t>: <name>' for the first success or 'rejected at <max>: AggregateError'. Prefix each line with the query name and ': '.",
+    "language": "javascript",
+    "input_format": "Line 1: N. Next N lines: 'name duration ok|fail'. Then Q, followed by Q lines each containing a combinator name.",
+    "output_format": "Q lines, one per query, as described.",
+    "example": {
+      "input": "3\napi 300 ok\ncache 100 fail\ncdn 200 ok\n4\nall\nallSettled\nrace\nany\n",
+      "output": "all: rejected at 100: cache\nallSettled: settled at 300: api=fulfilled, cache=rejected, cdn=fulfilled\nrace: rejected at 100: cache\nany: fulfilled at 200: cdn"
+    },
+    "constraints": [
+      "1 <= N <= 1000; 0 <= duration <= 100000.",
+      "Queries are exactly all, allSettled, race or any.",
+      "Do not use real timers; compute the result."
+    ],
+    "starter": "const lines = stdin.trim().split('\\n');\nlet i = 0;\nconst n = parseInt(lines[i++], 10);\nconst tasks = [];\n// TODO: parse tasks, sort a copy by (time, input order), answer each query\n",
+    "solution": "const lines = stdin.trim().split('\\n');\nlet i = 0;\nconst n = parseInt(lines[i++], 10);\nconst tasks = [];\nfor (let k = 0; k < n; k++) {\n  const [name, d, s] = lines[i++].trim().split(/\\s+/);\n  tasks.push({ name, t: Number(d), ok: s === 'ok', order: k });\n}\nconst byTime = tasks.slice().sort((a, b) => a.t - b.t || a.order - b.order);\nconst maxT = Math.max(...tasks.map(t => t.t));\nconst q = parseInt(lines[i++], 10);\nconst out = [];\nfor (let k = 0; k < q; k++) {\n  const c = lines[i++].trim();\n  let r;\n  if (c === 'all') {\n    const f = byTime.find(t => !t.ok);\n    r = f ? `rejected at ${f.t}: ${f.name}` : `fulfilled at ${maxT}: [${tasks.map(t => t.name).join(', ')}]`;\n  } else if (c === 'allSettled') {\n    r = `settled at ${maxT}: ` + tasks.map(t => t.name + '=' + (t.ok ? 'fulfilled' : 'rejected')).join(', ');\n  } else if (c === 'race') {\n    const f = byTime[0];\n    r = `${f.ok ? 'fulfilled' : 'rejected'} at ${f.t}: ${f.name}`;\n  } else {\n    const f = byTime.find(t => t.ok);\n    r = f ? `fulfilled at ${f.t}: ${f.name}` : `rejected at ${maxT}: AggregateError`;\n  }\n  out.push(c + ': ' + r);\n}\nconsole.log(out.join('\\n'));\n",
+    "explanation": [
+      "Sort a copy of the tasks by finish time, breaking ties by input order, to model the order in which they settle.",
+      "all rejects at the first failure in time order; otherwise it fulfils when the slowest task finishes, with results in input order (not finish order).",
+      "allSettled always waits for the slowest task and reports every status in input order.",
+      "race takes whichever task settles first, success or failure.",
+      "any ignores failures until a success appears; if none succeed it rejects with an AggregateError after all have settled."
+    ],
+    "tests": [
+      {
+        "input": "3\napi 300 ok\ncache 100 fail\ncdn 200 ok\n4\nall\nallSettled\nrace\nany\n",
+        "output": "all: rejected at 100: cache\nallSettled: settled at 300: api=fulfilled, cache=rejected, cdn=fulfilled\nrace: rejected at 100: cache\nany: fulfilled at 200: cdn"
+      },
+      {
+        "input": "3\nslow 500 ok\nfast 50 ok\nmid 120 ok\n2\nall\nrace\n",
+        "output": "all: fulfilled at 500: [slow, fast, mid]\nrace: fulfilled at 50: fast"
+      },
+      {
+        "input": "2\na 10 fail\nb 30 fail\n2\nany\nallSettled\n",
+        "output": "any: rejected at 30: AggregateError\nallSettled: settled at 30: a=rejected, b=rejected"
+      },
+      {
+        "input": "3\nx 100 ok\ny 100 fail\nz 100 ok\n3\nrace\nall\nany\n",
+        "output": "race: fulfilled at 100: x\nall: rejected at 100: y\nany: fulfilled at 100: x"
+      },
+      {
+        "input": "1\nonly 0 ok\n4\nany\nall\nrace\nallSettled\n",
+        "output": "any: fulfilled at 0: only\nall: fulfilled at 0: [only]\nrace: fulfilled at 0: only\nallSettled: settled at 0: only=fulfilled"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What is the output order?",
+      "code": "console.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
+      "options": [
+        "A D C B",
+        "A B C D",
+        "A C D B",
+        "A D B C"
+      ],
+      "answer": 0,
+      "explanation": "Synchronous logs A and D run first, then the microtask C, then the timer task B."
+    },
+    {
+      "type": "scenario",
+      "question": "A page uploads 20 files and must show which succeeded and which failed. Which combinator fits best?",
+      "options": [
+        "Promise.any",
+        "Promise.all",
+        "Promise.allSettled",
+        "Promise.race"
+      ],
+      "answer": 2,
+      "explanation": "allSettled waits for every upload and reports each outcome without failing fast."
+    },
+    {
+      "type": "concept",
+      "question": "fetch('/api/missing') receives a 404 response. What happens to the returned promise?",
+      "options": [
+        "It fulfils; you must check response.ok",
+        "It throws synchronously",
+        "It rejects with a 404 error",
+        "It never settles"
+      ],
+      "answer": 0,
+      "explanation": "fetch rejects only on network failures or aborts. HTTP error statuses still fulfil, so check response.ok or status."
+    },
+    {
+      "type": "code",
+      "question": "Which import correctly loads a module lazily for code splitting?",
+      "options": [
+        "export lazy from './Chart.js'",
+        "import Chart from './Chart.js' inside an if block",
+        "const mod = await import('./Chart.js')",
+        "require.lazy('./Chart.js')"
+      ],
+      "answer": 2,
+      "explanation": "Dynamic import() returns a promise and lets bundlers emit a separate chunk. Static import statements cannot appear inside blocks."
+    },
+    {
+      "type": "concept",
+      "question": "What does an async function always return?",
+      "options": [
+        "The value of its return statement directly",
+        "undefined",
+        "A callback",
+        "A promise"
+      ],
+      "answer": 3,
+      "explanation": "An async function wraps its return value in a promise, and a thrown error becomes a rejected promise."
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "day": 4,
+  "title": "File Handling: Reading and Writing CSV and JSON",
+  "module": "Python foundations for analysts",
+  "level": "Beginner",
+  "objectives": [
+    "Open files safely with context managers and the right encoding.",
+    "Read and write CSV files with the csv module, including quoted fields.",
+    "Load and save JSON with json.load, json.loads, json.dump and json.dumps.",
+    "Use the key pd.read_csv and to_csv options interviewers ask about.",
+    "Handle bad rows without crashing and report what was skipped."
+  ],
+  "definition": "File handling is reading data from and writing data to files on disk. CSV (comma-separated values) stores a table as plain text, one row per line, while JSON (JavaScript Object Notation) stores nested objects and arrays. Python's built-in csv and json modules parse these formats correctly, and pandas wraps them in read_csv, read_json, to_csv and to_json for table-shaped data.",
+  "theory": [
+    {
+      "heading": "Opening files the right way",
+      "body": "Use a with block so the file is closed even if an error occurs. Always state the encoding: most modern files are UTF-8, and Excel often adds a byte-order mark that 'utf-8-sig' removes so the first column name is not polluted with an invisible character. For the csv module, open files with newline='' so line endings inside quoted fields are handled correctly.",
+      "points": [
+        "with open('sales.csv', encoding='utf-8', newline='') as f: ...",
+        "Modes: 'r' read, 'w' overwrite, 'a' append, 'b' binary.",
+        "UnicodeDecodeError usually means the encoding is wrong (try 'utf-8-sig' or 'cp1252')."
+      ]
+    },
+    {
+      "heading": "The csv module",
+      "body": "Splitting lines on commas breaks as soon as a field contains a comma, such as \"Delhi, NCR\". csv.reader follows the CSV quoting rules and returns each row as a list of strings; csv.DictReader uses the header row to return dicts, so code does not depend on column order. csv.writer and DictWriter quote fields automatically when needed. Every value is still a string, so numbers must be converted.",
+      "points": [
+        "csv.DictReader(f) yields {'region': 'North', 'amount': '1200.50'}.",
+        "writer.writerow([...]) and DictWriter(f, fieldnames=[...]).writeheader().",
+        "Use delimiter=';' or '\\t' for semicolon or tab-separated files."
+      ]
+    },
+    {
+      "heading": "JSON in Python",
+      "body": "JSON maps naturally to Python: objects become dicts, arrays become lists, true/false/null become True/False/None. json.load reads from a file object and json.loads from a string; json.dump and json.dumps do the reverse. Use indent for readable files and sort_keys for stable output that is easy to compare in tests. JSON Lines (one JSON object per line) is common for logs and large exports.",
+      "points": [
+        "data = json.loads('{\"a\": 1}') gives {'a': 1}.",
+        "json.dumps(obj, indent=2, sort_keys=True) for readable, stable output.",
+        "pd.read_json('events.jsonl', lines=True) reads JSON Lines."
+      ]
+    },
+    {
+      "heading": "pandas readers and writers",
+      "body": "pd.read_csv does type inference, missing-value detection and date parsing in fast C code. Knowing its options saves cleaning time later and is a favourite interview topic. When writing, index=False stops pandas from adding an unnamed index column that confuses the next reader.",
+      "points": [
+        "sep, usecols, dtype, parse_dates, na_values, encoding, nrows, skiprows.",
+        "chunksize=100_000 returns an iterator of DataFrames for large files.",
+        "df.to_csv('out.csv', index=False); df.to_json('out.json', orient='records')."
+      ]
+    },
+    {
+      "heading": "Defensive reading",
+      "body": "Production files contain blank amounts, text in numeric columns and malformed lines. A good loader converts values inside try/except, counts or logs rejects and continues, so one bad row does not stop a whole report. pandas offers the same controls: pd.to_numeric(errors='coerce') turns bad values into NaN and on_bad_lines='skip' or 'warn' handles rows with the wrong number of fields.",
+      "points": [
+        "Report how many rows were skipped; silent data loss is worse than a crash.",
+        "Validate the header: check required columns exist before processing."
+      ]
+    }
+  ],
+  "example": {
+    "title": "From CSV to a JSON summary",
+    "body": "We read an orders file with DictReader, total the amounts per region and save the result as JSON for a dashboard. The pandas version is df.groupby('region')['amount'].sum().to_json().",
+    "code": {
+      "language": "python",
+      "source": "import csv, json\nfrom collections import defaultdict\n\ntotals = defaultdict(float)\nwith open('orders.csv', encoding='utf-8', newline='') as f:\n    for row in csv.DictReader(f):\n        totals[row['region']] += float(row['amount'])\n\nwith open('summary.json', 'w', encoding='utf-8') as f:\n    json.dump(dict(totals), f, indent=2, sort_keys=True)\n\n# pandas equivalent\n# import pandas as pd\n# df = pd.read_csv('orders.csv', usecols=['region', 'amount'])\n# df.groupby('region')['amount'].sum().to_json('summary.json')"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Ingesting exports",
+      "description": "Loading CRM, ERP or e-commerce CSV exports with the right encoding and delimiter."
+    },
+    {
+      "title": "Config and metadata",
+      "description": "Storing report settings, column mappings or thresholds in JSON files."
+    },
+    {
+      "title": "API responses",
+      "description": "Parsing JSON returned by web services before flattening it into a table."
+    },
+    {
+      "title": "Hand-off files",
+      "description": "Writing cleaned CSV or JSON for BI tools, other teams or a database load."
+    }
+  ],
+  "demonstration": {
+    "description": "Why naive splitting fails and how csv and json handle the same data correctly.",
+    "code": {
+      "language": "python",
+      "source": "import csv, io, json\n\nline = '2,\"Delhi, NCR\",800'\nprint(line.split(','))\nprint(next(csv.reader(io.StringIO(line))))\n\nrecord = {'city': 'Delhi, NCR', 'amount': 800, 'paid': True, 'note': None}\ntext = json.dumps(record, sort_keys=True)\nprint(text)\nprint(json.loads(text)['paid'])"
+    },
+    "output": "['2', '\"Delhi', ' NCR\"', '800']\n['2', 'Delhi, NCR', '800']\n{\"amount\": 800, \"city\": \"Delhi, NCR\", \"note\": null, \"paid\": true}\nTrue"
+  },
+  "takeaways": [
+    "Use with blocks, explicit encodings and newline='' for CSV files.",
+    "Never split CSV lines on commas yourself; quoted fields break it.",
+    "csv values are strings; convert types explicitly and count failures.",
+    "json.load/dump work with files, loads/dumps with strings.",
+    "Know read_csv options: sep, usecols, dtype, parse_dates, na_values, chunksize.",
+    "Write with index=False unless the index carries real information."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between json.load and json.loads?",
+      "answer": "json.load reads JSON from a file object; json.loads parses a JSON string. Likewise json.dump writes to a file and json.dumps returns a string.",
+      "explanation": "The 's' stands for string. Mention that JSON null becomes None and true becomes True."
+    },
+    {
+      "question": "Why use the csv module instead of line.split(',')?",
+      "answer": "Real CSV files quote fields that contain commas, quotes or newlines. The csv module implements those rules, so 'Delhi, NCR' stays one field; split(',') would break it into two.",
+      "explanation": "A concrete example of a quoted field makes this answer convincing."
+    },
+    {
+      "question": "Which pd.read_csv parameters do you use most and why?",
+      "answer": "usecols to load only needed columns, dtype to control types and memory, parse_dates for date columns, na_values for custom missing markers, sep and encoding for unusual files, and chunksize or nrows for large files.",
+      "explanation": "Interviewers look for awareness of memory and correctness, not a list of every parameter."
+    },
+    {
+      "question": "You open a CSV exported from Excel and the first column is named 'ï»¿id'. What happened?",
+      "answer": "The file starts with a UTF-8 byte-order mark that was read as text. Reading with encoding='utf-8-sig' strips it.",
+      "explanation": "This practical debugging question rewards people who have handled real exports."
+    },
+    {
+      "question": "How would you load a 10 GB CSV that does not fit in memory?",
+      "answer": "Read it in chunks with pd.read_csv(chunksize=...), load only needed columns with usecols, set compact dtypes, aggregate each chunk and combine the partial results. Alternatively, convert it once to Parquet or load it into a database and query it.",
+      "explanation": "This advanced question connects file handling to performance (covered again on Day 26)."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "CSV to JSON regional summary",
+    "difficulty": "Basic",
+    "objective": "Parse a CSV with quoted fields using csv.DictReader, aggregate a numeric column defensively and emit stable JSON.",
+    "statement": "Standard input contains a CSV file with a header row. It always has the columns region and amount, possibly among others and in any order. Sum amount per region. Rows whose amount is blank or not a number are skipped. Print one line of JSON with sorted keys: {\"skipped\": <count>, \"totals\": {<region>: <total rounded to 2 decimals>, ...}, \"valid_rows\": <count>}.",
+    "language": "python",
+    "input_format": "A CSV document: a header line followed by zero or more data lines. Fields may be quoted.",
+    "output_format": "A single line produced by json.dumps(result, sort_keys=True), with totals rounded using round(total, 2).",
+    "example": {
+      "input": "order_id,region,amount\n1,North,1200.50\n2,\"Delhi, NCR\",800\n3,North,\n4,South,450.25\n5,\"Delhi, NCR\",200\n",
+      "output": "{\"skipped\": 1, \"totals\": {\"Delhi, NCR\": 1000.0, \"North\": 1200.5, \"South\": 450.25}, \"valid_rows\": 4}"
+    },
+    "constraints": [
+      "Up to 100000 data rows.",
+      "Region names are used exactly as parsed by the csv module.",
+      "Use json.dumps with sort_keys=True so the output is deterministic."
+    ],
+    "starter": "import csv, io, json, sys\nfrom collections import defaultdict\n\nreader = csv.DictReader(io.StringIO(sys.stdin.read()))\ntotals = defaultdict(float)\nskipped = valid = 0\n\nfor row in reader:\n    # TODO: convert amount, skip bad rows, accumulate\n    pass\n\n# TODO: print the JSON summary\n",
+    "solution": "import csv, io, json, sys\nfrom collections import defaultdict\n\nreader = csv.DictReader(io.StringIO(sys.stdin.read()))\ntotals = defaultdict(float)\nskipped = valid = 0\n\nfor row in reader:\n    try:\n        amount = float(row['amount'])\n    except (TypeError, ValueError):\n        skipped += 1\n        continue\n    totals[row['region']] += amount\n    valid += 1\n\nresult = {\n    'skipped': skipped,\n    'totals': {region: round(total, 2) for region, total in totals.items()},\n    'valid_rows': valid,\n}\nprint(json.dumps(result, sort_keys=True))\n",
+    "explanation": [
+      "Wrap the whole input in io.StringIO so csv.DictReader can parse it like a file, including quoted commas.",
+      "For each row, try float(row['amount']); a ValueError (bad text) or TypeError (missing field) means the row is skipped.",
+      "Accumulate valid amounts per region in a defaultdict(float) and count valid rows.",
+      "Round totals to two decimals to hide float noise such as 0.30000000000000004, then print json.dumps with sort_keys=True."
+    ],
+    "tests": [
+      {
+        "input": "order_id,region,amount\n1,North,1200.50\n2,\"Delhi, NCR\",800\n3,North,\n4,South,450.25\n5,\"Delhi, NCR\",200\n",
+        "output": "{\"skipped\": 1, \"totals\": {\"Delhi, NCR\": 1000.0, \"North\": 1200.5, \"South\": 450.25}, \"valid_rows\": 4}"
+      },
+      {
+        "input": "amount,region,date\n100,East,2024-01-01\nabc,East,2024-01-02\n50.5,West,2024-01-03\n",
+        "output": "{\"skipped\": 1, \"totals\": {\"East\": 100.0, \"West\": 50.5}, \"valid_rows\": 2}"
+      },
+      {
+        "input": "order_id,region,amount\n",
+        "output": "{\"skipped\": 0, \"totals\": {}, \"valid_rows\": 0}"
+      },
+      {
+        "input": "region,amount\nA,0.1\nA,0.2\nB,10\n",
+        "output": "{\"skipped\": 0, \"totals\": {\"A\": 0.3, \"B\": 10.0}, \"valid_rows\": 3}"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "How many fields does this CSV reader return?",
+      "code": "import csv, io\nrow = next(csv.reader(io.StringIO('7,\"Pune, MH\",99')))\nprint(len(row))",
+      "options": [
+        "4",
+        "2",
+        "3",
+        "1"
+      ],
+      "answer": 2,
+      "explanation": "The csv reader keeps the quoted field 'Pune, MH' together, so the row has three fields."
+    },
+    {
+      "type": "concept",
+      "question": "Which function parses a JSON string (not a file) into a Python object?",
+      "options": [
+        "json.dumps",
+        "json.parse",
+        "json.loads",
+        "json.load"
+      ],
+      "answer": 2,
+      "explanation": "json.loads parses a string. json.load reads from a file object, json.dumps serialises, and json.parse does not exist in Python."
+    },
+    {
+      "type": "scenario",
+      "question": "A colleague's to_csv output gains an extra 'Unnamed: 0' column every time it is re-read. What is the fix?",
+      "options": [
+        "Use sep=';'",
+        "Read with encoding='utf-8-sig'",
+        "Use parse_dates=True",
+        "Write with df.to_csv(path, index=False)"
+      ],
+      "answer": 3,
+      "explanation": "By default to_csv writes the index as the first column, which read_csv then loads as 'Unnamed: 0'. index=False stops that."
+    },
+    {
+      "type": "code",
+      "question": "Which read_csv call loads only two columns and treats the text 'missing' as NaN?",
+      "options": [
+        "pd.read_csv(path, select=['id', 'amt'], fillna='missing')",
+        "pd.read_csv(path)[['id', 'amt']].dropna('missing')",
+        "pd.read_csv(path, columns=['id', 'amt'], na='missing')",
+        "pd.read_csv(path, usecols=['id', 'amt'], na_values=['missing'])"
+      ],
+      "answer": 3,
+      "explanation": "usecols limits the columns read and na_values adds extra strings that should be treated as missing."
+    },
+    {
+      "type": "output",
+      "question": "What JSON string does this code print?",
+      "code": "import json\nprint(json.dumps({'ok': True, 'v': None}))",
+      "options": [
+        "{'ok': True, 'v': None}",
+        "{\"ok\": True, \"v\": None}",
+        "{\"ok\": true, \"v\": null}",
+        "{\"ok\": \"True\", \"v\": \"None\"}"
+      ],
+      "answer": 2,
+      "explanation": "JSON uses lowercase true and null and double quotes, so Python True and None are converted."
+    }
+  ]
+}

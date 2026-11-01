@@ -1,0 +1,249 @@
+{
+  "day": 3,
+  "title": "Promises, async/await and Promise Combinators",
+  "module": "JavaScript core",
+  "level": "Beginner",
+  "objectives": [
+    "Explain the three promise states and how then/catch/finally chains pass values and errors.",
+    "Rewrite promise chains with async/await and handle errors with try/catch.",
+    "Choose between sequential and parallel awaiting for independent work.",
+    "Compare Promise.all, allSettled, race and any and pick the right one for a scenario.",
+    "Avoid common bugs: forgotten await, await inside forEach and unhandled rejections."
+  ],
+  "definition": "A Promise is an object representing the eventual result of an asynchronous operation. It starts pending and settles exactly once, either fulfilled with a value or rejected with a reason. async functions always return a promise, and await pauses the async function until a promise settles, letting asynchronous code read like synchronous code.",
+  "theory": [
+    {
+      "heading": "Why promises replaced callbacks",
+      "body": "Node's original style passed a callback (err, result) to every asynchronous function. Nested callbacks grow rightwards ('callback hell'), error handling must be repeated at each level, and nothing stops a buggy library from calling your callback twice. A promise settles only once, errors propagate down a chain to the nearest catch, and promises can be composed with combinators. Modern Node APIs such as fs/promises, the MongoDB driver and fetch all return promises.",
+      "points": [
+        "States: pending, then fulfilled or rejected; a settled promise never changes.",
+        "then(onFulfilled, onRejected) returns a new promise, which makes chaining possible.",
+        "Returning a value from then passes it on; throwing (or returning a rejected promise) moves to the next catch."
+      ]
+    },
+    {
+      "heading": "async/await",
+      "body": "An async function always returns a promise: a returned value fulfils it and a thrown error rejects it. Inside, await expression waits for the promise to settle, then returns its value or throws its rejection reason, so ordinary try/catch/finally works. await only pauses the current async function; the rest of the program, including other requests in an Express server, keeps running.",
+      "points": [
+        "Forgetting await gives you a pending Promise object instead of the data.",
+        "Errors from awaited promises are caught by the surrounding try/catch.",
+        "Top-level await is allowed in ES modules."
+      ]
+    },
+    {
+      "heading": "Sequential vs parallel",
+      "body": "Writing const a = await getUser(); const b = await getOrders(); runs the calls one after another, so the total time is the sum. If the calls do not depend on each other, start both first and await them together with Promise.all, so the total time is roughly the slowest one. In an API endpoint that loads a profile, its orders and its notifications, this can cut latency dramatically. Use sequential awaits only when a later call needs an earlier result.",
+      "points": [
+        "array.forEach(async ...) does not wait; use for...of with await for sequential work.",
+        "Use Promise.all(items.map(async ...)) for parallel work, with a concurrency limit for large lists."
+      ]
+    },
+    {
+      "heading": "The four combinators",
+      "body": "Promise combinators take an iterable of promises and return one promise. They differ in what they wait for and when they short-circuit. Knowing these precisely is a frequent interview check because choosing the wrong one either hides failures or fails a whole page because of one optional widget.",
+      "points": [
+        "Promise.all: fulfils with all values in input order; rejects as soon as any input rejects.",
+        "Promise.allSettled: never rejects; waits for all and returns {status, value|reason} objects.",
+        "Promise.race: settles like the first input to settle, fulfilled or rejected (useful for timeouts).",
+        "Promise.any: fulfils with the first fulfilment; rejects with an AggregateError only if all reject."
+      ]
+    },
+    {
+      "heading": "Error handling and unhandled rejections",
+      "body": "A rejected promise with no handler triggers an unhandledRejection event. Since Node 15 the default behaviour is to crash the process, which is safer than silently continuing. In Express 4, an error thrown inside an async route handler is not passed to the error middleware automatically, so you must wrap handlers or call next(err); Express 5 forwards rejected promises from handlers to the error middleware itself.",
+      "points": [
+        "Always end a chain with catch or wrap awaits in try/catch.",
+        "Note that Promise.all does not cancel the other operations when one fails; use AbortController for cancellation."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Parallel loading in an API handler",
+    "body": "The dashboard needs the user and their orders, which are independent. Starting both requests before awaiting halves the latency compared to awaiting them one by one. The optional recommendations call uses allSettled so its failure does not break the page.",
+    "code": {
+      "language": "javascript",
+      "source": "const wait = (ms, value, fail = false) =>\n  new Promise((resolve, reject) => setTimeout(() => (fail ? reject(new Error(value)) : resolve(value)), ms));\n\nasync function loadDashboard() {\n  const started = Date.now();\n  const [user, orders] = await Promise.all([wait(100, 'Asha'), wait(100, ['o1', 'o2'])]);\n  const [recs] = await Promise.allSettled([wait(20, 'recs down', true)]);\n  return {\n    user,\n    orders,\n    recommendations: recs.status === 'fulfilled' ? recs.value : [],\n    ms: Math.round((Date.now() - started) / 10) * 10\n  };\n}\n\nloadDashboard().then(console.log);\n// { user: 'Asha', orders: [ 'o1', 'o2' ], recommendations: [], ms: 120 } (approximately)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Aggregating microservice calls",
+      "description": "An Express endpoint fetches profile, cart and offers in parallel with Promise.all to keep response time low."
+    },
+    {
+      "title": "Optional widgets",
+      "description": "Promise.allSettled loads non-critical sections so one failing service shows a fallback instead of a 500 error."
+    },
+    {
+      "title": "Timeouts for LLM or third-party calls",
+      "description": "Promise.race between the request and a timer rejects slow calls; AbortController then cancels the request."
+    },
+    {
+      "title": "Fastest mirror or region",
+      "description": "Promise.any accepts the first successful response from several replicas and only fails if all fail."
+    },
+    {
+      "title": "Database transactions and migrations",
+      "description": "Sequential awaits in a for...of loop keep steps in order when each depends on the previous one."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare how combinators settle for the same three tasks: a fulfils after 30 ms, b rejects after 10 ms, c fulfils after 20 ms.",
+    "code": {
+      "language": "javascript",
+      "source": "const t = (ms, v, fail) => new Promise((res, rej) => setTimeout(() => (fail ? rej(v) : res(v)), ms));\nconst make = () => [t(30, 'a'), t(10, 'b-error', true), t(20, 'c')];\n\nPromise.all(make()).then(v => console.log('all', v), e => console.log('all rejected', e));\nPromise.allSettled(make()).then(r => console.log('allSettled', r.map(x => x.status).join(',')));\nPromise.race(make()).then(v => console.log('race', v), e => console.log('race rejected', e));\nPromise.any(make()).then(v => console.log('any', v));"
+    },
+    "output": "all rejected b-error\nrace rejected b-error\nany c\nallSettled fulfilled,rejected,fulfilled"
+  },
+  "takeaways": [
+    "A promise settles once: fulfilled with a value or rejected with a reason.",
+    "async functions return promises; await unwraps them and throws on rejection.",
+    "Independent awaits should run in parallel with Promise.all.",
+    "all fails fast, allSettled never rejects, race takes the first settlement, any takes the first success.",
+    "forEach does not await async callbacks; use for...of or Promise.all with map.",
+    "Unhandled rejections crash modern Node, so every chain needs error handling."
+  ],
+  "interview": [
+    {
+      "question": "What is a Promise and what states can it be in?",
+      "answer": "A Promise represents a value that will be available later. It is pending until it settles once, either fulfilled with a value or rejected with a reason, after which its state never changes.",
+      "explanation": "Mention that then returns a new promise, enabling chaining, and that settlement is one-time, unlike callbacks that might be called twice."
+    },
+    {
+      "question": "What is the difference between Promise.all and Promise.allSettled?",
+      "answer": "Promise.all fulfils with an array of values when every input fulfils and rejects immediately when any input rejects. Promise.allSettled always waits for every input and fulfils with objects describing each outcome.",
+      "explanation": "Give a scenario: use all when every result is required, allSettled for optional or independent tasks such as sending notifications."
+    },
+    {
+      "question": "How would you make three independent database calls faster in an async function?",
+      "answer": "Start all three without awaiting, then await Promise.all on them, so they run concurrently and the total time approaches the slowest call instead of the sum.",
+      "explanation": "Strong candidates also mention limits: very large arrays need a concurrency cap so the database connection pool is not flooded."
+    },
+    {
+      "question": "Why does await inside array.forEach not work as expected?",
+      "answer": "forEach ignores the promises returned by its async callback, so the outer function continues immediately and errors become unhandled. Use for...of to await sequentially or Promise.all(array.map(...)) for parallel execution.",
+      "explanation": "A very common bug in Node scripts and seeders; naming both alternatives shows practical experience."
+    },
+    {
+      "question": "How do you implement a timeout for a slow API call?",
+      "answer": "Race the call against a promise that rejects after N milliseconds using Promise.race, or better, pass an AbortSignal (for example AbortSignal.timeout(5000)) to fetch so the underlying request is actually cancelled.",
+      "explanation": "The advanced point is that race alone only stops waiting; it does not stop the request. AbortController cancels it."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Predict the Promise combinator result",
+    "difficulty": "Basic",
+    "objective": "Model exactly how Promise.all, allSettled, race and any settle given task outcomes and timings.",
+    "statement": "The first line names a combinator: all, allSettled, race or any. Each following line describes one task: <name> <ok|fail> <delayMs> <value>. A task fulfils (ok) or rejects (fail) with <value> after <delayMs>. Tasks with equal delays settle in input order. Print what the combinator produces and when it settles:\n- all: fulfilled: [v1,v2,...] in input order at the latest delay, or rejected: <reason> of the earliest rejection at that rejection's time.\n- allSettled: one line per task in input order, <name>: fulfilled <value> or <name>: rejected <value>, settling at the latest delay.\n- race: fulfilled: <value> or rejected: <value> for the first task to settle.\n- any: fulfilled: <value> for the first fulfilment; if every task rejects, rejected: AggregateError [r1,r2,...] in input order at the latest delay.\nThe final line is always at <ms>ms.",
+    "language": "javascript",
+    "input_format": "Line 1: combinator name. Following lines: name status delay value.",
+    "output_format": "Result line(s) followed by at <ms>ms.",
+    "example": {
+      "input": "all\na ok 100 user\nb ok 50 orders\nc fail 80 timeout\n",
+      "output": "rejected: timeout\nat 80ms"
+    },
+    "constraints": [
+      "1 to 20 tasks; delays are non-negative integers.",
+      "Values contain no spaces.",
+      "Do not use real timers; compute the result from the rules."
+    ],
+    "starter": "const lines = stdin.trim().split('\\n').map(l => l.trim()).filter(Boolean);\nconst mode = lines[0];\nconst tasks = lines.slice(1).map((line, i) => {\n  const [name, status, delay, value] = line.split(' ');\n  return { name, ok: status === 'ok', delay: Number(delay), value, i };\n});\n\n// TODO: order tasks by settlement time and apply the combinator rules\n",
+    "solution": "const lines = stdin.trim().split('\\n').map(l => l.trim()).filter(Boolean);\nconst mode = lines[0];\nconst tasks = lines.slice(1).map((line, i) => {\n  const [name, status, delay, value] = line.split(' ');\n  return { name, ok: status === 'ok', delay: Number(delay), value, i };\n});\n\nconst bySettleTime = [...tasks].sort((a, b) => a.delay - b.delay || a.i - b.i);\nconst latest = Math.max(...tasks.map(t => t.delay));\nconst out = [];\n\nif (mode === 'all') {\n  const firstFail = bySettleTime.find(t => !t.ok);\n  if (firstFail) out.push('rejected: ' + firstFail.value, 'at ' + firstFail.delay + 'ms');\n  else out.push('fulfilled: [' + tasks.map(t => t.value).join(',') + ']', 'at ' + latest + 'ms');\n} else if (mode === 'allSettled') {\n  for (const t of tasks) out.push(t.name + ': ' + (t.ok ? 'fulfilled ' : 'rejected ') + t.value);\n  out.push('at ' + latest + 'ms');\n} else if (mode === 'race') {\n  const first = bySettleTime[0];\n  out.push((first.ok ? 'fulfilled: ' : 'rejected: ') + first.value, 'at ' + first.delay + 'ms');\n} else if (mode === 'any') {\n  const firstOk = bySettleTime.find(t => t.ok);\n  if (firstOk) out.push('fulfilled: ' + firstOk.value, 'at ' + firstOk.delay + 'ms');\n  else out.push('rejected: AggregateError [' + tasks.map(t => t.value).join(',') + ']', 'at ' + latest + 'ms');\n}\nconsole.log(out.join('\\n'));\n",
+    "explanation": [
+      "Parse each task and remember its input position, which is used both for result order and for breaking ties in timing.",
+      "Sort a copy of the tasks by delay to know the order in which they settle.",
+      "all short-circuits on the earliest rejection; otherwise it reports values in input order (not completion order) at the latest delay.",
+      "allSettled always waits for every task; race takes whatever settles first; any skips rejections and only fails with an AggregateError when all reject."
+    ],
+    "tests": [
+      {
+        "input": "all\na ok 100 user\nb ok 50 orders\nc fail 80 timeout\n",
+        "output": "rejected: timeout\nat 80ms"
+      },
+      {
+        "input": "all\na ok 30 x\nb ok 10 y\n",
+        "output": "fulfilled: [x,y]\nat 30ms"
+      },
+      {
+        "input": "allSettled\na ok 20 1\nb fail 40 err\n",
+        "output": "a: fulfilled 1\nb: rejected err\nat 40ms"
+      },
+      {
+        "input": "race\na ok 50 slow\nb fail 10 boom\n",
+        "output": "rejected: boom\nat 10ms"
+      },
+      {
+        "input": "any\na fail 10 e1\nb ok 60 v\nc ok 30 w\n",
+        "output": "fulfilled: w\nat 30ms"
+      },
+      {
+        "input": "any\na fail 10 e1\nb fail 5 e2\n",
+        "output": "rejected: AggregateError [e1,e2]\nat 10ms"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which combinator should you use to send emails to 50 users and then report how many succeeded and failed?",
+      "options": [
+        "Promise.allSettled",
+        "Promise.race",
+        "Promise.any",
+        "Promise.all"
+      ],
+      "answer": 0,
+      "explanation": "allSettled waits for every promise and reports each outcome without rejecting on the first failure."
+    },
+    {
+      "type": "output",
+      "question": "What does this log?",
+      "code": "async function f() { return 42; }\nconsole.log(typeof f(), f() instanceof Promise);",
+      "options": [
+        "number false",
+        "object true",
+        "number true",
+        "undefined false"
+      ],
+      "answer": 1,
+      "explanation": "An async function always returns a Promise, which is an object, even when the body returns a plain value."
+    },
+    {
+      "type": "scenario",
+      "question": "An endpoint awaits getUser(), then getOrders(), then getAddresses(), each taking 200 ms and all independent. What change most reduces latency?",
+      "options": [
+        "Wrap each await in its own try/catch",
+        "Replace await with .then",
+        "Move them into a forEach loop",
+        "Run them concurrently with Promise.all"
+      ],
+      "answer": 3,
+      "explanation": "Independent calls should start together; Promise.all reduces total time from about 600 ms to about 200 ms."
+    },
+    {
+      "type": "concept",
+      "question": "When does Promise.any reject?",
+      "options": [
+        "Only when every input rejects, with an AggregateError",
+        "Never; it always fulfils",
+        "When the first input rejects",
+        "When any input takes longer than 1 second"
+      ],
+      "answer": 0,
+      "explanation": "Promise.any ignores rejections while any input might still fulfil, and rejects with an AggregateError only if all fail."
+    },
+    {
+      "type": "code",
+      "question": "items.forEach(async (item) => { await save(item); }); console.log('done'); What is the problem?",
+      "options": [
+        "'done' prints before the saves finish and their errors are not handled",
+        "save runs twice for each item",
+        "forEach throws because async callbacks are not allowed",
+        "'done' never prints"
+      ],
+      "answer": 0,
+      "explanation": "forEach ignores the returned promises, so execution continues immediately and rejections go unhandled."
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "day": 6,
+  "title": "Planning and Task Decomposition",
+  "module": "Planning and reasoning",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain how planning turns a high-level goal into an ordered set of sub-tasks.",
+    "Describe plan-and-execute and why plans are often revised mid-task.",
+    "Recognise dependencies between sub-tasks and order them correctly.",
+    "Compare upfront planning with step-by-step ReAct reasoning.",
+    "Produce a valid execution order from a set of task dependencies in code."
+  ],
+  "definition": "Planning is the agent skill of breaking a goal into smaller sub-tasks and deciding the order in which to do them before or while acting. Task decomposition produces the sub-tasks; a plan records their sequence and dependencies. A good plan makes progress visible, exposes parallelism and gives the agent checkpoints, but it must stay revisable because real environments return surprises that invalidate the original plan.",
+  "theory": [
+    {
+      "heading": "Why agents need plans",
+      "body": "ReAct reasons one step at a time, which is flexible but myopic: the agent can wander, repeat work or lose the thread on a long task. A plan gives the agent a map. It decomposes a goal such as 'prepare a competitor report' into sub-tasks such as gather sources, extract pricing, compare features and draft a summary. With a plan the agent can track what is done, what is next and what depends on what, which reduces loops and makes the task easier to evaluate.",
+      "points": [
+        "Decomposition turns an open-ended goal into concrete, checkable sub-tasks.",
+        "A plan records order and dependencies between sub-tasks.",
+        "Checkpoints make partial progress and failures visible."
+      ]
+    },
+    {
+      "heading": "Plan-and-execute versus interleaved reasoning",
+      "body": "In the plan-and-execute pattern the agent first writes a full plan, then executes each step, optionally replanning when a step fails or reveals new information. This contrasts with interleaved ReAct, which decides the next action without committing to a whole plan. Plan-and-execute is cheaper for long, structured tasks because the plan is written once, while ReAct adapts faster to surprises. Many systems combine them: a short plan, executed with ReAct-style steps inside each step.",
+      "points": [
+        "Plan-and-execute: write the plan, then carry it out step by step.",
+        "ReAct: decide one action at a time with no fixed plan.",
+        "Hybrid: a coarse plan with flexible reasoning inside each step."
+      ]
+    },
+    {
+      "heading": "Dependencies and ordering",
+      "body": "Sub-tasks rarely stand alone. Extracting pricing depends on having gathered sources; drafting the report depends on the comparison. These dependencies form a directed graph, and a valid execution order is a topological order in which every task comes after the tasks it depends on. When several tasks are ready at once they can be run in parallel, and when a cycle appears in the graph the plan is impossible and must be rewritten.",
+      "points": [
+        "A dependency means the earlier task's output is needed by the later one.",
+        "A topological order respects every dependency.",
+        "Independent tasks can run in parallel to save time.",
+        "A dependency cycle means the plan cannot be executed as written."
+      ]
+    },
+    {
+      "heading": "Replanning and failure",
+      "body": "A plan is a hypothesis, not a guarantee. A step can fail, return unexpected data or make a later step unnecessary. Robust agents detect this and replan: mark the failed step, decide whether to retry, substitute or abandon it, and regenerate the remaining plan. Replanning should be bounded so the agent does not thrash, and each revision should preserve the work already completed rather than starting over.",
+      "points": [
+        "Detect failure or invalidation at each step before continuing.",
+        "Replan the remaining work instead of discarding finished work.",
+        "Bound the number of replans to avoid an endless plan-rewrite loop.",
+        "Keep the original goal fixed while the path to it changes."
+      ]
+    },
+    {
+      "heading": "Limitations of planning",
+      "body": "Planning is only as good as the model's understanding of the domain and the tools available. An over-detailed plan can be brittle and wrong, and a plan made before any exploration can miss the real difficulty of a task. Plans also add tokens and latency, and they can create false confidence if the agent follows a bad plan without checking. The practical rule is to plan coarsely, verify each step, and replan often enough to stay aligned with reality.",
+      "points": [
+        "Plans based on assumptions fail when the assumptions are wrong.",
+        "Over-detailed plans are brittle; coarse plans are more adaptable.",
+        "Always verify step outputs rather than trusting the plan blindly."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Decomposing a report task into a dependency graph",
+    "body": "The goal 'write a competitor comparison' becomes five sub-tasks. Gathering sources and listing competitors can start immediately. Extracting pricing needs the sources. Comparing features needs both the competitor list and the pricing. Drafting the report needs the comparison. A valid order must run the two independent tasks first, then respect each arrow.",
+    "code": {
+      "language": "text",
+      "source": "goal: write a competitor comparison\n\ngather_sources        (no deps)\nlist_competitors      (no deps)\nextract_pricing       -> gather_sources\ncompare_features      -> list_competitors, extract_pricing\ndraft_report          -> compare_features"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Research reports",
+      "description": "Break a broad question into searches, readings, extraction and synthesis, ordering them so later steps use earlier results."
+    },
+    {
+      "title": "Software migrations",
+      "description": "Plan schema changes, data backfills and deploys as ordered sub-tasks with explicit dependencies and rollback points."
+    },
+    {
+      "title": "Trip and event planning",
+      "description": "Sequence booking flights, hotels and transport so each step respects availability produced by the previous one."
+    },
+    {
+      "title": "Data pipelines",
+      "description": "Order extract, validate, transform and load steps, running independent branches in parallel where possible."
+    }
+  ],
+  "demonstration": {
+    "description": "Topologically order five sub-tasks with dependencies, always choosing the alphabetically smallest ready task so the result is deterministic. A dependency cycle is detected and reported instead of looping forever.",
+    "code": {
+      "language": "text",
+      "source": "5\nextract_pricing gather_sources\ncompare_features list_competitors extract_pricing\ndraft_report compare_features\ngather_sources\nlist_competitors"
+    },
+    "output": "gather_sources\nlist_competitors\nextract_pricing\ncompare_features\ndraft_report"
+  },
+  "takeaways": [
+    "Planning decomposes a goal into ordered, checkable sub-tasks.",
+    "Plan-and-execute commits to a plan; ReAct adapts one step at a time.",
+    "Dependencies form a graph and a valid order respects every arrow.",
+    "Independent tasks can run in parallel; cycles make a plan impossible.",
+    "Replan when a step fails or invalidates later work, without discarding finished work.",
+    "Plan coarsely, verify each step and keep the goal fixed while the path changes."
+  ],
+  "interview": [
+    {
+      "question": "Why do agents need planning at all?",
+      "answer": "Step-by-step reasoning can wander or repeat on long tasks. A plan decomposes the goal into concrete sub-tasks with an order and dependencies, which keeps progress visible, enables checkpoints and makes the task easier to evaluate.",
+      "explanation": "Contrast planning with pure ReAct and mention that plans must stay revisable."
+    },
+    {
+      "question": "Compare plan-and-execute with ReAct.",
+      "answer": "Plan-and-execute writes the whole plan first and then runs it, which is cheaper for long structured tasks. ReAct decides one action at a time, which adapts faster to surprises but can lose the thread. Many systems combine a coarse plan with ReAct-style reasoning inside each step.",
+      "explanation": "The trade-off is commitment and efficiency versus adaptivity. Naming the hybrid shows practical experience."
+    },
+    {
+      "question": "How do you handle dependencies between sub-tasks?",
+      "answer": "Model them as a directed graph and execute in a topological order so each task runs after the tasks it depends on. Independent tasks can run in parallel, and a cycle means the plan is invalid and must be rewritten.",
+      "explanation": "Mention that a cycle is a design error, not something to retry, and that parallel branches cut wall-clock time."
+    },
+    {
+      "question": "When should an agent replan?",
+      "answer": "When a step fails, returns unexpected data, or makes a later step unnecessary. The agent marks the affected steps, keeps completed work, and regenerates only the remaining plan, with a bound on how many times it may replan.",
+      "explanation": "Interviewers look for bounded replanning that preserves progress rather than restarting the whole task."
+    },
+    {
+      "question": "What are the risks of a very detailed upfront plan?",
+      "answer": "It is brittle: a wrong assumption early on invalidates many later steps, it costs tokens and latency to generate, and the agent may follow it without checking reality. Coarse plans with per-step verification are usually more robust.",
+      "explanation": "This shows judgement about planning depth and the value of verification over blind plan-following."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Order sub-tasks by their dependencies",
+    "difficulty": "Intermediate",
+    "objective": "Compute a deterministic topological order of sub-tasks and detect an impossible plan that contains a dependency cycle.",
+    "statement": "Each sub-task is given as a line '<name> <dependency> ...'. Produce an execution order in which every task appears after all of its dependencies. Whenever several tasks are ready, choose the alphabetically smallest. Print one task name per line. If the dependencies contain a cycle so that no valid order exists, print 'cycle' instead.",
+    "language": "python",
+    "input_format": "Line 1: N. Next N lines: a task name followed by zero or more dependency names.",
+    "output_format": "The task names in a valid order, one per line, or the single word 'cycle' when no valid order exists.",
+    "example": {
+      "input": "4\nfetch_data\nvalidate fetch_data\ntransform validate\nload transform\n",
+      "output": "fetch_data\nvalidate\ntransform\nload"
+    },
+    "constraints": [
+      "1 <= N <= 100; task and dependency names contain no spaces.",
+      "A task that lists no dependencies is ready immediately.",
+      "Break ties by choosing the alphabetically smallest ready task."
+    ],
+    "starter": "import sys\nimport heapq\n\nlines = [ln.strip() for ln in sys.stdin.read().splitlines() if ln.strip()]\nn = int(lines[0])\n# TODO: build the dependency graph, run Kahn's algorithm and print the order or 'cycle'\n",
+    "solution": "import sys\nimport heapq\n\nlines = [ln.strip() for ln in sys.stdin.read().splitlines() if ln.strip()]\nn = int(lines[0])\ndeps = {}\nfor i in range(1, n + 1):\n    parts = lines[i].split()\n    deps[parts[0]] = set(parts[1:])\n\nindeg = {t: len(deps[t]) for t in deps}\nchildren = {t: [] for t in deps}\nfor t in deps:\n    for d in deps[t]:\n        children[d].append(t)\n\nready = [t for t in deps if indeg[t] == 0]\nheapq.heapify(ready)\norder = []\nwhile ready:\n    task = heapq.heappop(ready)\n    order.append(task)\n    for child in children[task]:\n        indeg[child] -= 1\n        if indeg[child] == 0:\n            heapq.heappush(ready, child)\n\nif len(order) != len(deps):\n    print('cycle')\nelse:\n    for task in order:\n        print(task)\n",
+    "explanation": [
+      "Read each task and store its set of dependencies.",
+      "The in-degree of a task is the number of dependencies it still needs.",
+      "Start with every task that has no dependencies, kept in a min-heap for alphabetical tie-breaking.",
+      "Pop the smallest ready task, then reduce the in-degree of its dependents and push any that become ready.",
+      "If fewer tasks are ordered than exist, the remaining ones form a cycle."
+    ],
+    "tests": [
+      {
+        "input": "4\nfetch_data\nvalidate fetch_data\ntransform validate\nload transform\n",
+        "output": "fetch_data\nvalidate\ntransform\nload"
+      },
+      {
+        "input": "4\na\nb\nc a\nd a\n",
+        "output": "a\nb\nc\nd"
+      },
+      {
+        "input": "2\na b\nb a\n",
+        "output": "cycle"
+      },
+      {
+        "input": "3\nbeta\nalpha\ngamma\n",
+        "output": "alpha\nbeta\ngamma"
+      },
+      {
+        "input": "4\nstart\nleft start\nright start\nend left right\n",
+        "output": "start\nleft\nright\nend"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does task decomposition produce for an agent?",
+      "options": [
+        "A single opaque action",
+        "A larger vocabulary",
+        "A shorter context window",
+        "A set of concrete sub-tasks that together achieve the goal"
+      ],
+      "answer": 3,
+      "explanation": "Decomposition turns a high-level goal into smaller, checkable sub-tasks that the agent can order and execute."
+    },
+    {
+      "type": "scenario",
+      "question": "An agent writes a full plan, then a tool returns data that makes step 4 unnecessary. What should it do?",
+      "options": [
+        "Keep finished work and replan the remaining steps",
+        "Ignore the new data",
+        "Follow step 4 anyway",
+        "Restart the whole task from step 1"
+      ],
+      "answer": 0,
+      "explanation": "Robust agents preserve completed work and revise only the remaining plan when reality invalidates part of it."
+    },
+    {
+      "type": "concept",
+      "question": "What does a dependency cycle in a task plan mean?",
+      "options": [
+        "The tasks can run in any order",
+        "The tasks must run in parallel",
+        "No valid execution order exists and the plan must be rewritten",
+        "The plan is valid but slow"
+      ],
+      "answer": 2,
+      "explanation": "A cycle means each task waits on another in a loop, so no topological order exists and the plan is impossible."
+    },
+    {
+      "type": "output",
+      "question": "Tasks are A (no deps), B (no deps) and C (depends on A). What is the valid order that picks the alphabetically smallest ready task each time?",
+      "options": [
+        "C, A, B",
+        "A, C, B",
+        "A, B, C",
+        "B, A, C"
+      ],
+      "answer": 2,
+      "explanation": "A and B are ready and A is smallest, so A runs first; then B; then C once its dependency A is done."
+    },
+    {
+      "type": "scenario",
+      "question": "When is plan-and-execute usually cheaper than pure ReAct?",
+      "options": [
+        "On short one-step tasks",
+        "On long, structured tasks with a stable sequence",
+        "When the environment changes every second",
+        "When no tools are available"
+      ],
+      "answer": 1,
+      "explanation": "Writing the plan once avoids re-deriving the next step on every turn, which pays off on long tasks whose steps are mostly stable."
+    }
+  ]
+}

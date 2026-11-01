@@ -1,0 +1,243 @@
+{
+  "day": 2,
+  "title": "AI vs Machine Learning vs Deep Learning vs Generative AI",
+  "module": "GenAI foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain how AI, Machine Learning, Deep Learning and Generative AI relate to each other.",
+    "Distinguish rule-based systems from systems that learn from data.",
+    "Describe what makes deep learning different from classical machine learning.",
+    "Place a real product or system in the correct category and justify the choice.",
+    "Answer the common interview question 'What is the difference between AI, ML, DL and GenAI?' with examples."
+  ],
+  "definition": "Artificial Intelligence (AI) is the broad goal of making machines perform tasks that normally need human intelligence. Machine Learning (ML) is the part of AI where systems learn patterns from data instead of following hand-written rules. Deep Learning (DL) is the part of ML that uses multi-layer neural networks, and modern Generative AI is the part of deep learning focused on creating new content.",
+  "theory": [
+    {
+      "heading": "The nested picture",
+      "body": "The four terms are usually drawn as nested circles. AI is the outer circle and includes everything from chess engines written with hand-coded rules to modern chat assistants. ML sits inside AI, DL sits inside ML, and today's Generative AI sits inside DL. Each inner circle is a more specific way of achieving the outer goal, so every deep-learning system is also a machine-learning system and an AI system, but not the other way round.",
+      "points": [
+        "AI: any technique that makes a machine behave intelligently, including rules and search.",
+        "ML: algorithms that improve at a task by learning from data.",
+        "DL: ML with many-layered neural networks that learn features automatically.",
+        "Generative AI: models, today mostly deep networks, that produce new text, images, audio, video or code."
+      ]
+    },
+    {
+      "heading": "Rule-based AI vs Machine Learning",
+      "body": "A rule-based system encodes expert knowledge as explicit if-then logic, for example 'if the transaction is over 1 lakh rupees and from a new country, flag it'. It is transparent but brittle: every new pattern needs a new rule. Machine learning flips the process: you provide examples (inputs with known outcomes) and the algorithm learns the rules itself. This is why ML scales to problems such as spam filtering, where patterns change faster than humans can write rules.",
+      "points": [
+        "Rule-based: knowledge is written by people; easy to explain, hard to maintain.",
+        "ML: knowledge is learned from data; adapts to new patterns when retrained.",
+        "Classic ML algorithms include linear and logistic regression, decision trees, random forests and SVMs."
+      ]
+    },
+    {
+      "heading": "What Deep Learning adds",
+      "body": "Classical ML usually depends on feature engineering: a person decides which measurements (word counts, pixel statistics, ratios) the model should see. Deep learning stacks many layers of artificial neurons so the network learns useful features directly from raw data such as pixels, audio samples or text tokens. This made huge progress possible in vision, speech and language, at the cost of needing much more data and GPU compute.",
+      "points": [
+        "Learns hierarchical features automatically (edges, then shapes, then objects).",
+        "Needs large datasets and specialised hardware (GPUs/TPUs).",
+        "Architectures include CNNs (images), RNNs/LSTMs (sequences) and Transformers (language and more)."
+      ]
+    },
+    {
+      "heading": "Where Generative AI fits",
+      "body": "Generative AI refers to models that learn the distribution of their training data well enough to create new samples. Modern generative systems such as large language models (Transformers) and diffusion models (images) are deep networks, which is why GenAI is drawn inside DL. Strictly speaking, generative modelling is older than deep learning: n-gram language models and Gaussian mixture models are generative ML without deep networks. In interviews, state the nested picture and mention this nuance if asked for depth.",
+      "points": [
+        "LLMs (GPT, Gemini, Claude, Llama) generate text and code.",
+        "Diffusion models (Stable Diffusion, Imagen) generate images and video.",
+        "Not all deep learning is generative: an image classifier built with a CNN is DL but predictive."
+      ]
+    },
+    {
+      "heading": "Choosing the right level",
+      "body": "A strong engineer picks the simplest approach that solves the problem. Fixed business logic with few exceptions can stay rule-based. Structured, tabular prediction (loan default, churn) is often best served by classical ML such as gradient-boosted trees. Unstructured data such as images, speech and free text benefits from deep learning. Generative AI is the right tool when the output itself is content: a summary, a reply, an image or code.",
+      "points": [
+        "Simpler methods are cheaper, faster and easier to explain to auditors.",
+        "More complex methods need more data, compute and monitoring.",
+        "Real systems often combine levels, for example rules for compliance checks plus an LLM for drafting."
+      ]
+    }
+  ],
+  "example": {
+    "title": "One bank, four kinds of AI",
+    "body": "Consider a bank's credit-card division. A rule engine blocks any card used in two countries within an hour: that is rule-based AI. A gradient-boosted model scores the probability of default from income and payment history: that is classical ML. A convolutional neural network reads cheque images and extracts the amount: that is deep learning. A large language model drafts a personalised reply to a customer complaint: that is Generative AI. The code below contrasts the first two ideas on a toy task.",
+    "code": {
+      "language": "python",
+      "source": "# Rule-based: a person writes the rule\ndef is_spam_rule(text):\n    return 'free money' in text.lower()\n\n# Machine learning: the rule is learned from labelled data (scikit-learn)\nfrom sklearn.feature_extraction.text import CountVectorizer\nfrom sklearn.naive_bayes import MultinomialNB\n\ntexts = ['free money now', 'meeting at 10', 'win free prize', 'project update']\nlabels = [1, 0, 1, 0]  # 1 = spam\nvec = CountVectorizer()\nmodel = MultinomialNB().fit(vec.fit_transform(texts), labels)\n\nprint(is_spam_rule('Claim your FREE prize'))                 # False: the rule misses it\nprint(model.predict(vec.transform(['claim your free prize'])))  # [1]: learned from words like 'free' and 'prize'"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Rule-based AI",
+      "description": "Tax calculators, eligibility checks and compliance rules where the logic is fixed and must be fully auditable."
+    },
+    {
+      "title": "Classical ML",
+      "description": "Credit scoring, churn prediction, demand forecasting and fraud scoring on structured, tabular data."
+    },
+    {
+      "title": "Deep Learning",
+      "description": "Face recognition, medical image analysis, speech-to-text and OCR on unstructured data."
+    },
+    {
+      "title": "Generative AI",
+      "description": "Chat assistants, code completion, document summarisation, marketing copy and image generation."
+    },
+    {
+      "title": "Combined systems",
+      "description": "A support platform that classifies tickets with ML, transcribes calls with DL and drafts replies with an LLM."
+    }
+  ],
+  "demonstration": {
+    "description": "Classify a list of systems by asking three questions in order: does it learn from data, does it use a deep neural network, and does it generate new content? The most specific 'yes' decides the category.",
+    "code": {
+      "language": "text",
+      "source": "System                        Learns?  Deep NN?  Generates?\nTraffic-light timer rules     no       no        no\nHouse-price regression        yes      no        no\nX-ray tumour detector (CNN)   yes      yes       no\nChat assistant (LLM)          yes      yes       yes"
+    },
+    "output": "Traffic-light timer rules   -> AI (rule-based)\nHouse-price regression      -> Machine Learning\nX-ray tumour detector (CNN) -> Deep Learning\nChat assistant (LLM)        -> Generative AI"
+  },
+  "takeaways": [
+    "AI is the broad field; ML, DL and modern GenAI are progressively narrower subsets.",
+    "ML learns rules from data instead of having them written by hand.",
+    "DL uses multi-layer neural networks that learn features from raw data.",
+    "Modern Generative AI (LLMs, diffusion models) is built on deep learning and creates new content.",
+    "Not every DL model is generative: classifiers and detectors are predictive.",
+    "Choose the simplest level that solves the problem; real systems often mix levels."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between AI, ML, DL and Generative AI?",
+      "answer": "AI is the broad goal of intelligent machines. ML is a subset of AI that learns from data. DL is a subset of ML using multi-layer neural networks. Generative AI is the subset, today built mostly with deep learning, that creates new content such as text or images.",
+      "explanation": "Interviewers want the nested relationship plus one example per layer (rule engine, regression model, CNN, LLM). Examples prove understanding beyond a memorised diagram."
+    },
+    {
+      "question": "Is every AI system a machine-learning system?",
+      "answer": "No. Rule-based expert systems, search algorithms and classic game engines are AI but do not learn from data. ML is only the data-driven subset of AI.",
+      "explanation": "This tests whether you know the hierarchy runs one way. A good answer names a non-learning AI example such as a chess engine using minimax search."
+    },
+    {
+      "question": "Why did deep learning outperform classical ML on images and text?",
+      "answer": "Deep networks learn hierarchical features directly from raw pixels or tokens, removing the need for hand-crafted features. With large datasets and GPUs they scale better, so accuracy keeps improving as data grows.",
+      "explanation": "Mention automatic feature learning, data scale and compute. Strong candidates add that for small tabular datasets classical ML (e.g. gradient boosting) often still wins."
+    },
+    {
+      "question": "Is Generative AI always deep learning?",
+      "answer": "Modern GenAI such as LLMs and diffusion models is deep learning, but generative modelling itself is older: n-gram language models, Naive Bayes and Gaussian mixture models are generative without deep networks.",
+      "explanation": "This is a depth check. Stating the common nested picture and then the nuance shows precise understanding instead of slogan-level knowledge."
+    },
+    {
+      "question": "A client wants an LLM to approve or reject loan applications. What would you advise?",
+      "answer": "Loan approval is a predictive, regulated decision on structured data, so an explainable ML model (or rules plus ML) is a better fit. An LLM can help with explaining decisions or summarising documents, with human review.",
+      "explanation": "Interviewers look for judgement: pick the simplest suitable level, consider explainability and regulation, and use GenAI where content generation adds value."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Classify systems into AI, ML, DL or GenAI",
+    "difficulty": "Basic",
+    "objective": "Apply the nested definitions by mapping three yes/no properties of a system to its most specific category.",
+    "statement": "Each system is described by three flags: learns (does it learn from data?), neural (does it use a deep neural network?) and generates (does it create new content?). Print the most specific category using these rules: if neural is yes but learns is no, the description is invalid. If learns is no, the system is rule-based AI. If learns is yes and neural is no, it is Machine Learning (this includes classic generative models such as n-grams). If learns and neural are yes and generates is no, it is Deep Learning. If all three are yes, it is Generative AI. After the systems, print a summary count of each category.",
+    "language": "python",
+    "input_format": "First line: N, the number of systems.\nNext N lines: name,learns,neural,generates where each flag is yes or no (case-insensitive). The name contains no commas.",
+    "output_format": "One line per system: <name>: <category> where category is one of AI (rule-based), Machine Learning, Deep Learning, Generative AI, Invalid.\nThen one line: Summary: AI=<a> ML=<m> DL=<d> GenAI=<g> Invalid=<i>",
+    "example": {
+      "input": "4\nTraffic rules,no,no,no\nHouse price model,yes,no,no\nX-ray detector,yes,yes,no\nChat assistant,yes,yes,yes\n",
+      "output": "Traffic rules: AI (rule-based)\nHouse price model: Machine Learning\nX-ray detector: Deep Learning\nChat assistant: Generative AI\nSummary: AI=1 ML=1 DL=1 GenAI=1 Invalid=0"
+    },
+    "constraints": [
+      "0 <= N <= 100.",
+      "Trim spaces around the name and the flags.",
+      "Flags are compared case-insensitively."
+    ],
+    "starter": "n = int(input())\nfor _ in range(n):\n    name, learns, neural, generates = [part.strip() for part in input().split(',')]\n    # TODO: decide the most specific category and count it\n\n# TODO: print the summary line\n",
+    "solution": "n = int(input())\ncounts = {'AI': 0, 'ML': 0, 'DL': 0, 'GenAI': 0, 'Invalid': 0}\nfor _ in range(n):\n    name, learns, neural, generates = [part.strip() for part in input().split(',')]\n    learns = learns.lower() == 'yes'\n    neural = neural.lower() == 'yes'\n    generates = generates.lower() == 'yes'\n    if neural and not learns:\n        key, label = 'Invalid', 'Invalid'\n    elif not learns:\n        key, label = 'AI', 'AI (rule-based)'\n    elif not neural:\n        key, label = 'ML', 'Machine Learning'\n    elif not generates:\n        key, label = 'DL', 'Deep Learning'\n    else:\n        key, label = 'GenAI', 'Generative AI'\n    counts[key] += 1\n    print(f'{name}: {label}')\nprint('Summary: ' + ' '.join(f'{k}={v}' for k, v in counts.items()))\n",
+    "explanation": [
+      "Read each line, split on commas and convert the three flags to booleans.",
+      "Check the impossible combination first: a neural network that does not learn is invalid.",
+      "Then test the layers from the outside in: no learning means rule-based AI, learning without a deep network means ML.",
+      "With a deep network, the generates flag separates Deep Learning (predictive) from Generative AI.",
+      "Count each category in a dictionary whose insertion order matches the summary format, then print it."
+    ],
+    "tests": [
+      {
+        "input": "4\nTraffic rules,no,no,no\nHouse price model,yes,no,no\nX-ray detector,yes,yes,no\nChat assistant,yes,yes,yes\n",
+        "output": "Traffic rules: AI (rule-based)\nHouse price model: Machine Learning\nX-ray detector: Deep Learning\nChat assistant: Generative AI\nSummary: AI=1 ML=1 DL=1 GenAI=1 Invalid=0"
+      },
+      {
+        "input": "3\nBigram text model,YES,no,Yes\nBroken entry,no,yes,no\nImage generator, yes , yes , yes \n",
+        "output": "Bigram text model: Machine Learning\nBroken entry: Invalid\nImage generator: Generative AI\nSummary: AI=0 ML=1 DL=0 GenAI=1 Invalid=1"
+      },
+      {
+        "input": "0\n",
+        "output": "Summary: AI=0 ML=0 DL=0 GenAI=0 Invalid=0"
+      },
+      {
+        "input": "2\nTemplate chatbot,no,no,yes\nSpeech recogniser,yes,yes,no\n",
+        "output": "Template chatbot: AI (rule-based)\nSpeech recogniser: Deep Learning\nSummary: AI=1 ML=0 DL=1 GenAI=0 Invalid=0"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which statement correctly describes the relationship between ML and DL?",
+      "options": [
+        "ML is a subset of DL",
+        "DL is a subset of ML that uses multi-layer neural networks",
+        "ML and DL are unrelated fields",
+        "DL is a type of rule-based AI"
+      ],
+      "answer": 1,
+      "explanation": "Deep learning is a specialised branch of machine learning that uses neural networks with many layers."
+    },
+    {
+      "type": "scenario",
+      "question": "A tax-filing tool applies fixed government slabs with if-else logic and never learns from data. How is it best classified?",
+      "options": [
+        "Generative AI",
+        "Machine Learning",
+        "Rule-based AI",
+        "Deep Learning"
+      ],
+      "answer": 2,
+      "explanation": "It follows hand-written rules and does not learn, so it is rule-based AI rather than ML."
+    },
+    {
+      "type": "concept",
+      "question": "What is the main advantage deep learning has over classical ML for images and audio?",
+      "options": [
+        "It never needs training data",
+        "It always runs faster on a CPU",
+        "It is always easier to explain",
+        "It learns useful features automatically from raw data"
+      ],
+      "answer": 3,
+      "explanation": "Deep networks learn hierarchical features from raw inputs, removing much of the manual feature engineering classical ML needs."
+    },
+    {
+      "type": "scenario",
+      "question": "A hospital uses a CNN to label chest X-rays as 'normal' or 'pneumonia'. Which category fits most precisely?",
+      "options": [
+        "Deep Learning (predictive)",
+        "Not AI at all",
+        "Generative AI",
+        "Rule-based AI"
+      ],
+      "answer": 0,
+      "explanation": "A CNN is a deep network, but it classifies rather than generates, so it is predictive deep learning."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these is a generative model that does NOT require deep learning?",
+      "options": [
+        "A diffusion image model",
+        "A Transformer-based LLM",
+        "A text-to-video model",
+        "An n-gram language model"
+      ],
+      "answer": 3,
+      "explanation": "An n-gram model generates text from word-sequence counts, a classic statistical method with no deep network."
+    }
+  ]
+}

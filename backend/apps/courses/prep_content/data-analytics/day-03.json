@@ -1,0 +1,255 @@
+{
+  "day": 3,
+  "title": "Data Quality and Data Cleaning Fundamentals",
+  "module": "Analytics foundations",
+  "level": "Beginner",
+  "objectives": [
+    "List the dimensions of data quality: accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+    "Identify common data problems such as duplicates, missing values, inconsistent labels and wrong data types.",
+    "Choose an appropriate treatment for missing values and outliers and justify it.",
+    "Write a repeatable cleaning routine that documents every change.",
+    "Answer interview questions about how you clean and validate data."
+  ],
+  "definition": "Data cleaning (also called data cleansing or wrangling) is the process of detecting and fixing errors, inconsistencies and gaps in a dataset so that analysis produces correct results. It includes removing duplicates, standardising formats, handling missing values, correcting data types and validating values against business rules.",
+  "theory": [
+    {
+      "heading": "Why data cleaning matters",
+      "body": "Every number an analyst reports inherits the errors of the data underneath it. A duplicated order inflates revenue, a city spelled three ways splits one region into three bars, and a text-typed number silently drops out of a SUM. Cleaning is not glamorous, but it is where trust is earned; interviewers often say 'garbage in, garbage out' and expect you to explain how you prevent it.",
+      "points": [
+        "Analysts commonly spend a large share of project time preparing data.",
+        "Cleaning errors are hard to spot later because the dashboard still 'looks' fine.",
+        "Documented, repeatable cleaning lets others reproduce and audit your numbers."
+      ]
+    },
+    {
+      "heading": "Dimensions of data quality",
+      "body": "Data quality is usually judged along a few standard dimensions. Naming them in an interview shows you can check data systematically instead of fixing problems at random.",
+      "points": [
+        "Accuracy: values reflect reality (a customer's age is truly 29).",
+        "Completeness: required fields are present (no missing order dates).",
+        "Consistency: the same thing is recorded the same way everywhere ('Bengaluru' vs 'Bangalore').",
+        "Validity: values follow rules and formats (age between 0 and 120, valid email pattern).",
+        "Uniqueness: no unintended duplicate records.",
+        "Timeliness: data is up to date enough for the decision."
+      ]
+    },
+    {
+      "heading": "Common problems and how to fix them",
+      "body": "Most messy datasets suffer from the same handful of issues. The fix depends on the cause, so investigate before deleting anything. For example, two rows with the same order ID might be a true duplicate, or a legitimate split shipment.",
+      "points": [
+        "Extra spaces and inconsistent case: TRIM and PROPER/UPPER in Excel, TRIM/UPPER in SQL, strip()/title() in Python.",
+        "Duplicates: define the business key first (order_id, or customer_id + date), then keep one row.",
+        "Wrong types: numbers or dates stored as text; convert explicitly and flag failures.",
+        "Inconsistent categories: map variants to one standard value with a lookup table.",
+        "Invalid values: negative quantities, ages of 200, future dates; flag or correct using business rules."
+      ]
+    },
+    {
+      "heading": "Handling missing values",
+      "body": "There is no single right way to handle missing data. First ask why it is missing: not collected, not applicable, or lost in a pipeline. Then choose a treatment and state its effect on the results. Deleting rows is simple but can bias the analysis if the missing rows are different from the rest.",
+      "points": [
+        "Delete rows: acceptable when few rows are affected and missingness is random.",
+        "Impute: fill with median (robust to outliers), mean, mode, or a group-wise value.",
+        "Flag: keep the row and mark the value as unknown, often the most honest choice for reporting.",
+        "Never fill with zero unless zero is truly the correct value; it distorts averages."
+      ]
+    },
+    {
+      "heading": "Outliers and validation",
+      "body": "An outlier is a value far from the rest. It might be an error (an extra zero typed in a price) or a genuine extreme (a bulk corporate order). Detect outliers with rules such as the IQR method or business limits, investigate them, and decide whether to correct, exclude or keep them. After cleaning, validate: compare row counts and totals with the source system or a finance report.",
+      "points": [
+        "Reconcile totals with a trusted source after cleaning.",
+        "Keep the raw data untouched; clean into a new table or sheet.",
+        "Log every rule applied, with counts of affected rows."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Cleaning a customer list",
+    "body": "A CRM export has names in mixed case with extra spaces, the same customer entered twice, a row without an ID, and ages such as 'abc' and 135. The analyst trims and standardises text, removes the repeated ID while keeping the first entry, drops the row without a key, and marks invalid ages as NA instead of guessing. The cleaning log records how many rows each rule touched, so the marketing team knows the final list size and why.",
+    "code": {
+      "language": "text",
+      "source": "Raw:   101, rahul sharma ,MUMBAI,29\nClean: 101,Rahul Sharma,Mumbai,29\n\nRaw:   103,amit kumar,  new delhi ,135\nClean: 103,Amit Kumar,New Delhi,NA   (age outside 0–120)\n\nExcel equivalents: =PROPER(TRIM(B2))   Data > Remove Duplicates   =IF(AND(ISNUMBER(D2),D2>=0,D2<=120),D2,\"NA\")"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "CRM and marketing lists",
+      "description": "De-duplicate customers and standardise emails and phone numbers before a campaign to avoid double messaging."
+    },
+    {
+      "title": "Financial reporting",
+      "description": "Reconcile transaction totals with the ledger and remove test or reversed transactions."
+    },
+    {
+      "title": "Survey analysis",
+      "description": "Handle skipped questions, standardise free-text answers and remove speeders or duplicate submissions."
+    },
+    {
+      "title": "Sales and inventory",
+      "description": "Fix product codes stored as text, unify units of measure and flag negative stock values."
+    },
+    {
+      "title": "HR analytics",
+      "description": "Standardise department names and job titles across systems before headcount and attrition reports."
+    }
+  ],
+  "demonstration": {
+    "description": "Profile a column before cleaning it. Counting distinct raw values reveals that one city has been recorded four different ways; a simple standardisation collapses them into one category.",
+    "code": {
+      "language": "python",
+      "source": "from collections import Counter\ncities = ['Mumbai', ' mumbai', 'MUMBAI ', 'Mumbai', 'Pune', 'pune ']\nprint(Counter(cities))\nclean = [c.strip().title() for c in cities]\nprint(Counter(clean))"
+    },
+    "output": "Counter({'Mumbai': 2, ' mumbai': 1, 'MUMBAI ': 1, 'Pune': 1, 'pune ': 1})\nCounter({'Mumbai': 4, 'Pune': 2})"
+  },
+  "takeaways": [
+    "Clean data is the foundation of trustworthy analysis; errors propagate silently.",
+    "Check quality along accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+    "Define the business key before removing duplicates.",
+    "Choose missing-value treatments deliberately and state their effect; do not default to zero.",
+    "Investigate outliers before removing them; some are real and important.",
+    "Keep raw data intact, log every rule and reconcile totals after cleaning."
+  ],
+  "interview": [
+    {
+      "question": "What is data cleaning and why is it important?",
+      "answer": "Data cleaning is detecting and fixing errors such as duplicates, missing values, inconsistent formats and invalid values. It matters because analysis and decisions are only as reliable as the data behind them.",
+      "explanation": "Back it with a concrete risk, for example duplicate orders inflating revenue, to show you understand the business impact."
+    },
+    {
+      "question": "How do you handle missing values?",
+      "answer": "I first find out why values are missing and how many. Then I choose: delete rows if few and random, impute with median, mode or a group value if the column is needed, or keep and flag them as unknown. I document the choice and check how it changes the results.",
+      "explanation": "Interviewers look for 'it depends' backed by reasoning. Mentioning median over mean for skewed data is a good detail."
+    },
+    {
+      "question": "How would you identify and remove duplicates?",
+      "answer": "Define what makes a record unique, such as order_id or customer email plus phone. In SQL, use GROUP BY on that key with HAVING COUNT(*) > 1 to find duplicates, or ROW_NUMBER() partitioned by the key to keep one row. In Excel, use Remove Duplicates or COUNTIF to flag them.",
+      "explanation": "Stress defining the key first and checking whether 'duplicates' are actually legitimate repeat events."
+    },
+    {
+      "question": "What are the main dimensions of data quality?",
+      "answer": "Accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+      "explanation": "Give a one-line example for two or three of them; it proves you can apply the framework."
+    },
+    {
+      "question": "You find an order of ₹9,99,999 when typical orders are around ₹1,500. What do you do?",
+      "answer": "I would not delete it immediately. I would check the order details and source system to see whether it is a data-entry error, a test transaction or a genuine bulk order. If it is an error, I correct or exclude it and log the change; if genuine, I keep it but may report medians or show results with and without it so one order does not distort averages.",
+      "explanation": "This tests judgement: investigate, decide with business context, and be transparent about the impact on metrics."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Clean a messy customer export",
+    "difficulty": "Basic",
+    "objective": "Apply standard cleaning rules (trim, standardise case, de-duplicate, validate) and report what changed.",
+    "statement": "Read a CSV with columns id,name,city,age. Clean it as follows: trim every field; collapse repeated inner spaces in name and city and convert them to title case; drop rows whose id is empty; drop rows whose id has already been seen (keep the first); replace an age that is not a whole number from 0 to 120 (including an empty age) with NA. Print the cleaned CSV and a cleaning log.",
+    "language": "python",
+    "input_format": "First line: the header id,name,city,age. Following lines: data rows with four comma-separated fields.",
+    "output_format": "The header, then each kept row as id,name,city,age. Then four log lines:\nRows kept: <k>\nDuplicates removed: <d>\nMissing ids removed: <m>\nMissing or invalid ages: <a>",
+    "example": {
+      "input": "id,name,city,age\n101, rahul sharma ,MUMBAI,29\n102,PRIYA  NAIR,pune,abc\n101,Rahul Sharma,Mumbai,29\n,Unknown,Delhi,40\n103,amit kumar,  new delhi ,135\n104,sneha rao,Bengaluru,\n",
+      "output": "id,name,city,age\n101,Rahul Sharma,Mumbai,29\n102,Priya Nair,Pune,NA\n103,Amit Kumar,New Delhi,NA\n104,Sneha Rao,Bengaluru,NA\nRows kept: 4\nDuplicates removed: 1\nMissing ids removed: 1\nMissing or invalid ages: 3"
+    },
+    "constraints": [
+      "Every data row has exactly four fields; fields contain no commas.",
+      "A valid age is made only of digits and lies between 0 and 120 inclusive; print it without leading zeros.",
+      "Ages are checked only for rows that are kept.",
+      "Ignore completely blank lines."
+    ],
+    "starter": "import sys\nimport csv\n\nlines = [l for l in sys.stdin.read().splitlines() if l.strip()]\nrows = list(csv.reader(lines))\nheader, data = rows[0], rows[1:]\n\n# TODO: clean each row, track seen ids, count every rule\n",
+    "solution": "import sys\nimport csv\n\nlines = [l for l in sys.stdin.read().splitlines() if l.strip()]\nrows = list(csv.reader(lines))\nheader, data = rows[0], rows[1:]\n\ndef tidy(text):\n    return ' '.join(text.split()).title()\n\nseen = set()\nkept = []\nduplicates = missing_ids = bad_ages = 0\nfor raw in data:\n    rid, name, city, age = [field.strip() for field in raw]\n    if not rid:\n        missing_ids += 1\n        continue\n    if rid in seen:\n        duplicates += 1\n        continue\n    seen.add(rid)\n    if age.isdigit() and 0 <= int(age) <= 120:\n        age = str(int(age))\n    else:\n        age = 'NA'\n        bad_ages += 1\n    kept.append([rid, tidy(name), tidy(city), age])\n\nprint(','.join(header))\nfor row in kept:\n    print(','.join(row))\nprint(f'Rows kept: {len(kept)}')\nprint(f'Duplicates removed: {duplicates}')\nprint(f'Missing ids removed: {missing_ids}')\nprint(f'Missing or invalid ages: {bad_ages}')\n",
+    "explanation": [
+      "Parse the input with the csv module rather than splitting by hand, which is safer for real CSV files.",
+      "Trim every field first so ' 101' and '101' are treated as the same id.",
+      "Apply the rules in a sensible order: a row without a key cannot be de-duplicated, so drop it first; then drop repeated ids, keeping the first occurrence.",
+      "Standardise text with ' '.join(text.split()) to collapse inner spaces, then title() for consistent case.",
+      "Validate age with isdigit() (which rejects '-3', 'abc' and empty strings) plus a range check, and replace failures with NA instead of guessing.",
+      "Print a log of how many rows each rule affected, which is what a stakeholder or reviewer needs to trust the output."
+    ],
+    "tests": [
+      {
+        "input": "id,name,city,age\n101, rahul sharma ,MUMBAI,29\n102,PRIYA  NAIR,pune,abc\n101,Rahul Sharma,Mumbai,29\n,Unknown,Delhi,40\n103,amit kumar,  new delhi ,135\n104,sneha rao,Bengaluru,\n",
+        "output": "id,name,city,age\n101,Rahul Sharma,Mumbai,29\n102,Priya Nair,Pune,NA\n103,Amit Kumar,New Delhi,NA\n104,Sneha Rao,Bengaluru,NA\nRows kept: 4\nDuplicates removed: 1\nMissing ids removed: 1\nMissing or invalid ages: 3"
+      },
+      {
+        "input": "id,name,city,age\n1,anita,delhi,30\n",
+        "output": "id,name,city,age\n1,Anita,Delhi,30\nRows kept: 1\nDuplicates removed: 0\nMissing ids removed: 0\nMissing or invalid ages: 0"
+      },
+      {
+        "input": "id,name,city,age\n",
+        "output": "id,name,city,age\nRows kept: 0\nDuplicates removed: 0\nMissing ids removed: 0\nMissing or invalid ages: 0"
+      },
+      {
+        "input": "id,name,city,age\n7,ravi,goa,0\n 7 ,Ravi,Goa,0\n8,o'brien kate,chennai,120\n",
+        "output": "id,name,city,age\n7,Ravi,Goa,0\n8,O'Brien Kate,Chennai,120\nRows kept: 2\nDuplicates removed: 1\nMissing ids removed: 0\nMissing or invalid ages: 0"
+      },
+      {
+        "input": "id,name,city,age\n1,a b,x,-3\n2,c d,y,045 \n3,e f,z,121\n",
+        "output": "id,name,city,age\n1,A B,X,NA\n2,C D,Y,45\n3,E F,Z,NA\nRows kept: 3\nDuplicates removed: 0\nMissing ids removed: 0\nMissing or invalid ages: 2"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "'Bengaluru', 'Bangalore' and 'BLR' all appear in the city column for the same city. Which data-quality dimension is affected?",
+      "options": [
+        "Uniqueness",
+        "Accuracy of timestamps",
+        "Consistency",
+        "Timeliness"
+      ],
+      "answer": 2,
+      "explanation": "The same real-world value is recorded in different ways, which is a consistency problem. Map the variants to one standard value."
+    },
+    {
+      "type": "scenario",
+      "question": "Income is missing for 3% of customers and the income distribution is highly skewed. If you must impute, which value is usually the safest choice?",
+      "options": [
+        "Zero",
+        "The maximum income",
+        "The mean income",
+        "The median income"
+      ],
+      "answer": 3,
+      "explanation": "The median is robust to skew and extreme values. Zero or the maximum would distort the distribution, and the mean is pulled by outliers."
+    },
+    {
+      "type": "output",
+      "question": "What does this Python expression return?",
+      "code": "' '.join('  priya   NAIR '.split()).title()",
+      "options": [
+        "'PRIYA NAIR'",
+        "'priya nair'",
+        "'  Priya   Nair '",
+        "'Priya Nair'"
+      ],
+      "answer": 3,
+      "explanation": "split() with no argument splits on any run of whitespace and drops the ends, join puts single spaces back, and title() capitalises each word."
+    },
+    {
+      "type": "scenario",
+      "question": "Two rows share order_id 5531 with identical amounts but different shipment numbers. What should you do before removing one?",
+      "options": [
+        "Delete both rows to be safe",
+        "Keep both without checking",
+        "Check whether the business allows split shipments under one order before treating them as duplicates",
+        "Replace the amount with zero in one row"
+      ],
+      "answer": 2,
+      "explanation": "Duplicates must be judged against the business key and process. Split shipments may be legitimate, in which case aggregation rules matter more than deletion."
+    },
+    {
+      "type": "concept",
+      "question": "Which practice makes a cleaning process auditable?",
+      "options": [
+        "Cleaning differently each time based on intuition",
+        "Removing all rows that contain any blank cell",
+        "Keeping the raw data unchanged and logging every rule with the number of rows affected",
+        "Editing the source file directly to save space"
+      ],
+      "answer": 2,
+      "explanation": "Preserving raw data and logging rules lets anyone reproduce the cleaned dataset and understand its differences from the source."
+    }
+  ]
+}

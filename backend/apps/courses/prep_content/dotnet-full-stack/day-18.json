@@ -1,0 +1,195 @@
+{
+  "day": 18,
+  "title": "Secret Management",
+  "module": ".NET and C# fundamentals",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain the key ideas behind Secret Management.",
+    "Describe why Secret Management matters in .NET Full Stack.",
+    "Apply Secret Management to a realistic scenario.",
+    "Identify common pitfalls and how to avoid them.",
+    "Answer interview questions about Secret Management."
+  ],
+  "definition": "Secret Management is a core concept in .NET Full Stack. It refers to the techniques, principles and practices that let a practitioner work effectively with this topic in real systems.",
+  "theory": [
+    {
+      "heading": "What Secret Management is",
+      "body": "Secret Management describes the methods and patterns used within .NET Full Stack to achieve reliable, maintainable results. Understanding it is the foundation for everything built later in this course.",
+      "points": [
+        "Secret Management is a named, repeatable concept.",
+        "It has a clear purpose and scope.",
+        "It connects to other course topics."
+      ]
+    },
+    {
+      "heading": "Why Secret Management matters",
+      "body": "Without Secret Management, systems built with .NET Full Stack are harder to debug, extend and operate. Teams that master this topic ship fewer defects and communicate more clearly about design decisions.",
+      "points": [
+        "Improves reliability and maintainability.",
+        "Reduces debugging time.",
+        "Supports team alignment."
+      ]
+    },
+    {
+      "heading": "How Secret Management works",
+      "body": "The mechanism behind Secret Management follows a repeatable sequence: understand the requirement, apply the principle, verify the result and refine based on feedback. Each step has checks that keep the work on track.",
+      "points": [
+        "Start from the requirement.",
+        "Apply the core principle of Secret Management.",
+        "Verify the outcome.",
+        "Refine using feedback."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations of Secret Management",
+      "body": "Secret Management offers structure, clarity and consistency, but it also adds overhead and may be overkill for trivial tasks. Use it when the benefit in reliability outweighs the added effort.",
+      "points": [
+        "Advantages: structure, clarity, consistency.",
+        "Limitations: added overhead, not always needed.",
+        "Apply judiciously."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Secret Management in practice",
+    "body": "A concrete illustration of Secret Management shows the principle applied to a small, realistic input so the learner can see cause and effect before scaling up.",
+    "code": {
+      "language": "python",
+      "source": "# Example illustrating Secret Management\nprint('See the worked walk-through above.')"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Production systems",
+      "description": "Applied in real .NET Full Stack systems to keep behaviour predictable."
+    },
+    {
+      "title": "Debugging",
+      "description": "Helps identify where Secret Management-related assumptions break down."
+    },
+    {
+      "title": "Interviews",
+      "description": "A common topic for .NET Full Stack interview questions."
+    }
+  ],
+  "demonstration": {
+    "description": "A short walk-through of Secret Management with expected input and output, showing the principle end to end.",
+    "code": {
+      "language": "python",
+      "source": "# Demonstration of Secret Management\nprint('walkthrough output')"
+    },
+    "output": "expected demonstration output"
+  },
+  "takeaways": [
+    "Secret Management is a foundational concept in .NET Full Stack.",
+    "It follows a clear, repeatable mechanism.",
+    "It improves reliability when applied appropriately.",
+    "Know the advantages and limitations before using it."
+  ],
+  "interview": [
+    {
+      "question": "What is Secret Management?",
+      "answer": "Secret Management is a core concept in .NET Full Stack that describes the techniques used to work effectively with this area.",
+      "explanation": "Give a concise, accurate definition and one example."
+    },
+    {
+      "question": "Why is Secret Management important?",
+      "answer": "It improves reliability, maintainability and clarity in .NET Full Stack systems.",
+      "explanation": "Connect to a concrete benefit."
+    },
+    {
+      "question": "What are the limitations of Secret Management?",
+      "answer": "It adds overhead and may be unnecessary for simple cases; apply it judiciously.",
+      "explanation": "Show balanced judgment."
+    },
+    {
+      "question": "How would you explain Secret Management to a junior teammate?",
+      "answer": "Start with the definition, show a small example, then walk through a realistic use case and its trade-offs.",
+      "explanation": "Structure the explanation from simple to applied."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Apply: Secret Management",
+    "difficulty": "Intermediate",
+    "objective": "Apply Secret Management through a practical exercise.",
+    "statement": "Complete a practical exercise that demonstrates Secret Management. Describe your approach, the steps you took and how you verified the result.",
+    "deliverable": "A short written answer or artefact showing your work on Secret Management.",
+    "steps": [
+      "Restate the goal of Secret Management in your own words.",
+      "List the inputs, steps and expected outputs for Secret Management.",
+      "Work through one concrete example by hand or with code.",
+      "Note one edge case and how you handle it.",
+      "Write a one-paragraph summary of what you learned."
+    ],
+    "checklist": [
+      "The deliverable addresses the stated goal.",
+      "Steps are concrete and reproducible.",
+      "At least one edge case is identified and handled.",
+      "The summary reflects genuine understanding."
+    ],
+    "sample_answer": "Sample answer: Explain Secret Management with a definition, one worked example, an edge case and a real-world use case. The answer shows the learner can apply Secret Management in .NET Full Stack."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is Secret Management?",
+      "options": [
+        "The core idea of Secret Management",
+        "An unrelated concept",
+        "A hardware device",
+        "A programming language"
+      ],
+      "answer": 0,
+      "explanation": "Secret Management is defined as the core idea above."
+    },
+    {
+      "type": "concept",
+      "question": "Why is Secret Management important?",
+      "options": [
+        "It is never used",
+        "It is only theory",
+        "It improves reliability",
+        "It slows things down"
+      ],
+      "answer": 2,
+      "explanation": "Secret Management improves reliability and clarity."
+    },
+    {
+      "type": "scenario",
+      "question": "A system ignores Secret Management. What is the likely result?",
+      "options": [
+        "More defects",
+        "Faster performance",
+        "No effect",
+        "Lower cost"
+      ],
+      "answer": 0,
+      "explanation": "Ignoring Secret Management leads to more defects."
+    },
+    {
+      "type": "output",
+      "question": "What does a correct Secret Management implementation produce?",
+      "options": [
+        "An error",
+        "Nothing",
+        "A reliable result",
+        "Random output"
+      ],
+      "answer": 2,
+      "explanation": "A correct implementation produces a reliable result."
+    },
+    {
+      "type": "concept",
+      "question": "Which is a limitation of Secret Management?",
+      "options": [
+        "Added overhead",
+        "No benefit",
+        "Always required",
+        "No cost"
+      ],
+      "answer": 0,
+      "explanation": "Secret Management adds overhead but brings reliability."
+    }
+  ]
+}

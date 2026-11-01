@@ -1,0 +1,228 @@
+{
+  "day": 14,
+  "title": "API Parameters and Sampling",
+  "module": "Transformers, prompting & APIs",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain temperature, top-p, top-k, max tokens and frequency/presence penalties.",
+    "Describe how temperature changes randomness and creativity in output.",
+    "Choose sampling settings for factual, deterministic tasks versus creative writing.",
+    "Explain how max tokens controls response length and cost.",
+    "Demonstrate calling the API with different sampling parameters and comparing outputs."
+  ],
+  "definition": "Sampling parameters control how an LLM picks each next token from its probability distribution. Temperature adjusts randomness, top-p and top-k restrict the token set considered, max tokens caps response length, and frequency/presence penalties reduce repetition. Choosing the right settings trades off creativity against consistency and cost.",
+  "theory": [
+    {
+      "heading": "Temperature",
+      "body": "Temperature scales the probability distribution before sampling. A low temperature (near 0) makes the model pick the most likely token, giving deterministic, factual output. A high temperature (near 1 or above) flattens the distribution, making the model more random and creative but also more likely to hallucinate.",
+      "points": [
+        "Low temperature: deterministic, good for facts and code.",
+        "High temperature: creative, good for stories and ideas.",
+        "Zero temperature usually means greedy decoding, always the top token."
+      ]
+    },
+    {
+      "heading": "Top-p and top-k",
+      "body": "Top-k limits sampling to the k most likely tokens. Top-p (nucleus sampling) picks the smallest set of tokens whose cumulative probability reaches p. Both prevent the model from choosing very unlikely tokens while still allowing variety. They are often used together with temperature.",
+      "points": [
+        "Top-k: choose from the k highest-probability tokens.",
+        "Top-p: choose from enough tokens to cover p probability mass.",
+        "Lower values make output more focused; higher values add variety."
+      ]
+    },
+    {
+      "heading": "Max tokens and cost",
+      "body": "Max tokens sets the maximum number of tokens the model can generate in one response. It bounds response length and cost, since each generated token is billed. Setting it too low can cut off the answer mid-sentence; setting it too high wastes budget on long outputs.",
+      "points": [
+        "Max tokens caps response length and billing.",
+        "Too low truncates the answer; too high increases cost.",
+        "Prompt tokens plus output tokens equal total tokens."
+      ]
+    },
+    {
+      "heading": "Frequency and presence penalties",
+      "body": "Frequency penalty reduces the chance of repeating the same token many times. Presence penalty encourages the model to introduce new topics rather than staying on one. Both help avoid repetitive, looping output, especially at higher temperatures.",
+      "points": [
+        "Frequency penalty discourages token repetition.",
+        "Presence penalty encourages topic variety.",
+        "Useful for long-form or creative generation."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Same prompt, different temperature",
+    "body": "The prompt 'Write a one-sentence tagline for a coffee shop' at temperature 0.2 produces 'Fresh coffee, friendly service, every morning.' At temperature 0.9 it produces 'Awaken your senses with every sip of our handcrafted brew.' The low-temperature result is safe and generic; the high-temperature result is more colourful but less predictable.",
+    "code": {
+      "language": "python",
+      "source": "payload_a = {'model': 'gpt-4o-mini', 'messages': [...], 'temperature': 0.2, 'max_tokens': 30}\npayload_b = {'model': 'gpt-4o-mini', 'messages': [...], 'temperature': 0.9, 'max_tokens': 30}\n# Same messages, different temperature => different style and randomness."
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Code generation",
+      "description": "Low temperature gives correct, repeatable code that compiles and passes tests."
+    },
+    {
+      "title": "Creative writing",
+      "description": "High temperature produces varied, imaginative stories and marketing copy."
+    },
+    {
+      "title": "Data extraction",
+      "description": "Low temperature and low top-p keep the output in a fixed, parseable format."
+    },
+    {
+      "title": "Chatbot",
+      "description": "Moderate temperature balances natural conversation with reliable behaviour."
+    }
+  ],
+  "demonstration": {
+    "description": "Call the same prompt three times at temperature 0.2, 0.7 and 1.2. The low-temperature answers are nearly identical, the medium answers vary in wording, and the high-temperature answers differ widely in content and may include mistakes.",
+    "code": {
+      "language": "text",
+      "source": "Prompt: Name a startup idea for pet owners.\nTemp 0.2: A pet-sitting booking app.\nTemp 0.2: A pet-sitting booking app.\nTemp 0.7: A smart collar that tracks pet health.\nTemp 1.2: A floating meditation pod for anxious cats."
+    },
+    "output": "Low temperature: consistent, safe, repeatable.\nHigh temperature: varied, creative, less reliable."
+  },
+  "takeaways": [
+    "Temperature controls randomness: low for facts and code, high for creativity.",
+    "Top-p and top-k restrict which tokens can be sampled, adding focus or variety.",
+    "Max tokens caps response length and controls cost.",
+    "Frequency and presence penalties reduce repetition and looping.",
+    "Match settings to the task: deterministic for data extraction, creative for writing.",
+    "Higher temperature and more tokens increase cost and latency."
+  ],
+  "interview": [
+    {
+      "question": "What does temperature control in an LLM API?",
+      "answer": "Temperature controls the randomness of token selection. Low temperature makes output deterministic and focused; high temperature makes it more random and creative.",
+      "explanation": "Give a numeric example, such as 0.2 for code and 0.9 for stories."
+    },
+    {
+      "question": "What is the difference between top-p and top-k?",
+      "answer": "Top-k samples from the k most likely tokens. Top-p samples from the smallest set whose cumulative probability reaches p. Both avoid unlikely tokens while allowing variety.",
+      "explanation": "Mention they are often combined with temperature."
+    },
+    {
+      "question": "Why set max tokens?",
+      "answer": "Max tokens caps how long the response can be, which bounds cost and prevents runaway generation. Too low can truncate the answer.",
+      "explanation": "Connect token count to billing and latency."
+    },
+    {
+      "question": "When would you use a high temperature?",
+      "answer": "For creative tasks such as story writing, brainstorming or marketing copy where varied and surprising output is desirable.",
+      "explanation": "Contrast with factual tasks where low temperature is better."
+    },
+    {
+      "question": "What do frequency and presence penalties do?",
+      "answer": "They reduce repetition: frequency penalty discourages reusing the same token, and presence penalty encourages introducing new topics.",
+      "explanation": "Useful for long-form generation to avoid loops."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Simulate temperature-based token selection",
+    "difficulty": "Basic",
+    "objective": "Model how temperature affects token choice using a simple probability distribution in Python.",
+    "statement": "Read a temperature t (a float) and a list of token probabilities as space-separated floats. Raise each probability to the power 1/t, renormalise so they sum to 1, then print the index of the token with the highest adjusted probability (greedy selection). If t is 0, print the index of the highest original probability.",
+    "language": "python",
+    "input_format": "Line 1: temperature t.\nLine 2: space-separated probabilities.",
+    "output_format": "A single integer: the selected token index.",
+    "example": {
+      "input": "1.0\n0.1 0.6 0.3\n",
+      "output": "1"
+    },
+    "constraints": [
+      "t is a non-negative float.",
+      "Probabilities are non-negative and sum to 1.",
+      "There are between 2 and 20 probabilities."
+    ],
+    "starter": "t = float(input())\nprobs = list(map(float, input().split()))\n\n# TODO: apply temperature, renormalise, and print the index of the max\n",
+    "solution": "t = float(input())\nprobs = list(map(float, input().split()))\n\nif t == 0:\n    print(probs.index(max(probs)))\nelse:\n    adjusted = [p ** (1.0 / t) for p in probs]\n    total = sum(adjusted)\n    adjusted = [a / total for a in adjusted]\n    print(adjusted.index(max(adjusted)))\n",
+    "explanation": [
+      "Read the temperature and the probability list.",
+      "If temperature is zero, use greedy selection on the original probabilities.",
+      "Otherwise raise each probability to 1/t, renormalise to sum to 1, then pick the index with the highest adjusted probability.",
+      "Lower temperature sharpens the distribution toward the most likely token."
+    ],
+    "tests": [
+      {
+        "input": "1.0\n0.1 0.6 0.3\n",
+        "output": "1"
+      },
+      {
+        "input": "0.0\n0.1 0.6 0.3\n",
+        "output": "1"
+      },
+      {
+        "input": "2.0\n0.5 0.5\n",
+        "output": "0"
+      },
+      {
+        "input": "0.5\n0.2 0.2 0.6\n",
+        "output": "2"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does a low temperature do to LLM output?",
+      "options": [
+        "Makes it more random and creative",
+        "Makes it more deterministic and focused",
+        "Increases the response length",
+        "Disables sampling entirely"
+      ],
+      "answer": 1,
+      "explanation": "Low temperature sharpens the probability distribution, so the model nearly always picks the most likely token."
+    },
+    {
+      "type": "scenario",
+      "question": "You are generating code that must compile and pass tests every time. Which temperature should you choose?",
+      "options": [
+        "1.5",
+        "2.0",
+        "0.9",
+        "0.2"
+      ],
+      "answer": 3,
+      "explanation": "Code needs deterministic, correct output, so a low temperature near 0.2 is appropriate."
+    },
+    {
+      "type": "concept",
+      "question": "What is max tokens used for?",
+      "options": [
+        "Choosing the model",
+        "Capping response length and cost",
+        "Setting the temperature",
+        "Filtering profanity"
+      ],
+      "answer": 1,
+      "explanation": "Max tokens limits how many tokens the model generates, bounding both length and billing."
+    },
+    {
+      "type": "scenario",
+      "question": "A chatbot repeats the same phrase over and over. Which parameter can help?",
+      "options": [
+        "Top-k only",
+        "System message length",
+        "Max tokens",
+        "Frequency penalty"
+      ],
+      "answer": 3,
+      "explanation": "Frequency penalty reduces the chance of repeating tokens, breaking the loop."
+    },
+    {
+      "type": "concept",
+      "question": "How does top-p (nucleus sampling) work?",
+      "options": [
+        "Picks the single most likely token",
+        "Samples from the smallest set covering cumulative probability p",
+        "Always picks the k-th most likely token",
+        "Disables randomness"
+      ],
+      "answer": 1,
+      "explanation": "Top-p includes just enough top tokens so their probabilities add up to p."
+    }
+  ]
+}

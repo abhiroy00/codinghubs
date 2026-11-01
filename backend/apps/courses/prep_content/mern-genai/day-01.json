@@ -1,0 +1,249 @@
+{
+  "day": 1,
+  "title": "JavaScript Scope, Hoisting and Closures",
+  "module": "JavaScript core",
+  "level": "Beginner",
+  "objectives": [
+    "Explain global, function and block scope and how the scope chain resolves a variable.",
+    "Describe hoisting for var, let, const, function declarations and the temporal dead zone.",
+    "Define a closure and explain why an inner function keeps access to outer variables.",
+    "Use closures for private state, factories and once/memoize helpers.",
+    "Predict the output of the classic loop-with-setTimeout interview question."
+  ],
+  "definition": "Scope is the set of rules that decides where a variable can be accessed. JavaScript uses lexical scope: a function can see the variables of the place where it was written, not where it is called. A closure is a function bundled with references to the variables of its surrounding scope, so it can keep reading and updating them even after the outer function has returned.",
+  "theory": [
+    {
+      "heading": "Three kinds of scope and the scope chain",
+      "body": "Variables declared at the top level of a script are global. Variables declared with var inside a function are function-scoped. Variables declared with let and const are block-scoped: they exist only inside the nearest pair of braces, such as an if block or a for loop. When code reads a name, the engine looks in the current scope, then the enclosing scope, and so on up to the global scope. This lookup path is the scope chain, and it is fixed by where the code is written (lexical scope).",
+      "points": [
+        "var: function-scoped, can be redeclared, attaches to window in non-module browser scripts.",
+        "let: block-scoped, can be reassigned, cannot be redeclared in the same scope.",
+        "const: block-scoped and cannot be reassigned, but an object it points to can still be mutated.",
+        "An inner scope can read outer variables; an outer scope cannot read inner ones."
+      ]
+    },
+    {
+      "heading": "Hoisting and the temporal dead zone",
+      "body": "Before running a scope, the engine registers every declaration in it. Function declarations are registered with their full body, so they can be called before the line that defines them. var declarations are registered and initialised to undefined. let, const and class declarations are registered but not initialised; reading them before the declaration line throws a ReferenceError. The region between the start of the block and the declaration is called the temporal dead zone (TDZ). The TDZ exists to catch bugs where a value is used before it is ready.",
+      "points": [
+        "console.log(a); var a = 1; prints undefined.",
+        "console.log(b); let b = 1; throws ReferenceError: Cannot access 'b' before initialization.",
+        "Function expressions and arrow functions assigned to variables follow the variable's hoisting rules, not function hoisting."
+      ]
+    },
+    {
+      "heading": "What a closure really is",
+      "body": "Every function object keeps a hidden link to the lexical environment in which it was created. When the outer function returns, its local variables are not destroyed if an inner function still references them; the garbage collector keeps them alive. The inner function therefore has persistent, private state. Closures capture variables, not values: if the variable changes later, the closure sees the new value.",
+      "points": [
+        "Each call of the outer function creates a fresh environment, so two counters from the same factory do not share state.",
+        "Closures power module patterns, event handlers, React hooks, debounce/throttle and middleware factories in Express.",
+        "A closure that holds a large object (for example a DOM node or a big array) keeps it in memory, which can cause leaks."
+      ]
+    },
+    {
+      "heading": "The loop and setTimeout question",
+      "body": "With var, a for loop has one shared variable i for all iterations. Callbacks scheduled with setTimeout run after the loop has finished, so they all read the final value. With let, the specification creates a new binding of i for each iteration, so each callback closes over its own copy. Before let existed, developers fixed this with an IIFE that passed i as a parameter, creating a new scope per iteration.",
+      "points": [
+        "for (var i = 0; i < 3; i++) setTimeout(() => console.log(i)); prints 3, 3, 3.",
+        "for (let i = 0; i < 3; i++) setTimeout(() => console.log(i)); prints 0, 1, 2.",
+        "Explaining per-iteration bindings is what separates a strong answer from a memorised one."
+      ]
+    },
+    {
+      "heading": "Practical closure patterns",
+      "body": "Interviewers often ask you to implement a small utility with closures. once(fn) runs fn the first time and returns the cached result afterwards. memoize(fn) keeps a cache object in the closure. A rate limiter or counter factory hides its count so callers can change it only through the returned methods. In Node, Express middleware factories such as requireRole('admin') return a function that closes over the role argument.",
+      "points": [
+        "Data privacy: state is reachable only through the returned functions.",
+        "Configuration: a factory captures settings once and returns a specialised function.",
+        "Caching: memoization stores computed results keyed by the arguments."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A counter factory with private state",
+    "body": "makeCounter returns three functions that all close over the same count variable. Code outside cannot set count directly, which is the essence of encapsulation with closures. Calling makeCounter again creates an independent count.",
+    "code": {
+      "language": "javascript",
+      "source": "function makeCounter(start = 0) {\n  let count = start;            // private, lives in the closure\n  return {\n    increment: () => ++count,\n    decrement: () => --count,\n    value: () => count\n  };\n}\n\nconst a = makeCounter(10);\nconst b = makeCounter();\na.increment();\na.increment();\nb.decrement();\nconsole.log(a.value()); // 12\nconsole.log(b.value()); // -1\nconsole.log(a.count);   // undefined: no direct access"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Express middleware factories",
+      "description": "requireRole('admin') returns (req, res, next) => {...} that remembers the required role through a closure."
+    },
+    {
+      "title": "React hooks and event handlers",
+      "description": "Handlers defined inside a component close over the props and state of that render, which explains the stale-closure bug in useEffect."
+    },
+    {
+      "title": "Debounce and throttle",
+      "description": "The timer id is stored in a closure so repeated calls can cancel or skip the previous one, for example in a search box."
+    },
+    {
+      "title": "Memoization and caching",
+      "description": "A cache object kept in a closure avoids repeating expensive work such as formatting or API lookups."
+    },
+    {
+      "title": "Module pattern",
+      "description": "Before ES modules, IIFEs returned a public API while keeping helpers private; the idea still appears in SDK code."
+    }
+  ],
+  "demonstration": {
+    "description": "Run the loop question with var and let, then fix the var version with an IIFE. The difference comes from how many bindings of i exist, not from timing.",
+    "code": {
+      "language": "javascript",
+      "source": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log('var', i), 0);\n}\nfor (let j = 0; j < 3; j++) {\n  setTimeout(() => console.log('let', j), 0);\n}\nfor (var k = 0; k < 3; k++) {\n  ((k) => setTimeout(() => console.log('iife', k), 0))(k);\n}"
+    },
+    "output": "var 3\nvar 3\nvar 3\nlet 0\nlet 1\nlet 2\niife 0\niife 1\niife 2"
+  },
+  "takeaways": [
+    "JavaScript is lexically scoped: where a function is written decides what it can see.",
+    "let and const are block-scoped and sit in the temporal dead zone until their declaration runs.",
+    "Function declarations are hoisted with their body; var is hoisted as undefined.",
+    "A closure keeps references to outer variables alive after the outer function returns.",
+    "Closures capture variables, not snapshots, which explains the var loop bug.",
+    "Closures give private state, factories, memoization and middleware configuration."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between var, let and const?",
+      "answer": "var is function-scoped, hoisted and initialised to undefined, and can be redeclared. let and const are block-scoped and stay in the temporal dead zone until declared. let can be reassigned; const cannot, although the object it refers to can be mutated.",
+      "explanation": "Cover scope, hoisting behaviour and reassignment. Mentioning that const does not make objects immutable (use Object.freeze for a shallow freeze) is a common follow-up."
+    },
+    {
+      "question": "What is hoisting?",
+      "answer": "Before executing a scope, the engine creates bindings for all its declarations. Function declarations are fully available early, var bindings start as undefined, and let/const/class bindings exist but are uninitialised, so accessing them early throws a ReferenceError.",
+      "explanation": "Avoid saying code is 'moved to the top'; describe the creation phase of the execution context. Name the temporal dead zone."
+    },
+    {
+      "question": "What is a closure? Give a practical example.",
+      "answer": "A closure is a function together with references to the variables of the scope where it was created. For example, a counter factory returns increment and value functions that share a private count variable which outside code cannot touch.",
+      "explanation": "Strong answers give a real use: middleware factories, debounce, memoization or React event handlers, and mention that each factory call gets its own environment."
+    },
+    {
+      "question": "Why does a for loop with var and setTimeout print the same number three times, and how do you fix it?",
+      "answer": "var creates a single function-scoped i shared by every callback; by the time the callbacks run the loop has finished and i equals 3. Using let creates a new binding per iteration; alternatively wrap the body in an IIFE that receives i as a parameter.",
+      "explanation": "Interviewers want the reason (one binding vs per-iteration bindings and callbacks running after the loop), not just the fix."
+    },
+    {
+      "question": "Can closures cause memory leaks? How?",
+      "answer": "Yes. Variables referenced by a live closure cannot be garbage-collected. A long-lived event listener or timer that closes over a large array or a detached DOM node keeps that data in memory. Removing listeners, clearing timers and not capturing more than needed prevent this.",
+      "explanation": "This advanced question checks that you understand closures are retained references. Mention cleanup in React useEffect as a real-world example."
+    },
+    {
+      "question": "Implement once(fn).",
+      "answer": "function once(fn) { let called = false, result; return function (...args) { if (!called) { called = true; result = fn.apply(this, args); } return result; }; }",
+      "explanation": "Two closure variables track state. Using fn.apply(this, args) preserves the caller's this and arguments, a detail interviewers notice."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Counter factory with private state",
+    "difficulty": "Basic",
+    "objective": "Use closures to build independent counters whose state can only be changed through returned methods.",
+    "statement": "Implement makeCounter(start, step) that returns an object with inc, dec, reset and get methods closing over a private count. Then process commands, one per line:\n- create <name> <start> <step>: create (or replace) a counter.\n- inc <name> / dec <name>: add or subtract step.\n- reset <name>: set the count back to start.\n- get <name>: print <name>=<count>.\nIf a command (other than create) names a counter that does not exist, print error: unknown counter <name>.",
+    "language": "javascript",
+    "input_format": "One command per line in the global string stdin. Blank lines are ignored.",
+    "output_format": "One line for every get command or error, in order.",
+    "example": {
+      "input": "create a 5 1\ninc a\ninc a\nget a\ncreate b 0 10\ninc b\ndec a\nget a\nget b\n",
+      "output": "a=7\na=6\nb=10"
+    },
+    "constraints": [
+      "start and step are integers.",
+      "Counter names contain no spaces.",
+      "Do not store counts in a shared global object; keep each count inside its closure."
+    ],
+    "starter": "function makeCounter(start, step) {\n  // TODO: keep count private and return { inc, dec, reset, get }\n}\n\nconst counters = new Map();\nconst out = [];\nfor (const raw of stdin.split('\\n')) {\n  const line = raw.trim();\n  if (!line) continue;\n  // TODO: handle create, inc, dec, reset and get\n}\nconsole.log(out.join('\\n'));\n",
+    "solution": "function makeCounter(start, step) {\n  let count = start;\n  return {\n    inc() { count += step; },\n    dec() { count -= step; },\n    reset() { count = start; },\n    get() { return count; }\n  };\n}\n\nconst counters = new Map();\nconst out = [];\nfor (const raw of stdin.split('\\n')) {\n  const line = raw.trim();\n  if (!line) continue;\n  const [cmd, name, a, b] = line.split(' ').filter(Boolean);\n  if (cmd === 'create') {\n    counters.set(name, makeCounter(Number(a), Number(b)));\n    continue;\n  }\n  const counter = counters.get(name);\n  if (!counter) {\n    out.push('error: unknown counter ' + name);\n    continue;\n  }\n  if (cmd === 'get') out.push(name + '=' + counter.get());\n  else counter[cmd]();\n}\nconsole.log(out.join('\\n'));\n",
+    "explanation": [
+      "makeCounter declares count with let; the four returned methods close over count, start and step.",
+      "Each call to makeCounter creates a new environment, so counters a and b never share state.",
+      "A Map stores the counter objects by name; creating the same name again replaces the old closure.",
+      "For every other command, look up the counter, print an error if missing, otherwise call the method or print the value."
+    ],
+    "tests": [
+      {
+        "input": "create a 5 1\ninc a\ninc a\nget a\ncreate b 0 10\ninc b\ndec a\nget a\nget b\n",
+        "output": "a=7\na=6\nb=10"
+      },
+      {
+        "input": "get x\ncreate x 3 2\ninc x\nget x\n",
+        "output": "error: unknown counter x\nx=5"
+      },
+      {
+        "input": "create c 100 25\ndec c\ndec c\nget c\nreset c\nget c\ninc d\n",
+        "output": "c=50\nc=100\nerror: unknown counter d"
+      },
+      {
+        "input": "create a 1 1\ninc a\ncreate a 0 -3\ninc a\n\nget a\n",
+        "output": "a=-3"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this code print?",
+      "code": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
+      "options": [
+        "3 3 3",
+        "undefined three times",
+        "0 0 0",
+        "0 1 2"
+      ],
+      "answer": 0,
+      "explanation": "var creates one shared i. The callbacks run after the loop ends, when i is 3."
+    },
+    {
+      "type": "output",
+      "question": "What happens when this code runs?",
+      "code": "console.log(total);\nlet total = 5;",
+      "options": [
+        "It prints null",
+        "It throws a ReferenceError",
+        "It prints 5",
+        "It prints undefined"
+      ],
+      "answer": 1,
+      "explanation": "total is hoisted but uninitialised; reading it inside the temporal dead zone throws a ReferenceError."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement about closures is correct?",
+      "options": [
+        "A closure's variables are deleted when the outer function returns",
+        "A closure captures references to outer variables, so later changes are visible",
+        "A closure copies outer variables at creation time",
+        "Closures only exist for arrow functions"
+      ],
+      "answer": 1,
+      "explanation": "Closures hold references to the variables themselves, which stay alive while the inner function is reachable."
+    },
+    {
+      "type": "code",
+      "question": "Two counters are created with const a = makeCounter(); const b = makeCounter(); then a.increment() is called twice. What is b.value() if makeCounter declares let count = 0 inside itself?",
+      "options": [
+        "2",
+        "1",
+        "0",
+        "undefined"
+      ],
+      "answer": 2,
+      "explanation": "Each call to makeCounter creates a new environment with its own count, so b is unaffected."
+    },
+    {
+      "type": "scenario",
+      "question": "An Express app uses app.use(requireRole('admin')) where requireRole returns (req, res, next) => {...}. How does the inner function know the required role?",
+      "options": [
+        "It closes over the role parameter of requireRole",
+        "It reads a global variable named role",
+        "The role is passed as the fourth middleware argument",
+        "Express stores it on req.role automatically"
+      ],
+      "answer": 0,
+      "explanation": "The returned middleware is a closure over requireRole's parameter, a common factory pattern."
+    }
+  ]
+}

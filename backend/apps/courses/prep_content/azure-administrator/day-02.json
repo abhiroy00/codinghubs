@@ -1,0 +1,242 @@
+{
+  "day": 2,
+  "title": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
+  "module": "Cloud and Azure foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what Azure Resource Manager (ARM) is and why every tool goes through it.",
+    "Describe the four-level hierarchy: management groups, subscriptions, resource groups and resources.",
+    "Decide when to create a new subscription versus a new resource group.",
+    "Create and organise resource groups with Azure CLI and PowerShell.",
+    "Explain how settings applied at a higher scope are inherited by lower scopes."
+  ],
+  "definition": "Azure Resource Manager (ARM) is the deployment and management service for Azure: every request from the portal, CLI, PowerShell, SDKs or templates is authenticated, authorised and then sent by ARM to the right resource provider. ARM organises resources in a hierarchy of management groups, subscriptions, resource groups and resources, and access control, policy and budgets applied at one level are inherited by everything beneath it.",
+  "theory": [
+    {
+      "heading": "What Azure Resource Manager does",
+      "body": "ARM is the single control plane in front of all Azure services. When you run 'az vm create', the CLI calls the ARM REST API; ARM checks your identity with Microsoft Entra ID, checks RBAC permissions, evaluates Azure Policy, and only then forwards the request to the Microsoft.Compute resource provider. Because every tool uses the same API, results are consistent and you can describe infrastructure declaratively with ARM templates or Bicep.",
+      "points": [
+        "Control plane (management.azure.com): create, update, delete and configure resources.",
+        "Data plane: using the resource itself, such as reading a blob or connecting to a VM.",
+        "Resource providers (Microsoft.Compute, Microsoft.Storage, Microsoft.Network) must be registered in a subscription.",
+        "Resource ID format: /subscriptions/{id}/resourceGroups/{rg}/providers/{namespace}/{type}/{name}."
+      ]
+    },
+    {
+      "heading": "The management hierarchy",
+      "body": "Management groups sit at the top and contain subscriptions or other management groups. Every Microsoft Entra tenant has one Tenant Root Group. Below management groups are subscriptions, then resource groups, then resources. The hierarchy exists so that governance (RBAC, Azure Policy) can be applied once at a high level and flow down automatically, instead of being configured on thousands of resources.",
+      "points": [
+        "Management groups: up to six levels of depth below the root (root and subscription levels not counted).",
+        "Each management group or subscription has exactly one parent.",
+        "Subscription: a billing, quota and access boundary, trusted by exactly one Entra tenant.",
+        "Resource group: a logical container for resources that share a lifecycle.",
+        "Resource: an individual VM, storage account, VNet, database and so on."
+      ]
+    },
+    {
+      "heading": "Subscriptions as boundaries",
+      "body": "A subscription is where usage is billed and where many quotas (for example vCPUs per region) are enforced. Organisations create separate subscriptions to separate billing (one per department or customer), to separate environments (production and development), to isolate access, or simply because one subscription would hit a scale limit. Subscriptions are grouped under management groups such as Platform, Landing Zones and Sandbox in the Azure landing zone model.",
+      "points": [
+        "Billing boundary: invoices and cost reports are produced per subscription.",
+        "Access boundary: owners of one subscription have no rights in another by default.",
+        "Quota boundary: request vCPU quota increases per subscription and region.",
+        "A subscription can be moved to a different tenant, but RBAC assignments in it are lost."
+      ]
+    },
+    {
+      "heading": "Resource groups",
+      "body": "A resource group holds resources that are deployed, managed and deleted together, such as the VMs, disks and network interface of one application. A resource group has a location, but that only stores its metadata; the resources inside can live in other regions. Resource groups cannot be nested, and a resource belongs to exactly one resource group at a time, although most resources can be moved between groups and subscriptions.",
+      "points": [
+        "Group by lifecycle: if things are created and deleted together, keep them together.",
+        "Deleting a resource group deletes every resource in it, so use locks on production.",
+        "Moving a resource changes its resource ID, so scripts and alerts referring to it must be updated.",
+        "Use a naming convention such as rg-<app>-<env>-<region>."
+      ]
+    },
+    {
+      "heading": "Inheritance and scope",
+      "body": "A scope is any level of the hierarchy at which you can assign roles, policies, locks or budgets. Assignments flow downward: a Reader role granted on a management group gives read access to every subscription, resource group and resource beneath it. This is why governance teams build management group structures first and why you should avoid granting broad roles at high scopes.",
+      "points": [
+        "Scope order from broad to narrow: management group, subscription, resource group, resource.",
+        "Lower scopes cannot remove rights granted higher up (except deny assignments).",
+        "Policies at a management group apply to all current and future subscriptions inside it."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Building a small hierarchy with Azure CLI",
+    "body": "A governance team creates a management group for production, moves a subscription into it and creates a resource group for a web application. The resource group metadata lives in Central India.",
+    "code": {
+      "language": "bash",
+      "source": "az account management-group create --name mg-prod --display-name \"Production\"\naz account management-group subscription add --name mg-prod --subscription \"Contoso-Prod\"\n\naz account set --subscription \"Contoso-Prod\"\naz group create --name rg-shop-prod-cin --location centralindia --tags env=prod app=shop\naz group list --query \"[].{name:name, location:location}\" -o table"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Landing zones",
+      "description": "An enterprise uses management groups (Platform, Corp, Online, Sandbox) so security policies apply to every new subscription automatically."
+    },
+    {
+      "title": "Environment isolation",
+      "description": "Separate production and development subscriptions stop a developer's test script from touching production resources."
+    },
+    {
+      "title": "Application lifecycle",
+      "description": "All resources of a short-lived training lab sit in one resource group and are removed with a single delete at the end of the batch."
+    },
+    {
+      "title": "Chargeback",
+      "description": "Each business unit gets its own subscription so its Azure bill can be charged back directly."
+    }
+  ],
+  "demonstration": {
+    "description": "Inspect a resource ID to see the hierarchy encoded inside it, then list everything in a resource group. PowerShell and CLI both call the same ARM API.",
+    "code": {
+      "language": "powershell",
+      "source": "$vm = Get-AzVM -ResourceGroupName rg-shop-prod-cin -Name vm-web-01\n$vm.Id\nGet-AzResource -ResourceGroupName rg-shop-prod-cin | Select-Object Name, ResourceType, Location"
+    },
+    "output": "/subscriptions/1111-.../resourceGroups/rg-shop-prod-cin/providers/Microsoft.Compute/virtualMachines/vm-web-01\n\nName           ResourceType                          Location\nvm-web-01      Microsoft.Compute/virtualMachines     centralindia\nvm-web-01-nic  Microsoft.Network/networkInterfaces   centralindia\nstshopprod01   Microsoft.Storage/storageAccounts     southindia"
+  },
+  "takeaways": [
+    "Every Azure tool talks to Azure Resource Manager, which authenticates, authorises and applies policy.",
+    "Hierarchy: management groups > subscriptions > resource groups > resources.",
+    "Management groups support six levels of depth below the Tenant Root Group.",
+    "A subscription is a billing, quota and access boundary trusted by one Entra tenant.",
+    "Resource groups group by lifecycle; their location stores metadata only.",
+    "Assignments at a higher scope are inherited by every lower scope."
+  ],
+  "interview": [
+    {
+      "question": "What is Azure Resource Manager?",
+      "answer": "ARM is Azure's management layer. All requests from the portal, CLI, PowerShell, SDKs and templates go through it; it authenticates the caller, checks RBAC and policy and forwards the request to the resource provider.",
+      "explanation": "Mention that this is why behaviour is consistent across tools and why templates can be declarative."
+    },
+    {
+      "question": "When would you create a new subscription instead of a new resource group?",
+      "answer": "When you need a separate billing boundary, a strong access or environment boundary such as production versus development, separate quotas, or when an existing subscription is reaching scale limits. Resource groups are for grouping resources with the same lifecycle within a subscription.",
+      "explanation": "Interviewers want the boundary concept: subscriptions separate billing, access and quota; resource groups separate lifecycle."
+    },
+    {
+      "question": "Can a resource group contain resources from different regions?",
+      "answer": "Yes. The resource group's location only stores its metadata. Resources inside can be in any region, although keeping metadata in a compliant region matters for some regulations.",
+      "explanation": "A common trick question. Mention the metadata point and the compliance nuance."
+    },
+    {
+      "question": "What are management groups and why use them?",
+      "answer": "Management groups are containers above subscriptions. Policies and role assignments applied to a management group are inherited by all subscriptions beneath it, so governance is applied once for many subscriptions. They support up to six levels of depth under the Tenant Root Group.",
+      "explanation": "A strong answer gives an example structure (Platform, Landing Zones, Sandbox) and mentions inheritance."
+    },
+    {
+      "question": "What happens when you move a resource to another resource group or subscription?",
+      "answer": "Both source and target groups are locked for writes during the move, and the resource gets a new resource ID. Not all resource types support moving, some have dependencies that must move together, and RBAC assignments made directly on the resource do not move with it.",
+      "explanation": "Mentioning the ID change and the need to update scripts, alerts and role assignments shows real operational experience."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Resolve a scope path in the hierarchy",
+    "difficulty": "Basic",
+    "objective": "Model the ARM hierarchy as parent links and print the inheritance path for any scope.",
+    "statement": "You are given parent links in an Azure hierarchy. Each line 'child parent' says that child is directly under parent; the top of the tree is the name 'root' (the Tenant Root Group). For each query, print the full path from root to the queried scope joined by ' > ', followed by its depth (number of links from root) in the form ' [depth d]'. If the queried name is not in the hierarchy (and is not 'root'), print '<name>: not found'.",
+    "language": "python",
+    "input_format": "Line 1: N. Next N lines: 'child parent'. Next line: Q. Next Q lines: a scope name.",
+    "output_format": "One line per query.",
+    "example": {
+      "input": "3\nmg-corp root\nsub-prod mg-corp\nrg-web sub-prod\n2\nrg-web\nmg-corp\n",
+      "output": "root > mg-corp > sub-prod > rg-web [depth 3]\nroot > mg-corp [depth 1]"
+    },
+    "constraints": [
+      "1 <= N <= 100; names contain no spaces.",
+      "The links form a tree: every child has exactly one parent and there are no cycles.",
+      "Querying 'root' prints 'root [depth 0]'."
+    ],
+    "starter": "n = int(input())\nparent = {}\nfor _ in range(n):\n    child, par = input().split()\n    parent[child] = par\n\nq = int(input())\nfor _ in range(q):\n    name = input().strip()\n    # TODO: walk up the parent links to root, then print the path\n",
+    "solution": "n = int(input())\nparent = {}\nfor _ in range(n):\n    child, par = input().split()\n    parent[child] = par\n\nq = int(input())\nfor _ in range(q):\n    name = input().strip()\n    if name != 'root' and name not in parent:\n        print(f'{name}: not found')\n        continue\n    chain = [name]\n    while chain[-1] != 'root':\n        chain.append(parent[chain[-1]])\n    chain.reverse()\n    print(' > '.join(chain) + f' [depth {len(chain) - 1}]')\n",
+    "explanation": [
+      "Store each child's single parent in a dictionary, exactly like ARM stores one parent per scope.",
+      "For a query, walk upward from the scope until you reach root, collecting names.",
+      "Reverse the list to print from the broadest scope to the narrowest; this is the direction inheritance flows.",
+      "The depth is the number of links, one less than the number of names."
+    ],
+    "tests": [
+      {
+        "input": "3\nmg-corp root\nsub-prod mg-corp\nrg-web sub-prod\n2\nrg-web\nmg-corp\n",
+        "output": "root > mg-corp > sub-prod > rg-web [depth 3]\nroot > mg-corp [depth 1]"
+      },
+      {
+        "input": "5\nmg-platform root\nmg-landing root\nmg-online mg-landing\nsub-shop mg-online\nrg-shop sub-shop\n3\nrg-shop\nmg-platform\nroot\n",
+        "output": "root > mg-landing > mg-online > sub-shop > rg-shop [depth 4]\nroot > mg-platform [depth 1]\nroot [depth 0]"
+      },
+      {
+        "input": "1\nsub-dev root\n2\nrg-missing\nsub-dev\n",
+        "output": "rg-missing: not found\nroot > sub-dev [depth 1]"
+      },
+      {
+        "input": "4\nrg-a sub-1\nsub-1 mg-b\nmg-b mg-a\nmg-a root\n1\nrg-a\n",
+        "output": "root > mg-a > mg-b > sub-1 > rg-a [depth 4]"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which component authenticates and authorises every Azure management request before it reaches a resource provider?",
+      "options": [
+        "Azure Monitor",
+        "Azure Policy",
+        "Azure Resource Manager",
+        "Azure Front Door"
+      ],
+      "answer": 2,
+      "explanation": "ARM is the control plane that every tool calls; it authenticates with Entra ID, checks RBAC and policy and then forwards the request."
+    },
+    {
+      "type": "scenario",
+      "question": "You create a resource group in Central India. Can you deploy a storage account in South India into that resource group?",
+      "options": [
+        "Only if the regions are a region pair",
+        "Only after enabling cross-region resource groups",
+        "Yes, the resource group location only stores metadata",
+        "No, resources must match the resource group region"
+      ],
+      "answer": 2,
+      "explanation": "Resources in a group can be in any region; the group's location is where its metadata is stored."
+    },
+    {
+      "type": "concept",
+      "question": "How many levels of management group depth are supported below the Tenant Root Group (not counting the root or subscription levels)?",
+      "options": [
+        "Two",
+        "Four",
+        "Ten",
+        "Six"
+      ],
+      "answer": 3,
+      "explanation": "A management group tree supports up to six levels of depth, excluding the root level and the subscription level."
+    },
+    {
+      "type": "scenario",
+      "question": "Finance wants a separate invoice and separate vCPU quotas for the analytics department. What should you create?",
+      "options": [
+        "A new tag",
+        "A new availability zone",
+        "A new resource group",
+        "A new subscription"
+      ],
+      "answer": 3,
+      "explanation": "Subscriptions are billing and quota boundaries. Resource groups and tags do not create separate quotas."
+    },
+    {
+      "type": "scenario",
+      "question": "A VM is moved from rg-old to rg-new in the same subscription. What must you expect?",
+      "options": [
+        "The VM is redeployed and its disks are recreated",
+        "The VM keeps the same resource ID",
+        "The VM's resource ID changes, so references to the old ID must be updated",
+        "The move automatically copies all role assignments"
+      ],
+      "answer": 2,
+      "explanation": "The resource group is part of the resource ID, so the ID changes. Role assignments made directly on the resource are not carried over."
+    }
+  ]
+}

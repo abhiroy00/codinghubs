@@ -1,0 +1,228 @@
+{
+  "day": 15,
+  "title": "Structured Outputs and Function Calling",
+  "module": "Transformers, prompting & APIs",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain why structured outputs make model results easier to use in programs.",
+    "Describe function calling: the model names a function and arguments instead of free text.",
+    "Show how JSON schema or a few-shot format constrains model output.",
+    "Parse and validate the model's structured response before using it.",
+    "Discuss when to use structured output versus free-form generation."
+  ],
+  "definition": "Structured outputs and function calling let a program ask an LLM to return data in a predictable format such as JSON, or to name a function and its arguments, instead of free-form text. This makes model output directly usable by downstream code without fragile parsing, and enables AI-driven applications to call real tools, databases or APIs.",
+  "theory": [
+    {
+      "heading": "Why structured outputs matter",
+      "body": "Free-form text is hard for programs to use: punctuation, wording and formatting vary between runs. Structured output guarantees a fixed schema, so the receiving code can parse JSON, access named fields and act on them reliably. This is essential when the model's output feeds a database, a form or another API.",
+      "points": [
+        "Free text varies; structured output is predictable.",
+        "JSON lets code read fields by name.",
+        "Structured output reduces parsing errors and retries."
+      ]
+    },
+    {
+      "heading": "Function calling",
+      "body": "Function calling lets the model decide which of several predefined functions to call and with what arguments. The model does not run the function; it returns the function name and arguments as JSON. The program then executes the function, optionally feeds the result back, and continues the conversation.",
+      "points": [
+        "The model selects a function and arguments, not free text.",
+        "The program executes the chosen function.",
+        "Results can be fed back to the model for a final answer."
+      ]
+    },
+    {
+      "heading": "Constraining output with JSON schema",
+      "body": "A JSON schema or response format tells the model exactly what fields, types and values to produce. Combined with system instructions and examples, it makes the output follow the schema closely. Some APIs offer a native JSON mode that constrains the model to valid JSON.",
+      "points": [
+        "A schema defines fields, types and required items.",
+        "Native JSON mode forces valid JSON output.",
+        "Examples show the expected shape to the model."
+      ]
+    },
+    {
+      "heading": "Validating model output",
+      "body": "Even with constraints, model output can be malformed or missing fields. The program should parse the JSON, validate required fields and types, and handle failures by asking the model again or falling back to a safe default. Never trust model output without validation.",
+      "points": [
+        "Parse JSON defensively.",
+        "Check required fields and types.",
+        "Retry or fall back on invalid output."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Function calling for a calendar assistant",
+    "body": "A user says 'Book a meeting with Maria tomorrow at 2pm.' The model calls the function create_event with arguments {title: 'Meeting with Maria', start: '2025-01-16T14:00:00', duration_minutes: 30}. The backend then calls the calendar API with those arguments.",
+    "code": {
+      "language": "json",
+      "source": "{\n  \"name\": \"create_event\",\n  \"arguments\": {\n    \"title\": \"Meeting with Maria\",\n    \"start\": \"2025-01-16T14:00:00\",\n    \"duration_minutes\": 30\n  }\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Calendar booking",
+      "description": "The model extracts date, time and people from a request and calls a booking function."
+    },
+    {
+      "title": "Database lookup",
+      "description": "The model turns a question into a function call that queries a database and returns results."
+    },
+    {
+      "title": "Form filling",
+      "description": "A support bot collects structured fields such as name, email and issue type from a free-text chat."
+    },
+    {
+      "title": "API orchestration",
+      "description": "The model chains several function calls, such as check-inventory then place-order."
+    }
+  ],
+  "demonstration": {
+    "description": "Show a free-text answer that is hard to parse versus the same information returned as JSON with named fields that a program can read directly.",
+    "code": {
+      "language": "text",
+      "source": "Free text: 'The meeting is with Maria on January 16 at 2pm for thirty minutes.'\n\nStructured JSON:\n{\n  \"person\": \"Maria\",\n  \"date\": \"2025-01-16\",\n  \"time\": \"14:00\",\n  \"duration_minutes\": 30\n}"
+    },
+    "output": "The program reads person, date, time and duration_minutes from the JSON without any string parsing."
+  },
+  "takeaways": [
+    "Structured output returns data in a fixed format such as JSON, not free text.",
+    "Function calling lets the model name a function and its arguments for the program to run.",
+    "A JSON schema constrains the model to the fields and types the program expects.",
+    "Always validate and parse model output defensively before using it.",
+    "Use structured output when the result feeds another system, database or UI.",
+    "Free text is fine for reading; structured output is for acting."
+  ],
+  "interview": [
+    {
+      "question": "What is function calling in an LLM API?",
+      "answer": "The model chooses a predefined function and returns its name and arguments as JSON; the program executes the function and can feed the result back.",
+      "explanation": "Emphasise the model does not run the function itself."
+    },
+    {
+      "question": "Why use structured output instead of free text?",
+      "answer": "Structured output follows a fixed schema so code can read named fields reliably, without fragile string parsing or formatting guesses.",
+      "explanation": "Mention JSON and native JSON mode."
+    },
+    {
+      "question": "What should you do before using a model's structured output?",
+      "answer": "Parse it defensively, validate required fields and types, and retry or fall back if it is invalid. Never trust model output without validation.",
+      "explanation": "This shows production-aware thinking."
+    },
+    {
+      "question": "When is function calling useful?",
+      "answer": "When the model needs to trigger a real action such as booking, querying a database or calling an API, based on user input.",
+      "explanation": "Name a concrete example such as calendar booking."
+    },
+    {
+      "question": "How does a JSON schema help the model?",
+      "answer": "It tells the model exactly which fields, types and values to produce, making output predictable and easier to parse.",
+      "explanation": "Combine schema with examples for best results."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Validate a structured model response",
+    "difficulty": "Basic",
+    "objective": "Practise parsing and validating JSON output from a model in Python.",
+    "statement": "Read a JSON object. It must have fields 'name' (non-empty string), 'email' (non-empty string) and 'age' (integer). Print 'valid' if all checks pass, otherwise print 'invalid'.",
+    "language": "python",
+    "input_format": "One line: a JSON object.",
+    "output_format": "Either 'valid' or 'invalid'.",
+    "example": {
+      "input": "{\"name\": \"Amar\", \"email\": \"amar@example.com\", \"age\": 25}\n",
+      "output": "valid"
+    },
+    "constraints": [
+      "Input is always valid JSON.",
+      "name and email must be non-empty strings.",
+      "age must be an integer (booleans do not count as integers)."
+    ],
+    "starter": "import json\n\ndata = json.loads(input())\n\n# TODO: validate and print 'valid' or 'invalid'\n",
+    "solution": "import json\n\ndata = json.loads(input())\nname = data.get('name')\nemail = data.get('email')\nage = data.get('age')\n\nif (\n    isinstance(name, str) and name and\n    isinstance(email, str) and email and\n    isinstance(age, int) and not isinstance(age, bool)\n):\n    print('valid')\nelse:\n    print('invalid')\n",
+    "explanation": [
+      "Parse the JSON input.",
+      "Check that name and email are non-empty strings.",
+      "Check that age is an integer but not a boolean (bool is a subclass of int in Python).",
+      "Print 'valid' only when all checks pass, otherwise 'invalid'."
+    ],
+    "tests": [
+      {
+        "input": "{\"name\": \"Amar\", \"email\": \"amar@example.com\", \"age\": 25}\n",
+        "output": "valid"
+      },
+      {
+        "input": "{\"name\": \"\", \"email\": \"a@b.com\", \"age\": 25}\n",
+        "output": "invalid"
+      },
+      {
+        "input": "{\"name\": \"Amar\", \"email\": \"a@b.com\", \"age\": true}\n",
+        "output": "invalid"
+      },
+      {
+        "input": "{\"name\": \"Amar\", \"email\": \"a@b.com\", \"age\": 25.5}\n",
+        "output": "invalid"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does function calling return?",
+      "options": [
+        "A trained model",
+        "A database row",
+        "Free-form text only",
+        "A function name and arguments as JSON"
+      ],
+      "answer": 3,
+      "explanation": "Function calling returns the function name and arguments in structured JSON for the program to execute."
+    },
+    {
+      "type": "scenario",
+      "question": "A model returns structured JSON but one required field is missing. What should the program do?",
+      "options": [
+        "Ignore the missing field",
+        "Parse defensively, validate, and retry or fall back",
+        "Guess a value for the field",
+        "Send the raw text to the user"
+      ],
+      "answer": 1,
+      "explanation": "Never trust model output; validate required fields and handle invalid responses gracefully."
+    },
+    {
+      "type": "concept",
+      "question": "What is native JSON mode in an LLM API?",
+      "options": [
+        "A mode that trains on JSON data",
+        "A mode that deletes non-JSON responses",
+        "A mode that only returns JSON text",
+        "A mode that forces valid JSON output"
+      ],
+      "answer": 3,
+      "explanation": "Native JSON mode constrains the model to produce syntactically valid JSON."
+    },
+    {
+      "type": "scenario",
+      "question": "You want a support bot to collect name, email and issue type from a chat. Which approach is best?",
+      "options": [
+        "Ask the model for free text and parse with regex",
+        "Use structured output with a JSON schema",
+        "Store the whole chat as one string",
+        "Ask the user to email separately"
+      ],
+      "answer": 1,
+      "explanation": "Structured output gives predictable fields the program can read directly."
+    },
+    {
+      "type": "concept",
+      "question": "Who executes the function chosen by the model in function calling?",
+      "options": [
+        "The API provider",
+        "The user's browser",
+        "The model",
+        "The program/backend"
+      ],
+      "answer": 3,
+      "explanation": "The model only returns the name and arguments; the program runs the function."
+    }
+  ]
+}

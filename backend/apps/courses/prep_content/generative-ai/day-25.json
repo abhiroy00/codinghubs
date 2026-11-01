@@ -1,0 +1,216 @@
+{
+  "day": 25,
+  "title": "Multimodal AI Fundamentals",
+  "module": "Multimodal AI",
+  "level": "Advanced",
+  "objectives": [
+    "Explain what multimodal AI is and what modalities it can handle.",
+    "Describe how a model processes text and images together.",
+    "Explain embeddings for different modalities in a shared space.",
+    "Name real multimodal use cases such as image captioning and visual QA.",
+    "Discuss limitations and safety of multimodal models."
+  ],
+  "definition": "Multimodal AI is a model that understands and generates more than one type of content, such as text, images, audio and video. A multimodal model can take an image and a text question as input and answer in text, or generate an image from a text prompt. It uses shared embeddings so different modalities can be compared and combined.",
+  "theory": [
+    {
+      "heading": "What multimodal means",
+      "body": "Modality is a form of data: text, image, audio or video. A multimodal model accepts and/or produces more than one modality. For example, a vision-language model takes an image plus a text question and returns a text answer. A text-to-image model takes text and returns an image.",
+      "points": [
+        "Modality: text, image, audio or video.",
+        "Multimodal: more than one modality in or out.",
+        "Example: image plus question in, text answer out."
+      ]
+    },
+    {
+      "heading": "Processing text and images together",
+      "body": "A vision-language model encodes the image into visual tokens and the text into text tokens, then processes them together through a Transformer. The model learns associations between visual features and words, so it can answer questions about the image.",
+      "points": [
+        "Images become visual tokens.",
+        "Text becomes text tokens.",
+        "A Transformer processes both together."
+      ]
+    },
+    {
+      "heading": "Shared embedding space",
+      "body": "Models such as CLIP embed images and text into the same vector space. An image of a dog and the text 'a dog' have nearby vectors, which enables image search by text, zero-shot classification and cross-modal retrieval.",
+      "points": [
+        "Images and text share one vector space.",
+        "Similar meanings are close regardless of modality.",
+        "Enables cross-modal search and classification."
+      ]
+    },
+    {
+      "heading": "Multimodal use cases",
+      "body": "Image captioning describes a picture in text. Visual question answering answers questions about an image. Document understanding reads invoices or forms. Text-to-image creates pictures from prompts. These power accessibility tools, e-commerce and design assistants.",
+      "points": [
+        "Image captioning: text from an image.",
+        "Visual QA: answer questions about images.",
+        "Document understanding: extract fields from scanned forms.",
+        "Text-to-image: generate images from prompts."
+      ]
+    },
+    {
+      "heading": "Limitations and safety",
+      "body": "Multimodal models can misread images, hallucinate details, or be biased. They may not handle tiny text, rare objects or medical images reliably. Safety includes not processing private photos without consent and not generating harmful images.",
+      "points": [
+        "Models can misread or hallucinate visual content.",
+        "Tiny text and rare objects are hard.",
+        "Consent and harm rules apply to images too."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Visual question answering",
+    "body": "A user uploads a photo of a restaurant menu and asks 'Is there a vegan dish under 300 rupees?' The model reads the menu image, finds the vegan section and prices, and answers yes or no with the dish name.",
+    "code": {
+      "language": "text",
+      "source": "Input: [menu image] + 'Is there a vegan dish under 300 rupees?'\nModel sees the image and text together.\nOutput: Yes, the grilled vegetable sandwich is 250 rupees and is vegan."
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Accessibility",
+      "description": "Describe images for users with vision impairment."
+    },
+    {
+      "title": "E-commerce",
+      "description": "Search products by uploading a photo or describe items for listings."
+    },
+    {
+      "title": "Document processing",
+      "description": "Extract fields from invoices, receipts and forms."
+    },
+    {
+      "title": "Design",
+      "description": "Generate mockups and images from text descriptions."
+    }
+  ],
+  "demonstration": {
+    "description": "Show the same image with two different questions to demonstrate that the model combines image and text.",
+    "code": {
+      "language": "text",
+      "source": "Image: a photo of a red bicycle.\nQuestion A: 'What colour is the bicycle?' → Answer: Red.\nQuestion B: 'How many wheels does it have?' → Answer: Two."
+    },
+    "output": "The same image gives different answers depending on the text question."
+  },
+  "takeaways": [
+    "Multimodal AI handles more than one modality such as text, image, audio and video.",
+    "Vision-language models encode images and text into tokens and process them together.",
+    "Shared embedding spaces let images and text be compared (e.g. CLIP).",
+    "Use cases include captioning, visual QA, document understanding and image generation.",
+    "Multimodal models can hallucinate and need safety guardrails.",
+    "Verify important visual answers, especially for medical or legal images."
+  ],
+  "interview": [
+    {
+      "question": "What is multimodal AI?",
+      "answer": "AI that understands or generates more than one modality, such as text, images, audio or video.",
+      "explanation": "Give an example like a vision-language model."
+    },
+    {
+      "question": "How does a vision-language model work?",
+      "answer": "It encodes the image into visual tokens and the text into text tokens, then processes both together through a Transformer.",
+      "explanation": "The model learns associations between visual features and words."
+    },
+    {
+      "question": "What is a shared embedding space?",
+      "answer": "A vector space where images and text are embedded together, so similar meanings are close regardless of modality.",
+      "explanation": "CLIP is a common example."
+    },
+    {
+      "question": "Name a multimodal use case.",
+      "answer": "Visual question answering: the model answers a text question about an uploaded image.",
+      "explanation": "Other examples: captioning, document understanding, text-to-image."
+    },
+    {
+      "question": "What is a limitation of multimodal models?",
+      "answer": "They can misread images or hallucinate details, especially tiny text, rare objects or medical images, so important answers should be verified.",
+      "explanation": "Safety and consent rules apply to images too."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design a multimodal use case",
+    "difficulty": "Intermediate",
+    "objective": "Plan how a multimodal model would be used in a real scenario, including inputs, outputs and safeguards.",
+    "statement": "Choose a scenario such as helping a user identify a product from a photo, reading a prescription, or generating an illustration. Describe: (1) the input modalities, (2) the output modality, (3) what the model must do, (4) one failure mode and how to handle it, and (5) one safety or consent consideration.",
+    "deliverable": "A written design covering inputs, output, model task, failure mode and safety.",
+    "steps": [
+      "Choose a real-world multimodal scenario.",
+      "State the input and output modalities.",
+      "Describe what the model must do.",
+      "Name a failure mode and a handling approach.",
+      "State a safety or consent consideration."
+    ],
+    "checklist": [
+      "Input modality named.",
+      "Output modality named.",
+      "Model task described.",
+      "Failure mode and handling included.",
+      "Safety or consent addressed."
+    ],
+    "sample_answer": "Scenario: read a medicine label from a photo. Input: image of label; output: text with dosage and expiry. The model extracts text and answers dosage questions. Failure: small print misread; ask the user to retake a clearer photo. Safety: do not give medical advice; tell the user to confirm with a pharmacist."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is a modality in AI?",
+      "options": [
+        "A form of data such as text, image or audio",
+        "A training method",
+        "A loss function",
+        "A type of model"
+      ],
+      "answer": 0,
+      "explanation": "A modality is a form of data: text, image, audio or video."
+    },
+    {
+      "type": "concept",
+      "question": "What does a vision-language model take as input?",
+      "options": [
+        "An image and text together",
+        "Audio only",
+        "Only text",
+        "Only images"
+      ],
+      "answer": 0,
+      "explanation": "A vision-language model combines an image with a text question or instruction."
+    },
+    {
+      "type": "concept",
+      "question": "What is a shared embedding space used for?",
+      "options": [
+        "To reduce temperature",
+        "To store model weights",
+        "To compare images and text in one vector space",
+        "To increase the context window"
+      ],
+      "answer": 2,
+      "explanation": "Images and text in the same space can be compared, enabling cross-modal search."
+    },
+    {
+      "type": "scenario",
+      "question": "A multimodal model misreads a price on a receipt. What should you do?",
+      "options": [
+        "Trust the model",
+        "Verify the important value manually",
+        "Raise the temperature",
+        "Ignore the image"
+      ],
+      "answer": 1,
+      "explanation": "Multimodal models can hallucinate; verify important values, especially financial or medical ones."
+    },
+    {
+      "type": "concept",
+      "question": "Which is a multimodal use case?",
+      "options": [
+        "Visual question answering about an image",
+        "Numerical regression only",
+        "Text-to-text translation only",
+        "Text classification only"
+      ],
+      "answer": 0,
+      "explanation": "Visual question answering combines an image and a text question."
+    }
+  ]
+}

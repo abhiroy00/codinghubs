@@ -1,0 +1,195 @@
+{
+  "day": 7,
+  "title": "Azure VM Scale Sets",
+  "module": "Cloud and Azure foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain the key ideas behind Azure VM Scale Sets.",
+    "Describe why Azure VM Scale Sets matters in Azure Administrator (AZ-104).",
+    "Apply Azure VM Scale Sets to a realistic scenario.",
+    "Identify common pitfalls and how to avoid them.",
+    "Answer interview questions about Azure VM Scale Sets."
+  ],
+  "definition": "Azure VM Scale Sets is a core concept in Azure Administrator (AZ-104). It refers to the techniques, principles and practices that let a practitioner work effectively with this topic in real systems.",
+  "theory": [
+    {
+      "heading": "What Azure VM Scale Sets is",
+      "body": "Azure VM Scale Sets describes the methods and patterns used within Azure Administrator (AZ-104) to achieve reliable, maintainable results. Understanding it is the foundation for everything built later in this course.",
+      "points": [
+        "Azure VM Scale Sets is a named, repeatable concept.",
+        "It has a clear purpose and scope.",
+        "It connects to other course topics."
+      ]
+    },
+    {
+      "heading": "Why Azure VM Scale Sets matters",
+      "body": "Without Azure VM Scale Sets, systems built with Azure Administrator (AZ-104) are harder to debug, extend and operate. Teams that master this topic ship fewer defects and communicate more clearly about design decisions.",
+      "points": [
+        "Improves reliability and maintainability.",
+        "Reduces debugging time.",
+        "Supports team alignment."
+      ]
+    },
+    {
+      "heading": "How Azure VM Scale Sets works",
+      "body": "The mechanism behind Azure VM Scale Sets follows a repeatable sequence: understand the requirement, apply the principle, verify the result and refine based on feedback. Each step has checks that keep the work on track.",
+      "points": [
+        "Start from the requirement.",
+        "Apply the core principle of Azure VM Scale Sets.",
+        "Verify the outcome.",
+        "Refine using feedback."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations of Azure VM Scale Sets",
+      "body": "Azure VM Scale Sets offers structure, clarity and consistency, but it also adds overhead and may be overkill for trivial tasks. Use it when the benefit in reliability outweighs the added effort.",
+      "points": [
+        "Advantages: structure, clarity, consistency.",
+        "Limitations: added overhead, not always needed.",
+        "Apply judiciously."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Azure VM Scale Sets in practice",
+    "body": "A concrete illustration of Azure VM Scale Sets shows the principle applied to a small, realistic input so the learner can see cause and effect before scaling up.",
+    "code": {
+      "language": "python",
+      "source": "# Example illustrating Azure VM Scale Sets\nprint('See the worked walk-through above.')"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Production systems",
+      "description": "Applied in real Azure Administrator (AZ-104) systems to keep behaviour predictable."
+    },
+    {
+      "title": "Debugging",
+      "description": "Helps identify where Azure VM Scale Sets-related assumptions break down."
+    },
+    {
+      "title": "Interviews",
+      "description": "A common topic for Azure Administrator (AZ-104) interview questions."
+    }
+  ],
+  "demonstration": {
+    "description": "A short walk-through of Azure VM Scale Sets with expected input and output, showing the principle end to end.",
+    "code": {
+      "language": "python",
+      "source": "# Demonstration of Azure VM Scale Sets\nprint('walkthrough output')"
+    },
+    "output": "expected demonstration output"
+  },
+  "takeaways": [
+    "Azure VM Scale Sets is a foundational concept in Azure Administrator (AZ-104).",
+    "It follows a clear, repeatable mechanism.",
+    "It improves reliability when applied appropriately.",
+    "Know the advantages and limitations before using it."
+  ],
+  "interview": [
+    {
+      "question": "What is Azure VM Scale Sets?",
+      "answer": "Azure VM Scale Sets is a core concept in Azure Administrator (AZ-104) that describes the techniques used to work effectively with this area.",
+      "explanation": "Give a concise, accurate definition and one example."
+    },
+    {
+      "question": "Why is Azure VM Scale Sets important?",
+      "answer": "It improves reliability, maintainability and clarity in Azure Administrator (AZ-104) systems.",
+      "explanation": "Connect to a concrete benefit."
+    },
+    {
+      "question": "What are the limitations of Azure VM Scale Sets?",
+      "answer": "It adds overhead and may be unnecessary for simple cases; apply it judiciously.",
+      "explanation": "Show balanced judgment."
+    },
+    {
+      "question": "How would you explain Azure VM Scale Sets to a junior teammate?",
+      "answer": "Start with the definition, show a small example, then walk through a realistic use case and its trade-offs.",
+      "explanation": "Structure the explanation from simple to applied."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Apply: Azure VM Scale Sets",
+    "difficulty": "Basic",
+    "objective": "Apply Azure VM Scale Sets through a practical exercise.",
+    "statement": "Complete a practical exercise that demonstrates Azure VM Scale Sets. Describe your approach, the steps you took and how you verified the result.",
+    "deliverable": "A short written answer or artefact showing your work on Azure VM Scale Sets.",
+    "steps": [
+      "Restate the goal of Azure VM Scale Sets in your own words.",
+      "List the inputs, steps and expected outputs for Azure VM Scale Sets.",
+      "Work through one concrete example by hand or with code.",
+      "Note one edge case and how you handle it.",
+      "Write a one-paragraph summary of what you learned."
+    ],
+    "checklist": [
+      "The deliverable addresses the stated goal.",
+      "Steps are concrete and reproducible.",
+      "At least one edge case is identified and handled.",
+      "The summary reflects genuine understanding."
+    ],
+    "sample_answer": "Sample answer: Explain Azure VM Scale Sets with a definition, one worked example, an edge case and a real-world use case. The answer shows the learner can apply Azure VM Scale Sets in Azure Administrator (AZ-104)."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is Azure VM Scale Sets?",
+      "options": [
+        "A hardware device",
+        "A programming language",
+        "The core idea of Azure VM Scale Sets",
+        "An unrelated concept"
+      ],
+      "answer": 2,
+      "explanation": "Azure VM Scale Sets is defined as the core idea above."
+    },
+    {
+      "type": "concept",
+      "question": "Why is Azure VM Scale Sets important?",
+      "options": [
+        "It improves reliability",
+        "It slows things down",
+        "It is never used",
+        "It is only theory"
+      ],
+      "answer": 0,
+      "explanation": "Azure VM Scale Sets improves reliability and clarity."
+    },
+    {
+      "type": "scenario",
+      "question": "A system ignores Azure VM Scale Sets. What is the likely result?",
+      "options": [
+        "No effect",
+        "Lower cost",
+        "More defects",
+        "Faster performance"
+      ],
+      "answer": 2,
+      "explanation": "Ignoring Azure VM Scale Sets leads to more defects."
+    },
+    {
+      "type": "output",
+      "question": "What does a correct Azure VM Scale Sets implementation produce?",
+      "options": [
+        "A reliable result",
+        "Random output",
+        "An error",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explanation": "A correct implementation produces a reliable result."
+    },
+    {
+      "type": "concept",
+      "question": "Which is a limitation of Azure VM Scale Sets?",
+      "options": [
+        "Always required",
+        "No cost",
+        "Added overhead",
+        "No benefit"
+      ],
+      "answer": 2,
+      "explanation": "Azure VM Scale Sets adds overhead but brings reliability."
+    }
+  ]
+}

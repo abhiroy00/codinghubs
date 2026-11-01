@@ -1,0 +1,239 @@
+{
+  "day": 3,
+  "title": "HTML Semantics and Document Structure",
+  "module": "The web platform",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what semantic HTML is and why it matters for accessibility, SEO and maintenance.",
+    "Use landmark elements (header, nav, main, article, section, aside, footer) correctly.",
+    "Build a logical heading hierarchy and connect form inputs to labels.",
+    "Spot 'div soup' and non-semantic patterns in AI-generated markup.",
+    "Write a program that checks a heading outline for skipped levels."
+  ],
+  "definition": "Semantic HTML means choosing elements for what content is, not how it looks: a navigation menu goes in nav, the primary content in main, a clickable action in button, and section titles in h1–h6. Browsers, search engines and assistive technologies such as screen readers use these meanings to understand and navigate the page. Styling is applied separately with CSS.",
+  "theory": [
+    {
+      "heading": "Why semantics matter",
+      "body": "A screen reader user can jump between headings, landmarks and form fields only if the markup exposes them. Search engines use headings and structure to understand topics. Developers read semantic markup faster because element names describe intent. AI assistants often generate nested divs with click handlers because that pattern is common in training data, so reviewing generated markup for semantics is a real interview topic.",
+      "points": [
+        "Accessibility: built-in roles, keyboard behaviour and names come free with native elements.",
+        "SEO: clear structure helps crawlers understand the page.",
+        "Maintainability: <nav> says more than <div class=\"top-thing\">."
+      ]
+    },
+    {
+      "heading": "Landmarks and sectioning elements",
+      "body": "Landmark elements divide a page into regions that assistive technology can list and jump to. header and footer hold introductory and closing content; nav holds major navigation links; main holds the unique primary content and should appear once per page; aside holds tangential content; article is self-contained content that could stand alone, such as a blog post or a product card; section groups related content that has its own heading.",
+      "points": [
+        "Use one visible <main> per page.",
+        "<article> for independently distributable items; <section> for thematic groups with a heading.",
+        "Use <div> only when no semantic element fits, typically for styling wrappers."
+      ]
+    },
+    {
+      "heading": "Headings form an outline",
+      "body": "Headings h1 to h6 create the document outline that screen reader users navigate. Start with a single h1 describing the page, and go down one level at a time: an h2 followed directly by an h4 skips a level and suggests missing structure. Choose heading levels by structure, never by font size; change the size with CSS instead.",
+      "points": [
+        "One h1 per page is the widely recommended convention.",
+        "Do not skip levels when going deeper (h2 -> h3, not h2 -> h4).",
+        "Going back up (h4 -> h2) is fine when a new section starts."
+      ]
+    },
+    {
+      "heading": "Interactive elements and forms",
+      "body": "Use <button> for actions and <a href> for navigation. A div with an onclick handler is not focusable with the keyboard and is not announced as a button. Every form control needs an accessible name, usually from a <label for> that matches the input's id. Native input types (email, tel, number, date) give mobile keyboards and basic validation for free.",
+      "points": [
+        "<button type=\"submit\"> inside <form> submits on Enter.",
+        "<label for=\"email\"> + <input id=\"email\" type=\"email\">.",
+        "Images need meaningful alt text, or alt=\"\" if decorative."
+      ]
+    },
+    {
+      "heading": "The document skeleton",
+      "body": "Every page should declare <!DOCTYPE html> for standards mode, set lang on the html element so screen readers pronounce text correctly, declare UTF-8 encoding and include a responsive viewport meta tag. A descriptive <title> appears in tabs and search results. These lines are short but frequently missing from quick generated snippets.",
+      "points": [
+        "<html lang=\"en\"> or the page's language.",
+        "<meta charset=\"utf-8\"> and <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">.",
+        "A unique, descriptive <title> per page."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Refactoring generated 'div soup' into semantic HTML",
+    "body": "An assistant generated a header built from divs, with a clickable div as the menu button. The refactor uses header, nav, a real button and a list of links. Visual appearance can stay identical through CSS, but keyboard users can now tab to the button, screen readers announce a navigation landmark, and the code explains itself.",
+    "code": {
+      "language": "html",
+      "source": "<!-- Before -->\n<div class=\"top\">\n  <div class=\"logo\">Coding Hub</div>\n  <div class=\"menu-btn\" onclick=\"toggleMenu()\">Menu</div>\n  <div class=\"links\"><div onclick=\"go('/courses')\">Courses</div></div>\n</div>\n\n<!-- After -->\n<header class=\"top\">\n  <a href=\"/\" class=\"logo\">Coding Hub</a>\n  <button type=\"button\" aria-expanded=\"false\" aria-controls=\"site-nav\">Menu</button>\n  <nav id=\"site-nav\" aria-label=\"Main\">\n    <ul>\n      <li><a href=\"/courses\">Courses</a></li>\n    </ul>\n  </nav>\n</header>"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Accessible landing pages",
+      "description": "Landmarks and headings let screen reader users skip directly to pricing or contact sections."
+    },
+    {
+      "title": "Content sites and blogs",
+      "description": "article, time and heading structure help search engines and feed readers understand posts."
+    },
+    {
+      "title": "Forms for sign-up and checkout",
+      "description": "Labels, input types and real buttons improve completion rates on mobile and with assistive tech."
+    },
+    {
+      "title": "Reviewing AI-generated UI",
+      "description": "A quick semantics checklist catches clickable divs, missing labels and skipped headings before merge."
+    }
+  ],
+  "demonstration": {
+    "description": "A minimal, semantic page skeleton. Open it in a browser and use a screen reader's landmarks list or the browser's accessibility tree to see header, navigation, main and footer regions.",
+    "code": {
+      "language": "html",
+      "source": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Vibe Coding Course | Coding Hub</title>\n</head>\n<body>\n  <header><a href=\"/\">Coding Hub</a></header>\n  <nav aria-label=\"Main\"><a href=\"/courses\">Courses</a></nav>\n  <main>\n    <h1>Vibe Coding with AI</h1>\n    <section>\n      <h2>What you will learn</h2>\n      <p>Prompting, reviewing and shipping AI-assisted code.</p>\n    </section>\n    <form>\n      <label for=\"email\">Email</label>\n      <input id=\"email\" type=\"email\" required>\n      <button type=\"submit\">Join waitlist</button>\n    </form>\n  </main>\n  <footer><p>&copy; Coding Hub</p></footer>\n</body>\n</html>"
+    },
+    "output": "Accessibility tree (simplified): banner, navigation \"Main\", main -> heading level 1 \"Vibe Coding with AI\" -> heading level 2 \"What you will learn\" -> textbox \"Email\" -> button \"Join waitlist\", contentinfo."
+  },
+  "takeaways": [
+    "Choose elements for meaning; style with CSS.",
+    "Landmarks (header, nav, main, footer) make pages navigable for assistive technology.",
+    "Use one h1 and do not skip heading levels when going deeper.",
+    "Use <button> for actions and <a href> for navigation, never clickable divs.",
+    "Every input needs a label; every meaningful image needs alt text.",
+    "Review AI-generated markup for div soup; it is a common weakness."
+  ],
+  "interview": [
+    {
+      "question": "What is semantic HTML?",
+      "answer": "Using HTML elements according to the meaning of the content, such as nav for navigation, button for actions and h1–h6 for headings, rather than generic divs and spans styled to look right.",
+      "explanation": "Add the benefits: accessibility, SEO and readable code."
+    },
+    {
+      "question": "What is the difference between section, article and div?",
+      "answer": "article is self-contained content that makes sense on its own, like a post or a product card. section groups thematically related content, normally with a heading. div has no meaning and is used for layout or styling hooks when nothing else fits.",
+      "explanation": "Interviewers like the 'could it be syndicated on its own?' test for article."
+    },
+    {
+      "question": "Why is <div onclick> a bad substitute for <button>?",
+      "answer": "A div is not focusable by keyboard, does not respond to Enter or Space, and is not announced as a button by screen readers. Recreating that needs tabindex, a role and key handlers, while <button> provides it all natively.",
+      "explanation": "This is the most common accessibility flaw in generated UIs, so mention you check for it in reviews."
+    },
+    {
+      "question": "How should headings be structured on a page?",
+      "answer": "One h1 that describes the page, then h2 for main sections, h3 for subsections and so on, without skipping levels when going deeper. Levels reflect structure; visual size is controlled by CSS.",
+      "explanation": "Mention that screen reader users navigate by headings, which is why the outline matters."
+    },
+    {
+      "question": "What would you check when reviewing an AI-generated form?",
+      "answer": "Each input has an associated label, appropriate input types and autocomplete attributes, a real submit button inside a form element, visible error messages tied to fields, and server-side validation in addition to any HTML validation.",
+      "explanation": "Linking client-side semantics to server-side validation shows full-stack awareness."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Check a page's heading outline",
+    "difficulty": "Basic",
+    "objective": "Apply heading-hierarchy rules by building an outline and reporting structural problems.",
+    "statement": "Each input line is a heading such as 'h2 Courses'. Print the outline: each heading on its own line as '- <text>' indented by two spaces per level below h1. Then report issues in document order: the first heading is not h1 ('first heading is hN, expected h1'), a heading goes deeper by more than one level compared with the previous heading ('skipped from hA to hB at '<text>''), and every h1 after the first ('extra h1 '<text>''). Print each issue as 'Issue: <message>', then 'Result: OK' or 'Result: <n> issue(s)'.",
+    "language": "javascript",
+    "input_format": "One heading per line: h1–h6 (case-insensitive), a space, then the heading text.",
+    "output_format": "The indented outline, then zero or more 'Issue: ...' lines, then the Result line.",
+    "example": {
+      "input": "h1 Store\nh2 Products\nh4 Pricing\nh1 Footer title\n",
+      "output": "- Store\n  - Products\n      - Pricing\n- Footer title\nIssue: skipped from h2 to h4 at 'Pricing'\nIssue: extra h1 'Footer title'\nResult: 2 issue(s)"
+    },
+    "constraints": [
+      "1 to 200 headings; ignore blank lines.",
+      "Going up any number of levels (for example h4 to h2) is allowed.",
+      "Trim the heading text."
+    ],
+    "starter": "const items = stdin.trim().split('\\n').map(l => l.trim()).filter(Boolean).map(l => {\n  const m = l.match(/^h([1-6])\\s+(.*)$/i);\n  return { level: Number(m[1]), text: m[2].trim() };\n});\n\n// TODO: print the outline, collect issues, print the result\n",
+    "solution": "const items = stdin.trim().split('\\n').map(l => l.trim()).filter(Boolean).map(l => {\n  const m = l.match(/^h([1-6])\\s+(.*)$/i);\n  return { level: Number(m[1]), text: m[2].trim() };\n});\nconst issues = [];\nlet prev = 0;\nlet h1Count = 0;\nitems.forEach((h, i) => {\n  console.log('  '.repeat(h.level - 1) + '- ' + h.text);\n  if (i === 0 && h.level !== 1) issues.push(`first heading is h${h.level}, expected h1`);\n  if (i > 0 && h.level > prev + 1) issues.push(`skipped from h${prev} to h${h.level} at '${h.text}'`);\n  if (h.level === 1) {\n    h1Count++;\n    if (h1Count > 1) issues.push(`extra h1 '${h.text}'`);\n  }\n  prev = h.level;\n});\nissues.forEach(msg => console.log('Issue: ' + msg));\nconsole.log(issues.length ? `Result: ${issues.length} issue(s)` : 'Result: OK');\n",
+    "explanation": [
+      "Parse each line with a regular expression into a level (1–6) and text.",
+      "Print the outline with '  '.repeat(level - 1) so nesting is visible.",
+      "Only the first heading is checked against h1; later headings are compared with the previous level.",
+      "A jump deeper by more than one level is a skip; moving back up is allowed.",
+      "Count h1 elements and flag every one after the first, then print the summary."
+    ],
+    "tests": [
+      {
+        "input": "h1 Coding Hub\nh2 Courses\nh3 Vibe Coding\nh2 Contact\n",
+        "output": "- Coding Hub\n  - Courses\n    - Vibe Coding\n  - Contact\nResult: OK"
+      },
+      {
+        "input": "h1 Store\nh2 Products\nh4 Pricing\nh1 Footer title\n",
+        "output": "- Store\n  - Products\n      - Pricing\n- Footer title\nIssue: skipped from h2 to h4 at 'Pricing'\nIssue: extra h1 'Footer title'\nResult: 2 issue(s)"
+      },
+      {
+        "input": "h3 Intro\nh4 Detail\n",
+        "output": "    - Intro\n      - Detail\nIssue: first heading is h3, expected h1\nResult: 1 issue(s)"
+      },
+      {
+        "input": "H1 Title\n\nH2 A\nH3 B\nH2   C  \n",
+        "output": "- Title\n  - A\n    - B\n  - C\nResult: OK"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which element should wrap the primary, unique content of a page?",
+      "options": [
+        "<main>",
+        "<section>",
+        "<aside>",
+        "<div id=\"content\">"
+      ],
+      "answer": 0,
+      "explanation": "<main> is the landmark for the page's primary content and should appear once."
+    },
+    {
+      "type": "code",
+      "question": "What is the main accessibility problem with this markup?",
+      "code": "<div class=\"btn\" onclick=\"save()\">Save</div>",
+      "options": [
+        "It cannot be focused or activated with the keyboard and is not announced as a button",
+        "The class name is too short",
+        "onclick only works in older browsers",
+        "Divs cannot contain text"
+      ],
+      "answer": 0,
+      "explanation": "Native <button> provides focus, keyboard activation and the button role; a div provides none of these."
+    },
+    {
+      "type": "scenario",
+      "question": "A designer wants a sub-section title to look small. The structure calls for an h2. What should you do?",
+      "options": [
+        "Use a bold <span> instead of a heading",
+        "Keep the h2 and reduce its size with CSS",
+        "Use an <h2> inside a <small> element",
+        "Use an h5 because it is smaller"
+      ],
+      "answer": 1,
+      "explanation": "Heading level reflects structure; visual size is a CSS concern."
+    },
+    {
+      "type": "concept",
+      "question": "How is an input most reliably given an accessible name?",
+      "options": [
+        "A title attribute on the form",
+        "Bold text placed next to the input",
+        "A placeholder attribute",
+        "A <label> whose for attribute matches the input's id"
+      ],
+      "answer": 3,
+      "explanation": "An associated label provides a persistent accessible name and enlarges the click target. Placeholders disappear when typing."
+    },
+    {
+      "type": "scenario",
+      "question": "A product listing shows many independent product cards that could each be shared on their own. Which element suits each card?",
+      "options": [
+        "<article>",
+        "<nav>",
+        "<footer>",
+        "<aside>"
+      ],
+      "answer": 0,
+      "explanation": "<article> represents self-contained content that makes sense independently, like a product card or post."
+    }
+  ]
+}

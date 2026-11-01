@@ -1,0 +1,252 @@
+{
+  "day": 1,
+  "title": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+  "module": "Web and JavaScript foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what happens between typing a URL and seeing a rendered page.",
+    "Describe the structure of an HTTP request and response: method, path, headers, body and status code.",
+    "Distinguish safe and idempotent HTTP methods and explain why the difference matters for retries.",
+    "Group status codes into their five classes and choose the right one for common situations.",
+    "Parse a raw HTTP request in JavaScript."
+  ],
+  "definition": "The web is a client-server system: a client such as a browser sends an HTTP request to a server, and the server returns an HTTP response. HTTP is a stateless, text-based application protocol (binary-framed in HTTP/2 and HTTP/3) that runs over TCP or QUIC, usually wrapped in TLS as HTTPS. DNS translates a human-readable domain name into the IP address the client connects to.",
+  "theory": [
+    {
+      "heading": "From URL to page",
+      "body": "When a user opens https://codinghub.in/courses, the browser first resolves the domain to an IP address through DNS (checking its own cache, the operating system, then a recursive resolver). It opens a TCP connection (or a QUIC connection for HTTP/3), performs a TLS handshake to encrypt the channel and verify the server's certificate, and sends an HTTP request. The server returns HTML, the browser parses it, discovers CSS, JavaScript and images, and fetches those with further requests before rendering.",
+      "points": [
+        "DNS: domain name to IP address, cached according to its TTL.",
+        "TCP/QUIC: a reliable connection to the server's IP and port (443 for HTTPS).",
+        "TLS: encryption plus certificate-based server identity.",
+        "HTTP: the request/response exchange itself.",
+        "Rendering: HTML parsed into the DOM, CSS into the CSSOM, then layout and paint."
+      ]
+    },
+    {
+      "heading": "Anatomy of a request and a response",
+      "body": "A request has a method (GET, POST, PUT, PATCH, DELETE), a target path with an optional query string, headers (metadata such as Host, Content-Type, Authorization, Cookie) and an optional body. A response has a status code, headers (Content-Type, Cache-Control, Set-Cookie) and a body. Headers are case-insensitive; the Host header lets one IP address serve many domains.",
+      "points": [
+        "Request line: METHOD /path?query HTTP/1.1",
+        "Headers: Name: value, one per line, ended by a blank line.",
+        "Body: JSON, form data or a file; its type is declared in Content-Type.",
+        "Response: status line, headers, blank line, body."
+      ]
+    },
+    {
+      "heading": "Methods: safe and idempotent",
+      "body": "A safe method does not change server state (GET, HEAD, OPTIONS). An idempotent method has the same effect whether it is sent once or many times (the safe methods plus PUT and DELETE). POST is neither, which is why a network retry of a POST can create two orders or charge a card twice. Clients and proxies retry idempotent requests automatically; for POST you need an idempotency key or deduplication on the server.",
+      "points": [
+        "GET reads, POST creates or triggers actions, PUT replaces, PATCH partially updates, DELETE removes.",
+        "Idempotent does not mean the same response: a second DELETE may return 404, but the state is the same.",
+        "Calling an LLM endpoint is usually a POST, so retries must be designed deliberately."
+      ]
+    },
+    {
+      "heading": "Status code classes",
+      "body": "Status codes tell the client what happened without parsing the body. 1xx is informational, 2xx success, 3xx redirection, 4xx a client error the client should fix, and 5xx a server error the client may retry later. Using precise codes lets front ends, monitoring and load balancers behave correctly.",
+      "points": [
+        "200 OK, 201 Created, 204 No Content.",
+        "301/308 permanent redirect, 302/307 temporary, 304 Not Modified (cache still valid).",
+        "400 Bad Request, 401 Unauthenticated, 403 Forbidden, 404 Not Found, 409 Conflict, 422 validation failed, 429 Too Many Requests.",
+        "500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout."
+      ]
+    },
+    {
+      "heading": "Statelessness, cookies and the AI web app",
+      "body": "HTTP itself remembers nothing between requests, so state is carried explicitly: cookies, tokens in the Authorization header, or IDs in the URL. A typical AI web app has a React client, an API server that holds secrets and talks to the database and the LLM provider, and a CDN for static files. Understanding this request flow is the base for later topics such as streaming, authentication and rate limiting.",
+      "points": [
+        "Stateless servers scale horizontally: any instance can handle any request.",
+        "The browser never calls the LLM provider directly with a secret key; the back end does.",
+        "HTTP/2 multiplexes many requests on one connection; HTTP/3 runs over QUIC (UDP)."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A chat request and its response",
+    "body": "The React front end sends the user's message to its own back end. The POST carries JSON and a bearer token. The server answers 201 with JSON. Notice the blank line separating headers from the body and the Content-Type header describing the body format.",
+    "code": {
+      "language": "http",
+      "source": "POST /api/chats/17/messages HTTP/1.1\nHost: app.codinghub.in\nContent-Type: application/json\nAuthorization: Bearer eyJhbGciOi...\n\n{\"content\": \"Explain closures in JavaScript\"}\n\nHTTP/1.1 201 Created\nContent-Type: application/json\nLocation: /api/chats/17/messages/90\n\n{\"id\": 90, \"role\": \"user\", \"content\": \"Explain closures in JavaScript\"}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Debugging with DevTools",
+      "description": "The Network tab shows every request's method, status, headers, timing and payload, which is the first place to look when a feature fails."
+    },
+    {
+      "title": "Designing safe retries",
+      "description": "Knowing which methods are idempotent tells you which failed calls a client can repeat automatically and which need idempotency keys."
+    },
+    {
+      "title": "Caching and performance",
+      "description": "Cache-Control, ETag and 304 responses let browsers and CDNs avoid downloading unchanged files."
+    },
+    {
+      "title": "Error handling in the UI",
+      "description": "A front end shows 'please sign in' for 401, 'not allowed' for 403 and 'try again shortly' for 429 or 503."
+    }
+  ],
+  "demonstration": {
+    "description": "Use fetch from the browser console to call a public JSON endpoint and inspect the parts of the response. The status, headers and body are separate pieces of the HTTP message.",
+    "code": {
+      "language": "javascript",
+      "source": "const res = await fetch('https://jsonplaceholder.typicode.com/todos/1');\nconsole.log(res.status, res.ok);                  // status code and 2xx check\nconsole.log(res.headers.get('content-type'));      // header lookup is case-insensitive\nconst data = await res.json();                     // parse the body\nconsole.log(data.title);"
+    },
+    "output": "200 true\napplication/json; charset=utf-8\ndelectus aut autem"
+  },
+  "takeaways": [
+    "DNS resolves the name, TCP/QUIC connects, TLS secures, HTTP exchanges the request and response.",
+    "A request is method + target + headers + optional body; a response is status + headers + body.",
+    "Safe methods do not change state; idempotent methods can be repeated with the same effect.",
+    "POST is not idempotent, so retries need an idempotency key or server-side deduplication.",
+    "4xx means the client must change something; 5xx means the server failed and a retry may succeed.",
+    "HTTP is stateless; cookies and tokens carry identity between requests."
+  ],
+  "interview": [
+    {
+      "question": "What happens when you type a URL into the browser and press Enter?",
+      "answer": "The browser parses the URL, resolves the domain through DNS, opens a TCP (or QUIC) connection, performs a TLS handshake for HTTPS, sends an HTTP request, receives the response, then parses HTML, fetches sub-resources (CSS, JS, images) and renders the page.",
+      "explanation": "Interviewers want the ordered chain, not every detail. Mention caching at each layer (DNS cache, HTTP cache) and that rendering involves the DOM and CSSOM for extra credit."
+    },
+    {
+      "question": "What is the difference between GET and POST?",
+      "answer": "GET retrieves a resource, is safe and idempotent, sends parameters in the URL and can be cached and bookmarked. POST submits data in the body to create something or trigger an action; it is neither safe nor idempotent and is not cached by default.",
+      "explanation": "Avoid saying POST is 'more secure': both are visible to anyone without HTTPS. The real difference is semantics, idempotency and caching."
+    },
+    {
+      "question": "What is the difference between 401 and 403?",
+      "answer": "401 Unauthorized means the request is not authenticated: credentials are missing or invalid. 403 Forbidden means the server knows who you are but you lack permission for this resource.",
+      "explanation": "A strong answer adds the UI consequence: on 401 redirect to login or refresh the token; on 403 show an access-denied message, because logging in again will not help."
+    },
+    {
+      "question": "What does idempotent mean, and why does it matter for an API that calls an LLM?",
+      "answer": "An idempotent operation produces the same server state whether it runs once or many times. LLM calls are usually POSTs that cost money and may create records, so blind retries can double charges or duplicate messages. Use idempotency keys or deduplicate on the server before retrying.",
+      "explanation": "Linking HTTP semantics to cost and duplicate data shows you think about production behaviour, not just definitions."
+    },
+    {
+      "question": "Why is HTTP called stateless, and how do web apps keep users logged in?",
+      "answer": "Each request is independent and the server keeps no built-in memory of earlier requests. Apps carry state explicitly: a session ID in a cookie that maps to server-side data, or a signed token (such as a JWT) sent on every request.",
+      "explanation": "Mention that statelessness is what allows horizontal scaling behind a load balancer, which leads naturally into session storage choices (Day 14)."
+    },
+    {
+      "question": "What changed in HTTP/2 and HTTP/3?",
+      "answer": "HTTP/2 uses binary framing and multiplexes many concurrent streams over one TCP connection, with header compression. HTTP/3 runs over QUIC on UDP, which removes TCP head-of-line blocking and makes connection setup faster, especially on mobile networks.",
+      "explanation": "You do not need protocol internals; showing why multiplexing helps pages with many assets is enough."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Parse a raw HTTP request",
+    "difficulty": "Basic",
+    "objective": "Read the parts of an HTTP request the way a server framework does, and classify the method as safe and/or idempotent.",
+    "statement": "The input is a raw HTTP/1.1 request: a request line, header lines until a blank line, and an optional body. Print the method, the path without the query string, the decoded query parameters, the Host header and whether the method is safe and idempotent. Safe methods: GET, HEAD, OPTIONS. Idempotent methods: the safe ones plus PUT and DELETE.",
+    "language": "javascript",
+    "input_format": "Line 1: METHOD TARGET HTTP/1.1. Then zero or more 'Name: value' header lines, a blank line, and an optional body (ignored).",
+    "output_format": "Six lines:\nMethod: <method>\nPath: <path>\nQuery: <k=v; k=v> in original order, or 'none'\nHost: <host header value> or 'missing'\nSafe: yes|no\nIdempotent: yes|no",
+    "example": {
+      "input": "GET /api/courses?page=2&q=ai+tools HTTP/1.1\nHost: codinghub.in\nAccept: application/json\n\n",
+      "output": "Method: GET\nPath: /api/courses\nQuery: page=2; q=ai tools\nHost: codinghub.in\nSafe: yes\nIdempotent: yes"
+    },
+    "constraints": [
+      "Header names are case-insensitive (host, Host and HOST are the same header).",
+      "Query keys and values are URL-decoded; '+' means a space.",
+      "A parameter without '=' has an empty value (print 'key=')."
+    ],
+    "starter": "const lines = stdin.replace(/\\r/g, '').split('\\n');\nconst [method, target] = lines[0].trim().split(/\\s+/);\n\n// TODO: read headers until the blank line (store names in lowercase)\n// TODO: split the target into path and query, decode the query\n// TODO: print the six lines\n",
+    "solution": "const lines = stdin.replace(/\\r/g, '').split('\\n');\nconst [method, target] = lines[0].trim().split(/\\s+/);\n\nconst headers = {};\nfor (let i = 1; i < lines.length; i++) {\n  const line = lines[i];\n  if (line.trim() === '') break;\n  const idx = line.indexOf(':');\n  if (idx === -1) continue;\n  headers[line.slice(0, idx).trim().toLowerCase()] = line.slice(idx + 1).trim();\n}\n\nconst q = target.indexOf('?');\nconst path = q === -1 ? target : target.slice(0, q);\nconst query = q === -1 ? '' : target.slice(q + 1);\nconst decode = (s) => decodeURIComponent(s.replace(/\\+/g, ' '));\nconst pairs = query.split('&').filter(Boolean).map((part) => {\n  const eq = part.indexOf('=');\n  const key = eq === -1 ? part : part.slice(0, eq);\n  const value = eq === -1 ? '' : part.slice(eq + 1);\n  return decode(key) + '=' + decode(value);\n});\n\nconst safe = ['GET', 'HEAD', 'OPTIONS'].includes(method);\nconst idempotent = safe || ['PUT', 'DELETE'].includes(method);\n\nconsole.log('Method: ' + method);\nconsole.log('Path: ' + path);\nconsole.log('Query: ' + (pairs.length ? pairs.join('; ') : 'none'));\nconsole.log('Host: ' + (headers.host || 'missing'));\nconsole.log('Safe: ' + (safe ? 'yes' : 'no'));\nconsole.log('Idempotent: ' + (idempotent ? 'yes' : 'no'));\n",
+    "explanation": [
+      "Split the input into lines; the first line holds the method and the request target.",
+      "Read headers until the first blank line, storing names in lowercase so lookups are case-insensitive.",
+      "Split the target at the first '?' into path and query string.",
+      "Split the query on '&', split each pair at the first '=', and URL-decode both sides after turning '+' into spaces.",
+      "Classify the method with two small lists: safe methods, and idempotent methods (safe plus PUT and DELETE)."
+    ],
+    "tests": [
+      {
+        "input": "GET /api/courses?page=2&q=ai+tools HTTP/1.1\nHost: codinghub.in\nAccept: application/json\n\n",
+        "output": "Method: GET\nPath: /api/courses\nQuery: page=2; q=ai tools\nHost: codinghub.in\nSafe: yes\nIdempotent: yes"
+      },
+      {
+        "input": "POST /api/chat HTTP/1.1\nhost: api.example.com\nContent-Type: application/json\n\n{\"message\":\"hi\"}\n",
+        "output": "Method: POST\nPath: /api/chat\nQuery: none\nHost: api.example.com\nSafe: no\nIdempotent: no"
+      },
+      {
+        "input": "DELETE /api/notes/42?force HTTP/1.1\nAuthorization: Bearer abc\n\n",
+        "output": "Method: DELETE\nPath: /api/notes/42\nQuery: force=\nHost: missing\nSafe: no\nIdempotent: yes"
+      },
+      {
+        "input": "PUT /search?name=Ravi%20Kumar&tag=%23ai HTTP/1.1\nHOST: localhost:8000\n\n",
+        "output": "Method: PUT\nPath: /search\nQuery: name=Ravi Kumar; tag=#ai\nHost: localhost:8000\nSafe: no\nIdempotent: yes"
+      },
+      {
+        "input": "HEAD / HTTP/1.1\nHost: codinghub.in\n\n",
+        "output": "Method: HEAD\nPath: /\nQuery: none\nHost: codinghub.in\nSafe: yes\nIdempotent: yes"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is the job of DNS when a browser opens a website?",
+      "options": [
+        "Translating a domain name into an IP address",
+        "Compressing HTTP headers",
+        "Encrypting traffic between browser and server",
+        "Rendering HTML into pixels"
+      ],
+      "answer": 0,
+      "explanation": "DNS maps names such as codinghub.in to IP addresses. Encryption is TLS's job and rendering is the browser engine's."
+    },
+    {
+      "type": "concept",
+      "question": "Which HTTP method is idempotent but NOT safe?",
+      "options": [
+        "PUT",
+        "GET",
+        "POST",
+        "HEAD"
+      ],
+      "answer": 3,
+      "explanation": "PUT changes state (not safe) but repeating the same PUT leaves the same state (idempotent). GET and HEAD are both; POST is neither."
+    },
+    {
+      "type": "scenario",
+      "question": "A logged-in student calls an admin-only endpoint. The server recognises the student's valid token. Which status code fits best?",
+      "options": [
+        "400 Bad Request",
+        "403 Forbidden",
+        "401 Unauthorized",
+        "404 Not Found"
+      ],
+      "answer": 1,
+      "explanation": "The user is authenticated but not permitted, which is 403. 401 is for missing or invalid credentials."
+    },
+    {
+      "type": "scenario",
+      "question": "A mobile client's POST /api/orders times out and the client retries automatically. Two orders appear. What is the most robust fix?",
+      "options": [
+        "Switch the endpoint to GET",
+        "Send an idempotency key so the server can detect the duplicate",
+        "Increase the client timeout to five minutes",
+        "Return 500 for every second request"
+      ],
+      "answer": 1,
+      "explanation": "POST is not idempotent. An idempotency key lets the server return the first result for a repeated request instead of creating a duplicate."
+    },
+    {
+      "type": "output",
+      "question": "What does this print?",
+      "code": "const res = new Response('{}', { status: 503 });\nconsole.log(res.ok, Math.floor(res.status / 100));",
+      "options": [
+        "false 5",
+        "true 503",
+        "true 5",
+        "false 503"
+      ],
+      "answer": 0,
+      "explanation": "res.ok is true only for 200–299, so it is false. Math.floor(503 / 100) gives the status class 5 (server error)."
+    }
+  ]
+}

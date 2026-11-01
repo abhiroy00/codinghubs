@@ -1,0 +1,219 @@
+{
+  "day": 4,
+  "title": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
+  "module": "Cloud and Azure foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Compare the Azure portal, Cloud Shell, Azure CLI and Azure PowerShell and know when to use each.",
+    "Translate common tasks between az commands and Az PowerShell cmdlets.",
+    "Filter and format CLI output with --query (JMESPath) and --output.",
+    "Explain how Cloud Shell authenticates and persists files.",
+    "Write a small, repeatable script instead of clicking through the portal."
+  ],
+  "definition": "Azure offers several front ends to the same Azure Resource Manager API: the web-based Azure portal, the cross-platform Azure CLI (az commands), the Azure PowerShell Az module (Verb-AzNoun cmdlets) and Azure Cloud Shell, a browser-based shell with both tools pre-installed and already signed in. Because they all call ARM, anything created with one can be managed with another.",
+  "theory": [
+    {
+      "heading": "The Azure portal",
+      "body": "The portal at portal.azure.com is the best place to explore a service, see dashboards and understand options, and it is used heavily in the AZ-104 exam's scenario questions. It is a poor tool for repeatable work: clicking through 20 blades to build a lab cannot be reviewed, version-controlled or rerun. Many blades offer an 'Export template' or 'Download a template for automation' link, which is a useful bridge to infrastructure as code.",
+      "points": [
+        "Good for discovery, one-off changes, dashboards and viewing metrics.",
+        "Supports custom dashboards and Azure Advisor recommendations.",
+        "Every portal action is recorded in the Activity Log like any other ARM call."
+      ]
+    },
+    {
+      "heading": "Azure CLI",
+      "body": "Azure CLI is a cross-platform command-line tool written in Python, installed on Windows, macOS and Linux. Commands follow 'az <group> <subgroup> <action>', for example 'az vm create'. Output is JSON by default; '--output table' or '-o tsv' make it readable or script-friendly, and '--query' applies a JMESPath expression to pick fields. CLI scripts fit naturally in Bash and in CI/CD pipelines.",
+      "points": [
+        "Sign in: az login; choose subscription: az account set --subscription <name>.",
+        "Output formats: json, jsonc, table, tsv, yaml, none.",
+        "JMESPath example: --query \"[?powerState=='VM running'].name\".",
+        "Use 'az <command> --help' and 'az find' to discover syntax."
+      ]
+    },
+    {
+      "heading": "Azure PowerShell",
+      "body": "The Az PowerShell module provides cmdlets named Verb-AzNoun, such as New-AzResourceGroup and Get-AzVM. PowerShell returns .NET objects rather than text, so you can pipe objects into Where-Object or Select-Object without parsing. It is popular with Windows administrators and in Azure Automation runbooks. The older AzureRM module is retired; use Az.",
+      "points": [
+        "Sign in: Connect-AzAccount; choose subscription: Set-AzContext -Subscription <name>.",
+        "Objects, not strings: Get-AzVM | Where-Object Location -eq 'centralindia'.",
+        "Runs on Windows PowerShell 5.1 and cross-platform PowerShell 7."
+      ]
+    },
+    {
+      "heading": "Azure Cloud Shell",
+      "body": "Cloud Shell is a browser-based terminal available from the portal, shell.azure.com, the mobile app and VS Code. It offers Bash or PowerShell, includes Azure CLI, Az PowerShell, Terraform, kubectl, git and editors, and signs you in automatically with your portal identity. Sessions can be ephemeral, or you can mount an Azure file share so that files in your home directory persist between sessions. Sessions time out after about 20 minutes without interaction.",
+      "points": [
+        "No local installation and always up-to-date tools.",
+        "Persistent storage uses an Azure Files share in a storage account you choose.",
+        "Runs as you: it has exactly your RBAC permissions, no more.",
+        "Can be deployed into a virtual network to reach private resources."
+      ]
+    },
+    {
+      "heading": "Choosing the right tool",
+      "body": "Use the portal to learn and to inspect; use CLI or PowerShell for repeatable tasks and bulk changes; use ARM templates or Bicep for whole environments. Scripts should be idempotent where possible: running 'az group create' twice simply returns the existing group, but other commands fail if the resource exists, so scripts often check first.",
+      "points": [
+        "One-off investigation: portal.",
+        "Bulk or repeatable operations: CLI or PowerShell scripts.",
+        "Full environments under version control: Bicep or ARM templates (Day 19).",
+        "Scheduled operational tasks: Azure Automation runbooks or Functions."
+      ]
+    }
+  ],
+  "example": {
+    "title": "The same task in CLI and PowerShell",
+    "body": "Create a resource group and list running VMs in it. Notice that CLI filters JSON with JMESPath while PowerShell filters objects in the pipeline.",
+    "code": {
+      "language": "bash",
+      "source": "# Azure CLI\naz group create -n rg-lab-dev -l centralindia\naz vm list -g rg-lab-dev -d --query \"[?powerState=='VM running'].{name:name,size:hardwareProfile.vmSize}\" -o table\n\n# Azure PowerShell\nNew-AzResourceGroup -Name rg-lab-dev -Location centralindia\nGet-AzVM -ResourceGroupName rg-lab-dev -Status |\n  Where-Object PowerState -eq 'VM running' |\n  Select-Object Name, @{n='Size';e={$_.HardwareProfile.VmSize}}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Bulk stop of dev VMs",
+      "description": "A short CLI loop stops all VMs tagged env=dev every evening, something impractical in the portal."
+    },
+    {
+      "title": "Exam and interview labs",
+      "description": "Learners rebuild the same lab repeatedly from a script, saving time and Azure credit."
+    },
+    {
+      "title": "Reporting",
+      "description": "PowerShell exports every VM's size, region and tags to CSV for an audit."
+    },
+    {
+      "title": "Locked-down laptops",
+      "description": "Engineers without local admin rights use Cloud Shell from the browser instead of installing tools."
+    }
+  ],
+  "demonstration": {
+    "description": "Use --query and --output to turn verbose JSON into a clean report of resource groups and locations.",
+    "code": {
+      "language": "bash",
+      "source": "az group list --query \"[?location=='centralindia'].name\" -o tsv"
+    },
+    "output": "rg-lab-dev\nrg-shop-prod-cin\nNetworkWatcherRG"
+  },
+  "takeaways": [
+    "Portal, CLI, PowerShell and Cloud Shell all call the same Azure Resource Manager API.",
+    "Azure CLI uses az <group> <action>; filter with --query (JMESPath) and format with -o.",
+    "Az PowerShell uses Verb-AzNoun cmdlets and returns objects you can pipe.",
+    "Cloud Shell is pre-authenticated, browser-based and can persist files on an Azure file share.",
+    "Use scripts or Bicep for anything you need to repeat; use the portal to explore."
+  ],
+  "interview": [
+    {
+      "question": "What tools can you use to manage Azure resources?",
+      "answer": "The Azure portal, Azure CLI, Azure PowerShell, Cloud Shell, REST APIs and SDKs, and infrastructure-as-code tools such as ARM templates, Bicep and Terraform. All of them go through Azure Resource Manager.",
+      "explanation": "Mentioning that they share ARM shows you understand why they are interchangeable."
+    },
+    {
+      "question": "When would you prefer Azure CLI or PowerShell over the portal?",
+      "answer": "For repeatable, bulk or scheduled tasks, for anything that should be reviewed and version-controlled, and in pipelines. The portal is better for exploration and one-off checks.",
+      "explanation": "Interviewers look for an automation mindset; give a real example such as stopping all dev VMs nightly."
+    },
+    {
+      "question": "How does Cloud Shell store files between sessions?",
+      "answer": "If you choose persistent storage, Cloud Shell mounts an Azure Files share from a storage account in your subscription as your home drive, so scripts and files survive. Ephemeral sessions keep nothing after they end.",
+      "explanation": "Knowing that storage is an Azure file share you pay for, and that sessions time out, shows hands-on use."
+    },
+    {
+      "question": "How do you filter Azure CLI output to show only the names of running VMs?",
+      "answer": "Use 'az vm list -d' with a JMESPath query such as --query \"[?powerState=='VM running'].name\" and -o tsv or -o table.",
+      "explanation": "The -d (show details) flag is needed for powerState; mentioning it signals real experience."
+    },
+    {
+      "question": "What is the key difference in how CLI and PowerShell return results?",
+      "answer": "Azure CLI returns text, JSON by default, which you shape with --query and parse in scripts. Azure PowerShell returns .NET objects whose properties can be filtered and selected directly in the pipeline.",
+      "explanation": "This explains why teams choose one or the other and why mixing them in one script is awkward."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Script a reusable lab environment",
+    "difficulty": "Basic",
+    "objective": "Replace a sequence of portal clicks with a repeatable script and its PowerShell equivalent.",
+    "statement": "Your trainer creates the same lab for every batch: a resource group rg-az104-lab in Central India tagged env=lab and owner=<your email>, a general-purpose v2 storage account with locally redundant storage, and a CanNotDelete lock on the group. Write an Azure CLI script that builds it, a query that proves it exists, and the PowerShell equivalent of the resource group and lock steps. Finally, write the single command that removes everything at the end of the batch and explain why it fails until the lock is removed.",
+    "deliverable": "A commented Bash script using az commands, the equivalent PowerShell lines for two steps, and a short note on clean-up.",
+    "steps": [
+      "Select the correct subscription with az account set.",
+      "Create the resource group with location and tags.",
+      "Create a StorageV2 account with Standard_LRS, using a globally unique lowercase name.",
+      "Create a CanNotDelete lock on the resource group.",
+      "Verify with az resource list and a --query that prints name and type as a table.",
+      "Write the PowerShell equivalents of the group and lock commands.",
+      "Write the clean-up commands in the correct order."
+    ],
+    "checklist": [
+      "Storage account name is 3-24 lowercase letters and numbers only.",
+      "Tags use the key=value syntax in CLI and a hashtable in PowerShell.",
+      "The lock is removed before the resource group is deleted.",
+      "The script can be rerun without changing the result for the group creation step.",
+      "The verification query returns readable output, not raw JSON."
+    ],
+    "sample_answer": "#!/bin/bash\nset -e\naz account set --subscription \"AZ104-Training\"\nRG=rg-az104-lab; LOC=centralindia\naz group create -n $RG -l $LOC --tags env=lab owner=student@example.com\naz storage account create -n stlab$RANDOM$RANDOM -g $RG -l $LOC --kind StorageV2 --sku Standard_LRS\naz lock create -n lock-lab --lock-type CanNotDelete -g $RG\naz resource list -g $RG --query \"[].{name:name,type:type}\" -o table\n\n# PowerShell equivalents\nNew-AzResourceGroup -Name rg-az104-lab -Location centralindia -Tag @{env='lab'; owner='student@example.com'}\nNew-AzResourceLock -LockName lock-lab -LockLevel CanNotDelete -ResourceGroupName rg-az104-lab\n\n# Clean-up\naz lock delete -n lock-lab -g $RG\naz group delete -n $RG --yes --no-wait\n\nNote: 'az group delete' alone fails with ScopeLocked because the CanNotDelete lock overrides RBAC; deleting the lock first is a deliberate second step. $RANDOM keeps the storage name unique, and 'az group create' is idempotent, so rerunning it updates rather than fails."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which Azure CLI parameter applies a JMESPath expression to filter command output?",
+      "options": [
+        "--query",
+        "--filter",
+        "--select",
+        "--where"
+      ],
+      "answer": 0,
+      "explanation": "--query takes a JMESPath expression; --output (-o) controls the format."
+    },
+    {
+      "type": "scenario",
+      "question": "An engineer on a locked-down laptop cannot install software but needs to run Az PowerShell commands against Azure today. What should they use?",
+      "options": [
+        "Azure Cloud Shell",
+        "Azure Advisor",
+        "Azure Storage Explorer",
+        "Azure Data Box"
+      ],
+      "answer": 0,
+      "explanation": "Cloud Shell runs in the browser with Azure CLI and Az PowerShell pre-installed and pre-authenticated."
+    },
+    {
+      "type": "concept",
+      "question": "Where does Azure Cloud Shell store files that persist between sessions?",
+      "options": [
+        "In the browser's local storage",
+        "In an Azure Files share in a storage account",
+        "On a managed disk attached to your VM",
+        "In Microsoft Entra ID"
+      ],
+      "answer": 1,
+      "explanation": "Persistent Cloud Shell mounts an Azure file share as the home directory."
+    },
+    {
+      "type": "code",
+      "question": "Which PowerShell cmdlet is the equivalent of 'az group create'?",
+      "options": [
+        "Create-AzGroup",
+        "New-AzResourceGroup",
+        "Set-AzResourceGroup",
+        "Add-AzResourceGroup"
+      ],
+      "answer": 1,
+      "explanation": "Az PowerShell uses the New verb for creation: New-AzResourceGroup."
+    },
+    {
+      "type": "scenario",
+      "question": "You need a nightly job that stops all VMs tagged env=dev and the steps must be reviewable in source control. Which approach is most appropriate?",
+      "options": [
+        "Stop the VMs manually in the portal each night",
+        "Create a custom portal dashboard",
+        "A version-controlled script run on a schedule, for example an Automation runbook",
+        "Ask Microsoft support to stop them"
+      ],
+      "answer": 2,
+      "explanation": "Repeatable, scheduled, reviewable work belongs in scripts or runbooks, not manual portal actions."
+    }
+  ]
+}

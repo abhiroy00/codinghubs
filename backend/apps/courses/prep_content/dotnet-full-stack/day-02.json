@@ -1,0 +1,248 @@
+{
+  "day": 2,
+  "title": "C# Types: Value vs Reference, Boxing and Nullable Types",
+  "module": ".NET and C# fundamentals",
+  "level": "Beginner",
+  "objectives": [
+    "Explain the difference between value types and reference types and how assignment behaves for each.",
+    "Describe where values are stored (stack, heap, inline in objects) without repeating the common myths.",
+    "Explain boxing and unboxing, why they cost performance and how generics avoid them.",
+    "Use nullable value types (int?), the ?? operator and nullable reference type annotations.",
+    "Choose between struct, class and record for a given data model."
+  ],
+  "definition": "Every C# type is either a value type or a reference type. A variable of a value type (int, double, bool, struct, enum) holds the data itself, so assignment copies the data. A variable of a reference type (class, string, array, interface, delegate, record class) holds a reference to an object on the managed heap, so assignment copies only the reference and both variables then point to the same object.",
+  "theory": [
+    {
+      "heading": "Copy semantics: the real difference",
+      "body": "The difference that matters in code is what happens on assignment and when passing arguments. Copying a value type duplicates the data, so changing the copy never affects the original. Copying a reference type duplicates the pointer, so a change through one variable is visible through the other. Method parameters are passed by value by default in both cases: for a reference type that means the method receives a copy of the reference, so it can mutate the object but cannot make the caller's variable point somewhere else unless the parameter is declared ref.",
+      "points": [
+        "Value types: built-in numerics, bool, char, DateTime, decimal, enums, structs, tuples (ValueTuple).",
+        "Reference types: classes, string, arrays, delegates, interfaces, object, record classes.",
+        "Value types derive from System.ValueType, which derives from System.Object.",
+        "== on reference types compares references by default unless the operator is overloaded (string overloads it)."
+      ]
+    },
+    {
+      "heading": "Stack, heap and the common myth",
+      "body": "'Value types live on the stack and reference types on the heap' is only partly true. Reference type objects always live on the managed heap. A value type lives wherever its container lives: a local int is on the stack (or in a register), but an int field inside a class instance is stored inline in that object on the heap, and an int[] array stores its elements on the heap. The stack is cheap and freed automatically when a method returns; the heap is managed by the garbage collector.",
+      "points": [
+        "Local value-type variables: stack or CPU registers.",
+        "Value-type fields of a class and array elements: inline on the heap.",
+        "Captured variables in lambdas and async methods are hoisted into heap objects."
+      ]
+    },
+    {
+      "heading": "Boxing and unboxing",
+      "body": "Boxing converts a value type to object (or to an interface it implements) by allocating a new heap object and copying the value into it. Unboxing extracts the value back and requires an explicit cast to exactly the original type. Each boxing operation allocates memory and adds GC pressure, which is why the non-generic ArrayList and Hashtable are slow for numbers and why generic List<int> was such an improvement: it stores ints without boxing.",
+      "points": [
+        "object o = 42;  // boxing: heap allocation and copy",
+        "int n = (int)o; // unboxing: type check and copy",
+        "(long)o where o holds a boxed int throws InvalidCastException.",
+        "Hidden boxing: string.Format with value types in older code, non-generic collections, calling an interface method on a struct through the interface."
+      ]
+    },
+    {
+      "heading": "Nullable value types and nullable reference types",
+      "body": "A value type normally cannot be null. Nullable<T>, written T?, adds a HasValue flag so int? can represent 'no value', which is essential for database columns that allow NULL. The null-coalescing operator ?? supplies a fallback and ?. stops a member access chain when something is null. Since C# 8, nullable reference types (enabled by default in new projects with <Nullable>enable</Nullable>) let the compiler warn when a string that may be null is dereferenced; string? documents that null is allowed, while string means it should not be.",
+      "points": [
+        "int? x = null; x.HasValue is false; x.GetValueOrDefault() is 0.",
+        "x ?? -1 returns -1 when x is null.",
+        "Nullable reference types are a compile-time analysis only; they do not change the runtime type.",
+        "The null-forgiving operator ! silences a warning, so use it sparingly."
+      ]
+    },
+    {
+      "heading": "struct vs class vs record",
+      "body": "Use a struct for small, immutable values that are copied cheaply (roughly 16 bytes or less), such as a point or a money amount. Use a class for entities with identity, behaviour and longer lifetimes. A record (C# 9) is a type designed for data: it gets value-based equality, a readable ToString and non-destructive mutation with the with expression. record is a reference type by default; record struct is a value type.",
+      "points": [
+        "Large mutable structs are a common bug source because every assignment silently copies them.",
+        "Two record instances with the same property values are equal; two class instances are not unless Equals is overridden.",
+        "Default values: 0 for numbers, false for bool, null for references, all-zero for structs."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Copying a struct vs copying a class",
+    "body": "The struct copy is independent, while both class variables point to one object. The boxed copy keeps the old value because boxing copied the int into a new heap object.",
+    "code": {
+      "language": "csharp",
+      "source": "using System;\n\nstruct PointS { public int X; }\nclass PointC { public int X; }\n\nclass Program\n{\n    static void Main()\n    {\n        PointS s1 = new PointS { X = 1 };\n        PointS s2 = s1;   // copies the data\n        s2.X = 99;\n        Console.WriteLine(s1.X); // 1\n\n        PointC c1 = new PointC { X = 1 };\n        PointC c2 = c1;   // copies the reference\n        c2.X = 99;\n        Console.WriteLine(c1.X); // 99\n\n        int n = 10;\n        object boxed = n; // boxing\n        n = 20;\n        Console.WriteLine(boxed); // 10\n        int back = (int)boxed;    // unboxing\n        Console.WriteLine(back + n); // 30\n    }\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Database NULLs",
+      "description": "Map an optional SQL column such as DiscountPercent to decimal? so 'no discount' is different from 0."
+    },
+    {
+      "title": "High-performance code",
+      "description": "Use small readonly structs and generic collections to avoid allocations and boxing in hot paths such as parsers or game loops."
+    },
+    {
+      "title": "DTOs and API contracts",
+      "description": "Use records for request and response models, getting value equality and concise syntax."
+    },
+    {
+      "title": "Avoiding shared-state bugs",
+      "description": "Knowing that lists are reference types prevents bugs where two parts of the app accidentally modify the same collection."
+    }
+  ],
+  "demonstration": {
+    "description": "Passing a reference type by value versus by ref. The method can change the object's contents, but only a ref parameter can replace the caller's object.",
+    "code": {
+      "language": "csharp",
+      "source": "static void Rename(Person p) { p.Name = \"Ravi\"; p = new Person { Name = \"Temp\" }; }\nstatic void Replace(ref Person p) { p = new Person { Name = \"Meera\" }; }\n\nvar person = new Person { Name = \"Asha\" };\nRename(person);\nConsole.WriteLine(person.Name);\nReplace(ref person);\nConsole.WriteLine(person.Name);"
+    },
+    "output": "Ravi\nMeera"
+  },
+  "takeaways": [
+    "Value types copy data on assignment; reference types copy the reference.",
+    "Reference objects live on the heap; value types live wherever their container lives.",
+    "Boxing allocates a heap object; unboxing needs a cast to the exact original type.",
+    "Generic collections such as List<int> avoid boxing.",
+    "int? models a missing value; ?? supplies a default; nullable reference types add compile-time null checks.",
+    "Prefer small immutable structs, classes for entities and records for data with value equality."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between a value type and a reference type?",
+      "answer": "A value-type variable holds its data directly and assignment copies the data. A reference-type variable holds a reference to a heap object and assignment copies the reference, so both variables see the same object. Examples: int and struct are value types; class, string and arrays are reference types.",
+      "explanation": "Lead with copy semantics, then give examples. Avoid saying only 'stack vs heap', because interviewers often follow up with 'where is an int field of a class stored?'."
+    },
+    {
+      "question": "What are boxing and unboxing, and why should you avoid unnecessary boxing?",
+      "answer": "Boxing wraps a value type in a heap-allocated object when it is converted to object or an interface. Unboxing copies it back with an explicit cast. Each box allocates memory and creates garbage, so in loops it hurts performance; generics avoid it.",
+      "explanation": "Mention a concrete source such as ArrayList versus List<int>, and that unboxing to the wrong type throws InvalidCastException."
+    },
+    {
+      "question": "Is string a value type or a reference type? Why does it behave like a value?",
+      "answer": "string is a reference type, but it is immutable and overloads == to compare contents. Any 'change' creates a new string, so sharing a reference is safe and it feels like a value.",
+      "explanation": "Linking immutability to safe sharing and to interning shows depth. It also prepares for StringBuilder questions."
+    },
+    {
+      "question": "When would you use a struct instead of a class?",
+      "answer": "For small, short-lived, logically single values that are ideally immutable, such as coordinates, money or a date range, where avoiding heap allocations matters. Use a class when the type is large, has identity, needs inheritance or is frequently passed around and mutated.",
+      "explanation": "Strong answers mention the copying cost of large structs and that structs cannot inherit from other structs or classes (they can implement interfaces)."
+    },
+    {
+      "question": "What are nullable reference types in C# 8+, and do they change runtime behaviour?",
+      "answer": "They are a compile-time feature: with <Nullable>enable</Nullable>, string means 'should not be null' and string? means 'may be null', and the compiler warns about possible null dereferences. At run time both are still System.String; no checks are inserted.",
+      "explanation": "Distinguish them clearly from Nullable<T> for value types, which is a real runtime struct with HasValue and Value."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Nullable sensor readings",
+    "difficulty": "Basic",
+    "objective": "Use int? to represent missing values, aggregate only real values and fill gaps with the null-coalescing operator.",
+    "statement": "A sensor sends readings separated by spaces. A token that is a valid integer is a reading; any other token (for example null, NA or abc) is a missing reading. Parse each token into an int? and print: the number of valid readings, the number of missing readings, the sum of valid readings (it may exceed the int range), the maximum valid reading, the average of valid readings with two decimals, and the sequence where each missing reading is replaced by the most recent valid reading before it, or 0 if there is none. Print n/a for maximum and average when there are no valid readings.",
+    "language": "csharp",
+    "input_format": "One line of whitespace-separated tokens (at least one).",
+    "output_format": "Valid: <count>\nMissing: <count>\nSum: <sum>\nMax: <max or n/a>\nAverage: <average with 2 decimals or n/a>\nFilled: <filled values separated by single spaces>",
+    "example": {
+      "input": "12 null 7 abc -3 10\n",
+      "output": "Valid: 4\nMissing: 2\nSum: 26\nMax: 12\nAverage: 6.50\nFilled: 12 12 7 7 -3 10"
+    },
+    "constraints": [
+      "1 <= number of tokens <= 1000",
+      "Valid readings fit in a 32-bit int; use a long for the sum.",
+      "Format the average with a dot as the decimal separator (InvariantCulture)."
+    ],
+    "starter": "using System;\nusing System.Collections.Generic;\nusing System.Globalization;\n\nclass Program\n{\n    static void Main()\n    {\n        string[] tokens = Console.In.ReadToEnd().Split(new char[] { ' ', '\\t', '\\r', '\\n' }, StringSplitOptions.RemoveEmptyEntries);\n        var readings = new List<int?>();\n        // TODO: parse each token with int.TryParse into an int? (null when invalid)\n        // TODO: compute the statistics and the filled sequence using ??\n    }\n}\n",
+    "solution": "using System;\nusing System.Collections.Generic;\nusing System.Globalization;\n\nclass Program\n{\n    static void Main()\n    {\n        string[] tokens = Console.In.ReadToEnd().Split(new char[] { ' ', '\\t', '\\r', '\\n' }, StringSplitOptions.RemoveEmptyEntries);\n        var readings = new List<int?>();\n        foreach (string t in tokens)\n        {\n            int v;\n            readings.Add(int.TryParse(t, out v) ? v : (int?)null);\n        }\n\n        int valid = 0, missing = 0;\n        long sum = 0;\n        int? max = null;\n        int? last = null;\n        var filled = new List<string>();\n        foreach (int? r in readings)\n        {\n            if (r.HasValue)\n            {\n                valid++;\n                sum += r.Value;\n                if (!max.HasValue || r.Value > max.Value) max = r;\n                last = r;\n            }\n            else\n            {\n                missing++;\n            }\n            int f = r ?? last ?? 0;\n            filled.Add(f.ToString(CultureInfo.InvariantCulture));\n        }\n\n        Console.WriteLine(\"Valid: \" + valid);\n        Console.WriteLine(\"Missing: \" + missing);\n        Console.WriteLine(\"Sum: \" + sum);\n        Console.WriteLine(\"Max: \" + (max.HasValue ? max.Value.ToString(CultureInfo.InvariantCulture) : \"n/a\"));\n        Console.WriteLine(\"Average: \" + (valid == 0 ? \"n/a\" : ((double)sum / valid).ToString(\"F2\", CultureInfo.InvariantCulture)));\n        Console.WriteLine(\"Filled: \" + string.Join(\" \", filled));\n    }\n}\n",
+    "explanation": [
+      "Split the whole input on whitespace and turn each token into an int? using int.TryParse; failures become null.",
+      "Track count, sum (as long, to avoid overflow) and the maximum, which itself is an int? that starts as null.",
+      "For the filled sequence use r ?? last ?? 0: the reading if present, otherwise the last valid reading, otherwise 0.",
+      "Cast the sum to double before dividing so the average is not truncated by integer division.",
+      "Print n/a when max has no value and when there are no valid readings."
+    ],
+    "tests": [
+      {
+        "input": "12 null 7 abc -3 10\n",
+        "output": "Valid: 4\nMissing: 2\nSum: 26\nMax: 12\nAverage: 6.50\nFilled: 12 12 7 7 -3 10"
+      },
+      {
+        "input": "null null 5\n",
+        "output": "Valid: 1\nMissing: 2\nSum: 5\nMax: 5\nAverage: 5.00\nFilled: 0 0 5"
+      },
+      {
+        "input": "x y\n",
+        "output": "Valid: 0\nMissing: 2\nSum: 0\nMax: n/a\nAverage: n/a\nFilled: 0 0"
+      },
+      {
+        "input": "-4 -9 -1\n",
+        "output": "Valid: 3\nMissing: 0\nSum: -14\nMax: -1\nAverage: -4.67\nFilled: -4 -9 -1"
+      },
+      {
+        "input": "2147483647 2147483647 n\n",
+        "output": "Valid: 2\nMissing: 1\nSum: 4294967294\nMax: 2147483647\nAverage: 2147483647.00\nFilled: 2147483647 2147483647 2147483647"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this boxing example print?",
+      "code": "int a = 10;\nobject o = a;\na = 20;\nConsole.WriteLine(o);",
+      "options": [
+        "20",
+        "0",
+        "10",
+        "It does not compile"
+      ],
+      "answer": 2,
+      "explanation": "Boxing copies the value 10 into a new heap object. Changing a afterwards does not affect the boxed copy."
+    },
+    {
+      "type": "output",
+      "question": "Given struct P { public int X; }, what does this print?",
+      "code": "P p1 = new P();\np1.X = 1;\nP p2 = p1;\np2.X = 5;\nConsole.WriteLine(p1.X);",
+      "options": [
+        "0",
+        "6",
+        "1",
+        "5"
+      ],
+      "answer": 2,
+      "explanation": "Structs are value types, so p2 is an independent copy. Changing p2.X leaves p1.X at 1."
+    },
+    {
+      "type": "code",
+      "question": "What happens when this code runs?",
+      "code": "object o = 5;\nlong l = (long)o;",
+      "options": [
+        "l becomes 5",
+        "l becomes 0",
+        "Compile-time error",
+        "InvalidCastException at run time"
+      ],
+      "answer": 3,
+      "explanation": "A boxed value can only be unboxed to its exact type (int here). Use (long)(int)o or Convert.ToInt64(o)."
+    },
+    {
+      "type": "concept",
+      "question": "Where is an int field of a class instance stored?",
+      "options": [
+        "In a separate boxed object",
+        "In the CPU cache only",
+        "Always on the stack",
+        "Inline inside the object on the managed heap"
+      ],
+      "answer": 3,
+      "explanation": "Value-type fields are stored inline in their containing object. Because the object is on the heap, so is the field."
+    },
+    {
+      "type": "scenario",
+      "question": "A SQL column DiscountPercent allows NULL, meaning 'no discount configured', which differs from 0. Which C# property type models it best?",
+      "options": [
+        "int",
+        "object",
+        "decimal?",
+        "string"
+      ],
+      "answer": 2,
+      "explanation": "Nullable<decimal> distinguishes 'no value' (null) from a real 0 and keeps strong typing. object would require boxing and casts."
+    }
+  ]
+}

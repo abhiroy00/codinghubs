@@ -1,0 +1,250 @@
+{
+  "day": 1,
+  "title": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
+  "module": ".NET and C# fundamentals",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what .NET is and how C# source code becomes running machine code.",
+    "Describe the role of the CLR, JIT compiler, garbage collector and base class library.",
+    "Distinguish the Common Type System (CTS) from the Common Language Specification (CLS).",
+    "Compare modern .NET (5, 6, 8 and later) with the Windows-only .NET Framework and .NET Standard.",
+    "Answer the classic opening questions of a .NET interview with confidence."
+  ],
+  "definition": ".NET is a free, open-source, cross-platform developer platform from Microsoft for building web, desktop, mobile, cloud and console applications. Code written in C#, F# or VB.NET is compiled into Intermediate Language (IL) and executed by the Common Language Runtime (CLR), which manages memory, type safety and security for it. Code that runs under the CLR's control is called managed code.",
+  "theory": [
+    {
+      "heading": "From C# source to running code",
+      "body": "The C# compiler (Roslyn) does not produce machine code. It produces an assembly (.dll or .exe) containing Intermediate Language plus metadata that describes every type and member. When the program runs, the CLR loads the assembly and the Just-In-Time (JIT) compiler turns each method's IL into native machine code the first time that method is called. This two-step design is why the same assembly runs on Windows, Linux and macOS, and why tools can inspect types through reflection.",
+      "points": [
+        "Compile time: C# -> IL + metadata, packaged in an assembly.",
+        "Run time: the CLR loads the assembly, verifies it and JIT-compiles methods on first call.",
+        "Tiered compilation: a quick first JIT, then hot methods are recompiled with full optimisation.",
+        "ReadyToRun and Native AOT pre-compile to native code to improve start-up time."
+      ]
+    },
+    {
+      "heading": "The Common Language Runtime (CLR)",
+      "body": "The CLR is the execution engine of .NET. Because it controls execution, it can provide services that unmanaged languages such as C or C++ leave to the programmer. The most important is automatic memory management: the garbage collector (GC) reclaims objects that are no longer reachable, so developers rarely free memory by hand. The GC is generational (Gen 0, 1, 2 plus the Large Object Heap) because most objects die young, which keeps collections cheap.",
+      "points": [
+        "Memory management through a generational garbage collector.",
+        "Type safety and IL verification, so code cannot read arbitrary memory.",
+        "Structured exception handling that works across languages.",
+        "Thread management, security checks and interop with native (unmanaged) code."
+      ]
+    },
+    {
+      "heading": "CTS, CLS and the base class library",
+      "body": "The Common Type System (CTS) defines how types are declared and used inside the runtime, so a class written in F# can be consumed from C#. Every C# keyword type is an alias for a CTS type: int is System.Int32 and string is System.String. The Common Language Specification (CLS) is a smaller subset of rules that every .NET language must support; unsigned integers such as uint are part of the CTS but not of the CLS, so public APIs meant for all languages avoid them. The Base Class Library (BCL) provides the ready-made types every app uses: collections, I/O, networking, LINQ and more.",
+      "points": [
+        "CTS: the full type system, with value types and reference types.",
+        "CLS: the interoperable subset; mark libraries with [assembly: CLSCompliant(true)] to have the compiler check it.",
+        "BCL: System, System.Collections.Generic, System.IO, System.Linq and so on."
+      ]
+    },
+    {
+      "heading": ".NET vs .NET Framework vs .NET Standard",
+      "body": ".NET Framework (1.0 to 4.8.x) is the original Windows-only implementation; it is still supported but receives only fixes. .NET Core started in 2016 as a cross-platform, open-source rewrite, and from version 5 it was renamed simply .NET. New projects should target a current version such as .NET 8 (long-term support). .NET Standard was a specification of APIs shared by both implementations, used to write libraries that worked on either; for new code that only targets modern .NET it is no longer needed.",
+      "points": [
+        ".NET Framework: Windows only, IIS-centric, System.Web, maintenance mode.",
+        "Modern .NET: cross-platform, side-by-side installs, high performance, containers, yearly releases.",
+        "LTS releases (even numbers such as .NET 8) get three years of support; STS releases get less.",
+        ".NET Standard 2.0 is still useful for libraries that must also run on .NET Framework."
+      ]
+    },
+    {
+      "heading": "Managed vs unmanaged code",
+      "body": "Managed code runs under the CLR and benefits from garbage collection, type checks and exception handling. Unmanaged code (a C++ DLL or a Win32 API) runs directly on the operating system, and the CLR cannot track its memory. .NET can call it through P/Invoke or COM interop, but resources such as file handles or native memory must then be released explicitly, which is why IDisposable and the using statement exist.",
+      "points": [
+        "Managed: memory reclaimed by the GC, verified IL.",
+        "Unmanaged: manual lifetime management, no runtime safety net.",
+        "Bridge: P/Invoke, COM interop and SafeHandle wrappers."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Keyword aliases map to CTS types",
+    "body": "The C# keywords int and string are just aliases. Both lines below compile to exactly the same IL, and GetType() reveals the underlying CTS type that every .NET language shares.",
+    "code": {
+      "language": "csharp",
+      "source": "using System;\n\nclass Program\n{\n    static void Main()\n    {\n        int a = 42;\n        System.Int32 b = 42;          // identical to int\n        string s = \"hi\";\n\n        Console.WriteLine(a.GetType());            // System.Int32\n        Console.WriteLine(b.GetType() == a.GetType()); // True\n        Console.WriteLine(s.GetType().IsValueType);    // False (reference type)\n        Console.WriteLine(Environment.Version);        // runtime version, e.g. 8.0.x\n    }\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Cross-platform web APIs",
+      "description": "ASP.NET Core services built on modern .NET run on Linux containers in Azure, AWS or on-premises Kubernetes."
+    },
+    {
+      "title": "Enterprise line-of-business apps",
+      "description": "Banks, insurers and Indian IT service companies maintain large .NET Framework estates and migrate them to .NET 8."
+    },
+    {
+      "title": "Desktop applications",
+      "description": "WPF and Windows Forms apps for internal tools, and .NET MAUI for cross-platform desktop and mobile clients."
+    },
+    {
+      "title": "Cloud and serverless",
+      "description": "Azure Functions and background worker services written in C# on the same runtime."
+    },
+    {
+      "title": "Shared libraries",
+      "description": "One class library consumed by a web API, a console tool and a test project because all compile to IL."
+    }
+  ],
+  "demonstration": {
+    "description": "Create a console app with the .NET CLI, build it and inspect what the compiler produced. The build output is an assembly containing IL; the runtime JIT-compiles it when you run the program.",
+    "code": {
+      "language": "bash",
+      "source": "dotnet --list-sdks\ndotnet new console -n HelloClr\ncd HelloClr\ndotnet build\ndotnet run\n# Optional: view the IL of Main with the ildasm / ILSpy tool\n# IL_0000: ldstr \"Hello, World!\"\n# IL_0005: call void [System.Console]System.Console::WriteLine(string)\n# IL_000a: ret"
+    },
+    "output": "8.0.4xx [C:\\Program Files\\dotnet\\sdk]\nThe template \"Console App\" was created successfully.\nBuild succeeded. bin/Debug/net8.0/HelloClr.dll\nHello, World!"
+  },
+  "takeaways": [
+    "C# compiles to IL plus metadata; the CLR's JIT turns IL into native code at run time.",
+    "The CLR provides garbage collection, type safety, exception handling and threading.",
+    "CTS defines all runtime types; CLS is the cross-language subset (uint is CTS but not CLS).",
+    "C# keywords such as int and string are aliases for System.Int32 and System.String.",
+    "Modern .NET (8+) is cross-platform and open source; .NET Framework 4.8 is Windows-only and in maintenance.",
+    "Managed code is controlled by the CLR; unmanaged resources still need explicit cleanup via IDisposable."
+  ],
+  "interview": [
+    {
+      "question": "What is the CLR and what does it do?",
+      "answer": "The Common Language Runtime is the .NET execution engine. It loads assemblies, JIT-compiles IL to native code, manages memory with the garbage collector, enforces type safety and handles exceptions and threads.",
+      "explanation": "List three or four concrete services rather than saying 'it runs code'. Mentioning JIT and GC together shows you understand the managed execution model."
+    },
+    {
+      "question": "What is the difference between CTS and CLS?",
+      "answer": "CTS is the complete set of types and rules the runtime supports. CLS is a subset of those rules that all .NET languages agree to support, so a CLS-compliant library can be used from any .NET language. For example, uint exists in the CTS but is not CLS-compliant.",
+      "explanation": "The uint example is what separates a memorised answer from an understood one. You can add that [CLSCompliant(true)] makes the compiler warn about violations."
+    },
+    {
+      "question": "What is managed code, and how is it different from unmanaged code?",
+      "answer": "Managed code runs under the CLR, which handles memory, type checks and exceptions. Unmanaged code runs directly on the OS (for example a native C++ DLL), so its memory and handles must be released manually. .NET calls unmanaged code through P/Invoke or COM interop.",
+      "explanation": "Connect the answer to IDisposable: unmanaged resources are the reason the dispose pattern exists, which interviewers often ask next."
+    },
+    {
+      "question": "Explain the difference between .NET Framework, .NET Core and .NET 5+.",
+      "answer": ".NET Framework is the original Windows-only runtime, now in maintenance at 4.8.x. .NET Core was the cross-platform, open-source rewrite. From version 5 it became the single unified '.NET', with yearly releases; even-numbered versions such as .NET 8 are LTS.",
+      "explanation": "Strong candidates mention why companies migrate: Linux containers, performance, side-by-side versions and the fact that new features land only in modern .NET."
+    },
+    {
+      "question": "What is JIT compilation, and what are ReadyToRun and Native AOT?",
+      "answer": "JIT compiles each method's IL to native code on first call, optionally recompiling hot methods with more optimisation (tiered compilation). ReadyToRun ships pre-compiled native code inside the assembly to reduce start-up time while keeping JIT as a fallback. Native AOT compiles the whole app ahead of time into a self-contained native executable with no JIT, giving fast start-up and small memory but limiting reflection and dynamic code.",
+      "explanation": "This is an advanced follow-up. Mention trade-offs: AOT suits serverless and containers where cold start matters, but features like runtime code generation are restricted."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "CTS type inspector",
+    "difficulty": "Basic",
+    "objective": "Reinforce how C# keywords map to Common Type System types, which are value or reference types, and which are not CLS-compliant.",
+    "statement": "Read N C# type names. For each, print the CTS type it is an alias for and whether it is a value type (with its size) or a reference type. Unsigned and signed-byte aliases sbyte, ushort, uint and ulong must also be flagged as not CLS-compliant. Names are case-sensitive: only lower-case keyword aliases are recognised. Finish with a summary line.\n\nKnown aliases: bool System.Boolean 1, byte System.Byte 1, sbyte System.SByte 1, char System.Char 2, short System.Int16 2, ushort System.UInt16 2, int System.Int32 4, uint System.UInt32 4, long System.Int64 8, ulong System.UInt64 8, float System.Single 4, double System.Double 8, decimal System.Decimal 16, string System.String (reference), object System.Object (reference).",
+    "language": "csharp",
+    "input_format": "First line: N. Next N lines: one type name each (surrounding spaces should be trimmed).",
+    "output_format": "One line per name:\n<name> => <CTS type> | value type | <size> byte(s)[ | not CLS-compliant]\n<name> => <CTS type> | reference type\n<name> => not a C# built-in alias\nUse 'byte' when the size is 1, otherwise 'bytes'. Then:\nSummary: <v> value, <r> reference, <u> unknown, <c> not CLS-compliant",
+    "example": {
+      "input": "5\nint\nstring\ndecimal\nuint\nString\n",
+      "output": "int => System.Int32 | value type | 4 bytes\nstring => System.String | reference type\ndecimal => System.Decimal | value type | 16 bytes\nuint => System.UInt32 | value type | 4 bytes | not CLS-compliant\nString => not a C# built-in alias\nSummary: 3 value, 1 reference, 1 unknown, 1 not CLS-compliant"
+    },
+    "constraints": [
+      "1 <= N <= 100",
+      "Matching is case-sensitive after trimming spaces.",
+      "Use a Dictionary for the lookup rather than a long if/else chain."
+    ],
+    "starter": "using System;\nusing System.Collections.Generic;\n\nclass Program\n{\n    static void Main()\n    {\n        string[] lines = Console.In.ReadToEnd().Replace(\"\\r\", \"\").Split('\\n');\n        int n = int.Parse(lines[0].Trim());\n        // TODO: build a Dictionary from alias to CTS name and size (or \"ref\")\n        // TODO: print one line per name, then the summary line\n    }\n}\n",
+    "solution": "using System;\nusing System.Collections.Generic;\n\nclass Program\n{\n    static void Main()\n    {\n        var map = new Dictionary<string, string[]>();\n        map[\"bool\"] = new string[] { \"System.Boolean\", \"1\" };\n        map[\"byte\"] = new string[] { \"System.Byte\", \"1\" };\n        map[\"sbyte\"] = new string[] { \"System.SByte\", \"1\" };\n        map[\"char\"] = new string[] { \"System.Char\", \"2\" };\n        map[\"short\"] = new string[] { \"System.Int16\", \"2\" };\n        map[\"ushort\"] = new string[] { \"System.UInt16\", \"2\" };\n        map[\"int\"] = new string[] { \"System.Int32\", \"4\" };\n        map[\"uint\"] = new string[] { \"System.UInt32\", \"4\" };\n        map[\"long\"] = new string[] { \"System.Int64\", \"8\" };\n        map[\"ulong\"] = new string[] { \"System.UInt64\", \"8\" };\n        map[\"float\"] = new string[] { \"System.Single\", \"4\" };\n        map[\"double\"] = new string[] { \"System.Double\", \"8\" };\n        map[\"decimal\"] = new string[] { \"System.Decimal\", \"16\" };\n        map[\"string\"] = new string[] { \"System.String\", \"ref\" };\n        map[\"object\"] = new string[] { \"System.Object\", \"ref\" };\n        var nonCls = new HashSet<string> { \"sbyte\", \"ushort\", \"uint\", \"ulong\" };\n\n        string[] lines = Console.In.ReadToEnd().Replace(\"\\r\", \"\").Split('\\n');\n        int n = int.Parse(lines[0].Trim());\n        int values = 0, refs = 0, unknown = 0, notCls = 0;\n        for (int i = 1; i <= n; i++)\n        {\n            string name = i < lines.Length ? lines[i].Trim() : \"\";\n            string[] info;\n            if (!map.TryGetValue(name, out info))\n            {\n                Console.WriteLine(name + \" => not a C# built-in alias\");\n                unknown++;\n                continue;\n            }\n            if (info[1] == \"ref\")\n            {\n                Console.WriteLine(name + \" => \" + info[0] + \" | reference type\");\n                refs++;\n                continue;\n            }\n            string line = name + \" => \" + info[0] + \" | value type | \" + info[1] + (info[1] == \"1\" ? \" byte\" : \" bytes\");\n            if (nonCls.Contains(name))\n            {\n                line += \" | not CLS-compliant\";\n                notCls++;\n            }\n            Console.WriteLine(line);\n            values++;\n        }\n        Console.WriteLine(\"Summary: \" + values + \" value, \" + refs + \" reference, \" + unknown + \" unknown, \" + notCls + \" not CLS-compliant\");\n    }\n}\n",
+    "explanation": [
+      "Store each keyword alias in a Dictionary with its CTS name and either its size in bytes or the marker 'ref' for reference types.",
+      "Keep the four non-CLS aliases in a HashSet so the check is a single Contains call.",
+      "Read all input at once, strip carriage returns and trim each name, so Windows line endings and stray spaces do not break matching.",
+      "Use TryGetValue: an unknown name (including 'String', which is a type name, not a keyword) prints the 'not a C# built-in alias' line.",
+      "Count value, reference, unknown and non-CLS names while printing, then print the summary."
+    ],
+    "tests": [
+      {
+        "input": "5\nint\nstring\ndecimal\nuint\nString\n",
+        "output": "int => System.Int32 | value type | 4 bytes\nstring => System.String | reference type\ndecimal => System.Decimal | value type | 16 bytes\nuint => System.UInt32 | value type | 4 bytes | not CLS-compliant\nString => not a C# built-in alias\nSummary: 3 value, 1 reference, 1 unknown, 1 not CLS-compliant"
+      },
+      {
+        "input": "3\nbool\nobject\n  char  \n",
+        "output": "bool => System.Boolean | value type | 1 byte\nobject => System.Object | reference type\nchar => System.Char | value type | 2 bytes\nSummary: 2 value, 1 reference, 0 unknown, 0 not CLS-compliant"
+      },
+      {
+        "input": "4\nsbyte\nulong\ndouble\ninteger\n",
+        "output": "sbyte => System.SByte | value type | 1 byte | not CLS-compliant\nulong => System.UInt64 | value type | 8 bytes | not CLS-compliant\ndouble => System.Double | value type | 8 bytes\ninteger => not a C# built-in alias\nSummary: 3 value, 0 reference, 1 unknown, 2 not CLS-compliant"
+      },
+      {
+        "input": "1\nlong\n",
+        "output": "long => System.Int64 | value type | 8 bytes\nSummary: 1 value, 0 reference, 0 unknown, 0 not CLS-compliant"
+      },
+      {
+        "input": "4\nfloat\nushort\nshort\nbyte\n",
+        "output": "float => System.Single | value type | 4 bytes\nushort => System.UInt16 | value type | 2 bytes | not CLS-compliant\nshort => System.Int16 | value type | 2 bytes\nbyte => System.Byte | value type | 1 byte\nSummary: 4 value, 0 reference, 0 unknown, 1 not CLS-compliant"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does the C# compiler produce when you build a .NET project?",
+      "options": [
+        "JavaScript that runs in the CLR",
+        "A text file of source code interpreted line by line",
+        "Native machine code for the current CPU only",
+        "An assembly containing Intermediate Language and metadata"
+      ],
+      "answer": 3,
+      "explanation": "Roslyn emits IL plus metadata in an assembly. The CLR's JIT compiler converts IL to native code at run time."
+    },
+    {
+      "type": "concept",
+      "question": "Which type is part of the Common Type System but NOT CLS-compliant?",
+      "options": [
+        "int",
+        "string",
+        "decimal",
+        "uint"
+      ],
+      "answer": 3,
+      "explanation": "Unsigned integers (uint, ushort, ulong) and sbyte exist in the CTS, but some .NET languages do not support them, so they are outside the CLS."
+    },
+    {
+      "type": "output",
+      "question": "What type name does this code print?",
+      "code": "int x = 5;\nConsole.WriteLine(x.GetType().FullName);",
+      "options": [
+        "Int",
+        "System.Integer",
+        "System.Int32",
+        "int"
+      ],
+      "answer": 2,
+      "explanation": "int is a C# alias for the CTS type System.Int32, and FullName returns the namespace-qualified CTS name."
+    },
+    {
+      "type": "scenario",
+      "question": "A team must run a new web API in Linux Docker containers. Which target framework should they choose?",
+      "options": [
+        ".NET Framework 4.8",
+        ".NET Standard 2.0",
+        ".NET 8",
+        "Classic ASP.NET Web Forms"
+      ],
+      "answer": 2,
+      "explanation": ".NET 8 is cross-platform and LTS. .NET Framework is Windows-only, and .NET Standard is a library specification, not a runtime you can host an app on."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement about the .NET garbage collector is correct?",
+      "options": [
+        "It must be called manually with GC.Collect() after every allocation",
+        "It only runs when the application exits",
+        "It frees unmanaged file handles automatically as soon as a variable goes out of scope",
+        "It is generational, because most objects die young and collecting Gen 0 is cheap"
+      ],
+      "answer": 3,
+      "explanation": "The GC is generational (Gen 0/1/2 plus the Large Object Heap). It reclaims managed memory automatically; unmanaged handles still need Dispose."
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "day": 9,
+  "title": "Self-Attention & Multi-Head Attention",
+  "module": "Transformers, prompting & APIs",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain the intuition behind self-attention using queries, keys and values.",
+    "Compute scaled dot-product attention step by step, including the softmax and the scaling factor.",
+    "Explain causal masking and why decoder-only models need it.",
+    "Describe multi-head attention and why several heads beat one large head.",
+    "Distinguish self-attention, cross-attention and efficient variants such as MQA and GQA."
+  ],
+  "definition": "Self-attention is the mechanism that lets each token in a sequence build its new representation as a weighted average of all tokens' information, with the weights computed from how relevant each token is to it. It is computed as softmax(Q K^T / sqrt(d_k)) V, where queries (Q), keys (K) and values (V) are learned projections of the token vectors. Multi-head attention runs several such attentions in parallel on smaller projections and concatenates the results.",
+  "theory": [
+    {
+      "heading": "The intuition: queries, keys and values",
+      "body": "Think of a library search. Each token issues a query ('what am I looking for?'), every token advertises a key ('what do I contain?') and carries a value ('the information I give if chosen'). In the sentence 'The animal didn't cross the street because it was too tired', the token 'it' should attend strongly to 'animal'. Attention scores come from comparing the query of 'it' with every key; the output for 'it' is mostly the value of 'animal'. Q, K and V are produced by multiplying each token vector by three learned weight matrices W_Q, W_K and W_V.",
+      "points": [
+        "Query: what the current token needs.",
+        "Key: what each token offers, used for matching.",
+        "Value: the content that is actually mixed into the output."
+      ]
+    },
+    {
+      "heading": "Scaled dot-product attention, step by step",
+      "body": "1) Compute scores S = Q K^T: each entry is the dot product of one query with one key. 2) Divide by sqrt(d_k). Without this, dot products grow with the dimension, softmax becomes extremely peaked and gradients vanish. 3) Apply softmax to each row so the weights for one query sum to 1. 4) Multiply by V: each output row is the weighted average of value vectors. The whole operation is a few matrix multiplications, which is why it runs so efficiently on GPUs.",
+      "points": [
+        "Attention(Q, K, V) = softmax(Q K^T / sqrt(d_k)) V.",
+        "Shapes: Q (n x d_k), K (n x d_k), V (n x d_v) -> weights (n x n) -> output (n x d_v).",
+        "Each row of the weight matrix is a probability distribution over the tokens."
+      ]
+    },
+    {
+      "heading": "Causal masking",
+      "body": "A decoder-only model is trained to predict each next token, so position i must not see positions after i, otherwise it could simply copy the answer. A causal mask sets the scores above the diagonal to minus infinity before the softmax, giving those future positions a weight of exactly 0. Encoder models such as BERT use no causal mask (bidirectional attention); padding masks are used in both to ignore padding tokens in a batch.",
+      "points": [
+        "Masked scores = -inf -> softmax weight 0.",
+        "Row i of the weight matrix only has non-zero entries for columns 0..i.",
+        "This is what makes parallel training of next-token prediction possible."
+      ]
+    },
+    {
+      "heading": "Multi-head attention",
+      "body": "Instead of one attention with dimension d_model, the model splits it into h heads of size d_model / h. Each head has its own W_Q, W_K, W_V, so it can learn a different kind of relationship: one head may track syntax (subject-verb), another coreference ('it' -> 'animal'), another nearby tokens. The head outputs are concatenated and mixed by an output projection W_O. The total compute is similar to a single full-size head, but the representation is much richer.",
+      "points": [
+        "MultiHead(X) = Concat(head_1, ..., head_h) W_O.",
+        "GPT-2 small: 12 heads of 64 dimensions = 768.",
+        "Heads specialise during training without being told what to learn."
+      ]
+    },
+    {
+      "heading": "Variants: cross-attention, MQA and GQA",
+      "body": "In cross-attention, queries come from one sequence and keys/values from another; an encoder-decoder translator uses it so the decoder can look at the source sentence, and image-text models use it to attend to image features. For faster inference, Multi-Query Attention (MQA) shares one set of keys and values across all heads, and Grouped-Query Attention (GQA, used in Llama 2 70B, Llama 3 and Mistral) shares them within groups of heads. Both shrink the KV cache with little quality loss.",
+      "points": [
+        "Self-attention: Q, K, V all from the same sequence.",
+        "Cross-attention: Q from the decoder, K and V from the encoder or another modality.",
+        "MQA / GQA: fewer key-value heads -> smaller KV cache, faster decoding."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Attention in PyTorch",
+    "body": "PyTorch provides a fused implementation, torch.nn.functional.scaled_dot_product_attention, which can use FlashAttention kernels on supported GPUs. The manual version and the built-in function give the same result. Setting is_causal=True applies the causal mask.",
+    "code": {
+      "language": "python",
+      "source": "import math\nimport torch\nimport torch.nn.functional as F\n\ntorch.manual_seed(0)\nq = torch.randn(1, 4, 8)   # (batch, tokens, d_k)\nk = torch.randn(1, 4, 8)\nv = torch.randn(1, 4, 8)\n\nscores = q @ k.transpose(-2, -1) / math.sqrt(q.size(-1))\nmask = torch.triu(torch.ones(4, 4, dtype=torch.bool), diagonal=1)\nmanual = scores.masked_fill(mask, float('-inf')).softmax(dim=-1) @ v\n\nbuiltin = F.scaled_dot_product_attention(q, k, v, is_causal=True)\nprint(torch.allclose(manual, builtin, atol=1e-6))   # True"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Coreference and long-range context",
+      "description": "Linking pronouns to entities and connecting a question at the end of a prompt to facts at the start."
+    },
+    {
+      "title": "Machine translation",
+      "description": "Cross-attention aligns each generated word with the relevant source words."
+    },
+    {
+      "title": "Vision and multimodal models",
+      "description": "Vision Transformers attend across image patches; multimodal models attend from text tokens to image features."
+    },
+    {
+      "title": "Interpretability",
+      "description": "Visualising attention weights (for example with BertViz) gives hints about what a model focuses on, with caution."
+    }
+  ],
+  "demonstration": {
+    "description": "Compute attention for two tokens with d_k = 2 and no mask. Token 1's query matches key 1 better, so its output leans towards value 1.",
+    "code": {
+      "language": "text",
+      "source": "Q = [[1, 0], [0, 1]]   K = [[1, 0], [0, 1]]   V = [[10, 0], [0, 10]]\nScores Q K^T = [[1, 0], [0, 1]]\nScaled by 1/sqrt(2) = [[0.7071, 0], [0, 0.7071]]\nSoftmax per row     = [[0.6698, 0.3302], [0.3302, 0.6698]]"
+    },
+    "output": "Output = weights x V = [[6.698, 3.302], [3.302, 6.698]]\nEach token keeps about 67% of its own value and mixes in 33% of the other."
+  },
+  "takeaways": [
+    "Attention(Q, K, V) = softmax(Q K^T / sqrt(d_k)) V.",
+    "Q, K and V are learned linear projections of the same token vectors in self-attention.",
+    "Scaling by sqrt(d_k) keeps softmax from saturating as dimensions grow.",
+    "Causal masks hide future tokens in decoder-only models.",
+    "Multiple heads learn different relationships in parallel and are concatenated.",
+    "GQA and MQA reduce KV-cache memory for faster inference."
+  ],
+  "interview": [
+    {
+      "question": "Explain self-attention in simple terms.",
+      "answer": "Each token compares its query with every token's key to get relevance scores, turns them into weights with softmax, and outputs a weighted average of the tokens' values. This lets every token gather context from the whole sequence.",
+      "explanation": "Use a concrete sentence example (pronoun resolution). Interviewers check that you know the roles of Q, K and V."
+    },
+    {
+      "question": "Why do we divide by sqrt(d_k)?",
+      "answer": "Dot products of random vectors have variance proportional to d_k, so large dimensions produce large scores that push softmax into a near one-hot region with tiny gradients. Dividing by sqrt(d_k) keeps the variance around 1.",
+      "explanation": "This is a classic question; mention both the variance argument and the gradient consequence."
+    },
+    {
+      "question": "What is the purpose of the causal mask?",
+      "answer": "It prevents each position from attending to future positions by setting their scores to minus infinity before softmax, so a decoder learns next-token prediction without seeing the answer and generation stays consistent with training.",
+      "explanation": "Mention that it enables training on all positions of a sequence in parallel."
+    },
+    {
+      "question": "Why use multi-head attention instead of one big head?",
+      "answer": "Different heads can attend to different kinds of relationships and positions simultaneously. Splitting the dimension keeps compute similar, while the concatenated heads give a richer representation than one averaged attention pattern.",
+      "explanation": "Strong answers mention head specialisation and the output projection W_O."
+    },
+    {
+      "question": "What is Grouped-Query Attention and why is it used?",
+      "answer": "GQA lets groups of query heads share one key-value head. It reduces the size of the KV cache and memory bandwidth at inference, giving faster decoding with quality close to full multi-head attention.",
+      "explanation": "Position it between MHA (one KV per head) and MQA (one KV for all heads); name a model that uses it, such as Llama 3."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Scaled dot-product attention with an optional causal mask",
+    "difficulty": "Intermediate",
+    "objective": "Implement the attention formula from scratch on small matrices, including scaling, softmax and causal masking.",
+    "statement": "Given matrices Q (n x dk), K (n x dk) and V (n x dv), compute weights = softmax(Q K^T / sqrt(dk)) row by row and output = weights V. If the mask flag is 1, apply a causal mask: for row i, columns j > i receive weight 0 (exclude them before the softmax). Use a numerically stable softmax. Print the weight matrix and the output matrix.",
+    "language": "python",
+    "input_format": "Line 1: n dk dv mask (mask is 0 or 1).\nNext n lines: rows of Q. Next n lines: rows of K. Next n lines: rows of V.",
+    "output_format": "weights:\n<n lines, n values each with 4 decimals>\noutput:\n<n lines, dv values each with 4 decimals>\nValues are space-separated; never print -0.0000.",
+    "example": {
+      "input": "2 2 2 0\n1 0\n0 1\n1 0\n0 1\n10 0\n0 10\n",
+      "output": "weights:\n0.6698 0.3302\n0.3302 0.6698\noutput:\n6.6976 3.3024\n3.3024 6.6976"
+    },
+    "constraints": [
+      "1 <= n <= 20; 1 <= dk, dv <= 16.",
+      "Values are real numbers between -100 and 100.",
+      "With the mask, row 0 always attends only to itself (weight 1)."
+    ],
+    "starter": "import math\n\nn, dk, dv, mask = map(int, input().split())\nQ = [list(map(float, input().split())) for _ in range(n)]\nK = [list(map(float, input().split())) for _ in range(n)]\nV = [list(map(float, input().split())) for _ in range(n)]\n\ndef fmt(row):\n    return ' '.join(f'{round(x, 4) + 0.0:.4f}' for x in row)\n\n# TODO: scores, optional causal mask, softmax, weighted sum of V\n",
+    "solution": "import math\n\nn, dk, dv, mask = map(int, input().split())\nQ = [list(map(float, input().split())) for _ in range(n)]\nK = [list(map(float, input().split())) for _ in range(n)]\nV = [list(map(float, input().split())) for _ in range(n)]\n\ndef fmt(row):\n    return ' '.join(f'{round(x, 4) + 0.0:.4f}' for x in row)\n\nscale = math.sqrt(dk)\nweights = []\nfor i in range(n):\n    visible = range(i + 1) if mask else range(n)\n    scores = {j: sum(a * b for a, b in zip(Q[i], K[j])) / scale for j in visible}\n    top = max(scores.values())\n    exps = {j: math.exp(s - top) for j, s in scores.items()}\n    total = sum(exps.values())\n    weights.append([exps[j] / total if j in exps else 0.0 for j in range(n)])\n\noutput = [[sum(weights[i][j] * V[j][c] for j in range(n)) for c in range(dv)] for i in range(n)]\n\nprint('weights:')\nfor row in weights:\n    print(fmt(row))\nprint('output:')\nfor row in output:\n    print(fmt(row))\n",
+    "explanation": [
+      "For each query row i, compute the dot product with every visible key row j and divide by sqrt(dk).",
+      "With the causal mask, only keys 0..i are visible; skipping the others is equivalent to setting their scores to minus infinity.",
+      "Apply a stable softmax over the visible scores: subtract the maximum, exponentiate and divide by the sum.",
+      "Each output row is the weighted sum of the value rows using that row's weights.",
+      "Print both matrices with 4 decimals, normalising -0.0 to 0.0."
+    ],
+    "tests": [
+      {
+        "input": "2 2 2 0\n1 0\n0 1\n1 0\n0 1\n10 0\n0 10\n",
+        "output": "weights:\n0.6698 0.3302\n0.3302 0.6698\noutput:\n6.6976 3.3024\n3.3024 6.6976"
+      },
+      {
+        "input": "3 2 1 1\n1 1\n1 1\n1 1\n1 0\n0 1\n1 1\n3\n6\n9\n",
+        "output": "weights:\n1.0000 0.0000 0.0000\n0.5000 0.5000 0.0000\n0.2483 0.2483 0.5035\noutput:\n3.0000\n4.5000\n6.7657"
+      },
+      {
+        "input": "1 3 2 0\n0.5 -1 2\n1 1 1\n-4 7\n",
+        "output": "weights:\n1.0000\noutput:\n-4.0000 7.0000"
+      },
+      {
+        "input": "3 1 2 0\n100\n0\n-100\n1\n0\n-1\n1 0\n0 1\n1 1\n",
+        "output": "weights:\n1.0000 0.0000 0.0000\n0.3333 0.3333 0.3333\n0.0000 0.0000 1.0000\noutput:\n1.0000 0.0000\n0.6667 0.6667\n1.0000 1.0000"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "In self-attention, which vectors are compared to produce the attention scores?",
+      "options": [
+        "Keys with the output projection",
+        "Embeddings with positional encodings",
+        "Values with values",
+        "Queries with keys"
+      ],
+      "answer": 3,
+      "explanation": "Scores are dot products between each query and every key; values are then mixed using the resulting weights."
+    },
+    {
+      "type": "output",
+      "question": "A query's scores for three keys after scaling are [0, 0, 0]. What attention weights does softmax produce?",
+      "options": [
+        "[1, 0, 0]",
+        "[0, 0, 0]",
+        "[0.5, 0.25, 0.25]",
+        "[1/3, 1/3, 1/3]"
+      ],
+      "answer": 3,
+      "explanation": "Equal scores give equal weights: exp(0) / (3 * exp(0)) = 1/3 each."
+    },
+    {
+      "type": "concept",
+      "question": "What does a causal mask do in a decoder-only Transformer?",
+      "options": [
+        "Shuffles token order",
+        "Doubles the number of heads",
+        "Hides future tokens from each position",
+        "Removes padding from the vocabulary"
+      ],
+      "answer": 2,
+      "explanation": "Scores for positions after the current one are set to minus infinity, so their weights become zero."
+    },
+    {
+      "type": "scenario",
+      "question": "You increase d_k from 64 to 1,024 but forget the 1/sqrt(d_k) scaling. What is the likely effect?",
+      "options": [
+        "Training becomes faster and more stable",
+        "Attention weights become uniform",
+        "Softmax saturates to near one-hot weights, giving tiny gradients",
+        "The causal mask stops working"
+      ],
+      "answer": 2,
+      "explanation": "Unscaled dot products grow with dimension, pushing softmax to extremes where gradients vanish."
+    },
+    {
+      "type": "concept",
+      "question": "What is the main benefit of Grouped-Query Attention over standard multi-head attention?",
+      "options": [
+        "It makes attention bidirectional",
+        "It increases the vocabulary size",
+        "It removes the need for positional encoding",
+        "It shrinks the KV cache, speeding up inference"
+      ],
+      "answer": 3,
+      "explanation": "Sharing key-value heads across groups of query heads reduces KV-cache memory and bandwidth during decoding."
+    }
+  ]
+}

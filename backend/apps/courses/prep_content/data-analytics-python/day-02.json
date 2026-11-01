@@ -1,0 +1,231 @@
+{
+  "day": 2,
+  "title": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+  "module": "Python foundations for analysts",
+  "level": "Beginner",
+  "objectives": [
+    "Build and transform lists with slicing, sorting and list comprehensions.",
+    "Use dicts, defaultdict and Counter to group and count records.",
+    "Write dict and set comprehensions with conditions.",
+    "Sort records by several keys using key functions.",
+    "Explain when comprehensions help readability and when a loop is clearer."
+  ],
+  "definition": "A comprehension is a compact Python expression that builds a new list, dict or set by looping over an iterable, optionally filtering items with a condition. Combined with dictionaries for grouping and counting, comprehensions let an analyst reshape small datasets in a few readable lines, which is exactly what pandas later does at scale.",
+  "theory": [
+    {
+      "heading": "Working with lists",
+      "body": "Lists hold a sequence of values such as daily sales. Slicing (sales[:7]) returns a new list, negative indexes count from the end, and sorted() returns a new sorted list while list.sort() sorts in place and returns None. Forgetting that .sort() returns None is a classic bug in interview code.",
+      "points": [
+        "sales[-1] is the last item; sales[::-1] is a reversed copy.",
+        "sorted(rows, key=lambda r: r['amount'], reverse=True) sorts records by a field.",
+        "Sorting by a tuple key, key=lambda r: (-r['amount'], r['name']), gives descending amount then ascending name."
+      ]
+    },
+    {
+      "heading": "Comprehensions: list, dict and set",
+      "body": "A comprehension has the shape [expression for item in iterable if condition]. It is usually faster than an equivalent loop with append because the loop runs inside the interpreter's optimised bytecode, and it reads like a sentence. Dict comprehensions build lookups, set comprehensions collect unique values. Avoid stuffing several nested loops and conditions into one comprehension; readability matters more than brevity.",
+      "points": [
+        "[p * 1.18 for p in prices] adds 18% GST to every price.",
+        "{name: score for name, score in pairs if score >= 40} keeps passing students.",
+        "{row['city'] for row in rows} gives the distinct cities.",
+        "The if at the end filters; a conditional expression (a if c else b) at the front transforms."
+      ]
+    },
+    {
+      "heading": "Grouping and counting with dictionaries",
+      "body": "Grouping is the heart of analytics: total sales per region, customers per city. In plain Python you loop once over the records and accumulate into a dict. collections.defaultdict removes the need to check whether a key exists, and collections.Counter counts hashable items and offers most_common(). This single-pass pattern is what pandas groupby performs internally in optimised code.",
+      "points": [
+        "totals = defaultdict(float); totals[region] += amount",
+        "Counter(cities).most_common(3) gives the top three cities.",
+        "dict.get(key, 0) returns a default without raising KeyError."
+      ]
+    },
+    {
+      "heading": "Useful built-ins: zip, enumerate, any, all",
+      "body": "zip pairs values from two lists, for example column names with a row's values to build a record dict. enumerate gives an index while looping without manual counters. any and all answer yes/no questions over a sequence, such as whether any value is negative, and stop early as soon as the answer is known.",
+      "points": [
+        "dict(zip(header, values)) turns a CSV row into a record.",
+        "for i, row in enumerate(rows, start=1) numbers rows from 1.",
+        "all(v >= 0 for v in amounts) validates a column."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Revenue per region with a dict comprehension and defaultdict",
+    "body": "We turn raw rows into records with zip, keep only paid orders with a comprehension, then accumulate revenue per region. The pandas equivalent is df[df.status == 'paid'].groupby('region')['amount'].sum().",
+    "code": {
+      "language": "python",
+      "source": "from collections import defaultdict\n\nheader = ['region', 'amount', 'status']\nrows = [['North', 500, 'paid'], ['South', 300, 'refunded'],\n        ['North', 250, 'paid'], ['South', 400, 'paid']]\nrecords = [dict(zip(header, r)) for r in rows]\npaid = [r for r in records if r['status'] == 'paid']\n\nrevenue = defaultdict(int)\nfor r in paid:\n    revenue[r['region']] += r['amount']\nprint(dict(revenue))   # {'North': 750, 'South': 400}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Quick frequency tables",
+      "description": "Counting product categories or error codes with Counter before loading anything into pandas."
+    },
+    {
+      "title": "Lookup tables",
+      "description": "Building a dict from product ID to price to enrich order records, the manual version of a merge."
+    },
+    {
+      "title": "Validation",
+      "description": "Using any/all with comprehensions to check that IDs are unique or amounts are positive."
+    },
+    {
+      "title": "Preparing API payloads",
+      "description": "Turning lists of records into dicts keyed by ID before sending or storing them as JSON."
+    }
+  ],
+  "demonstration": {
+    "description": "Comprehensions with filters and transforms, a Counter and a multi-key sort on a small list of records.",
+    "code": {
+      "language": "python",
+      "source": "from collections import Counter\n\nmarks = [35, 72, 90, 41, 58]\nprint([m for m in marks if m >= 40])\nprint(['pass' if m >= 40 else 'fail' for m in marks])\n\ncities = ['Pune', 'Delhi', 'Pune', 'Chennai', 'Delhi', 'Pune']\nprint(Counter(cities).most_common(2))\n\nstaff = [('Asha', 50000), ('Ravi', 65000), ('Bina', 50000)]\nprint(sorted(staff, key=lambda s: (-s[1], s[0])))"
+    },
+    "output": "[72, 90, 41, 58]\n['fail', 'pass', 'pass', 'pass', 'pass']\n[('Pune', 3), ('Delhi', 2)]\n[('Ravi', 65000), ('Asha', 50000), ('Bina', 50000)]"
+  },
+  "takeaways": [
+    "Comprehensions build lists, dicts and sets in one readable expression; keep them simple.",
+    "A trailing if filters items; a leading if-else transforms every item.",
+    "defaultdict and Counter make grouping and counting a single pass over the data.",
+    "sorted() returns a new list; list.sort() sorts in place and returns None.",
+    "Tuple sort keys handle multi-column ordering, with negation for descending numbers.",
+    "These patterns are the mental model behind pandas filtering and groupby."
+  ],
+  "interview": [
+    {
+      "question": "What is a list comprehension and why would you use it?",
+      "answer": "It is an expression such as [x * 2 for x in values if x > 0] that builds a new list from an iterable with optional filtering. It is concise, readable for simple transformations and usually faster than a loop that calls append.",
+      "explanation": "Mention both readability and speed, and that very complex comprehensions should be rewritten as loops."
+    },
+    {
+      "question": "What is the difference between sorted(x) and x.sort()?",
+      "answer": "sorted() works on any iterable and returns a new list, leaving the original unchanged. list.sort() sorts the list in place and returns None.",
+      "explanation": "Interviewers often show code like x = x.sort() to see if you spot that x becomes None."
+    },
+    {
+      "question": "How would you count the frequency of each item in a list?",
+      "answer": "Use collections.Counter(items), which returns a dict-like object of counts and supports most_common(n). Without imports, loop and use counts[item] = counts.get(item, 0) + 1.",
+      "explanation": "Showing both the library way and the manual way demonstrates understanding, not just recall."
+    },
+    {
+      "question": "How do you sort a list of records by amount descending and then by name ascending?",
+      "answer": "Use a tuple key: sorted(records, key=lambda r: (-r['amount'], r['name'])). Negating the number reverses its order while names stay ascending. For non-numeric keys, sort twice using stable sorting: first by the secondary key, then by the primary key with reverse=True.",
+      "explanation": "Knowing that Python's sort is stable and how to exploit it is a strong advanced signal."
+    },
+    {
+      "question": "When is a comprehension the wrong choice?",
+      "answer": "When it needs several nested loops and conditions, has side effects such as printing or writing files, or when the data is large and a generator expression or pandas vectorised operation would avoid building a full list in memory.",
+      "explanation": "Good answers mention generator expressions, e.g. sum(x for x in values), to avoid creating an intermediate list."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Category units and distinct products",
+    "difficulty": "Basic",
+    "objective": "Group records with dictionaries and sets, then sort the result by several keys.",
+    "statement": "Each order line has a product name, a category and a quantity. For each category, compute the total units sold and the number of distinct products. Print the categories sorted by total units descending; break ties by category name ascending. If there are no order lines, print 'no data'.",
+    "language": "python",
+    "input_format": "The first line is N, the number of order lines. Each of the next N lines is product,category,quantity. Spaces around fields should be ignored.",
+    "output_format": "One line per category: <category> | units=<total> | products=<distinct count>, or 'no data' when N is 0.",
+    "example": {
+      "input": "5\nLaptop,Electronics,2\nPen,Stationery,10\nPhone,Electronics,3\nLaptop,Electronics,1\nNotebook,Stationery,4\n",
+      "output": "Stationery | units=14 | products=2\nElectronics | units=6 | products=2"
+    },
+    "constraints": [
+      "0 <= N <= 10000; quantity is a non-negative integer.",
+      "Product and category names are case-sensitive after trimming spaces.",
+      "A product appearing several times in a category counts once."
+    ],
+    "starter": "from collections import defaultdict\n\nn = int(input())\nunits = defaultdict(int)\nproducts = defaultdict(set)\nfor _ in range(n):\n    name, category, qty = [part.strip() for part in input().split(',')]\n    # TODO: accumulate units and products\n\n# TODO: sort and print\n",
+    "solution": "from collections import defaultdict\n\nn = int(input())\nunits = defaultdict(int)\nproducts = defaultdict(set)\nfor _ in range(n):\n    name, category, qty = [part.strip() for part in input().split(',')]\n    units[category] += int(qty)\n    products[category].add(name)\n\nif not units:\n    print('no data')\nfor category in sorted(units, key=lambda c: (-units[c], c)):\n    print(f'{category} | units={units[category]} | products={len(products[category])}')\n",
+    "explanation": [
+      "Read N, then split each line on commas and strip spaces from every field.",
+      "Add the quantity to a defaultdict(int) keyed by category, and add the product to a defaultdict(set) so repeats count once.",
+      "Sort category names with the key (-units, name) to get descending totals and alphabetical tie-breaks.",
+      "Print one formatted line per category, or 'no data' when nothing was read."
+    ],
+    "tests": [
+      {
+        "input": "5\nLaptop,Electronics,2\nPen,Stationery,10\nPhone,Electronics,3\nLaptop,Electronics,1\nNotebook,Stationery,4\n",
+        "output": "Stationery | units=14 | products=2\nElectronics | units=6 | products=2"
+      },
+      {
+        "input": "4\nA,X,5\nB,Y,5\nC,Z,1\nA,X,0\n",
+        "output": "X | units=5 | products=1\nY | units=5 | products=1\nZ | units=1 | products=1"
+      },
+      {
+        "input": "0\n",
+        "output": "no data"
+      },
+      {
+        "input": "3\n Mug , Kitchen , 3\nMug,Kitchen,2\nBowl,Kitchen,1\n",
+        "output": "Kitchen | units=6 | products=2"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this comprehension produce?",
+      "code": "print([x * 2 for x in range(6) if x % 2 == 0])",
+      "options": [
+        "[0, 2, 4]",
+        "[2, 6, 10]",
+        "[0, 4, 8]",
+        "[0, 2, 4, 6, 8, 10]"
+      ],
+      "answer": 2,
+      "explanation": "range(6) gives 0..5; the filter keeps 0, 2 and 4; doubling gives [0, 4, 8]."
+    },
+    {
+      "type": "output",
+      "question": "What does this in-place sort return?",
+      "code": "nums = [3, 1, 2]\nresult = nums.sort()\nprint(result)",
+      "options": [
+        "[3, 1, 2]",
+        "TypeError",
+        "None",
+        "[1, 2, 3]"
+      ],
+      "answer": 2,
+      "explanation": "list.sort() sorts in place and returns None, so result is None even though nums is now sorted."
+    },
+    {
+      "type": "concept",
+      "question": "Which tool most directly gives the three most frequent cities in a list?",
+      "options": [
+        "set(cities)",
+        "sorted(cities)[:3]",
+        "dict.fromkeys(cities)",
+        "collections.Counter(cities).most_common(3)"
+      ],
+      "answer": 3,
+      "explanation": "Counter counts each item and most_common(3) returns the top three (item, count) pairs."
+    },
+    {
+      "type": "code",
+      "question": "Which expression builds a dict of only the students who scored at least 40?",
+      "options": [
+        "{n for n, s in scores.items() if s >= 40}",
+        "dict(n, s for n, s in scores if s >= 40)",
+        "[n: s for n, s in scores.items() if s >= 40]",
+        "{n: s for n, s in scores.items() if s >= 40}"
+      ],
+      "answer": 3,
+      "explanation": "A dict comprehension uses braces with key: value. The set comprehension keeps only names, and the other two are invalid syntax."
+    },
+    {
+      "type": "scenario",
+      "question": "You must sort employees by salary descending and, for equal salaries, by name ascending. Which key works?",
+      "options": [
+        "key=lambda e: (-e['salary'], e['name'])",
+        "key=lambda e: (e['salary'], e['name']), reverse=True",
+        "key=lambda e: e['salary'] + e['name']",
+        "key=lambda e: -e['name']"
+      ],
+      "answer": 0,
+      "explanation": "Negating salary sorts it descending while the name stays ascending. reverse=True would also reverse the name order."
+    }
+  ]
+}

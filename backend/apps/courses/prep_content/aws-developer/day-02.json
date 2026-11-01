@@ -1,0 +1,244 @@
+{
+  "day": 2,
+  "title": "IAM Users, Groups, Roles and Policies",
+  "module": "Cloud foundations and IAM",
+  "level": "Beginner",
+  "objectives": [
+    "Distinguish the root user, IAM users, groups and roles and when to use each.",
+    "Read and write an IAM policy document: Version, Statement, Effect, Action, Resource and Condition.",
+    "Compare identity-based, resource-based, AWS managed, customer managed and inline policies.",
+    "Explain why roles with temporary credentials are preferred over long-term access keys.",
+    "Match IAM actions and ARNs containing wildcards."
+  ],
+  "definition": "AWS Identity and Access Management (IAM) is the global service that controls who can sign in (authentication) and what they can do (authorisation) in an AWS account. Identities such as users and roles receive permissions through JSON policy documents that allow or deny specific API actions on specific resources.",
+  "theory": [
+    {
+      "heading": "Identities: root, users, groups and roles",
+      "body": "The root user is created with the account and has unrestricted access; lock it with MFA and use it only for the few tasks that require it, such as changing the support plan. IAM users represent a person or workload with long-term credentials (a console password and/or access keys). Groups are collections of users used to attach permissions once; they cannot be nested and cannot be named as a principal in a policy. Roles have no long-term credentials: a trusted entity assumes the role and receives temporary credentials from STS.",
+      "points": [
+        "Users: long-term credentials; today most organisations use IAM Identity Center for people instead.",
+        "Groups: only contain users, simplify permission management, cannot be nested.",
+        "Roles: assumed by AWS services (Lambda, EC2), other accounts, or federated users.",
+        "An EC2 instance gets a role through an instance profile; a Lambda function through its execution role."
+      ]
+    },
+    {
+      "heading": "Anatomy of a policy",
+      "body": "A policy is a JSON document with a Version (always \"2012-10-17\" for current features) and one or more Statements. Each statement has an Effect (Allow or Deny), the Action list (service:Operation, for example dynamodb:PutItem), the Resource ARNs the statement applies to, and an optional Condition block that narrows when it applies. Resource-based policies also include a Principal element naming who is granted access.",
+      "points": [
+        "Actions and resources accept wildcards: * matches any sequence, ? matches one character.",
+        "Action names are case-insensitive; resource ARNs are case-sensitive.",
+        "NotAction and NotResource invert the match and are easy to misuse.",
+        "Conditions use keys such as aws:SourceIp, aws:MultiFactorAuthPresent, aws:PrincipalTag/team or s3:prefix."
+      ]
+    },
+    {
+      "heading": "Types of policies",
+      "body": "Identity-based policies attach to a user, group or role and say what that identity can do. Resource-based policies attach to a resource such as an S3 bucket, SQS queue, KMS key or Lambda function and say who can use it; they are essential for cross-account access. Managed policies are standalone and reusable: AWS managed policies are maintained by AWS, customer managed policies by you. Inline policies are embedded in one identity and deleted with it.",
+      "points": [
+        "Prefer customer managed policies: versioned, reusable and auditable.",
+        "Use inline policies only for a strict one-to-one relationship.",
+        "Lambda resource-based policies grant services like S3 or API Gateway permission to invoke the function.",
+        "Permission boundaries and SCPs set maximum permissions; they never grant anything themselves (Day 3)."
+      ]
+    },
+    {
+      "heading": "Least privilege and best practices",
+      "body": "Least privilege means granting only the actions and resources a workload needs. Broad policies such as AdministratorAccess on an application role turn a small bug or a leaked credential into a full account compromise. Start narrow, use IAM Access Analyzer to generate policies from CloudTrail activity and to find resources shared outside the account, and review last-accessed information to remove unused permissions.",
+      "points": [
+        "Never create access keys for the root user; enable MFA on it.",
+        "Use roles for applications on AWS compute, never hard-coded keys.",
+        "Rotate any long-term access keys and remove unused ones.",
+        "Use tags and conditions (attribute-based access control) to scale permissions."
+      ]
+    },
+    {
+      "heading": "Roles in practice: trust policy plus permissions policy",
+      "body": "Every role has two policies that answer different questions. The trust policy (a resource-based policy on the role) answers who may assume the role, for example the service principal lambda.amazonaws.com. The permissions policy answers what the role may do once assumed. A common exam trap is an AccessDenied on sts:AssumeRole: that is fixed in the trust policy, not the permissions policy.",
+      "points": [
+        "Trust policy Principal examples: a service, an account ARN, a federated identity provider.",
+        "Permissions policy: identity-based policies attached to the role."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Least-privilege policy for an orders Lambda function",
+    "body": "This customer managed policy lets a function read and write items in one DynamoDB table and write its own logs. It names exact actions and an exact table ARN instead of dynamodb:* on *, so a bug cannot delete other tables.",
+    "code": {
+      "language": "json",
+      "source": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"OrdersTableAccess\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"dynamodb:GetItem\", \"dynamodb:PutItem\", \"dynamodb:UpdateItem\", \"dynamodb:Query\"],\n      \"Resource\": [\n        \"arn:aws:dynamodb:ap-south-1:111122223333:table/Orders\",\n        \"arn:aws:dynamodb:ap-south-1:111122223333:table/Orders/index/*\"\n      ]\n    },\n    {\n      \"Sid\": \"Logs\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"logs:CreateLogStream\", \"logs:PutLogEvents\"],\n      \"Resource\": \"arn:aws:logs:ap-south-1:111122223333:log-group:/aws/lambda/orders-api:*\"\n    }\n  ]\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Application roles",
+      "description": "Lambda functions, ECS tasks and EC2 instances receive roles so the SDK obtains rotating temporary credentials automatically."
+    },
+    {
+      "title": "Team permissions through groups",
+      "description": "Developers, testers and auditors are placed in groups with different managed policies, so onboarding a person is one group membership."
+    },
+    {
+      "title": "Cross-account access",
+      "description": "A CI/CD account assumes a deployment role in the production account; the role's trust policy names the CI/CD account."
+    },
+    {
+      "title": "Service-to-service invocation",
+      "description": "A resource-based policy on a Lambda function allows an S3 bucket in the same account to invoke it on object upload."
+    }
+  ],
+  "demonstration": {
+    "description": "Create a role that Lambda can assume and attach the AWS managed basic execution policy using the CLI. The trust policy is passed as a file; the command output includes the role ARN you later give to the function.",
+    "code": {
+      "language": "bash",
+      "source": "cat > trust.json <<'EOF'\n{\"Version\": \"2012-10-17\",\n \"Statement\": [{\"Effect\": \"Allow\",\n   \"Principal\": {\"Service\": \"lambda.amazonaws.com\"},\n   \"Action\": \"sts:AssumeRole\"}]}\nEOF\n\naws iam create-role --role-name orders-api-role \\\n  --assume-role-policy-document file://trust.json \\\n  --query Role.Arn --output text\n\naws iam attach-role-policy --role-name orders-api-role \\\n  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+    },
+    "output": "arn:aws:iam::111122223333:role/orders-api-role\n(attach-role-policy prints nothing on success)"
+  },
+  "takeaways": [
+    "Use roles and temporary credentials for workloads; avoid long-term access keys.",
+    "Groups hold users only, cannot be nested and cannot be a policy principal.",
+    "A policy statement is Effect + Action + Resource (+ Condition, + Principal for resource-based policies).",
+    "Trust policy = who can assume the role; permissions policy = what the role can do.",
+    "Resource-based policies enable cross-account and service-to-service access.",
+    "Least privilege limits the blast radius of bugs and leaked credentials."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between an IAM user and an IAM role?",
+      "answer": "A user is a long-lived identity with permanent credentials such as a password or access keys. A role has no credentials of its own; a trusted principal assumes it and receives temporary credentials from STS that expire automatically.",
+      "explanation": "Add when to use each: roles for applications, AWS services and cross-account access; users only where long-term credentials are unavoidable."
+    },
+    {
+      "question": "What are the main elements of an IAM policy statement?",
+      "answer": "Effect (Allow or Deny), Action (the API operations), Resource (the ARNs affected), an optional Condition block and, in resource-based policies, Principal.",
+      "explanation": "Mention Version 2012-10-17 and that action names are case-insensitive while ARNs are case-sensitive."
+    },
+    {
+      "question": "Compare identity-based and resource-based policies.",
+      "answer": "Identity-based policies attach to users, groups or roles and define what that identity can do. Resource-based policies attach to resources such as S3 buckets, SQS queues or KMS keys, include a Principal, and define who may access that resource, including principals from other accounts.",
+      "explanation": "The strong answer links resource-based policies to cross-account access and to services invoking Lambda."
+    },
+    {
+      "question": "A Lambda function gets AccessDenied writing to DynamoDB. How do you troubleshoot?",
+      "answer": "Check the function's execution role: does its permissions policy allow the exact action (for example dynamodb:PutItem) on the exact table ARN, including the Region and account? Then look for explicit denies in boundaries or SCPs, KMS key permissions if the table uses a customer managed key, and read the error message, which names the action and resource.",
+      "explanation": "Interviewers want a methodical path: the role, action, ARN, then guardrails. Mentioning CloudTrail and the IAM policy simulator is a plus."
+    },
+    {
+      "question": "When would you use an inline policy rather than a managed policy?",
+      "answer": "Only when the permissions must belong to exactly one identity and should be deleted with it. Managed policies are preferred because they are reusable, versioned and easier to audit.",
+      "explanation": "Showing that you know managed policies support version history and rollback adds depth."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "IAM wildcard permission checker",
+    "difficulty": "Basic",
+    "objective": "Practise how IAM matches actions and resource ARNs that contain * and ? wildcards.",
+    "statement": "A role has n Allow statements, each with one action pattern and one resource pattern. For each of m requests (an action and a resource ARN) print ALLOWED if at least one statement matches both, otherwise DENIED (IAM's implicit deny). In patterns, * matches any sequence of characters (including none and including / and :) and ? matches exactly one character. Actions match case-insensitively; resources are case-sensitive.",
+    "language": "python",
+    "input_format": "Line 1: n. Next n lines: action_pattern resource_pattern.\nNext line: m. Next m lines: action resource.",
+    "output_format": "m lines: <action as given> -> ALLOWED or <action as given> -> DENIED",
+    "example": {
+      "input": "2\ns3:Get* arn:aws:s3:::reports/*\ns3:ListBucket arn:aws:s3:::reports\n3\ns3:GetObject arn:aws:s3:::reports/2026/jan.csv\ns3:PutObject arn:aws:s3:::reports/x.csv\nS3:listbucket arn:aws:s3:::reports\n",
+      "output": "s3:GetObject -> ALLOWED\ns3:PutObject -> DENIED\nS3:listbucket -> ALLOWED"
+    },
+    "constraints": [
+      "0 ≤ n ≤ 50, 1 ≤ m ≤ 50.",
+      "Patterns and values contain no spaces.",
+      "Only * and ? are special; every other character matches itself."
+    ],
+    "starter": "import re\nimport sys\n\nlines = sys.stdin.read().splitlines()\nn = int(lines[0])\n\ndef compile_pattern(pattern, ignore_case):\n    # TODO: turn * into .* and ? into . and escape everything else\n    pass\n\n# TODO: read statements and requests, print ALLOWED or DENIED\n",
+    "solution": "import re\nimport sys\n\nlines = sys.stdin.read().splitlines()\n\ndef compile_pattern(pattern, ignore_case):\n    parts = []\n    for ch in pattern:\n        if ch == '*':\n            parts.append('.*')\n        elif ch == '?':\n            parts.append('.')\n        else:\n            parts.append(re.escape(ch))\n    flags = re.IGNORECASE if ignore_case else 0\n    return re.compile('^' + ''.join(parts) + '$', flags)\n\nn = int(lines[0])\nstatements = []\nfor line in lines[1:1 + n]:\n    action, resource = line.split()\n    statements.append((compile_pattern(action, True), compile_pattern(resource, False)))\n\nm = int(lines[1 + n])\nfor line in lines[2 + n:2 + n + m]:\n    action, resource = line.split()\n    allowed = any(a.match(action) and r.match(resource) for a, r in statements)\n    print(action + ' -> ' + ('ALLOWED' if allowed else 'DENIED'))\n",
+    "explanation": [
+      "Convert each pattern to an anchored regular expression: * becomes .*, ? becomes . and every other character is escaped.",
+      "Compile action patterns with IGNORECASE because IAM action names are case-insensitive; resource patterns stay case-sensitive.",
+      "A request is allowed when any single statement matches both the action and the resource.",
+      "With no matching statement IAM falls back to the implicit deny, so print DENIED."
+    ],
+    "tests": [
+      {
+        "input": "2\ns3:Get* arn:aws:s3:::reports/*\ns3:ListBucket arn:aws:s3:::reports\n3\ns3:GetObject arn:aws:s3:::reports/2026/jan.csv\ns3:PutObject arn:aws:s3:::reports/x.csv\nS3:listbucket arn:aws:s3:::reports\n",
+        "output": "s3:GetObject -> ALLOWED\ns3:PutObject -> DENIED\nS3:listbucket -> ALLOWED"
+      },
+      {
+        "input": "1\n* *\n2\nec2:TerminateInstances arn:aws:ec2:ap-south-1:111122223333:instance/i-0abc\niam:CreateUser arn:aws:iam::111122223333:user/dev\n",
+        "output": "ec2:TerminateInstances -> ALLOWED\niam:CreateUser -> ALLOWED"
+      },
+      {
+        "input": "0\n2\ns3:GetObject arn:aws:s3:::reports/a.csv\nsqs:SendMessage arn:aws:sqs:ap-south-1:111122223333:orders\n",
+        "output": "s3:GetObject -> DENIED\nsqs:SendMessage -> DENIED"
+      },
+      {
+        "input": "1\ndynamodb:GetItem arn:aws:dynamodb:ap-south-1:111122223333:table/Orders?\n2\ndynamodb:GetItem arn:aws:dynamodb:ap-south-1:111122223333:table/Orders1\ndynamodb:GetItem arn:aws:dynamodb:ap-south-1:111122223333:table/Orders10\n",
+        "output": "dynamodb:GetItem -> ALLOWED\ndynamodb:GetItem -> DENIED"
+      },
+      {
+        "input": "1\ns3:GetObject arn:aws:s3:::Reports/*\n1\ns3:GetObject arn:aws:s3:::reports/a.csv\n",
+        "output": "s3:GetObject -> DENIED"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which statement about IAM groups is true?",
+      "options": [
+        "Groups can contain other groups",
+        "Groups can be named as the Principal in an S3 bucket policy",
+        "Groups contain users and are used to attach permissions to many users at once",
+        "Groups can be assumed like roles"
+      ],
+      "answer": 2,
+      "explanation": "Groups only contain users, cannot be nested, cannot be a policy principal and cannot be assumed."
+    },
+    {
+      "type": "scenario",
+      "question": "An application on EC2 needs to read from S3. What is the most secure way to give it credentials?",
+      "options": [
+        "Use the root user's access keys stored in environment variables",
+        "Embed the keys in the AMI",
+        "Attach an IAM role to the instance through an instance profile",
+        "Store an IAM user's access keys in the application's config file"
+      ],
+      "answer": 2,
+      "explanation": "An instance role delivers short-lived, automatically rotated credentials through the instance metadata service; no keys are stored."
+    },
+    {
+      "type": "scenario",
+      "question": "A developer receives AccessDenied when calling sts:AssumeRole on a role in another account. Which policy most likely needs to change?",
+      "options": [
+        "The S3 bucket policy in the target account",
+        "The role's permissions policy",
+        "The developer's group inline policy name",
+        "The role's trust policy, which must allow the caller as a principal"
+      ],
+      "answer": 3,
+      "explanation": "The trust policy controls who may assume a role. The caller also needs sts:AssumeRole allowed in their own identity policy."
+    },
+    {
+      "type": "concept",
+      "question": "Which IAM policy element appears in resource-based policies but not in identity-based policies?",
+      "options": [
+        "Action",
+        "Condition",
+        "Effect",
+        "Principal"
+      ],
+      "answer": 3,
+      "explanation": "Resource-based policies must say who is granted access, so they include Principal. Identity-based policies apply to the identity they are attached to."
+    },
+    {
+      "type": "scenario",
+      "question": "A statement allows the action s3:Get* on arn:aws:s3:::logs/*. Which request does it allow?",
+      "options": [
+        "s3:PutObject on arn:aws:s3:::logs/app.log",
+        "s3:ListBucket on arn:aws:s3:::logs",
+        "s3:GetObject on arn:aws:s3:::logs/2026/app.log",
+        "s3:GetObject on arn:aws:s3:::LOGS/app.log"
+      ],
+      "answer": 2,
+      "explanation": "s3:Get* matches GetObject, and the resource wildcard * matches 2026/app.log including the slash. ARNs are case-sensitive, so LOGS does not match."
+    }
+  ]
+}

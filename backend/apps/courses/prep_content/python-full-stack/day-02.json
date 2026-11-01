@@ -1,0 +1,245 @@
+{
+  "day": 2,
+  "title": "Functions, Arguments, Scope and Closures",
+  "module": "Core Python",
+  "level": "Beginner",
+  "objectives": [
+    "Define functions with positional, keyword, default, *args and **kwargs parameters.",
+    "Explain the LEGB scope rule and when global and nonlocal are needed.",
+    "Avoid the mutable default argument trap and explain why it happens.",
+    "Use functions as first-class objects: pass them, return them and store them in dicts.",
+    "Build closures and lambdas and know their limits."
+  ],
+  "definition": "A function is a named, reusable block of code defined with def that takes parameters and returns a value (None if no return runs). In Python functions are first-class objects, so they can be assigned to variables, passed as arguments and returned from other functions; a closure is a nested function that remembers variables from the scope in which it was created.",
+  "theory": [
+    {
+      "heading": "Parameters and arguments",
+      "body": "Parameters are the names in the def line; arguments are the values passed in a call. Python matches arguments in a fixed order: positional, then keyword. *args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dict. A bare * in the signature makes the following parameters keyword-only, and / (Python 3.8+) makes the preceding ones positional-only. Clear signatures make APIs harder to misuse.",
+      "points": [
+        "def f(a, b=2, *args, flag=False, **kwargs) is a valid full signature.",
+        "f(*items) unpacks a list into positional arguments; f(**opts) unpacks a dict into keywords.",
+        "Keyword-only parameters (after *) force callers to write send(to=..., cc=...).",
+        "A function without a return statement returns None."
+      ]
+    },
+    {
+      "heading": "The mutable default argument trap",
+      "body": "Default values are evaluated once, when the def statement runs, not on every call. If the default is a mutable object such as a list, every call that relies on the default shares the same list, so data leaks between calls. The fix is to use None as a sentinel and create a new object inside the function.",
+      "points": [
+        "Wrong: def add(item, bucket=[]).",
+        "Right: def add(item, bucket=None): bucket = [] if bucket is None else bucket.",
+        "The shared default is visible in add.__defaults__."
+      ]
+    },
+    {
+      "heading": "Scope: the LEGB rule",
+      "body": "When Python looks up a name it searches Local, then Enclosing function scopes, then Global (module), then Built-in. Assigning to a name anywhere in a function makes it local to that function for the whole body, which is why reading a global and then assigning to it raises UnboundLocalError. global rebinds a module-level name; nonlocal rebinds a name in the nearest enclosing function. Prefer returning values over mutating globals.",
+      "points": [
+        "Local: names assigned inside the current function.",
+        "Enclosing: names in outer functions, used by closures.",
+        "Global: names at module top level.",
+        "Built-in: len, print, range and friends; shadowing them (list = [...]) is a common bug."
+      ]
+    },
+    {
+      "heading": "First-class functions, closures and lambdas",
+      "body": "Because functions are objects you can store them in a dictionary to build a dispatch table instead of a long if/elif chain, pass them as the key argument to sorted, or return them from a factory. A closure is created when an inner function references a variable of the outer function; the variable survives after the outer function returns. Closures are the foundation of decorators (Day 7). lambda creates a small anonymous function limited to a single expression.",
+      "points": [
+        "sorted(users, key=lambda u: u['age']) passes a function as data.",
+        "Closures capture variables, not values: loop variables captured in lambdas all see the final value unless bound with a default (lambda i=i: i).",
+        "functools.partial pre-fills some arguments of a function."
+      ]
+    },
+    {
+      "heading": "Pass by object reference",
+      "body": "Python passes references to objects ('call by sharing'). The function receives a new name bound to the same object. Mutating a mutable argument (list.append) is visible to the caller, but rebinding the parameter (lst = [...]) is not. This explains both why functions can change a caller's list and why they cannot change a caller's int.",
+      "points": [
+        "Mutation is visible outside; rebinding is not.",
+        "Copy defensively (list(arg), dict(arg)) if a function must not change its input."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A closure-based counter and the default-argument trap",
+    "body": "make_counter returns an inner function that keeps its own count using nonlocal. The second part shows how a mutable default leaks state between calls and how the None sentinel fixes it.",
+    "code": {
+      "language": "python",
+      "source": "def make_counter(start=0):\n    count = start\n    def increment(step=1):\n        nonlocal count\n        count += step\n        return count\n    return increment\n\nclicks = make_counter()\nprint(clicks(), clicks(), clicks(5))  # 1 2 7\n\ndef add_bad(item, bucket=[]):\n    bucket.append(item)\n    return bucket\n\ndef add_good(item, bucket=None):\n    bucket = [] if bucket is None else bucket\n    bucket.append(item)\n    return bucket\n\nprint(add_bad('a'), add_bad('b'))    # ['a', 'b'] ['a', 'b']\nprint(add_good('a'), add_good('b'))  # ['a'] ['b']"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Dispatch tables",
+      "description": "Map command or action names to handler functions, the same idea a URL router uses to map paths to views."
+    },
+    {
+      "title": "Callbacks and sorting keys",
+      "description": "Pass functions to sorted, map, filter or event systems to customise behaviour."
+    },
+    {
+      "title": "Configuration factories",
+      "description": "Closures that build pre-configured functions, such as a logger bound to a module name."
+    },
+    {
+      "title": "Flexible APIs",
+      "description": "**kwargs lets a function forward options, as Django's Model.objects.filter(**filters) does."
+    }
+  ],
+  "demonstration": {
+    "description": "Unpack arguments into a function with * and **, and see how keyword-only parameters protect a call site.",
+    "code": {
+      "language": "python",
+      "source": "def send(subject, *recipients, urgent=False, **headers):\n    print(subject, recipients, urgent, headers)\n\nto = ['a@x.com', 'b@x.com']\nsend('Hello', *to, urgent=True, **{'X-Id': '42'})\nsend('Hi')"
+    },
+    "output": "Hello ('a@x.com', 'b@x.com') True {'X-Id': '42'}\nHi () False {}"
+  },
+  "takeaways": [
+    "*args is a tuple of extra positional arguments; **kwargs is a dict of extra keyword arguments.",
+    "Default values are evaluated once; never use a mutable default.",
+    "Name lookup follows LEGB; assignment makes a name local for the whole function.",
+    "Functions are objects: store them in dicts, pass them, return them.",
+    "A closure remembers variables from its enclosing scope; nonlocal lets it rebind them.",
+    "Python passes object references: mutation is visible to the caller, rebinding is not."
+  ],
+  "interview": [
+    {
+      "question": "What are *args and **kwargs?",
+      "answer": "*args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dict. The same symbols in a call unpack a sequence or mapping into arguments.",
+      "explanation": "Show both directions (packing in the definition, unpacking in the call) and mention a real use such as wrapper functions in decorators."
+    },
+    {
+      "question": "Why is def f(x, items=[]) dangerous?",
+      "answer": "The default list is created once when the function is defined and shared by every call that uses the default, so items appended in one call appear in the next. Use None as the default and create a new list inside.",
+      "explanation": "This is one of the most common Python interview questions. Explaining that defaults are evaluated at definition time is the key insight."
+    },
+    {
+      "question": "Explain the LEGB rule. What do global and nonlocal do?",
+      "answer": "Python resolves names in Local, Enclosing, Global and Built-in scopes, in that order. global lets a function rebind a module-level name; nonlocal lets a nested function rebind a name in its enclosing function's scope.",
+      "explanation": "Mention UnboundLocalError: assigning to a name anywhere in a function makes it local everywhere in that function."
+    },
+    {
+      "question": "Does Python pass arguments by value or by reference?",
+      "answer": "Neither exactly: it passes object references (call by sharing). The parameter is a new name for the same object, so in-place mutation of a mutable object is visible to the caller, while rebinding the parameter is not.",
+      "explanation": "A good answer gives a two-line example contrasting lst.append(1) with lst = [1]."
+    },
+    {
+      "question": "What is a closure and where is it used in practice?",
+      "answer": "A closure is an inner function that references variables from an enclosing function and keeps them alive after the outer function returns. Closures power decorators, callback factories, memoisation and configuration of handlers.",
+      "explanation": "Strong candidates mention the late-binding gotcha with lambdas in loops and that decorators are just closures applied with @ syntax."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Command calculator with a dispatch table",
+    "difficulty": "Basic",
+    "objective": "Use first-class functions in a dict, *args for variable arguments and argument-count errors raised by Python itself.",
+    "statement": "Read commands until the end of input. Each command is an operation name followed by zero or more integers. Supported operations: add (sum of all numbers), mul (product of all numbers), avg (average with two decimals; needs at least one number) and pow (exactly two numbers: base and exponent, exponent >= 0). Print one line per command. Unknown operations print 'Unknown command: <name>'. If avg has no numbers print 'Error: avg needs at least one number'. If pow does not receive exactly two numbers print 'Error: wrong number of arguments for pow'. Skip blank lines.",
+    "language": "python",
+    "input_format": "One command per line: name followed by space-separated integers.",
+    "output_format": "One result or error line per non-blank command.",
+    "example": {
+      "input": "add 1 2 3\nmul 2 5\navg 1 2\npow 2 10\n",
+      "output": "6\n10\n1.50\n1024"
+    },
+    "constraints": [
+      "All arguments are valid integers.",
+      "pow exponents are non-negative.",
+      "Use a dictionary that maps names to functions rather than an if/elif chain."
+    ],
+    "starter": "import sys\n\ndef add(*nums):\n    pass  # TODO\n\nOPS = {'add': add}\n\nfor line in sys.stdin:\n    parts = line.split()\n    if not parts:\n        continue\n    name, *args = parts\n    # TODO: look up the function and call it with the integer arguments\n",
+    "solution": "import sys\n\ndef add(*nums):\n    return sum(nums)\n\ndef mul(*nums):\n    result = 1\n    for n in nums:\n        result *= n\n    return result\n\ndef avg(*nums):\n    if not nums:\n        raise ValueError('avg needs at least one number')\n    return f'{sum(nums) / len(nums):.2f}'\n\ndef power(base, exp):\n    return base ** exp\n\nOPS = {'add': add, 'mul': mul, 'avg': avg, 'pow': power}\n\nfor line in sys.stdin:\n    parts = line.split()\n    if not parts:\n        continue\n    name, *args = parts\n    func = OPS.get(name)\n    if func is None:\n        print(f'Unknown command: {name}')\n        continue\n    try:\n        print(func(*map(int, args)))\n    except TypeError:\n        print(f'Error: wrong number of arguments for {name}')\n    except ValueError as exc:\n        print(f'Error: {exc}')\n",
+    "explanation": [
+      "Store each operation function in OPS so adding a command means adding one dict entry.",
+      "Split each line with name, *args = parts to separate the command from its arguments.",
+      "Unpack the converted integers into the call with func(*map(int, args)); variadic functions accept any count.",
+      "power has exactly two parameters, so Python itself raises TypeError for the wrong count, which is caught and reported.",
+      "avg raises ValueError for no input; the empty sum is 0 and the empty product is 1, the identity values."
+    ],
+    "tests": [
+      {
+        "input": "add 1 2 3\nmul 2 5\navg 1 2\npow 2 10\n",
+        "output": "6\n10\n1.50\n1024"
+      },
+      {
+        "input": "add\nmul\n",
+        "output": "0\n1"
+      },
+      {
+        "input": "avg\npow 2\npow 2 3 4\n",
+        "output": "Error: avg needs at least one number\nError: wrong number of arguments for pow\nError: wrong number of arguments for pow"
+      },
+      {
+        "input": "div 4 2\n\nadd -5 5\n",
+        "output": "Unknown command: div\n0"
+      },
+      {
+        "input": "pow 5 0\navg 7\n",
+        "output": "1\n7.00"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does calling the function below twice print?",
+      "code": "def f(x, acc=[]):\n    acc.append(x)\n    return acc\nf(1)\nprint(f(2))",
+      "options": [
+        "An error",
+        "[1, 2]",
+        "[2]",
+        "[1]"
+      ],
+      "answer": 1,
+      "explanation": "The default list is created once and shared, so the second call appends to the list that already contains 1."
+    },
+    {
+      "type": "concept",
+      "question": "Inside def f(*args, **kwargs), what are the types of args and kwargs?",
+      "options": [
+        "dict and tuple",
+        "tuple and dict",
+        "list and dict",
+        "tuple and list"
+      ],
+      "answer": 1,
+      "explanation": "Extra positional arguments are packed into a tuple and extra keyword arguments into a dict."
+    },
+    {
+      "type": "scenario",
+      "question": "A nested function needs to update a counter variable defined in its enclosing function. Which keyword should it use?",
+      "options": [
+        "global",
+        "static",
+        "nonlocal",
+        "local"
+      ],
+      "answer": 2,
+      "explanation": "nonlocal rebinds a name in the nearest enclosing function scope; global would target the module scope."
+    },
+    {
+      "type": "output",
+      "question": "What does this code that modifies and rebinds a parameter print?",
+      "code": "def change(lst):\n    lst.append(3)\n    lst = [0]\nnums = [1, 2]\nchange(nums)\nprint(nums)",
+      "options": [
+        "[1, 2, 3]",
+        "[1, 2]",
+        "[0, 3]",
+        "[0]"
+      ],
+      "answer": 0,
+      "explanation": "append mutates the shared list; rebinding lst afterwards only changes the local name."
+    },
+    {
+      "type": "code",
+      "question": "In def send(to, *, cc=None), how must cc be passed?",
+      "options": [
+        "Either way",
+        "It cannot be passed at all",
+        "Only as a keyword argument, e.g. send('a', cc='b')",
+        "Only positionally, e.g. send('a', 'b')"
+      ],
+      "answer": 2,
+      "explanation": "Parameters after a bare * are keyword-only, which prevents callers from mixing up positional arguments."
+    }
+  ]
+}

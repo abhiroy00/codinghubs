@@ -1,0 +1,195 @@
+{
+  "day": 11,
+  "title": "JWT Auth in MEAN",
+  "module": "Web and JavaScript foundations",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain the key ideas behind JWT Auth in MEAN.",
+    "Describe why JWT Auth in MEAN matters in MEAN Stack.",
+    "Apply JWT Auth in MEAN to a realistic scenario.",
+    "Identify common pitfalls and how to avoid them.",
+    "Answer interview questions about JWT Auth in MEAN."
+  ],
+  "definition": "JWT Auth in MEAN is a core concept in MEAN Stack. It refers to the techniques, principles and practices that let a practitioner work effectively with this topic in real systems.",
+  "theory": [
+    {
+      "heading": "What JWT Auth in MEAN is",
+      "body": "JWT Auth in MEAN describes the methods and patterns used within MEAN Stack to achieve reliable, maintainable results. Understanding it is the foundation for everything built later in this course.",
+      "points": [
+        "JWT Auth in MEAN is a named, repeatable concept.",
+        "It has a clear purpose and scope.",
+        "It connects to other course topics."
+      ]
+    },
+    {
+      "heading": "Why JWT Auth in MEAN matters",
+      "body": "Without JWT Auth in MEAN, systems built with MEAN Stack are harder to debug, extend and operate. Teams that master this topic ship fewer defects and communicate more clearly about design decisions.",
+      "points": [
+        "Improves reliability and maintainability.",
+        "Reduces debugging time.",
+        "Supports team alignment."
+      ]
+    },
+    {
+      "heading": "How JWT Auth in MEAN works",
+      "body": "The mechanism behind JWT Auth in MEAN follows a repeatable sequence: understand the requirement, apply the principle, verify the result and refine based on feedback. Each step has checks that keep the work on track.",
+      "points": [
+        "Start from the requirement.",
+        "Apply the core principle of JWT Auth in MEAN.",
+        "Verify the outcome.",
+        "Refine using feedback."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations of JWT Auth in MEAN",
+      "body": "JWT Auth in MEAN offers structure, clarity and consistency, but it also adds overhead and may be overkill for trivial tasks. Use it when the benefit in reliability outweighs the added effort.",
+      "points": [
+        "Advantages: structure, clarity, consistency.",
+        "Limitations: added overhead, not always needed.",
+        "Apply judiciously."
+      ]
+    }
+  ],
+  "example": {
+    "title": "JWT Auth in MEAN in practice",
+    "body": "A concrete illustration of JWT Auth in MEAN shows the principle applied to a small, realistic input so the learner can see cause and effect before scaling up.",
+    "code": {
+      "language": "python",
+      "source": "# Example illustrating JWT Auth in MEAN\nprint('See the worked walk-through above.')"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Production systems",
+      "description": "Applied in real MEAN Stack systems to keep behaviour predictable."
+    },
+    {
+      "title": "Debugging",
+      "description": "Helps identify where JWT Auth in MEAN-related assumptions break down."
+    },
+    {
+      "title": "Interviews",
+      "description": "A common topic for MEAN Stack interview questions."
+    }
+  ],
+  "demonstration": {
+    "description": "A short walk-through of JWT Auth in MEAN with expected input and output, showing the principle end to end.",
+    "code": {
+      "language": "python",
+      "source": "# Demonstration of JWT Auth in MEAN\nprint('walkthrough output')"
+    },
+    "output": "expected demonstration output"
+  },
+  "takeaways": [
+    "JWT Auth in MEAN is a foundational concept in MEAN Stack.",
+    "It follows a clear, repeatable mechanism.",
+    "It improves reliability when applied appropriately.",
+    "Know the advantages and limitations before using it."
+  ],
+  "interview": [
+    {
+      "question": "What is JWT Auth in MEAN?",
+      "answer": "JWT Auth in MEAN is a core concept in MEAN Stack that describes the techniques used to work effectively with this area.",
+      "explanation": "Give a concise, accurate definition and one example."
+    },
+    {
+      "question": "Why is JWT Auth in MEAN important?",
+      "answer": "It improves reliability, maintainability and clarity in MEAN Stack systems.",
+      "explanation": "Connect to a concrete benefit."
+    },
+    {
+      "question": "What are the limitations of JWT Auth in MEAN?",
+      "answer": "It adds overhead and may be unnecessary for simple cases; apply it judiciously.",
+      "explanation": "Show balanced judgment."
+    },
+    {
+      "question": "How would you explain JWT Auth in MEAN to a junior teammate?",
+      "answer": "Start with the definition, show a small example, then walk through a realistic use case and its trade-offs.",
+      "explanation": "Structure the explanation from simple to applied."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Apply: JWT Auth in MEAN",
+    "difficulty": "Intermediate",
+    "objective": "Apply JWT Auth in MEAN through a practical exercise.",
+    "statement": "Complete a practical exercise that demonstrates JWT Auth in MEAN. Describe your approach, the steps you took and how you verified the result.",
+    "deliverable": "A short written answer or artefact showing your work on JWT Auth in MEAN.",
+    "steps": [
+      "Restate the goal of JWT Auth in MEAN in your own words.",
+      "List the inputs, steps and expected outputs for JWT Auth in MEAN.",
+      "Work through one concrete example by hand or with code.",
+      "Note one edge case and how you handle it.",
+      "Write a one-paragraph summary of what you learned."
+    ],
+    "checklist": [
+      "The deliverable addresses the stated goal.",
+      "Steps are concrete and reproducible.",
+      "At least one edge case is identified and handled.",
+      "The summary reflects genuine understanding."
+    ],
+    "sample_answer": "Sample answer: Explain JWT Auth in MEAN with a definition, one worked example, an edge case and a real-world use case. The answer shows the learner can apply JWT Auth in MEAN in MEAN Stack."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is JWT Auth in MEAN?",
+      "options": [
+        "A programming language",
+        "The core idea of JWT Auth in MEAN",
+        "An unrelated concept",
+        "A hardware device"
+      ],
+      "answer": 1,
+      "explanation": "JWT Auth in MEAN is defined as the core idea above."
+    },
+    {
+      "type": "concept",
+      "question": "Why is JWT Auth in MEAN important?",
+      "options": [
+        "It improves reliability",
+        "It slows things down",
+        "It is never used",
+        "It is only theory"
+      ],
+      "answer": 0,
+      "explanation": "JWT Auth in MEAN improves reliability and clarity."
+    },
+    {
+      "type": "scenario",
+      "question": "A system ignores JWT Auth in MEAN. What is the likely result?",
+      "options": [
+        "Faster performance",
+        "No effect",
+        "Lower cost",
+        "More defects"
+      ],
+      "answer": 3,
+      "explanation": "Ignoring JWT Auth in MEAN leads to more defects."
+    },
+    {
+      "type": "output",
+      "question": "What does a correct JWT Auth in MEAN implementation produce?",
+      "options": [
+        "An error",
+        "Nothing",
+        "A reliable result",
+        "Random output"
+      ],
+      "answer": 2,
+      "explanation": "A correct implementation produces a reliable result."
+    },
+    {
+      "type": "concept",
+      "question": "Which is a limitation of JWT Auth in MEAN?",
+      "options": [
+        "No cost",
+        "Added overhead",
+        "No benefit",
+        "Always required"
+      ],
+      "answer": 1,
+      "explanation": "JWT Auth in MEAN adds overhead but brings reliability."
+    }
+  ]
+}

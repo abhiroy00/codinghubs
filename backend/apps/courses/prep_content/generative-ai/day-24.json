@@ -1,0 +1,215 @@
+{
+  "day": 24,
+  "title": "Multi-Agent Systems",
+  "module": "Agents & tools",
+  "level": "Advanced",
+  "objectives": [
+    "Explain what a multi-agent system is and why multiple agents help.",
+    "Describe common patterns: planner-worker, critic-reviser and debate.",
+    "Explain how agents communicate and hand off work.",
+    "Discuss coordination, consistency and cost in multi-agent systems.",
+    "Compare a single agent with a multi-agent system for a real task."
+  ],
+  "definition": "A multi-agent system is a group of agents, each with a role and tools, that work together to complete a task. Agents can specialise (researcher, writer, critic) and pass work between them. Coordination ensures they do not duplicate work or contradict each other, while the added complexity brings higher cost and latency.",
+  "theory": [
+    {
+      "heading": "Why multiple agents",
+      "body": "One agent can become overwhelmed by a large task. Splitting work among specialised agents lets each focus on what it does best: one searches, one writes, one reviews. This often improves quality and makes the system easier to test and debug.",
+      "points": [
+        "Specialisation: each agent has a clear role.",
+        "Parallel work: agents can handle parts at once.",
+        "Easier to test each agent separately."
+      ]
+    },
+    {
+      "heading": "Common patterns",
+      "body": "Planner-worker: a planner breaks the task into steps and workers execute them. Critic-reviser: one agent drafts and another critiques, then the draft is revised. Debate: two agents argue different sides and a third decides. Each pattern suits different tasks.",
+      "points": [
+        "Planner-worker: plan then execute.",
+        "Critic-reviser: draft, critique, revise.",
+        "Debate: argue, then decide."
+      ]
+    },
+    {
+      "heading": "Communication and handoffs",
+      "body": "Agents communicate by passing messages: one agent's output becomes the next agent's input. A handoff happens when an agent transfers the task to another agent with context. Clear message formats and shared state prevent lost information.",
+      "points": [
+        "Output of one agent is input to the next.",
+        "Handoffs carry context so nothing is lost.",
+        "Shared state or a message bus keeps everyone aligned."
+      ]
+    },
+    {
+      "heading": "Coordination and consistency",
+      "body": "Without coordination, agents may duplicate work, contradict each other or go in circles. A central orchestrator or shared plan keeps agents aligned. Consistency checks, such as a critic verifying facts, catch disagreements before the final answer.",
+      "points": [
+        "An orchestrator assigns and tracks work.",
+        "Critics verify consistency and facts.",
+        "Avoid duplicate or conflicting work."
+      ]
+    },
+    {
+      "heading": "Cost and complexity",
+      "body": "Multi-agent systems cost more: more LLM calls, more tokens and more latency. They are worth it for complex, multi-stage tasks but overkill for simple questions. Start with one agent and add more only when one is not enough.",
+      "points": [
+        "More agents means more calls and cost.",
+        "Latency increases with each round.",
+        "Use one agent when it suffices."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Writing a blog post with three agents",
+    "body": "A researcher agent finds facts on the topic. A writer agent drafts the post from those facts. A critic agent checks the draft for accuracy and tone, and sends it back for revision. The final post combines research, writing and review.",
+    "code": {
+      "language": "text",
+      "source": "Researcher: finds sources and summaries.\nWriter: drafts the blog post using the sources.\nCritic: checks accuracy and tone, requests changes.\nWriter: revises the draft.\nFinal: reviewed, accurate post."
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Content production",
+      "description": "Research, write and edit articles with specialised agents."
+    },
+    {
+      "title": "Software development",
+      "description": "One agent writes code, another reviews, another writes tests."
+    },
+    {
+      "title": "Research reports",
+      "description": "Multiple agents gather sources, analyse and write findings."
+    },
+    {
+      "title": "Customer support",
+      "description": "One agent handles the chat, another checks policies, another escalates."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare a single agent writing a report (may miss facts) with a researcher-writer-critic pipeline (verified and polished).",
+    "code": {
+      "language": "text",
+      "source": "Single agent: 'Here is a report.' (may miss facts or have errors)\nPipeline: Researcher finds facts → Writer drafts → Critic flags an error → Writer fixes → Final report."
+    },
+    "output": "Single: fast but less reliable.\nPipeline: slower but verified and polished."
+  },
+  "takeaways": [
+    "Multi-agent systems use specialised agents that collaborate on a task.",
+    "Patterns include planner-worker, critic-reviser and debate.",
+    "Agents communicate by passing output as input and through handoffs.",
+    "Coordination prevents duplication and contradiction.",
+    "Multi-agent systems cost more and are slower; use them for complex tasks.",
+    "Start with one agent and add more only when needed."
+  ],
+  "interview": [
+    {
+      "question": "What is a multi-agent system?",
+      "answer": "A group of specialised agents that collaborate, each with a role, to complete a task together.",
+      "explanation": "Mention roles such as researcher, writer and critic."
+    },
+    {
+      "question": "Name two multi-agent patterns.",
+      "answer": "Planner-worker (plan then execute) and critic-reviser (draft, critique, revise). Debate is another.",
+      "explanation": "Give a one-sentence example of each."
+    },
+    {
+      "question": "How do agents hand off work?",
+      "answer": "One agent's output becomes the next agent's input, with context carried along so nothing is lost.",
+      "explanation": "Shared state or a message bus keeps agents aligned."
+    },
+    {
+      "question": "What is a downside of multi-agent systems?",
+      "answer": "More agents mean more LLM calls, higher cost and greater latency. They are overkill for simple tasks.",
+      "explanation": "Start with one agent and scale up only when necessary."
+    },
+    {
+      "question": "How do you keep agents consistent?",
+      "answer": "Use an orchestrator or shared plan, and add a critic or verification step to catch contradictions before the final answer.",
+      "explanation": "Consistency checks prevent conflicting outputs."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design a multi-agent workflow",
+    "difficulty": "Advanced",
+    "objective": "Plan roles, communication, coordination and cost trade-offs for a multi-agent system.",
+    "statement": "Choose a complex task such as producing a weekly newsletter, building a feature, or auditing a document. Describe: (1) the overall goal, (2) the agents and their roles, (3) how they communicate and hand off work, (4) the coordination mechanism (orchestrator, shared plan or critic), and (5) the cost/quality trade-off versus using one agent.",
+    "deliverable": "A written design covering goal, agents, communication, coordination and cost trade-off.",
+    "steps": [
+      "Choose a complex multi-stage task.",
+      "Define the goal and the agents' roles.",
+      "Describe how output passes between agents.",
+      "Choose an orchestration or consistency method.",
+      "Compare cost and quality with a single-agent alternative."
+    ],
+    "checklist": [
+      "Goal is clearly stated.",
+      "At least two agents with distinct roles.",
+      "Communication and handoffs are described.",
+      "Coordination mechanism is named.",
+      "Cost versus one agent is discussed."
+    ],
+    "sample_answer": "Goal: audit a document for compliance. Agents: reader (extracts clauses), checker (compares to regulation), reporter (writes findings). Reader sends clauses to checker; checker sends flags to reporter. An orchestrator runs them in sequence. Cost: three calls versus one; quality is higher because the checker catches misses."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is a multi-agent system?",
+      "options": [
+        "One agent with many tools",
+        "Multiple specialised agents collaborating",
+        "A model trained on multiple datasets",
+        "A single long prompt"
+      ],
+      "answer": 1,
+      "explanation": "Multiple agents, each with a role, work together on a task."
+    },
+    {
+      "type": "concept",
+      "question": "What is the critic-reviser pattern?",
+      "options": [
+        "One agent drafts, another critiques, then it is revised",
+        "Two agents debate and one decides",
+        "All agents work at once",
+        "One agent plans, another acts"
+      ],
+      "answer": 0,
+      "explanation": "Draft, critique and revise improves quality through review."
+    },
+    {
+      "type": "scenario",
+      "question": "Two agents contradict each other in a multi-agent system. What helps?",
+      "options": [
+        "Use more agents",
+        "Raise temperature",
+        "Ignore the contradiction",
+        "Add a critic or consistency check"
+      ],
+      "answer": 3,
+      "explanation": "A critic or verification step catches disagreements before the final answer."
+    },
+    {
+      "type": "concept",
+      "question": "Why are multi-agent systems more expensive?",
+      "options": [
+        "They are slower to train",
+        "They use larger models",
+        "More LLM calls and tokens per task",
+        "They need more training data"
+      ],
+      "answer": 2,
+      "explanation": "Each agent makes LLM calls, so total tokens and cost increase with agent count."
+    },
+    {
+      "type": "concept",
+      "question": "When should you use one agent instead of many?",
+      "answer": 0,
+      "explanation": "Start simple and add agents as needed.",
+      "options": [
+        "Simple tasks one agent can complete",
+        "Every task needs many agents",
+        "Only complex math tasks",
+        "Never use one agent"
+      ]
+    }
+  ]
+}

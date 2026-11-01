@@ -1,0 +1,236 @@
+{
+  "day": 3,
+  "title": "Asynchronous JavaScript: Event Loop, Promises and async/await",
+  "module": "Web and JavaScript foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain how a single-threaded JavaScript runtime handles slow I/O without blocking.",
+    "Describe the call stack, the microtask queue and the task (macrotask) queue, and the order they run in.",
+    "Use promises and async/await, including proper error handling with try/catch.",
+    "Predict the output order of code mixing synchronous logs, promises and timers.",
+    "Recognise common async bugs such as missing await and accidental sequential requests."
+  ],
+  "definition": "JavaScript runs your code on a single thread, so long operations such as network requests, timers and file reads are handed to the environment (the browser or Node.js) and their results come back later as queued callbacks. The event loop runs those callbacks when the call stack is empty. A Promise represents a value that will be available in the future, and async/await is syntax that lets you write promise-based code in a readable, top-to-bottom style.",
+  "theory": [
+    {
+      "heading": "Why asynchronous code exists",
+      "body": "If JavaScript waited synchronously for a 3-second LLM response, the browser could not repaint or respond to clicks and a Node.js server could not serve any other request. Instead, the runtime starts the operation, keeps running other code, and calls your code back when the result is ready. This non-blocking model is why one Node.js process can handle thousands of concurrent connections that mostly wait on I/O.",
+      "points": [
+        "I/O-bound work (network, disk, database) fits the async model well.",
+        "CPU-bound work (image processing, large loops) still blocks the thread; move it to a Worker or worker_threads.",
+        "await pauses only the current async function, not the whole program."
+      ]
+    },
+    {
+      "heading": "Call stack, microtasks and tasks",
+      "body": "The event loop repeats one cycle: run a task to completion, then run every microtask in the microtask queue (including microtasks added while draining), then let the browser render if needed, then take the next task. Promise callbacks (then, catch, finally, code after await) and queueMicrotask are microtasks. setTimeout, setInterval, I/O callbacks and UI events are tasks. So a resolved promise's callback always runs before a setTimeout(fn, 0) scheduled at the same moment.",
+      "points": [
+        "Synchronous code first, until the stack is empty.",
+        "Then all microtasks, in FIFO order.",
+        "Then one macrotask, followed again by all microtasks.",
+        "setTimeout(fn, 0) means 'as a later task', not 'immediately'."
+      ]
+    },
+    {
+      "heading": "Promises",
+      "body": "A promise is pending, then settles once as fulfilled (with a value) or rejected (with a reason); after settling it never changes. then returns a new promise, which is what makes chaining work: whatever a then callback returns becomes the next value, and a thrown error skips to the nearest catch. Always return or await promises you create; a promise that is created but not awaited can fail silently as an unhandled rejection.",
+      "points": [
+        "new Promise((resolve, reject) => ...) wraps callback-style APIs.",
+        "Promise.resolve(v) and Promise.reject(e) create settled promises.",
+        "finally runs on both outcomes, useful for hiding a loading spinner."
+      ]
+    },
+    {
+      "heading": "async/await and error handling",
+      "body": "An async function always returns a promise. Inside it, await pauses until the awaited promise settles, then resumes with its value or throws its rejection reason, so ordinary try/catch works. A frequent performance bug is awaiting independent requests one after another; start them together and await Promise.all instead. A frequent correctness bug is forgetting await, which returns a pending promise and lets errors escape your try/catch.",
+      "points": [
+        "Sequential: const a = await getA(); const b = await getB(); takes timeA + timeB.",
+        "Parallel: const [a, b] = await Promise.all([getA(), getB()]); takes max(timeA, timeB).",
+        "fetch only rejects on network failure; check res.ok for 4xx/5xx."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Fetching a chat reply with proper error handling",
+    "body": "This helper awaits the response, converts HTTP error statuses into thrown errors (fetch does not do that by itself) and always clears the loading state in finally.",
+    "code": {
+      "language": "javascript",
+      "source": "async function sendMessage(text, setLoading) {\n  setLoading(true);\n  try {\n    const res = await fetch('/api/chat', {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({ message: text }),\n    });\n    if (!res.ok) throw new Error(`Request failed with ${res.status}`);\n    const data = await res.json();\n    return data.reply;\n  } catch (err) {\n    console.error(err.message);\n    return 'Sorry, something went wrong.';\n  } finally {\n    setLoading(false);\n  }\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Calling APIs from React",
+      "description": "Every data fetch, form submission and LLM request in the front end is asynchronous."
+    },
+    {
+      "title": "Parallel data loading",
+      "description": "A dashboard loads profile, courses and notifications at once with Promise.all."
+    },
+    {
+      "title": "Non-blocking servers",
+      "description": "An Express handler awaits a database query and an LLM call while Node.js keeps serving other users."
+    },
+    {
+      "title": "Responsive UIs",
+      "description": "Long work is split or moved off the main thread so typing and scrolling stay smooth."
+    }
+  ],
+  "demonstration": {
+    "description": "Predict the order before running. Synchronous logs come first, then the microtask from the promise, then the timer task.",
+    "code": {
+      "language": "javascript",
+      "source": "console.log('1: script start');\nsetTimeout(() => console.log('4: timeout'), 0);\nPromise.resolve().then(() => console.log('3: promise'));\n(async () => {\n  console.log('2: inside async, before await');\n  await null;\n  console.log('3b: after await');\n})();\nconsole.log('2b: script end');"
+    },
+    "output": "1: script start\n2: inside async, before await\n2b: script end\n3: promise\n3b: after await\n4: timeout"
+  },
+  "takeaways": [
+    "JavaScript is single-threaded; the event loop runs queued callbacks when the stack is empty.",
+    "Microtasks (promise callbacks, code after await) run before the next macrotask (timers, I/O, events).",
+    "An async function always returns a promise; await unwraps it or throws its rejection.",
+    "Use Promise.all for independent requests instead of sequential awaits.",
+    "fetch resolves on HTTP errors; check res.ok yourself.",
+    "CPU-heavy work blocks the event loop; offload it."
+  ],
+  "interview": [
+    {
+      "question": "Explain the event loop.",
+      "answer": "JavaScript executes code on one call stack. Async operations are handled by the runtime, and their callbacks are queued. When the stack is empty, the event loop runs all pending microtasks (promise reactions), then takes the next macrotask (timer, I/O, UI event), runs it, drains microtasks again, and repeats.",
+      "explanation": "The key detail interviewers check is the microtask-before-macrotask rule. A small example (promise logs before setTimeout 0) makes the answer convincing."
+    },
+    {
+      "question": "What is the difference between a promise and a callback?",
+      "answer": "A callback is a function you pass to be called later; nesting many leads to 'callback hell' and inconsistent error handling. A promise is an object representing a future result that settles once, can be chained, composes with Promise.all, and propagates errors to a single catch.",
+      "explanation": "Mention the trust guarantees: a promise settles only once, and its callbacks always run asynchronously."
+    },
+    {
+      "question": "What does async/await do under the hood?",
+      "answer": "An async function returns a promise. Each await suspends the function and schedules its continuation as a microtask once the awaited promise settles; the result is returned or the rejection is thrown at the await point. It is syntax over promises, not a new threading model.",
+      "explanation": "Say clearly that await does not block the thread: other code keeps running while the function is suspended."
+    },
+    {
+      "question": "Your page makes three independent API calls with three awaits in a row and feels slow. What would you change?",
+      "answer": "Start all three requests first and await them together with Promise.all, so total time is the slowest call rather than the sum. If one failure should not cancel the others, use Promise.allSettled and handle each result.",
+      "explanation": "This is a very common practical question. Mentioning allSettled for partial failure shows depth."
+    },
+    {
+      "question": "Why might a try/catch around an async call not catch an error?",
+      "answer": "If the promise is not awaited (or returned) inside the try block, the function continues and the try block exits before the rejection happens, so the rejection becomes unhandled. Also, fetch does not reject on 404 or 500, so there is nothing to catch unless you check res.ok and throw.",
+      "explanation": "Covering both the missing-await bug and the fetch status behaviour shows real debugging experience."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Simulate the event loop",
+    "difficulty": "Basic",
+    "objective": "Apply the event-loop rules (synchronous first, then all microtasks, then one macrotask at a time) to predict execution order.",
+    "statement": "Each input line is a statement in a script: '<type> <label>' or '<type> <label> then <type> <label>'. The type is sync, micro or macro. Processing a statement means: sync runs immediately, micro is added to the microtask queue, macro is added to the macrotask queue. When a task runs it prints its label; if it has a 'then' part, that child statement is processed at that moment. After the whole script, drain the microtask queue completely (including microtasks added while draining), then repeatedly run one macrotask followed by draining microtasks, until both queues are empty. Print labels in the order they run.",
+    "language": "javascript",
+    "input_format": "One statement per line. Labels contain no spaces.",
+    "output_format": "One label per line in execution order.",
+    "example": {
+      "input": "sync start\nmacro timeout\nmicro promise\nsync end\n",
+      "output": "start\nend\npromise\ntimeout"
+    },
+    "constraints": [
+      "At most one 'then' per line (children have no further children).",
+      "Queues are FIFO.",
+      "1 to 50 statements."
+    ],
+    "starter": "const statements = stdin.split('\\n').map((l) => l.trim()).filter(Boolean);\nconst micro = [];\nconst macro = [];\n\n// TODO: parse each line into { type, label, child }\n// TODO: dispatch(task) and run(task), then drain the queues\n",
+    "solution": "const lines = stdin.split('\\n').map((l) => l.trim()).filter(Boolean);\nconst micro = [];\nconst macro = [];\nconst out = [];\n\nfunction parse(line) {\n  const [head, tail] = line.split(' then ');\n  const [type, label] = head.trim().split(/\\s+/);\n  return { type, label, child: tail ? parse(tail) : null };\n}\n\nfunction run(task) {\n  out.push(task.label);\n  if (task.child) dispatch(task.child);\n}\n\nfunction dispatch(task) {\n  if (task.type === 'sync') run(task);\n  else if (task.type === 'micro') micro.push(task);\n  else macro.push(task);\n}\n\nfunction drainMicrotasks() {\n  while (micro.length) run(micro.shift());\n}\n\nlines.map(parse).forEach(dispatch);\ndrainMicrotasks();\nwhile (macro.length) {\n  run(macro.shift());\n  drainMicrotasks();\n}\nconsole.log(out.join('\\n'));\n",
+    "explanation": [
+      "Parse each line into a task object; the part after ' then ' becomes a child task.",
+      "dispatch runs sync tasks immediately and pushes micro and macro tasks onto FIFO queues.",
+      "run records the label and dispatches the child, so a microtask can schedule a macrotask and vice versa.",
+      "After the script, drain microtasks fully; the while loop also picks up microtasks added during draining.",
+      "Then run exactly one macrotask at a time, draining microtasks after each, which mirrors the real event loop."
+    ],
+    "tests": [
+      {
+        "input": "sync start\nmacro timeout\nmicro promise\nsync end\n",
+        "output": "start\nend\npromise\ntimeout"
+      },
+      {
+        "input": "macro t1 then micro m-in-t1\nmacro t2\nmicro m1 then macro t3\nsync s\n",
+        "output": "s\nm1\nt1\nm-in-t1\nt2\nt3"
+      },
+      {
+        "input": "micro a then micro b\nmicro c\nsync d then micro e\n",
+        "output": "d\na\nc\ne\nb"
+      },
+      {
+        "input": "sync x then sync y\nmacro z\n",
+        "output": "x\ny\nz"
+      },
+      {
+        "input": "macro only\n",
+        "output": "only"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "In what order are the letters logged?",
+      "code": "console.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
+      "options": [
+        "A C D B",
+        "A D C B",
+        "A B C D",
+        "A D B C"
+      ],
+      "answer": 1,
+      "explanation": "Synchronous logs A and D run first, then the promise microtask C, then the timer task B."
+    },
+    {
+      "type": "concept",
+      "question": "What does an async function return when you call it?",
+      "options": [
+        "Always a Promise",
+        "The value of its return statement, synchronously",
+        "undefined until the function finishes",
+        "A generator object"
+      ],
+      "answer": 3,
+      "explanation": "An async function always returns a promise that resolves with the returned value or rejects with the thrown error."
+    },
+    {
+      "type": "scenario",
+      "question": "A page awaits getProfile(), then getCourses(), then getNotifications(). Each takes about 300 ms and none depends on another. What is the best improvement?",
+      "options": [
+        "Start all three and await Promise.all",
+        "Call them inside a for loop with await",
+        "Wrap each call in setTimeout",
+        "Use var instead of const for the results"
+      ],
+      "answer": 0,
+      "explanation": "Independent requests should run concurrently; Promise.all reduces total time from about 900 ms to about 300 ms."
+    },
+    {
+      "type": "concept",
+      "question": "A promise's executor calls resolve('ok') and then reject(new Error('x')). What is the promise's final state?",
+      "options": [
+        "Rejected with Error('x')",
+        "Fulfilled with 'ok'",
+        "Pending forever",
+        "It throws a TypeError"
+      ],
+      "answer": 1,
+      "explanation": "A promise settles only once. The first call wins; the later reject is ignored."
+    },
+    {
+      "type": "output",
+      "question": "What is printed?",
+      "code": "async function f() {\n  console.log(1);\n  await null;\n  console.log(2);\n}\nf();\nconsole.log(3);",
+      "options": [
+        "1 3 2",
+        "2 1 3",
+        "1 2 3",
+        "3 1 2"
+      ],
+      "answer": 3,
+      "explanation": "The async function runs synchronously until the first await, so 1 prints first. The rest is a microtask, so 3 prints before 2."
+    }
+  ]
+}

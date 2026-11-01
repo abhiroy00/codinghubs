@@ -1,0 +1,246 @@
+{
+  "day": 3,
+  "title": "Probability and Statistics for Machine Learning",
+  "module": "Foundations: Python and maths",
+  "level": "Beginner",
+  "objectives": [
+    "Explain random variables, distributions, expectation and variance in plain terms.",
+    "Apply conditional probability and Bayes' theorem to realistic problems.",
+    "Recognise the normal, Bernoulli, binomial and categorical distributions in ML.",
+    "Connect maximum likelihood to common loss functions such as MSE and cross-entropy.",
+    "Avoid base-rate mistakes when interpreting classifier outputs."
+  ],
+  "definition": "Probability is the mathematics of uncertainty: it assigns numbers between 0 and 1 to events and describes how likely different outcomes are. Statistics uses data to estimate those probabilities and the parameters of distributions. Machine learning models are statistical models: a classifier outputs a probability distribution over classes and training chooses the parameters that make the observed data most likely.",
+  "theory": [
+    {
+      "heading": "Random variables and distributions",
+      "body": "A random variable maps an uncertain outcome to a number, such as whether a transaction is fraud (0 or 1) or tomorrow's temperature. Its distribution says how probable each value is. Discrete variables have a probability mass function; continuous variables have a probability density. ML uses a small set of distributions repeatedly, and knowing them explains model design choices.",
+      "points": [
+        "Bernoulli: one yes/no trial, used for binary classification outputs.",
+        "Categorical: one of K classes, the output of a softmax layer.",
+        "Binomial: number of successes in n trials, e.g. clicks out of impressions.",
+        "Normal (Gaussian): bell curve, used for noise, weight initialisation and many natural measurements."
+      ]
+    },
+    {
+      "heading": "Expectation, variance and descriptive statistics",
+      "body": "The expectation (mean) is the probability-weighted average of a variable. Variance measures spread as the expected squared distance from the mean, and standard deviation is its square root in the original units. The median is robust to outliers, which is why it is often better for skewed data such as salaries or response latencies. Sample statistics estimate population ones and have their own uncertainty, which is why A/B tests report confidence intervals.",
+      "points": [
+        "E[aX + b] = aE[X] + b; Var(aX + b) = a^2 Var(X).",
+        "Use median and percentiles (p95, p99) for skewed data like latency.",
+        "Covariance and correlation measure how two variables move together; correlation is not causation."
+      ]
+    },
+    {
+      "heading": "Conditional probability and Bayes' theorem",
+      "body": "P(A | B) is the probability of A given that B happened. Bayes' theorem reverses a conditional: P(A | B) = P(B | A) P(A) / P(B). The prior P(A) is what we believed before the evidence, the likelihood P(B | A) is how compatible the evidence is with A, and the posterior P(A | B) is the updated belief. Ignoring the prior is the base-rate fallacy: a 99 percent sensitive test for a rare disease still produces mostly false positives.",
+      "points": [
+        "P(B) = P(B | A)P(A) + P(B | not A)P(not A) (law of total probability).",
+        "Naive Bayes classifiers apply Bayes' theorem with an independence assumption between features.",
+        "Class imbalance is a prior: rare positives need careful metrics and thresholds."
+      ]
+    },
+    {
+      "heading": "Maximum likelihood and loss functions",
+      "body": "Maximum likelihood estimation (MLE) chooses parameters that make the observed data most probable. Taking the negative log turns products into sums and maximisation into minimisation, which gives the losses we train with. Assuming Gaussian noise around predictions gives mean squared error; assuming Bernoulli or categorical labels gives binary or categorical cross-entropy. Adding a prior on the weights (MAP estimation) gives regularisation such as L2.",
+      "points": [
+        "MSE corresponds to Gaussian likelihood.",
+        "Cross-entropy (log loss) corresponds to Bernoulli or categorical likelihood.",
+        "A Gaussian prior on weights corresponds to L2 regularisation."
+      ]
+    },
+    {
+      "heading": "Sampling, the central limit theorem and hypothesis tests",
+      "body": "The central limit theorem says that the mean of many independent samples is approximately normally distributed, whatever the original distribution. This justifies confidence intervals and significance tests used to compare models or run A/B tests. A p-value is the probability of seeing results at least as extreme as observed if there were really no difference; it is not the probability that the hypothesis is true.",
+      "points": [
+        "Larger samples shrink the standard error by a factor of sqrt(n).",
+        "Run enough samples before concluding a new model is better.",
+        "Multiple comparisons inflate false discoveries."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Why a 99 percent accurate fraud alert is mostly wrong",
+    "body": "Suppose 1 percent of transactions are fraud, the detector catches 99 percent of fraud (sensitivity) and correctly clears 95 percent of genuine transactions (specificity). Bayes' theorem shows that only about 17 percent of flagged transactions are actually fraud, because the 5 percent false-alarm rate is applied to the 99 percent of genuine traffic.",
+    "code": {
+      "language": "python",
+      "source": "prior = 0.01          # P(fraud)\nsens = 0.99           # P(alert | fraud)\nspec = 0.95           # P(no alert | genuine)\n\np_alert = sens * prior + (1 - spec) * (1 - prior)\nposterior = sens * prior / p_alert\nprint(round(p_alert, 4))    # 0.0594\nprint(round(posterior, 4))  # 0.1667"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Classifier outputs",
+      "description": "Softmax and sigmoid layers output probability distributions that drive thresholds and ranking."
+    },
+    {
+      "title": "Spam filtering with Naive Bayes",
+      "description": "Word likelihoods per class combined with class priors give a fast, strong text baseline."
+    },
+    {
+      "title": "A/B testing models",
+      "description": "Confidence intervals and significance tests decide whether a new model truly improves conversions."
+    },
+    {
+      "title": "Anomaly detection",
+      "description": "Points with very low probability under a fitted distribution are flagged as anomalies."
+    },
+    {
+      "title": "LLM sampling",
+      "description": "Language models output a categorical distribution over tokens, sampled with temperature and top-p."
+    }
+  ],
+  "demonstration": {
+    "description": "Simulate the central limit theorem: draw from a skewed exponential distribution, average groups of 50 samples and observe that the averages cluster tightly and symmetrically around the true mean of 1.0.",
+    "code": {
+      "language": "python",
+      "source": "import random, statistics\nrandom.seed(42)\nmeans = [statistics.mean(random.expovariate(1.0) for _ in range(50)) for _ in range(2000)]\nprint(round(statistics.mean(means), 2))\nprint(round(statistics.stdev(means), 2))   # close to 1/sqrt(50) = 0.14"
+    },
+    "output": "1.0\n0.14   (values may differ slightly by Python version, but they stay close to 1.0 and 0.14)"
+  },
+  "takeaways": [
+    "Classifier outputs are probability distributions: Bernoulli for binary, categorical for multi-class.",
+    "Bayes' theorem combines a prior with evidence; ignoring the prior causes base-rate errors.",
+    "Use median and percentiles for skewed data such as latency.",
+    "Minimising MSE or cross-entropy is maximum likelihood under Gaussian or Bernoulli assumptions.",
+    "L2 regularisation is equivalent to a Gaussian prior on the weights.",
+    "A p-value is not the probability that your model is better."
+  ],
+  "interview": [
+    {
+      "question": "State Bayes' theorem and explain each term.",
+      "answer": "P(A | B) = P(B | A) P(A) / P(B). P(A) is the prior belief, P(B | A) is the likelihood of the evidence if A is true, P(B) is the overall probability of the evidence and P(A | B) is the posterior, the updated belief after seeing B.",
+      "explanation": "Follow with a concrete example such as a medical test or spam filter, and mention the base-rate fallacy."
+    },
+    {
+      "question": "What is the difference between probability and likelihood?",
+      "answer": "Probability treats parameters as fixed and asks how probable different data are. Likelihood treats the observed data as fixed and asks how well different parameter values explain it. Training maximises the likelihood over parameters.",
+      "explanation": "This shows you understand why training is framed as maximum likelihood and why the negative log-likelihood becomes the loss."
+    },
+    {
+      "question": "Why does minimising cross-entropy make sense for classification?",
+      "answer": "Cross-entropy is the negative log-likelihood of the true labels under the model's predicted distribution. Minimising it maximises the probability the model assigns to correct classes, and it strongly penalises confident wrong predictions.",
+      "explanation": "Bonus: mention that for one-hot labels cross-entropy equals the negative log of the predicted probability of the correct class."
+    },
+    {
+      "question": "When would you report the median or p95 instead of the mean?",
+      "answer": "For skewed or heavy-tailed data such as API latency, income or session length, the mean is pulled by outliers. The median describes the typical case, and p95 or p99 describe the tail that users actually feel.",
+      "explanation": "Linking statistics to service-level objectives in production AI systems shows engineering maturity."
+    },
+    {
+      "question": "A rare-disease test is 99 percent sensitive and 95 percent specific, and prevalence is 1 percent. A patient tests positive. What is the chance they have the disease?",
+      "answer": "About 17 percent. P(+) = 0.99 * 0.01 + 0.05 * 0.99 = 0.0594, and P(disease | +) = 0.0099 / 0.0594, which is about 0.167.",
+      "explanation": "Interviewers want the calculation and the insight: with rare positives, false positives dominate, so precision is low even with a good test."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Bayesian update for a diagnostic alert",
+    "difficulty": "Basic",
+    "objective": "Apply Bayes' theorem and the law of total probability to compute what a positive or negative alert really means.",
+    "statement": "Read the prior probability of the condition, the test sensitivity P(+ | condition) and the specificity P(- | no condition). Compute P(+), the posterior P(condition | +) and P(condition | -). If the conditioning event has probability 0 (smaller than 1e-12), print undefined for that posterior.",
+    "language": "python",
+    "input_format": "One line with three decimals: prior sensitivity specificity, each between 0 and 1.",
+    "output_format": "Three lines, numbers rounded to 4 decimals:\nP(+)=<value>\nP(D|+)=<value or undefined>\nP(D|-)=<value or undefined>",
+    "example": {
+      "input": "0.01 0.99 0.95\n",
+      "output": "P(+)=0.0594\nP(D|+)=0.1667\nP(D|-)=0.0001"
+    },
+    "constraints": [
+      "0 <= prior, sensitivity, specificity <= 1.",
+      "Format every number with exactly 4 decimals."
+    ],
+    "starter": "prior, sens, spec = map(float, input().split())\n\n# TODO: compute P(+), P(D|+) and P(D|-) and print them\n",
+    "solution": "prior, sens, spec = map(float, input().split())\n\np_pos = sens * prior + (1 - spec) * (1 - prior)\np_neg = 1 - p_pos\n\ndef show(num, den):\n    if den < 1e-12:\n        return 'undefined'\n    return f'{num / den:.4f}'\n\nprint(f'P(+)={p_pos:.4f}')\nprint(f'P(D|+)={show(sens * prior, p_pos)}')\nprint(f'P(D|-)={show((1 - sens) * prior, p_neg)}')\n",
+    "explanation": [
+      "Use the law of total probability: P(+) = P(+|D)P(D) + P(+|not D)P(not D), where P(+|not D) = 1 - specificity.",
+      "Bayes' theorem gives P(D|+) = sensitivity * prior / P(+).",
+      "For a negative result, P(D|-) = (1 - sensitivity) * prior / P(-) with P(-) = 1 - P(+).",
+      "Guard against division by zero when the evidence can never occur."
+    ],
+    "tests": [
+      {
+        "input": "0.01 0.99 0.95\n",
+        "output": "P(+)=0.0594\nP(D|+)=0.1667\nP(D|-)=0.0001"
+      },
+      {
+        "input": "0.5 0.9 0.9\n",
+        "output": "P(+)=0.5000\nP(D|+)=0.9000\nP(D|-)=0.1000"
+      },
+      {
+        "input": "0 0.9 1\n",
+        "output": "P(+)=0.0000\nP(D|+)=undefined\nP(D|-)=0.0000"
+      },
+      {
+        "input": "1 1 0.5\n",
+        "output": "P(+)=1.0000\nP(D|+)=1.0000\nP(D|-)=undefined"
+      },
+      {
+        "input": "0.2 0.8 0.7\n",
+        "output": "P(+)=0.4000\nP(D|+)=0.4000\nP(D|-)=0.0667"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which distribution best describes the output of a softmax layer over 10 classes?",
+      "options": [
+        "Poisson",
+        "Categorical",
+        "Normal",
+        "Binomial"
+      ],
+      "answer": 1,
+      "explanation": "Softmax gives probabilities for one of K mutually exclusive classes, which is a categorical distribution."
+    },
+    {
+      "type": "concept",
+      "question": "Minimising mean squared error is equivalent to maximum likelihood under which assumption?",
+      "options": [
+        "Gaussian noise around the prediction",
+        "Bernoulli-distributed labels",
+        "Uniform prior on the weights",
+        "Exponentially distributed features"
+      ],
+      "answer": 0,
+      "explanation": "The negative log of a Gaussian likelihood is, up to constants, the squared error."
+    },
+    {
+      "type": "scenario",
+      "question": "Your API latency has mean 120 ms but a few requests take 5 seconds. Which statistic best represents what most users experience?",
+      "options": [
+        "The median",
+        "The variance",
+        "The mean",
+        "The maximum"
+      ],
+      "answer": 0,
+      "explanation": "The median is robust to outliers; p95 or p99 should also be tracked for the tail."
+    },
+    {
+      "type": "output",
+      "question": "What posterior probability does this code print?",
+      "code": "prior, sens, fpr = 0.1, 0.8, 0.1\np_pos = sens * prior + fpr * (1 - prior)\nprint(round(sens * prior / p_pos, 2))",
+      "options": [
+        "0.8",
+        "0.47",
+        "0.17",
+        "0.08"
+      ],
+      "answer": 1,
+      "explanation": "P(+) = 0.08 + 0.09 = 0.17, so the posterior is 0.08 / 0.17, about 0.47."
+    },
+    {
+      "type": "concept",
+      "question": "In MAP estimation, a Gaussian prior on the model weights corresponds to which technique?",
+      "options": [
+        "Early stopping",
+        "Data augmentation",
+        "Dropout",
+        "L2 regularisation"
+      ],
+      "answer": 3,
+      "explanation": "The negative log of a zero-mean Gaussian prior adds a squared-norm penalty on the weights, which is L2 regularisation."
+    }
+  ]
+}

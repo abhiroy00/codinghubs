@@ -1,0 +1,244 @@
+{
+  "day": 9,
+  "title": "Strings, Formatting and Regular Expressions",
+  "module": "Strings and text processing",
+  "level": "Intermediate",
+  "objectives": [
+    "Master the f-string and format mini-language for alignment, precision and custom formatting.",
+    "Use the re module for search, fullmatch, findall and sub on real text.",
+    "Build and explain patterns with character classes, quantifiers, anchors and groups.",
+    "Distinguish str from bytes and encode or decode text correctly.",
+    "Avoid catastrophic backtracking and prefer raw strings for patterns."
+  ],
+  "definition": "Text data in Python is handled with the immutable str type, which stores Unicode code points and is formatted with f-strings and the format mini-language. Complex matching and transformation is done with the re module, whose patterns combine literal characters, character classes, quantifiers, anchors and groups. Bytes, a separate bytes type produced by encode, are used for raw binary data and decoded back to str with a chosen encoding such as UTF-8.",
+  "theory": [
+    {
+      "heading": "str and bytes",
+      "body": "A str is a sequence of Unicode code points; a bytes object is a sequence of raw bytes from 0 to 255. Text read from the network or a binary file is bytes and must be decoded with a character set, usually UTF-8, to become str. Writing with an unknown or wrong encoding produces mojibake or UnicodeDecodeError. Because characters can need several bytes, len(text) counts characters while len(text.encode('utf-8')) counts bytes, which is why limits are sometimes measured in bytes rather than characters.",
+      "points": [
+        "str.encode('utf-8') turns text into bytes; bytes.decode('utf-8') turns bytes into text.",
+        "len of a str counts characters, len of bytes counts bytes.",
+        "The encoding is metadata; the same bytes can decode differently with the wrong codec.",
+        "Use errors='replace' only when you are willing to lose data."
+      ]
+    },
+    {
+      "heading": "Formatting in depth",
+      "body": "An f-string evaluates expressions inside braces and applies a format specifier after a colon. The mini-language composes an optional fill and alignment (< left, > right, ^ centre, = after the sign), a sign, a width, a grouping option and a precision with a type such as f for fixed point, e for scientific, d for integer or s for string. A comma adds thousands separators and a percent type multiplies by 100. Objects can customise their own rendering by defining __format__. str.format and the older percent style still appear in legacy code.",
+      "points": [
+        "{value:>10.2f} right-aligns a float in width 10 with two decimals.",
+        "{value:^10} centres text in a field of 10.",
+        "{n:,} inserts thousands separators; {p:.1%} formats a fraction as a percentage.",
+        "{x=} prints the expression and its value, useful when debugging."
+      ]
+    },
+    {
+      "heading": "Regular expressions: searching and matching",
+      "body": "The re module compiles a pattern into a regular expression object whose methods scan text. re.search finds the first match anywhere, re.match anchors at the start, re.fullmatch requires the whole string to match, re.findall returns a list of all matches and re.finditer yields match objects with positions. re.sub replaces matches with a replacement string, which may reference captured groups. Compiling once with re.compile and reusing the object is faster when the same pattern is applied to many strings.",
+      "points": [
+        "search looks anywhere; match anchors at the start; fullmatch requires the entire string.",
+        "findall returns strings; finditer returns match objects with .group() and .span().",
+        "sub(pattern, repl, text, count=0) replaces every match by default.",
+        "Compile a pattern once and reuse it in loops."
+      ]
+    },
+    {
+      "heading": "Pattern building blocks and groups",
+      "body": "Square brackets define a character class such as [abc] or a range [0-9], the dot matches any character except newline, and quantifiers control repetition: * zero or more, + one or more, ? zero or one and {m,n} between m and n. Quantifiers are greedy by default and consume as much as possible; adding ? makes them lazy. Anchors ^ and $ pin a match to the start and end, and backslash classes such as \\d, \\w and \\s mean digit, word character and whitespace. Parentheses group parts of a pattern and capture them so they can be reused or extracted.",
+      "points": [
+        "\\d matches a digit, \\w a letter, digit or underscore, \\s whitespace.",
+        "+ is greedy, +? is lazy and matches as little as possible.",
+        "(...) captures a group; (?:...) groups without capturing.",
+        "(?P<name>...) names a group so it can be read by name."
+      ]
+    },
+    {
+      "heading": "Performance and pitfalls",
+      "body": "Patterns full of nested quantifiers such as (a+)+ can backtrack catastrophically and hang on long inputs; keep patterns specific and prefer simple string methods when they suffice. Always write patterns as raw strings, r'...', so backslashes reach the engine instead of being treated as escapes. Special characters such as . * + ? ( ) [ ] { } ^ $ | must be escaped with a backslash when you mean them literally. Beware that . does not match a newline unless the re.DOTALL flag is set, and that findall returns the groups, not the whole match, when the pattern contains capturing groups.",
+      "points": [
+        "Use raw strings: r'\\d+' not '\\\\d+'.",
+        "Avoid nested quantifiers that cause catastrophic backtracking.",
+        "Escape special characters when matching them literally.",
+        "Prefer str.split or str.startswith when no pattern is needed."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Extracting and rewriting with re",
+    "body": "Named groups make an extracted date readable, and re.sub with a replacement template rewrites a messy version string into a clean one. The pattern is compiled once and reused.",
+    "code": {
+      "language": "python",
+      "source": "import re\n\nlog = '2024-06-01 INFO login ok, 2024-06-02 WARN disk 91%'\ndate = re.compile(r'(?P<year>\\d{4})-(?P<month>\\d{2})-(?P<day>\\d{2})')\nmatch = date.search(log)\nprint(match.group('day'), match.group('month'), match.group('year'))\nprint(date.findall(log))\n\nmessy = 'version 1-2-3 released'\nprint(re.sub(r'(\\d+)-(\\d+)-(\\d+)', r'\\1.\\2.\\3', messy))"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Validating user input",
+      "description": "fullmatch checks that a whole string is a phone number, postcode or identifier before it is accepted."
+    },
+    {
+      "title": "Parsing logs and files",
+      "description": "Regex pulls timestamps, IDs and status codes out of fixed-format text quickly."
+    },
+    {
+      "title": "Search and replace",
+      "description": "re.sub normalises whitespace, masks data or rewrites templated text in one pass."
+    },
+    {
+      "title": "Formatted reports",
+      "description": "The format mini-language aligns columns, sets precision and adds currency separators."
+    }
+  ],
+  "demonstration": {
+    "description": "Split, findall, named groups and substitution show the common ways regular expressions are used on real text.",
+    "code": {
+      "language": "python",
+      "source": "import re\n\ntext = 'Call 555-1234 or 555-9876 before 6pm'\nprint(re.findall(r'\\d{3}-\\d{4}', text))\nprint(re.sub(r'\\d', '#', text, count=3))\n\nm = re.fullmatch(r'(\\w+)@(\\w+)\\.com', 'asha@example.com')\nprint(m.group(1), m.group(2))\nprint(re.split(r'\\s+', '  a   b  c '))\nprint(bool(re.search(r'^Call', text)))\nimport re as _\nprint(bool(re.match(r'Call', text)))"
+    },
+    "output": "['555-1234', '555-9876']\nCall ###-1234 or 555-9876 before 6pm\nasha example\n['', 'a', 'b', 'c', '']\nTrue\nTrue"
+  },
+  "takeaways": [
+    "str holds Unicode text; encode to bytes and decode back with a named encoding such as UTF-8.",
+    "The format mini-language handles alignment, width, precision, signs and thousands separators.",
+    "search looks anywhere, match anchors at the start and fullmatch requires the whole string.",
+    "Quantifiers are greedy; add ? to make them lazy.",
+    "Write patterns as raw strings and escape characters you mean literally.",
+    "Prefer simple string methods when no pattern matching is needed."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between str and bytes in Python?",
+      "answer": "str is a sequence of Unicode characters used for text; bytes is a sequence of raw byte values used for binary data. You move between them with encode and decode using an encoding such as UTF-8, and mixing them raises TypeError.",
+      "explanation": "Mention that len differs because a character can need several bytes in UTF-8."
+    },
+    {
+      "question": "When would you use re.fullmatch instead of re.search?",
+      "answer": "Use fullmatch when the entire string must match the pattern, such as validating a whole date or identifier. search returns a match if the pattern is found anywhere, so it can accept strings with extra text before or after.",
+      "explanation": "Anchoring with ^ and $ is the alternative, but fullmatch states the intent more clearly."
+    },
+    {
+      "question": "What is the difference between greedy and lazy quantifiers?",
+      "answer": "A greedy quantifier such as + consumes as many characters as possible while still allowing the rest of the pattern to match. Adding ? makes it lazy, so it consumes as few as possible. The match is the same only when the surrounding pattern forces it.",
+      "explanation": "A classic example is matching tags or quoted text, where <.*> grabs too much and <.*?> stops at the first closing angle bracket."
+    },
+    {
+      "question": "Why should regular expression patterns be raw strings?",
+      "answer": "In a normal string Python processes backslash escapes before the regex engine sees the pattern, so \\d might become an unexpected character. A raw string r'\\d' passes the backslash and letter through unchanged, making the pattern exactly what you typed.",
+      "explanation": "This is a frequent source of subtle bugs; raw strings exist precisely for patterns and filesystem paths."
+    },
+    {
+      "question": "How can a regular expression cause a performance problem?",
+      "answer": "Nested quantifiers such as (a+)+ can make the engine try exponentially many ways to match a failing input, called catastrophic backtracking. Keep patterns specific, avoid nesting ambiguous quantifiers, and use simple string operations when they are enough.",
+      "explanation": "Mention that some engines use different algorithms, but Python's re can be vulnerable, so testing with worst-case inputs matters."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Extract integers with a regular expression",
+    "difficulty": "Intermediate",
+    "objective": "Use re.findall to pull every signed integer out of arbitrary text.",
+    "statement": "For each input line, extract every integer, including a leading minus sign when present, and print them separated by single spaces in the order they appear. If a line contains no integer, print 'none'. A plus sign is not part of the number.",
+    "language": "python",
+    "input_format": "The first line is N. Each of the next N lines is arbitrary text that may contain integers.",
+    "output_format": "N lines, each the extracted integers separated by single spaces, or the word none.",
+    "example": {
+      "input": "3\nprice 120 discount -7\nno digits at all\nabc1def22\n",
+      "output": "120 -7\nnone\n1 22"
+    },
+    "constraints": [
+      "1 <= N <= 100.",
+      "Each line is at most 200 characters.",
+      "Numbers may have a leading minus sign but not a plus sign.",
+      "Use the re module."
+    ],
+    "starter": "import re\n\nn = int(input())\nfor _ in range(n):\n    line = input()\n    numbers = re.findall(r'-?\\d+', line)\n    # TODO: print the numbers or 'none'\n",
+    "solution": "import re\n\nn = int(input())\nfor _ in range(n):\n    line = input()\n    numbers = re.findall(r'-?\\d+', line)\n    print(' '.join(numbers) if numbers else 'none')\n",
+    "explanation": [
+      "re.findall returns every non-overlapping match as a list of strings, in the order they appear.",
+      "The pattern -?\\d+ matches an optional minus sign followed by one or more digits.",
+      "A plus sign is absent from the pattern, so '+5' yields just '5'.",
+      "When the list is empty, joining would give an empty line, so the conditional prints 'none' instead."
+    ],
+    "tests": [
+      {
+        "input": "3\nprice 120 discount -7\nno digits at all\nabc1def22\n",
+        "output": "120 -7\nnone\n1 22"
+      },
+      {
+        "input": "2\n-100 200\n+5\n",
+        "output": "-100 200\n5"
+      },
+      {
+        "input": "1\n42\n",
+        "output": "42"
+      },
+      {
+        "input": "2\n0\nx-0-9y\n",
+        "output": "0\n-0 -9"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does the regular expression pattern r'\\d+' match?",
+      "options": [
+        "Exactly one digit",
+        "One or more digit characters",
+        "A decimal point",
+        "One or more non-digit characters"
+      ],
+      "answer": 1,
+      "explanation": "\\d means a digit and + repeats it one or more times, so it matches a run of digits."
+    },
+    {
+      "type": "output",
+      "question": "What does this findall example print?",
+      "code": "import re\nprint(re.findall(r'\\d+', 'a1b22c333'))",
+      "options": [
+        "[1, 22, 333]",
+        "['a1b22c333']",
+        "['1', '22', '333']",
+        "['1', '2', '2', '3', '3', '3']"
+      ],
+      "answer": 2,
+      "explanation": "findall scans left to right and returns each maximal run of digits as a string, so 1, 22 and 333."
+    },
+    {
+      "type": "concept",
+      "question": "Why are raw strings commonly used for regular expressions?",
+      "options": [
+        "They compile the pattern once",
+        "They make matching faster",
+        "They prevent Python from interpreting backslashes as escape sequences",
+        "They allow multi-line patterns"
+      ],
+      "answer": 2,
+      "explanation": "A raw string passes backslashes through unchanged, so r'\\d' reaches the regex engine as \\d rather than being processed by Python first."
+    },
+    {
+      "type": "scenario",
+      "question": "You want to check that an entire string is exactly a date formatted like 2024-06-01. Which approach is most appropriate?",
+      "options": [
+        "re.search with an unanchored pattern",
+        "str.replace",
+        "str.split('-')",
+        "re.fullmatch with the pattern r'\\d{4}-\\d{2}-\\d{2}'"
+      ],
+      "answer": 3,
+      "explanation": "fullmatch requires the whole string to match, which is exactly what a strict format check needs."
+    },
+    {
+      "type": "concept",
+      "question": "How do 'abc'.encode('utf-8') and b'abc'.decode('utf-8') relate?",
+      "options": [
+        "The first turns str into bytes and the second turns bytes into str.",
+        "They are identical operations.",
+        "The first raises an error.",
+        "Both produce bytes."
+      ],
+      "answer": 0,
+      "explanation": "encode goes from str to bytes and decode goes from bytes to str, using the same encoding in reverse."
+    }
+  ]
+}

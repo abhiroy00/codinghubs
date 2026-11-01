@@ -1,0 +1,245 @@
+{
+  "day": 6,
+  "title": "Functions: Parameters, Arguments and Return Values",
+  "module": "Functions and scope",
+  "level": "Beginner",
+  "objectives": [
+    "Define functions with def and explain the difference between parameters and arguments.",
+    "Use positional, keyword and default arguments, and avoid the mutable default trap.",
+    "Accept a variable number of arguments with *args and **kwargs and unpack them when calling.",
+    "Mark positional-only and keyword-only parameters with / and *.",
+    "Explain why a function without return returns None and how to return several values."
+  ],
+  "definition": "A function is a named block of code that performs a task and can be called repeatedly with different inputs. A parameter is a name listed in the function definition; an argument is the actual object supplied at the call site. Parameters can be positional, keyword, defaulted, collected into *args and **kwargs, or restricted to positional-only or keyword-only, and a function may return one value, several values packed in a tuple, or None.",
+  "theory": [
+    {
+      "heading": "Defining and calling functions",
+      "body": "A def statement binds a function object to a name. Calling the name runs the body in a fresh local namespace; parameters are assigned from the arguments first. When the body finishes, control returns to the caller. If a function never executes a return statement it returns None, so functions used only for their side effects are called procedures. Docstrings are string literals placed first in the body; they are stored in __doc__ and are what help() displays. Reusing a function removes duplication and gives the logic a name, which is the reason the DRY principle exists.",
+      "points": [
+        "def name(parameters): introduces a function; the body is indented.",
+        "Calling without arguments uses defaults or raises TypeError if a required one is missing.",
+        "No return statement means the function returns None.",
+        "return exits the function immediately and can return several values as a tuple."
+      ]
+    },
+    {
+      "heading": "Positional, keyword and default arguments",
+      "body": "Arguments are matched to parameters by position unless you write name=value at the call site, which binds by name. A parameter with a default value becomes optional, but the default expression is evaluated only once, when the def statement runs. That is why def append_to(item, box=[]) is a classic bug: every call shares the same list. Use an immutable sentinel such as None and create the mutable object inside the body instead. Required parameters must be written before defaulted ones.",
+      "points": [
+        "f(1, 2) binds positionally; f(x=1, y=2) binds by name.",
+        "Never use a mutable default such as [] or {}; default to None and build inside.",
+        "Readable call sites use keyword arguments for booleans and options.",
+        "A parameter can become required two ways: no default, or keyword-only."
+      ]
+    },
+    {
+      "heading": "Variable arguments: *args and **kwargs",
+      "body": "A parameter written *args collects any extra positional arguments into a tuple, and **kwargs collects any extra keyword arguments into a dictionary. They let a function forward arguments it does not understand, which is essential for decorators and wrappers. At the call site the same symbols unpack in the other direction: f(*items) spreads a list or tuple into positional arguments and f(**mapping) spreads a dictionary into keyword arguments. The names args and kwargs are a convention; only the stars are required.",
+      "points": [
+        "*args is a tuple of extra positional arguments.",
+        "**kwargs is a dict of extra keyword arguments.",
+        "f(*seq) and f(**d) unpack when calling.",
+        "A bare * in the parameter list makes the following parameters keyword-only."
+      ]
+    },
+    {
+      "heading": "Positional-only and keyword-only parameters",
+      "body": "A / in the parameter list marks the parameters before it as positional-only, so they cannot be passed by name. A plain * marks the parameters after it as keyword-only, so they must be passed by name. These markers make APIs explicit and stable: positional-only names can be renamed without breaking callers, and keyword-only parameters document intent and prevent confusing calls such as f(True, False). Standard functions such as pow(x, y, /) and max(iterable, *, default=...) use them.",
+      "points": [
+        "def f(a, b, /, c, *, d): a and b positional-only, d keyword-only.",
+        "/ and * can be combined in one signature.",
+        "Keyword-only parameters are forced to be self-documenting.",
+        "The empty parameter list f() is not the same as the keyword-only marker *."
+      ]
+    },
+    {
+      "heading": "Functions are objects",
+      "body": "In Python a function is a first-class object: it can be stored in a variable, put in a list or dictionary, passed to another function and returned from one. That enables callbacks, sorting by a key function, and higher-order functions such as map, filter and functools.reduce. Aim for pure functions where possible: given the same arguments they return the same result and change nothing outside themselves, which makes them easy to test. Keep side effects deliberate and documented so callers are never surprised.",
+      "points": [
+        "sorted(data, key=str.lower) passes a function as the key.",
+        "Functions have attributes such as __name__, __doc__ and __defaults__.",
+        "Pure functions are easier to test and reason about.",
+        "Closures and decorators build on functions being values."
+      ]
+    }
+  ],
+  "example": {
+    "title": "The mutable default pitfall",
+    "body": "The first version shares one list between all calls because the default is created once. The corrected version uses None as a sentinel and builds a fresh list on every call, which is the safe pattern.",
+    "code": {
+      "language": "python",
+      "source": "def buggy(item, box=[]):\n    box.append(item)\n    return box\n\nprint(buggy('a'))    # ['a']\nprint(buggy('b'))    # ['a', 'b']  shared list!\n\ndef fixed(item, box=None):\n    if box is None:\n        box = []\n    box.append(item)\n    return box\n\nprint(fixed('a'))    # ['a']\nprint(fixed('b'))    # ['b']  fresh list"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Removing duplication",
+      "description": "Extracting repeated logic into one named function so a bug is fixed in a single place."
+    },
+    {
+      "title": "Callbacks and plugins",
+      "description": "Passing functions to event handlers, sort keys and web framework route handlers."
+    },
+    {
+      "title": "Configurable behaviour",
+      "description": "Defaults plus keyword-only options let callers override only what they need."
+    },
+    {
+      "title": "Wrappers and decorators",
+      "description": "*args and **kwargs forward arbitrary arguments through logging, timing and caching decorators."
+    }
+  ],
+  "demonstration": {
+    "description": "One function shows default arguments, keyword-only options, *args collection and tuple return values.",
+    "code": {
+      "language": "python",
+      "source": "def order(item, qty=1, *, express=False, **extras):\n    total = qty * extras.get('price', 10)\n    if express:\n        total += 5\n    return qty, total\n\nprint(order('pen'))                    # (1, 10)\nprint(order('pen', 3))                 # (3, 30)\nprint(order('pen', 3, express=True, price=2))  # (3, 11)\n\ndef total(*nums):\n    return sum(nums)\n\nprint(total(1, 2, 3))                  # 6\nprint(total(*[4, 5], 6))               # 15\n\ndef apply(f, value):\n    return f(value)\n\nprint(apply(str.upper, 'hello'))       # HELLO"
+    },
+    "output": "(1, 10)\n(3, 30)\n(3, 11)\n6\n15\nHELLO"
+  },
+  "takeaways": [
+    "Parameters are the names in the definition; arguments are the values you pass.",
+    "Defaults are evaluated once at definition time, so never default to a mutable object.",
+    "Use None as a sentinel and create the list or dict inside the function.",
+    "*args collects extra positional arguments and **kwargs extra keyword arguments.",
+    "A function without return returns None; multiple return values arrive as a tuple.",
+    "Functions are objects, so they can be passed around as callbacks and keys."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between a parameter and an argument?",
+      "answer": "A parameter is the placeholder name in the function definition; an argument is the actual value passed when the function is called. Parameters are bound to the argument objects at call time.",
+      "explanation": "This sounds trivial but interviewers use it to check that you use precise vocabulary when discussing signatures."
+    },
+    {
+      "question": "Why is def add_item(item, box=[]) dangerous?",
+      "answer": "Default values are evaluated once, when the def runs, so the same list object is reused by every call and items accumulate across unrelated calls. Default to None and create the list inside the function instead.",
+      "explanation": "This is the classic mutable-default-argument question; showing the fix demonstrates real experience."
+    },
+    {
+      "question": "How do *args and **kwargs work?",
+      "answer": "*args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dictionary. At the call site, * unpacks a sequence into positional arguments and ** unpacks a mapping into keyword arguments.",
+      "explanation": "Mention their role in writing decorators and wrappers that must forward unknown arguments unchanged."
+    },
+    {
+      "question": "What does a function return if it has no return statement?",
+      "answer": "None. Falling off the end of a function is equivalent to returning None, so functions that only print or modify state still return None.",
+      "explanation": "A good follow-up answer notes that returning several values is really returning a tuple, which the caller can unpack."
+    },
+    {
+      "question": "What do the / and * markers in a parameter list mean?",
+      "answer": "Parameters before / are positional-only and cannot be passed by name; parameters after a bare * are keyword-only and must be passed by name. They let library authors make APIs explicit and keep internal parameter names free to change.",
+      "explanation": "Mention built-in examples such as pow(x, y, /) and that keyword-only arguments prevent confusing positional boolean calls."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Greatest common divisor and least common multiple",
+    "difficulty": "Basic",
+    "objective": "Implement Euclid's algorithm in a reusable helper function and call it from a loop.",
+    "statement": "Read N pairs of non-negative integers. For each pair print the greatest common divisor and the least common multiple on one line. Define a function gcd(a, b) using Euclid's algorithm, and derive lcm(a, b) from it as a // gcd(a, b) * b, guarding the case where both numbers are zero.",
+    "language": "python",
+    "input_format": "The first line is N. Each of the next N lines holds two non-negative integers a and b.",
+    "output_format": "N lines, each '<gcd> <lcm>'.",
+    "example": {
+      "input": "2\n12 18\n7 5\n",
+      "output": "6 36\n1 35"
+    },
+    "constraints": [
+      "1 <= N <= 1000.",
+      "0 <= a, b <= 10^9.",
+      "Define gcd as a function and reuse it inside lcm.",
+      "The least common multiple of two zeros is 0."
+    ],
+    "starter": "def gcd(a, b):\n    # TODO: Euclid's algorithm\n    pass\n\ndef lcm(a, b):\n    # TODO: use gcd and handle the all-zero case\n    pass\n\nn = int(input())\nfor _ in range(n):\n    a, b = map(int, input().split())\n    print(gcd(a, b), lcm(a, b))\n",
+    "solution": "def gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n\ndef lcm(a, b):\n    if a == 0 and b == 0:\n        return 0\n    return a // gcd(a, b) * b\n\nn = int(input())\nfor _ in range(n):\n    a, b = map(int, input().split())\n    print(gcd(a, b), lcm(a, b))\n",
+    "explanation": [
+      "Euclid's algorithm replaces (a, b) with (b, a % b) until the remainder is 0; the last non-zero value is the gcd.",
+      "The assignment a, b = b, a % b uses tuple packing to read the old values before rebinding, so no temporary is needed.",
+      "Because a * b equals gcd * lcm, the lcm can be computed as a // gcd(a, b) * b; dividing before multiplying keeps the intermediate value small.",
+      "Both numbers zero is a special case, since dividing by a zero gcd would raise ZeroDivisionError."
+    ],
+    "tests": [
+      {
+        "input": "2\n12 18\n7 5\n",
+        "output": "6 36\n1 35"
+      },
+      {
+        "input": "2\n0 5\n0 0\n",
+        "output": "5 0\n0 0"
+      },
+      {
+        "input": "3\n14 21\n9 9\n15 25\n",
+        "output": "7 42\n9 9\n5 75"
+      },
+      {
+        "input": "1\n1000000007 998244353\n",
+        "output": "1 998244359987710471"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this default-argument example print?",
+      "code": "def add(a, b=2):\n    return a + b\nprint(add(3), add(3, 4))",
+      "options": [
+        "3 4",
+        "5 5",
+        "5 7",
+        "7 7"
+      ],
+      "answer": 2,
+      "explanation": "The first call uses the default b=2, giving 5; the second passes b=4 explicitly, giving 7."
+    },
+    {
+      "type": "output",
+      "question": "What does this mutable-default example print?",
+      "code": "def add_item(item, box=[]):\n    box.append(item)\n    return box\nprint(add_item(1))\nprint(add_item(2))",
+      "options": [
+        "[2]\n[1, 2]",
+        "[1]\n[2]",
+        "[1]\n[1, 2]",
+        "[1, 2]\n[1, 2]"
+      ],
+      "answer": 2,
+      "explanation": "The default list is created once, so the second call sees the first call's item and appends to it, giving [1] then [1, 2]."
+    },
+    {
+      "type": "concept",
+      "question": "What does a function return if it has no return statement?",
+      "options": [
+        "0",
+        "An empty tuple",
+        "None",
+        "The last expression evaluated"
+      ],
+      "answer": 2,
+      "explanation": "Reaching the end of a function body is the same as returning None; only an explicit return changes that."
+    },
+    {
+      "type": "scenario",
+      "question": "You want a parameter that can only be passed by keyword. What should you do?",
+      "options": [
+        "Give it a default value.",
+        "Name it with a leading underscore.",
+        "Place it after a * in the parameter list.",
+        "Place it before a / in the parameter list."
+      ],
+      "answer": 2,
+      "explanation": "A bare * makes every following parameter keyword-only, so callers must pass it as name=value."
+    },
+    {
+      "type": "concept",
+      "question": "How do *args and **kwargs collect their values?",
+      "options": [
+        "Both always produce lists.",
+        "They limit how many arguments a function can receive.",
+        "*args collects extra positional arguments into a list and **kwargs into a tuple.",
+        "*args collects extra positional arguments into a tuple and **kwargs into a dict."
+      ],
+      "answer": 3,
+      "explanation": "*args is a tuple because positional arguments are ordered; **kwargs is a dict because keyword arguments are named."
+    }
+  ]
+}

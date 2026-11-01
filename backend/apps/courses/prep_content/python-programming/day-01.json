@@ -1,0 +1,244 @@
+{
+  "day": 1,
+  "title": "Python Overview and the Execution Model",
+  "module": "Python foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Describe what Python is and why it is popular for back-end, automation and data work.",
+    "Explain how CPython compiles source code to bytecode and runs it on a virtual machine.",
+    "Distinguish compile-time errors (SyntaxError) from run-time errors (NameError, TypeError).",
+    "Explain the role of __name__ == '__main__' and .pyc caching.",
+    "Answer the classic 'Is Python compiled or interpreted?' interview question precisely."
+  ],
+  "definition": "Python is a high-level, general-purpose, dynamically typed programming language that emphasises readability. The standard implementation, CPython, first compiles a source file into bytecode (a low-level, platform-independent instruction set) and then executes that bytecode on the Python Virtual Machine, an interpreter loop written in C.",
+  "theory": [
+    {
+      "heading": "What Python is and why companies use it",
+      "body": "Python was created by Guido van Rossum and first released in 1991. Its design favours readable code, a large standard library ('batteries included') and fast development over raw execution speed. That trade-off is why it dominates scripting, web back ends (Django, Flask, FastAPI), data engineering, machine learning and test automation: developer time is usually more expensive than CPU time, and performance-critical parts can be delegated to C extensions such as NumPy.",
+      "points": [
+        "High-level: memory management, garbage collection and data structures are built in.",
+        "Dynamically typed: types belong to objects, not variables, and are checked at run time.",
+        "Multi-paradigm: procedural, object-oriented and functional styles are all supported.",
+        "Python 2 reached end of life in 2020; interviews assume Python 3."
+      ]
+    },
+    {
+      "heading": "Compiled or interpreted? Both",
+      "body": "When you run python app.py, CPython reads the whole file, tokenises and parses it into an abstract syntax tree, and compiles that tree into bytecode. Only then does the Python Virtual Machine (PVM) start executing the bytecode instruction by instruction. So Python is compiled to bytecode and the bytecode is interpreted. It is not compiled to native machine code ahead of time the way C is.",
+      "points": [
+        "Source (.py) -> tokens -> AST -> bytecode (code objects) -> executed by the PVM.",
+        "Because the whole file is compiled first, a SyntaxError anywhere stops the program before line 1 runs.",
+        "Name lookups, attribute access and type checks happen at run time, so a NameError only appears when that line executes.",
+        "The dis module shows the bytecode: import dis; dis.dis(func)."
+      ]
+    },
+    {
+      "heading": "Bytecode caching and .pyc files",
+      "body": "When a module is imported, CPython saves its compiled bytecode in a __pycache__ folder as a .pyc file named for the interpreter version, for example utils.cpython-311.pyc. On the next import, if the source has not changed, Python skips compilation and loads the cached bytecode. This speeds up start-up, not execution. The main script you run directly is compiled every time and is not cached.",
+      "points": [
+        ".pyc files are a start-up optimisation, not a way to hide or speed up code.",
+        "They are version-specific, which is why the interpreter tag is in the file name.",
+        "Deleting __pycache__ is always safe; Python regenerates it."
+      ]
+    },
+    {
+      "heading": "Implementations and the __main__ module",
+      "body": "Python is a language specification with several implementations: CPython (the reference, written in C), PyPy (a JIT compiler that can make long-running pure-Python code much faster), Jython (JVM) and MicroPython (microcontrollers). Whichever implementation runs it, the file you execute directly becomes the module named __main__. The idiom if __name__ == '__main__': lets a file act both as an importable module and as a script: the guarded code runs only when the file is executed directly.",
+      "points": [
+        "Imported module: __name__ is the module's name, e.g. 'utils'.",
+        "Executed script: __name__ is '__main__'.",
+        "Put test calls and CLI entry points under the guard so imports have no side effects."
+      ]
+    },
+    {
+      "heading": "Strengths and limitations to state in interviews",
+      "body": "Python's strengths are readability, a huge ecosystem, rapid prototyping and portability. Its limitations are slower CPU-bound execution than compiled languages, the Global Interpreter Lock that prevents CPython threads from running Python bytecode in parallel, higher memory use per object and run-time rather than compile-time type errors. Good engineers mitigate these with profiling, C-backed libraries, multiprocessing, and type hints checked by tools such as mypy.",
+      "points": [
+        "Everything is an object, including functions, classes and modules.",
+        "Indentation is syntax: blocks are defined by consistent indentation, not braces.",
+        "Type hints are optional annotations; the interpreter does not enforce them."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A module that is also a script",
+    "body": "This file defines a reusable function and runs a quick demo only when executed directly. Another file can import greet without printing anything, because in that case __name__ is 'greetings', not '__main__'.",
+    "code": {
+      "language": "python",
+      "source": "# greetings.py\ndef greet(name):\n    return f'Hello, {name}!'\n\nprint('module name:', __name__)\n\nif __name__ == '__main__':\n    print(greet('Asha'))\n\n# python greetings.py      -> module name: __main__ / Hello, Asha!\n# >>> import greetings      -> module name: greetings"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Web back ends",
+      "description": "Django, Flask and FastAPI power APIs and websites; Python's readability speeds up team development."
+    },
+    {
+      "title": "Automation and scripting",
+      "description": "Renaming files, scraping reports, calling APIs and gluing systems together in a few lines."
+    },
+    {
+      "title": "Data and machine learning",
+      "description": "pandas, NumPy, scikit-learn and PyTorch use Python as a friendly front end to fast C/C++ code."
+    },
+    {
+      "title": "Testing and DevOps",
+      "description": "pytest, Selenium, Ansible and many CI tools are written in or scripted with Python."
+    }
+  ],
+  "demonstration": {
+    "description": "Use the dis module to see the bytecode CPython generates for a tiny function. Exact opcode names differ between Python versions (for example BINARY_ADD in 3.8 became BINARY_OP in 3.11), which is exactly why bytecode is an implementation detail rather than part of the language.",
+    "code": {
+      "language": "python",
+      "source": "import dis\n\ndef add(a, b):\n    return a + b\n\ndis.dis(add)"
+    },
+    "output": "  LOAD_FAST    a\n  LOAD_FAST    b\n  BINARY_OP    0 (+)      # BINARY_ADD on older versions\n  RETURN_VALUE\n(line numbers and extra RESUME instructions vary by version)"
+  },
+  "takeaways": [
+    "CPython compiles source to bytecode, then the Python Virtual Machine interprets the bytecode.",
+    "A SyntaxError anywhere in a file prevents any of it from running; NameError and TypeError appear only when the line executes.",
+    ".pyc files in __pycache__ cache bytecode of imported modules to speed up start-up.",
+    "if __name__ == '__main__': separates script behaviour from importable code.",
+    "Python trades raw CPU speed for readability and productivity; heavy lifting is delegated to C extensions.",
+    "CPython, PyPy, Jython and MicroPython are different implementations of the same language."
+  ],
+  "interview": [
+    {
+      "question": "Is Python a compiled or an interpreted language?",
+      "answer": "Both, in the CPython implementation. Source code is compiled to bytecode, and the bytecode is executed by the Python Virtual Machine, an interpreter. It is not compiled ahead of time to native machine code.",
+      "explanation": "Saying only 'interpreted' is the common weak answer. A strong answer names the pipeline (source -> AST -> bytecode -> PVM) and mentions that PyPy adds JIT compilation."
+    },
+    {
+      "question": "What is the purpose of if __name__ == '__main__':?",
+      "answer": "It runs the guarded block only when the file is executed directly. When the file is imported, __name__ is the module name, so the block is skipped and importing has no side effects.",
+      "explanation": "Mention practical uses: CLI entry points, quick demos and avoiding duplicate work when multiprocessing re-imports the main module on Windows."
+    },
+    {
+      "question": "What are .pyc files and __pycache__?",
+      "answer": ".pyc files hold the compiled bytecode of imported modules, stored in __pycache__ with a version tag. Python reuses them when the source is unchanged, which speeds up imports. They do not make code run faster once loaded.",
+      "explanation": "Interviewers check that you know caching affects start-up time only, and that the main script is not cached."
+    },
+    {
+      "question": "A file has a syntax error on its last line. Does the first print statement run?",
+      "answer": "No. The whole file is parsed and compiled before execution starts, so the SyntaxError is raised before any statement runs. A NameError on the last line, by contrast, would only occur after the earlier lines had executed.",
+      "explanation": "This tests real understanding of the execution model: compile-time versus run-time errors."
+    },
+    {
+      "question": "What are the main limitations of Python, and how do teams work around them?",
+      "answer": "CPU-bound code is slower than in compiled languages, the GIL stops threads running Python bytecode in parallel, objects use more memory and type errors surface at run time. Teams use C-backed libraries (NumPy), multiprocessing or native extensions for speed, PyPy for some workloads, and type hints with mypy plus tests for correctness.",
+      "explanation": "Balanced answers that pair each limitation with a mitigation sound like real engineering experience."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Syntax checker without running the code",
+    "difficulty": "Basic",
+    "objective": "Use Python's compile step to detect syntax errors before execution, mirroring how CPython compiles a whole file before running it.",
+    "statement": "Read a small Python program and report whether it compiles. Do not execute it. If it compiles, print OK followed by the number of non-blank lines. If it does not, print the line number of the syntax error reported by the compiler. IndentationError is a kind of SyntaxError and must be reported the same way.",
+    "language": "python",
+    "input_format": "The first line is an integer N. The next N lines are the program's source code (indentation preserved).",
+    "output_format": "Either 'OK <k>' where k is the number of non-blank source lines, or 'SyntaxError on line <L>'.",
+    "example": {
+      "input": "3\nx = 10\nif x > 5\n    print(x)\n",
+      "output": "SyntaxError on line 2"
+    },
+    "constraints": [
+      "1 <= N <= 50.",
+      "Use compile(source, '<input>', 'exec'); never call exec or eval on the input.",
+      "A line containing only spaces counts as blank."
+    ],
+    "starter": "import sys\n\nlines = sys.stdin.read().split('\\n')\nn = int(lines[0])\ncode_lines = lines[1:n + 1]\nsource = '\\n'.join(code_lines) + '\\n'\n\n# TODO: compile the source and print the result\n",
+    "solution": "import sys\n\nlines = sys.stdin.read().split('\\n')\nn = int(lines[0])\ncode_lines = lines[1:n + 1]\nsource = '\\n'.join(code_lines) + '\\n'\n\ntry:\n    compile(source, '<input>', 'exec')\nexcept SyntaxError as err:\n    print(f'SyntaxError on line {err.lineno}')\nelse:\n    non_blank = sum(1 for line in code_lines if line.strip())\n    print(f'OK {non_blank}')\n",
+    "explanation": [
+      "Read all input and keep exactly N source lines, preserving their indentation.",
+      "compile() runs the tokenizer, parser and bytecode compiler but executes nothing, just like the first phase of python file.py.",
+      "Catch SyntaxError; IndentationError and TabError are subclasses, so one except clause handles all of them. err.lineno holds the line number.",
+      "In the else block (no exception), count lines whose strip() is non-empty and print OK with the count."
+    ],
+    "tests": [
+      {
+        "input": "3\nx = 10\nif x > 5\n    print(x)\n",
+        "output": "SyntaxError on line 2"
+      },
+      {
+        "input": "4\ndef add(a, b):\n    return a + b\n\nprint(add(2, 3))\n",
+        "output": "OK 3"
+      },
+      {
+        "input": "3\nprint('start')\n  print('indented')\nprint('end')\n",
+        "output": "SyntaxError on line 2"
+      },
+      {
+        "input": "2\nprint(undefined_name)\nresult = 1 / 0\n",
+        "output": "OK 2"
+      },
+      {
+        "input": "1\n1 = x\n",
+        "output": "SyntaxError on line 1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does CPython produce from a .py source file before executing it?",
+      "options": [
+        "Bytecode that runs on the Python Virtual Machine",
+        "Java bytecode for the JVM",
+        "An executable .exe file",
+        "Native machine code for the current CPU"
+      ],
+      "answer": 0,
+      "explanation": "CPython compiles source to bytecode, which its virtual machine then interprets. PyPy can JIT-compile further, but CPython does not produce native code."
+    },
+    {
+      "type": "output",
+      "question": "What does this program print when run as a script?",
+      "code": "print('start')\n\ndef report():\n    return missing_variable\n\nprint('end')",
+      "options": [
+        "start and end on two lines",
+        "SyntaxError",
+        "NameError before anything is printed",
+        "start, then a NameError"
+      ],
+      "answer": 0,
+      "explanation": "Names inside a function body are looked up only when the function runs. report() is never called, so no NameError occurs and both lines print."
+    },
+    {
+      "type": "scenario",
+      "question": "utils.py ends with print('loaded'). You want the message only when running python utils.py, not when another file imports utils. What should you do?",
+      "options": [
+        "Wrap the print in a try/except block",
+        "Put the print under if __name__ == '__main__':",
+        "Rename the file to __main__.py",
+        "Delete the __pycache__ folder"
+      ],
+      "answer": 1,
+      "explanation": "When imported, __name__ is 'utils'; when run directly, it is '__main__'. The guard runs the code only in the second case."
+    },
+    {
+      "type": "concept",
+      "question": "What is the main benefit of the .pyc files stored in __pycache__?",
+      "options": [
+        "They make loops execute faster",
+        "They hide source code from other developers",
+        "They allow Python 3.8 bytecode to run on Python 3.12",
+        "They skip recompilation on import, so start-up is faster"
+      ],
+      "answer": 3,
+      "explanation": "Cached bytecode avoids reparsing unchanged modules. Execution speed is the same, and .pyc files are version-specific."
+    },
+    {
+      "type": "scenario",
+      "question": "A 200-line script has a missing colon on line 200. What happens when you run it?",
+      "options": [
+        "A SyntaxError is raised and no line runs",
+        "Python skips line 200 and finishes normally",
+        "Python inserts the colon automatically",
+        "Lines 1 to 199 run, then a SyntaxError is raised"
+      ],
+      "answer": 0,
+      "explanation": "The whole file is compiled before execution starts, so a syntax error anywhere prevents every line from running."
+    }
+  ]
+}

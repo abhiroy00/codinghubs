@@ -1,0 +1,246 @@
+{
+  "day": 8,
+  "title": "Built-in Data Structures: Lists, Tuples, Sets and Dictionaries",
+  "module": "Data structures",
+  "level": "Intermediate",
+  "objectives": [
+    "Choose between list, tuple, set and dict based on ordering, mutability and lookup needs.",
+    "Use the core methods of lists and dictionaries confidently and correctly.",
+    "Explain hashing and why set and dict membership tests are O(1) on average.",
+    "Combine and compare collections with the set operations for union, intersection and difference.",
+    "Recognise when Counter and defaultdict replace hand-written bookkeeping."
+  ],
+  "definition": "Python's four built-in collections cover most everyday needs. A list is an ordered, mutable sequence; a tuple is an ordered, immutable sequence that can be hashed and used as a dictionary key; a set is an unordered collection of unique hashable objects with fast membership tests; and a dict is a mapping of unique hashable keys to values that preserves insertion order. Each trades off ordering, mutability and lookup speed differently.",
+  "theory": [
+    {
+      "heading": "Lists: ordered and mutable",
+      "body": "A list stores references to objects in order and can grow or shrink. Indexing and slicing are fast, and append and pop at the end are amortised O(1), but inserting or deleting near the front is O(n) because it shifts every later element. Useful methods include append, extend, insert, remove, pop, index, count, sort, reverse and copy. Because a list holds references, a nested list can accidentally be shared; copying with [:] or list() is shallow, so use copy.deepcopy for nested mutable data.",
+      "points": [
+        "append adds one item; extend adds every item of an iterable.",
+        "ls.sort() sorts in place and returns None; sorted(ls) returns a new list.",
+        "slicing ls[:] makes a shallow copy.",
+        "Membership on a list is O(n); on a set it is O(1)."
+      ]
+    },
+    {
+      "heading": "Tuples: ordered and immutable",
+      "body": "A tuple is like a frozen list. It cannot be changed after creation, which makes it safe to share and allows it to be hashed, so tuples can be keys in a dict or members of a set, provided all their elements are hashable too. Tuples are the natural representation of a fixed record such as a coordinate or a database row, and returning several values from a function really returns a tuple. namedtuple from collections, or dataclasses, give those records named fields.",
+      "points": [
+        "(1, 2) and 1, 2 both build a tuple; a one-element tuple needs a trailing comma: (1,).",
+        "Tuples are hashable if every element is hashable.",
+        "Packing and unpacking let you swap values: a, b = b, a.",
+        "namedtuple adds readable field names without losing tuple behaviour."
+      ]
+    },
+    {
+      "heading": "Sets: unique and fast to test",
+      "body": "A set keeps one copy of each hashable value and does not preserve order. Its power comes from O(1) average membership tests and from mathematical operations: | for union, & for intersection, - for difference and ^ for symmetric difference. Use a set to remove duplicates from a sequence with set(items) or to test whether two collections share values. A frozenset is an immutable, hashable set that can itself be used as a dictionary key. Sets cannot hold lists or dictionaries because those are unhashable.",
+      "points": [
+        "{1, 2, 3} or set([1, 2, 3]) creates a set; {} creates an empty dict, not a set.",
+        "set(items) removes duplicates but loses order.",
+        "a & b, a | b, a - b, a ^ b perform the set operations.",
+        "add, discard, remove and issubset are common methods."
+      ]
+    },
+    {
+      "heading": "Dictionaries: key-value lookups",
+      "body": "A dict maps hashable keys to arbitrary values and, since Python 3.7, remembers insertion order. Lookups by key are O(1) on average. Reading a missing key with d[k] raises KeyError, while d.get(k) returns None and d.get(k, default) returns your fallback. Keys must be hashable, so use tuples or strings, not lists. Useful methods include keys, values, items, setdefault, update and pop. Comprehensions and Counter cover most counting and grouping tasks without extra loops.",
+      "points": [
+        "d.get(k, default) avoids KeyError for missing keys.",
+        "d.items() yields (key, value) pairs for iteration.",
+        "Keys must be hashable; insertion order of keys is preserved.",
+        "Counter and defaultdict remove the need for manual default checks."
+      ]
+    },
+    {
+      "heading": "Choosing a structure and complexity",
+      "body": "Pick the structure from the operations you perform most. Need order and frequent appends: list. Need an immutable record or a hashable key: tuple. Need uniqueness or fast membership: set. Need to associate values with keys: dict. Remember the average costs: list indexing is O(1) but membership is O(n); set and dict membership is O(1) average; sorting anything is O(n log n). Converting between types is cheap enough, so it is normal to build a list, then a set to deduplicate, then back to a list when order matters.",
+      "points": [
+        "list: ordered, mutable, O(n) search, O(1) index.",
+        "tuple: ordered, immutable, hashable, good as a key.",
+        "set: unordered, unique, O(1) average membership.",
+        "dict: keyed, ordered, O(1) average lookup.",
+        "List -> set -> sorted list is the usual deduplicate-and-order recipe."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Counting with a dictionary and Counter",
+    "body": "A plain dictionary counts words with dict.get, while collections.Counter does the same job in fewer lines. Sorting the items by count turns the counts into a simple frequency report.",
+    "code": {
+      "language": "python",
+      "source": "from collections import Counter\n\nwords = 'the cat the hat the cat'.split()\n\ncounts = {}\nfor w in words:\n    counts[w] = counts.get(w, 0) + 1\nprint(counts)\n\ncounter = Counter(words)\nprint(counter.most_common(2))\nprint(sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])))"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Removing duplicates",
+      "description": "list(set(items)) drops repeated values; pair it with sorted() to restore a stable order."
+    },
+    {
+      "title": "Membership tests on large data",
+      "description": "Checking an allow-list with a set is far faster than scanning a list for every request."
+    },
+    {
+      "title": "Grouping and tallying",
+      "description": "Dictionaries and Counter group records by key and count occurrences in one pass."
+    },
+    {
+      "title": "Fixed records",
+      "description": "Tuples and namedtuples represent coordinates, rows and return values that must not change."
+    }
+  ],
+  "demonstration": {
+    "description": "Exercise set algebra, tuple keys in a dictionary, and the difference between reading a missing key with [] and with get.",
+    "code": {
+      "language": "python",
+      "source": "a = {1, 2, 3, 4}\nb = {3, 4, 5, 6}\nprint(sorted(a & b), sorted(a | b), sorted(a - b))\nprint(3 in a, 7 in a)\n\ngrid = {(0, 0): 'start', (1, 2): 'treasure'}\nprint(grid[(1, 2)])\n\nd = {'x': 1}\nprint(d.get('y', 'missing'))\ntry:\n    d['y']\nexcept KeyError as e:\n    print('KeyError:', e)"
+    },
+    "output": "[3, 4] [1, 2, 3, 4, 5, 6] [1, 2]\nTrue False\ntreasure\nmissing\nKeyError: 'y'"
+  },
+  "takeaways": [
+    "list is ordered and mutable; tuple is ordered and immutable, so it can be a key.",
+    "set stores unique values and gives O(1) average membership and set operations.",
+    "dict maps hashable keys to values and preserves insertion order.",
+    "Reading a missing key with [] raises KeyError; get returns a default instead.",
+    "Keys of dicts and members of sets must be hashable, so lists cannot be used.",
+    "Counter and defaultdict replace repetitive counting and default-checking code."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between a list and a tuple?",
+      "answer": "A list is mutable and typically holds homogeneous items you will change; a tuple is immutable, often holds a fixed record, and being hashable it can be a dictionary key or set member if its elements are hashable.",
+      "explanation": "Mention that immutability makes tuples safe to share and slightly cheaper to create, though speed is rarely the deciding factor."
+    },
+    {
+      "question": "Why is checking membership in a set faster than in a list?",
+      "answer": "A set is built on a hash table, so membership computes the hash of the value and checks a bucket, which is O(1) on average. A list must compare against items one by one and is O(n).",
+      "explanation": "The same hashing explains fast dictionary key lookups; note that worst-case behaviour can degrade if hashes collide."
+    },
+    {
+      "question": "Why can't a list be used as a dictionary key?",
+      "answer": "Dictionary keys must be hashable, and hashability requires an object whose hash never changes. A list can be mutated, so its hash could change and break the mapping. Use a tuple instead.",
+      "explanation": "This links to __hash__ and __eq__ being defined together; mutable containers deliberately set __hash__ to None."
+    },
+    {
+      "question": "How do you remove duplicates from a list while keeping order?",
+      "answer": "Build a set for fast membership and collect items in a new list only the first time they appear, for example dict.fromkeys(items) in Python 3.7+, or a loop with a seen set. A plain set(items) removes duplicates but loses the original order.",
+      "explanation": "dict.fromkeys is a neat one-liner because dictionaries preserve insertion order and the keys are unique."
+    },
+    {
+      "question": "What is the average time complexity of common operations on these structures?",
+      "answer": "List indexing is O(1), list search is O(n), and appending is amortised O(1). Set and dict membership, insertion and deletion are O(1) on average. Sorting any of them is O(n log n).",
+      "explanation": "Interviewers like candidates who can map a data structure choice to the expected complexity rather than guessing."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Word frequency report",
+    "difficulty": "Intermediate",
+    "objective": "Aggregate counts with a dictionary and sort the result by frequency and then alphabetically.",
+    "statement": "Read N words, ignoring case. Print each distinct word, lowercased, with its count, ordered by count descending and, for equal counts, alphabetically ascending. Print one '<word> <count>' per line.",
+    "language": "python",
+    "input_format": "The first line is N. The second line contains N whitespace-separated words, possibly with mixed case.",
+    "output_format": "One line per distinct word: '<word> <count>'.",
+    "example": {
+      "input": "4\nApple Banana apple cherry\n",
+      "output": "apple 2\nbanana 1\ncherry 1"
+    },
+    "constraints": [
+      "1 <= N <= 1000.",
+      "Words contain only letters.",
+      "Compare words case-insensitively by lowercasing them.",
+      "Sort with the key (-count, word)."
+    ],
+    "starter": "n = int(input())\nwords = input().split()\ncounts = {}\n# TODO: count each lowercased word and print the report\n",
+    "solution": "n = int(input())\nwords = input().split()\ncounts = {}\nfor w in words:\n    w = w.lower()\n    counts[w] = counts.get(w, 0) + 1\nfor word, count in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])):\n    print(word, count)\n",
+    "explanation": [
+      "dict.get(w, 0) supplies a default so the first occurrence needs no special case.",
+      "Lowercasing each word before counting merges Apple and apple into one key.",
+      "counts.items() yields (word, count) pairs, which sorted turns into an ordered list.",
+      "The key function returns the tuple (-count, word): the minus sign sorts counts from largest to smallest while words of equal count sort alphabetically."
+    ],
+    "tests": [
+      {
+        "input": "4\nApple Banana apple cherry\n",
+        "output": "apple 2\nbanana 1\ncherry 1"
+      },
+      {
+        "input": "5\na a a b b\n",
+        "output": "a 3\nb 2"
+      },
+      {
+        "input": "1\nHello\n",
+        "output": "hello 1"
+      },
+      {
+        "input": "6\nx y z x y x\n",
+        "output": "x 3\ny 2\nz 1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which structure should you use to test membership in a large collection of unique values as fast as possible?",
+      "options": [
+        "A list",
+        "A tuple",
+        "A set",
+        "A string"
+      ],
+      "answer": 2,
+      "explanation": "A set is a hash table, so membership is O(1) on average, whereas a list scan is O(n)."
+    },
+    {
+      "type": "output",
+      "question": "What does this set example print?",
+      "code": "s = {1, 2, 2, 3}\nprint(len(s), 2 in s)",
+      "options": [
+        "4 True",
+        "3 False",
+        "4 False",
+        "3 True"
+      ],
+      "answer": 3,
+      "explanation": "A set keeps one copy of each value, so the duplicate 2 collapses and the length is 3; 2 is present."
+    },
+    {
+      "type": "concept",
+      "question": "Why must dictionary keys be hashable?",
+      "options": [
+        "To keep insertion order",
+        "To allow duplicate keys",
+        "To allow stable sorting of the keys",
+        "So they can be looked up by computing a hash and comparing equality"
+      ],
+      "answer": 3,
+      "explanation": "The hash locates the bucket for a key quickly, and equality resolves any collisions; mutable keys would break this."
+    },
+    {
+      "type": "output",
+      "question": "What does this dictionary lookup example print?",
+      "code": "d = {'a': 1, 'b': 2}\nprint(d.get('c', 0), d['a'])",
+      "options": [
+        "0 1",
+        "None 1",
+        "KeyError",
+        "0 2"
+      ],
+      "answer": 0,
+      "explanation": "get returns the default 0 when 'c' is missing, and d['a'] returns 1."
+    },
+    {
+      "type": "scenario",
+      "question": "You need an ordered sequence that you will frequently append to and read by position. Which type fits best?",
+      "options": [
+        "tuple",
+        "set",
+        "list",
+        "frozenset"
+      ],
+      "answer": 2,
+      "explanation": "A list is ordered and mutable, so it supports positional access and efficient appends at the end."
+    }
+  ]
+}

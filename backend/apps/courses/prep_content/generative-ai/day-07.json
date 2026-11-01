@@ -1,0 +1,241 @@
+{
+  "day": 7,
+  "title": "Embeddings & Semantic Representations",
+  "module": "GenAI foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Define an embedding and explain why meaning can be represented as a vector of numbers.",
+    "Calculate cosine similarity, dot product and Euclidean distance between vectors.",
+    "Distinguish token embeddings inside an LLM from sentence or document embeddings used for search.",
+    "Describe how embedding models are trained (contrastive learning) and how to choose one.",
+    "Identify applications such as semantic search, clustering, recommendations and RAG."
+  ],
+  "definition": "An embedding is a dense vector of numbers (for example 384, 768 or 1,536 dimensions) that represents the meaning of a piece of data such as a word, sentence, image or product. Embedding models are trained so that items with similar meaning end up close together in this vector space, which lets software compare meaning with simple maths such as cosine similarity.",
+  "theory": [
+    {
+      "heading": "From words to vectors",
+      "body": "Computers cannot compare meaning in raw text: 'car' and 'automobile' share no letters. Early approaches such as one-hot vectors or bag-of-words treat every word as unrelated. Embeddings instead place words in a continuous space where distance reflects meaning. Word2Vec and GloVe showed that such vectors capture relationships, the classic example being vector('king') - vector('man') + vector('woman') ≈ vector('queen'). Modern models embed whole sentences and documents, capturing context: 'bank' in 'river bank' and 'bank loan' get different representations.",
+      "points": [
+        "One-hot: sparse, huge, no notion of similarity.",
+        "Static word embeddings (Word2Vec, GloVe): one vector per word regardless of context.",
+        "Contextual embeddings (BERT, sentence-transformers, API embedding models): meaning depends on surrounding words."
+      ]
+    },
+    {
+      "heading": "Measuring similarity",
+      "body": "Cosine similarity measures the angle between two vectors: dot(a, b) / (|a| * |b|). It ranges from -1 to 1 and ignores vector length, which makes it the default for text embeddings. Dot product is the same as cosine when vectors are normalised to length 1, which is why many systems normalise embeddings once and then use the faster dot product. Euclidean (L2) distance measures straight-line distance; smaller means more similar.",
+      "points": [
+        "cosine(a, b) = sum(a_i * b_i) / (sqrt(sum a_i^2) * sqrt(sum b_i^2)).",
+        "For unit-length vectors: ranking by cosine, dot product or L2 distance gives the same order.",
+        "Use the metric the embedding model was trained for."
+      ]
+    },
+    {
+      "heading": "Token embeddings vs sentence embeddings",
+      "body": "Inside every LLM, the first layer maps each token ID to a learned vector, the token embedding. These flow through the Transformer and become contextual. Sentence embedding models (for example all-MiniLM-L6-v2, BGE, E5, OpenAI text-embedding-3, Cohere Embed) produce one vector for an entire passage, usually by pooling token vectors. Those passage-level vectors power semantic search and RAG. Do not confuse the two: you do not normally take a chat model's internal vectors for search.",
+      "points": [
+        "Token embeddings: an embedding matrix of shape vocab_size x hidden_size inside the model.",
+        "Sentence embeddings: one fixed-size vector per text, from a dedicated embedding model.",
+        "Pooling methods: mean pooling or the [CLS] token output."
+      ]
+    },
+    {
+      "heading": "How embedding models are trained",
+      "body": "Sentence embedding models are usually trained with contrastive learning. The model sees pairs that should be close (a question and its answer, a sentence and its paraphrase) and pushes them together, while pushing apart unrelated pairs in the same batch. Large, diverse training pairs produce general-purpose embeddings; domain-specific fine-tuning can improve results for legal, medical or code search.",
+      "points": [
+        "Positive pairs pulled together, negatives pushed apart (e.g. InfoNCE / MultipleNegativesRankingLoss).",
+        "Benchmarks such as MTEB compare models across retrieval, clustering and classification.",
+        "Choose by quality on your data, dimension (storage cost), speed, language support and licence."
+      ]
+    },
+    {
+      "heading": "Limitations and practical notes",
+      "body": "Embeddings capture topical similarity well but can miss exact details: two sentences that differ only in a negation or a number may look very similar. Vectors from different models are not comparable, so changing the model means re-embedding all documents. Higher dimensions can capture more nuance but cost more storage and search time; some models support shortened (Matryoshka) embeddings to trade a little quality for size.",
+      "points": [
+        "Weak on negation, exact numbers, rare IDs and keywords: combine with keyword search when needed.",
+        "Never mix vectors from different embedding models in one index.",
+        "Store the model name and version with every vector."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Semantic similarity with sentence-transformers",
+    "body": "A sentence embedding model turns sentences into vectors; cosine similarity then scores how close their meanings are. 'How do I reset my password?' and 'I forgot my login credentials' share almost no words but score high, while an unrelated sentence scores low. Exact scores vary by model version.",
+    "code": {
+      "language": "python",
+      "source": "from sentence_transformers import SentenceTransformer, util\n\nmodel = SentenceTransformer('all-MiniLM-L6-v2')   # 384-dimensional vectors\nsentences = ['How do I reset my password?',\n             'I forgot my login credentials',\n             'What is the weather in Chennai?']\nemb = model.encode(sentences, normalize_embeddings=True)\nprint(emb.shape)                         # (3, 384)\nprint(util.cos_sim(emb[0], emb[1]))      # high, e.g. ~0.6\nprint(util.cos_sim(emb[0], emb[2]))      # low,  e.g. ~0.05"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Semantic search",
+      "description": "Find help-centre articles by meaning, so 'can't log in' finds 'reset your password'."
+    },
+    {
+      "title": "Retrieval-augmented generation",
+      "description": "Retrieve the most relevant document chunks to ground an LLM's answer (Days 16–20)."
+    },
+    {
+      "title": "Recommendations",
+      "description": "Recommend similar products, courses or jobs by comparing item and user embeddings."
+    },
+    {
+      "title": "Clustering and deduplication",
+      "description": "Group support tickets by theme or detect near-duplicate questions in a forum."
+    },
+    {
+      "title": "Classification with few labels",
+      "description": "Train a lightweight classifier on embeddings, or label by nearest labelled example."
+    }
+  ],
+  "demonstration": {
+    "description": "Compute cosine similarity by hand for three tiny 3-dimensional 'embeddings'. Real embeddings have hundreds of dimensions, but the maths is identical.",
+    "code": {
+      "language": "python",
+      "source": "import math\n\ndef cosine(a, b):\n    dot = sum(x * y for x, y in zip(a, b))\n    return dot / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b)))\n\ncricket = [0.9, 0.1, 0.0]\nfootball = [0.8, 0.3, 0.1]\nbanking = [0.0, 0.2, 0.9]\nprint(round(cosine(cricket, football), 3))\nprint(round(cosine(cricket, banking), 3))"
+    },
+    "output": "0.963\n0.024"
+  },
+  "takeaways": [
+    "Embeddings are dense vectors where distance reflects meaning.",
+    "Cosine similarity compares direction; on normalised vectors it equals the dot product.",
+    "Token embeddings live inside LLMs; sentence embeddings from dedicated models power search and RAG.",
+    "Embedding models are trained contrastively on similar and dissimilar pairs.",
+    "Embeddings can miss negations, numbers and exact keywords; hybrid search helps.",
+    "Never compare vectors produced by different embedding models."
+  ],
+  "interview": [
+    {
+      "question": "What is an embedding?",
+      "answer": "A dense numeric vector representation of data, such as text, in which semantically similar items are close together, so meaning can be compared mathematically.",
+      "explanation": "Add a concrete example ('reset password' close to 'forgot login') and the typical dimension sizes."
+    },
+    {
+      "question": "Why is cosine similarity commonly used for text embeddings?",
+      "answer": "It compares the direction of vectors and ignores their length, which reflects meaning better than magnitude. On normalised vectors it equals the dot product, so it is also fast to compute.",
+      "explanation": "Strong answers mention normalisation and that the right metric depends on how the model was trained."
+    },
+    {
+      "question": "What is the difference between Word2Vec and BERT-style embeddings?",
+      "answer": "Word2Vec gives each word one static vector regardless of context. BERT produces contextual embeddings, so the same word gets different vectors in different sentences.",
+      "explanation": "Use the 'bank' example (river bank vs bank account) to show the difference clearly."
+    },
+    {
+      "question": "You switch to a new embedding model. What must you do with your existing vector index?",
+      "answer": "Re-embed all documents with the new model and rebuild the index, because vectors from different models live in different spaces and cannot be compared.",
+      "explanation": "A practical production question. Mention versioning vectors and running both indexes during migration."
+    },
+    {
+      "question": "How are sentence embedding models trained?",
+      "answer": "Mostly with contrastive learning: matching pairs (question-answer, paraphrases) are pulled together and non-matching pairs in the batch pushed apart, often with an InfoNCE-style loss.",
+      "explanation": "Mentioning in-batch negatives, hard negatives and the MTEB benchmark shows depth."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Rank documents by cosine similarity",
+    "difficulty": "Basic",
+    "objective": "Implement the core of semantic search: score document embeddings against a query embedding and return the top-k.",
+    "statement": "You are given a query embedding and N document embeddings of the same dimension. Compute the cosine similarity between the query and each document. If either vector has zero length, its similarity is 0. Print the top k documents sorted by similarity descending; break ties by document name ascending. Round scores to 4 decimals and never print -0.0000.",
+    "language": "python",
+    "input_format": "Line 1: the query vector (space-separated numbers).\nLine 2: N.\nNext N lines: name v1 v2 ... vd\nLast line: k.",
+    "output_format": "Up to k lines: <name> <similarity with 4 decimals>. If k > N, print all N.",
+    "example": {
+      "input": "1 0 1\n3\nrefund 1 0 0.9\nshipping 0 1 0\ninvoice 0.5 0.5 0.5\n2\n",
+      "output": "refund 0.9986\ninvoice 0.8165"
+    },
+    "constraints": [
+      "1 <= d <= 50; 1 <= N <= 1000; 1 <= k.",
+      "Document names are unique and contain no spaces.",
+      "Values may be negative or zero."
+    ],
+    "starter": "import math\n\nquery = list(map(float, input().split()))\nn = int(input())\ndocs = []\nfor _ in range(n):\n    parts = input().split()\n    docs.append((parts[0], list(map(float, parts[1:]))))\nk = int(input())\n\ndef cosine(a, b):\n    # TODO: return the cosine similarity, or 0.0 if a vector has zero length\n    pass\n",
+    "solution": "import math\n\nquery = list(map(float, input().split()))\nn = int(input())\ndocs = []\nfor _ in range(n):\n    parts = input().split()\n    docs.append((parts[0], list(map(float, parts[1:]))))\nk = int(input())\n\ndef cosine(a, b):\n    norm_a = math.sqrt(sum(x * x for x in a))\n    norm_b = math.sqrt(sum(y * y for y in b))\n    if norm_a == 0 or norm_b == 0:\n        return 0.0\n    return sum(x * y for x, y in zip(a, b)) / (norm_a * norm_b)\n\nscored = [(name, round(cosine(query, vec), 4) + 0.0) for name, vec in docs]\nscored.sort(key=lambda item: (-item[1], item[0]))\nfor name, score in scored[:k]:\n    print(f'{name} {score:.4f}')\n",
+    "explanation": [
+      "Parse the query and each document line into a name and a list of floats.",
+      "Cosine similarity is the dot product divided by the product of the two vector lengths; guard against zero length to avoid division by zero.",
+      "Round to 4 decimals before sorting so equal printed scores are tie-broken by name; adding 0.0 turns -0.0 into 0.0.",
+      "Sort by score descending then name ascending, and print the first k results, just like a vector database's top-k query."
+    ],
+    "tests": [
+      {
+        "input": "1 0 1\n3\nrefund 1 0 0.9\nshipping 0 1 0\ninvoice 0.5 0.5 0.5\n2\n",
+        "output": "refund 0.9986\ninvoice 0.8165"
+      },
+      {
+        "input": "1 1\n3\nb 2 2\na 1 1\nc -1 -1\n5\n",
+        "output": "a 1.0000\nb 1.0000\nc -1.0000"
+      },
+      {
+        "input": "0 0 0\n2\nx 1 2 3\ny 3 2 1\n1\n",
+        "output": "x 0.0000"
+      },
+      {
+        "input": "0.2 -0.4 0.9 0.1\n4\nd1 0.1 -0.5 0.8 0\nd2 0 0 0 0\nd3 -0.2 0.4 -0.9 -0.1\nd4 0.9 0.1 0.1 0.3\n3\n",
+        "output": "d1 0.9811\nd4 0.2684\nd2 0.0000"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What is the cosine similarity between vectors [1, 0] and [0, 1]?",
+      "options": [
+        "-1",
+        "0.5",
+        "0",
+        "1"
+      ],
+      "answer": 2,
+      "explanation": "The dot product is 0, so the vectors are orthogonal and the cosine similarity is 0."
+    },
+    {
+      "type": "concept",
+      "question": "Why can 'car' and 'automobile' be matched by embedding search but not by exact keyword search?",
+      "options": [
+        "They have the same number of letters",
+        "Keyword search ignores nouns",
+        "Their embeddings are close because the model learned they have similar meaning",
+        "Embeddings store a dictionary of synonyms"
+      ],
+      "answer": 2,
+      "explanation": "Embedding models place semantically similar text close together even when the words differ."
+    },
+    {
+      "type": "scenario",
+      "question": "Your team upgrades from embedding model A to model B but only embeds new documents with B. Search quality collapses. Why?",
+      "options": [
+        "The index needs more RAM",
+        "Vectors from different models are in different spaces and cannot be compared",
+        "Model B is always worse than A",
+        "Cosine similarity stops working after upgrades"
+      ],
+      "answer": 1,
+      "explanation": "Each model has its own vector space; all documents and queries must be embedded with the same model."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement about BERT-style contextual embeddings is true?",
+      "options": [
+        "Each word always has exactly one vector",
+        "The same word can get different vectors in different sentences",
+        "They are only used for images",
+        "They require one-hot encoding at search time"
+      ],
+      "answer": 1,
+      "explanation": "Contextual models compute a word's vector from its surrounding text, so 'bank' differs between 'river bank' and 'bank loan'."
+    },
+    {
+      "type": "concept",
+      "question": "For vectors normalised to unit length, which ranking gives the same order as cosine similarity?",
+      "options": [
+        "Ranking by the first dimension only",
+        "Ranking alphabetically by document name",
+        "Ranking by dot product (highest first)",
+        "Ranking by vector length"
+      ],
+      "answer": 2,
+      "explanation": "When |a| = |b| = 1, cosine similarity equals the dot product, so the rankings match."
+    }
+  ]
+}

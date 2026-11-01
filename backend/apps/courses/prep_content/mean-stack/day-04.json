@@ -1,0 +1,244 @@
+{
+  "day": 4,
+  "title": "Asynchronous JavaScript and the Event Loop",
+  "module": "Web and JavaScript foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain why JavaScript needs an event loop despite running on a single thread.",
+    "Describe the call stack, the task (macrotask) queue and the microtask queue.",
+    "Predict the output order of code mixing synchronous logs, timers and promises.",
+    "Identify callback hell and the inversion-of-control problem of callbacks.",
+    "Explain how a long synchronous task blocks rendering in the browser and requests in Node.js."
+  ],
+  "definition": "The event loop is the mechanism that lets single-threaded JavaScript perform non-blocking work. Synchronous code runs on the call stack; slow operations (timers, network, file I/O) are handed to the host environment, and their callbacks are queued. Whenever the stack is empty, the loop first drains the microtask queue (promise reactions, queueMicrotask) and then takes the next task (macrotask) such as a timer callback or an I/O event.",
+  "theory": [
+    {
+      "heading": "Single thread, non-blocking I/O",
+      "body": "A JavaScript engine executes one piece of code at a time on one call stack. If a network request blocked that thread, a browser tab would freeze and a Node.js server could serve only one client at a time. Instead, the host (the browser's Web APIs or Node's libuv) performs the waiting outside the JavaScript thread and later queues a callback. This model is why Node.js can handle thousands of concurrent connections with little memory, and also why one CPU-heavy loop stalls everything.",
+      "points": [
+        "Call stack: frames of currently executing functions.",
+        "Host APIs: timers, fetch/XHR, DOM events, file system, sockets.",
+        "Queues: callbacks wait until the stack is empty.",
+        "Run-to-completion: a function is never interrupted by another callback."
+      ]
+    },
+    {
+      "heading": "Tasks versus microtasks",
+      "body": "There are two kinds of queues. Tasks (often called macrotasks) include setTimeout, setInterval, I/O callbacks and UI events; the loop takes one task per iteration. Microtasks include promise .then/.catch/.finally reactions, await continuations, queueMicrotask and MutationObserver. After every task, and after the initial script, the microtask queue is drained completely, including microtasks added while draining, before the next task or a render happens.",
+      "points": [
+        "Order: synchronous code, then all microtasks, then one task, then all microtasks again.",
+        "setTimeout(fn, 0) means 'run as a task after at least 0 ms', never immediately.",
+        "An endless chain of microtasks starves timers and rendering."
+      ]
+    },
+    {
+      "heading": "Node.js event-loop phases",
+      "body": "Node.js's loop (libuv) cycles through phases: timers (expired setTimeout/setInterval), pending callbacks, poll (waiting for and running I/O callbacks), check (setImmediate) and close callbacks. Between callbacks Node drains process.nextTick callbacks first and then promise microtasks. Inside an I/O callback, setImmediate always runs before a setTimeout(fn, 0); from the main module their order is not guaranteed.",
+      "points": [
+        "process.nextTick runs before promise microtasks; overusing it can starve I/O.",
+        "setImmediate is for 'run after the current poll phase'.",
+        "CPU-heavy work belongs in worker_threads or a separate service."
+      ]
+    },
+    {
+      "heading": "Callbacks and their problems",
+      "body": "The original asynchronous pattern was passing a callback, and Node.js standardised error-first callbacks: callback(err, result). Nested sequential operations produce deeply indented 'callback hell', error handling must be repeated at every level, and you hand control to the called code, which might call your callback twice or never (inversion of control). Promises (Day 5) fix these by representing a future value as an object that settles exactly once.",
+      "points": [
+        "Error-first convention: if (err) return handle(err);",
+        "Callback hell hurts readability and error propagation.",
+        "Promises and async/await flatten the code and centralise errors."
+      ]
+    },
+    {
+      "heading": "Why this matters in Angular",
+      "body": "Angular has traditionally used Zone.js to patch asynchronous APIs (timers, events, XHR) so it knows when a task finishes and can run change detection. Understanding tasks and microtasks explains why a value set in a setTimeout appears after the next check, why ExpressionChangedAfterItHasBeenChecked errors happen, and why newer zoneless Angular relies on signals and explicit notifications instead of patching every async API.",
+      "points": [
+        "Zone.js tracks async tasks and triggers change detection when they complete.",
+        "Zoneless apps schedule change detection from signal updates, events and markForCheck."
+      ]
+    }
+  ],
+  "example": {
+    "title": "The classic ordering question",
+    "body": "Synchronous logs run first. The promise reaction is a microtask, so it runs as soon as the script finishes, before the timer, which is a task, even with a 0 ms delay.",
+    "code": {
+      "language": "javascript",
+      "source": "console.log('1: script start');\n\nsetTimeout(() => console.log('4: timeout'), 0);\n\nPromise.resolve()\n  .then(() => console.log('3: promise'));\n\nconsole.log('2: script end');"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Responsive UIs",
+      "description": "Splitting long work into chunks scheduled as tasks lets the browser render between them, keeping an Angular page responsive."
+    },
+    {
+      "title": "High-concurrency APIs",
+      "description": "An Express server handles many requests while each waits on MongoDB, because waiting does not block the thread."
+    },
+    {
+      "title": "Debugging race conditions",
+      "description": "Knowing the queue order explains why a value is undefined when read too early or why a UI update appears one tick late."
+    },
+    {
+      "title": "Batching updates",
+      "description": "Frameworks queue microtasks to batch many state changes into a single render."
+    }
+  ],
+  "demonstration": {
+    "description": "A microtask scheduled by a timer callback runs before the next timer, and a timer scheduled by a microtask goes to the back of the task queue.",
+    "code": {
+      "language": "javascript",
+      "source": "setTimeout(() => {\n  console.log('T1');\n  Promise.resolve().then(() => console.log('M inside T1'));\n}, 0);\nsetTimeout(() => console.log('T2'), 0);\nPromise.resolve().then(() => {\n  console.log('M1');\n  setTimeout(() => console.log('T3 from M1'), 0);\n});"
+    },
+    "output": "M1\nT1\nM inside T1\nT2\nT3 from M1"
+  },
+  "takeaways": [
+    "JavaScript runs one call stack; the host does the waiting and queues callbacks.",
+    "After the script and after each task, all microtasks run before the next task.",
+    "Promise reactions and await continuations are microtasks; timers and I/O callbacks are tasks.",
+    "setTimeout(fn, 0) is deferred, not immediate.",
+    "Long synchronous work blocks rendering and every other request; move it to workers.",
+    "In Node.js, process.nextTick runs before promise microtasks."
+  ],
+  "interview": [
+    {
+      "question": "What is the event loop?",
+      "answer": "It is the loop that coordinates the call stack and the callback queues. When the stack is empty it drains all microtasks, then takes the next task (timer, I/O, UI event) and runs it, repeating forever. This lets single-threaded JavaScript perform non-blocking I/O.",
+      "explanation": "Name the call stack, host APIs and both queues; a diagram on the whiteboard helps."
+    },
+    {
+      "question": "What is the difference between microtasks and macrotasks?",
+      "answer": "Macrotasks (setTimeout, setInterval, I/O, events) are taken one per loop iteration. Microtasks (promise reactions, queueMicrotask, await continuations) run in full after the current script or task, before the next macrotask and before rendering.",
+      "explanation": "Strong candidates add the starvation risk: recursively queued microtasks can block timers and painting."
+    },
+    {
+      "question": "Does setTimeout(fn, 0) run immediately?",
+      "answer": "No. It queues fn as a task to run after at least 0 ms, once the current script and all pending microtasks have finished, and browsers may clamp nested timers to 4 ms.",
+      "explanation": "This is the standard trick question; explaining queue position, not delay, is the key."
+    },
+    {
+      "question": "In Node.js, what is the order of process.nextTick, Promise.then, setTimeout 0 and setImmediate called from the main module?",
+      "answer": "nextTick callbacks run first, then promise microtasks, then the timers phase and check phase. setTimeout 0 versus setImmediate from the main module is not guaranteed; inside an I/O callback setImmediate always runs first.",
+      "explanation": "Mentioning the non-determinism from the main module shows real Node.js knowledge rather than a memorised list."
+    },
+    {
+      "question": "Your Express API becomes slow for all users while one endpoint generates a large PDF. Why, and what would you do?",
+      "answer": "PDF generation is CPU-bound and runs on the single JavaScript thread, so the event loop cannot handle other requests until it finishes. Move the work to worker_threads, a job queue with separate workers, or a separate service, and respond asynchronously.",
+      "explanation": "This scenario checks that you understand non-blocking applies to I/O, not to CPU work."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Simulate the event loop",
+    "difficulty": "Basic",
+    "objective": "Predict execution order by implementing the rules of the call stack, microtask queue and timer queue.",
+    "statement": "Each input line is a statement of a script. 'sync L' logs L immediately. 'micro L' queues a microtask that logs L. 'macro D L' schedules a timer task with delay D milliseconds that logs L. A statement may contain ' then ' followed by a second statement, which is executed inside the first one's callback after it logs (for example 'macro 0 B then micro C' logs B and then queues microtask C). Use virtual time: the script runs at time 0, a timer scheduled at time t with delay D fires at t + D, and timers with the same firing time run in the order they were scheduled. After the script and after every timer task, drain the whole microtask queue. Print the logged labels in order.",
+    "language": "javascript",
+    "input_format": "One statement per line, optionally with one ' then ' clause. Labels contain no spaces.",
+    "output_format": "Each logged label on its own line, in execution order.",
+    "example": {
+      "input": "sync A\nmacro 0 B\nmicro C\nsync D\nmicro E then macro 0 F\nmacro 0 G then micro H\n",
+      "output": "A\nD\nC\nE\nB\nG\nH\nF"
+    },
+    "constraints": [
+      "Delays are integers from 0 to 1000.",
+      "At most 50 statements.",
+      "Ignore blank lines."
+    ],
+    "starter": "const out = [];\nconst microtasks = [];\nconst timers = [];\nlet now = 0;\nlet seq = 0;\n// TODO: parse each line, run sync code, then drain microtasks and run timers in order\n",
+    "solution": "const out = [];\nconst microtasks = [];\nconst timers = [];\nlet now = 0;\nlet seq = 0;\n\nfunction parse(piece) {\n  const t = piece.trim().split(/\\s+/);\n  if (t[0] === 'macro') return { kind: 'macro', delay: Number(t[1]), label: t[2] };\n  return { kind: t[0], label: t[1] };\n}\n\nfunction run(step, next) {\n  out.push(step.label);\n  if (next) schedule(next, null);\n}\n\nfunction schedule(step, next) {\n  if (step.kind === 'sync') run(step, next);\n  else if (step.kind === 'micro') microtasks.push({ step, next });\n  else timers.push({ time: now + step.delay, seq: seq++, step, next });\n}\n\nfunction drain() {\n  while (microtasks.length) {\n    const m = microtasks.shift();\n    run(m.step, m.next);\n  }\n}\n\nfor (const line of stdin.split('\\n')) {\n  if (!line.trim()) continue;\n  const pieces = line.split(' then ').map(parse);\n  schedule(pieces[0], pieces[1] || null);\n}\ndrain();\nwhile (timers.length) {\n  timers.sort((a, b) => a.time - b.time || a.seq - b.seq);\n  const t = timers.shift();\n  now = t.time;\n  run(t.step, t.next);\n  drain();\n}\nconsole.log(out.join('\\n'));\n",
+    "explanation": [
+      "Parse each statement into a kind, an optional delay and a label; a ' then ' clause becomes the 'next' step run inside the callback.",
+      "sync steps run immediately; micro steps go to a FIFO queue; macro steps go to a timer list with firing time now + delay and a sequence number.",
+      "After the whole script runs, drain the microtask queue completely, including microtasks queued while draining.",
+      "Repeatedly pick the timer with the earliest time (then lowest sequence), advance virtual time, run it, and drain microtasks again.",
+      "Print the collected labels in order."
+    ],
+    "tests": [
+      {
+        "input": "sync A\nmacro 0 B\nmicro C\nsync D\nmicro E then macro 0 F\nmacro 0 G then micro H\n",
+        "output": "A\nD\nC\nE\nB\nG\nH\nF"
+      },
+      {
+        "input": "macro 10 X\nmacro 5 Y then macro 0 Z\nsync S\n",
+        "output": "S\nY\nZ\nX"
+      },
+      {
+        "input": "micro A then micro B\nmicro C\n",
+        "output": "A\nC\nB"
+      },
+      {
+        "input": "sync one\nsync two\n",
+        "output": "one\ntwo"
+      },
+      {
+        "input": "micro P then macro 0 Q\nmacro 0 R\n",
+        "output": "P\nR\nQ"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What is the output order?",
+      "code": "setTimeout(() => console.log('a'), 0);\nPromise.resolve().then(() => console.log('b'));\nconsole.log('c');",
+      "options": [
+        "a b c",
+        "c a b",
+        "b c a",
+        "c b a"
+      ],
+      "answer": 3,
+      "explanation": "Synchronous 'c' runs first, then the promise microtask 'b', then the timer task 'a'."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these callbacks is queued as a microtask?",
+      "options": [
+        "A Promise.then callback",
+        "A click event handler",
+        "A setInterval callback",
+        "A setTimeout callback"
+      ],
+      "answer": 0,
+      "explanation": "Promise reactions are microtasks. Timers and UI events are tasks (macrotasks)."
+    },
+    {
+      "type": "scenario",
+      "question": "A page freezes while a loop processes 5 million rows in the browser. What is the underlying cause?",
+      "options": [
+        "The microtask queue is full of timers",
+        "setTimeout has a maximum of 4 ms",
+        "The loop blocks the single call stack, so the event loop cannot render or handle events",
+        "Promises are too slow for large data"
+      ],
+      "answer": 2,
+      "explanation": "Synchronous work occupies the only thread; rendering and events wait. Chunk the work, or move it to a Web Worker."
+    },
+    {
+      "type": "output",
+      "question": "In what order does this async code print?",
+      "code": "async function f() {\n  console.log('1');\n  await null;\n  console.log('2');\n}\nf();\nconsole.log('3');",
+      "options": [
+        "2 1 3",
+        "1 2 3",
+        "3 1 2",
+        "1 3 2"
+      ],
+      "answer": 3,
+      "explanation": "An async function runs synchronously until the first await. The rest of it continues as a microtask after the current script, so '3' prints before '2'."
+    },
+    {
+      "type": "concept",
+      "question": "In Node.js, which callback runs first after the current synchronous code finishes?",
+      "options": [
+        "setImmediate",
+        "setTimeout(fn, 0)",
+        "Promise.then",
+        "process.nextTick"
+      ],
+      "answer": 3,
+      "explanation": "Node drains the nextTick queue before the promise microtask queue, and both run before the timers and check phases."
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "day": 27,
+  "title": "Multimodal Applications",
+  "module": "Multimodal AI",
+  "level": "Advanced",
+  "objectives": [
+    "Explain how to combine text, image and audio models in one application.",
+    "Design a workflow that uses multiple modalities, such as image-to-text then text-to-speech.",
+    "Show how to pass outputs between models as inputs.",
+    "Discuss latency, cost and fallback when one modality fails.",
+    "Describe how to present multimodal results to a user."
+  ],
+  "definition": "A multimodal application chains multiple models so the user can mix input and output types. For example, a user uploads an image, the app transcribes any text in it, summarises the summary in speech, and shows a generated illustration. Each model's output becomes the next model's input, with clear handoffs and error handling.",
+  "theory": [
+    {
+      "heading": "Chaining modalities",
+      "body": "A multimodal workflow passes data between models: an image-to-text model describes an image, then a text model answers a question about that description, then text-to-speech speaks the answer. Each step has its own input and output, and the app orchestrates the order.",
+      "points": [
+        "Output of one model becomes input to the next.",
+        "The app orchestrates the sequence.",
+        "Each model handles one modality step."
+      ]
+    },
+    {
+      "heading": "Example workflows",
+      "body": "Accessibility: image → caption → speech. Product support: photo of product → text description → knowledge-base answer → speech reply. Content: topic → image generation → social post text → voiceover. The workflow matches the user's needs and available models.",
+      "points": [
+        "Image → caption → speech for accessibility.",
+        "Photo → description → answer → reply for support.",
+        "Topic → image → text → voiceover for content."
+      ]
+    },
+    {
+      "heading": "Passing outputs between models",
+      "body": "Model outputs must be in a format the next model accepts. Text is the easiest glue: captions, transcripts and summaries are all text. Structured output (JSON) helps pass fields reliably between steps.",
+      "points": [
+        "Text is the common format between models.",
+        "JSON keeps structured fields reliable.",
+        "Convert media outputs to text before the next text model."
+      ]
+    },
+    {
+      "heading": "Latency, cost and fallback",
+      "body": "Each model call adds latency and cost. A four-step workflow is slow and expensive. Use fallbacks: if image-to-text fails, ask the user to describe the image; if speech fails, show text. Set timeouts and show progress so the user is not left waiting.",
+      "points": [
+        "More steps means more latency and cost.",
+        "Fallbacks keep the app usable when a model fails.",
+        "Show progress and set timeouts."
+      ]
+    },
+    {
+      "heading": "Presenting results",
+      "body": "Show the user the image, the transcript, the generated text and any audio together, with labels so they know what each piece is. Let the user edit or regenerate any step. Captions and alt text keep the app accessible.",
+      "points": [
+        "Label each output so users know what it is.",
+        "Allow editing or regenerating a step.",
+        "Provide alt text and captions for accessibility."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Accessibility app for product labels",
+    "body": "A user photos a product label. The app runs image-to-text to read the label, summarises the key facts (ingredients, expiry), then uses text-to-speech to read them aloud. The screen also shows the extracted text for verification.",
+    "code": {
+      "language": "python",
+      "source": "caption = image_to_text(image)\nfacts = summarize(caption)\naudio = text_to_speech(facts)\nshow(image, caption, facts)\nplay(audio)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Accessibility",
+      "description": "Read labels, signs and documents aloud for vision-impaired users."
+    },
+    {
+      "title": "Product support",
+      "description": "Photo of a product leads to troubleshooting steps spoken back."
+    },
+    {
+      "title": "Social content",
+      "description": "Generate an image, caption and voiceover from one topic."
+    },
+    {
+      "title": "Learning",
+      "description": "Diagram plus explanation spoken to a student."
+    }
+  ],
+  "demonstration": {
+    "description": "Show an accessibility flow where a photo becomes spoken text, with a text fallback if audio fails.",
+    "code": {
+      "language": "text",
+      "source": "User photos a medicine label.\nStep 1: image-to-text → 'Take 1 tablet after meals, expiry 2026-05.'\nStep 2: text-to-speech → audio plays.\nFallback: if audio fails, show the text on screen."
+    },
+    "output": "The user hears and sees the label instructions."
+  },
+  "takeaways": [
+    "Multimodal apps chain models so output of one feeds the next.",
+    "Text is the easiest glue between models; JSON helps structured handoffs.",
+    "Common flows: image → caption → speech, photo → answer → reply.",
+    "Each step adds latency and cost; use fallbacks and timeouts.",
+    "Present each output with labels and allow editing or regeneration.",
+    "Keep accessibility with alt text and captions."
+  ],
+  "interview": [
+    {
+      "question": "How do you chain multiple models in a multimodal app?",
+      "answer": "Pass one model's output as the next model's input, orchestrated by the app, usually with text as the common format.",
+      "explanation": "Give an example chain like image → caption → speech."
+    },
+    {
+      "question": "Why use text as the glue between models?",
+      "answer": "text is easy to generate, parse and pass between almost all models, and JSON keeps structured fields reliable.",
+      "explanation": "Captions, transcripts and summaries are all text."
+    },
+    {
+      "question": "What is a fallback in a multimodal workflow?",
+      "answer": "A backup action when a model fails, such as showing text when speech fails or asking the user to describe an image.",
+      "explanation": "Fallbacks keep the app usable despite model errors."
+    },
+    {
+      "question": "What are the costs of a multi-step multimodal workflow?",
+      "answer": "Each model call adds latency and cost, so more steps mean slower and more expensive results.",
+      "explanation": "Use timeouts and progress indicators for the user."
+    },
+    {
+      "question": "How should results be presented to the user?",
+      "answer": "Label each output (image, text, audio), allow editing or regeneration, and provide alt text and captions for accessibility.",
+      "explanation": "Clarity and user control improve trust."
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design a multimodal workflow",
+    "difficulty": "Advanced",
+    "objective": "Plan a chained multimodal application with models, handoffs, fallbacks and user presentation.",
+    "statement": "Choose a scenario such as a visual receipt expander, a voice-powered recipe assistant, or a photo-to-story app. Describe: (1) the user input, (2) the sequence of models and what each produces, (3) how outputs are passed between models, (4) one fallback if a step fails, and (5) how results are shown to the user.",
+    "deliverable": "A written design covering input, model sequence, handoffs, fallback and presentation.",
+    "steps": [
+      "Choose a scenario combining at least two modalities.",
+      "State the user input and its modality.",
+      "List the models in order and each one's output.",
+      "Describe how each output feeds the next model.",
+      "Name a fallback for a failing step.",
+      "Describe how results are shown and made accessible."
+    ],
+    "checklist": [
+      "User input modality named.",
+      "At least two models in sequence.",
+      "Handoffs described.",
+      "One fallback included.",
+      "User presentation described."
+    ],
+    "sample_answer": "Scenario: photo-to-story. User uploads a photo. Model 1 image-to-text describes the scene. Model 2 writes a short story from the description. Model 3 text-to-speech reads the story. Fallback: if the description is poor, the user types a prompt. Presentation: photo, story text and audio together."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What is the easiest format to pass between models in a multimodal app?",
+      "options": [
+        "Model weights",
+        "Raw audio bytes",
+        "Text",
+        "Video frames"
+      ],
+      "answer": 2,
+      "explanation": "Text is easy to generate, parse and pass between models."
+    },
+    {
+      "type": "scenario",
+      "question": "A user uploads a photo and wants it read aloud. What is the model sequence?",
+      "options": [
+        "Text-to-speech then image-to-text",
+        "Image-to-text then text-to-speech",
+        "Speech-to-text then image",
+        "Text only"
+      ],
+      "answer": 1,
+      "explanation": "First describe the image as text, then speak that text."
+    },
+    {
+      "type": "concept",
+      "question": "Why does each added model step increase cost and latency?",
+      "options": [
+        "Models share weights",
+        "Text is slower",
+        "Fallbacks are expensive",
+        "Each call takes time and tokens"
+      ],
+      "answer": 0,
+      "explanation": "Every model invocation consumes time and compute, adding up across steps."
+    },
+    {
+      "type": "scenario",
+      "question": "Image-to-text fails in a workflow. What is a good fallback?",
+      "options": [
+        "Generate a random image",
+        "Raise the temperature",
+        "Stop the app",
+        "Ask the user to describe the image or type the text"
+      ],
+      "answer": 3,
+      "explanation": "A fallback keeps the task possible when a model cannot run."
+    },
+    {
+      "type": "concept",
+      "question": "How should multimodal results be presented?",
+      "options": [
+        "A single combined string",
+        "Only the final audio",
+        "Each output labelled, with editing and alt text",
+        "Only the image"
+      ],
+      "answer": 2,
+      "explanation": "Labels, editing and accessibility make results clear and usable."
+    }
+  ]
+}

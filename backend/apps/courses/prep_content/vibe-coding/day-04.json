@@ -1,0 +1,244 @@
+{
+  "day": 4,
+  "title": "CSS Layout: Box Model, Flexbox and Grid",
+  "module": "The web platform",
+  "level": "Beginner",
+  "objectives": [
+    "Explain the CSS box model and why box-sizing: border-box is the common default.",
+    "Use flexbox for one-dimensional layouts and explain flex-grow, flex-shrink and flex-basis.",
+    "Use CSS grid for two-dimensional layouts with grid-template-columns, fr units and gap.",
+    "Choose between flexbox and grid for a given layout.",
+    "Compute how flexbox distributes free space between items."
+  ],
+  "definition": "CSS layout is how the browser sizes and positions boxes. Every element is a box made of content, padding, border and margin (the box model). Flexbox arranges items along a single axis (a row or a column) and distributes spare space between them, while CSS grid places items into rows and columns at the same time. Together they replace older float- and table-based layouts.",
+  "theory": [
+    {
+      "heading": "The box model",
+      "body": "Each box has content, padding, border and margin. With the default box-sizing: content-box, width sets only the content, so padding and border are added on top and a 'width: 300px' card with 20px padding becomes 340px wide. With box-sizing: border-box, width includes padding and border, which makes sizes predictable. Most modern resets apply border-box to every element for this reason.",
+      "points": [
+        "content-box: rendered width = width + padding + border.",
+        "border-box: rendered width = width (padding and border fit inside).",
+        "Vertical margins between blocks can collapse; padding and border never do."
+      ]
+    },
+    {
+      "heading": "Flexbox: one-dimensional layout",
+      "body": "display: flex makes children flex items laid out along the main axis (row by default). justify-content aligns items along the main axis and align-items along the cross axis. gap adds space between items. Flexbox is ideal for navbars, toolbars, centering and rows of cards that wrap, because items size themselves based on content and available space.",
+      "points": [
+        "flex-direction: row | column sets the main axis.",
+        "justify-content: space-between spreads items; align-items: center centres them vertically in a row.",
+        "flex-wrap: wrap lets items move to new lines.",
+        "Centering anything: display: flex; justify-content: center; align-items: center."
+      ]
+    },
+    {
+      "heading": "How flex items share space",
+      "body": "Each item starts at its flex-basis (its preferred size). The browser subtracts all bases and gaps from the container size. Positive free space is shared in proportion to flex-grow. Negative free space (overflow) is removed in proportion to flex-shrink multiplied by the item's basis, so larger items shrink more. The shorthand flex: 1 means grow 1, shrink 1, basis 0, which is why several flex: 1 items become equal width.",
+      "points": [
+        "free = container - sum(bases) - gaps.",
+        "Growing: item gets basis + free * grow / totalGrow.",
+        "Shrinking: item loses |free| * (shrink * basis) / sum(shrink * basis).",
+        "Real browsers also respect min-width (often the content size), which can stop items shrinking."
+      ]
+    },
+    {
+      "heading": "Grid: two-dimensional layout",
+      "body": "display: grid defines rows and columns on the container. grid-template-columns: repeat(3, 1fr) creates three equal columns, where fr is a fraction of the remaining space. repeat(auto-fit, minmax(220px, 1fr)) creates as many columns as fit, each at least 220px, which gives responsive card grids without media queries. Items can span cells with grid-column: span 2 or be placed into named areas.",
+      "points": [
+        "fr units divide space left after fixed tracks and gaps.",
+        "minmax(min, max) bounds a track's size.",
+        "grid-template-areas gives readable page layouts (header, sidebar, main)."
+      ]
+    },
+    {
+      "heading": "Choosing flexbox or grid",
+      "body": "Use flexbox when content drives the layout in one direction: a row of buttons, a navbar, aligning an icon with text. Use grid when the layout drives the content in two directions: a page skeleton, a dashboard or an image gallery with aligned rows and columns. They combine well: a grid for the page and flexbox inside each card.",
+      "points": [
+        "Flexbox: content-first, one axis.",
+        "Grid: layout-first, two axes.",
+        "Avoid floats and absolute positioning for general layout."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A dashboard shell with grid and a toolbar with flexbox",
+    "body": "The page uses grid areas for the header, sidebar and main region. Inside the header, flexbox pushes the logo left and the actions right. The cards area uses auto-fit and minmax so the number of columns adapts to the screen width.",
+    "code": {
+      "language": "css",
+      "source": "*, *::before, *::after { box-sizing: border-box; }\n\n.shell {\n  display: grid;\n  grid-template-columns: 240px 1fr;\n  grid-template-areas:\n    \"header header\"\n    \"sidebar main\";\n  min-height: 100vh;\n}\n.header { grid-area: header; display: flex; justify-content: space-between; align-items: center; gap: 12px; }\n.sidebar { grid-area: sidebar; }\n.main { grid-area: main; }\n\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 16px;\n}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Navigation bars",
+      "description": "Flexbox with space-between and align-items: center aligns logo, links and buttons in one row."
+    },
+    {
+      "title": "Card galleries",
+      "description": "Grid with auto-fit and minmax produces responsive columns without breakpoints."
+    },
+    {
+      "title": "Application shells",
+      "description": "Grid template areas lay out header, sidebar and content clearly."
+    },
+    {
+      "title": "Form rows",
+      "description": "Flexbox lets an input grow (flex: 1) while a button keeps its natural width."
+    }
+  ],
+  "demonstration": {
+    "description": "Three items in a 600px flex row with a 20px gap. The sidebar has flex: 0 1 200px; content and ads have flex-grow 1 with bases of 200px and 100px. Free space is 600 - 500 - 40 = 60px, split equally between the two growing items.",
+    "code": {
+      "language": "css",
+      "source": ".row { display: flex; width: 600px; gap: 20px; }\n.sidebar { flex: 0 1 200px; }\n.content { flex: 1 1 200px; }\n.ads { flex: 1 1 100px; }"
+    },
+    "output": "sidebar: 200px (grow 0)\ncontent: 200 + 30 = 230px\nads: 100 + 30 = 130px"
+  },
+  "takeaways": [
+    "Use box-sizing: border-box so width includes padding and border.",
+    "Flexbox handles one axis; grid handles rows and columns together.",
+    "Free space is shared by flex-grow; overflow is removed by flex-shrink weighted by basis.",
+    "flex: 1 means grow 1, shrink 1, basis 0, giving equal widths.",
+    "repeat(auto-fit, minmax(...)) creates responsive grids without media queries.",
+    "Combine them: grid for the page, flexbox for components."
+  ],
+  "interview": [
+    {
+      "question": "Explain the CSS box model.",
+      "answer": "Every element is a box with content, padding, border and margin. With content-box sizing, width applies to content only and padding and border add to it; with border-box, width includes padding and border.",
+      "explanation": "Mentioning why teams set border-box globally shows practical experience."
+    },
+    {
+      "question": "When do you use flexbox versus grid?",
+      "answer": "Flexbox for one-dimensional layouts where content size drives placement, such as navbars and button rows. Grid for two-dimensional layouts where I define rows and columns, such as page shells and galleries. I often nest flexbox inside grid items.",
+      "explanation": "Giving one concrete example of each is what interviewers look for."
+    },
+    {
+      "question": "How do you centre an element horizontally and vertically?",
+      "answer": "Make the parent display: flex with justify-content: center and align-items: center, or display: grid with place-items: center.",
+      "explanation": "Both modern answers are accepted; avoid only quoting old absolute-position hacks."
+    },
+    {
+      "question": "What does flex: 1 mean?",
+      "answer": "It is shorthand for flex-grow: 1, flex-shrink: 1 and flex-basis: 0%. Because every item starts from zero and grows equally, items with flex: 1 share the space equally regardless of content (subject to their minimum content size).",
+      "explanation": "Contrast with flex: auto (basis auto), where items start from their content size."
+    },
+    {
+      "question": "An AI-generated layout overflows on small screens. How do you debug it?",
+      "answer": "Inspect elements in DevTools to find the widest box, check for fixed widths, long unbroken words, images without max-width: 100%, and flex items that cannot shrink below their content (fix with min-width: 0). Then replace fixed widths with flexible units.",
+      "explanation": "The min-width: 0 detail on flex items is a classic senior-level insight."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Simulate flexbox space distribution",
+    "difficulty": "Basic",
+    "objective": "Understand flex-grow and flex-shrink by computing final item widths.",
+    "statement": "Given a flex container width, a gap and items with basis, grow and shrink, compute each item's final width (ignore minimum content sizes). free = width - sum(bases) - gap * (items - 1). If free >= 0, each item gets basis + free * grow / totalGrow (items keep their basis when totalGrow is 0). If free < 0, each item gets basis + free * (shrink * basis) / sum(shrink * basis) (items keep their basis when that sum is 0). Print the free space, then each item's width rounded to at most two decimals.",
+    "language": "javascript",
+    "input_format": "First line: container width and gap separated by a space. Each following line: name|basis|grow|shrink.",
+    "output_format": "'Free space: <free>' then one line per item: '<name>: <width>' with at most two decimals and no trailing zeros.",
+    "example": {
+      "input": "600 20\nsidebar|200|0|1\ncontent|200|1|1\nads|100|1|1\n",
+      "output": "Free space: 60\nsidebar: 200\ncontent: 230\nads: 130"
+    },
+    "constraints": [
+      "1 to 20 items; all numbers are non-negative integers.",
+      "Format numbers with Number(x.toFixed(2)) so 230.00 prints as 230."
+    ],
+    "starter": "const lines = stdin.trim().split('\\n');\nconst [width, gap] = lines[0].trim().split(/\\s+/).map(Number);\nconst items = lines.slice(1).map(l => {\n  const [name, basis, grow, shrink] = l.split('|');\n  return { name: name.trim(), basis: +basis, grow: +grow, shrink: +shrink };\n});\n\n// TODO: compute free space and distribute it\n",
+    "solution": "const lines = stdin.trim().split('\\n');\nconst [width, gap] = lines[0].trim().split(/\\s+/).map(Number);\nconst items = lines.slice(1).map(l => {\n  const [name, basis, grow, shrink] = l.split('|');\n  return { name: name.trim(), basis: +basis, grow: +grow, shrink: +shrink };\n});\nconst fmt = x => String(Number(x.toFixed(2)));\nconst free = width - items.reduce((s, it) => s + it.basis, 0) - gap * (items.length - 1);\nconsole.log('Free space: ' + fmt(free));\nconst totalGrow = items.reduce((s, it) => s + it.grow, 0);\nconst totalScaled = items.reduce((s, it) => s + it.shrink * it.basis, 0);\nfor (const it of items) {\n  let w = it.basis;\n  if (free >= 0 && totalGrow > 0) w += free * it.grow / totalGrow;\n  if (free < 0 && totalScaled > 0) w += free * (it.shrink * it.basis) / totalScaled;\n  console.log(`${it.name}: ${fmt(w)}`);\n}\n",
+    "explanation": [
+      "Subtract all bases and the gaps between items from the container width to get free space.",
+      "For positive space, share it in proportion to flex-grow.",
+      "For negative space, weight shrinking by shrink * basis, as the CSS specification does.",
+      "Guard against division by zero when nothing can grow or shrink.",
+      "Round with toFixed(2) and convert back to Number to drop trailing zeros."
+    ],
+    "tests": [
+      {
+        "input": "600 20\nsidebar|200|0|1\ncontent|200|1|1\nads|100|1|1\n",
+        "output": "Free space: 60\nsidebar: 200\ncontent: 230\nads: 130"
+      },
+      {
+        "input": "400 0\na|300|1|1\nb|200|1|1\n",
+        "output": "Free space: -100\na: 240\nb: 160"
+      },
+      {
+        "input": "500 10\nx|100|0|1\ny|100|0|1\n",
+        "output": "Free space: 290\nx: 100\ny: 100"
+      },
+      {
+        "input": "1000 0\na|0|1|1\nb|0|2|1\nc|0|0|1\n",
+        "output": "Free space: 1000\na: 333.33\nb: 666.67\nc: 0"
+      },
+      {
+        "input": "300 0\nlogo|200|0|0\nmenu|200|0|1\n",
+        "output": "Free space: -100\nlogo: 200\nmenu: 100"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "With box-sizing: content-box, what is the rendered width of this element (excluding margin)?",
+      "code": ".card { width: 300px; padding: 20px; border: 2px solid; }",
+      "options": [
+        "300px",
+        "320px",
+        "344px",
+        "342px"
+      ],
+      "answer": 2,
+      "explanation": "content-box adds padding (20 + 20) and border (2 + 2) to the 300px content: 344px."
+    },
+    {
+      "type": "scenario",
+      "question": "You need a photo gallery whose number of columns adapts to screen width, with aligned rows. Which approach fits best?",
+      "options": [
+        "Floats with clearfix",
+        "A table element",
+        "Absolute positioning for each image",
+        "display: grid with repeat(auto-fit, minmax(200px, 1fr))"
+      ],
+      "answer": 3,
+      "explanation": "Grid with auto-fit and minmax creates responsive, aligned columns without media queries."
+    },
+    {
+      "type": "concept",
+      "question": "In a flex row, which property aligns items along the vertical (cross) axis?",
+      "options": [
+        "flex-basis",
+        "align-items",
+        "justify-content",
+        "flex-wrap"
+      ],
+      "answer": 1,
+      "explanation": "In a row, the cross axis is vertical, controlled by align-items. justify-content works on the main axis."
+    },
+    {
+      "type": "output",
+      "question": "A 500px flex container (no gap) has items A (basis 100, grow 1) and B (basis 100, grow 3). How wide is B?",
+      "options": [
+        "400px",
+        "250px",
+        "325px",
+        "300px"
+      ],
+      "answer": 2,
+      "explanation": "Free space is 300px. B gets 3/4 of it (225px) on top of its 100px basis: 325px."
+    },
+    {
+      "type": "scenario",
+      "question": "A flex item containing a long URL refuses to shrink and overflows its container. What is the usual fix?",
+      "options": [
+        "Set flex-grow: 0",
+        "Add z-index: 10",
+        "Set min-width: 0 on the item (and allow the text to wrap)",
+        "Change display to inline"
+      ],
+      "answer": 2,
+      "explanation": "Flex items default to min-width: auto (their content size). min-width: 0 lets them shrink; overflow-wrap handles the long word."
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "day": 2,
+  "title": "What Makes a System Agentic: Autonomy, Goals and the Agency Spectrum",
+  "module": "Foundations of agentic systems",
+  "level": "Beginner",
+  "objectives": [
+    "Define an AI agent and distinguish it from a chatbot, a workflow and a plain program.",
+    "Describe the core properties of agentic systems: goal, autonomy, tools, memory and feedback.",
+    "Place a system on the agency spectrum based on who controls the flow.",
+    "Explain when an agent is the wrong choice and a fixed workflow is better.",
+    "Classify example systems by their level of autonomy in code."
+  ],
+  "definition": "An agentic system is software in which a language model decides, at run time, what to do next in order to reach a goal: which tool to call, which path to take and when the task is finished. The more of the control flow the model owns, the more agentic the system is. A workflow follows steps written by a developer; an agent chooses its own steps inside the boundaries the developer sets.",
+  "theory": [
+    {
+      "heading": "The core idea: who controls the flow?",
+      "body": "The most useful test for 'is this an agent?' is to ask who decides the next step. In ordinary software the developer decides with if-statements and loops. In an agent, the model's output decides: it reads the situation, picks an action, observes the result and chooses again. This is why agents can handle open-ended tasks that cannot be scripted in advance, and also why they are harder to predict, test and secure.",
+      "points": [
+        "Goal-directed: works towards an objective rather than answering one message.",
+        "Autonomous: chooses actions without a human approving each step.",
+        "Tool-using: acts on the world through APIs, code or other systems.",
+        "Adaptive: uses feedback from observations to change its next action."
+      ]
+    },
+    {
+      "heading": "The agency spectrum",
+      "body": "Agency is a spectrum, not a yes/no label. At level 0 code does everything. At level 1 the model generates text but code decides what happens with it. At level 2 the model makes a single decision such as routing a ticket or choosing one tool call. At level 3 the model runs in a loop, deciding the next action repeatedly and deciding when to stop. Multi-agent systems sit beyond that, with several models coordinating. Naming the level in an interview shows you can match architecture to the problem.",
+      "points": [
+        "Level 0: fixed code, no model in control.",
+        "Level 1: single LLM call whose output is used by fixed code.",
+        "Level 2: LLM router or one-shot tool call; the model picks one branch.",
+        "Level 3: agent loop; the model picks actions until it decides the goal is met."
+      ]
+    },
+    {
+      "heading": "Workflows versus agents",
+      "body": "A workflow chains LLM calls and tools along a path written by the developer, for example 'extract fields, then validate, then summarise'. It is predictable, cheaper and easier to test. An agent is better when the number and order of steps depends on what it discovers, as in debugging code or researching a question. Many production 'agents' are mostly workflows with one or two agentic decisions, and that is usually the right choice.",
+      "points": [
+        "Prefer a workflow when steps are known in advance.",
+        "Prefer an agent when the path depends on intermediate results.",
+        "Start simple and add autonomy only when it measurably improves outcomes."
+      ]
+    },
+    {
+      "heading": "Building blocks of an agent",
+      "body": "Most agents are built from the same parts: a model that reasons, instructions that define role and boundaries, tools that let it act, memory that carries information across steps, a control loop that runs until a stopping condition, and guardrails that limit what it may do. Each later day of this course zooms in on one of these blocks.",
+      "points": [
+        "Model (reasoning engine) and instructions (system prompt).",
+        "Tools and their schemas.",
+        "Memory: short-term context and long-term stores.",
+        "Control loop with stopping conditions and step limits.",
+        "Guardrails, permissions and human approval points."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations",
+      "body": "Agents can complete multi-step tasks, recover from failed attempts and adapt to new inputs without new code. The cost is non-determinism, higher latency and token spend from multiple calls, compounding errors (a 95% reliable step repeated ten times succeeds only about 60% of the time end to end) and a larger security surface because the model can trigger real actions.",
+      "points": [
+        "Strengths: flexibility, multi-step reasoning, self-correction.",
+        "Risks: unpredictable paths, error compounding, cost, latency, misuse of tools.",
+        "Mitigations: step limits, validation, permissions, human approval and evaluation."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Three ways to handle a refund request",
+    "body": "Level 1: an LLM drafts a reply and a human sends it. Level 2: an LLM classifies the email as refund, complaint or query, and fixed code routes it. Level 3: an agent reads the email, looks up the order, checks the refund policy tool, asks the customer for a missing invoice number if needed, issues the refund within a limit and writes the reply. The third system handles more cases without new code, but it needs permission limits and logging because it can move money.",
+    "code": {
+      "language": "python",
+      "source": "def level2_router(llm, email):\n    label = llm(f'Classify as refund, complaint or query: {email}')\n    return {'refund': 'refund_queue', 'complaint': 'escalations'}.get(label, 'faq_bot')\n\ndef level3_agent(llm, tools, goal, max_steps=8):\n    history = [goal]\n    for _ in range(max_steps):\n        decision = llm(history)                      # model chooses the next action\n        if decision['action'] == 'finish':\n            return decision['answer']\n        result = tools[decision['action']](**decision['args'])\n        history.append(result)                       # feedback shapes the next choice\n    return 'stopped: step limit reached'"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Coding agents",
+      "description": "Read a bug report, search the repository, edit files, run tests and iterate until they pass."
+    },
+    {
+      "title": "Research assistants",
+      "description": "Break a question into searches, read sources, compare findings and write a cited summary."
+    },
+    {
+      "title": "Customer operations",
+      "description": "Look up orders, apply policy, take bounded actions such as refunds and escalate unusual cases to staff."
+    },
+    {
+      "title": "IT and DevOps automation",
+      "description": "Investigate an alert by querying logs and metrics, propose a fix and open a ticket for approval."
+    }
+  ],
+  "demonstration": {
+    "description": "Classify four systems by asking who controls the flow. Each is described by whether it uses an LLM, whether the LLM routes or calls tools, and whether the LLM loops until it decides it is done.",
+    "code": {
+      "language": "text",
+      "source": "faq_bot       llm=yes tools=no route=no loop=no\ncron_report   llm=no\nticket_router llm=yes route=yes\ncoding_agent  llm=yes tools=yes route=yes loop=yes"
+    },
+    "output": "faq_bot: level 1 (LLM call)\ncron_report: level 0 (fixed code)\nticket_router: level 2 (LLM router)\ncoding_agent: level 3 (agent)\nAgents: 1/4"
+  },
+  "takeaways": [
+    "A system is agentic to the degree that the model decides the next step.",
+    "Agency is a spectrum: fixed code, single LLM call, router, autonomous loop, multi-agent.",
+    "Workflows are predictable and cheap; agents handle open-ended paths.",
+    "Agents combine a model, instructions, tools, memory, a control loop and guardrails.",
+    "Errors compound across steps, so autonomy must be paired with limits and evaluation.",
+    "Use the least autonomy that solves the problem."
+  ],
+  "interview": [
+    {
+      "question": "What is an AI agent?",
+      "answer": "A system in which an LLM pursues a goal by repeatedly deciding which action to take, executing it through tools, observing the result and deciding again until it judges the goal complete or hits a limit.",
+      "explanation": "Mention goal, autonomy, tools and the feedback loop. Avoid defining an agent as 'a chatbot with a persona'."
+    },
+    {
+      "question": "What is the difference between an agentic workflow and an autonomous agent?",
+      "answer": "In a workflow the developer fixes the sequence of steps and the model fills in each step. In an autonomous agent the model chooses the sequence itself at run time, including how many steps to take.",
+      "explanation": "Strong answers say workflows are often the better production choice and give an example of each."
+    },
+    {
+      "question": "When would you not use an agent?",
+      "answer": "When the steps are known and stable, when strict latency or cost limits apply, when actions are high-risk and must be fully predictable, or when a single well-prompted call already meets the quality bar.",
+      "explanation": "Interviewers value judgement. Saying 'start with the simplest solution and add autonomy only when evaluation shows it helps' is a strong signal."
+    },
+    {
+      "question": "Why do errors compound in agents, and what do you do about it?",
+      "answer": "Each step has some failure probability and later steps depend on earlier ones, so end-to-end success is roughly the product of step reliabilities. Mitigations are fewer and simpler steps, validating outputs at each step, retries, checkpoints, step limits and human review for risky actions.",
+      "explanation": "A quick calculation (0.95 to the power 10 is about 0.6) makes the point memorable."
+    },
+    {
+      "question": "Describe the levels of autonomy you might give an LLM in a product.",
+      "answer": "Level 0 fixed code; level 1 the model only generates content; level 2 the model makes a single routing or tool decision; level 3 the model runs an action loop and decides when to stop; beyond that, several agents coordinate. Each level adds flexibility and risk.",
+      "explanation": "Tying levels to controls (approval, permissions, tracing) shows production thinking."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Classify systems on the agency spectrum",
+    "difficulty": "Basic",
+    "objective": "Apply the 'who controls the flow' test to describe how agentic a system is.",
+    "statement": "Each system is described by a name and optional flags: llm (uses a language model), tools (the LLM chooses tool calls), route (the LLM chooses a branch) and loop (the LLM repeats actions and decides when to stop). Missing flags mean no. Assign a level: 0 'fixed code' if llm is not yes; otherwise 3 'agent' if loop is yes; otherwise 2 'LLM router' if tools or route is yes; otherwise 1 'LLM call'. Print each classification, then the number of agents.",
+    "language": "python",
+    "input_format": "First line: N. Next N lines: a name followed by zero or more flags of the form key=yes or key=no, in any order.",
+    "output_format": "N lines '<name>: level <k> (<label>)', then 'Agents: <count>/<N>'.",
+    "example": {
+      "input": "4\nfaq_bot llm=yes tools=no route=no loop=no\ncron_report llm=no tools=no route=no loop=no\nticket_router llm=yes route=yes\ncoding_agent llm=yes tools=yes route=yes loop=yes\n",
+      "output": "faq_bot: level 1 (LLM call)\ncron_report: level 0 (fixed code)\nticket_router: level 2 (LLM router)\ncoding_agent: level 3 (agent)\nAgents: 1/4"
+    },
+    "constraints": [
+      "1 <= N <= 100; names contain no spaces.",
+      "Flag values are yes or no, compared case-insensitively.",
+      "A loop without an LLM is still level 0."
+    ],
+    "starter": "n = int(input())\nfor _ in range(n):\n    parts = input().split()\n    name, flags = parts[0], parts[1:]\n    # TODO: parse flags, choose the level and print it\n",
+    "solution": "LABELS = {0: 'fixed code', 1: 'LLM call', 2: 'LLM router', 3: 'agent'}\n\nn = int(input())\nagents = 0\nfor _ in range(n):\n    parts = input().split()\n    name = parts[0]\n    flags = {}\n    for item in parts[1:]:\n        key, _, value = item.partition('=')\n        flags[key.lower()] = value.strip().lower() == 'yes'\n    if not flags.get('llm'):\n        level = 0\n    elif flags.get('loop'):\n        level = 3\n    elif flags.get('tools') or flags.get('route'):\n        level = 2\n    else:\n        level = 1\n    if level == 3:\n        agents += 1\n    print(f'{name}: level {level} ({LABELS[level]})')\nprint(f'Agents: {agents}/{n}')\n",
+    "explanation": [
+      "Parse each line into a name and a dictionary of boolean flags, defaulting missing flags to False.",
+      "Check the rules from most fundamental to most autonomous: no LLM means fixed code regardless of other flags.",
+      "A model that loops and decides when to stop is an agent; a single routing or tool decision is level 2.",
+      "Count level-3 systems and print the summary line."
+    ],
+    "tests": [
+      {
+        "input": "4\nfaq_bot llm=yes tools=no route=no loop=no\ncron_report llm=no tools=no route=no loop=no\nticket_router llm=yes route=yes\ncoding_agent llm=yes tools=yes route=yes loop=yes\n",
+        "output": "faq_bot: level 1 (LLM call)\ncron_report: level 0 (fixed code)\nticket_router: level 2 (LLM router)\ncoding_agent: level 3 (agent)\nAgents: 1/4"
+      },
+      {
+        "input": "2\nscheduler llm=no loop=yes\nweather_bot llm=YES tools=Yes\n",
+        "output": "scheduler: level 0 (fixed code)\nweather_bot: level 2 (LLM router)\nAgents: 0/2"
+      },
+      {
+        "input": "1\nscript\n",
+        "output": "script: level 0 (fixed code)\nAgents: 0/1"
+      },
+      {
+        "input": "3\nresearcher loop=yes llm=yes\nsummariser llm=yes\nplanner route=no loop=yes llm=yes tools=no\n",
+        "output": "researcher: level 3 (agent)\nsummariser: level 1 (LLM call)\nplanner: level 3 (agent)\nAgents: 2/3"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which question best decides whether a system is agentic?",
+      "options": [
+        "Does it use a large model?",
+        "Does it have a chat interface?",
+        "Is it written in Python?",
+        "Does the model decide the next step at run time?"
+      ],
+      "answer": 3,
+      "explanation": "Agency is about control flow: the more the model chooses actions and when to stop, the more agentic the system."
+    },
+    {
+      "type": "scenario",
+      "question": "An invoice pipeline always extracts fields, validates totals and stores the record, using an LLM only for extraction. What is it?",
+      "options": [
+        "A multi-agent system",
+        "A reinforcement-learning agent",
+        "A workflow with a fixed sequence of steps",
+        "An autonomous agent"
+      ],
+      "answer": 2,
+      "explanation": "The developer fixed the order of steps; the LLM fills in one step but does not choose the path."
+    },
+    {
+      "type": "concept",
+      "question": "Each step of a 10-step agent succeeds 95% of the time independently. Roughly how often does the whole task succeed?",
+      "options": [
+        "95%",
+        "About 90%",
+        "About 60%",
+        "About 10%"
+      ],
+      "answer": 2,
+      "explanation": "0.95 to the power 10 is about 0.60, which is why errors compound and step-level validation matters."
+    },
+    {
+      "type": "scenario",
+      "question": "A task has known, stable steps and strict latency limits. What should you build first?",
+      "options": [
+        "An autonomous agent with unlimited steps",
+        "A self-modifying agent",
+        "A multi-agent debate system",
+        "A deterministic workflow with targeted LLM calls"
+      ],
+      "answer": 3,
+      "explanation": "When the path is known, a workflow is cheaper, faster and easier to test. Add autonomy only where it helps."
+    },
+    {
+      "type": "concept",
+      "question": "Which component is responsible for stopping an agent that keeps calling tools without progress?",
+      "options": [
+        "The control loop's stopping conditions, such as a step limit",
+        "The tokenizer",
+        "The embedding model",
+        "The user interface"
+      ],
+      "answer": 0,
+      "explanation": "The control loop enforces maximum steps, budgets or time limits so a confused agent cannot run forever."
+    }
+  ]
+}

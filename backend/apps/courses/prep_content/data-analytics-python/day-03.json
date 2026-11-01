@@ -1,0 +1,238 @@
+{
+  "day": 3,
+  "title": "Functions, Lambdas and Reusable Analysis Code",
+  "module": "Python foundations for analysts",
+  "level": "Beginner",
+  "objectives": [
+    "Write functions with positional, keyword and default parameters and clear return values.",
+    "Use *args and **kwargs and explain when they are useful.",
+    "Apply lambda functions as sort keys and in map/filter or pandas apply.",
+    "Explain variable scope and the mutable default argument trap.",
+    "Turn repeated analysis steps into small, testable functions."
+  ],
+  "definition": "A function is a named, reusable block of code that takes inputs (parameters), performs a task and returns a result. A lambda is a small anonymous function written in one expression, typically passed to another function such as sorted or DataFrame.apply. Packaging analysis steps as functions makes notebooks reproducible and lets the same logic run on new data.",
+  "theory": [
+    {
+      "heading": "Defining and calling functions",
+      "body": "A function groups logic behind a name: def clean_price(text): ... return value. Parameters can be positional or passed by keyword, and default values make arguments optional. A function without a return statement returns None, which is a frequent source of bugs when analysts forget to return the cleaned DataFrame.",
+      "points": [
+        "def growth(old, new, pct=True): keyword defaults make calls readable: growth(100, 120, pct=False).",
+        "Return a value instead of printing it so the result can be reused and tested.",
+        "Docstrings describe inputs, outputs and assumptions for the next analyst."
+      ]
+    },
+    {
+      "heading": "*args, **kwargs and unpacking",
+      "body": "*args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dict. They let wrapper functions pass options through, for example a load_data(path, **read_options) helper that forwards sep or encoding to pd.read_csv. The same star syntax unpacks sequences and dicts at call time.",
+      "points": [
+        "def total(*amounts): return sum(amounts)",
+        "def load(path, **opts): return pd.read_csv(path, **opts)",
+        "f(*[1, 2]) unpacks a list; f(**{'sep': ';'}) unpacks a dict."
+      ]
+    },
+    {
+      "heading": "Lambdas and higher-order functions",
+      "body": "A lambda such as lambda r: r['amount'] is a function expression with a single return value. It shines as a short argument to sorted, max, min, filter, map or pandas methods like apply and assign. If the logic needs several statements or a name for reuse, write a normal def instead.",
+      "points": [
+        "max(rows, key=lambda r: r['amount']) finds the largest order.",
+        "df.assign(total=lambda d: d.price * d.qty) adds a column in a method chain.",
+        "Lambdas cannot contain statements such as assignments or loops."
+      ]
+    },
+    {
+      "heading": "Scope and the mutable default trap",
+      "body": "Names assigned inside a function are local; Python looks up names in Local, Enclosing, Global and Built-in scope order (LEGB). Default argument values are evaluated once when the function is defined, so a default list is shared between calls. Use None as the default and create the list inside the function.",
+      "points": [
+        "def add(x, seen=[]) keeps growing seen across calls.",
+        "def add(x, seen=None): seen = [] if seen is None else seen is the safe pattern.",
+        "Avoid modifying global DataFrames inside functions; pass them in and return results."
+      ]
+    },
+    {
+      "heading": "Pure functions make analysis reproducible",
+      "body": "A pure function returns the same output for the same input and does not change anything outside itself. Cleaning steps written as pure functions can be chained with DataFrame.pipe, unit-tested with small inputs and reused across monthly reports. This is a practical habit interviewers look for when they ask how you structure analysis code.",
+      "points": [
+        "df.pipe(drop_test_orders).pipe(add_month_column) reads as a pipeline.",
+        "Small functions are easy to test with assert on tiny examples."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A reusable age-banding function",
+    "body": "Marketing wants customers grouped into age bands. We write one function that assigns a band and reuse it for any list. In pandas the same idea is pd.cut(df['age'], bins=[0, 18, 35, 60, 100]), which also uses right-closed intervals such as (18, 35].",
+    "code": {
+      "language": "python",
+      "source": "def age_band(age, edges=(0, 18, 35, 60, 100)):\n    \"\"\"Return the (low, high] band label for age, or None if outside.\"\"\"\n    for low, high in zip(edges, edges[1:]):\n        if low < age <= high:\n            return f'({low}, {high}]'\n    return None\n\nages = [16, 18, 22, 47, 70]\nprint([age_band(a) for a in ages])\n# ['(0, 18]', '(0, 18]', '(18, 35]', '(35, 60]', '(60, 100]']"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Cleaning helpers",
+      "description": "Functions such as clean_phone or parse_amount reused across many columns and files."
+    },
+    {
+      "title": "Custom sort and ranking",
+      "description": "Lambdas as keys to rank products by margin or customers by recency."
+    },
+    {
+      "title": "Report pipelines",
+      "description": "Chaining small functions with DataFrame.pipe so a monthly report runs end to end with one call."
+    },
+    {
+      "title": "Binning and segmentation",
+      "description": "Assigning customers to age, income or spend bands for segment analysis."
+    }
+  ],
+  "demonstration": {
+    "description": "See the mutable default trap and its fix, and a lambda used as a key.",
+    "code": {
+      "language": "python",
+      "source": "def add_bad(item, bucket=[]):\n    bucket.append(item)\n    return bucket\n\ndef add_good(item, bucket=None):\n    bucket = [] if bucket is None else bucket\n    bucket.append(item)\n    return bucket\n\nprint(add_bad('a'), add_bad('b'))\nprint(add_good('a'), add_good('b'))\n\norders = [{'id': 1, 'amt': 250}, {'id': 2, 'amt': 900}, {'id': 3, 'amt': 400}]\nprint(max(orders, key=lambda o: o['amt'])['id'])"
+    },
+    "output": "['a', 'b'] ['a', 'b']\n['a'] ['b']\n2"
+  },
+  "takeaways": [
+    "Functions should return results, not just print them.",
+    "Default values are evaluated once; never use a mutable object as a default.",
+    "Lambdas are for short, single-expression logic such as sort keys.",
+    "*args and **kwargs let helpers forward options to library calls.",
+    "Pure, small functions make analysis testable and reproducible.",
+    "pd.cut uses right-closed bins (a, b] by default, just like the banding example."
+  ],
+  "interview": [
+    {
+      "question": "What is a lambda function and when would you use one in data analysis?",
+      "answer": "A lambda is an anonymous single-expression function, such as lambda x: x * 1.18. Analysts use it for short logic passed to another function: sort keys, max/min keys, Series.map, DataFrame.apply or DataFrame.assign.",
+      "explanation": "A strong answer adds the limitation: no statements, so longer logic belongs in a named def."
+    },
+    {
+      "question": "What are *args and **kwargs?",
+      "answer": "*args gathers extra positional arguments into a tuple; **kwargs gathers extra keyword arguments into a dict. They are used to write flexible functions and wrappers that pass options on, such as forwarding read options to pd.read_csv.",
+      "explanation": "Give a practical wrapper example rather than only the definition."
+    },
+    {
+      "question": "Explain the mutable default argument problem.",
+      "answer": "Default values are created once when the function is defined. A default list or dict is therefore shared across calls and keeps earlier changes. The fix is to default to None and create a new object inside the function.",
+      "explanation": "Interviewers like candidates who can show the buggy output and the corrected pattern."
+    },
+    {
+      "question": "What is the difference between a function that prints and one that returns?",
+      "answer": "Printing only displays a value; the caller receives None. Returning hands the value back so it can be stored, tested, combined or written to a file.",
+      "explanation": "This basic question catches people who build notebooks that cannot be reused."
+    },
+    {
+      "question": "How would you structure a repeated monthly cleaning process in Python?",
+      "answer": "Write small pure functions for each step (load, standardise columns, fix types, remove test data, add derived columns), chain them with DataFrame.pipe or a main function, add docstrings and simple tests on sample data, and keep configuration such as file paths as parameters.",
+      "explanation": "This advanced answer shows engineering habits: modularity, testability and parameterisation."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Bin values like pd.cut",
+    "difficulty": "Basic",
+    "objective": "Write a reusable function that assigns values to right-closed bins and counts how many fall in each, mirroring pd.cut followed by value_counts.",
+    "statement": "The first line holds ascending bin edges e0,e1,...,ek. A value v belongs to bin i when e(i) < v <= e(i+1). Values that fit no bin are out of range. The second line holds the values to bin (it may be empty). Print each bin as (e(i), e(i+1)]: count in edge order, using the edges exactly as written in the input, then print 'out of range: <count>'.",
+    "language": "python",
+    "input_format": "Line 1: comma-separated ascending numeric edges (at least two). Line 2: comma-separated numeric values, possibly empty.",
+    "output_format": "One line per bin: (<low>, <high>]: <count>, then out of range: <count>.",
+    "example": {
+      "input": "0,18,35,60,100\n5,18,19,35,36,60,61,0,101,45\n",
+      "output": "(0, 18]: 2\n(18, 35]: 2\n(35, 60]: 3\n(60, 100]: 1\nout of range: 2"
+    },
+    "constraints": [
+      "2 to 20 edges, strictly increasing.",
+      "Up to 10000 values; values and edges may be decimals or negative.",
+      "The lowest edge itself is not included in the first bin (right-closed intervals)."
+    ],
+    "starter": "def find_bin(value, edges):\n    # TODO: return the bin index or None\n    pass\n\nedge_text = [t.strip() for t in input().split(',')]\nedges = [float(t) for t in edge_text]\nline = input().strip()\nvalues = [float(t) for t in line.split(',')] if line else []\n\n# TODO: count values per bin and print\n",
+    "solution": "def find_bin(value, edges):\n    for i in range(len(edges) - 1):\n        if edges[i] < value <= edges[i + 1]:\n            return i\n    return None\n\nedge_text = [t.strip() for t in input().split(',')]\nedges = [float(t) for t in edge_text]\nline = input().strip()\nvalues = [float(t) for t in line.split(',')] if line else []\n\ncounts = [0] * (len(edges) - 1)\noutside = 0\nfor v in values:\n    i = find_bin(v, edges)\n    if i is None:\n        outside += 1\n    else:\n        counts[i] += 1\n\nfor i, c in enumerate(counts):\n    print(f'({edge_text[i]}, {edge_text[i + 1]}]: {c}')\nprint(f'out of range: {outside}')\n",
+    "explanation": [
+      "Keep the edge text for labels and convert a copy to floats for comparisons.",
+      "find_bin checks each consecutive pair with low < value <= high and returns the index, or None if no bin fits.",
+      "Count values per bin in a list sized len(edges) - 1, and count the rest as out of range.",
+      "Print the labels in edge order followed by the out-of-range count."
+    ],
+    "tests": [
+      {
+        "input": "0,18,35,60,100\n5,18,19,35,36,60,61,0,101,45\n",
+        "output": "(0, 18]: 2\n(18, 35]: 2\n(35, 60]: 3\n(60, 100]: 1\nout of range: 2"
+      },
+      {
+        "input": "0,50,100\n10.5,50,50.01,99.9\n",
+        "output": "(0, 50]: 2\n(50, 100]: 2\nout of range: 0"
+      },
+      {
+        "input": "1,2\n\n",
+        "output": "(1, 2]: 0\nout of range: 0"
+      },
+      {
+        "input": "-10,0,10\n-10,-5,0,5,10,15\n",
+        "output": "(-10, 0]: 2\n(0, 10]: 2\nout of range: 2"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this shared default argument print?",
+      "code": "def f(x, items=[]):\n    items.append(x)\n    return len(items)\n\nf(1)\nprint(f(2))",
+      "options": [
+        "TypeError",
+        "2",
+        "1",
+        "0"
+      ],
+      "answer": 1,
+      "explanation": "The default list is created once and shared, so after f(1) it already holds one item and f(2) returns 2."
+    },
+    {
+      "type": "concept",
+      "question": "What does a Python function return if it has no return statement?",
+      "options": [
+        "0",
+        "None",
+        "An empty string",
+        "The last computed value"
+      ],
+      "answer": 1,
+      "explanation": "Without an explicit return, a function returns None. Forgetting to return a cleaned DataFrame is a common bug."
+    },
+    {
+      "type": "code",
+      "question": "Which call correctly finds the order with the highest amount in a list of dicts called orders?",
+      "options": [
+        "orders.max('amount')",
+        "max(lambda o: o['amount'], orders)",
+        "max(orders, key=lambda o: o['amount'])",
+        "max(orders['amount'])"
+      ],
+      "answer": 2,
+      "explanation": "max accepts a key function; the lambda extracts the amount used for comparison."
+    },
+    {
+      "type": "output",
+      "question": "What does this *args and **kwargs call print?",
+      "code": "def stats(*args, **kwargs):\n    return len(args), sorted(kwargs)\n\nprint(stats(4, 5, 6, sep=';', header=0))",
+      "options": [
+        "(5, [])",
+        "(3, {'sep': ';', 'header': 0})",
+        "(3, ['header', 'sep'])",
+        "TypeError"
+      ],
+      "answer": 2,
+      "explanation": "args is (4, 5, 6) so its length is 3; kwargs has keys sep and header, and sorted returns the keys alphabetically."
+    },
+    {
+      "type": "scenario",
+      "question": "With pd.cut(ages, bins=[0, 18, 35]), which bin does an age of exactly 18 fall into?",
+      "options": [
+        "Both bins",
+        "(0, 18]",
+        "(18, 35]",
+        "It becomes NaN"
+      ],
+      "answer": 1,
+      "explanation": "pd.cut uses right-closed intervals by default (right=True), so 18 belongs to (0, 18]."
+    }
+  ]
+}

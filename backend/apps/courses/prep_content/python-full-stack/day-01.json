@@ -1,0 +1,248 @@
+{
+  "day": 1,
+  "title": "Python Fundamentals: Types, Variables and Control Flow",
+  "module": "Core Python",
+  "level": "Beginner",
+  "objectives": [
+    "Explain how Python variables work as names bound to objects.",
+    "Distinguish mutable and immutable built-in types and why it matters.",
+    "Use if/elif/else, for, while, break, continue and the loop else clause correctly.",
+    "Explain truthiness, the difference between == and is, and integer vs float division.",
+    "Write a small stdin/stdout program that combines input parsing, branching and loops."
+  ],
+  "definition": "Python is a dynamically typed, strongly typed, interpreted language. A variable is a name that refers to an object; the object, not the name, carries the type. Control flow statements (if, for, while) decide which code runs and how many times, using indentation to mark blocks.",
+  "theory": [
+    {
+      "heading": "Names, objects and dynamic typing",
+      "body": "In Python every value is an object with an identity, a type and a value. An assignment such as x = 10 does not put 10 into a box called x; it binds the name x to an int object. Rebinding x = 'ten' simply points the name at a different object. That is dynamic typing. Python is still strongly typed: '3' + 4 raises TypeError instead of silently converting, unlike JavaScript.",
+      "points": [
+        "type(x) returns the class of the object the name refers to.",
+        "id(x) returns the object's identity; two names can share one object.",
+        "Strong typing means no implicit conversion between unrelated types.",
+        "Type hints (x: int = 5) document intent but are not enforced at runtime."
+      ]
+    },
+    {
+      "heading": "Built-in types and mutability",
+      "body": "The core scalar types are int (arbitrary precision), float (IEEE 754 double), complex, bool (a subclass of int) and NoneType. Sequence and collection types are str, list, tuple, dict and set. The key interview distinction is mutability: immutable objects (int, float, str, tuple, frozenset) cannot change after creation, so an operation that looks like modification creates a new object. Mutable objects (list, dict, set) change in place, which matters when two names share the same object.",
+      "points": [
+        "Immutable: int, float, bool, str, tuple, frozenset, bytes.",
+        "Mutable: list, dict, set, bytearray and most user-defined objects.",
+        "Only hashable (normally immutable) objects can be dict keys or set members.",
+        "0.1 + 0.2 != 0.3 because of binary floating point; use decimal.Decimal for money."
+      ]
+    },
+    {
+      "heading": "Operators that interviewers probe",
+      "body": "/ always returns a float (7 / 2 == 3.5), // is floor division (7 // 2 == 3, and -7 // 2 == -4 because it floors toward negative infinity) and % follows the sign of the divisor. == compares values by calling __eq__, while is compares identity. Use is only for singletons such as None. and/or short-circuit and return one of their operands, not necessarily a bool: '' or 'guest' evaluates to 'guest'.",
+      "points": [
+        "x is None is the idiomatic None check.",
+        "Chained comparisons work: 0 <= score <= 100.",
+        "Falsy values: None, False, 0, 0.0, '', [], {}, set(), range(0).",
+        "The walrus operator := assigns inside an expression (Python 3.8+)."
+      ]
+    },
+    {
+      "heading": "Control flow",
+      "body": "if/elif/else picks one branch. for iterates over any iterable (lists, strings, dicts, files, ranges); while repeats while a condition is true. break exits the loop, continue skips to the next iteration, and the optional else block on a loop runs only if the loop finished without break, which is handy for search loops. Python 3.10 added match/case for structural pattern matching.",
+      "points": [
+        "range(start, stop, step) is lazy and excludes stop.",
+        "enumerate(items, start=1) gives index and value together.",
+        "zip(a, b) walks two iterables in parallel and stops at the shorter one.",
+        "Indentation is syntax: mixing tabs and spaces causes errors."
+      ]
+    },
+    {
+      "heading": "Strings and input handling",
+      "body": "Strings are immutable sequences of Unicode characters. Common methods are strip, split, join, replace, lower, startswith and format with f-strings. input() always returns a str, so numeric input must be converted with int() or float(). f'{value:.2f}' formats a float with two decimals, which you will use constantly in coding rounds.",
+      "points": [
+        "s.split() with no argument splits on any whitespace and drops empty parts.",
+        "', '.join(words) is the efficient way to build a string from pieces.",
+        "Slicing s[::-1] reverses a string; slices never raise IndexError."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Mutability in action",
+    "body": "Two names bound to the same list see each other's changes, while rebinding an int creates a new object. This is the root of many subtle bugs, such as a function unexpectedly modifying a list it received.",
+    "code": {
+      "language": "python",
+      "source": "a = [1, 2, 3]\nb = a            # b and a refer to the SAME list\nb.append(4)\nprint(a)         # [1, 2, 3, 4]\nprint(a is b)    # True\n\nx = 10\ny = x\ny += 1           # ints are immutable: y now refers to a new object\nprint(x, y)      # 10 11\n\nc = a[:]         # shallow copy creates a new list\nprint(c == a, c is a)  # True False"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Input validation",
+      "description": "Branching on types and ranges to reject bad form data before it reaches the database."
+    },
+    {
+      "title": "Data processing scripts",
+      "description": "Loops over CSV rows or log lines to compute totals, averages and reports."
+    },
+    {
+      "title": "Business rules",
+      "description": "if/elif chains for pricing tiers, grading, discounts or tax slabs."
+    },
+    {
+      "title": "Automation",
+      "description": "while loops for retry logic and polling a service until a job finishes."
+    }
+  ],
+  "demonstration": {
+    "description": "Use a for loop with an else clause to search for the first number divisible by 7. The else runs only when no break happened.",
+    "code": {
+      "language": "python",
+      "source": "for nums in ([3, 5, 14, 21], [1, 2, 4]):\n    for n in nums:\n        if n % 7 == 0:\n            print('found', n)\n            break\n    else:\n        print('none divisible by 7')\n\nprint(7 / 2, 7 // 2, -7 // 2, 7 % 3)"
+    },
+    "output": "found 14\nnone divisible by 7\n3.5 3 -4 1"
+  },
+  "takeaways": [
+    "Variables are names bound to objects; the object has the type.",
+    "Python is dynamically but strongly typed.",
+    "Know which types are mutable; it affects copying, defaults and dict keys.",
+    "Use == for value equality and is only for identity checks like is None.",
+    "/ returns float, // floors toward negative infinity.",
+    "A loop's else block runs only when the loop was not exited with break."
+  ],
+  "interview": [
+    {
+      "question": "Is Python statically or dynamically typed? Strongly or weakly typed?",
+      "answer": "Dynamically typed, because types are checked at runtime and a name can be rebound to an object of any type. Strongly typed, because it does not implicitly convert between unrelated types; '3' + 4 raises TypeError.",
+      "explanation": "Many candidates confuse dynamic with weak. Giving the '3' + 4 example and contrasting it with JavaScript's '34' shows you understand both axes."
+    },
+    {
+      "question": "What is the difference between == and is?",
+      "answer": "== compares values using __eq__; is compares identity, meaning both names point to the same object. Use is for singletons such as None, True and False.",
+      "explanation": "Mention that small integers and some strings are cached by CPython, so is may appear to work for them, but relying on that is a bug."
+    },
+    {
+      "question": "Which built-in types are mutable and which are immutable? Why does it matter?",
+      "answer": "Mutable: list, dict, set, bytearray. Immutable: int, float, bool, str, tuple, frozenset, bytes. It matters because shared references to mutable objects see in-place changes, and only hashable objects can be dictionary keys or set members.",
+      "explanation": "A strong answer connects mutability to real consequences: aliasing bugs, the mutable default argument trap and hashability."
+    },
+    {
+      "question": "What does the else clause on a for or while loop do?",
+      "answer": "It runs after the loop finishes normally, that is, without hitting break. It is useful for search loops where you need to act when nothing was found.",
+      "explanation": "This is a classic Python-specific question; a short search example demonstrates you have actually used it."
+    },
+    {
+      "question": "Why does 0.1 + 0.2 == 0.3 return False, and how do you handle money in Python?",
+      "answer": "Floats are binary IEEE 754 doubles and cannot represent 0.1 exactly, so the sum is 0.30000000000000004. For money use decimal.Decimal (constructed from strings) or store integer paise/cents; for approximate comparisons use math.isclose.",
+      "explanation": "Interviewers for full-stack roles like this because payment and invoice code must avoid float rounding errors; Django's DecimalField exists for the same reason."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Student result summary",
+    "difficulty": "Basic",
+    "objective": "Combine input parsing, if/elif grading rules, loops and formatted output.",
+    "statement": "Read a list of students with their marks and print each student's grade, the class average and the topper. Grades: 90 and above is A, 75–89 is B, 60–74 is C, 40–59 is D and below 40 is F. If several students share the highest marks, the topper is the one who appears first. If there are no students, print only 'No students'.",
+    "language": "python",
+    "input_format": "First line: n, the number of students (0 or more). Next n lines: a name (no spaces) and integer marks, separated by a space.",
+    "output_format": "n lines 'name: grade' in input order, then 'Average: x.xx' (two decimals), then 'Topper: name (marks)'. For n = 0 print 'No students'.",
+    "example": {
+      "input": "3\nAsha 92\nRavi 74\nMeena 40\n",
+      "output": "Asha: A\nRavi: C\nMeena: D\nAverage: 68.67\nTopper: Asha (92)"
+    },
+    "constraints": [
+      "0 <= n <= 1000",
+      "Marks are integers from 0 to 100.",
+      "Names contain no spaces."
+    ],
+    "starter": "n = int(input())\nstudents = []\nfor _ in range(n):\n    name, marks = input().split()\n    students.append((name, int(marks)))\n\n# TODO: print grades, average and topper\n",
+    "solution": "def grade(m):\n    if m >= 90:\n        return 'A'\n    elif m >= 75:\n        return 'B'\n    elif m >= 60:\n        return 'C'\n    elif m >= 40:\n        return 'D'\n    return 'F'\n\nn = int(input())\nstudents = []\nfor _ in range(n):\n    name, marks = input().split()\n    students.append((name, int(marks)))\n\nif not students:\n    print('No students')\nelse:\n    for name, marks in students:\n        print(f'{name}: {grade(marks)}')\n    average = sum(m for _, m in students) / len(students)\n    print(f'Average: {average:.2f}')\n    top_name, top_marks = students[0]\n    for name, marks in students[1:]:\n        if marks > top_marks:\n            top_name, top_marks = name, marks\n    print(f'Topper: {top_name} ({top_marks})')\n",
+    "explanation": [
+      "Convert the marks to int, because input() always returns a string.",
+      "Check grade thresholds from highest to lowest so the first matching elif wins.",
+      "Use true division for the average and format it with :.2f.",
+      "Track the topper with a strict > comparison so the earliest student wins a tie.",
+      "Handle the empty case first to avoid dividing by zero."
+    ],
+    "tests": [
+      {
+        "input": "3\nAsha 92\nRavi 74\nMeena 40\n",
+        "output": "Asha: A\nRavi: C\nMeena: D\nAverage: 68.67\nTopper: Asha (92)"
+      },
+      {
+        "input": "0\n",
+        "output": "No students"
+      },
+      {
+        "input": "2\nKiran 75\nArjun 75\n",
+        "output": "Kiran: B\nArjun: B\nAverage: 75.00\nTopper: Kiran (75)"
+      },
+      {
+        "input": "1\nZoya 39\n",
+        "output": "Zoya: F\nAverage: 39.00\nTopper: Zoya (39)"
+      },
+      {
+        "input": "4\nDev 100\nSam 0\nLia 60\nOm 89\n",
+        "output": "Dev: A\nSam: F\nLia: C\nOm: B\nAverage: 62.25\nTopper: Dev (100)"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this floor-division code print?",
+      "code": "print(7 // 2, -7 // 2)",
+      "options": [
+        "3 -4",
+        "3.5 -3.5",
+        "4 -4",
+        "3 -3"
+      ],
+      "answer": 0,
+      "explanation": "// is floor division and rounds toward negative infinity, so -3.5 floors to -4."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these built-in types is mutable?",
+      "options": [
+        "list",
+        "frozenset",
+        "tuple",
+        "str"
+      ],
+      "answer": 0,
+      "explanation": "Lists can be changed in place; tuples, strings and frozensets are immutable."
+    },
+    {
+      "type": "code",
+      "question": "What is the idiomatic way to check whether a variable is None?",
+      "options": [
+        "if not value.exists():",
+        "if value is None:",
+        "if value == None:",
+        "if type(value) == 'None':"
+      ],
+      "answer": 1,
+      "explanation": "None is a singleton, so an identity check with is is correct and cannot be fooled by a custom __eq__."
+    },
+    {
+      "type": "output",
+      "question": "What does this for...else loop print?",
+      "code": "for n in [2, 4, 6]:\n    if n % 2:\n        break\nelse:\n    print('done')",
+      "options": [
+        "Nothing",
+        "2",
+        "An error",
+        "done"
+      ],
+      "answer": 3,
+      "explanation": "No element is odd, so break never runs and the loop's else clause executes."
+    },
+    {
+      "type": "scenario",
+      "question": "An invoice total computed with floats shows 0.30000000000000004. What is the best fix?",
+      "options": [
+        "Convert values to strings before adding",
+        "Use decimal.Decimal or integer paise for currency",
+        "Switch to Python 2",
+        "Round every value to one decimal place"
+      ],
+      "answer": 1,
+      "explanation": "Binary floats cannot represent most decimal fractions exactly; Decimal or integer minor units give exact currency arithmetic."
+    }
+  ]
+}

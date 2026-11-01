@@ -1,0 +1,246 @@
+{
+  "day": 2,
+  "title": "Immutability, Spread and Destructuring",
+  "module": "JavaScript essentials for React",
+  "level": "Beginner",
+  "objectives": [
+    "Explain the difference between primitive values and object references.",
+    "Use object/array spread and destructuring to create updated copies instead of mutating.",
+    "Explain why React compares state by reference and why mutation breaks re-rendering.",
+    "Perform immutable updates on nested objects and arrays with structural sharing.",
+    "Distinguish a shallow copy from a deep copy and choose the right one."
+  ],
+  "definition": "Immutability means that once a value is created it is never changed in place; to 'update' it you create a new value that contains the change. In JavaScript, primitives are already immutable, but objects and arrays are mutable, so React code treats them as immutable by convention, building new copies with spread syntax, array methods that return new arrays, or helpers such as Immer.",
+  "theory": [
+    {
+      "heading": "Values versus references",
+      "body": "Primitives (numbers, strings, booleans, null, undefined, bigint, symbol) are compared by value. Objects, arrays and functions are compared by reference: two variables are equal only if they point to the same object in memory. If you mutate an object, every variable that references it sees the change, and the reference itself stays the same, so nothing that compares references can notice the change.",
+      "points": [
+        "{} === {} is false: two different objects.",
+        "const b = a; b.x = 1; also changes a.x because both point to one object.",
+        "Object.is is the comparison React uses for state and dependencies."
+      ]
+    },
+    {
+      "heading": "Why React needs immutable updates",
+      "body": "When you call a state setter, React compares the new value with the old one using Object.is. If they are the same reference it can skip the re-render. If you push into the existing array and call setItems(items), the reference has not changed, so React may skip the update. Immutable updates also make memoisation (React.memo, useMemo, selectors) cheap, because 'did anything change?' becomes a reference check instead of a deep comparison, and they enable features such as undo and time-travel debugging.",
+      "points": [
+        "Mutation + same reference = missed or unreliable re-render.",
+        "New reference for changed data = cheap change detection.",
+        "Old snapshots stay intact, which makes undo/redo and debugging easier."
+      ]
+    },
+    {
+      "heading": "Spread and rest syntax",
+      "body": "Spread (...) copies the own enumerable properties of an object, or the elements of an iterable, into a new object or array. Later properties override earlier ones, which makes { ...user, name: 'Asha' } the standard way to update one field. Rest uses the same three dots on the receiving side to collect 'everything else', for example const { password, ...publicUser } = user.",
+      "points": [
+        "Add to array: [...items, newItem]; remove: items.filter(i => i.id !== id).",
+        "Update one item: items.map(i => i.id === id ? { ...i, done: true } : i).",
+        "Spread is shallow: nested objects are still shared."
+      ]
+    },
+    {
+      "heading": "Destructuring",
+      "body": "Destructuring unpacks values from arrays or objects into variables. React uses it everywhere: const [count, setCount] = useState(0) is array destructuring, and function Card({ title, children }) destructures props. Defaults (const { size = 'md' } = props) and renaming (const { id: userId } = user) keep component signatures readable.",
+      "points": [
+        "Array destructuring is positional, which is why hooks return arrays.",
+        "Object destructuring is by name and supports defaults and renaming."
+      ]
+    },
+    {
+      "heading": "Nested updates and structural sharing",
+      "body": "To change a deeply nested field immutably you copy every object on the path from the root to the field and reuse (share) everything else. Only the objects along the path get new references; untouched branches keep their old references, so components that depend on them can skip rendering. Deep copying everything (structuredClone or JSON round-trip) is wasteful and defeats memoisation because every reference changes. For deeply nested state, flatten the shape or use Immer, which lets you write 'mutating' code on a draft and produces a structurally shared result.",
+      "points": [
+        "Copy the path, share the rest.",
+        "structuredClone is a true deep copy; use it for snapshots, not for routine state updates.",
+        "Redux Toolkit uses Immer internally (Day 15)."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Updating nested state without mutation",
+    "body": "Changing the city of a user inside a profile requires new objects for the profile and the address, while the preferences object is reused as is.",
+    "code": {
+      "language": "javascript",
+      "source": "const state = {\n  user: { name: 'Ravi', address: { city: 'Pune', pin: '411001' } },\n  prefs: { theme: 'dark' }\n};\n\nconst next = {\n  ...state,\n  user: {\n    ...state.user,\n    address: { ...state.user.address, city: 'Delhi' }\n  }\n};\n\nconsole.log(state.user.address.city);   // 'Pune'  (original untouched)\nconsole.log(next.user.address.city);    // 'Delhi'\nconsole.log(next.prefs === state.prefs); // true   (shared)\nconsole.log(next.user === state.user);   // false  (copied on the path)"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "useState updates",
+      "description": "setTodos(todos => [...todos, newTodo]) produces a new array so React detects the change."
+    },
+    {
+      "title": "Reducers",
+      "description": "Redux and useReducer reducers must return new state objects rather than modifying the old ones."
+    },
+    {
+      "title": "Undo/redo",
+      "description": "Because old states are never mutated, an editor can keep an array of past snapshots and step back through them."
+    },
+    {
+      "title": "Memoised selectors",
+      "description": "Reselect and React.memo compare inputs by reference, which is only reliable when data is updated immutably."
+    },
+    {
+      "title": "Safe props",
+      "description": "Child components never modify props; they ask the parent to produce new values through callbacks."
+    }
+  ],
+  "demonstration": {
+    "description": "Compare a mutating update with an immutable one. The mutating version keeps the same reference, so a reference check (what React does) reports 'no change' even though the data changed.",
+    "code": {
+      "language": "javascript",
+      "source": "const todos = [{ id: 1, done: false }];\n\nconst mutated = todos;\nmutated[0].done = true;\nconsole.log('mutated changed?', !Object.is(mutated, todos));\n\nconst fresh = [{ id: 1, done: false }];\nconst updated = fresh.map(t => t.id === 1 ? { ...t, done: true } : t);\nconsole.log('updated changed?', !Object.is(updated, fresh));\nconsole.log('original kept?', fresh[0].done === false);"
+    },
+    "output": "mutated changed? false\nupdated changed? true\noriginal kept? true"
+  },
+  "takeaways": [
+    "Objects and arrays are compared by reference; mutation keeps the same reference.",
+    "React uses Object.is to decide whether state changed, so always create new objects for updates.",
+    "Use spread, map, filter and concat to build updated copies; avoid push, splice and direct assignment on state.",
+    "Spread is shallow: copy every level on the path to a nested change.",
+    "Structural sharing keeps untouched branches identical, which makes memoisation work.",
+    "Destructuring powers hook APIs and clean prop handling."
+  ],
+  "interview": [
+    {
+      "question": "Why should you not mutate state directly in React?",
+      "answer": "React detects changes by comparing references with Object.is. Mutating keeps the same reference, so React may skip the re-render, memoised children may show stale data, and features like concurrent rendering and Strict Mode double rendering can expose inconsistent results.",
+      "explanation": "Mention reference comparison explicitly; it is the real reason, not just 'it is a rule'."
+    },
+    {
+      "question": "What is the difference between a shallow copy and a deep copy?",
+      "answer": "A shallow copy creates a new top-level object but shares nested objects with the original. A deep copy recursively copies every nested object. Spread and Object.assign are shallow; structuredClone is deep.",
+      "explanation": "Strong candidates add that deep copying all state is wasteful and breaks memoisation, so React apps copy only the changed path."
+    },
+    {
+      "question": "How do you update one item in an array held in state?",
+      "answer": "Map over the array and return a new object for the matching item while returning the others unchanged: setItems(items => items.map(i => i.id === id ? { ...i, qty: i.qty + 1 } : i)).",
+      "explanation": "Using the functional updater avoids stale state and returning untouched items keeps their references stable."
+    },
+    {
+      "question": "What does the rest pattern do in const { password, ...safeUser } = user?",
+      "answer": "It extracts password into its own variable and collects all the remaining own properties into a new object named safeUser, which is useful for removing fields before sending or rendering data.",
+      "explanation": "This also demonstrates immutable removal of a key, a common follow-up question."
+    },
+    {
+      "question": "What is structural sharing and why does it help performance?",
+      "answer": "Structural sharing means an updated state reuses every unchanged sub-object from the previous state and creates new objects only along the path to the change. Components and selectors that depend on unchanged branches see identical references and can skip work.",
+      "explanation": "Mention that Immer and Redux Toolkit produce structurally shared results automatically."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Immutable setIn with structural sharing",
+    "difficulty": "Basic",
+    "objective": "Implement an immutable nested update that copies only the path to the change and reuses everything else.",
+    "statement": "Write setIn(obj, path, value) that returns a new object with the value at the dot-separated path replaced, without mutating obj. Copy arrays as arrays (numeric segments are indices) and objects as objects; create missing objects along the path. If the new value is identical (Object.is) to the existing one, return the original object unchanged. Apply all updates in order, then print which top-level keys now have a different reference from the original state, the final state as JSON, and the original state as JSON (to prove it was not mutated).",
+    "language": "javascript",
+    "input_format": "Line 1: the initial state as JSON. Line 2: N. Next N lines: '<path> <value as JSON>'.",
+    "output_format": "Line 1: 'changed: ' followed by the changed top-level keys in the final object's key order, comma-separated, or 'none'. Line 2: final state JSON. Line 3: original state JSON.",
+    "example": {
+      "input": "{\"user\":{\"name\":\"Ravi\",\"city\":\"Pune\"},\"todos\":[{\"id\":1,\"done\":false}],\"theme\":\"dark\"}\n2\nuser.city \"Delhi\"\ntodos.0.done true\n",
+      "output": "changed: user,todos\n{\"user\":{\"name\":\"Ravi\",\"city\":\"Delhi\"},\"todos\":[{\"id\":1,\"done\":true}],\"theme\":\"dark\"}\n{\"user\":{\"name\":\"Ravi\",\"city\":\"Pune\"},\"todos\":[{\"id\":1,\"done\":false}],\"theme\":\"dark\"}"
+    },
+    "constraints": [
+      "1 <= N <= 100; paths have 1 to 10 segments.",
+      "The JSON value is everything after the first space on the line.",
+      "Do not use structuredClone or JSON round-trips to copy state."
+    ],
+    "starter": "function setIn(obj, path, value) {\n  // TODO: recursive immutable update; return obj itself when nothing changed\n}\n\nconst lines = stdin.trim().split('\\n');\nconst original = JSON.parse(lines[0]);\nlet state = original;\n// TODO: apply updates, then print the three lines\n",
+    "solution": "function setIn(obj, path, value) {\n  if (path.length === 0) return value;\n  const [head, ...rest] = path;\n  const current = obj == null ? undefined : obj[head];\n  const next = setIn(current, rest, value);\n  if (obj != null && Object.is(current, next)) return obj;\n  if (Array.isArray(obj)) {\n    const copy = obj.slice();\n    copy[Number(head)] = next;\n    return copy;\n  }\n  return { ...(obj || {}), [head]: next };\n}\n\nconst lines = stdin.trim().split('\\n');\nconst original = JSON.parse(lines[0]);\nconst n = parseInt(lines[1], 10);\nlet state = original;\nfor (let i = 2; i < 2 + n; i++) {\n  const line = lines[i];\n  const space = line.indexOf(' ');\n  const path = line.slice(0, space).split('.');\n  const value = JSON.parse(line.slice(space + 1));\n  state = setIn(state, path, value);\n}\nconst changed = Object.keys(state).filter(k => !Object.is(state[k], original[k]));\nconsole.log('changed: ' + (changed.length ? changed.join(',') : 'none'));\nconsole.log(JSON.stringify(state));\nconsole.log(JSON.stringify(original));\n",
+    "explanation": [
+      "Recurse down the path: the base case returns the new value itself.",
+      "On the way back up, if the child did not change (Object.is), return the existing parent so its reference is preserved.",
+      "Otherwise copy only this level: slice() for arrays, spread for objects, and put the new child in.",
+      "Compare each top-level key of the result with the original by reference to see which branches were copied.",
+      "Printing the original proves no mutation occurred."
+    ],
+    "tests": [
+      {
+        "input": "{\"user\":{\"name\":\"Ravi\",\"city\":\"Pune\"},\"todos\":[{\"id\":1,\"done\":false}],\"theme\":\"dark\"}\n2\nuser.city \"Delhi\"\ntodos.0.done true\n",
+        "output": "changed: user,todos\n{\"user\":{\"name\":\"Ravi\",\"city\":\"Delhi\"},\"todos\":[{\"id\":1,\"done\":true}],\"theme\":\"dark\"}\n{\"user\":{\"name\":\"Ravi\",\"city\":\"Pune\"},\"todos\":[{\"id\":1,\"done\":false}],\"theme\":\"dark\"}"
+      },
+      {
+        "input": "{\"a\":{\"b\":1},\"c\":2}\n1\na.b 1\n",
+        "output": "changed: none\n{\"a\":{\"b\":1},\"c\":2}\n{\"a\":{\"b\":1},\"c\":2}"
+      },
+      {
+        "input": "{\"count\":1}\n2\nsettings.lang \"hi\"\ncount 5\n",
+        "output": "changed: count,settings\n{\"count\":5,\"settings\":{\"lang\":\"hi\"}}\n{\"count\":1}"
+      },
+      {
+        "input": "{\"list\":[1,2,3],\"meta\":{\"v\":1}}\n2\nlist.1 20\nlist.1 20\n",
+        "output": "changed: list\n{\"list\":[1,20,3],\"meta\":{\"v\":1}}\n{\"list\":[1,2,3],\"meta\":{\"v\":1}}"
+      },
+      {
+        "input": "{\"x\":{\"y\":{\"z\":0}},\"w\":true}\n1\nx.y {\"z\":1,\"k\":[1]}\n",
+        "output": "changed: x\n{\"x\":{\"y\":{\"z\":1,\"k\":[1]}},\"w\":true}\n{\"x\":{\"y\":{\"z\":0}},\"w\":true}"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this object reference example print?",
+      "code": "const a = { n: 1 };\nconst b = a;\nb.n = 2;\nconsole.log(a.n, a === b);",
+      "options": [
+        "2 true",
+        "1 true",
+        "1 false",
+        "2 false"
+      ],
+      "answer": 0,
+      "explanation": "b and a reference the same object, so the change is visible through a and the references are equal."
+    },
+    {
+      "type": "scenario",
+      "question": "A developer writes items.push(newItem); setItems(items); and the list does not update. What is the best fix?",
+      "options": [
+        "Use var instead of const for items",
+        "setItems([...items, newItem])",
+        "Call setItems twice",
+        "Wrap the push in useEffect"
+      ],
+      "answer": 1,
+      "explanation": "React compares references; pushing keeps the same array. A new array with spread gives React a changed reference."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement about { ...state } is true?",
+      "options": [
+        "It recursively copies every nested object",
+        "It freezes the object",
+        "It only works on arrays",
+        "It creates a shallow copy; nested objects are still shared"
+      ],
+      "answer": 3,
+      "explanation": "Spread copies only the top level; nested objects remain the same references."
+    },
+    {
+      "type": "code",
+      "question": "Which expression removes the todo with id 3 from todos without mutation?",
+      "options": [
+        "todos.filter(t => t.id !== 3)",
+        "delete todos[3]",
+        "todos.pop(3)",
+        "todos.splice(todos.findIndex(t => t.id === 3), 1)"
+      ],
+      "answer": 0,
+      "explanation": "filter returns a new array. splice, delete and pop all modify the original array."
+    },
+    {
+      "type": "concept",
+      "question": "Why is deep-cloning the entire state on every update a poor choice in React?",
+      "options": [
+        "React throws an error for cloned objects",
+        "It makes state impossible to serialise",
+        "It changes every reference, so memoised components and selectors can no longer skip work",
+        "Deep cloning is not possible in JavaScript"
+      ],
+      "answer": 2,
+      "explanation": "Structural sharing keeps unchanged branches identical; a full deep clone breaks reference-based change detection and wastes memory."
+    }
+  ]
+}

@@ -57,7 +57,7 @@ const dec = (s: string | null) => {
   }
 }
 
-type Result = { status: string; stdout: string; stderr: string; time?: string; ok: boolean }
+export type Result = { status: string; stdout: string; stderr: string; time?: string; ok: boolean }
 
 function runJavaScript(code: string, stdin: string): Promise<Result> {
   return new Promise((resolve) => {
@@ -116,6 +116,15 @@ async function runRemote(lang: Lang, code: string, stdin: string): Promise<Resul
   } finally {
     clearTimeout(t)
   }
+}
+
+const PRACTICE_LANGS: Record<string, string> = { python: 'Python', javascript: 'JavaScript', java: 'Java', csharp: 'C#' }
+
+/** Run a practice program with the given input. JavaScript runs in the browser (input in a global `stdin`); the rest use the public runner. */
+export function runProgram(language: string, code: string, stdin: string): Promise<Result> {
+  const lang = LANGS.find((item) => item.name === PRACTICE_LANGS[language])
+  if (!lang) return Promise.resolve({ status: 'Unsupported language', stdout: '', stderr: `Cannot run ${language} here.`, ok: false })
+  return lang.name === 'JavaScript' ? runJavaScript(code, stdin) : runRemote(lang, code, stdin)
 }
 
 const read = (k: string, fallback: string) => {

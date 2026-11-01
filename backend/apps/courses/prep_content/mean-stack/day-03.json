@@ -1,0 +1,242 @@
+{
+  "day": 3,
+  "title": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
+  "module": "Web and JavaScript foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Use destructuring with defaults and renaming for objects, arrays and function parameters.",
+    "Apply spread and rest syntax to copy, merge and collect values immutably.",
+    "Choose between map, filter, reduce, find, some and every for data transformations.",
+    "Explain ES modules (import/export) and how they differ from CommonJS.",
+    "Use classes, template literals, optional chaining and Map/Set where they fit."
+  ],
+  "definition": "ES6 (ECMAScript 2015) and the yearly releases after it added the syntax modern JavaScript and TypeScript code relies on: let/const, arrow functions, classes, template literals, destructuring, spread/rest, modules, Map/Set, promises and later async/await, optional chaining and nullish coalescing. Angular, Express and Mongoose code is written almost entirely in this style.",
+  "theory": [
+    {
+      "heading": "Destructuring and default values",
+      "body": "Destructuring unpacks values from objects or arrays into variables in one statement. It can rename (const { id: courseId } = course), provide defaults used when a value is undefined (const { page = 1 } = query), and work in function parameters, which makes an options object self-documenting. Array destructuring is positional and is used for swaps and for tuple-like returns.",
+      "points": [
+        "Object: const { title, price = 0 } = course;",
+        "Array: const [first, , third] = list;",
+        "Parameters: function list({ page = 1, limit = 10 } = {}) { ... }",
+        "Defaults apply only for undefined, not for null."
+      ]
+    },
+    {
+      "heading": "Spread and rest",
+      "body": "The same three dots mean two different things. Spread expands an iterable or object into individual elements or properties; rest collects the remaining ones into an array or object. Spread creates a shallow copy, which is the basis of immutable updates in Angular state management: { ...state, loading: true } produces a new object, so reference checks notice the change. Nested objects are still shared, so deep changes need nested spreads or structuredClone.",
+      "points": [
+        "Merge: const config = { ...defaults, ...overrides }; later keys win.",
+        "Copy and append: const next = [...items, newItem];",
+        "Rest parameters: function sum(...nums) { ... }",
+        "Omit a key: const { password, ...safeUser } = user;"
+      ]
+    },
+    {
+      "heading": "Array methods for data transformation",
+      "body": "Declarative array methods replace most for loops in application code. map transforms each element, filter keeps elements matching a condition, reduce folds the array into a single value (sum, grouping, lookup table), find returns the first match, and some/every answer yes-or-no questions. They do not mutate the source array (sort, reverse and splice do, which is why toSorted and toReversed were added in ES2023). Chaining them keeps code readable, but each step allocates a new array, so for very large datasets a single reduce or a loop can be faster.",
+      "points": [
+        "map: same length, transformed values.",
+        "filter: subset; find: first match or undefined.",
+        "reduce: accumulate anything; always pass an initial value.",
+        "Object.entries, Object.fromEntries and Object.groupBy help with keyed data."
+      ]
+    },
+    {
+      "heading": "ES modules versus CommonJS",
+      "body": "ES modules use import and export, are statically analysable (enabling tree shaking in Angular builds), are always in strict mode and load asynchronously. CommonJS uses require and module.exports, loads synchronously and was Node.js's original system. Modern Node.js supports both: files ending in .mjs, or a package.json with \"type\": \"module\", are treated as ES modules. Angular and TypeScript code always uses ES module syntax.",
+      "points": [
+        "Named exports: export function x() {}, imported with { x }.",
+        "Default export: one per module; import any name.",
+        "Dynamic import(): loads a module on demand, used for lazy-loaded Angular routes."
+      ]
+    },
+    {
+      "heading": "Other everyday features",
+      "body": "Classes provide constructor, methods, getters, static members and true private fields (#secret). Template literals interpolate expressions and span lines. Map keeps insertion order and allows any key type; Set stores unique values, making de-duplication a one-liner. Optional chaining (a?.b?.c) and nullish coalescing (x ?? fallback) make safe access to API responses concise.",
+      "points": [
+        "Unique values: [...new Set(tags)].",
+        "Map vs object: any key type, size property, predictable iteration order.",
+        "Private class fields (#count) are enforced by the language, unlike TypeScript's private keyword."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Preparing API data for a view",
+    "body": "An API returns enrolments. The code removes a sensitive field with rest destructuring, applies defaults, keeps only active records, computes totals with reduce and groups by course, all without mutating the original array.",
+    "code": {
+      "language": "javascript",
+      "source": "const enrolments = [\n  { student: 'Asha', course: 'MEAN', fee: 25000, active: true, aadhaar: 'XXXX' },\n  { student: 'Ravi', course: 'MEAN', active: true, aadhaar: 'YYYY' },\n  { student: 'Meera', course: 'Java', fee: 18000, active: false, aadhaar: 'ZZZZ' },\n];\n\nconst safe = enrolments\n  .filter(e => e.active)\n  .map(({ aadhaar, fee = 0, ...rest }) => ({ ...rest, fee }));\n\nconst total = safe.reduce((sum, { fee }) => sum + fee, 0);\nconst byCourse = Object.groupBy(safe, e => e.course);\n\nconsole.log(safe.length, total, Object.keys(byCourse)); // 2 25000 [ 'MEAN' ]"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Shaping API responses",
+      "description": "Express handlers strip private fields with rest destructuring before sending JSON."
+    },
+    {
+      "title": "Immutable state updates",
+      "description": "Angular stores and signals are updated with spread copies so change detection sees a new reference."
+    },
+    {
+      "title": "Configuration merging",
+      "description": "Libraries combine defaults with user options using object spread."
+    },
+    {
+      "title": "Lazy loading",
+      "description": "Angular routes use dynamic import() so feature code is downloaded only when visited."
+    }
+  ],
+  "demonstration": {
+    "description": "Spread makes shallow copies. Changing a top-level property of the copy leaves the original alone, but a nested object is still shared. structuredClone performs a deep copy.",
+    "code": {
+      "language": "javascript",
+      "source": "const original = { name: 'Asha', address: { city: 'Pune' } };\nconst shallow = { ...original, name: 'Ravi' };\nshallow.address.city = 'Delhi';\nconsole.log(original.name, original.address.city);\n\nconst deep = structuredClone(original);\ndeep.address.city = 'Chennai';\nconsole.log(original.address.city);"
+    },
+    "output": "Asha Delhi\nDelhi"
+  },
+  "takeaways": [
+    "Destructuring defaults apply only when a value is undefined.",
+    "Spread copies are shallow; nested objects remain shared.",
+    "map, filter and reduce return new values; sort, reverse and splice mutate.",
+    "ES modules are static and tree-shakeable; dynamic import() enables lazy loading.",
+    "Use Set for uniqueness and Map when keys are not simple strings or order matters."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between the spread and rest operators?",
+      "answer": "Both use three dots. Spread expands an iterable or object into elements or properties (copying, merging, passing arguments). Rest collects the remaining elements or properties into an array or object (function parameters, destructuring).",
+      "explanation": "A good answer gives one example of each, such as Math.max(...nums) and const { password, ...safe } = user."
+    },
+    {
+      "question": "Is { ...obj } a deep copy?",
+      "answer": "No. It is a shallow copy: top-level properties are copied, but nested objects and arrays are shared by reference. Use structuredClone, or nested spreads for targeted updates, when a deep copy is needed.",
+      "explanation": "This matters for immutable state: mutating a nested object after a shallow copy defeats OnPush and NgRx change detection."
+    },
+    {
+      "question": "When would you use reduce instead of map or filter?",
+      "answer": "When the result is not an array of the same shape, for example a sum, an object keyed by ID, or groups. map is for one-to-one transformation and filter for selection; reduce accumulates any result type, and you should always pass an initial value.",
+      "explanation": "Interviewers check that you pick the most expressive method rather than using reduce for everything."
+    },
+    {
+      "question": "How do ES modules differ from CommonJS?",
+      "answer": "ES modules use static import/export, are analysed before execution (allowing tree shaking), run in strict mode and support top-level await. CommonJS uses require/module.exports, resolved at runtime synchronously. Node.js supports both, chosen by file extension or the package.json type field.",
+      "explanation": "Mentioning tree shaking and lazy loading with dynamic import() ties the answer to Angular build performance."
+    },
+    {
+      "question": "Why were toSorted and toReversed added to arrays?",
+      "answer": "sort and reverse mutate the array in place, which causes bugs when the array is shared state. toSorted, toReversed, toSpliced and with return new arrays and leave the original untouched.",
+      "explanation": "Knowing recent additions signals that you keep up with the language; tie it to immutable updates in front-end state."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Course report with map, filter and reduce",
+    "difficulty": "Basic",
+    "objective": "Transform a list of records with destructuring defaults and array methods instead of manual bookkeeping.",
+    "statement": "stdin holds a JSON array of records shaped like { name, course, score }. A missing score counts as 0 and a missing course counts as 'Unassigned' (use destructuring defaults). Group records by course and, for each course in ascending order of name (plain string comparison), print the number of records, the average score with one decimal place and the top scorer. If two students tie for the top score, choose the name that comes first in string order. If the array is empty, print 'no records'.",
+    "language": "javascript",
+    "input_format": "A single JSON array.",
+    "output_format": "One line per course: '<course>: count=<n> avg=<average to 1 decimal> top=<name>', or 'no records'.",
+    "example": {
+      "input": "[{\"name\":\"Asha\",\"course\":\"MEAN\",\"score\":82},{\"name\":\"Ravi\",\"course\":\"MEAN\",\"score\":91},{\"name\":\"Meera\",\"course\":\"Java\",\"score\":75},{\"name\":\"Kiran\",\"course\":\"MEAN\"}]",
+      "output": "Java: count=1 avg=75.0 top=Meera\nMEAN: count=3 avg=57.7 top=Ravi"
+    },
+    "constraints": [
+      "Use toFixed(1) for the average.",
+      "Do not mutate the parsed array while processing it.",
+      "Course names are compared with < and >, so uppercase letters sort before lowercase."
+    ],
+    "starter": "const records = JSON.parse(stdin);\n// TODO: normalise with destructuring defaults, group with reduce, then print\n",
+    "solution": "const records = JSON.parse(stdin);\nif (records.length === 0) {\n  console.log('no records');\n} else {\n  const normalised = records.map(({ name, course = 'Unassigned', score = 0 }) => ({ name, course, score }));\n  const groups = normalised.reduce((acc, r) => {\n    (acc[r.course] ||= []).push(r);\n    return acc;\n  }, {});\n  const courses = Object.keys(groups).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));\n  for (const course of courses) {\n    const list = groups[course];\n    const total = list.reduce((sum, { score }) => sum + score, 0);\n    const top = list.reduce((best, r) =>\n      r.score > best.score || (r.score === best.score && r.name < best.name) ? r : best\n    );\n    console.log(course + ': count=' + list.length + ' avg=' + (total / list.length).toFixed(1) + ' top=' + top.name);\n  }\n}\n",
+    "explanation": [
+      "Parse the JSON, then map every record through a destructuring pattern with defaults so missing fields become 'Unassigned' and 0.",
+      "reduce builds an object of arrays keyed by course; ||= creates the array the first time a course is seen.",
+      "Sort the course names with a plain comparison so the order is deterministic.",
+      "For each course, one reduce sums the scores and another picks the top record, breaking ties by name.",
+      "Print the count, the average with toFixed(1) and the top name."
+    ],
+    "tests": [
+      {
+        "input": "[{\"name\":\"Asha\",\"course\":\"MEAN\",\"score\":82},{\"name\":\"Ravi\",\"course\":\"MEAN\",\"score\":91},{\"name\":\"Meera\",\"course\":\"Java\",\"score\":75},{\"name\":\"Kiran\",\"course\":\"MEAN\"}]",
+        "output": "Java: count=1 avg=75.0 top=Meera\nMEAN: count=3 avg=57.7 top=Ravi"
+      },
+      {
+        "input": "[]",
+        "output": "no records"
+      },
+      {
+        "input": "[{\"name\":\"Zoya\",\"course\":\"AI\",\"score\":90},{\"name\":\"Arjun\",\"course\":\"AI\",\"score\":90},{\"name\":\"Neel\",\"score\":40}]",
+        "output": "AI: count=2 avg=90.0 top=Arjun\nUnassigned: count=1 avg=40.0 top=Neel"
+      },
+      {
+        "input": "[{\"name\":\"A\",\"course\":\"Python\",\"score\":70},{\"name\":\"B\",\"course\":\"Python\",\"score\":80},{\"name\":\"C\",\"course\":\"Python\",\"score\":85},{\"name\":\"D\",\"course\":\"Go\",\"score\":1},{\"name\":\"E\",\"course\":\"Go\",\"score\":2}]",
+        "output": "Go: count=2 avg=1.5 top=E\nPython: count=3 avg=78.3 top=C"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "output",
+      "question": "What does this destructuring default print?",
+      "code": "const { page = 1, limit = 10 } = { page: null, limit: undefined };\nconsole.log(page, limit);",
+      "options": [
+        "1 undefined",
+        "null 10",
+        "1 10",
+        "null undefined"
+      ],
+      "answer": 1,
+      "explanation": "Destructuring defaults apply only when the value is undefined. null is a real value, so page stays null while limit becomes 10."
+    },
+    {
+      "type": "concept",
+      "question": "Which array method mutates the original array?",
+      "options": [
+        "map",
+        "filter",
+        "toSorted",
+        "sort"
+      ],
+      "answer": 3,
+      "explanation": "sort reorders the array in place. map, filter and toSorted return new arrays."
+    },
+    {
+      "type": "output",
+      "question": "What object does this spread merge print?",
+      "code": "const defaults = { theme: 'light', lang: 'en' };\nconst user = { lang: 'hi' };\nconsole.log({ ...defaults, ...user });",
+      "options": [
+        "{ theme: 'light', lang: 'hi' }",
+        "{ lang: 'hi' }",
+        "{ lang: 'en', theme: 'light', lang: 'hi' }",
+        "{ theme: 'light', lang: 'en' }"
+      ],
+      "answer": 0,
+      "explanation": "Later spreads overwrite earlier keys, so user's lang replaces the default while theme is kept."
+    },
+    {
+      "type": "concept",
+      "question": "Why does using ES module import/export help Angular production builds?",
+      "options": [
+        "Static imports let the bundler tree-shake unused exports",
+        "It converts TypeScript to Java bytecode",
+        "It makes code run on the server",
+        "It disables strict mode"
+      ],
+      "answer": 0,
+      "explanation": "Because imports are statically analysable, the bundler can drop exports that are never used, shrinking the bundle."
+    },
+    {
+      "type": "code",
+      "question": "Which line removes the password from a user object without mutating it?",
+      "options": [
+        "const safeUser = [...user].filter(k => k !== 'password');",
+        "const { password, ...safeUser } = user;",
+        "delete user.password; const safeUser = user;",
+        "const safeUser = user; safeUser.password = undefined;"
+      ],
+      "answer": 1,
+      "explanation": "Rest destructuring collects every other property into a new object and leaves user unchanged. The other options mutate or are invalid for objects."
+    }
+  ]
+}

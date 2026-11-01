@@ -1,0 +1,242 @@
+{
+  "day": 1,
+  "title": "What Prompt Engineering Is and How LLMs Read Prompts",
+  "module": "How LLMs read prompts",
+  "level": "Beginner",
+  "objectives": [
+    "Define prompt engineering and explain why it matters for products built on LLMs.",
+    "Explain how text is split into tokens before a model processes it.",
+    "Describe next-token prediction and why the prompt conditions every generated token.",
+    "Estimate the token count of a prompt and reason about cost and limits.",
+    "Answer foundational interview questions on prompts, tokens and model behaviour."
+  ],
+  "definition": "Prompt engineering is the practice of designing, testing and refining the input given to a large language model (LLM) so that it reliably produces useful, correct and well-formatted output. An LLM never sees words directly: the prompt is split into tokens, converted to numbers, and the model predicts the most suitable next token again and again, each time conditioned on the prompt and everything generated so far.",
+  "theory": [
+    {
+      "heading": "What prompt engineering is (and is not)",
+      "body": "A prompt is everything the model receives for a request: system instructions, the user's message, examples, retrieved documents and conversation history. Prompt engineering is the discipline of shaping that input deliberately and measuring the result. It is not a bag of magic phrases. In production it looks like software engineering: you write a specification for the model, test it on many inputs, version it and monitor it.",
+      "points": [
+        "Goal: reliable behaviour across many inputs, not one impressive answer.",
+        "Levers: instructions, context, examples, output format, sampling settings.",
+        "It is usually the cheapest and fastest way to change model behaviour, before retrieval (RAG) or fine-tuning."
+      ]
+    },
+    {
+      "heading": "Tokens: the unit the model actually reads",
+      "body": "A tokenizer splits text into tokens using a fixed vocabulary learned from data, typically with byte-pair encoding (BPE) or a similar sub-word method. Common English words are often a single token, rare words are split into several pieces, and spaces and punctuation are part of tokens. A rough rule for English is about four characters, or three-quarters of a word, per token. Text in Hindi, Tamil or other scripts that were less common in the tokenizer's training data usually needs noticeably more tokens for the same meaning.",
+      "points": [
+        "Each token maps to an integer ID; the model works on these IDs, not on letters.",
+        "Pricing, context limits and output limits are all measured in tokens.",
+        "Tokenization explains odd failures such as miscounting letters in a word or struggling with reversed strings.",
+        "Different model families use different tokenizers, so counts differ between providers."
+      ]
+    },
+    {
+      "heading": "How a model turns a prompt into an answer",
+      "body": "An LLM is trained to predict the next token. At inference time it reads all prompt tokens, computes a probability distribution over the whole vocabulary for the next token, picks one (according to the sampling settings), appends it and repeats until it emits a stop token or reaches the output limit. Because each new token depends on every token before it, the prompt steers the entire answer: the instructions, the examples and even the first words of the response all change what comes next.",
+      "points": [
+        "Autoregressive: output is generated one token at a time, left to right.",
+        "The model has no memory between API calls; the application resends history each time.",
+        "Chat models are base models further trained to follow instructions and conversation roles."
+      ]
+    },
+    {
+      "heading": "Why prompts matter in real systems",
+      "body": "The same model can be a poor or an excellent component depending on its prompt. A vague request produces generic, variable answers; a precise request with context, constraints and an output format produces answers that downstream code can parse and users can trust. Because every token costs money and latency, good prompts are also efficient: they include what the model needs and leave out what it does not.",
+      "points": [
+        "Quality: clearer prompts reduce ambiguity and hallucination.",
+        "Consistency: explicit formats make output machine-readable.",
+        "Cost and latency: fewer, better-chosen tokens are cheaper and faster."
+      ]
+    },
+    {
+      "heading": "Limitations to keep in mind",
+      "body": "Prompting cannot teach a model knowledge it does not have, guarantee correctness, or make a probabilistic system fully deterministic. Small wording changes can shift results, and a prompt tuned for one model may behave differently on another. That is why prompt engineering always pairs with evaluation, which this course covers from Day 20 onwards.",
+      "points": [
+        "Knowledge gaps need retrieval or tools, not cleverer wording.",
+        "Outputs vary between runs and model versions.",
+        "Prompts must be tested on representative data, not a single example."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Counting tokens with a real tokenizer",
+    "body": "OpenAI's open-source tiktoken library exposes the tokenizers used by its models. Encoding a short sentence shows that the token count is not the word count, and that rare words split into several pieces. Other providers offer token-counting endpoints in their SDKs for the same purpose.",
+    "code": {
+      "language": "python",
+      "source": "import tiktoken  # pip install tiktoken\n\nenc = tiktoken.get_encoding(\"o200k_base\")\ntext = \"Summarise this email in 3 bullet points.\"\nids = enc.encode(text)\nprint(len(text.split()), \"words\")\nprint(len(ids), \"tokens\")\nprint([enc.decode([i]) for i in ids])\n# The pieces show leading spaces attached to words, e.g. ' email'"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Customer support assistants",
+      "description": "Prompts define tone, policy limits and escalation rules so a chat assistant answers consistently for every customer."
+    },
+    {
+      "title": "Document processing",
+      "description": "Prompts turn invoices, resumes or contracts into structured fields without training a custom model."
+    },
+    {
+      "title": "Developer tools",
+      "description": "Code assistants rely on carefully assembled prompts containing the open file, related code and the user's instruction."
+    },
+    {
+      "title": "Budgeting and capacity planning",
+      "description": "Token estimates per request drive monthly cost forecasts and decide whether long documents need chunking."
+    }
+  ],
+  "demonstration": {
+    "description": "Send a vague prompt and a specific prompt to the same chat model. The model, data and settings are identical; only the prompt changes, and so does the usefulness of the output.",
+    "code": {
+      "language": "text",
+      "source": "Vague:    Tell me about this ticket.\nSpecific: You are a support analyst. Read the ticket below and reply with three lines:\n          Category: one of billing, technical, account\n          Urgency: low, medium or high\n          Summary: one sentence under 20 words\n          Ticket: \"I was charged twice for my March plan and need a refund before the 5th.\""
+    },
+    "output": "Vague    -> a loose paragraph restating the ticket, different in length and structure on every run.\nSpecific -> Category: billing\n            Urgency: high\n            Summary: Customer was double-charged for March and needs a refund before the 5th."
+  },
+  "takeaways": [
+    "Prompt engineering is designing and testing model input for reliable, useful output.",
+    "Models read tokens, not words; roughly four English characters per token.",
+    "Generation is next-token prediction, so the whole prompt conditions every output token.",
+    "Cost, latency and context limits are all counted in tokens.",
+    "Prompting cannot add missing knowledge or guarantee correctness; evaluation is essential.",
+    "The same prompt can behave differently across models, so test when you switch."
+  ],
+  "interview": [
+    {
+      "question": "What is prompt engineering?",
+      "answer": "It is the practice of designing, testing and refining the input to an LLM, including instructions, context, examples and output format, so the model produces reliable, useful output for a task.",
+      "explanation": "Strong answers stress reliability across many inputs and mention testing, rather than describing it as finding magic words."
+    },
+    {
+      "question": "What is a token, and why should a prompt engineer care?",
+      "answer": "A token is a sub-word unit produced by the model's tokenizer; the model reads and generates tokens. Context limits, pricing and output limits are all measured in tokens, so token count drives cost, latency and how much context fits.",
+      "explanation": "Mention the rough four-characters-per-token rule for English and that non-English scripts often need more tokens."
+    },
+    {
+      "question": "Why does an LLM sometimes fail to count the letters in a word?",
+      "answer": "The model sees tokens, not individual characters. A word like 'strawberry' may be one or a few tokens, so character-level facts are not directly visible and must be inferred.",
+      "explanation": "This shows you understand tokenization as a cause of failure. A good follow-up is that asking the model to spell the word out or to use a code tool fixes it."
+    },
+    {
+      "question": "How does an LLM generate a response from a prompt?",
+      "answer": "It processes the prompt tokens, predicts a probability distribution for the next token, selects one using the sampling settings, appends it and repeats until a stop condition. Each token is conditioned on the prompt and all previous output.",
+      "explanation": "Use the word autoregressive and link it to why the beginning of a prompt and of the response strongly shape the rest."
+    },
+    {
+      "question": "When is prompt engineering not enough, and what would you use instead?",
+      "answer": "When the model lacks the knowledge (use retrieval or tools), when the task needs a consistent style or format that prompts cannot hold at scale (consider fine-tuning), or when the base capability is too weak (use a stronger model).",
+      "explanation": "Interviewers want the escalation ladder: prompt first, then RAG or tools, then fine-tuning, chosen by the type of failure."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Estimate prompt tokens against a budget",
+    "difficulty": "Basic",
+    "objective": "Practise thinking in tokens rather than words by implementing a simple, deterministic token estimator and a budget check.",
+    "statement": "Real tokenizers are learned, but a useful approximation is: split the text into pieces, where a piece is either a run of ASCII letters and digits or a single other non-space character (punctuation, symbols). A letter/digit run of length L costs ceil(L / 4) tokens; every other piece costs 1 token. Read a token budget and a prompt, then report the number of pieces, the estimated tokens and whether the prompt fits.",
+    "language": "python",
+    "input_format": "First line: an integer budget B. All remaining lines (possibly none) form the prompt text, joined by newlines.",
+    "output_format": "Four lines:\nPieces: <p>\nTokens: <t>\nBudget: <B>\nStatus: FITS, <B - t> left   (when t <= B)\nStatus: OVER by <t - B>      (when t > B)",
+    "example": {
+      "input": "20\nSummarise this email in 3 bullet points.\n",
+      "output": "Pieces: 8\nTokens: 13\nBudget: 20\nStatus: FITS, 7 left"
+    },
+    "constraints": [
+      "0 <= B <= 1000000.",
+      "Whitespace (spaces, tabs, newlines) separates pieces and costs nothing.",
+      "Letter/digit runs use only A-Z, a-z and 0-9."
+    ],
+    "starter": "import sys, re, math\n\nlines = sys.stdin.read().split('\\n')\nbudget = int(lines[0])\ntext = '\\n'.join(lines[1:])\n\n# TODO: split text into pieces, estimate tokens, print the four lines\n",
+    "solution": "import sys, re, math\n\nlines = sys.stdin.read().split('\\n')\nbudget = int(lines[0])\ntext = '\\n'.join(lines[1:])\n\npieces = re.findall(r'[A-Za-z0-9]+|[^A-Za-z0-9\\s]', text)\ntokens = 0\nfor p in pieces:\n    if p[0].isascii() and p[0].isalnum():\n        tokens += math.ceil(len(p) / 4)\n    else:\n        tokens += 1\n\nprint(f'Pieces: {len(pieces)}')\nprint(f'Tokens: {tokens}')\nprint(f'Budget: {budget}')\nif tokens <= budget:\n    print(f'Status: FITS, {budget - tokens} left')\nelse:\n    print(f'Status: OVER by {tokens - budget}')\n",
+    "explanation": [
+      "Read everything, take the first line as the budget and rejoin the rest as the prompt text.",
+      "Use one regular expression with two alternatives: a run of ASCII letters/digits, or any single non-space character.",
+      "Charge ceil(len / 4) for word-like pieces, mirroring the four-characters-per-token rule, and 1 for punctuation.",
+      "Compare the total with the budget and print how much room is left or how far over the prompt is."
+    ],
+    "tests": [
+      {
+        "input": "20\nSummarise this email in 3 bullet points.\n",
+        "output": "Pieces: 8\nTokens: 13\nBudget: 20\nStatus: FITS, 7 left"
+      },
+      {
+        "input": "5\nHello, world!\n",
+        "output": "Pieces: 4\nTokens: 6\nBudget: 5\nStatus: OVER by 1"
+      },
+      {
+        "input": "10\n",
+        "output": "Pieces: 0\nTokens: 0\nBudget: 10\nStatus: FITS, 10 left"
+      },
+      {
+        "input": "12\ndef add(a, b):\n    return a + b\n",
+        "output": "Pieces: 12\nTokens: 13\nBudget: 12\nStatus: OVER by 1"
+      },
+      {
+        "input": "13\nSummarise this email in 3 bullet points.\n",
+        "output": "Pieces: 8\nTokens: 13\nBudget: 13\nStatus: FITS, 0 left"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What does an LLM actually process when it reads a prompt?",
+      "options": [
+        "Token IDs produced by a tokenizer",
+        "Individual characters only",
+        "Grammar trees built from the text",
+        "Whole sentences"
+      ],
+      "answer": 0,
+      "explanation": "The tokenizer converts text into sub-word tokens mapped to integer IDs, and the model operates on those IDs."
+    },
+    {
+      "type": "concept",
+      "question": "Roughly how many characters of English text make up one token on average?",
+      "options": [
+        "Twenty",
+        "About four",
+        "One",
+        "Ten"
+      ],
+      "answer": 1,
+      "explanation": "A common rule of thumb is about four characters (roughly three-quarters of a word) per token for English. It varies by tokenizer and language."
+    },
+    {
+      "type": "scenario",
+      "question": "The same paragraph translated into Hindi costs noticeably more to process than the English version. What is the most likely reason?",
+      "options": [
+        "Hindi prompts always use a larger model",
+        "The Hindi text is split into more tokens by the tokenizer",
+        "Providers charge extra for non-English languages",
+        "The model translates the text to English first"
+      ],
+      "answer": 1,
+      "explanation": "Tokenizers trained mostly on English represent other scripts less efficiently, so the same meaning takes more tokens, and billing is per token."
+    },
+    {
+      "type": "concept",
+      "question": "Why does the beginning of a prompt influence the entire response?",
+      "options": [
+        "The model reads only the first sentence",
+        "The model stores the prompt permanently in its weights",
+        "Each generated token is predicted conditioned on all earlier tokens",
+        "Providers cache only the first line"
+      ],
+      "answer": 2,
+      "explanation": "Generation is autoregressive: every next token depends on the prompt and all output generated so far."
+    },
+    {
+      "type": "scenario",
+      "question": "A model keeps giving outdated answers about your company's new refund policy. Which fix addresses the root cause?",
+      "options": [
+        "Provide the current policy text in the prompt or via retrieval",
+        "Ask the model to try harder",
+        "Reduce the maximum output tokens",
+        "Increase the temperature"
+      ],
+      "answer": 0,
+      "explanation": "The model lacks the knowledge. Supplying the policy as context (or with RAG) fixes the gap; wording tricks cannot add missing facts."
+    }
+  ]
+}

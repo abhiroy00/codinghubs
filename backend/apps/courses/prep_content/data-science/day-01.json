@@ -1,0 +1,250 @@
+{
+  "day": 1,
+  "title": "The Data Science Lifecycle & Problem Framing",
+  "module": "Data science foundations",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what a data scientist does and how the role differs from a data analyst and an ML engineer.",
+    "Describe each stage of the data science lifecycle (CRISP-DM style) and what it produces.",
+    "Translate a vague business question into a measurable data science problem.",
+    "Explain why most project time goes into data work rather than modelling.",
+    "Answer lifecycle and project-walkthrough interview questions with a clear structure."
+  ],
+  "definition": "Data science is the practice of turning data into decisions using statistics, programming and domain knowledge. The data science lifecycle is the repeatable sequence a project follows: define the problem, collect data, clean it, explore it, build models, evaluate them against the business goal, deploy the result and monitor it in production. The lifecycle is iterative: findings in a later stage often send you back to an earlier one.",
+  "theory": [
+    {
+      "heading": "What a data scientist actually does",
+      "body": "A data scientist sits between business questions and data. A data analyst mostly describes what happened (dashboards, reports, SQL), an ML engineer mostly builds and scales production systems, and a data scientist frames questions, runs statistical analyses and experiments, and builds predictive models. In Indian product companies, banks and startups the boundaries blur, so interviewers test all three skills: SQL and pandas for data work, statistics for inference and machine learning for prediction.",
+      "points": [
+        "Descriptive: what happened? (reports, EDA)",
+        "Diagnostic: why did it happen? (segmentation, hypothesis tests)",
+        "Predictive: what will happen? (machine-learning models)",
+        "Prescriptive: what should we do? (experiments, optimisation, decision rules)"
+      ]
+    },
+    {
+      "heading": "Stages of the lifecycle",
+      "body": "CRISP-DM (Cross-Industry Standard Process for Data Mining) is the best-known framework: business understanding, data understanding, data preparation, modelling, evaluation and deployment. Modern teams add monitoring because models degrade when the world changes. Each stage has a concrete output, which is what interviewers want you to name.",
+      "points": [
+        "Define: business goal, success metric, constraints (e.g. reduce churn by 5% within a quarter).",
+        "Collect: identify sources (databases, logs, APIs, surveys) and pull a dataset.",
+        "Clean: fix types, duplicates, missing values and inconsistent labels.",
+        "Explore (EDA): distributions, relationships, data quality issues, early hypotheses.",
+        "Model: features, baseline, candidate algorithms, tuning.",
+        "Evaluate: offline metrics plus business impact; check fairness and leakage.",
+        "Deploy and monitor: serve predictions, track drift and performance, retrain."
+      ]
+    },
+    {
+      "heading": "Problem framing: the most underrated step",
+      "body": "A model that answers the wrong question is worthless however accurate it is. Framing turns 'customers are leaving' into a precise target ('predict whether an active subscriber cancels in the next 30 days'), a unit of prediction (one row per customer per month), a metric that reflects cost (recall on churners at a fixed contact budget) and a decision the prediction drives (who receives a retention offer). Framing also decides whether you need machine learning at all: sometimes a SQL rule or a dashboard solves the problem.",
+      "points": [
+        "Define the target variable and the prediction time point precisely.",
+        "Choose a metric aligned with business cost, not just accuracy.",
+        "Start with a simple baseline (rule, average, last value) to beat.",
+        "Agree on how the output will be used before building anything."
+      ]
+    },
+    {
+      "heading": "Why the lifecycle is iterative",
+      "body": "Surveys of practitioners consistently report that data collection and cleaning take the majority of project time. EDA may reveal that the target is mislabelled, evaluation may expose leakage, and monitoring may show drift that forces new data collection. Interviewers like candidates who describe these loops honestly instead of a straight line from data to model.",
+      "points": [
+        "Bad data found in EDA sends you back to collection or cleaning.",
+        "Poor evaluation results may mean the problem framing was wrong.",
+        "Drift found in monitoring triggers retraining or redesign."
+      ]
+    },
+    {
+      "heading": "Advantages and limitations of a process framework",
+      "body": "A lifecycle gives teams a shared vocabulary, makes projects auditable and stops people jumping straight to modelling. Its limitation is that it can become bureaucratic; small analyses do not need every stage formally. The skill is knowing which stages carry the most risk for a particular project and spending time there.",
+      "points": [
+        "Advantage: structure, reproducibility and easier communication with stakeholders.",
+        "Advantage: forces success criteria to be agreed early.",
+        "Limitation: real projects loop and overlap; the stages are not strictly sequential.",
+        "Limitation: CRISP-DM says little about MLOps, which modern teams add."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Framing a churn problem for a telecom company",
+    "body": "Business ask: 'Too many prepaid users are leaving.' Framed problem: for each active user on the 1st of the month, predict whether they will not recharge in the next 30 days, using only data available up to that date. Metric: recall among the top 10% highest-risk users, because the retention team can call only that many. Baseline: flag users whose recharge amount dropped by more than 50% last month. The code shows the framing written down as a checklist that the team agrees on before any modelling.",
+    "code": {
+      "language": "python",
+      "source": "problem = {\n    'business_goal': 'Reduce prepaid churn by 5% this quarter',\n    'target': 'no recharge in the 30 days after the snapshot date',\n    'unit': 'one row per active user per monthly snapshot',\n    'features_cutoff': 'only data available before the snapshot date',\n    'metric': 'recall in the top 10% risk scores (call-centre capacity)',\n    'baseline': 'recharge amount dropped by more than 50% last month',\n    'action': 'retention offer for the top 10% each month',\n}\nfor key, value in problem.items():\n    print(f'{key:16}: {value}')"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Customer churn in telecom and SaaS",
+      "description": "Predict which customers are likely to leave and target retention offers where they give the best return."
+    },
+    {
+      "title": "Credit risk in banking and fintech",
+      "description": "Estimate the probability that a borrower defaults, used for loan approval and interest-rate decisions under regulatory oversight."
+    },
+    {
+      "title": "Demand forecasting in retail and quick commerce",
+      "description": "Forecast orders per store and product so inventory and delivery staff match demand."
+    },
+    {
+      "title": "Recommendation systems",
+      "description": "Rank products, videos or courses for each user, measured through A/B tests on engagement or revenue."
+    },
+    {
+      "title": "Fraud detection in payments",
+      "description": "Score UPI and card transactions in real time and route suspicious ones for review."
+    }
+  ],
+  "demonstration": {
+    "description": "Track where project hours go by lifecycle stage. The practice problem below automates this: given task logs, it totals hours per stage, finds the bottleneck and lists the stages a project has skipped. Here is a typical first-month log for a churn project.",
+    "code": {
+      "language": "text",
+      "source": "6\ndefine,4\ncollect,10\nclean,18\nexplore,8\nmodel,12\nclean,6"
+    },
+    "output": "define: 4.0h (6.9%)\ncollect: 10.0h (17.2%)\nclean: 24.0h (41.4%)\nexplore: 8.0h (13.8%)\nmodel: 12.0h (20.7%)\nBottleneck: clean\nMissing stages: evaluate, deploy, monitor\nIgnored: 0\n\nCleaning dominates, which is normal, and the missing stages show the project has not yet been evaluated or deployed."
+  },
+  "takeaways": [
+    "The lifecycle is define, collect, clean, explore, model, evaluate, deploy and monitor, and it loops.",
+    "Problem framing (target, unit, metric, decision) matters more than the choice of algorithm.",
+    "Always build a simple baseline first; a model must beat it to be worth deploying.",
+    "Data preparation usually takes most of the project time.",
+    "Evaluation must connect offline metrics to business impact.",
+    "Deployment is not the end: monitoring catches drift and decay."
+  ],
+  "interview": [
+    {
+      "question": "Walk me through the stages of a data science project.",
+      "answer": "Define the business problem and success metric, collect data, clean and prepare it, explore it (EDA), engineer features and build models starting from a baseline, evaluate on held-out data against the business metric, deploy, and monitor for drift with periodic retraining. The process is iterative.",
+      "explanation": "Name a concrete output for each stage and stress iteration. Strong candidates illustrate it with one of their own projects rather than reciting CRISP-DM."
+    },
+    {
+      "question": "How is a data scientist different from a data analyst and an ML engineer?",
+      "answer": "An analyst focuses on describing and reporting what happened, mainly with SQL and dashboards. A data scientist frames questions, runs statistical analyses and experiments and builds predictive models. An ML engineer focuses on putting models into reliable, scalable production systems.",
+      "explanation": "Show you understand the overlap: data scientists still write SQL and must think about deployment. Avoid sounding dismissive of other roles."
+    },
+    {
+      "question": "A manager says 'use AI to reduce customer complaints'. How do you start?",
+      "answer": "Ask clarifying questions: what counts as a complaint, which channel, the current baseline and the goal. Then decide the decision the model supports, for example routing tickets or predicting which orders will cause complaints, define the target and metric, check what data exists, and propose a simple baseline before any complex model.",
+      "explanation": "Interviewers test whether you jump to algorithms. Clarify, define a measurable target and tie it to an action."
+    },
+    {
+      "question": "Why do you build a baseline model?",
+      "answer": "A baseline, such as predicting the mean, the majority class or a simple rule, sets the minimum performance a model must beat. It exposes whether the problem is learnable, catches evaluation bugs and tells the business how much value the complex model adds.",
+      "explanation": "Mention that a surprisingly strong baseline is common, and that if a complex model barely beats it, the simpler solution may be the right one to ship."
+    },
+    {
+      "question": "Your model had 92% offline accuracy but business metrics did not improve after launch. What could be wrong?",
+      "answer": "Possible causes: the metric was misaligned (accuracy on an imbalanced target), data leakage inflated offline results, training data differs from production data (skew or drift), the predictions were not acted on correctly, or the target did not represent the business outcome. Investigate by comparing offline and online feature distributions, re-checking the split and running a controlled A/B test.",
+      "explanation": "This advanced question checks lifecycle thinking end to end. Structure the answer by stage: framing, data, evaluation, deployment."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Lifecycle effort tracker",
+    "difficulty": "Basic",
+    "objective": "Practise the lifecycle stages and basic Python parsing by summarising where a project's time goes.",
+    "statement": "Read N task log lines of the form stage,hours. Valid stages, in lifecycle order, are define, collect, clean, explore, model, evaluate, deploy and monitor (case-insensitive). Ignore a line if it does not have exactly two comma-separated parts, the stage is unknown, or hours is not a number or is negative. Print the total hours and percentage share of every stage that appears, in lifecycle order, then the bottleneck stage (most hours; on a tie, the earliest stage), the stages that never appear, and how many lines were ignored. If no line is valid, print 'No valid tasks' instead of the stage lines and the bottleneck.",
+    "language": "python",
+    "input_format": "First line: N. Next N lines: stage,hours.",
+    "output_format": "For each stage present: '<stage>: <hours>h (<pct>%)' with one decimal for both.\n'Bottleneck: <stage>'\n'Missing stages: <comma-separated list>' or 'Missing stages: none'\n'Ignored: <count>'",
+    "example": {
+      "input": "6\ndefine,4\ncollect,10\nclean,18\nexplore,8\nmodel,12\nclean,6\n",
+      "output": "define: 4.0h (6.9%)\ncollect: 10.0h (17.2%)\nclean: 24.0h (41.4%)\nexplore: 8.0h (13.8%)\nmodel: 12.0h (20.7%)\nBottleneck: clean\nMissing stages: evaluate, deploy, monitor\nIgnored: 0"
+    },
+    "constraints": [
+      "0 ≤ N ≤ 1000.",
+      "Hours may be decimals; a stage may appear on several lines and its hours are added.",
+      "Percentages are of the total valid hours."
+    ],
+    "starter": "ORDER = ['define', 'collect', 'clean', 'explore', 'model', 'evaluate', 'deploy', 'monitor']\n\nn = int(input())\nhours = {}\nignored = 0\nfor _ in range(n):\n    line = input()\n    # TODO: validate the line and add its hours to the right stage\n\n# TODO: print stage totals, bottleneck, missing stages and ignored count\n",
+    "solution": "ORDER = ['define', 'collect', 'clean', 'explore', 'model', 'evaluate', 'deploy', 'monitor']\n\nn = int(input())\nhours = {}\nignored = 0\nfor _ in range(n):\n    parts = input().split(',')\n    if len(parts) != 2:\n        ignored += 1\n        continue\n    stage = parts[0].strip().lower()\n    try:\n        h = float(parts[1])\n    except ValueError:\n        ignored += 1\n        continue\n    if stage not in ORDER or h < 0:\n        ignored += 1\n        continue\n    hours[stage] = hours.get(stage, 0.0) + h\n\ntotal = sum(hours.values())\nif total == 0:\n    print('No valid tasks')\nelse:\n    for stage in ORDER:\n        if stage in hours:\n            print(f'{stage}: {hours[stage]:.1f}h ({100 * hours[stage] / total:.1f}%)')\n    bottleneck = max(ORDER, key=lambda s: (hours.get(s, -1), -ORDER.index(s)))\n    print(f'Bottleneck: {bottleneck}')\nmissing = [s for s in ORDER if s not in hours]\nprint('Missing stages: ' + (', '.join(missing) if missing else 'none'))\nprint(f'Ignored: {ignored}')\n",
+    "explanation": [
+      "Keep the stages in a list so their position gives the lifecycle order for printing and tie-breaking.",
+      "Split each line on commas and reject lines with the wrong shape, unknown stage, non-numeric or negative hours.",
+      "Accumulate hours per stage in a dictionary, since a stage can appear many times.",
+      "Print stages in lifecycle order with their share of the total; choose the bottleneck with max() using (hours, -position) so ties go to the earlier stage.",
+      "List the stages never logged, which highlights skipped work such as evaluation or monitoring."
+    ],
+    "tests": [
+      {
+        "input": "6\ndefine,4\ncollect,10\nclean,18\nexplore,8\nmodel,12\nclean,6\n",
+        "output": "define: 4.0h (6.9%)\ncollect: 10.0h (17.2%)\nclean: 24.0h (41.4%)\nexplore: 8.0h (13.8%)\nmodel: 12.0h (20.7%)\nBottleneck: clean\nMissing stages: evaluate, deploy, monitor\nIgnored: 0"
+      },
+      {
+        "input": "9\nDefine,2\ncollect,5\nclean,12\nexplore,6\nmodel,12\nevaluate,4\ndeploy,3\nmonitor,2\nreport,5\n",
+        "output": "define: 2.0h (4.3%)\ncollect: 5.0h (10.9%)\nclean: 12.0h (26.1%)\nexplore: 6.0h (13.0%)\nmodel: 12.0h (26.1%)\nevaluate: 4.0h (8.7%)\ndeploy: 3.0h (6.5%)\nmonitor: 2.0h (4.3%)\nBottleneck: clean\nMissing stages: none\nIgnored: 1"
+      },
+      {
+        "input": "3\nmodel,abc\ntraining,4\nclean\n",
+        "output": "No valid tasks\nMissing stages: define, collect, clean, explore, model, evaluate, deploy, monitor\nIgnored: 3"
+      },
+      {
+        "input": "4\nmonitor,1.5\ndeploy,2.5\ndefine,0.5\nmodel,-3\n",
+        "output": "define: 0.5h (11.1%)\ndeploy: 2.5h (55.6%)\nmonitor: 1.5h (33.3%)\nBottleneck: deploy\nMissing stages: collect, clean, explore, model, evaluate\nIgnored: 1"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "In CRISP-DM, which phase comes immediately before modelling?",
+      "options": [
+        "Data preparation",
+        "Business understanding",
+        "Deployment",
+        "Evaluation"
+      ],
+      "answer": 0,
+      "explanation": "CRISP-DM runs business understanding, data understanding, data preparation, modelling, evaluation and deployment. Features and clean data must exist before modelling."
+    },
+    {
+      "type": "scenario",
+      "question": "A stakeholder asks for 'a model to improve sales'. What should you do first?",
+      "options": [
+        "Train a gradient-boosting model on all available columns",
+        "Clarify the decision, target variable and success metric",
+        "Build a dashboard of last year's sales",
+        "Collect as much external data as possible"
+      ],
+      "answer": 1,
+      "explanation": "Problem framing comes first: without a defined target, metric and action, no model can be judged a success."
+    },
+    {
+      "type": "concept",
+      "question": "Why should a project start with a simple baseline?",
+      "options": [
+        "It removes the need for a test set",
+        "Regulators require a baseline for every model",
+        "It sets the minimum performance a more complex model must beat",
+        "Baselines are always deployed to production"
+      ],
+      "answer": 2,
+      "explanation": "A baseline such as the majority class or a simple rule shows how much value extra complexity really adds and helps catch evaluation bugs."
+    },
+    {
+      "type": "scenario",
+      "question": "Three months after launch, a fraud model's precision drops steadily although the code has not changed. Which lifecycle stage should have caught this?",
+      "options": [
+        "Problem framing",
+        "Data cleaning",
+        "Exploratory data analysis",
+        "Monitoring"
+      ],
+      "answer": 3,
+      "explanation": "Fraud patterns change over time (drift). Monitoring of inputs and performance after deployment detects decay and triggers retraining."
+    },
+    {
+      "type": "output",
+      "question": "What does this effort-share calculation print?",
+      "code": "hours = {'clean': 24, 'model': 12, 'define': 4}\nbig = max(hours, key=hours.get)\nprint(big, round(100 * hours[big] / sum(hours.values())))",
+      "options": [
+        "clean 60",
+        "define 10",
+        "model 30",
+        "clean 24"
+      ],
+      "answer": 0,
+      "explanation": "max with key=hours.get returns the key with the largest value, 'clean'. Its share is 24 / 40 = 60%."
+    }
+  ]
+}

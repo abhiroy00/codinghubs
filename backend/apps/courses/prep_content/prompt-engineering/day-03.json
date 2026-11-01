@@ -1,0 +1,244 @@
+{
+  "day": 3,
+  "title": "Sampling Controls: Temperature, Top-k and Top-p",
+  "module": "How LLMs read prompts",
+  "level": "Beginner",
+  "objectives": [
+    "Explain how logits become a probability distribution with softmax.",
+    "Describe how temperature reshapes that distribution.",
+    "Distinguish top-k and top-p (nucleus) sampling and when each helps.",
+    "Choose sampling settings for extraction, coding, chat and creative tasks.",
+    "Explain why temperature 0 is not a guarantee of identical outputs."
+  ],
+  "definition": "Sampling controls decide how a model picks the next token from its predicted probability distribution. Temperature sharpens or flattens the distribution, top-k keeps only the k most likely tokens, and top-p (nucleus sampling) keeps the smallest set of tokens whose probabilities add up to p. Together with the prompt, these settings determine how focused or varied the output is.",
+  "theory": [
+    {
+      "heading": "From logits to probabilities",
+      "body": "At each step the model outputs a score, called a logit, for every token in its vocabulary. The softmax function turns these scores into probabilities that sum to 1: p_i = exp(z_i) / sum_j exp(z_j). Decoding then chooses a token from this distribution. Greedy decoding always takes the most likely token; sampling draws randomly according to the probabilities, which allows variety.",
+      "points": [
+        "Logit: an unnormalised score; higher means more likely.",
+        "Softmax: exponentiate and normalise so probabilities sum to 1.",
+        "Greedy: deterministic in principle but can be repetitive and bland."
+      ]
+    },
+    {
+      "heading": "Temperature",
+      "body": "Temperature T divides every logit before softmax: p_i = softmax(z_i / T). A T below 1 widens the gap between likely and unlikely tokens, so the top choice dominates and output becomes focused and repeatable. A T above 1 shrinks the gaps, so less likely tokens are chosen more often, giving more diverse but riskier output. T = 0 is treated by APIs as greedy decoding. Typical ranges differ by provider, often 0 to 1 or 0 to 2.",
+      "points": [
+        "Low (0 to 0.3): extraction, classification, SQL, code, factual Q&A.",
+        "Medium (0.5 to 0.8): conversational answers, explanations.",
+        "High (0.9 and above): brainstorming, stories, varied marketing copy."
+      ]
+    },
+    {
+      "heading": "Top-k and top-p (nucleus) sampling",
+      "body": "Top-k keeps only the k highest-probability tokens and renormalises them before sampling. Its weakness is that k is fixed: when the model is confident, k = 50 still admits nonsense tokens; when it is uncertain, k = 5 may cut good options. Top-p, introduced by Holtzman et al. (2019), adapts: it sorts tokens by probability and keeps the smallest set whose cumulative probability reaches p. A confident step keeps one or two tokens; an uncertain step keeps many.",
+      "points": [
+        "Top-p 0.9 to 0.95 is a common default for open-ended generation.",
+        "Order of operations in many implementations: temperature, then top-k, then top-p, then sample.",
+        "Providers usually advise tuning temperature or top-p, not both at once, because they interact."
+      ]
+    },
+    {
+      "heading": "Other generation settings",
+      "body": "Beyond sampling, several parameters shape output. Max tokens caps answer length. Stop sequences end generation when a given string appears. Frequency and presence penalties (offered by some providers) discourage repetition. A seed parameter, where supported, improves reproducibility. Not every model exposes every control; some reasoning models fix or ignore sampling parameters.",
+      "points": [
+        "Max tokens: protects latency and cost but can truncate answers.",
+        "Stop sequences: useful to end at a delimiter in completion-style prompts.",
+        "Check the documentation of each model; supported parameters vary."
+      ]
+    },
+    {
+      "heading": "Limitations: why temperature 0 is not perfectly deterministic",
+      "body": "Even at temperature 0, outputs can differ between calls. Floating-point arithmetic on GPUs, batching with other requests, and silent model updates can change logits slightly, and when two tokens are nearly tied, a tiny change flips the choice and the rest of the answer diverges. For repeatability, pin the model version, use low temperature, constrain the output format and validate results, instead of assuming identical text.",
+      "points": [
+        "Pin model versions in production.",
+        "Design checks around meaning and format, not exact string equality."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Same prompt, different temperatures",
+    "body": "Suppose the model's logits for the next word after 'The capital of France is' are Paris 3.0, Lyon 1.5, London 1.0, banana -2.0. At T = 1, Paris gets about 73 percent. At T = 0.5 the logits double in effect and Paris rises to about 94 percent. At T = 2 they halve and Paris drops to about 52 percent, so wrong answers appear far more often. The code computes this directly.",
+    "code": {
+      "language": "python",
+      "source": "import math\n\nlogits = {\"Paris\": 3.0, \"Lyon\": 1.5, \"London\": 1.0, \"banana\": -2.0}\n\ndef softmax(scores, t):\n    exps = {k: math.exp(v / t) for k, v in scores.items()}\n    total = sum(exps.values())\n    return {k: round(v / total, 3) for k, v in exps.items()}\n\nfor t in (0.5, 1.0, 2.0):\n    print(t, softmax(logits, t))\n# 0.5 {'Paris': 0.935, 'Lyon': 0.047, 'London': 0.017, 'banana': 0.0}\n# 1.0 {'Paris': 0.733, 'Lyon': 0.163, 'London': 0.099, 'banana': 0.005}\n# 2.0 {'Paris': 0.517, 'Lyon': 0.244, 'London': 0.19, 'banana': 0.049}"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Data extraction pipelines",
+      "description": "Temperature 0 to 0.2 keeps field values stable so the same invoice yields the same JSON across runs."
+    },
+    {
+      "title": "Creative writing tools",
+      "description": "Higher temperature or top-p produces varied taglines, story ideas and campaign options."
+    },
+    {
+      "title": "Self-consistency voting",
+      "description": "Moderate temperature generates diverse reasoning paths that are then majority-voted (Day 11)."
+    },
+    {
+      "title": "Code assistants",
+      "description": "Low temperature for completing code; slightly higher when proposing several alternative implementations."
+    }
+  ],
+  "demonstration": {
+    "description": "Apply temperature 1, then top-p 0.9, to the four-candidate distribution. Tokens are sorted by probability and added until the cumulative probability reaches 0.9; the survivors are renormalised.",
+    "code": {
+      "language": "text",
+      "source": "Probabilities at T=1: Paris 0.733, Lyon 0.163, London 0.099, banana 0.005\nCumulative:           0.733,       0.896,      0.995  -> reaches 0.9 at London\nNucleus: {Paris, Lyon, London}; banana is removed"
+    },
+    "output": "Renormalised nucleus:\nParis 0.736\nLyon 0.164\nLondon 0.100\nThe nonsense token 'banana' can never be sampled, yet sensible alternatives remain possible."
+  },
+  "takeaways": [
+    "Softmax turns logits into probabilities; decoding picks from them.",
+    "Temperature below 1 sharpens the distribution; above 1 flattens it.",
+    "Top-k keeps a fixed number of tokens; top-p keeps an adaptive set by cumulative probability.",
+    "Use low temperature for factual and structured tasks, higher for creative ones.",
+    "Tune temperature or top-p, usually not both.",
+    "Temperature 0 reduces but does not eliminate run-to-run variation."
+  ],
+  "interview": [
+    {
+      "question": "What does the temperature parameter do?",
+      "answer": "It divides the logits before softmax. Lower values make the distribution peakier so the most likely tokens dominate; higher values flatten it so less likely tokens are sampled more often.",
+      "explanation": "State the formula softmax(z / T) and the practical effect: focused versus diverse output."
+    },
+    {
+      "question": "What temperature would you use for extracting fields from invoices, and why?",
+      "answer": "Low, around 0 to 0.2, because the task has one correct answer and we want consistent, repeatable output that downstream code can parse.",
+      "explanation": "Linking the setting to the task's nature (one right answer versus many good answers) is what interviewers look for."
+    },
+    {
+      "question": "Explain the difference between top-k and top-p sampling.",
+      "answer": "Top-k keeps the k most probable tokens regardless of their probabilities. Top-p keeps the smallest set of tokens whose cumulative probability reaches p, so the candidate set shrinks when the model is confident and grows when it is uncertain.",
+      "explanation": "Highlight why top-p is adaptive and give a concrete failure of fixed k."
+    },
+    {
+      "question": "Why might you get different outputs at temperature 0?",
+      "answer": "Non-deterministic GPU floating-point operations, request batching and model updates can change logits slightly; near-ties then flip and the continuation diverges.",
+      "explanation": "Strong candidates add mitigations: pin model versions, use seeds where supported and validate meaning rather than exact text."
+    },
+    {
+      "question": "Can sampling settings fix a model that gives wrong facts?",
+      "answer": "Only partly. Lower temperature reduces random low-probability errors, but if the model's most likely answer is wrong, greedy decoding returns that wrong answer confidently. Wrong knowledge needs grounding, retrieval or tools.",
+      "explanation": "This separates decoding randomness from knowledge errors, a distinction senior interviewers probe."
+    }
+  ],
+  "practice": {
+    "kind": "coding",
+    "title": "Build the nucleus-sampling candidate set",
+    "difficulty": "Basic",
+    "objective": "Implement temperature scaling, softmax, top-k and top-p filtering exactly as a decoder does before drawing a token.",
+    "statement": "Given candidate tokens with logits and the settings temperature T, top-k K and top-p P, print the tokens that could be sampled and their renormalised probabilities. If T is 0, use greedy decoding: print only the token with the highest logit (ties broken alphabetically) with probability 1.000. Otherwise: compute softmax(logit / T); sort by probability descending, ties alphabetically; if K > 0 keep only the first K; then keep tokens in order until the cumulative probability reaches at least P; renormalise the kept probabilities so they sum to 1.",
+    "language": "python",
+    "input_format": "Line 1: T K P (float, integer, float). Line 2: n. Next n lines: token logit.",
+    "output_format": "One line per kept token, in sorted order: '<token> <probability>' with probability to 3 decimal places.",
+    "example": {
+      "input": "1 0 0.9\n4\nParis 3.0\nLyon 1.5\nLondon 1.0\nbanana -2.0\n",
+      "output": "Paris 0.736\nLyon 0.164\nLondon 0.100"
+    },
+    "constraints": [
+      "1 <= n <= 1000; tokens contain no spaces.",
+      "0 <= T <= 5; K = 0 means top-k is disabled; 0 < P <= 1.",
+      "Use a tiny tolerance (1e-9) when comparing the cumulative sum with P."
+    ],
+    "starter": "import sys, math\n\ndata = sys.stdin.read().split('\\n')\nt_str, k_str, p_str = data[0].split()\ntemperature, top_k, top_p = float(t_str), int(k_str), float(p_str)\nn = int(data[1])\ncands = [(line.split()[0], float(line.split()[1])) for line in data[2:2 + n]]\n\n# TODO: greedy when T == 0; otherwise softmax(logit / T), top-k, top-p, renormalise\n",
+    "solution": "import sys, math\n\ndata = sys.stdin.read().split('\\n')\nt_str, k_str, p_str = data[0].split()\ntemperature, top_k, top_p = float(t_str), int(k_str), float(p_str)\nn = int(data[1])\ncands = []\nfor line in data[2:2 + n]:\n    tok, logit = line.split()\n    cands.append((tok, float(logit)))\n\nif temperature == 0:\n    best = sorted(cands, key=lambda c: (-c[1], c[0]))[0]\n    print(f'{best[0]} 1.000')\n    sys.exit(0)\n\nscaled = [l / temperature for _, l in cands]\nm = max(scaled)\nexps = [math.exp(s - m) for s in scaled]\ntotal = sum(exps)\nprobs = sorted(((tok, e / total) for (tok, _), e in zip(cands, exps)), key=lambda c: (-c[1], c[0]))\n\nif top_k > 0:\n    probs = probs[:top_k]\n\nkept, cum = [], 0.0\nfor tok, p in probs:\n    kept.append((tok, p))\n    cum += p\n    if cum >= top_p - 1e-9:\n        break\n\nz = sum(p for _, p in kept)\nfor tok, p in kept:\n    print(f'{tok} {p / z:.3f}')\n",
+    "explanation": [
+      "Handle T = 0 separately as greedy decoding, because dividing by zero is undefined and APIs treat it as argmax.",
+      "Divide logits by T and subtract the maximum before exponentiating; this numerically stable softmax avoids overflow.",
+      "Sort by probability (ties alphabetically) and cut to the first K when top-k is enabled.",
+      "Accumulate probabilities until the running total reaches P, then renormalise the kept set and print it."
+    ],
+    "tests": [
+      {
+        "input": "1 0 0.9\n4\nParis 3.0\nLyon 1.5\nLondon 1.0\nbanana -2.0\n",
+        "output": "Paris 0.736\nLyon 0.164\nLondon 0.100"
+      },
+      {
+        "input": "0 0 1.0\n3\nyes 1.0\nno 2.0\nmaybe 2.0\n",
+        "output": "maybe 1.000"
+      },
+      {
+        "input": "0.5 0 0.9\n4\nParis 3.0\nLyon 1.5\nLondon 1.0\nbanana -2.0\n",
+        "output": "Paris 1.000"
+      },
+      {
+        "input": "2 2 1.0\n4\nParis 3.0\nLyon 1.5\nLondon 1.0\nbanana -2.0\n",
+        "output": "Paris 0.679\nLyon 0.321"
+      },
+      {
+        "input": "1 0 1.0\n3\na 0.0\nb 0.0\nc 0.0\n",
+        "output": "a 0.333\nb 0.333\nc 0.333"
+      },
+      {
+        "input": "1 0 0.5\n3\na 0.0\nb 0.0\nc 0.0\n",
+        "output": "a 0.500\nb 0.500"
+      }
+    ]
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "What happens to the next-token distribution when temperature is lowered from 1.0 to 0.2?",
+      "options": [
+        "It becomes sharper, so the top tokens dominate",
+        "It becomes uniform",
+        "Low-probability tokens become more likely",
+        "The vocabulary size shrinks permanently"
+      ],
+      "answer": 0,
+      "explanation": "Dividing logits by a small T magnifies differences between them, concentrating probability on the most likely tokens."
+    },
+    {
+      "type": "concept",
+      "question": "How does top-p (nucleus) sampling choose its candidate set?",
+      "options": [
+        "It always keeps exactly p tokens",
+        "It keeps the smallest set of top tokens whose cumulative probability reaches p",
+        "It removes the p most likely tokens",
+        "It keeps tokens with probability above p each"
+      ],
+      "answer": 1,
+      "explanation": "Tokens are sorted by probability and added until their cumulative probability reaches p; the set size adapts to the model's confidence."
+    },
+    {
+      "type": "scenario",
+      "question": "You are generating SQL queries from natural-language questions for a reporting tool. Which setting is most appropriate?",
+      "options": [
+        "Temperature 1.5 for creativity",
+        "Top-p 1.0 with temperature 2",
+        "Random temperature per request",
+        "Low temperature, around 0 to 0.2"
+      ],
+      "answer": 3,
+      "explanation": "SQL generation needs precise, consistent output, so low temperature is preferred."
+    },
+    {
+      "type": "output",
+      "question": "Probabilities after temperature are A 0.5, B 0.3, C 0.15, D 0.05. With top-p = 0.8, which tokens remain?",
+      "options": [
+        "A and B",
+        "B, C and D",
+        "A only",
+        "A, B, C and D"
+      ],
+      "answer": 0,
+      "explanation": "Cumulative: A 0.5, then A+B 0.8, which reaches 0.8, so the nucleus is {A, B}."
+    },
+    {
+      "type": "scenario",
+      "question": "At temperature 0, a pipeline's outputs still differ slightly between some runs. What is the most reasonable explanation?",
+      "options": [
+        "The prompt is re-tokenised differently each time",
+        "Temperature 0 is ignored by every provider",
+        "Numerical non-determinism or batching flips near-tied tokens",
+        "The tokenizer is random"
+      ],
+      "answer": 2,
+      "explanation": "Small floating-point and batching differences can change near-tied logits, so greedy decoding is not perfectly reproducible in practice."
+    }
+  ]
+}
