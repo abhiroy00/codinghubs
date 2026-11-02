@@ -114,6 +114,11 @@ export function ProductEditor() {
   const cats = useOptions<any>('/product-categories/')
   const physical = form.product_type !== 'digital'
   const digital = form.product_type !== 'physical'
+  const [showPaidSettings, setShowPaidSettings] = useState(false)
+  useEffect(() => {
+    if (!api.loading && form.id) setShowPaidSettings(Number(form.price) > 0)
+  }, [api.loading, form.id])
+  const freeDirectDownload = form.product_type === 'digital' && Number(form.price) <= 0 && !showPaidSettings
   const discount = form.original_price && Number(form.original_price) > Number(form.price) ? Math.round((1 - Number(form.price) / Number(form.original_price)) * 100) : 0
   return (
     <EditorShell kind="products" api={api} noun="product"
@@ -132,13 +137,13 @@ export function ProductEditor() {
             <Text id="sku" label="SKU / product ID" value={form.sku} onChange={(v) => set('sku', v)} error={errors.sku} hint="Leave empty to generate one." max={40} />
             <CheckField id="p-feat" label="Feature this product" checked={form.is_featured} onChange={(v) => set('is_featured', v)} />
           </section>
-          <section className="ad-panel">
+          {freeDirectDownload ? <section className="ad-panel"><h2>Free direct download</h2><p className="ad-muted">Visitors submit their name, email and mobile number, then receive the file directly. No cart, checkout or payment is used.</p><button type="button" className="ad-btn" onClick={() => setShowPaidSettings(true)}>Set up paid checkout instead</button></section> : <section className="ad-panel">
             <h2>Price</h2>
-            <NumberField id="price" label="Selling price (₹) *" step="0.01" min={0} value={form.price} onChange={(v) => set('price', v)} error={errors.price} hint="0 makes it a free item (claimed through checkout so downloads have an owner)." />
+            <NumberField id="price" label="Selling price (₹) *" step="0.01" min={0} value={form.price} onChange={(v) => set('price', v)} error={errors.price} hint="Paid products use the existing cart, checkout and payment flow. Free digital products use direct downloads." />
             <NumberField id="original_price" label="Original price (₹)" step="0.01" min={0} value={form.original_price} onChange={(v) => set('original_price', v)} error={errors.original_price} hint={discount ? `Shows a ${discount}% saving. Only fill this in if it is a real earlier price.` : 'Optional. Only if it is a real earlier price.'} />
             <Text id="currency" label="Currency" value={form.currency} onChange={(v) => set('currency', v.toUpperCase())} max={3} error={errors.currency} />
             <NumberField id="tax_rate" label="Tax rate override (%)" step="0.01" min={0} value={form.tax_rate} onChange={(v) => set('tax_rate', v)} error={errors.tax_rate} hint="Empty = the store default (Store settings). Set only what your accountant confirms." />
-          </section>
+          </section>}
           {physical && (
             <section className="ad-panel">
               <h2>Stock and shipping</h2>
@@ -189,25 +194,23 @@ export function ProductEditor() {
 
 
 /* ============================ Simple product (notes) ============================ */
-/** What the owner needs to sell notes: name, price, a short line, a picture and the PDF. Everything else is filled in for them. */
+/** Quick editor for free note downloads; paid products use the advanced editor. */
 export function SimpleProductEditor() {
-  const api = useContentForm<ProductForm>('products', { ...blankProduct, price: '', item_kind: 'pdf_notes', product_type: 'digital', format: 'PDF' })
+  const api = useContentForm<ProductForm>('products', { ...blankProduct, price: '0', item_kind: 'pdf_notes', product_type: 'digital', format: 'PDF' })
   const { form, set, errors } = api
   const [files, setFiles] = useState(0)
   const cover = form.images[0]
   const blocked = !form.id ? 'Save the draft first, then upload the note file (PDF). Publish unlocks after that.' : files === 0 ? 'Upload the note file (PDF) below before publishing.' : undefined
+  if (form.id && (form.product_type !== 'digital' || Number(form.price) > 0)) return <div className="ad-panel"><h1 className="ad-h1">Use the advanced editor</h1><p className="ad-muted">Paid or physical products keep their existing price, stock and checkout settings.</p><Link className="ad-btn ad-btn-primary" to={`/products/advanced/${form.id}`}>Open advanced editor</Link></div>
   return (
     <EditorShell kind="products" api={api} noun="product" layout="single" publishBlock={blocked}>
       <Text id="title" label="Note name" required value={form.title} onChange={(v) => set('title', v)} error={errors.title} max={200} placeholder="e.g. Python Notes — Complete Handwritten PDF" />
-      <div className="ad-two">
-        <NumberField id="price" label="Price (₹) *" step="1" min={0} value={form.price} onChange={(v) => set('price', v)} error={errors.price} hint="Enter 0 to give it for free." />
-        <NumberField id="original_price" label="Original price / MRP (₹), optional" step="1" min={0} value={form.original_price} onChange={(v) => set('original_price', v)} error={errors.original_price} hint="Only if it is a real earlier price; it shows struck through." />
-      </div>
+      <div className="ad-note" role="note"><strong>Free direct download.</strong> Visitors enter their name, email and mobile number, then the file downloads. There is no cart, checkout or payment.</div>
       <Text id="short_description" label="Short description" textarea rows={3} value={form.short_description} onChange={(v) => set('short_description', v)} max={400} error={errors.short_description} placeholder="One or two lines about what is inside (shown on the store card)." />
       <ThumbnailField id="cover" label="Cover image" src={cover?.src ?? ''} alt={cover?.alt ?? ''} onSrc={(v) => set('images', v ? [{ src: v, alt: cover?.alt ?? '' }] : [])} onAlt={(v) => set('images', cover ? [{ ...cover, alt: v }] : [])} error={errors.images} />
       <RichEditor id="description" label="Full description (optional)" value={form.description} onChange={(v) => set('description', v)} height={320} />
-      <AssetPanel endpoint="products" ownerId={form.id} title="The note file (PDF) customers get after paying" onCount={setFiles} saveFirst="Click “Save as Draft” first. This box then lets you upload the PDF." />
-      {form.id && <p className="ad-note-line">Need printed books, stock or tax settings? <Link to={`/products/advanced/${form.id}`}>Open the advanced editor</Link>.</p>}
+      <AssetPanel endpoint="products" ownerId={form.id} title="The private file visitors can download after submitting their details" onCount={setFiles} saveFirst="Save the draft first, then upload the PDF here." />
+      {form.id && <p className="ad-note-line">Need paid checkout or physical stock? <Link to={`/products/advanced/${form.id}`}>Open the advanced editor</Link>.</p>}
     </EditorShell>
   )
 }

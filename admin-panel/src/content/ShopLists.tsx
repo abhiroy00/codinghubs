@@ -20,7 +20,7 @@ interface Cfg {
 const CFG: Partial<Record<Kind, Cfg>> = {
   projects: { title: 'Projects', noun: 'project', path: 'projects', extraHead: 'Difficulty', extra: (r) => `${r.difficulty ?? ''}${r.product ? ' · paid' : ''}`, filter: { name: 'difficulty', label: 'All difficulties', options: [['beginner', 'Beginner'], ['intermediate', 'Intermediate'], ['advanced', 'Advanced']] } },
   'project-guides': { title: 'Project guides', noun: 'project guide', path: 'project-guides', extraHead: 'Access', extra: (r) => r.access_type, filter: { name: 'access', label: 'Any access', options: [['free', 'Free'], ['account', 'Account'], ['paid', 'Paid'], ['included', 'Included']] } },
-  products: { title: 'Products', noun: 'product', path: 'products', extraHead: 'Type · price', extra: (r) => `${r.product_type} · ₹${r.price}`, filter: { name: 'type', label: 'All types', options: [['digital', 'Digital'], ['physical', 'Physical'], ['mixed', 'Mixed']] } },
+  products: { title: 'Products', noun: 'product', path: 'products', extraHead: 'Type · access', extra: (r) => Number(r.price) <= 0 && ['digital', 'mixed'].includes(r.product_type) ? `${r.product_type} · Free direct download` : `${r.product_type} · ₹${r.price}`, filter: { name: 'type', label: 'All types', options: [['digital', 'Digital'], ['physical', 'Physical'], ['mixed', 'Mixed']] } },
 }
 
 export function ShopList({ kind }: { kind: Kind }) {
@@ -117,13 +117,13 @@ export function ShopList({ kind }: { kind: Kind }) {
                 const live = r.status === 'published' || r.status === 'scheduled'
                 return (
                   <tr key={r.id}>
-                    <td><Link to={`/${kind}/edit/${r.id}`}><strong>{r.title}</strong></Link>{r.is_featured && <span className="ad-badge tone-pin"> Featured</span>}<br /><small className="ad-muted">/{r.slug}</small></td>
+                    <td><Link to={kind === 'products' && (r.product_type !== 'digital' || Number(r.price) > 0) ? `/products/advanced/${r.id}` : `/${kind}/edit/${r.id}`}><strong>{r.title}</strong></Link>{r.is_featured && <span className="ad-badge tone-pin"> Featured</span>}<br /><small className="ad-muted">/{r.slug}</small></td>
                     <td><span className={`ad-badge st-${r.status}`}>{r.status}</span></td>
                     <td>{cfg.extra(r) || '—'}</td>
                     <td>{fmtDate(r.published_at)}</td>
                     <td>{fmtDate(r.updated_at)}</td>
                     <td className="ad-actions">
-                      <Link className="ad-link" to={`/${kind}/edit/${r.id}`}>Edit</Link>
+                      <Link className="ad-link" to={kind === 'products' && (r.product_type !== 'digital' || Number(r.price) > 0) ? `/products/advanced/${r.id}` : `/${kind}/edit/${r.id}`}>Edit</Link>
                       <button type="button" className="ad-link" onClick={() => void preview(r)}>Preview</button>
                       <button type="button" className="ad-link" onClick={() => void act(r, live ? 'unpublish' : 'publish')}>{live ? 'Unpublish' : 'Publish'}</button>
                       <button type="button" className="ad-link ad-danger" onClick={() => setDel(r)}>Delete</button>

@@ -31,7 +31,7 @@ export function StoreOverview() {
       {!s && !err && <p className="ad-muted" role="status">Loading…</p>}
       {s && (
         <>
-          {!s.payments_configured && <div className="ad-note" role="status">Online payments are not configured: set the Razorpay keys on the server (see DEPLOY.md). Until then customers can only order free items.</div>}
+          {!s.payments_configured && <div className="ad-note" role="status">Online payments are not configured. Paid product orders are unavailable until Razorpay is set up. Free digital resources use direct download and do not go through checkout.</div>}
           {s.payments_configured && !s.payments_live && <div className="ad-note" role="status">Payments are in <strong>test mode</strong>. No real money moves until live keys are set.</div>}
           <div className="ad-cards">
             {tile('Projects', `${s.projects.published} / ${s.projects.total}`, '/projects')}

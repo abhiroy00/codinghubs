@@ -37,6 +37,13 @@ class FreeDownloadLeadSerializer(serializers.ModelSerializer):
         return value
 
 
+class FreeDownloadLeadAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FreeDownloadLead
+        fields = ('id', 'full_name', 'email', 'mobile_number', 'resource_id_snapshot', 'resource_name', 'created_at')
+        read_only_fields = fields
+
+
 def _strings(value, label, max_items, max_len):
     if not isinstance(value, list):
         raise serializers.ValidationError(f'{label} must be a list.')

@@ -8,6 +8,7 @@ import { ContentDashboard } from './content/Dashboard'
 import { ChangePassword } from './content/ChangePassword'
 import { GuideEditor, ProductEditor, ProjectEditor, SimpleProductEditor } from './content/ShopEditors'
 import { ShopList } from './content/ShopLists'
+import { FreeDownloadLeads } from './content/FreeDownloadLeads'
 import { Customers, StoreOrderDetail, StoreOrders, StoreOverview } from './content/StorePages'
 import { CoursesPage, DataPage, LeadsPage, Overview } from './pages'
 import { QuestionManager } from './content/QuestionManager'
@@ -60,6 +61,7 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
     heading: 'Store',
     items: [
       { to: '/products', label: 'Products', icon: 'M12 2 3 6.5v11L12 22l9-4.5v-11L12 2Zm0 2.2 5.9 2.9L12 10 6.1 7.1 12 4.2Z' },
+      { to: '/free-download-leads', label: 'Free download requests', icon: 'M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3' },
       { to: '/store-orders', label: 'Store Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
       { to: '/customers', label: 'Customers', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
     ],
@@ -288,6 +290,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="products/create" element={<SimpleProductEditor key="new-product" />} />
             <Route path="products/edit/:id" element={<SimpleProductEditor />} />
             <Route path="products/advanced/:id" element={<ProductEditor />} />
+            <Route path="free-download-leads" element={<FreeDownloadLeads />} />
             <Route path="projects" element={<ShopList kind="projects" />} />
             <Route path="projects/create" element={<ProjectEditor key="new-project" />} />
             <Route path="projects/edit/:id" element={<ProjectEditor />} />

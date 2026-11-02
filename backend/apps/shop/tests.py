@@ -847,6 +847,18 @@ class DownloadTests(ShopBase):
         self.assertEqual(checkout.status_code, 400)
         self.assertEqual(Order.objects.count(), 0)
 
+    def test_free_download_requests_are_visible_only_in_staff_admin(self):
+        free = self.product(title='Free Python Notes', price='0.00')
+        FreeDownloadLead.objects.create(resource=free, resource_id_snapshot=free.id, resource_name=free.title,
+                                        full_name='Ada Lovelace', email='ada@example.com', mobile_number='+91 98765 43210')
+        url = '/api/admin/free-download-leads/'
+        self.assertEqual(self.anon.get(url).status_code, 401)
+        self.assertEqual(self.as_user(self.alice).get(url).status_code, 403)
+        response = self.api.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['results'][0]['resource_name'], free.title)
+        self.assertEqual(response.json()['results'][0]['email'], 'ada@example.com')
+
     def test_buyer_downloads_through_a_signed_link(self):
         order = self.paid_order(user=self.alice, items=[(self.p, 1)])
         alice = self.as_user(self.alice)

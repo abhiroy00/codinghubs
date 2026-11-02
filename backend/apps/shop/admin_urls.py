@@ -9,6 +9,7 @@ urlpatterns = [
     path('shop/audit/', a.AuditList.as_view()),
     path('products/', a.ProductList.as_view()),
     path('products/<int:pk>/', a.ProductDetail.as_view()),
+    path('free-download-leads/', a.FreeDownloadLeadList.as_view()),
     path('product-categories/', a.CategoryList.as_view()),
     path('projects/', a.ProjectList.as_view()),
     path('projects/<int:pk>/', a.ProjectDetail.as_view()),

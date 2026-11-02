@@ -19,12 +19,12 @@ from apps.content import services as content_services
 
 from . import audit, downloads, gateway, inventory, orders
 from .models import (
-    AuditLog, Coupon, DigitalAsset, InventoryMovement, Order, Product, ProductCategory, Project, ProjectGuide, StoreSettings,
+    AuditLog, Coupon, DigitalAsset, FreeDownloadLead, InventoryMovement, Order, Product, ProductCategory, Project, ProjectGuide, StoreSettings,
 )
 from .money import q
 from .pricing import CartError
 from .serializers import (
-    AdminOrderSerializer, CategoryAdminSerializer, CouponSerializer, GuideAdminSerializer, ProductAdminSerializer, ProjectAdminSerializer,
+    AdminOrderSerializer, CategoryAdminSerializer, CouponSerializer, FreeDownloadLeadAdminSerializer, GuideAdminSerializer, ProductAdminSerializer, ProjectAdminSerializer,
     StoreSettingsSerializer,
 )
 
@@ -112,6 +112,17 @@ class ProductDetail(Base, AuditedCRUD, generics.RetrieveUpdateDestroyAPIView):
         for a in instance.assets.all():
             a.file.delete(save=False)
         super().perform_destroy(instance)
+
+
+class FreeDownloadLeadList(Base, generics.ListAPIView):
+    model_class = FreeDownloadLead
+    serializer_class = FreeDownloadLeadAdminSerializer
+
+    def get_queryset(self):
+        qs = FreeDownloadLead.objects.order_by('-created_at', '-id')
+        if q := self.request.query_params.get('q', '').strip()[:100]:
+            qs = qs.filter(Q(full_name__icontains=q) | Q(email__icontains=q) | Q(mobile_number__icontains=q) | Q(resource_name__icontains=q))
+        return qs
 
 
 class ProjectList(Base, AuditedCRUD, generics.ListCreateAPIView):
