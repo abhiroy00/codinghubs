@@ -118,6 +118,7 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '30/min',
         'user': '120/min',
+        'shop_free_download': '10/hour',
     },
 }
 

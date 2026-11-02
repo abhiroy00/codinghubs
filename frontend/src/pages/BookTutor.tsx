@@ -153,6 +153,9 @@ export function BookTutor() {
           <>
         <section className="tutors-hero">
           <div className="container-x tutors-hero-inner">
+            <nav className="tutor-breadcrumbs" aria-label="Breadcrumb">
+              <Link to="/">Home</Link><span aria-hidden="true">/</span><span aria-current="page">Book a Tutor</span>
+            </nav>
             <p className="eyebrow">PERSONALIZED LEARNING</p>
             <h1 className="display-lg">Learn directly from a <span>tutor</span></h1>
             <p className="lede">Get focused, one-to-one guidance in AI, data and software development. Choose a tutor and request a session that fits your schedule.</p>

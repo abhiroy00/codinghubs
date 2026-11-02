@@ -70,6 +70,7 @@ export interface Card {
   price?: string | null
   original_price?: string | null
   is_free?: boolean
+  has_download?: boolean
   is_paid?: boolean
   product_type?: string
   stock_label?: string

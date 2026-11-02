@@ -22,7 +22,7 @@ from apps.enrollments.models import Enrollment
 
 from . import downloads, orders
 from .models import (
-    Coupon, DigitalAsset, DownloadPermission, InventoryMovement, Order, PaymentEvent, Product, ProductCategory, Project, ProjectGuide, ProjectQuestion, StoreSettings,
+    Coupon, DigitalAsset, DownloadPermission, FreeDownloadLead, InventoryMovement, Order, PaymentEvent, Product, ProductCategory, Project, ProjectGuide, ProjectQuestion, StoreSettings,
 )
 
 User = get_user_model()
@@ -527,16 +527,15 @@ class CheckoutTests(ShopBase):
             r, _ = self.checkout(self.as_user(self.alice), [(p, 1)])
             self.assertEqual(r.status_code, 201)
 
-    def test_free_product_completes_without_the_gateway_and_grants_access(self):
+    def test_free_digital_product_uses_direct_download_instead_of_checkout(self):
         p = self.product('Free notes', price='0.00')
         self.attach_pdf(p)
         with mock.patch('apps.shop.gateway.create_order', side_effect=AssertionError('gateway must not be called')):
             r, _ = self.checkout(APIClient(), [(p, 1)])
-        self.assertEqual(r.status_code, 201)
-        self.assertTrue(r.json()['free'])
-        o = Order.objects.get()
-        self.assertEqual((o.payment_status, o.status), ('paid', 'delivered'))
-        self.assertEqual(o.permissions.count(), 1)
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(r.json()['code'], 'empty_cart')
+        self.assertEqual(Order.objects.count(), 0)
+        self.assertEqual(DownloadPermission.objects.count(), 0)
 
 
 # ====================== payments ======================
@@ -816,6 +815,37 @@ class DownloadTests(ShopBase):
         order = Order.objects.get(number=r.json()['order_number'])
         self.assertEqual(order.permissions.count(), 0)
         self.assertEqual(self.as_user(self.alice).get('/api/my-account/downloads/').json(), [])
+
+    def test_free_product_download_saves_details_and_streams_file_without_order(self):
+        free = self.product(title='Free Python Notes', price='0.00')
+        asset = self.attach_pdf(free, name='Python notes final.pdf')
+        response = self.anon.post(f'/api/products/{free.slug}/files/{asset.id}/free-download/', {
+            'full_name': '  Ada   Lovelace ', 'email': 'ADA@example.com', 'mobile_number': '+91 98765 43210',
+        }, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(b''.join(response.streaming_content), pdf_bytes())
+        self.assertEqual(response['Content-Disposition'], 'attachment; filename="Python notes final.pdf"')
+        lead = FreeDownloadLead.objects.get()
+        self.assertEqual((lead.full_name, lead.email, lead.mobile_number, lead.resource_id_snapshot, lead.resource_name),
+                         ('Ada Lovelace', 'ada@example.com', '+91 98765 43210', free.id, free.title))
+        self.assertEqual(Order.objects.count(), 0)
+        self.assertEqual(asset_events(), 1)
+
+    def test_paid_product_cannot_use_free_download_endpoint(self):
+        response = self.anon.post(f'/api/products/{self.p.slug}/files/{self.asset.id}/free-download/', {
+            'full_name': 'Ada Lovelace', 'email': 'ada@example.com', 'mobile_number': '9876543210',
+        }, format='json')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(FreeDownloadLead.objects.count(), 0)
+
+    def test_free_digital_product_cannot_be_added_to_cart_or_checked_out(self):
+        free = self.product(title='Free Python Notes', price='0.00')
+        response = self.anon.post('/api/cart/items/', {'product': free.id, 'quantity': 1}, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['code'], 'direct_download')
+        checkout = self.anon.post('/api/checkout/', {'name': 'Ada', 'email': 'ada@example.com'}, format='json')
+        self.assertEqual(checkout.status_code, 400)
+        self.assertEqual(Order.objects.count(), 0)
 
     def test_buyer_downloads_through_a_signed_link(self):
         order = self.paid_order(user=self.alice, items=[(self.p, 1)])

@@ -10,7 +10,7 @@ from .models import Product, ProductCategory, Project, ProjectGuide, StoreSettin
 
 
 def public_products():
-    return Product.objects.public().select_related('category').prefetch_related('images')
+    return Product.objects.public().select_related('category').prefetch_related('images', 'assets')
 
 
 def public_projects():
@@ -37,7 +37,7 @@ def product_card(p: Product) -> dict:
         'product_type': p.product_type, 'item_kind': p.item_kind, 'format': p.format, 'author': p.author,
         'category': {'name': p.category.name, 'slug': p.category.slug} if p.category else None,
         'image': {'src': img.src, 'alt': img.alt} if img else None, 'in_stock': p.in_stock, 'stock_label': stock_label(p),
-        'is_featured': p.is_featured, 'is_free': p.price <= 0, 'published_at': p.published_at,
+        'is_featured': p.is_featured, 'is_free': p.price <= 0, 'has_download': p.is_digital and p.assets.exists(), 'published_at': p.published_at,
     }
 
 
@@ -51,7 +51,7 @@ def product_detail(p: Product, preview=False) -> dict:
         'publisher': p.publisher, 'isbn': p.isbn, 'language': p.language, 'edition': p.edition, 'publication_year': p.publication_year,
         'pages': p.pages, 'topics': p.topics, 'images': [{'src': i.src, 'alt': i.alt} for i in p.images.all()], 'sku': p.sku,
         'weight_grams': p.weight_grams, 'dimensions': p.dimensions, 'tracks_stock': p.tracks_stock, 'is_physical': p.is_physical, 'is_digital': p.is_digital,
-        'files': [{'label': a.label, 'size': a.size, 'type': a.content_type} for a in p.assets.all()] if p.is_digital else [],
+        'files': [{'id': a.id, 'label': a.label, 'size': a.size, 'type': a.content_type} for a in p.assets.all()] if p.is_digital else [],
         'delivery': delivery_note(p, cfg), 'tax_note': tax_note(cfg), 'shipping_flat': str(cfg.shipping_flat) if p.is_physical else None,
         'free_shipping_over': str(cfg.free_shipping_over) if p.is_physical and cfg.free_shipping_over is not None else None,
         'related': [product_card(r) for r in related], 'guides': [guide_card(g) for g in guides],
@@ -63,7 +63,10 @@ def product_detail(p: Product, preview=False) -> dict:
 def delivery_note(p, cfg):
     parts = []
     if p.is_digital:
-        parts.append('Digital files are available to download from your account (or the order link) as soon as payment is confirmed.')
+        if p.price <= 0:
+            parts.append('Submit your details on the product page to download this free digital resource directly.')
+        else:
+            parts.append('Digital files are available to download from your account (or the order link) as soon as payment is confirmed.')
     if p.is_physical:
         parts.append('Printed items are shipped to your address after payment; you receive tracking details by email.')
     return ' '.join(parts)

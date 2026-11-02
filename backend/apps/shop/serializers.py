@@ -10,9 +10,31 @@ from apps.content.sanitize import add_heading_ids, sanitize_html
 from apps.content.validators import validate_https_or_site_url, validate_media_or_https_url
 
 from .models import (
-    DIFFICULTIES, GUIDE_SECTION_KEYS, Coupon, Order, OrderItem, Product, ProductCategory, ProductImage, Project, ProjectGuide,
+    DIFFICULTIES, GUIDE_SECTION_KEYS, Coupon, FreeDownloadLead, Order, OrderItem, Product, ProductCategory, ProductImage, Project, ProjectGuide,
     ProjectQuestion, StoreSettings, unique_slug_for,
 )
+
+
+class FreeDownloadLeadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FreeDownloadLead
+        fields = ('full_name', 'email', 'mobile_number')
+
+    def validate_full_name(self, value):
+        value = ' '.join(value.split())
+        if len(value) < 2:
+            raise serializers.ValidationError('Enter your full name.')
+        return value
+
+    def validate_email(self, value):
+        return value.strip().lower()
+
+    def validate_mobile_number(self, value):
+        value = value.strip()
+        digits = ''.join(char for char in value if char.isdigit())
+        if len(digits) < 7 or len(digits) > 15 or len(value) > 20:
+            raise serializers.ValidationError('Enter a valid mobile number.')
+        return value
 
 
 def _strings(value, label, max_items, max_len):

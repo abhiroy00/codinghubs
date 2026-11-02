@@ -5,7 +5,7 @@ from decimal import Decimal, InvalidOperation
 from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.db.models import Count, Q
-from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
+from django.http import FileResponse, Http404, HttpResponse, HttpResponsePermanentRedirect
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -15,12 +15,13 @@ from rest_framework.views import APIView
 from apps.content import services as content_services
 
 from . import access, downloads, gateway, orders, payloads
+from .audit import client_prefix
 from .models import (
-    Cart, CartItem, DigitalAsset, DownloadPermission, Order, PaymentEvent, Product, ProductCategory, Project, ProjectGuide, StoreSettings,
+    Cart, CartItem, DigitalAsset, DownloadEvent, DownloadPermission, Order, PaymentEvent, Product, ProductCategory, Project, ProjectGuide, StoreSettings,
 )
 from .money import q
 from .pricing import MAX_QTY, CartError, normalise_qty, price_lines
-from .serializers import ProjectQuestionSubmissionSerializer
+from .serializers import FreeDownloadLeadSerializer, ProjectQuestionSubmissionSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,11 @@ class CheckoutThrottle(AnonRateThrottle):
 class CouponThrottle(AnonRateThrottle):
     scope = 'shop_coupon'
     rate = '30/hour'
+
+
+class FreeDownloadThrottle(AnonRateThrottle):
+    scope = 'shop_free_download'
+    rate = '10/hour'
 
 
 class ProjectQuestionAnonThrottle(AnonRateThrottle):
@@ -129,6 +135,32 @@ class ProductDetail(APIView):
         obj, preview = load_published_or_preview(Product, request, slug, payloads.public_products())
         resp = Response(payloads.product_detail(obj, preview))
         return no_cache(resp) if preview else revalidate(resp)
+
+
+class FreeProductDownload(APIView):
+    """Validate a free digital product and stream its private asset after saving the download lead."""
+
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [FreeDownloadThrottle]
+
+    def post(self, request, slug, asset_id):
+        product = payloads.public_products().filter(slug=slug, price=0, product_type__in=[Product.TYPE_DIGITAL, Product.TYPE_MIXED]).first()
+        asset = DigitalAsset.objects.filter(pk=asset_id, product=product).first() if product else None
+        if not product or not asset:
+            raise Http404
+        serializer = FreeDownloadLeadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            stream = asset.file.open('rb')
+        except (OSError, ValueError, FileNotFoundError):
+            raise Http404
+        serializer.save(resource=product, resource_id_snapshot=product.pk, resource_name=product.title)
+        DownloadEvent.objects.create(asset=asset, user=request.user if request.user.is_authenticated else None, source='free', ip_prefix=client_prefix(request))
+        response = FileResponse(stream, as_attachment=True, filename=asset.original_name, content_type=asset.content_type or 'application/octet-stream')
+        response['X-Content-Type-Options'] = 'nosniff'
+        response['Cache-Control'] = 'private, no-store'
+        response['Content-Security-Policy'] = "default-src 'none'; sandbox"
+        return response
 
 
 class StoreCategories(generics.ListAPIView):
@@ -286,10 +318,16 @@ def get_cart(request, create=False):
                     cart.coupon_code = guest.coupon_code
                     cart.save(update_fields=['coupon_code'])
                 guest.delete()
-        return cart
+        return _remove_direct_downloads_from_cart(cart)
     if guest:
-        return guest
-    return Cart.objects.create() if create else None
+        return _remove_direct_downloads_from_cart(guest)
+    return _remove_direct_downloads_from_cart(Cart.objects.create()) if create else None
+
+
+def _remove_direct_downloads_from_cart(cart):
+    if cart:
+        cart.items.filter(product__price__lte=0, product__product_type__in=[Product.TYPE_DIGITAL, Product.TYPE_MIXED]).delete()
+    return cart
 
 
 def cart_payload(cart, email=''):
@@ -325,6 +363,8 @@ class CartItems(APIView):
         product = Product.objects.public().filter(pk=product_id).first()
         if not product:
             return Response({'detail': 'This item is not available.', 'code': 'unavailable'}, status=404)
+        if product.price <= 0 and product.is_digital:
+            return Response({'detail': 'Free digital resources are downloaded directly from their product page.', 'code': 'direct_download'}, status=400)
         try:
             qty = normalise_qty(product, qty)
         except CartError as exc:

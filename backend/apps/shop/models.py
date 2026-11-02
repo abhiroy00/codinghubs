@@ -615,9 +615,27 @@ class DownloadEvent(models.Model):
     asset = models.ForeignKey(DigitalAsset, on_delete=models.CASCADE, related_name='events')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
     order = models.ForeignKey(Order, null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
-    source = models.CharField(max_length=12)  # order | guide | project
+    source = models.CharField(max_length=12)  # order | guide | project | free
     ip_prefix = models.CharField(max_length=45, blank=True)  # truncated, not the full address
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class FreeDownloadLead(models.Model):
+    """Contact details captured before a published, zero-price product download."""
+
+    resource = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, related_name='free_download_leads')
+    resource_id_snapshot = models.PositiveIntegerField()
+    resource_name = models.CharField(max_length=200)
+    full_name = models.CharField(max_length=120)
+    email = models.EmailField()
+    mobile_number = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at', '-id']
+
+    def __str__(self):
+        return f'{self.full_name} — {self.resource_name}'
 
 
 class AuditLog(models.Model):

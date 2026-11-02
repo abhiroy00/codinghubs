@@ -5,6 +5,7 @@ from . import views_public as v
 urlpatterns = [
     path('products/', v.ProductList.as_view()),
     path('products/<slug:slug>/', v.ProductDetail.as_view()),
+    path('products/<slug:slug>/files/<int:asset_id>/free-download/', v.FreeProductDownload.as_view()),
     path('product-categories/', v.StoreCategories.as_view()),
     path('store/settings/', v.StorePublicSettings.as_view()),
     path('projects/', v.ProjectList.as_view()),

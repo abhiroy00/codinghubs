@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { BackLink } from '../components/BackLink'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { Html, useDetail } from './catalog'
 import { GuideCard } from './guides'
-import { cartApi, errorText, fmtSize, get, initial, rupees, useCartData, type Card, type Paged } from './api'
+import { cartApi, errorText, fmtSize, get, initial, rupees, shop, useCartData, type Card, type Paged } from './api'
 import './projects.css'
 import './shopui.css'
 import './store.css'
@@ -54,6 +54,7 @@ export function ProductCard({ c, i = 0 }: { c: Card; i?: number }) {
     setState('busy')
     try { await cartApi.add(c.id!, 1); setState('idle') } catch { setState('error'); setTimeout(() => setState('idle'), 2200) }
   }
+  const isFreeDigital = !!c.is_free && (c.product_type === 'digital' || c.product_type === 'mixed')
   return (
     <article className="shop-card" style={{ ['--i' as string]: i }}>
       <Link to={`/store/${c.slug}`} className="shop-media" tabIndex={-1} aria-hidden="true">
@@ -71,7 +72,7 @@ export function ProductCard({ c, i = 0 }: { c: Card; i?: number }) {
           <span className={`shop-stock${c.in_stock ? '' : ' out'}`}>{c.stock_label}</span>
         </div>
         <div className="shop-foot">
-          {inCart ? <Link to="/cart" className="shop-add"><CartBadge /> Go to cart</Link> : (
+          {isFreeDigital ? (c.has_download ? <Link to={`/store/${c.slug}?download=1`} className="shop-add">Download</Link> : <button type="button" className="shop-add" disabled>Files coming soon</button>) : inCart ? <Link to="/cart" className="shop-add"><CartBadge /> Go to cart</Link> : (
             <button type="button" className="shop-add" onClick={() => void add()} disabled={!c.in_stock || state === 'busy' || !cartReady} aria-live="polite">
               <CartBadge /> {!cartReady ? 'Checking cart…' : state === 'error' ? 'Try again' : c.is_free ? 'Get free' : 'Add to cart'}
             </button>
@@ -200,9 +201,18 @@ export function ProductPage() {
   const [active, setActive] = useState(0)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
   const [busy, setBusy] = useState(false)
+  const [downloadOpen, setDownloadOpen] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
   const nav = useNavigate()
   const { cart, ready: cartReady } = useCartData()
   useEffect(() => setActive(0), [p?.slug])
+  useEffect(() => {
+    if (!p || searchParams.get('download') !== '1') return
+    if (p.is_free && p.is_digital) setDownloadOpen(true)
+    const next = new URLSearchParams(searchParams)
+    next.delete('download')
+    setSearchParams(next, { replace: true })
+  }, [p, searchParams, setSearchParams])
   if (missing) return <NotFound />
   if (!p) return <PageFrame wide store><div className="pj-detail-skel" aria-busy="true" role="status"><span className="sr-only">Loading…</span></div></PageFrame>
   const cut = saving(p)
@@ -244,15 +254,19 @@ export function ProductPage() {
                 <label className="shop-qty">Quantity<input type="number" min={1} max={10} value={qty} onChange={(e) => setQty(Math.min(10, Math.max(1, Number(e.target.value) || 1)))} /></label>
               )}
               <div className="st-actions">
-                {inCart ? <Link to="/cart" className="btn btn-yellow btn-lg">Go to Cart</Link> : <button type="button" className="btn btn-yellow btn-lg" disabled={!p.in_stock || busy || !cartReady} onClick={() => void add()}>{!cartReady ? 'Checking cart…' : p.is_free ? 'Get for free' : 'Add to cart'}</button>}
-                <button type="button" className="btn pj-btn-dark btn-lg" disabled={!p.in_stock || busy || !cartReady} onClick={buyNow}>Buy now</button>
+                {p.is_free && p.is_digital ? (
+                  <button type="button" className="btn btn-yellow btn-lg" disabled={p.files?.length === 0} onClick={() => setDownloadOpen(true)}>Download</button>
+                ) : <>
+                  {inCart ? <Link to="/cart" className="btn btn-yellow btn-lg">Go to Cart</Link> : <button type="button" className="btn btn-yellow btn-lg" disabled={!p.in_stock || busy || !cartReady} onClick={() => void add()}>{!cartReady ? 'Checking cart…' : p.is_free ? 'Get for free' : 'Add to cart'}</button>}
+                  <button type="button" className="btn pj-btn-dark btn-lg" disabled={!p.in_stock || busy || !cartReady} onClick={buyNow}>Buy now</button>
+                </>}
               </div>
               {msg && <p className={msg.ok ? 'shop-ok' : 'shop-err'} role={msg.ok ? 'status' : 'alert'}>{msg.text} {msg.ok && <Link to="/cart">View cart →</Link>}</p>}
             </div>
             <ul className="st-perks">
-              {p.is_digital && <li><span>1</span><div><strong>Instant download</strong><small>Files unlock as soon as your payment is confirmed.</small></div></li>}
+              {p.is_digital && <li><span>1</span><div><strong>{p.is_free ? 'Direct download' : 'Instant download'}</strong><small>{p.is_free ? 'Submit your details to start your download.' : 'Files unlock as soon as your payment is confirmed.'}</small></div></li>}
               {p.is_physical && <li><span>2</span><div><strong>Delivered to your address</strong><small>Tracking details are emailed when it ships.</small></div></li>}
-              <li><span>3</span><div><strong>Secure payment</strong><small>Paid through Razorpay. We never see your card details.</small></div></li>
+              {!p.is_free && <li><span>3</span><div><strong>Secure payment</strong><small>Paid through Razorpay. We never see your card details.</small></div></li>}
               <li><span>4</span><div><strong>Clear policies</strong><small><Link to="/policies#rescheduling">Refund and return policy</Link> · <a href="/#contact">Contact us</a></small></div></li>
             </ul>
           </div>
@@ -266,7 +280,7 @@ export function ProductPage() {
           {p.files?.length > 0 && (
             <section className="pj-sec"><h2>Files you get</h2>
               <ul className="st-files">{p.files.map((f: any) => (<li key={f.label}><span aria-hidden="true">📄</span><strong>{f.label}</strong><small>{fmtSize(f.size)}</small></li>))}</ul>
-              <p className="bl-meta">Download links appear on the confirmation page, in your email and under My account → Downloads.</p>
+              <p className="bl-meta">{p.is_free ? 'Provide your details to download this free file.' : 'Download links appear after payment in your account or order confirmation.'}</p>
             </section>
           )}
           {(details.length > 0 || p.topics?.length > 0) && (
@@ -281,10 +295,75 @@ export function ProductPage() {
         {p.related?.length > 0 && <section className="pj-more"><h2>You may also like</h2><div className="shop-grid">{p.related.map((r: Card, i: number) => (<ProductCard key={r.slug} c={r} i={i} />))}</div></section>}
       </article>
 
-      <div className="st-bar" role="region" aria-label="Buy">
+      {downloadOpen && p.is_free && p.is_digital && <FreeDownloadDialog product={p} onClose={() => setDownloadOpen(false)} />}
+
+      <div className="st-bar" role="region" aria-label={p.is_free && p.is_digital ? 'Download' : 'Buy'}>
         <div><strong>{p.is_free ? 'Free' : rupees(p.price)}</strong>{p.original_price && <s>{rupees(p.original_price)}</s>}</div>
-        <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy || !cartReady} onClick={buyNow}>{!cartReady ? 'Checking cart…' : p.is_free ? 'Get free' : 'Buy now'}</button>
+        {p.is_free && p.is_digital ? <button type="button" className="btn btn-yellow" disabled={p.files?.length === 0} onClick={() => setDownloadOpen(true)}>Download</button> : <button type="button" className="btn btn-yellow" disabled={!p.in_stock || busy || !cartReady} onClick={buyNow}>{!cartReady ? 'Checking cart…' : p.is_free ? 'Get free' : 'Buy now'}</button>}
       </div>
     </PageFrame>
+  )
+}
+
+function FreeDownloadDialog({ product, onClose }: { product: any; onClose: () => void }) {
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [fileId, setFileId] = useState<number>(product.files?.[0]?.id ?? 0)
+  const closeRef = useRef(onClose)
+  closeRef.current = onClose
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (busy) return
+    const form = new FormData(event.currentTarget)
+    setBusy(true)
+    setError('')
+    try {
+      const { data, headers } = await shop.post<Blob>(`/products/${product.slug}/files/${fileId}/free-download/`, {
+        full_name: form.get('full_name'), email: form.get('email'), mobile_number: form.get('mobile_number'),
+      }, { responseType: 'blob' })
+      const disposition = String(headers['content-disposition'] || '')
+      const filename = disposition.match(/filename="?([^";]+)"?/i)?.[1] || 'download'
+      const objectUrl = URL.createObjectURL(data)
+      const anchor = document.createElement('a')
+      anchor.href = objectUrl
+      anchor.download = filename
+      document.body.appendChild(anchor)
+      anchor.click()
+      anchor.remove()
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 30_000)
+      setSuccess(true)
+    } catch {
+      setError('We could not start this download. Please check your details and try again.')
+    } finally {
+      setBusy(false)
+    }
+  }
+  useEffect(() => {
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') closeRef.current() }
+    window.addEventListener('keydown', onKey)
+    return () => { document.body.style.overflow = previous; window.removeEventListener('keydown', onKey) }
+  }, [])
+  return (
+    <div className="free-download-overlay" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <section className="free-download-dialog" role="dialog" aria-modal="true" aria-labelledby="free-download-title">
+        <button type="button" className="free-download-close" onClick={onClose} aria-label="Close">×</button>
+        {success ? <div role="status"><p className="shop-ok">Your download is starting.</p><button type="button" className="btn btn-yellow" onClick={onClose}>Done</button></div> : <>
+          <p className="pj-cat">FREE RESOURCE</p>
+          <h2 id="free-download-title">Download {product.title}</h2>
+          <p className="bl-meta">Enter your details to start the download.</p>
+          {product.files?.length > 1 && <label className="free-download-label">Choose a file<select value={fileId} onChange={(event) => setFileId(Number(event.target.value))}>{product.files.map((file: any) => <option key={file.id} value={file.id}>{file.label}</option>)}</select></label>}
+          <form className="free-download-form" onSubmit={submit}>
+            <label>Full name<input name="full_name" autoComplete="name" minLength={2} maxLength={120} required /></label>
+            <label>Email address<input name="email" type="email" autoComplete="email" maxLength={254} required /></label>
+            <label>Mobile number<input name="mobile_number" type="tel" autoComplete="tel" inputMode="tel" maxLength={20} minLength={7} required /></label>
+            {error && <p className="shop-err" role="alert">{error}</p>}
+            <button type="submit" className="btn btn-yellow btn-lg" disabled={busy || !fileId}>{busy ? 'Preparing download…' : 'Download file'}</button>
+          </form>
+        </>}
+      </section>
+    </div>
   )
 }
