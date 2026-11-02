@@ -229,6 +229,14 @@ class ProductTests(ShopBase):
         self.assertEqual(b.price, Decimal('0.00'))
         self.assertEqual(t.price, Decimal('499.00'))
 
+    def test_pdf_note_is_free_but_other_digital_items_can_be_paid(self):
+        note = self.product('Python_notes', item_kind='pdf_notes', price='150.00', original_price='200.00')
+        source = self.product('Project source', item_kind='source_code', price='150.00')
+        note.refresh_from_db()
+        source.refresh_from_db()
+        self.assertEqual((note.price, note.original_price), (Decimal('0.00'), None))
+        self.assertEqual(source.price, Decimal('150.00'))
+
     def test_public_filters_search_sort_pagination(self):
         cat = ProductCategory.objects.create(name='Guides')
         for i in range(14):

@@ -114,11 +114,12 @@ export function ProductEditor() {
   const cats = useOptions<any>('/product-categories/')
   const physical = form.product_type !== 'digital'
   const digital = form.product_type !== 'physical'
+  const freeNoteKind = ['programming_notes', 'interview_notes', 'pdf_notes'].includes(form.item_kind)
   const [showPaidSettings, setShowPaidSettings] = useState(false)
   useEffect(() => {
-    if (!api.loading && form.id) setShowPaidSettings(Number(form.price) > 0)
-  }, [api.loading, form.id])
-  const freeDirectDownload = form.product_type === 'digital' && Number(form.price) <= 0 && !showPaidSettings
+    if (!api.loading && form.id) setShowPaidSettings(Number(form.price) > 0 && !freeNoteKind)
+  }, [api.loading, form.id, freeNoteKind])
+  const freeDirectDownload = form.product_type === 'digital' && (Number(form.price) <= 0 || freeNoteKind) && !showPaidSettings
   const discount = form.original_price && Number(form.original_price) > Number(form.price) ? Math.round((1 - Number(form.price) / Number(form.original_price)) * 100) : 0
   return (
     <EditorShell kind="products" api={api} noun="product"
@@ -137,7 +138,7 @@ export function ProductEditor() {
             <Text id="sku" label="SKU / product ID" value={form.sku} onChange={(v) => set('sku', v)} error={errors.sku} hint="Leave empty to generate one." max={40} />
             <CheckField id="p-feat" label="Feature this product" checked={form.is_featured} onChange={(v) => set('is_featured', v)} />
           </section>
-          {freeDirectDownload ? <section className="ad-panel"><h2>Free direct download</h2><p className="ad-muted">Visitors submit their name, email and mobile number, then receive the file directly. No cart, checkout or payment is used.</p><button type="button" className="ad-btn" onClick={() => setShowPaidSettings(true)}>Set up paid checkout instead</button></section> : <section className="ad-panel">
+          {freeDirectDownload ? <section className="ad-panel"><h2>Free direct download</h2><p className="ad-muted">Visitors submit their name, email and mobile number, then receive the file directly. No cart, checkout or payment is used.</p>{!freeNoteKind && <button type="button" className="ad-btn" onClick={() => setShowPaidSettings(true)}>Set up paid checkout instead</button>}</section> : <section className="ad-panel">
             <h2>Price</h2>
             <NumberField id="price" label="Selling price (₹) *" step="0.01" min={0} value={form.price} onChange={(v) => set('price', v)} error={errors.price} hint="Paid products use the existing cart, checkout and payment flow. Free digital products use direct downloads." />
             <NumberField id="original_price" label="Original price (₹)" step="0.01" min={0} value={form.original_price} onChange={(v) => set('original_price', v)} error={errors.original_price} hint={discount ? `Shows a ${discount}% saving. Only fill this in if it is a real earlier price.` : 'Optional. Only if it is a real earlier price.'} />

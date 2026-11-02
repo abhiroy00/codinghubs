@@ -115,8 +115,8 @@ class Product(SeoMixin, PublishMixin):
         self.sku = self.sku.strip().upper()
         if self.status == 'published' and not self.published_at:
             self.published_at = timezone.now()
-        if self.category_id and self.category.slug in FREE_CATEGORY_SLUGS:
-            # Business rule: notes and books are free (T-shirts are sold). Keeps the shop honest even if a price is typed in.
+        if (self.category_id and self.category.slug in FREE_CATEGORY_SLUGS) or (self.product_type == self.TYPE_DIGITAL and self.item_kind in FREE_NOTE_KINDS):
+            # Note/book downloads are direct, never cart orders. Other paid digital products remain supported.
             self.price = ZERO
             self.original_price = None
         super().save(*args, **kwargs)
@@ -132,6 +132,7 @@ def _valid_isbn(value: str) -> bool:
 
 
 FREE_CATEGORY_SLUGS = ('notes', 'books')
+FREE_NOTE_KINDS = ('programming_notes', 'interview_notes', 'pdf_notes')
 
 
 class ProductCategory(models.Model):
