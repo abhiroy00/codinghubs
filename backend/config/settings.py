@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'apps.content',
     'apps.shop',
     'apps.jobs',
+    'apps.aicoach',
 ]
 
 MIDDLEWARE = [
@@ -134,6 +135,22 @@ SIMPLE_JWT = {
 # one at a time once the previous day is complete; the server then enforces it and tells the frontend through
 # the /courses/prep/<slug>/ outline (`sequential_unlock`).
 PREP_REQUIRE_SEQUENTIAL_UNLOCK = config('PREP_REQUIRE_SEQUENTIAL_UNLOCK', default=False, cast=bool)
+
+# --- AI features (apps.aicoach) ---
+# Keys come from the environment only (backend/.env locally, SSM Parameter Store in production) and never reach the frontend.
+# Model names are configurable because free-tier model availability changes; check what your key can use.
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+# GEMINI_MODEL / GROQ_MODEL may list several models separated by commas; they are tried in that order before the next provider.
+# Defaults were checked against a live key: free-tier Gemini flash models often answer 503 (high demand), so a lighter model follows.
+GEMINI_MODEL = config('GEMINI_MODEL', default='gemini-3.5-flash,gemini-3.5-flash-lite')  # gemini-2.5-flash is closed to new users
+GROQ_API_KEY = config('GROQ_API_KEY', default='')
+GROQ_MODEL = config('GROQ_MODEL', default='openai/gpt-oss-120b')  # checked against a live key; llama-3.3-70b-versatile is no longer offered
+AI_PROVIDER_ORDER = config('AI_PROVIDER_ORDER', default='gemini,groq', cast=Csv())  # first = primary, rest = fallbacks
+AI_REQUEST_TIMEOUT = config('AI_REQUEST_TIMEOUT', default=20, cast=int)  # seconds per provider call
+AI_TOTAL_BUDGET = config('AI_TOTAL_BUDGET', default=45, cast=int)  # seconds for one request across all providers
+AI_MAX_RETRIES = config('AI_MAX_RETRIES', default=1, cast=int)  # retries for network errors / 5xx only; quota errors are never retried
+AI_DAILY_LIMIT_PER_USER = config('AI_DAILY_LIMIT_PER_USER', default=30, cast=int)  # successful AI calls per user per day
+AI_GLOBAL_DAILY_LIMIT = config('AI_GLOBAL_DAILY_LIMIT', default=1000, cast=int)  # across all users, protects the shared free quota
 
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID', default='')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='')
