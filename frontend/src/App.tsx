@@ -16,6 +16,11 @@ const LocationsIndex = lazy(() => import('./locations/LocationsIndex').then((m) 
 const CourseDirectory = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.CourseDirectory })))
 const CourseDetails = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.CourseDetails })))
 const InterviewPrep = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.InterviewPrep })))
+const AiHub = lazy(() => import('./ai/AiHub').then((m) => ({ default: m.AiHub })))
+const AnswerEvaluation = lazy(() => import('./ai/AnswerEvaluation').then((m) => ({ default: m.AnswerEvaluation })))
+const MockInterview = lazy(() => import('./ai/MockInterview').then((m) => ({ default: m.MockInterview })))
+const ResumeAnalyzer = lazy(() => import('./ai/ResumeAnalyzer').then((m) => ({ default: m.ResumeAnalyzer })))
+const JobMatcher = lazy(() => import('./ai/JobMatcher').then((m) => ({ default: m.JobMatcher })))
 const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ default: m.BlogList })))
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
 const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.BlogDetail })))
@@ -89,6 +94,11 @@ export function App() {
                 <Route path="courses/:slug" element={<LearnFrame><CourseDetails /></LearnFrame>} />
                 <Route path="interview-prep" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
                 <Route path="interview-prep/:slug" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
+                <Route path="ai" element={<AiHub />} />
+                <Route path="ai/answer-evaluation" element={<AnswerEvaluation />} />
+                <Route path="ai/mock-interview" element={<MockInterview />} />
+                <Route path="ai/resume-analyzer" element={<ResumeAnalyzer />} />
+                <Route path="ai/job-matcher" element={<JobMatcher />} />
                 <Route path="certificates" element={<Navigate to="/interview-prep/#certificates" replace />} />
                 <Route path="certificates/:slug" element={<CertificateRedirect />} />
               <Route element={<Layout />}>

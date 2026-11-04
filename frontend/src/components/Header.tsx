@@ -27,6 +27,7 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
           </li>
           <li><Link className="nav-link" to="/courses/">Courses</Link></li>
           <li><Link className="nav-link" to="/interview-prep/">Interview Prep</Link></li>
+          <li><Link className="nav-link" to="/ai">AI Coach</Link></li>
           <li>
             <Link className="nav-link" to="/book-a-tutor/">
               Book a Tutor

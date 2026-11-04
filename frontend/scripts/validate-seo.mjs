@@ -6,7 +6,7 @@ import path from 'node:path'
 
 const dist = path.resolve(import.meta.dirname, '..', 'dist')
 const SITE = 'https://codinghubs.in'
-const APP_ONLY = /^\/(login|register|dashboard|courses|admin-panel)(\/|$)/
+const APP_ONLY = /^\/(login|register|dashboard|courses|admin-panel|ai)(\/|$)/
 const PROXIED = /^\/(api|admin|static)\//
 const failures = []
 const warnings = []
