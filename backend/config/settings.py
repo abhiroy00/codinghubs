@@ -121,6 +121,7 @@ REST_FRAMEWORK = {
         'user': '120/min',
         'shop_free_download': '10/hour',
         'quiz_attempt': '60/hour',
+        'ai_burst': '10/min',
     },
 }
 

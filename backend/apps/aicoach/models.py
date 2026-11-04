@@ -29,3 +29,25 @@ class AIUsage(models.Model):
 
     def __str__(self):
         return f'{self.feature} · {self.provider} · {self.status}'
+
+
+class AnswerEvaluation(models.Model):
+    """A candidate's answer to an interview question and the AI's evaluation. Private to the user who submitted it."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='answer_evaluations')
+    course_slug = models.SlugField(max_length=120, blank=True)
+    day = models.PositiveSmallIntegerField(null=True, blank=True)
+    question_index = models.PositiveSmallIntegerField(null=True, blank=True)
+    question = models.TextField()
+    answer = models.TextField()
+    score = models.FloatField(help_text='Overall score out of 10, computed from the six sub-scores.')
+    result = models.JSONField(default=dict)
+    provider = models.CharField(max_length=20)
+    model = models.CharField(max_length=80, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [models.Index(fields=['user', '-created_at'], name='answereval_user_time')]
+
+    def __str__(self):
+        return f'{self.user} · {self.score}/10 · {self.created_at:%Y-%m-%d}'

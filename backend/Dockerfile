@@ -24,4 +24,6 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \
 
 COPY --chown=appuser:appuser docker-entrypoint.sh /app/docker-entrypoint.sh
 ENTRYPOINT ["/bin/sh", "/app/docker-entrypoint.sh"]
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--access-logfile", "-", "--error-logfile", "-"]
+# gthread + a 90s timeout: an AI request can take up to AI_TOTAL_BUDGET (45s) and must not block a whole worker or be killed at gunicorn's 30s default.
+# nginx waits 75s for /api/ (see frontend/nginx.conf), which is between the two.
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--worker-class", "gthread", "--threads", "4", "--timeout", "90", "--access-logfile", "-", "--error-logfile", "-"]
