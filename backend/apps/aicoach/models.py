@@ -51,3 +51,56 @@ class AnswerEvaluation(models.Model):
 
     def __str__(self):
         return f'{self.user} · {self.score}/10 · {self.created_at:%Y-%m-%d}'
+
+
+class MockInterview(models.Model):
+    """One AI mock interview session. Private to the user who started it."""
+    IN_PROGRESS, COMPLETED = 'in_progress', 'completed'
+    EXPERIENCE = [('fresher', 'Fresher (0-1 years)'), ('junior', 'Junior (1-3 years)'), ('mid', 'Mid-level (3-5 years)'), ('senior', 'Senior (5+ years)')]
+    DIFFICULTY = [('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')]
+    TYPES = [('technical', 'Technical'), ('hr', 'HR'), ('mixed', 'Mixed')]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='mock_interviews')
+    job_role = models.CharField(max_length=80)
+    technology = models.CharField(max_length=80)
+    experience_level = models.CharField(max_length=10, choices=EXPERIENCE)
+    difficulty = models.CharField(max_length=14, choices=DIFFICULTY, help_text='The level the candidate chose.')
+    current_difficulty = models.CharField(max_length=14, choices=DIFFICULTY, help_text='Moves up or down with the candidate\'s scores.')
+    interview_type = models.CharField(max_length=10, choices=TYPES)
+    total_questions = models.PositiveSmallIntegerField(help_text='Counts follow-up questions too.')
+    status = models.CharField(max_length=12, default=IN_PROGRESS)
+    overall_score = models.FloatField(null=True, blank=True)
+    report = models.JSONField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    ended_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [models.Index(fields=['user', 'status'], name='mockinterview_user_status'), models.Index(fields=['user', '-created_at'], name='mockinterview_user_time')]
+
+    def __str__(self):
+        return f'{self.user} · {self.job_role} · {self.status}'
+
+
+class MockInterviewTurn(models.Model):
+    """One question in an interview and the candidate's answer. `next_candidates` holds questions prepared while evaluating the answer."""
+    interview = models.ForeignKey(MockInterview, on_delete=models.CASCADE, related_name='turns')
+    number = models.PositiveSmallIntegerField()
+    category = models.CharField(max_length=10)  # technical | hr
+    kind = models.CharField(max_length=10, default='main')  # main | follow_up
+    difficulty = models.CharField(max_length=14)
+    question = models.TextField()
+    answer = models.TextField(blank=True)
+    skipped = models.BooleanField(default=False)
+    evaluation = models.JSONField(null=True, blank=True)
+    score = models.FloatField(null=True, blank=True)
+    next_candidates = models.JSONField(null=True, blank=True)
+    asked_at = models.DateTimeField(auto_now_add=True)
+    answered_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['number']
+        constraints = [models.UniqueConstraint(fields=['interview', 'number'], name='unique_interview_turn_number')]
+
+    def __str__(self):
+        return f'{self.interview_id} · Q{self.number}'
