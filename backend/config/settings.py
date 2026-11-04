@@ -122,6 +122,7 @@ REST_FRAMEWORK = {
         'shop_free_download': '10/hour',
         'quiz_attempt': '60/hour',
         'ai_burst': '10/min',
+        'resume_upload': '10/hour',
     },
 }
 

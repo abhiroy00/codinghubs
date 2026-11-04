@@ -1,5 +1,11 @@
+import uuid
+
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+
+from apps.shop.storage import private_storage
 
 
 class AIUsage(models.Model):
@@ -104,3 +110,47 @@ class MockInterviewTurn(models.Model):
 
     def __str__(self):
         return f'{self.interview_id} · Q{self.number}'
+
+
+def resume_path(instance, filename):
+    """Random server-side name in a per-user folder; the uploaded file name is only kept as metadata."""
+    return f'resumes/{instance.user_id}/{uuid.uuid4().hex}.pdf'
+
+
+class Resume(models.Model):
+    """An uploaded PDF resume and the text pulled out of it. The file lives in private storage (never served by nginx)."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='resumes')
+    file = models.FileField(storage=private_storage, upload_to=resume_path, max_length=200)
+    original_name = models.CharField(max_length=120)
+    size = models.PositiveIntegerField()
+    sha256 = models.CharField(max_length=64)
+    page_count = models.PositiveSmallIntegerField(default=0)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [models.UniqueConstraint(fields=['user', 'sha256'], name='unique_resume_per_user')]
+
+    def __str__(self):
+        return f'{self.user} · {self.original_name}'
+
+
+@receiver(post_delete, sender=Resume)
+def remove_resume_file(sender, instance, **kwargs):
+    """Deleting a resume (or the user who owns it) also deletes the stored PDF, so no personal file is left behind."""
+    if instance.file:
+        instance.file.delete(save=False)
+
+
+class ResumeAnalysis(models.Model):
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='analyses')
+    target_role = models.CharField(max_length=80, blank=True)
+    result = models.JSONField(default=dict)
+    provider = models.CharField(max_length=20)
+    model = models.CharField(max_length=80, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name_plural = 'resume analyses'

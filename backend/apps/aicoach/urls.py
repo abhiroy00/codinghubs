@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .interview_views import (EndInterviewView, InterviewDetailView, InterviewHistoryView, NextQuestionView, StartInterviewView, SubmitAnswerView)
+from .resume_views import ResumeAnalyzeView, ResumeDetailView, ResumeDownloadView, ResumeHistoryView, ResumeUploadView
 from .views import EvaluateAnswerView, EvaluationDetailView, EvaluationHistoryView
 
 urlpatterns = [
@@ -13,4 +14,9 @@ urlpatterns = [
     path('mock-interview/end/', EndInterviewView.as_view(), name='ai-interview-end'),
     path('mock-interview/history/', InterviewHistoryView.as_view(), name='ai-interview-history'),
     path('mock-interview/history/<int:pk>/', InterviewDetailView.as_view(), name='ai-interview-detail'),
+    path('resume/upload/', ResumeUploadView.as_view(), name='ai-resume-upload'),
+    path('resume/analyze/', ResumeAnalyzeView.as_view(), name='ai-resume-analyze'),
+    path('resume/history/', ResumeHistoryView.as_view(), name='ai-resume-history'),
+    path('resume/<int:pk>/', ResumeDetailView.as_view(), name='ai-resume-detail'),
+    path('resume/<int:pk>/download/', ResumeDownloadView.as_view(), name='ai-resume-download'),
 ]
