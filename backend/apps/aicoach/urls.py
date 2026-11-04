@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .interview_views import (EndInterviewView, InterviewDetailView, InterviewHistoryView, NextQuestionView, StartInterviewView, SubmitAnswerView)
+from .jobmatch_views import JobMatchAnalyzeView, JobMatchDetailView, JobMatchHistoryView
 from .resume_views import ResumeAnalyzeView, ResumeDetailView, ResumeDownloadView, ResumeHistoryView, ResumeUploadView
 from .views import EvaluateAnswerView, EvaluationDetailView, EvaluationHistoryView
 
@@ -19,4 +20,7 @@ urlpatterns = [
     path('resume/history/', ResumeHistoryView.as_view(), name='ai-resume-history'),
     path('resume/<int:pk>/', ResumeDetailView.as_view(), name='ai-resume-detail'),
     path('resume/<int:pk>/download/', ResumeDownloadView.as_view(), name='ai-resume-download'),
+    path('job-matcher/analyze/', JobMatchAnalyzeView.as_view(), name='ai-jobmatch-analyze'),
+    path('job-matcher/history/', JobMatchHistoryView.as_view(), name='ai-jobmatch-history'),
+    path('job-matcher/history/<int:pk>/', JobMatchDetailView.as_view(), name='ai-jobmatch-detail'),
 ]

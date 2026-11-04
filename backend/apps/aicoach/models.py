@@ -154,3 +154,20 @@ class ResumeAnalysis(models.Model):
     class Meta:
         ordering = ['-created_at']
         verbose_name_plural = 'resume analyses'
+
+
+class JobMatch(models.Model):
+    """A resume compared with a job description. Deleted together with the resume."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='job_matches')
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='job_matches')
+    job_title = models.CharField(max_length=100, blank=True)
+    job_description = models.TextField()
+    match_percentage = models.PositiveSmallIntegerField()
+    result = models.JSONField(default=dict)
+    provider = models.CharField(max_length=20)
+    model = models.CharField(max_length=80, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [models.Index(fields=['user', '-created_at'], name='jobmatch_user_time')]
