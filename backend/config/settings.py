@@ -119,6 +119,7 @@ REST_FRAMEWORK = {
         'anon': '30/min',
         'user': '120/min',
         'shop_free_download': '10/hour',
+        'quiz_attempt': '60/hour',
     },
 }
 
@@ -129,8 +130,9 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': False,
 }
 
-# Interview-prep days unlock one at a time once the previous day is complete. Set True to restore that rule;
-# while False, learners can open and complete any day (used while the daily content is still being authored).
+# All 30 interview-prep days are open: learners can open and complete any day. Set to True to make days unlock
+# one at a time once the previous day is complete; the server then enforces it and tells the frontend through
+# the /courses/prep/<slug>/ outline (`sequential_unlock`).
 PREP_REQUIRE_SEQUENTIAL_UNLOCK = config('PREP_REQUIRE_SEQUENTIAL_UNLOCK', default=False, cast=bool)
 
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID', default='')

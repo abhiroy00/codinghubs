@@ -7,6 +7,10 @@ import tempfile
 LEVELS = ('Beginner', 'Intermediate', 'Advanced')
 DIFFICULTIES = ('Basic', 'Intermediate', 'Advanced')
 QUIZ_TYPES = ('concept', 'scenario', 'output', 'code')
+# Answer standard 2: model interview answers of roughly 80-150 words (a little slack either side).
+MIN_ANSWER_WORDS = 70
+MAX_ANSWER_WORDS = 190
+MIN_EXPLANATION_WORDS = 12
 # Languages the site's code runner can execute with stdin/stdout tests.
 PRACTICE_LANGUAGES = ('python', 'javascript', 'java', 'csharp')
 
@@ -49,8 +53,22 @@ def _code(value, where):
     _text(value['source'], f'{where}.source')
 
 
-def validate_lesson(lesson, day=None):
-    """Raise LessonError if the lesson does not match the schema documented in prep_content/README.md."""
+PLACEHOLDER_MARKERS = ('is a core concept in', 'It improves reliability, maintainability and clarity', 'An unrelated concept', 'advanced topic ')
+
+
+def is_placeholder(lesson):
+    """True for template filler (generated scaffolding with no real teaching content), so it can be reported and replaced."""
+    text = ' '.join([lesson.get('title', ''), lesson.get('definition', ''), *(i.get('answer', '') for i in lesson.get('interview', []))])
+    text += ' '.join(o for q in lesson.get('quiz', []) for o in q.get('options', []))
+    return any(marker in text for marker in PLACEHOLDER_MARKERS)
+
+
+def validate_lesson(lesson, day=None, answer_standard=1):
+    """Raise LessonError if the lesson does not match the schema documented in prep_content/README.md.
+
+    `answer_standard` comes from the curriculum's _meta.json: 1 is the original schema; 2 also requires
+    detailed interview answers and follow-up questions. Edits made in the admin panel use standard 1.
+    """
     if not isinstance(lesson, dict):
         raise LessonError('lesson: expected an object')
     expected = {'day', 'title', 'module', 'level', 'objectives', 'definition', 'theory', 'example', 'use_cases',
@@ -85,7 +103,19 @@ def validate_lesson(lesson, day=None):
     if 'output' in demo:
         _text(demo['output'], 'demonstration.output')
     _texts(lesson['takeaways'], 'takeaways', 4, 7, 15)
-    _objects(lesson['interview'], 'interview', 4, 6, ('question', 'answer', 'explanation'))
+    _objects(lesson['interview'], 'interview', 4, 6, ('question', 'answer', 'explanation'), ('follow_ups',))
+    for i, item in enumerate(lesson['interview']):
+        if 'follow_ups' in item:
+            _texts(item['follow_ups'], f'interview[{i}].follow_ups', 2, 4, 10)
+        if answer_standard >= 2:
+            # Answer standard 2 (see prep_content/README.md): a real model answer, not a one-line definition.
+            words = len(item['answer'].split())
+            if not MIN_ANSWER_WORDS <= words <= MAX_ANSWER_WORDS:
+                raise LessonError(f'interview[{i}].answer: {words} words, expected {MIN_ANSWER_WORDS}–{MAX_ANSWER_WORDS}')
+            if len(item['explanation'].split()) < MIN_EXPLANATION_WORDS:
+                raise LessonError(f'interview[{i}].explanation: expected at least {MIN_EXPLANATION_WORDS} words')
+            if 'follow_ups' not in item:
+                raise LessonError(f'interview[{i}]: answer standard 2 needs follow_ups')
     validate_practice(lesson['practice'])
     validate_quiz(lesson['quiz'])
     return lesson

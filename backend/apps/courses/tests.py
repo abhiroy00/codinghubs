@@ -72,6 +72,16 @@ class CourseApiTests(TestCase):
         self.assertEqual(other.data['completed_days'], [])
         self.assertEqual(other.data['current_day'], 1)
 
+    def test_all_days_are_open_by_default(self):
+        from django.conf import settings
+        self.assertFalse(settings.PREP_REQUIRE_SEQUENTIAL_UNLOCK)
+        user = get_user_model().objects.create_user(username='default', password='test-password')
+        self.client.force_authenticate(user=user)
+        saved = self.client.put('/api/courses/learning/progress/generative-ai/', {
+            'completed_days': [5], 'completed_theory': [5], 'completed_challenges': [5], 'quiz_scores': {'5': 4},
+        }, format='json')
+        self.assertEqual(saved.status_code, 200)
+
     def test_learning_days_can_be_completed_out_of_order_while_unlocked(self):
         user = get_user_model().objects.create_user(username='open', password='test-password')
         self.client.force_authenticate(user=user)
@@ -110,3 +120,94 @@ class PrepContentTests(TestCase):
     def test_curriculum_is_shared_by_its_courses(self):
         PrepCurriculum.objects.create(slug='aws-sa', title='AWS SA', course_slugs=['aws-solutions-architect', 'aws-certified-solutions-architect'])
         self.assertEqual(self.client.get('/api/courses/prep/aws-certified-solutions-architect/').data['curriculum'], 'aws-sa')
+
+
+class QuizAttemptTests(TestCase):
+    """The server grades quizzes itself, so a stored score always comes from real answers."""
+
+    def setUp(self):
+        self.client = APIClient()
+        call_command('seed_prep_content', verbosity=0)
+        self.user = get_user_model().objects.create_user(username='quizzer', password='test-password')
+        self.url = '/api/courses/learning/quiz/generative-ai/1/'
+        self.quiz = PrepLesson.objects.get(curriculum__slug='generative-ai', day=1).content['quiz']
+
+    def correct(self):
+        return [q['answer'] for q in self.quiz]
+
+    def wrong(self):
+        return [(q['answer'] + 1) % 4 for q in self.quiz]
+
+    def test_requires_authentication(self):
+        self.assertEqual(self.client.post(self.url, {'answers': self.correct()}, format='json').status_code, 401)
+
+    def test_grades_and_records_a_passing_attempt(self):
+        from .models import QuizAttempt
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(self.url, {'answers': self.correct()}, format='json')
+        self.assertEqual(resp.status_code, 201)
+        self.assertEqual((resp.data['score'], resp.data['total'], resp.data['passed']), (5, 5, True))
+        self.assertTrue(all(r['correct'] for r in resp.data['results']))
+        attempt = QuizAttempt.objects.get(user=self.user)
+        self.assertEqual((attempt.course_slug, attempt.day, attempt.score, attempt.passed), ('generative-ai', 1, 5, True))
+
+    def test_failing_attempt_is_recorded_and_best_score_is_reported(self):
+        self.client.force_authenticate(user=self.user)
+        failed = self.client.post(self.url, {'answers': self.wrong()}, format='json')
+        self.assertEqual((failed.data['score'], failed.data['passed']), (0, False))
+        self.client.post(self.url, {'answers': self.correct()}, format='json')
+        summary = self.client.get(self.url)
+        self.assertEqual((summary.data['attempts'], summary.data['best_score'], summary.data['passed']), (2, 5, True))
+
+    def test_rejects_malformed_answers(self):
+        self.client.force_authenticate(user=self.user)
+        for body in ({'answers': [0, 1]}, {'answers': [0, 1, 2, 3, 9]}, {'answers': 'abcde'}, {'answers': [True] * 5}, {}):
+            self.assertEqual(self.client.post(self.url, body, format='json').status_code, 400, body)
+
+    def test_unknown_lesson_is_404(self):
+        self.client.force_authenticate(user=self.user)
+        self.assertEqual(self.client.post('/api/courses/learning/quiz/generative-ai/31/', {'answers': [0] * 5}, format='json').status_code, 404)
+
+    def test_attempts_are_private_to_each_user(self):
+        other = get_user_model().objects.create_user(username='other', password='test-password')
+        self.client.force_authenticate(user=self.user)
+        self.client.post(self.url, {'answers': self.correct()}, format='json')
+        self.client.force_authenticate(user=other)
+        self.assertEqual(self.client.get(self.url).data['attempts'], 0)
+
+    def test_outline_tells_the_frontend_the_unlock_rule(self):
+        self.assertFalse(self.client.get('/api/courses/prep/generative-ai/').data['sequential_unlock'])
+        with override_settings(PREP_REQUIRE_SEQUENTIAL_UNLOCK=True):
+            self.assertTrue(self.client.get('/api/courses/prep/generative-ai/').data['sequential_unlock'])
+
+
+class AnswerStandardTests(TestCase):
+    """Curricula opt in to detailed interview answers through "answer_standard": 2 in _meta.json."""
+
+    def lesson(self, **item):
+        import json
+        from .management.commands.validate_prep_content import CONTENT_DIR
+        data = json.loads((CONTENT_DIR / 'generative-ai' / 'day-01.json').read_text(encoding='utf-8'))
+        for entry in data['interview']:
+            entry.update(item)
+        return data
+
+    def test_standard_one_accepts_short_answers(self):
+        from .prep_schema import validate_lesson
+        validate_lesson(self.lesson(), 1)
+
+    def test_standard_two_rejects_short_answers_and_missing_follow_ups(self):
+        from .prep_schema import LessonError, validate_lesson
+        with self.assertRaisesRegex(LessonError, 'words, expected'):
+            validate_lesson(self.lesson(), 1, answer_standard=2)
+        long_answer = ' '.join(['word'] * 90)
+        with self.assertRaisesRegex(LessonError, 'explanation'):
+            validate_lesson(self.lesson(answer=long_answer, explanation='Too short.', follow_ups=['What is the first follow-up?', 'What is the second one?']), 1, answer_standard=2)
+        with self.assertRaisesRegex(LessonError, 'follow_ups'):
+            lesson = self.lesson(answer=long_answer, explanation=' '.join(['look'] * 15))
+            validate_lesson(lesson, 1, answer_standard=2)
+
+    def test_standard_two_accepts_a_full_answer(self):
+        from .prep_schema import validate_lesson
+        item = dict(answer=' '.join(['word'] * 90), explanation=' '.join(['look'] * 15), follow_ups=['What is the first follow-up?', 'What is the second one?'])
+        validate_lesson(self.lesson(**item), 1, answer_standard=2)

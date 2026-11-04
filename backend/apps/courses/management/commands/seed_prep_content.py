@@ -25,7 +25,7 @@ class Command(BaseCommand):
             curriculum.save()
             for day, path, lesson in lessons:
                 try:
-                    validate_lesson(lesson, day)
+                    validate_lesson(lesson, day, meta.get('answer_standard', 1))
                 except LessonError as error:
                     self.stderr.write(f'Skipped {folder.name}/{path.name}: {error}')
                     skipped += 1

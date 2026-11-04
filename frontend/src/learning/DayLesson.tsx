@@ -19,7 +19,7 @@ export type Lesson = {
   use_cases: { title: string; description: string }[]
   demonstration: { description: string; code?: Code; output?: string }
   takeaways: string[]
-  interview: { question: string; answer: string; explanation: string }[]
+  interview: { question: string; answer: string; explanation: string; follow_ups?: string[] }[]
   practice: CodingPractice | ExercisePractice
   quiz: QuizQuestion[]
 }
@@ -83,6 +83,7 @@ export function InterviewQuestions({ lesson }: { lesson: Lesson }) {
           <summary>{n + 1}. {item.question}</summary>
           <p>{item.answer}</p>
           <p className="lesson-why"><b>What interviewers look for:</b> {item.explanation}</p>
+          {item.follow_ups && item.follow_ups.length > 0 && <div className="lesson-followups"><b>Likely follow-up questions</b><ul className="lesson-list">{item.follow_ups.map((followUp) => <li key={followUp}>{followUp}</li>)}</ul></div>}
         </details>
       ))}
     </>
@@ -224,12 +225,13 @@ function ExerciseTask({ practice, draftKey, done, onDone }: { practice: Exercise
 }
 
 /** Five questions with explanations. Passing needs PASS_SCORE correct; learners can retry. */
-export function Quiz({ quiz, bestScore, onSubmit, children }: { quiz: QuizQuestion[]; bestScore: number | undefined; onSubmit: (score: number) => void; children?: ReactNode }) {
+export function Quiz({ quiz, bestScore, onSubmit, children }: { quiz: QuizQuestion[]; bestScore: number | undefined; onSubmit: (score: number, answers: number[]) => void; children?: ReactNode }) {
   const [answers, setAnswers] = useState<(number | undefined)[]>([])
   const [submitted, setSubmitted] = useState(false)
   useEffect(() => { setAnswers([]); setSubmitted(false) }, [quiz])
   const score = quiz.reduce((sum, q, i) => sum + (answers[i] === q.answer ? 1 : 0), 0)
   const complete = quiz.every((_, i) => answers[i] !== undefined)
+  const missed = quiz.flatMap((q, i) => (answers[i] === q.answer ? [] : [i + 1]))
   return (
     <>
       {children}
@@ -242,15 +244,15 @@ export function Quiz({ quiz, bestScore, onSubmit, children }: { quiz: QuizQuesti
               <input type="radio" name={`quiz-${i}`} checked={answers[i] === n} disabled={submitted} onChange={() => setAnswers((current) => { const next = [...current]; next[i] = n; return next })} />{option}
             </label>
           ))}
-          {submitted && <p className="quiz-explanation">{q.explanation}</p>}
+          {submitted && <p className="quiz-explanation"><b>{answers[i] === q.answer ? 'Correct.' : `Not quite. The correct answer is: ${q.options[q.answer]}.`}</b> {q.explanation}</p>}
         </fieldset>
       ))}
       <div className="learn-card-actions">
         {!submitted
-          ? <button type="button" className="learn-button" disabled={!complete} onClick={() => { setSubmitted(true); onSubmit(score) }}>Submit answers</button>
+          ? <button type="button" className="learn-button" disabled={!complete} onClick={() => { setSubmitted(true); onSubmit(score, quiz.map((_, i) => answers[i] as number)) }}>Submit answers</button>
           : <button type="button" className="learn-button learn-button-quiet" onClick={() => { setAnswers([]); setSubmitted(false) }}>Try again</button>}
       </div>
-      {submitted && <p className="quiz-result">Score: {score} / {quiz.length}. {score >= PASS_SCORE ? 'Quiz passed.' : `You need ${PASS_SCORE} correct to pass. Review the explanations and try again.`}</p>}
+      {submitted && <p className="quiz-result">Score: {score} / {quiz.length}. {score >= PASS_SCORE ? 'Quiz passed.' : `You need ${PASS_SCORE} correct to pass. Review the explanations and try again.`}{missed.length > 0 && ` Revisit question${missed.length > 1 ? 's' : ''} ${missed.join(', ')}.`}</p>}
       {!submitted && bestScore !== undefined && <p className="learn-muted">Best score so far: {bestScore} / {quiz.length}{bestScore >= PASS_SCORE ? ' (passed)' : ''}.</p>}
     </>
   )

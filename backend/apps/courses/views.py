@@ -1,10 +1,12 @@
+from django.conf import settings
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 from django.utils import timezone
 
-from .models import Course, CourseCategory, CourseCertificate, CourseQuestion, LearningProgress, PrepCurriculum, PrepLesson
-from .serializers import CourseCategorySerializer, CourseCertificateSerializer, CourseQuestionSerializer, CourseSerializer, LearningProgressSerializer
+from .models import Course, CourseCategory, CourseCertificate, CourseQuestion, LearningProgress, PrepCurriculum, PrepLesson, QuizAttempt
+from .serializers import PASS_SCORE, CourseCategorySerializer, CourseCertificateSerializer, CourseQuestionSerializer, CourseSerializer, LearningProgressSerializer
 
 
 class CourseCategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -65,6 +67,42 @@ class CourseCertificateListView(APIView):
         return Response(CourseCertificateSerializer(certificates, many=True).data)
 
 
+class QuizAttemptThrottle(UserRateThrottle):
+    scope = 'quiz_attempt'
+
+
+class QuizAttemptView(APIView):
+    """Grade a day's quiz on the server and keep the attempt. Body: {"answers": [0-3, ...]} with one choice per question."""
+    permission_classes = [permissions.IsAuthenticated]
+    throttle_classes = [QuizAttemptThrottle]
+
+    def get(self, request, slug, day):
+        attempts = QuizAttempt.objects.filter(user=request.user, course_slug=slug, day=day)
+        return Response({
+            'attempts': attempts.count(),
+            'best_score': max((a.score for a in attempts), default=None),
+            'passed': attempts.filter(passed=True).exists(),
+        })
+
+    def post(self, request, slug, day):
+        curriculum = PrepCurriculum.for_course(slug)
+        lesson = PrepLesson.objects.filter(curriculum=curriculum, day=day).first() if curriculum else None
+        if lesson is None:
+            return Response({'detail': 'Lesson not found.'}, status=status.HTTP_404_NOT_FOUND)
+        quiz = lesson.content.get('quiz', [])
+        answers = request.data.get('answers')
+        if (not isinstance(answers, list) or len(answers) != len(quiz)
+                or any(isinstance(a, bool) or not isinstance(a, int) or not 0 <= a <= 3 for a in answers)):
+            return Response({'detail': f'Send one answer (0-3) for each of the {len(quiz)} questions.'}, status=status.HTTP_400_BAD_REQUEST)
+        results = [{'correct': a == q['answer'], 'answer': q['answer'], 'explanation': q['explanation']} for a, q in zip(answers, quiz)]
+        score = sum(r['correct'] for r in results)
+        attempt = QuizAttempt.objects.create(
+            user=request.user, course_slug=slug, day=day, answers=answers,
+            score=score, total=len(quiz), passed=score >= PASS_SCORE,
+        )
+        return Response({'score': score, 'total': len(quiz), 'passed': attempt.passed, 'results': results}, status=status.HTTP_201_CREATED)
+
+
 class PrepCurriculumView(APIView):
     """The 30-day outline for a course: titles and levels, without the lesson bodies."""
     permission_classes = [permissions.AllowAny]
@@ -77,6 +115,7 @@ class PrepCurriculumView(APIView):
         return Response({
             'curriculum': curriculum.slug, 'title': curriculum.title, 'summary': curriculum.summary,
             'source': curriculum.source, 'source_pdf': curriculum.source_pdf, 'days': list(days),
+            'sequential_unlock': bool(settings.PREP_REQUIRE_SEQUENTIAL_UNLOCK),
         })
 
 

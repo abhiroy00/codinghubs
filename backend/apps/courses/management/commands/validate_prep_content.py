@@ -4,7 +4,7 @@ from pathlib import Path
 
 from django.core.management.base import BaseCommand, CommandError
 
-from apps.courses.prep_schema import LessonError, normalize_output, run_program, validate_lesson
+from apps.courses.prep_schema import LessonError, is_placeholder, normalize_output, run_program, validate_lesson
 
 CONTENT_DIR = Path(__file__).resolve().parents[2] / 'prep_content'
 
@@ -48,7 +48,7 @@ class Command(BaseCommand):
             for day, path, lesson in lessons:
                 where = f'{folder.name}/{path.name}'
                 try:
-                    validate_lesson(lesson, day)
+                    validate_lesson(lesson, day, meta.get('answer_standard', 1))
                 except LessonError as error:
                     problems.append(f'{where}: {error}')
                     continue
@@ -73,7 +73,10 @@ class Command(BaseCommand):
             problems += [f'{folder.name}: quiz question repeated: "{q[:70]}"' for q, n in questions.items() if n > 1]
             if lessons and max(answers.values(), default=0) > 0.5 * sum(answers.values()):
                 problems.append(f'{folder.name}: quiz answers are not spread across options {dict(answers)}')
+            filler = [day for day, _, lesson in lessons if is_placeholder(lesson)]
             self.stdout.write(f'{folder.name}: {len(lessons)} lessons checked')
+            if filler:
+                self.stdout.write(self.style.WARNING(f'{folder.name}: {len(filler)} of {len(lessons)} lessons are template placeholders, not real content (days {filler[0]}–{filler[-1]})'))
         for item in unverified:
             self.stdout.write(self.style.WARNING(f'not run locally: {item}'))
         if problems:

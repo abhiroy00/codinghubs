@@ -63,6 +63,25 @@ class LearningProgress(models.Model):
         ordering = ['-updated_at']
 
 
+class QuizAttempt(models.Model):
+    """One graded submission of a day's quiz. Graded on the server so the score cannot be set by the client."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quiz_attempts')
+    course_slug = models.SlugField(max_length=120)
+    day = models.PositiveSmallIntegerField()
+    answers = models.JSONField(default=list)
+    score = models.PositiveSmallIntegerField()
+    total = models.PositiveSmallIntegerField(default=5)
+    passed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [models.Index(fields=['user', 'course_slug', 'day'], name='quizattempt_user_course_day')]
+
+    def __str__(self):
+        return f'{self.user} · {self.course_slug} · day {self.day} · {self.score}/{self.total}'
+
+
 class CourseQuestion(models.Model):
     LEVEL_BASIC = 'basic'
     LEVEL_INTERMEDIATE = 'intermediate'
