@@ -1,0 +1,1160 @@
+[
+  {
+    "level": 1,
+    "title": "Generative AI Foundations",
+    "start": 1,
+    "end": 7,
+    "articleCount": 10,
+    "questionCount": 100,
+    "articleSlugs": [
+      {
+        "slug": "ai-ml-deep-learning",
+        "title": "AI, machine learning and deep learning",
+        "id": "genai-ai-ml-deep-learning",
+        "summary": "AI is the broad task-oriented field; machine learning fits patterns from data, and deep learning uses multilayer neural networks. Rules, classifiers and generators can coexist inside one product. The correct choice follows the decision and its error costs, not a fashionable model label.",
+        "sources": [
+          "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html",
+          "https://huggingface.co/docs/transformers/llm_tutorial"
+        ]
+      },
+      {
+        "slug": "generative-discriminative",
+        "title": "Generative versus discriminative models",
+        "id": "genai-generative-discriminative",
+        "summary": "A classifier predicts a defined label from features; a generator models and emits data conditioned on context. Token-sequence probability is not a calibrated probability that a real-world claim is true. A product can use both kinds of model without confusing their evaluation contracts.",
+        "sources": [
+          "https://huggingface.co/docs/transformers/llm_tutorial"
+        ]
+      },
+      {
+        "slug": "data-splits-leakage",
+        "title": "Data splits and leakage",
+        "id": "genai-data-splits-leakage",
+        "summary": "Leakage lets information unavailable at prediction time influence training or evaluation. Duplicate document revisions, future labels and transformations fitted on all data can produce optimistic results. The evaluation partition must represent the deployment boundary rather than an arbitrary set of rows.",
+        "sources": [
+          "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html",
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide"
+        ]
+      },
+      {
+        "slug": "neurons-and-mlp",
+        "title": "Neurons, perceptrons and MLPs",
+        "id": "genai-neurons-and-mlp",
+        "summary": "A neuron combines a weighted sum, a bias and usually an activation. A perceptron expresses a linear boundary; an MLP composes layers to learn intermediate representations. These numerical functions do not imply human-like understanding or explainability by themselves.",
+        "sources": [
+          "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html"
+        ]
+      },
+      {
+        "slug": "activation-functions",
+        "title": "Activation functions and saturation",
+        "id": "genai-activation-functions",
+        "summary": "Activations introduce nonlinearity into a neural network. Sigmoid, tanh, ReLU and GELU differ in range and gradient behavior. Their effects depend on the architecture, objective and input distribution; naming an activation does not establish a universal accuracy or performance advantage.",
+        "sources": [
+          "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html"
+        ]
+      },
+      {
+        "slug": "gradients-backprop",
+        "title": "Gradients and backpropagation",
+        "id": "genai-gradients-backprop",
+        "summary": "Backpropagation computes loss derivatives through a computation graph using the chain rule. An optimizer uses those derivatives and its own state to update parameters. Automatic differentiation does not select a valid objective, fix data leakage or prove a model will generalize.",
+        "sources": [
+          "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html"
+        ]
+      },
+      {
+        "slug": "nlp-tokenization",
+        "title": "NLP, tokens and tokenization",
+        "id": "genai-nlp-tokenization",
+        "summary": "Tokenizers encode text into model-specific discrete units. A token is not necessarily a word, character or fixed byte count. Subword boundaries vary with vocabulary, script, punctuation and tokenizer version. The tokenizer is part of the model contract, not an interchangeable display utility.",
+        "sources": [
+          "https://huggingface.co/docs/transformers/llm_tutorial"
+        ]
+      },
+      {
+        "slug": "embeddings-vectors",
+        "title": "Embeddings and vector representations",
+        "id": "genai-embeddings-vectors",
+        "summary": "Embeddings represent items as numeric vectors learned for a task. Similarity can propose retrieval candidates, but it does not certify truth, permission or equivalence. Meaningful scores depend on model compatibility, preprocessing, normalization and the chosen distance function.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://huggingface.co/docs/transformers/llm_tutorial"
+        ]
+      },
+      {
+        "slug": "probability-next-token",
+        "title": "Probability and next-token prediction",
+        "id": "genai-probability-next-token",
+        "summary": "An autoregressive language model predicts a distribution over the next token given context. Training loss and the later decoding policy are distinct. A likely token continuation can be fluent while its resulting claim remains unsupported by the permitted evidence.",
+        "sources": [
+          "https://huggingface.co/docs/transformers/llm_tutorial",
+          "https://research.google/pubs/attention-is-all-you-need/"
+        ]
+      },
+      {
+        "slug": "hallucinations-and-limits",
+        "title": "GPT-style models, hallucinations and limits",
+        "id": "genai-hallucinations-and-limits",
+        "summary": "GPT-style generation can produce unsupported or incorrect content that remains persuasive. Grounding, validation and abstention reduce particular failure modes but do not guarantee universal correctness. A citation must correspond to accessible evidence that actually supports the relevant claim.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://huggingface.co/docs/transformers/llm_tutorial",
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/"
+        ]
+      }
+    ],
+    "days": [
+      {
+        "day": 1,
+        "title": "AI, machine learning and deep learning + Generative versus discriminative models",
+        "id": "genai-day-01"
+      },
+      {
+        "day": 2,
+        "title": "Data splits and leakage + Neurons, perceptrons and MLPs",
+        "id": "genai-day-02"
+      },
+      {
+        "day": 3,
+        "title": "Activation functions and saturation + Gradients and backpropagation",
+        "id": "genai-day-03"
+      },
+      {
+        "day": 4,
+        "title": "NLP, tokens and tokenization",
+        "id": "genai-day-04"
+      },
+      {
+        "day": 5,
+        "title": "Embeddings and vector representations",
+        "id": "genai-day-05"
+      },
+      {
+        "day": 6,
+        "title": "Probability and next-token prediction",
+        "id": "genai-day-06"
+      },
+      {
+        "day": 7,
+        "title": "GPT-style models, hallucinations and limits",
+        "id": "genai-day-07"
+      }
+    ],
+    "progressIds": {
+      "articles": [
+        "genai-ai-ml-deep-learning",
+        "genai-generative-discriminative",
+        "genai-data-splits-leakage",
+        "genai-neurons-and-mlp",
+        "genai-activation-functions",
+        "genai-gradients-backprop",
+        "genai-nlp-tokenization",
+        "genai-embeddings-vectors",
+        "genai-probability-next-token",
+        "genai-hallucinations-and-limits"
+      ],
+      "questions": [
+        "genai-l1-001",
+        "genai-l1-002",
+        "genai-l1-003",
+        "genai-l1-004",
+        "genai-l1-005",
+        "genai-l1-006",
+        "genai-l1-007",
+        "genai-l1-008",
+        "genai-l1-009",
+        "genai-l1-010",
+        "genai-l1-011",
+        "genai-l1-012",
+        "genai-l1-013",
+        "genai-l1-014",
+        "genai-l1-015",
+        "genai-l1-016",
+        "genai-l1-017",
+        "genai-l1-018",
+        "genai-l1-019",
+        "genai-l1-020",
+        "genai-l1-021",
+        "genai-l1-022",
+        "genai-l1-023",
+        "genai-l1-024",
+        "genai-l1-025",
+        "genai-l1-026",
+        "genai-l1-027",
+        "genai-l1-028",
+        "genai-l1-029",
+        "genai-l1-030",
+        "genai-l1-031",
+        "genai-l1-032",
+        "genai-l1-033",
+        "genai-l1-034",
+        "genai-l1-035",
+        "genai-l1-036",
+        "genai-l1-037",
+        "genai-l1-038",
+        "genai-l1-039",
+        "genai-l1-040",
+        "genai-l1-041",
+        "genai-l1-042",
+        "genai-l1-043",
+        "genai-l1-044",
+        "genai-l1-045",
+        "genai-l1-046",
+        "genai-l1-047",
+        "genai-l1-048",
+        "genai-l1-049",
+        "genai-l1-050",
+        "genai-l1-051",
+        "genai-l1-052",
+        "genai-l1-053",
+        "genai-l1-054",
+        "genai-l1-055",
+        "genai-l1-056",
+        "genai-l1-057",
+        "genai-l1-058",
+        "genai-l1-059",
+        "genai-l1-060",
+        "genai-l1-061",
+        "genai-l1-062",
+        "genai-l1-063",
+        "genai-l1-064",
+        "genai-l1-065",
+        "genai-l1-066",
+        "genai-l1-067",
+        "genai-l1-068",
+        "genai-l1-069",
+        "genai-l1-070",
+        "genai-l1-071",
+        "genai-l1-072",
+        "genai-l1-073",
+        "genai-l1-074",
+        "genai-l1-075",
+        "genai-l1-076",
+        "genai-l1-077",
+        "genai-l1-078",
+        "genai-l1-079",
+        "genai-l1-080",
+        "genai-l1-081",
+        "genai-l1-082",
+        "genai-l1-083",
+        "genai-l1-084",
+        "genai-l1-085",
+        "genai-l1-086",
+        "genai-l1-087",
+        "genai-l1-088",
+        "genai-l1-089",
+        "genai-l1-090",
+        "genai-l1-091",
+        "genai-l1-092",
+        "genai-l1-093",
+        "genai-l1-094",
+        "genai-l1-095",
+        "genai-l1-096",
+        "genai-l1-097",
+        "genai-l1-098",
+        "genai-l1-099",
+        "genai-l1-100"
+      ],
+      "coding": [
+        "genai-ai-ml-deep-learning",
+        "genai-generative-discriminative",
+        "genai-data-splits-leakage",
+        "genai-neurons-and-mlp",
+        "genai-activation-functions",
+        "genai-gradients-backprop",
+        "genai-nlp-tokenization",
+        "genai-embeddings-vectors",
+        "genai-probability-next-token",
+        "genai-hallucinations-and-limits"
+      ],
+      "assignments": [
+        "genai-day-01",
+        "genai-day-02",
+        "genai-day-03",
+        "genai-day-04",
+        "genai-day-05",
+        "genai-day-06",
+        "genai-day-07"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "title": "LLMs & Transformer Architecture",
+    "start": 8,
+    "end": 14,
+    "articleCount": 10,
+    "questionCount": 100,
+    "articleSlugs": [
+      {
+        "slug": "transformer-blocks",
+        "title": "Transformer blocks and residual streams",
+        "id": "genai-transformer-blocks",
+        "summary": "A transformer combines attention, position information, feed-forward transformations and normalization. Residual connections carry representations between sublayers. A decoder used for autoregressive generation applies causal constraints so a position cannot use future tokens during next-token prediction.",
+        "sources": [
+          "https://research.google/pubs/attention-is-all-you-need/",
+          "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
+        ]
+      },
+      {
+        "slug": "qkv-attention",
+        "title": "Query, key, value and scaled attention",
+        "id": "genai-qkv-attention",
+        "summary": "Queries represent what a position seeks; keys support matching; values provide content to combine. Scaled dot-product attention turns query-key compatibility into normalized weights and uses them to aggregate values. Attention weights are contextual computation, not a universal explanation of model decisions.",
+        "sources": [
+          "https://research.google/pubs/attention-is-all-you-need/"
+        ]
+      },
+      {
+        "slug": "heads-masks-kv",
+        "title": "Attention heads, causal masks and KV sharing",
+        "id": "genai-heads-masks-kv",
+        "summary": "Multi-head attention uses several learned projections to represent different interaction patterns. Causal masks prevent a decoder position from reading future positions. Multi-query and grouped-query variants share key/value representations across query heads in different ways to reduce cache and bandwidth requirements.",
+        "sources": [
+          "https://research.google/pubs/attention-is-all-you-need/",
+          "https://ai.meta.com/research/publications/the-llama-3-herd-of-models",
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics"
+        ]
+      },
+      {
+        "slug": "positions-rope",
+        "title": "Position information and RoPE",
+        "id": "genai-positions-rope",
+        "summary": "Attention without position information does not inherently encode the order of input tokens. Transformers add or otherwise incorporate position signals. Rotary position embeddings apply position-dependent rotations to query/key components, making relative position differences influence their dot products.",
+        "sources": [
+          "https://research.google/pubs/attention-is-all-you-need/",
+          "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
+        ]
+      },
+      {
+        "slug": "encoder-decoder-families",
+        "title": "Encoder, decoder, BERT, GPT and T5",
+        "id": "genai-encoder-decoder-families",
+        "summary": "Encoder-only, decoder-only and encoder-decoder families organize attention and training objectives differently. BERT-style encoders are commonly associated with masked-token representation learning; GPT-style decoders use autoregressive prediction; T5-style systems frame tasks as text-to-text sequence transformation.",
+        "sources": [
+          "https://research.google/pubs/attention-is-all-you-need/",
+          "https://huggingface.co/docs/transformers/llm_tutorial",
+          "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
+        ]
+      },
+      {
+        "slug": "context-prefill-decode",
+        "title": "Context windows, prefill and decoding",
+        "id": "genai-context-prefill-decode",
+        "summary": "A context window limits the tokens a model can attend to in a request, subject to model and service constraints. Prefill processes the supplied prefix; decoding extends it. KV caching avoids recomputing some prior representations but does not make long prompts or long outputs costless.",
+        "sources": [
+          "https://huggingface.co/docs/transformers/llm_tutorial",
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics"
+        ]
+      },
+      {
+        "slug": "sampling-temperature",
+        "title": "Temperature, top-k and top-p sampling",
+        "id": "genai-sampling-temperature",
+        "summary": "Decoding transforms a model distribution into output choices. Temperature rescales logits, top-k limits a fixed number of candidates and top-p retains a probability-mass nucleus. These are sampling controls, not mechanisms that supply missing factual knowledge or guarantee valid output.",
+        "sources": [
+          "https://huggingface.co/docs/transformers/llm_tutorial"
+        ]
+      },
+      {
+        "slug": "prompting-reasoning",
+        "title": "Prompt engineering, examples and reasoning",
+        "id": "genai-prompting-reasoning",
+        "summary": "Prompts specify a task, context and output contract, but they do not replace system permissions or evaluation. Zero-shot instructions and few-shot examples differ in the demonstrations supplied. A useful explanation can show a concise rationale or verifiable calculation without requiring disclosure of private internal chain-of-thought.",
+        "sources": [
+          "https://huggingface.co/docs/transformers/llm_tutorial",
+          "https://www.anthropic.com/research/building-effective-agents",
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/"
+        ]
+      },
+      {
+        "slug": "structured-tools",
+        "title": "Structured outputs and function calling",
+        "id": "genai-structured-tools",
+        "summary": "Structured outputs target a declared response shape; tool calling proposes an application operation with arguments. Neither valid JSON nor a tool name grants authorization. The host must validate types, business rules, user permissions and side effects before executing a model-proposed action.",
+        "sources": [
+          "https://www.anthropic.com/research/building-effective-agents",
+          "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture",
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/"
+        ]
+      },
+      {
+        "slug": "model-comparison",
+        "title": "Model comparison, LLaMA and deployment choices",
+        "id": "genai-model-comparison",
+        "summary": "Model selection balances measured task capability, license terms, data handling, hardware, latency and operating cost. Open-weight availability is not identical to unrestricted open-source licensing. A hosted proprietary API and a self-hosted checkpoint expose different operational responsibilities and control surfaces.",
+        "sources": [
+          "https://ai.meta.com/research/publications/the-llama-3-herd-of-models",
+          "https://huggingface.co/docs/transformers/llm_tutorial",
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics"
+        ]
+      }
+    ],
+    "days": [
+      {
+        "day": 8,
+        "title": "Transformer blocks and residual streams + Query, key, value and scaled attention",
+        "id": "genai-day-08"
+      },
+      {
+        "day": 9,
+        "title": "Attention heads, causal masks and KV sharing + Position information and RoPE",
+        "id": "genai-day-09"
+      },
+      {
+        "day": 10,
+        "title": "Encoder, decoder, BERT, GPT and T5 + Context windows, prefill and decoding",
+        "id": "genai-day-10"
+      },
+      {
+        "day": 11,
+        "title": "Temperature, top-k and top-p sampling",
+        "id": "genai-day-11"
+      },
+      {
+        "day": 12,
+        "title": "Prompt engineering, examples and reasoning",
+        "id": "genai-day-12"
+      },
+      {
+        "day": 13,
+        "title": "Structured outputs and function calling",
+        "id": "genai-day-13"
+      },
+      {
+        "day": 14,
+        "title": "Model comparison, LLaMA and deployment choices",
+        "id": "genai-day-14"
+      }
+    ],
+    "progressIds": {
+      "articles": [
+        "genai-transformer-blocks",
+        "genai-qkv-attention",
+        "genai-heads-masks-kv",
+        "genai-positions-rope",
+        "genai-encoder-decoder-families",
+        "genai-context-prefill-decode",
+        "genai-sampling-temperature",
+        "genai-prompting-reasoning",
+        "genai-structured-tools",
+        "genai-model-comparison"
+      ],
+      "questions": [
+        "genai-l2-001",
+        "genai-l2-002",
+        "genai-l2-003",
+        "genai-l2-004",
+        "genai-l2-005",
+        "genai-l2-006",
+        "genai-l2-007",
+        "genai-l2-008",
+        "genai-l2-009",
+        "genai-l2-010",
+        "genai-l2-011",
+        "genai-l2-012",
+        "genai-l2-013",
+        "genai-l2-014",
+        "genai-l2-015",
+        "genai-l2-016",
+        "genai-l2-017",
+        "genai-l2-018",
+        "genai-l2-019",
+        "genai-l2-020",
+        "genai-l2-021",
+        "genai-l2-022",
+        "genai-l2-023",
+        "genai-l2-024",
+        "genai-l2-025",
+        "genai-l2-026",
+        "genai-l2-027",
+        "genai-l2-028",
+        "genai-l2-029",
+        "genai-l2-030",
+        "genai-l2-031",
+        "genai-l2-032",
+        "genai-l2-033",
+        "genai-l2-034",
+        "genai-l2-035",
+        "genai-l2-036",
+        "genai-l2-037",
+        "genai-l2-038",
+        "genai-l2-039",
+        "genai-l2-040",
+        "genai-l2-041",
+        "genai-l2-042",
+        "genai-l2-043",
+        "genai-l2-044",
+        "genai-l2-045",
+        "genai-l2-046",
+        "genai-l2-047",
+        "genai-l2-048",
+        "genai-l2-049",
+        "genai-l2-050",
+        "genai-l2-051",
+        "genai-l2-052",
+        "genai-l2-053",
+        "genai-l2-054",
+        "genai-l2-055",
+        "genai-l2-056",
+        "genai-l2-057",
+        "genai-l2-058",
+        "genai-l2-059",
+        "genai-l2-060",
+        "genai-l2-061",
+        "genai-l2-062",
+        "genai-l2-063",
+        "genai-l2-064",
+        "genai-l2-065",
+        "genai-l2-066",
+        "genai-l2-067",
+        "genai-l2-068",
+        "genai-l2-069",
+        "genai-l2-070",
+        "genai-l2-071",
+        "genai-l2-072",
+        "genai-l2-073",
+        "genai-l2-074",
+        "genai-l2-075",
+        "genai-l2-076",
+        "genai-l2-077",
+        "genai-l2-078",
+        "genai-l2-079",
+        "genai-l2-080",
+        "genai-l2-081",
+        "genai-l2-082",
+        "genai-l2-083",
+        "genai-l2-084",
+        "genai-l2-085",
+        "genai-l2-086",
+        "genai-l2-087",
+        "genai-l2-088",
+        "genai-l2-089",
+        "genai-l2-090",
+        "genai-l2-091",
+        "genai-l2-092",
+        "genai-l2-093",
+        "genai-l2-094",
+        "genai-l2-095",
+        "genai-l2-096",
+        "genai-l2-097",
+        "genai-l2-098",
+        "genai-l2-099",
+        "genai-l2-100"
+      ],
+      "coding": [
+        "genai-transformer-blocks",
+        "genai-qkv-attention",
+        "genai-heads-masks-kv",
+        "genai-positions-rope",
+        "genai-encoder-decoder-families",
+        "genai-context-prefill-decode",
+        "genai-sampling-temperature",
+        "genai-prompting-reasoning",
+        "genai-structured-tools",
+        "genai-model-comparison"
+      ],
+      "assignments": [
+        "genai-day-08",
+        "genai-day-09",
+        "genai-day-10",
+        "genai-day-11",
+        "genai-day-12",
+        "genai-day-13",
+        "genai-day-14"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "title": "RAG, Fine-tuning & AI Agents",
+    "start": 15,
+    "end": 22,
+    "articleCount": 10,
+    "questionCount": 100,
+    "articleSlugs": [
+      {
+        "slug": "rag-pipeline",
+        "title": "RAG pipeline and evidence contracts",
+        "id": "genai-rag-pipeline",
+        "summary": "Retrieval-augmented generation conditions a language model on retrieved evidence. Retrieval supplies information; it does not train the generator or prove that an answer is true.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/"
+        ]
+      },
+      {
+        "slug": "chunking-metadata",
+        "title": "Document loading, chunking and metadata",
+        "id": "genai-chunking-metadata",
+        "summary": "Chunking turns documents into retrievable units while preserving enough context to answer questions. Chunk size is a tradeoff between semantic completeness and retrieval specificity.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
+        ]
+      },
+      {
+        "slug": "vector-indexes",
+        "title": "Vector databases and similarity search",
+        "id": "genai-vector-indexes",
+        "summary": "A vector index finds nearby embeddings under a chosen similarity metric. Approximate nearest-neighbor search trades some exact recall for speed and memory efficiency.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
+        ]
+      },
+      {
+        "slug": "hybrid-reranking",
+        "title": "Hybrid retrieval and reranking",
+        "id": "genai-hybrid-reranking",
+        "summary": "Hybrid search combines lexical and semantic retrieval. A reranker then scores a smaller candidate set with more expensive query-document interaction.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
+        ]
+      },
+      {
+        "slug": "advanced-rag-evaluation",
+        "title": "Advanced RAG and retrieval evaluation",
+        "id": "genai-advanced-rag-evaluation",
+        "summary": "Advanced RAG adds selective query rewriting, decomposition, or iterative retrieval when a single lookup cannot supply sufficient evidence. Extra steps must justify their complexity.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://docs.ragas.io/en/stable/concepts/metrics/",
+          "https://www.anthropic.com/research/building-effective-agents"
+        ]
+      },
+      {
+        "slug": "lora-qlora-peft",
+        "title": "Fine-tuning, LoRA, QLoRA and PEFT",
+        "id": "genai-lora-qlora-peft",
+        "summary": "Parameter-efficient fine-tuning adapts selected trainable parameters while keeping most pretrained weights frozen. LoRA expresses weight updates through two low-rank matrices.",
+        "sources": [
+          "https://huggingface.co/docs/peft/main/en/conceptual_guides/lora",
+          "https://huggingface.co/docs/transformers/llm_tutorial"
+        ]
+      },
+      {
+        "slug": "quantization",
+        "title": "Quantization and precision tradeoffs",
+        "id": "genai-quantization",
+        "summary": "Quantization represents numbers with a smaller set of discrete values. Scale and zero point map values between integer storage and an approximate floating-point representation.",
+        "sources": [
+          "https://huggingface.co/docs/peft/main/en/conceptual_guides/lora",
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
+          "https://huggingface.co/docs/transformers/llm_tutorial"
+        ]
+      },
+      {
+        "slug": "langchain-langgraph",
+        "title": "LangChain, LangGraph and durable state",
+        "id": "genai-langchain-langgraph",
+        "summary": "Workflow orchestration connects model calls, retrieval, and tools. A state graph makes transitions explicit and can support checkpoints and controlled resumptions.",
+        "sources": [
+          "https://docs.langchain.com/oss/python/langgraph/overview",
+          "https://www.anthropic.com/research/building-effective-agents"
+        ]
+      },
+      {
+        "slug": "mcp-tools-multiagent",
+        "title": "MCP, tools, memory and multi-agent systems",
+        "id": "genai-mcp-tools-multiagent",
+        "summary": "MCP standardizes communication between AI applications and external capabilities. Tool availability does not imply that an agent is authorized to execute every exposed operation.",
+        "sources": [
+          "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture",
+          "https://www.anthropic.com/research/building-effective-agents",
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/"
+        ]
+      },
+      {
+        "slug": "grounded-app-integration",
+        "title": "Building a grounded GenAI application",
+        "id": "genai-grounded-app-integration",
+        "summary": "A complete application combines ingestion, retrieval, generation, user identity, and a usable evidence display. Correctness depends on the boundaries between these components.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/"
+        ]
+      }
+    ],
+    "days": [
+      {
+        "day": 15,
+        "title": "RAG pipeline and evidence contracts + Document loading, chunking and metadata",
+        "id": "genai-day-15"
+      },
+      {
+        "day": 16,
+        "title": "Vector databases and similarity search + Hybrid retrieval and reranking",
+        "id": "genai-day-16"
+      },
+      {
+        "day": 17,
+        "title": "Advanced RAG and retrieval evaluation",
+        "id": "genai-day-17"
+      },
+      {
+        "day": 18,
+        "title": "Fine-tuning, LoRA, QLoRA and PEFT",
+        "id": "genai-day-18"
+      },
+      {
+        "day": 19,
+        "title": "Quantization and precision tradeoffs",
+        "id": "genai-day-19"
+      },
+      {
+        "day": 20,
+        "title": "LangChain, LangGraph and durable state",
+        "id": "genai-day-20"
+      },
+      {
+        "day": 21,
+        "title": "MCP, tools, memory and multi-agent systems",
+        "id": "genai-day-21"
+      },
+      {
+        "day": 22,
+        "title": "Building a grounded GenAI application",
+        "id": "genai-day-22"
+      }
+    ],
+    "progressIds": {
+      "articles": [
+        "genai-rag-pipeline",
+        "genai-chunking-metadata",
+        "genai-vector-indexes",
+        "genai-hybrid-reranking",
+        "genai-advanced-rag-evaluation",
+        "genai-lora-qlora-peft",
+        "genai-quantization",
+        "genai-langchain-langgraph",
+        "genai-mcp-tools-multiagent",
+        "genai-grounded-app-integration"
+      ],
+      "questions": [
+        "genai-l3-001",
+        "genai-l3-002",
+        "genai-l3-003",
+        "genai-l3-004",
+        "genai-l3-005",
+        "genai-l3-006",
+        "genai-l3-007",
+        "genai-l3-008",
+        "genai-l3-009",
+        "genai-l3-010",
+        "genai-l3-011",
+        "genai-l3-012",
+        "genai-l3-013",
+        "genai-l3-014",
+        "genai-l3-015",
+        "genai-l3-016",
+        "genai-l3-017",
+        "genai-l3-018",
+        "genai-l3-019",
+        "genai-l3-020",
+        "genai-l3-021",
+        "genai-l3-022",
+        "genai-l3-023",
+        "genai-l3-024",
+        "genai-l3-025",
+        "genai-l3-026",
+        "genai-l3-027",
+        "genai-l3-028",
+        "genai-l3-029",
+        "genai-l3-030",
+        "genai-l3-031",
+        "genai-l3-032",
+        "genai-l3-033",
+        "genai-l3-034",
+        "genai-l3-035",
+        "genai-l3-036",
+        "genai-l3-037",
+        "genai-l3-038",
+        "genai-l3-039",
+        "genai-l3-040",
+        "genai-l3-041",
+        "genai-l3-042",
+        "genai-l3-043",
+        "genai-l3-044",
+        "genai-l3-045",
+        "genai-l3-046",
+        "genai-l3-047",
+        "genai-l3-048",
+        "genai-l3-049",
+        "genai-l3-050",
+        "genai-l3-051",
+        "genai-l3-052",
+        "genai-l3-053",
+        "genai-l3-054",
+        "genai-l3-055",
+        "genai-l3-056",
+        "genai-l3-057",
+        "genai-l3-058",
+        "genai-l3-059",
+        "genai-l3-060",
+        "genai-l3-061",
+        "genai-l3-062",
+        "genai-l3-063",
+        "genai-l3-064",
+        "genai-l3-065",
+        "genai-l3-066",
+        "genai-l3-067",
+        "genai-l3-068",
+        "genai-l3-069",
+        "genai-l3-070",
+        "genai-l3-071",
+        "genai-l3-072",
+        "genai-l3-073",
+        "genai-l3-074",
+        "genai-l3-075",
+        "genai-l3-076",
+        "genai-l3-077",
+        "genai-l3-078",
+        "genai-l3-079",
+        "genai-l3-080",
+        "genai-l3-081",
+        "genai-l3-082",
+        "genai-l3-083",
+        "genai-l3-084",
+        "genai-l3-085",
+        "genai-l3-086",
+        "genai-l3-087",
+        "genai-l3-088",
+        "genai-l3-089",
+        "genai-l3-090",
+        "genai-l3-091",
+        "genai-l3-092",
+        "genai-l3-093",
+        "genai-l3-094",
+        "genai-l3-095",
+        "genai-l3-096",
+        "genai-l3-097",
+        "genai-l3-098",
+        "genai-l3-099",
+        "genai-l3-100"
+      ],
+      "coding": [
+        "genai-rag-pipeline",
+        "genai-chunking-metadata",
+        "genai-vector-indexes",
+        "genai-hybrid-reranking",
+        "genai-advanced-rag-evaluation",
+        "genai-lora-qlora-peft",
+        "genai-quantization",
+        "genai-langchain-langgraph",
+        "genai-mcp-tools-multiagent",
+        "genai-grounded-app-integration"
+      ],
+      "assignments": [
+        "genai-day-15",
+        "genai-day-16",
+        "genai-day-17",
+        "genai-day-18",
+        "genai-day-19",
+        "genai-day-20",
+        "genai-day-21",
+        "genai-day-22"
+      ]
+    }
+  },
+  {
+    "level": 4,
+    "title": "Production GenAI & MNC Interviews",
+    "start": 23,
+    "end": 30,
+    "articleCount": 10,
+    "questionCount": 100,
+    "articleSlugs": [
+      {
+        "slug": "production-api",
+        "title": "Production APIs and FastAPI concurrency",
+        "id": "genai-production-api",
+        "summary": "A production model API coordinates authentication, validation, model access, deadlines, and response delivery. Asynchronous handlers improve concurrency only when blocking work is managed correctly.",
+        "sources": [
+          "https://fastapi.tiangolo.com/async/",
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics"
+        ]
+      },
+      {
+        "slug": "rag-system-design",
+        "title": "Scalable RAG system design",
+        "id": "genai-rag-system-design",
+        "summary": "Scalable RAG separates ingestion throughput from interactive retrieval and generation latency. Consistency, tenant isolation, and freshness are architectural concerns rather than prompt settings.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
+          "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/"
+        ]
+      },
+      {
+        "slug": "evaluation-judges",
+        "title": "LLM evaluation, RAGAS and model judges",
+        "id": "genai-evaluation-judges",
+        "summary": "Evaluation measures behavior against a defined task and evidence standard. Retrieval metrics, answer correctness, faithfulness, and user outcomes describe different properties.",
+        "sources": [
+          "https://docs.ragas.io/en/stable/concepts/metrics/",
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide"
+        ]
+      },
+      {
+        "slug": "guardrails-injection",
+        "title": "Guardrails, prompt injection and AI security",
+        "id": "genai-guardrails-injection",
+        "summary": "Prompt injection occurs when untrusted content attempts to redirect application behavior. It is a trust-boundary problem, including indirect instructions hidden in retrieved documents or tool results.",
+        "sources": [
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/",
+          "https://www.anthropic.com/research/building-effective-agents",
+          "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture"
+        ]
+      },
+      {
+        "slug": "responsible-ai-privacy",
+        "title": "Responsible AI, privacy and human oversight",
+        "id": "genai-responsible-ai-privacy",
+        "summary": "Responsible deployment requires understanding affected users, sensitive data, failure consequences, and appropriate human control. Average quality metrics can hide unequal or harmful outcomes.",
+        "sources": [
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/",
+          "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
+        ]
+      },
+      {
+        "slug": "llmops-monitoring",
+        "title": "LLMOps, observability and controlled releases",
+        "id": "genai-llmops-monitoring",
+        "summary": "LLMOps manages the versions and operational behavior of model-powered applications. Model, prompt, retriever, corpus, and tool changes can each alter outcomes.",
+        "sources": [
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
+          "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+          "https://docs.ragas.io/en/stable/concepts/metrics/"
+        ]
+      },
+      {
+        "slug": "latency-token-cost",
+        "title": "Latency, token cost and caching",
+        "id": "genai-latency-token-cost",
+        "summary": "GenAI cost and latency depend on prompt length, generated length, model choice, concurrency, and caching. Optimize against an explicit quality target rather than minimizing one metric in isolation.",
+        "sources": [
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
+          "https://huggingface.co/docs/transformers/llm_tutorial"
+        ]
+      },
+      {
+        "slug": "gpu-inference",
+        "title": "GPU inference, batching and KV memory",
+        "id": "genai-gpu-inference",
+        "summary": "GPU inference performance depends on model weights, activations, KV cache, memory bandwidth, and scheduling. Different request phases stress hardware differently.",
+        "sources": [
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
+          "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
+        ]
+      },
+      {
+        "slug": "docker-k8s-cloud",
+        "title": "Docker, Kubernetes and cloud deployment",
+        "id": "genai-docker-k8s-cloud",
+        "summary": "Containers package an application runtime, while orchestration manages replicas, networking, rollout, and recovery. Successful deployment also requires model readiness, secrets, and external dependencies.",
+        "sources": [
+          "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+          "https://fastapi.tiangolo.com/async/",
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics"
+        ]
+      },
+      {
+        "slug": "incident-response-projects",
+        "title": "Production debugging and MNC mock interviews",
+        "id": "genai-incident-response-projects",
+        "summary": "Production debugging starts with a reproducible symptom, bounded impact, and evidence. Interview preparation should demonstrate reasoning and truthful engineering ownership rather than memorized claims.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+          "https://docs.ragas.io/en/stable/concepts/metrics/",
+          "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/",
+          "https://docs.nvidia.com/nim/benchmarking/llm/metrics"
+        ]
+      }
+    ],
+    "days": [
+      {
+        "day": 23,
+        "title": "Production APIs and FastAPI concurrency + Scalable RAG system design",
+        "id": "genai-day-23"
+      },
+      {
+        "day": 24,
+        "title": "LLM evaluation, RAGAS and model judges + Guardrails, prompt injection and AI security",
+        "id": "genai-day-24"
+      },
+      {
+        "day": 25,
+        "title": "Responsible AI, privacy and human oversight",
+        "id": "genai-day-25"
+      },
+      {
+        "day": 26,
+        "title": "LLMOps, observability and controlled releases",
+        "id": "genai-day-26"
+      },
+      {
+        "day": 27,
+        "title": "Latency, token cost and caching",
+        "id": "genai-day-27"
+      },
+      {
+        "day": 28,
+        "title": "GPU inference, batching and KV memory",
+        "id": "genai-day-28"
+      },
+      {
+        "day": 29,
+        "title": "Docker, Kubernetes and cloud deployment",
+        "id": "genai-day-29"
+      },
+      {
+        "day": 30,
+        "title": "Production debugging and MNC mock interviews",
+        "id": "genai-day-30"
+      }
+    ],
+    "progressIds": {
+      "articles": [
+        "genai-production-api",
+        "genai-rag-system-design",
+        "genai-evaluation-judges",
+        "genai-guardrails-injection",
+        "genai-responsible-ai-privacy",
+        "genai-llmops-monitoring",
+        "genai-latency-token-cost",
+        "genai-gpu-inference",
+        "genai-docker-k8s-cloud",
+        "genai-incident-response-projects"
+      ],
+      "questions": [
+        "genai-l4-001",
+        "genai-l4-002",
+        "genai-l4-003",
+        "genai-l4-004",
+        "genai-l4-005",
+        "genai-l4-006",
+        "genai-l4-007",
+        "genai-l4-008",
+        "genai-l4-009",
+        "genai-l4-010",
+        "genai-l4-011",
+        "genai-l4-012",
+        "genai-l4-013",
+        "genai-l4-014",
+        "genai-l4-015",
+        "genai-l4-016",
+        "genai-l4-017",
+        "genai-l4-018",
+        "genai-l4-019",
+        "genai-l4-020",
+        "genai-l4-021",
+        "genai-l4-022",
+        "genai-l4-023",
+        "genai-l4-024",
+        "genai-l4-025",
+        "genai-l4-026",
+        "genai-l4-027",
+        "genai-l4-028",
+        "genai-l4-029",
+        "genai-l4-030",
+        "genai-l4-031",
+        "genai-l4-032",
+        "genai-l4-033",
+        "genai-l4-034",
+        "genai-l4-035",
+        "genai-l4-036",
+        "genai-l4-037",
+        "genai-l4-038",
+        "genai-l4-039",
+        "genai-l4-040",
+        "genai-l4-041",
+        "genai-l4-042",
+        "genai-l4-043",
+        "genai-l4-044",
+        "genai-l4-045",
+        "genai-l4-046",
+        "genai-l4-047",
+        "genai-l4-048",
+        "genai-l4-049",
+        "genai-l4-050",
+        "genai-l4-051",
+        "genai-l4-052",
+        "genai-l4-053",
+        "genai-l4-054",
+        "genai-l4-055",
+        "genai-l4-056",
+        "genai-l4-057",
+        "genai-l4-058",
+        "genai-l4-059",
+        "genai-l4-060",
+        "genai-l4-061",
+        "genai-l4-062",
+        "genai-l4-063",
+        "genai-l4-064",
+        "genai-l4-065",
+        "genai-l4-066",
+        "genai-l4-067",
+        "genai-l4-068",
+        "genai-l4-069",
+        "genai-l4-070",
+        "genai-l4-071",
+        "genai-l4-072",
+        "genai-l4-073",
+        "genai-l4-074",
+        "genai-l4-075",
+        "genai-l4-076",
+        "genai-l4-077",
+        "genai-l4-078",
+        "genai-l4-079",
+        "genai-l4-080",
+        "genai-l4-081",
+        "genai-l4-082",
+        "genai-l4-083",
+        "genai-l4-084",
+        "genai-l4-085",
+        "genai-l4-086",
+        "genai-l4-087",
+        "genai-l4-088",
+        "genai-l4-089",
+        "genai-l4-090",
+        "genai-l4-091",
+        "genai-l4-092",
+        "genai-l4-093",
+        "genai-l4-094",
+        "genai-l4-095",
+        "genai-l4-096",
+        "genai-l4-097",
+        "genai-l4-098",
+        "genai-l4-099",
+        "genai-l4-100"
+      ],
+      "coding": [
+        "genai-production-api",
+        "genai-rag-system-design",
+        "genai-evaluation-judges",
+        "genai-guardrails-injection",
+        "genai-responsible-ai-privacy",
+        "genai-llmops-monitoring",
+        "genai-latency-token-cost",
+        "genai-gpu-inference",
+        "genai-docker-k8s-cloud",
+        "genai-incident-response-projects"
+      ],
+      "assignments": [
+        "genai-day-23",
+        "genai-day-24",
+        "genai-day-25",
+        "genai-day-26",
+        "genai-day-27",
+        "genai-day-28",
+        "genai-day-29",
+        "genai-day-30"
+      ]
+    }
+  }
+]

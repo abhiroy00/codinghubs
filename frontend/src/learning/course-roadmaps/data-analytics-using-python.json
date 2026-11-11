@@ -1,0 +1,2204 @@
+{
+  "slug": "data-analytics-using-python",
+  "name": "Data Analytics Using Python",
+  "focus": "Python analytics",
+  "track": "data",
+  "tools": [
+    "Python",
+    "pandas",
+    "SQL",
+    "Jupyter",
+    "Power BI",
+    "Git"
+  ],
+  "projects": [
+    {
+      "name": "Python data exploration",
+      "description": "Clean and explore a dataset with pandas and reproducible notebooks.",
+      "objectives": [
+        "Profile missingness and outliers",
+        "Explain findings with charts"
+      ],
+      "requirements": [
+        "CSV or tabular data",
+        "Analysis question"
+      ],
+      "steps": [
+        "Inspect schema and duplicates.",
+        "Clean values using documented rules.",
+        "Explore distributions and segments.",
+        "Summarize evidence and caveats."
+      ],
+      "outcome": "A reproducible analysis notebook.",
+      "skills": [
+        "Python",
+        "pandas",
+        "visualization"
+      ]
+    },
+    {
+      "name": "Business metrics dashboard",
+      "description": "Use Python to prepare and validate data for a decision-focused report.",
+      "objectives": [
+        "Keep transformations testable",
+        "Reconcile totals"
+      ],
+      "requirements": [
+        "Metric definitions",
+        "Representative edge cases"
+      ],
+      "steps": [
+        "Load and validate records.",
+        "Calculate metrics at the proper grain.",
+        "Create a clear chart or report.",
+        "Test totals and document refresh steps."
+      ],
+      "outcome": "A repeatable metric report with validation.",
+      "skills": [
+        "Python",
+        "SQL",
+        "communication"
+      ]
+    },
+    {
+      "name": "Python analytics capstone",
+      "description": "Create an end-to-end analysis pipeline with documented assumptions.",
+      "objectives": [
+        "Make the workflow reproducible",
+        "Connect results to a decision"
+      ],
+      "requirements": [
+        "Data source and question",
+        "Acceptance criteria"
+      ],
+      "steps": [
+        "Prepare a clean dataset.",
+        "Analyze and validate measures.",
+        "Visualize the key findings.",
+        "Present recommendation and limitations."
+      ],
+      "outcome": "A portfolio-ready Python analytics project.",
+      "skills": [
+        "data cleaning",
+        "analysis",
+        "evidence-based communication"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "data-analytics-using-python",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Data and analytical foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "data-analytics-using-python:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "Python Data Types and Core Structures for Analysts",
+            "module": "Python foundations for analysts",
+            "level": "Beginner",
+            "objectives": [
+              "Explain Python's built-in scalar types (int, float, str, bool, None) and when an analyst meets each one.",
+              "Choose between list, tuple, dict and set for a given data task and justify the choice.",
+              "Describe mutability and why aliasing a list can silently change data.",
+              "Convert raw text values into numbers safely and treat bad values as missing.",
+              "Answer common interview questions on float precision, None and type conversion."
+            ],
+            "definition": "Python data types describe what kind of value a variable holds and which operations are allowed on it. Analysts work mostly with numbers (int, float), text (str), true/false flags (bool), the missing marker None, and four containers: list (ordered, changeable), tuple (ordered, fixed), dict (key to value lookup) and set (unique items). pandas and NumPy are built on top of these ideas, so understanding them explains much of how those libraries behave.",
+            "theory": [
+              {
+                "heading": "Scalar types an analyst uses every day",
+                "body": "Every value read from a file starts life as a string. Turning '1,250' or '3.5' into numbers is the analyst's first job, and mistakes here flow into every later calculation. Integers have unlimited precision in Python, while floats follow the IEEE 754 double-precision standard, which cannot represent most decimal fractions exactly.",
+                "points": [
+                  "int: whole numbers such as order counts; unlimited size.",
+                  "float: decimals such as prices; 0.1 + 0.2 gives 0.30000000000000004.",
+                  "str: text such as city names; immutable, so methods return new strings.",
+                  "bool: True/False flags; True behaves as 1 in arithmetic, so sum(flags) counts True values.",
+                  "None: Python's 'no value' marker; pandas shows missing numbers as NaN instead."
+                ]
+              },
+              {
+                "heading": "Containers: list, tuple, dict and set",
+                "body": "The container you pick decides how fast lookups are and whether data can change. A list keeps order and allows duplicates, which suits a column of values. A dict maps keys to values with average O(1) lookup, which suits counts per category or a row represented as column-to-value. A set removes duplicates and answers membership questions quickly. A tuple is a fixed record, useful as a dictionary key such as (city, month).",
+                "points": [
+                  "list: [120, 85, 97]; ordered, mutable, allows duplicates.",
+                  "tuple: ('Pune', 2024); ordered, immutable, hashable if its items are.",
+                  "dict: {'Pune': 120}; key lookup, insertion order preserved since Python 3.7.",
+                  "set: {'Pune', 'Delhi'}; unique items, fast 'in' checks, no order."
+                ]
+              },
+              {
+                "heading": "Mutability and aliasing",
+                "body": "Assigning a list to another name does not copy it; both names point to the same object. If you append to one, the other changes too. This is the same reason pandas warns about modifying a slice of a DataFrame: you must know whether you hold a view or a copy. Use list(x), x.copy() or copy.deepcopy(x) when you need an independent copy.",
+                "points": [
+                  "Mutable: list, dict, set. Immutable: int, float, str, tuple, bool.",
+                  "b = a shares the object; b = a.copy() makes a shallow copy.",
+                  "Default arguments such as def f(x=[]) are created once and shared between calls."
+                ]
+              },
+              {
+                "heading": "Type conversion and missing values",
+                "body": "Real data contains blanks, 'NA', 'null' and typing errors. Calling float() on such text raises ValueError, so analysts wrap conversion in try/except and count failures as missing rather than crashing. The string 'nan' does convert to a float NaN, and NaN is not equal to itself, which is why missing-value checks use special functions (math.isnan, pandas isna) instead of ==.",
+                "points": [
+                  "int('42') works; int('4.5') raises ValueError; int(float('4.5')) truncates to 4.",
+                  "float('nan') != float('nan') is True.",
+                  "Decide explicitly whether missing values are skipped, filled or reported."
+                ]
+              },
+              {
+                "heading": "Why this matters in pandas",
+                "body": "pandas columns have a dtype such as int64, float64, object, bool or datetime64. A single text value in a numeric column turns it into object dtype, which is slower and breaks arithmetic. An integer column with a missing value becomes float64 because NaN is a float, unless you use the nullable Int64 dtype. Knowing the underlying Python types lets you predict and fix these surprises.",
+                "points": [
+                  "One bad string makes a column object dtype.",
+                  "Missing values in an int column turn it into float64.",
+                  "Nullable dtypes (Int64, boolean, string) keep a proper missing marker, pd.NA."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Cleaning a raw list of order amounts",
+              "body": "A store exports order amounts as text, with some blanks and typing errors. We convert what we can to floats, count what we cannot, and compute a safe average. The same steps happen inside pd.to_numeric(errors='coerce').",
+              "code": {
+                "language": "python",
+                "source": "raw = ['1250', '980.5', '', 'NA', '1100', 'abc']\nvalues, missing = [], 0\nfor item in raw:\n    try:\n        values.append(float(item))\n    except ValueError:\n        missing += 1\n\nprint(values)                  # [1250.0, 980.5, 1100.0]\nprint(missing)                 # 3\nprint(round(sum(values) / len(values), 2))  # 1110.17"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Data import checks",
+                "description": "Converting text columns from CSV exports into numbers and counting values that failed conversion before analysis starts."
+              },
+              {
+                "title": "Category counts",
+                "description": "Using a dict to count orders per city or a set to find the distinct products sold."
+              },
+              {
+                "title": "Composite keys",
+                "description": "Using tuples such as (region, month) as dictionary keys to store monthly totals per region."
+              },
+              {
+                "title": "Flag columns",
+                "description": "Storing booleans like is_returned and summing them to count returns, the same trick used on pandas boolean masks."
+              }
+            ],
+            "demonstration": {
+              "description": "Run these lines in a Python shell to see the behaviours interviewers ask about: float precision, aliasing, NaN comparison and set deduplication.",
+              "code": {
+                "language": "python",
+                "source": "print(0.1 + 0.2 == 0.3)\nprint(round(0.1 + 0.2, 2) == 0.3)\na = [1, 2]\nb = a\nb.append(3)\nprint(a)\nx = float('nan')\nprint(x == x)\nprint(len({'Pune', 'Delhi', 'Pune'}))\nprint(sum([True, False, True, True]))"
+              },
+              "output": "False\nTrue\n[1, 2, 3]\nFalse\n2\n3"
+            },
+            "takeaways": [
+              "Everything read from a file starts as text; convert deliberately and count failures.",
+              "Floats are approximate, so compare with rounding or math.isclose, never with == on computed values.",
+              "Pick the container by the question: order (list), fixed record (tuple), lookup (dict), uniqueness (set).",
+              "Assignment shares mutable objects; copy when you need independence.",
+              "NaN is not equal to itself; use dedicated functions to detect missing values.",
+              "pandas dtypes mirror these types, which explains object columns and int-to-float conversions."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between a list and a tuple, and when would you use each?",
+                "answer": "Both are ordered sequences. A list is mutable, so it suits a collection that grows or changes, such as values read from a file. A tuple is immutable and hashable when its items are, so it suits fixed records and dictionary keys such as (city, month).",
+                "explanation": "A strong answer mentions immutability, hashability and a concrete analytics use, not just syntax differences."
+              },
+              {
+                "question": "Why does 0.1 + 0.2 not equal 0.3 in Python?",
+                "answer": "Floats are stored in binary using IEEE 754 double precision, and 0.1 and 0.2 have no exact binary representation, so the sum is 0.30000000000000004. Compare with math.isclose or round, and use decimal.Decimal for money when exactness matters.",
+                "explanation": "Interviewers want the cause (binary representation) and the practical fix, especially for financial data."
+              },
+              {
+                "question": "When would you use a dict instead of a list?",
+                "answer": "When you need to look up values by a key, for example totals per region. Dict lookups are O(1) on average, while finding an item in a list is O(n).",
+                "explanation": "Mentioning time complexity and a realistic grouping example shows you think about performance."
+              },
+              {
+                "question": "What is the difference between None and NaN?",
+                "answer": "None is Python's object meaning 'no value'. NaN is a special float value meaning 'not a number', used by NumPy and pandas for missing numeric data. NaN is not equal to itself, so missing values are detected with functions such as pd.isna rather than ==.",
+                "explanation": "Good answers connect this to pandas: a float column stores missing values as NaN, while an object column can hold None."
+              },
+              {
+                "question": "Why does a pandas integer column become float when it has missing values, and how can you avoid it?",
+                "answer": "The classic NaN marker is a float, and NumPy int64 has no missing marker, so pandas upcasts the column to float64. Use the nullable 'Int64' dtype (capital I), which stores missing values as pd.NA while keeping integers.",
+                "explanation": "This advanced question checks whether you understand dtypes rather than only using pandas functions."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Summarise a column of raw values",
+              "difficulty": "Basic",
+              "objective": "Convert raw text values into numbers safely, count missing entries and compute basic summary statistics, as you would before trusting a column.",
+              "statement": "A single line contains comma-separated values from one spreadsheet column. A value is valid if it converts to a float and is not NaN; everything else (blank, NA, null, text, nan) counts as missing. Print the number of valid and missing values, then the sum, minimum, maximum and mean of the valid values, each with two decimals. If there are no valid values, print the two counts and then 'summary: not available'.",
+              "language": "python",
+              "input_format": "One line of comma-separated values. Spaces around values should be ignored.",
+              "output_format": "count: <n>\nmissing: <m>\nsum: <x.xx>\nmin: <x.xx>\nmax: <x.xx>\nmean: <x.xx>\nor, when n is 0, the two count lines followed by 'summary: not available'.",
+              "example": {
+                "input": "12, 7.5, NA, 3, , abc\n",
+                "output": "count: 3\nmissing: 3\nsum: 22.50\nmin: 3.00\nmax: 12.00\nmean: 7.50"
+              },
+              "constraints": [
+                "The line has between 1 and 1000 comma-separated tokens.",
+                "Treat the token 'nan' (any case) as missing even though float() accepts it.",
+                "Format every number with exactly two decimals."
+              ],
+              "starter": "line = input()\nvalues, missing = [], 0\n\nfor token in line.split(','):\n    token = token.strip()\n    # TODO: convert to float, count missing values\n\n# TODO: print the summary\n",
+              "solution": "import math\n\nline = input()\nvalues, missing = [], 0\nfor token in line.split(','):\n    token = token.strip()\n    try:\n        number = float(token)\n    except ValueError:\n        missing += 1\n        continue\n    if math.isnan(number):\n        missing += 1\n    else:\n        values.append(number)\n\nprint(f'count: {len(values)}')\nprint(f'missing: {missing}')\nif values:\n    total = sum(values)\n    print(f'sum: {total:.2f}')\n    print(f'min: {min(values):.2f}')\n    print(f'max: {max(values):.2f}')\n    print(f'mean: {total / len(values):.2f}')\nelse:\n    print('summary: not available')\n",
+              "explanation": [
+                "Split the line on commas and strip spaces from each token.",
+                "Try float(); a ValueError means the token is missing. Also treat NaN as missing because float('nan') succeeds.",
+                "Keep valid numbers in a list and count the rest.",
+                "If any values exist, compute sum, min, max and mean and format them with two decimals; otherwise print the fallback line."
+              ],
+              "tests": [
+                {
+                  "input": "12, 7.5, NA, 3, , abc\n",
+                  "output": "count: 3\nmissing: 3\nsum: 22.50\nmin: 3.00\nmax: 12.00\nmean: 7.50"
+                },
+                {
+                  "input": "10,20,25\n",
+                  "output": "count: 3\nmissing: 0\nsum: 55.00\nmin: 10.00\nmax: 25.00\nmean: 18.33"
+                },
+                {
+                  "input": "NA,,null\n",
+                  "output": "count: 0\nmissing: 3\nsummary: not available"
+                },
+                {
+                  "input": "-4.5, 2, NaN, 8\n",
+                  "output": "count: 3\nmissing: 1\nsum: 5.50\nmin: -4.50\nmax: 8.00\nmean: 1.83"
+                },
+                {
+                  "input": "42\n",
+                  "output": "count: 1\nmissing: 0\nsum: 42.00\nmin: 42.00\nmax: 42.00\nmean: 42.00"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this list aliasing code print?",
+                "code": "a = [10, 20]\nb = a\nb.append(30)\nprint(len(a))",
+                "options": [
+                  "Error",
+                  "None",
+                  "2",
+                  "3"
+                ],
+                "answer": 3,
+                "explanation": "b = a makes both names refer to the same list, so appending through b also changes a, which now has 3 items."
+              },
+              {
+                "type": "concept",
+                "question": "Which container is the best choice for counting how many orders came from each city?",
+                "options": [
+                  "A tuple of city names",
+                  "A set of city names",
+                  "A dict mapping city to count",
+                  "A string of city names joined by commas"
+                ],
+                "answer": 2,
+                "explanation": "A dict gives O(1) lookup and update per city. A set loses the counts and a tuple cannot be updated."
+              },
+              {
+                "type": "output",
+                "question": "What does this NaN comparison print?",
+                "code": "x = float('nan')\nprint(x == x)",
+                "options": [
+                  "nan",
+                  "ValueError",
+                  "False",
+                  "True"
+                ],
+                "answer": 2,
+                "explanation": "By the IEEE 754 standard NaN is not equal to anything, including itself, so the comparison is False."
+              },
+              {
+                "type": "scenario",
+                "question": "A pandas column of customer ages is int64. After loading a new file with two blank ages, the column becomes float64. Why?",
+                "options": [
+                  "pandas always stores ages as floats",
+                  "The CSV reader rounds all numbers",
+                  "Blank cells are read as zero",
+                  "Missing values are stored as NaN, which is a float, so the column is upcast"
+                ],
+                "answer": 3,
+                "explanation": "NumPy int64 cannot hold NaN, so pandas upcasts to float64. The nullable Int64 dtype avoids this."
+              },
+              {
+                "type": "concept",
+                "question": "Which of these can be used as a dictionary key?",
+                "options": [
+                  "{'Pune': 2024}",
+                  "{'Pune', 2024}",
+                  "['Pune', 2024]",
+                  "('Pune', 2024)"
+                ],
+                "answer": 3,
+                "explanation": "Dictionary keys must be hashable. A tuple of immutable items is hashable; lists, dicts and sets are mutable and are not."
+              }
+            ]
+          }
+        },
+        {
+          "id": "data-analytics-using-python:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+            "module": "Python foundations for analysts",
+            "level": "Beginner",
+            "objectives": [
+              "Build and transform lists with slicing, sorting and list comprehensions.",
+              "Use dicts, defaultdict and Counter to group and count records.",
+              "Write dict and set comprehensions with conditions.",
+              "Sort records by several keys using key functions.",
+              "Explain when comprehensions help readability and when a loop is clearer."
+            ],
+            "definition": "A comprehension is a compact Python expression that builds a new list, dict or set by looping over an iterable, optionally filtering items with a condition. Combined with dictionaries for grouping and counting, comprehensions let an analyst reshape small datasets in a few readable lines, which is exactly what pandas later does at scale.",
+            "theory": [
+              {
+                "heading": "Working with lists",
+                "body": "Lists hold a sequence of values such as daily sales. Slicing (sales[:7]) returns a new list, negative indexes count from the end, and sorted() returns a new sorted list while list.sort() sorts in place and returns None. Forgetting that .sort() returns None is a classic bug in interview code.",
+                "points": [
+                  "sales[-1] is the last item; sales[::-1] is a reversed copy.",
+                  "sorted(rows, key=lambda r: r['amount'], reverse=True) sorts records by a field.",
+                  "Sorting by a tuple key, key=lambda r: (-r['amount'], r['name']), gives descending amount then ascending name."
+                ]
+              },
+              {
+                "heading": "Comprehensions: list, dict and set",
+                "body": "A comprehension has the shape [expression for item in iterable if condition]. It is usually faster than an equivalent loop with append because the loop runs inside the interpreter's optimised bytecode, and it reads like a sentence. Dict comprehensions build lookups, set comprehensions collect unique values. Avoid stuffing several nested loops and conditions into one comprehension; readability matters more than brevity.",
+                "points": [
+                  "[p * 1.18 for p in prices] adds 18% GST to every price.",
+                  "{name: score for name, score in pairs if score >= 40} keeps passing students.",
+                  "{row['city'] for row in rows} gives the distinct cities.",
+                  "The if at the end filters; a conditional expression (a if c else b) at the front transforms."
+                ]
+              },
+              {
+                "heading": "Grouping and counting with dictionaries",
+                "body": "Grouping is the heart of analytics: total sales per region, customers per city. In plain Python you loop once over the records and accumulate into a dict. collections.defaultdict removes the need to check whether a key exists, and collections.Counter counts hashable items and offers most_common(). This single-pass pattern is what pandas groupby performs internally in optimised code.",
+                "points": [
+                  "totals = defaultdict(float); totals[region] += amount",
+                  "Counter(cities).most_common(3) gives the top three cities.",
+                  "dict.get(key, 0) returns a default without raising KeyError."
+                ]
+              },
+              {
+                "heading": "Useful built-ins: zip, enumerate, any, all",
+                "body": "zip pairs values from two lists, for example column names with a row's values to build a record dict. enumerate gives an index while looping without manual counters. any and all answer yes/no questions over a sequence, such as whether any value is negative, and stop early as soon as the answer is known.",
+                "points": [
+                  "dict(zip(header, values)) turns a CSV row into a record.",
+                  "for i, row in enumerate(rows, start=1) numbers rows from 1.",
+                  "all(v >= 0 for v in amounts) validates a column."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Revenue per region with a dict comprehension and defaultdict",
+              "body": "We turn raw rows into records with zip, keep only paid orders with a comprehension, then accumulate revenue per region. The pandas equivalent is df[df.status == 'paid'].groupby('region')['amount'].sum().",
+              "code": {
+                "language": "python",
+                "source": "from collections import defaultdict\n\nheader = ['region', 'amount', 'status']\nrows = [['North', 500, 'paid'], ['South', 300, 'refunded'],\n        ['North', 250, 'paid'], ['South', 400, 'paid']]\nrecords = [dict(zip(header, r)) for r in rows]\npaid = [r for r in records if r['status'] == 'paid']\n\nrevenue = defaultdict(int)\nfor r in paid:\n    revenue[r['region']] += r['amount']\nprint(dict(revenue))   # {'North': 750, 'South': 400}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Quick frequency tables",
+                "description": "Counting product categories or error codes with Counter before loading anything into pandas."
+              },
+              {
+                "title": "Lookup tables",
+                "description": "Building a dict from product ID to price to enrich order records, the manual version of a merge."
+              },
+              {
+                "title": "Validation",
+                "description": "Using any/all with comprehensions to check that IDs are unique or amounts are positive."
+              },
+              {
+                "title": "Preparing API payloads",
+                "description": "Turning lists of records into dicts keyed by ID before sending or storing them as JSON."
+              }
+            ],
+            "demonstration": {
+              "description": "Comprehensions with filters and transforms, a Counter and a multi-key sort on a small list of records.",
+              "code": {
+                "language": "python",
+                "source": "from collections import Counter\n\nmarks = [35, 72, 90, 41, 58]\nprint([m for m in marks if m >= 40])\nprint(['pass' if m >= 40 else 'fail' for m in marks])\n\ncities = ['Pune', 'Delhi', 'Pune', 'Chennai', 'Delhi', 'Pune']\nprint(Counter(cities).most_common(2))\n\nstaff = [('Asha', 50000), ('Ravi', 65000), ('Bina', 50000)]\nprint(sorted(staff, key=lambda s: (-s[1], s[0])))"
+              },
+              "output": "[72, 90, 41, 58]\n['fail', 'pass', 'pass', 'pass', 'pass']\n[('Pune', 3), ('Delhi', 2)]\n[('Ravi', 65000), ('Asha', 50000), ('Bina', 50000)]"
+            },
+            "takeaways": [
+              "Comprehensions build lists, dicts and sets in one readable expression; keep them simple.",
+              "A trailing if filters items; a leading if-else transforms every item.",
+              "defaultdict and Counter make grouping and counting a single pass over the data.",
+              "sorted() returns a new list; list.sort() sorts in place and returns None.",
+              "Tuple sort keys handle multi-column ordering, with negation for descending numbers.",
+              "These patterns are the mental model behind pandas filtering and groupby."
+            ],
+            "interview": [
+              {
+                "question": "What is a list comprehension and why would you use it?",
+                "answer": "It is an expression such as [x * 2 for x in values if x > 0] that builds a new list from an iterable with optional filtering. It is concise, readable for simple transformations and usually faster than a loop that calls append.",
+                "explanation": "Mention both readability and speed, and that very complex comprehensions should be rewritten as loops."
+              },
+              {
+                "question": "What is the difference between sorted(x) and x.sort()?",
+                "answer": "sorted() works on any iterable and returns a new list, leaving the original unchanged. list.sort() sorts the list in place and returns None.",
+                "explanation": "Interviewers often show code like x = x.sort() to see if you spot that x becomes None."
+              },
+              {
+                "question": "How would you count the frequency of each item in a list?",
+                "answer": "Use collections.Counter(items), which returns a dict-like object of counts and supports most_common(n). Without imports, loop and use counts[item] = counts.get(item, 0) + 1.",
+                "explanation": "Showing both the library way and the manual way demonstrates understanding, not just recall."
+              },
+              {
+                "question": "How do you sort a list of records by amount descending and then by name ascending?",
+                "answer": "Use a tuple key: sorted(records, key=lambda r: (-r['amount'], r['name'])). Negating the number reverses its order while names stay ascending. For non-numeric keys, sort twice using stable sorting: first by the secondary key, then by the primary key with reverse=True.",
+                "explanation": "Knowing that Python's sort is stable and how to exploit it is a strong advanced signal."
+              },
+              {
+                "question": "When is a comprehension the wrong choice?",
+                "answer": "When it needs several nested loops and conditions, has side effects such as printing or writing files, or when the data is large and a generator expression or pandas vectorised operation would avoid building a full list in memory.",
+                "explanation": "Good answers mention generator expressions, e.g. sum(x for x in values), to avoid creating an intermediate list."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Category units and distinct products",
+              "difficulty": "Basic",
+              "objective": "Group records with dictionaries and sets, then sort the result by several keys.",
+              "statement": "Each order line has a product name, a category and a quantity. For each category, compute the total units sold and the number of distinct products. Print the categories sorted by total units descending; break ties by category name ascending. If there are no order lines, print 'no data'.",
+              "language": "python",
+              "input_format": "The first line is N, the number of order lines. Each of the next N lines is product,category,quantity. Spaces around fields should be ignored.",
+              "output_format": "One line per category: <category> | units=<total> | products=<distinct count>, or 'no data' when N is 0.",
+              "example": {
+                "input": "5\nLaptop,Electronics,2\nPen,Stationery,10\nPhone,Electronics,3\nLaptop,Electronics,1\nNotebook,Stationery,4\n",
+                "output": "Stationery | units=14 | products=2\nElectronics | units=6 | products=2"
+              },
+              "constraints": [
+                "0 <= N <= 10000; quantity is a non-negative integer.",
+                "Product and category names are case-sensitive after trimming spaces.",
+                "A product appearing several times in a category counts once."
+              ],
+              "starter": "from collections import defaultdict\n\nn = int(input())\nunits = defaultdict(int)\nproducts = defaultdict(set)\nfor _ in range(n):\n    name, category, qty = [part.strip() for part in input().split(',')]\n    # TODO: accumulate units and products\n\n# TODO: sort and print\n",
+              "solution": "from collections import defaultdict\n\nn = int(input())\nunits = defaultdict(int)\nproducts = defaultdict(set)\nfor _ in range(n):\n    name, category, qty = [part.strip() for part in input().split(',')]\n    units[category] += int(qty)\n    products[category].add(name)\n\nif not units:\n    print('no data')\nfor category in sorted(units, key=lambda c: (-units[c], c)):\n    print(f'{category} | units={units[category]} | products={len(products[category])}')\n",
+              "explanation": [
+                "Read N, then split each line on commas and strip spaces from every field.",
+                "Add the quantity to a defaultdict(int) keyed by category, and add the product to a defaultdict(set) so repeats count once.",
+                "Sort category names with the key (-units, name) to get descending totals and alphabetical tie-breaks.",
+                "Print one formatted line per category, or 'no data' when nothing was read."
+              ],
+              "tests": [
+                {
+                  "input": "5\nLaptop,Electronics,2\nPen,Stationery,10\nPhone,Electronics,3\nLaptop,Electronics,1\nNotebook,Stationery,4\n",
+                  "output": "Stationery | units=14 | products=2\nElectronics | units=6 | products=2"
+                },
+                {
+                  "input": "4\nA,X,5\nB,Y,5\nC,Z,1\nA,X,0\n",
+                  "output": "X | units=5 | products=1\nY | units=5 | products=1\nZ | units=1 | products=1"
+                },
+                {
+                  "input": "0\n",
+                  "output": "no data"
+                },
+                {
+                  "input": "3\n Mug , Kitchen , 3\nMug,Kitchen,2\nBowl,Kitchen,1\n",
+                  "output": "Kitchen | units=6 | products=2"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this comprehension produce?",
+                "code": "print([x * 2 for x in range(6) if x % 2 == 0])",
+                "options": [
+                  "[0, 2, 4]",
+                  "[2, 6, 10]",
+                  "[0, 4, 8]",
+                  "[0, 2, 4, 6, 8, 10]"
+                ],
+                "answer": 2,
+                "explanation": "range(6) gives 0..5; the filter keeps 0, 2 and 4; doubling gives [0, 4, 8]."
+              },
+              {
+                "type": "output",
+                "question": "What does this in-place sort return?",
+                "code": "nums = [3, 1, 2]\nresult = nums.sort()\nprint(result)",
+                "options": [
+                  "[3, 1, 2]",
+                  "TypeError",
+                  "None",
+                  "[1, 2, 3]"
+                ],
+                "answer": 2,
+                "explanation": "list.sort() sorts in place and returns None, so result is None even though nums is now sorted."
+              },
+              {
+                "type": "concept",
+                "question": "Which tool most directly gives the three most frequent cities in a list?",
+                "options": [
+                  "set(cities)",
+                  "sorted(cities)[:3]",
+                  "dict.fromkeys(cities)",
+                  "collections.Counter(cities).most_common(3)"
+                ],
+                "answer": 3,
+                "explanation": "Counter counts each item and most_common(3) returns the top three (item, count) pairs."
+              },
+              {
+                "type": "code",
+                "question": "Which expression builds a dict of only the students who scored at least 40?",
+                "options": [
+                  "{n for n, s in scores.items() if s >= 40}",
+                  "dict(n, s for n, s in scores if s >= 40)",
+                  "[n: s for n, s in scores.items() if s >= 40]",
+                  "{n: s for n, s in scores.items() if s >= 40}"
+                ],
+                "answer": 3,
+                "explanation": "A dict comprehension uses braces with key: value. The set comprehension keeps only names, and the other two are invalid syntax."
+              },
+              {
+                "type": "scenario",
+                "question": "You must sort employees by salary descending and, for equal salaries, by name ascending. Which key works?",
+                "options": [
+                  "key=lambda e: (-e['salary'], e['name'])",
+                  "key=lambda e: (e['salary'], e['name']), reverse=True",
+                  "key=lambda e: e['salary'] + e['name']",
+                  "key=lambda e: -e['name']"
+                ],
+                "answer": 0,
+                "explanation": "Negating salary sorts it descending while the name stays ascending. reverse=True would also reverse the name order."
+              }
+            ]
+          }
+        },
+        {
+          "id": "data-analytics-using-python:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Functions, Lambdas and Reusable Analysis Code",
+            "module": "Python foundations for analysts",
+            "level": "Beginner",
+            "objectives": [
+              "Write functions with positional, keyword and default parameters and clear return values.",
+              "Use *args and **kwargs and explain when they are useful.",
+              "Apply lambda functions as sort keys and in map/filter or pandas apply.",
+              "Explain variable scope and the mutable default argument trap.",
+              "Turn repeated analysis steps into small, testable functions."
+            ],
+            "definition": "A function is a named, reusable block of code that takes inputs (parameters), performs a task and returns a result. A lambda is a small anonymous function written in one expression, typically passed to another function such as sorted or DataFrame.apply. Packaging analysis steps as functions makes notebooks reproducible and lets the same logic run on new data.",
+            "theory": [
+              {
+                "heading": "Defining and calling functions",
+                "body": "A function groups logic behind a name: def clean_price(text): ... return value. Parameters can be positional or passed by keyword, and default values make arguments optional. A function without a return statement returns None, which is a frequent source of bugs when analysts forget to return the cleaned DataFrame.",
+                "points": [
+                  "def growth(old, new, pct=True): keyword defaults make calls readable: growth(100, 120, pct=False).",
+                  "Return a value instead of printing it so the result can be reused and tested.",
+                  "Docstrings describe inputs, outputs and assumptions for the next analyst."
+                ]
+              },
+              {
+                "heading": "*args, **kwargs and unpacking",
+                "body": "*args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dict. They let wrapper functions pass options through, for example a load_data(path, **read_options) helper that forwards sep or encoding to pd.read_csv. The same star syntax unpacks sequences and dicts at call time.",
+                "points": [
+                  "def total(*amounts): return sum(amounts)",
+                  "def load(path, **opts): return pd.read_csv(path, **opts)",
+                  "f(*[1, 2]) unpacks a list; f(**{'sep': ';'}) unpacks a dict."
+                ]
+              },
+              {
+                "heading": "Lambdas and higher-order functions",
+                "body": "A lambda such as lambda r: r['amount'] is a function expression with a single return value. It shines as a short argument to sorted, max, min, filter, map or pandas methods like apply and assign. If the logic needs several statements or a name for reuse, write a normal def instead.",
+                "points": [
+                  "max(rows, key=lambda r: r['amount']) finds the largest order.",
+                  "df.assign(total=lambda d: d.price * d.qty) adds a column in a method chain.",
+                  "Lambdas cannot contain statements such as assignments or loops."
+                ]
+              },
+              {
+                "heading": "Scope and the mutable default trap",
+                "body": "Names assigned inside a function are local; Python looks up names in Local, Enclosing, Global and Built-in scope order (LEGB). Default argument values are evaluated once when the function is defined, so a default list is shared between calls. Use None as the default and create the list inside the function.",
+                "points": [
+                  "def add(x, seen=[]) keeps growing seen across calls.",
+                  "def add(x, seen=None): seen = [] if seen is None else seen is the safe pattern.",
+                  "Avoid modifying global DataFrames inside functions; pass them in and return results."
+                ]
+              },
+              {
+                "heading": "Pure functions make analysis reproducible",
+                "body": "A pure function returns the same output for the same input and does not change anything outside itself. Cleaning steps written as pure functions can be chained with DataFrame.pipe, unit-tested with small inputs and reused across monthly reports. This is a practical habit interviewers look for when they ask how you structure analysis code.",
+                "points": [
+                  "df.pipe(drop_test_orders).pipe(add_month_column) reads as a pipeline.",
+                  "Small functions are easy to test with assert on tiny examples."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A reusable age-banding function",
+              "body": "Marketing wants customers grouped into age bands. We write one function that assigns a band and reuse it for any list. In pandas the same idea is pd.cut(df['age'], bins=[0, 18, 35, 60, 100]), which also uses right-closed intervals such as (18, 35].",
+              "code": {
+                "language": "python",
+                "source": "def age_band(age, edges=(0, 18, 35, 60, 100)):\n    \"\"\"Return the (low, high] band label for age, or None if outside.\"\"\"\n    for low, high in zip(edges, edges[1:]):\n        if low < age <= high:\n            return f'({low}, {high}]'\n    return None\n\nages = [16, 18, 22, 47, 70]\nprint([age_band(a) for a in ages])\n# ['(0, 18]', '(0, 18]', '(18, 35]', '(35, 60]', '(60, 100]']"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Cleaning helpers",
+                "description": "Functions such as clean_phone or parse_amount reused across many columns and files."
+              },
+              {
+                "title": "Custom sort and ranking",
+                "description": "Lambdas as keys to rank products by margin or customers by recency."
+              },
+              {
+                "title": "Report pipelines",
+                "description": "Chaining small functions with DataFrame.pipe so a monthly report runs end to end with one call."
+              },
+              {
+                "title": "Binning and segmentation",
+                "description": "Assigning customers to age, income or spend bands for segment analysis."
+              }
+            ],
+            "demonstration": {
+              "description": "See the mutable default trap and its fix, and a lambda used as a key.",
+              "code": {
+                "language": "python",
+                "source": "def add_bad(item, bucket=[]):\n    bucket.append(item)\n    return bucket\n\ndef add_good(item, bucket=None):\n    bucket = [] if bucket is None else bucket\n    bucket.append(item)\n    return bucket\n\nprint(add_bad('a'), add_bad('b'))\nprint(add_good('a'), add_good('b'))\n\norders = [{'id': 1, 'amt': 250}, {'id': 2, 'amt': 900}, {'id': 3, 'amt': 400}]\nprint(max(orders, key=lambda o: o['amt'])['id'])"
+              },
+              "output": "['a', 'b'] ['a', 'b']\n['a'] ['b']\n2"
+            },
+            "takeaways": [
+              "Functions should return results, not just print them.",
+              "Default values are evaluated once; never use a mutable object as a default.",
+              "Lambdas are for short, single-expression logic such as sort keys.",
+              "*args and **kwargs let helpers forward options to library calls.",
+              "Pure, small functions make analysis testable and reproducible.",
+              "pd.cut uses right-closed bins (a, b] by default, just like the banding example."
+            ],
+            "interview": [
+              {
+                "question": "What is a lambda function and when would you use one in data analysis?",
+                "answer": "A lambda is an anonymous single-expression function, such as lambda x: x * 1.18. Analysts use it for short logic passed to another function: sort keys, max/min keys, Series.map, DataFrame.apply or DataFrame.assign.",
+                "explanation": "A strong answer adds the limitation: no statements, so longer logic belongs in a named def."
+              },
+              {
+                "question": "What are *args and **kwargs?",
+                "answer": "*args gathers extra positional arguments into a tuple; **kwargs gathers extra keyword arguments into a dict. They are used to write flexible functions and wrappers that pass options on, such as forwarding read options to pd.read_csv.",
+                "explanation": "Give a practical wrapper example rather than only the definition."
+              },
+              {
+                "question": "Explain the mutable default argument problem.",
+                "answer": "Default values are created once when the function is defined. A default list or dict is therefore shared across calls and keeps earlier changes. The fix is to default to None and create a new object inside the function.",
+                "explanation": "Interviewers like candidates who can show the buggy output and the corrected pattern."
+              },
+              {
+                "question": "What is the difference between a function that prints and one that returns?",
+                "answer": "Printing only displays a value; the caller receives None. Returning hands the value back so it can be stored, tested, combined or written to a file.",
+                "explanation": "This basic question catches people who build notebooks that cannot be reused."
+              },
+              {
+                "question": "How would you structure a repeated monthly cleaning process in Python?",
+                "answer": "Write small pure functions for each step (load, standardise columns, fix types, remove test data, add derived columns), chain them with DataFrame.pipe or a main function, add docstrings and simple tests on sample data, and keep configuration such as file paths as parameters.",
+                "explanation": "This advanced answer shows engineering habits: modularity, testability and parameterisation."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Bin values like pd.cut",
+              "difficulty": "Basic",
+              "objective": "Write a reusable function that assigns values to right-closed bins and counts how many fall in each, mirroring pd.cut followed by value_counts.",
+              "statement": "The first line holds ascending bin edges e0,e1,...,ek. A value v belongs to bin i when e(i) < v <= e(i+1). Values that fit no bin are out of range. The second line holds the values to bin (it may be empty). Print each bin as (e(i), e(i+1)]: count in edge order, using the edges exactly as written in the input, then print 'out of range: <count>'.",
+              "language": "python",
+              "input_format": "Line 1: comma-separated ascending numeric edges (at least two). Line 2: comma-separated numeric values, possibly empty.",
+              "output_format": "One line per bin: (<low>, <high>]: <count>, then out of range: <count>.",
+              "example": {
+                "input": "0,18,35,60,100\n5,18,19,35,36,60,61,0,101,45\n",
+                "output": "(0, 18]: 2\n(18, 35]: 2\n(35, 60]: 3\n(60, 100]: 1\nout of range: 2"
+              },
+              "constraints": [
+                "2 to 20 edges, strictly increasing.",
+                "Up to 10000 values; values and edges may be decimals or negative.",
+                "The lowest edge itself is not included in the first bin (right-closed intervals)."
+              ],
+              "starter": "def find_bin(value, edges):\n    # TODO: return the bin index or None\n    pass\n\nedge_text = [t.strip() for t in input().split(',')]\nedges = [float(t) for t in edge_text]\nline = input().strip()\nvalues = [float(t) for t in line.split(',')] if line else []\n\n# TODO: count values per bin and print\n",
+              "solution": "def find_bin(value, edges):\n    for i in range(len(edges) - 1):\n        if edges[i] < value <= edges[i + 1]:\n            return i\n    return None\n\nedge_text = [t.strip() for t in input().split(',')]\nedges = [float(t) for t in edge_text]\nline = input().strip()\nvalues = [float(t) for t in line.split(',')] if line else []\n\ncounts = [0] * (len(edges) - 1)\noutside = 0\nfor v in values:\n    i = find_bin(v, edges)\n    if i is None:\n        outside += 1\n    else:\n        counts[i] += 1\n\nfor i, c in enumerate(counts):\n    print(f'({edge_text[i]}, {edge_text[i + 1]}]: {c}')\nprint(f'out of range: {outside}')\n",
+              "explanation": [
+                "Keep the edge text for labels and convert a copy to floats for comparisons.",
+                "find_bin checks each consecutive pair with low < value <= high and returns the index, or None if no bin fits.",
+                "Count values per bin in a list sized len(edges) - 1, and count the rest as out of range.",
+                "Print the labels in edge order followed by the out-of-range count."
+              ],
+              "tests": [
+                {
+                  "input": "0,18,35,60,100\n5,18,19,35,36,60,61,0,101,45\n",
+                  "output": "(0, 18]: 2\n(18, 35]: 2\n(35, 60]: 3\n(60, 100]: 1\nout of range: 2"
+                },
+                {
+                  "input": "0,50,100\n10.5,50,50.01,99.9\n",
+                  "output": "(0, 50]: 2\n(50, 100]: 2\nout of range: 0"
+                },
+                {
+                  "input": "1,2\n\n",
+                  "output": "(1, 2]: 0\nout of range: 0"
+                },
+                {
+                  "input": "-10,0,10\n-10,-5,0,5,10,15\n",
+                  "output": "(-10, 0]: 2\n(0, 10]: 2\nout of range: 2"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this shared default argument print?",
+                "code": "def f(x, items=[]):\n    items.append(x)\n    return len(items)\n\nf(1)\nprint(f(2))",
+                "options": [
+                  "TypeError",
+                  "2",
+                  "1",
+                  "0"
+                ],
+                "answer": 1,
+                "explanation": "The default list is created once and shared, so after f(1) it already holds one item and f(2) returns 2."
+              },
+              {
+                "type": "concept",
+                "question": "What does a Python function return if it has no return statement?",
+                "options": [
+                  "0",
+                  "None",
+                  "An empty string",
+                  "The last computed value"
+                ],
+                "answer": 1,
+                "explanation": "Without an explicit return, a function returns None. Forgetting to return a cleaned DataFrame is a common bug."
+              },
+              {
+                "type": "code",
+                "question": "Which call correctly finds the order with the highest amount in a list of dicts called orders?",
+                "options": [
+                  "orders.max('amount')",
+                  "max(lambda o: o['amount'], orders)",
+                  "max(orders, key=lambda o: o['amount'])",
+                  "max(orders['amount'])"
+                ],
+                "answer": 2,
+                "explanation": "max accepts a key function; the lambda extracts the amount used for comparison."
+              },
+              {
+                "type": "output",
+                "question": "What does this *args and **kwargs call print?",
+                "code": "def stats(*args, **kwargs):\n    return len(args), sorted(kwargs)\n\nprint(stats(4, 5, 6, sep=';', header=0))",
+                "options": [
+                  "(5, [])",
+                  "(3, {'sep': ';', 'header': 0})",
+                  "(3, ['header', 'sep'])",
+                  "TypeError"
+                ],
+                "answer": 2,
+                "explanation": "args is (4, 5, 6) so its length is 3; kwargs has keys sep and header, and sorted returns the keys alphabetically."
+              },
+              {
+                "type": "scenario",
+                "question": "With pd.cut(ages, bins=[0, 18, 35]), which bin does an age of exactly 18 fall into?",
+                "options": [
+                  "Both bins",
+                  "(0, 18]",
+                  "(18, 35]",
+                  "It becomes NaN"
+                ],
+                "answer": 1,
+                "explanation": "pd.cut uses right-closed intervals by default (right=True), so 18 belongs to (0, 18]."
+              }
+            ]
+          }
+        },
+        {
+          "id": "data-analytics-using-python:article:4",
+          "slug": "day-4",
+          "lesson": {
+            "day": 4,
+            "title": "File Handling: Reading and Writing CSV and JSON",
+            "module": "Python foundations for analysts",
+            "level": "Beginner",
+            "objectives": [
+              "Open files safely with context managers and the right encoding.",
+              "Read and write CSV files with the csv module, including quoted fields.",
+              "Load and save JSON with json.load, json.loads, json.dump and json.dumps.",
+              "Use the key pd.read_csv and to_csv options interviewers ask about.",
+              "Handle bad rows without crashing and report what was skipped."
+            ],
+            "definition": "File handling is reading data from and writing data to files on disk. CSV (comma-separated values) stores a table as plain text, one row per line, while JSON (JavaScript Object Notation) stores nested objects and arrays. Python's built-in csv and json modules parse these formats correctly, and pandas wraps them in read_csv, read_json, to_csv and to_json for table-shaped data.",
+            "theory": [
+              {
+                "heading": "Opening files the right way",
+                "body": "Use a with block so the file is closed even if an error occurs. Always state the encoding: most modern files are UTF-8, and Excel often adds a byte-order mark that 'utf-8-sig' removes so the first column name is not polluted with an invisible character. For the csv module, open files with newline='' so line endings inside quoted fields are handled correctly.",
+                "points": [
+                  "with open('sales.csv', encoding='utf-8', newline='') as f: ...",
+                  "Modes: 'r' read, 'w' overwrite, 'a' append, 'b' binary.",
+                  "UnicodeDecodeError usually means the encoding is wrong (try 'utf-8-sig' or 'cp1252')."
+                ]
+              },
+              {
+                "heading": "The csv module",
+                "body": "Splitting lines on commas breaks as soon as a field contains a comma, such as \"Delhi, NCR\". csv.reader follows the CSV quoting rules and returns each row as a list of strings; csv.DictReader uses the header row to return dicts, so code does not depend on column order. csv.writer and DictWriter quote fields automatically when needed. Every value is still a string, so numbers must be converted.",
+                "points": [
+                  "csv.DictReader(f) yields {'region': 'North', 'amount': '1200.50'}.",
+                  "writer.writerow([...]) and DictWriter(f, fieldnames=[...]).writeheader().",
+                  "Use delimiter=';' or '\\t' for semicolon or tab-separated files."
+                ]
+              },
+              {
+                "heading": "JSON in Python",
+                "body": "JSON maps naturally to Python: objects become dicts, arrays become lists, true/false/null become True/False/None. json.load reads from a file object and json.loads from a string; json.dump and json.dumps do the reverse. Use indent for readable files and sort_keys for stable output that is easy to compare in tests. JSON Lines (one JSON object per line) is common for logs and large exports.",
+                "points": [
+                  "data = json.loads('{\"a\": 1}') gives {'a': 1}.",
+                  "json.dumps(obj, indent=2, sort_keys=True) for readable, stable output.",
+                  "pd.read_json('events.jsonl', lines=True) reads JSON Lines."
+                ]
+              },
+              {
+                "heading": "pandas readers and writers",
+                "body": "pd.read_csv does type inference, missing-value detection and date parsing in fast C code. Knowing its options saves cleaning time later and is a favourite interview topic. When writing, index=False stops pandas from adding an unnamed index column that confuses the next reader.",
+                "points": [
+                  "sep, usecols, dtype, parse_dates, na_values, encoding, nrows, skiprows.",
+                  "chunksize=100_000 returns an iterator of DataFrames for large files.",
+                  "df.to_csv('out.csv', index=False); df.to_json('out.json', orient='records')."
+                ]
+              },
+              {
+                "heading": "Defensive reading",
+                "body": "Production files contain blank amounts, text in numeric columns and malformed lines. A good loader converts values inside try/except, counts or logs rejects and continues, so one bad row does not stop a whole report. pandas offers the same controls: pd.to_numeric(errors='coerce') turns bad values into NaN and on_bad_lines='skip' or 'warn' handles rows with the wrong number of fields.",
+                "points": [
+                  "Report how many rows were skipped; silent data loss is worse than a crash.",
+                  "Validate the header: check required columns exist before processing."
+                ]
+              }
+            ],
+            "example": {
+              "title": "From CSV to a JSON summary",
+              "body": "We read an orders file with DictReader, total the amounts per region and save the result as JSON for a dashboard. The pandas version is df.groupby('region')['amount'].sum().to_json().",
+              "code": {
+                "language": "python",
+                "source": "import csv, json\nfrom collections import defaultdict\n\ntotals = defaultdict(float)\nwith open('orders.csv', encoding='utf-8', newline='') as f:\n    for row in csv.DictReader(f):\n        totals[row['region']] += float(row['amount'])\n\nwith open('summary.json', 'w', encoding='utf-8') as f:\n    json.dump(dict(totals), f, indent=2, sort_keys=True)\n\n# pandas equivalent\n# import pandas as pd\n# df = pd.read_csv('orders.csv', usecols=['region', 'amount'])\n# df.groupby('region')['amount'].sum().to_json('summary.json')"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Ingesting exports",
+                "description": "Loading CRM, ERP or e-commerce CSV exports with the right encoding and delimiter."
+              },
+              {
+                "title": "Config and metadata",
+                "description": "Storing report settings, column mappings or thresholds in JSON files."
+              },
+              {
+                "title": "API responses",
+                "description": "Parsing JSON returned by web services before flattening it into a table."
+              },
+              {
+                "title": "Hand-off files",
+                "description": "Writing cleaned CSV or JSON for BI tools, other teams or a database load."
+              }
+            ],
+            "demonstration": {
+              "description": "Why naive splitting fails and how csv and json handle the same data correctly.",
+              "code": {
+                "language": "python",
+                "source": "import csv, io, json\n\nline = '2,\"Delhi, NCR\",800'\nprint(line.split(','))\nprint(next(csv.reader(io.StringIO(line))))\n\nrecord = {'city': 'Delhi, NCR', 'amount': 800, 'paid': True, 'note': None}\ntext = json.dumps(record, sort_keys=True)\nprint(text)\nprint(json.loads(text)['paid'])"
+              },
+              "output": "['2', '\"Delhi', ' NCR\"', '800']\n['2', 'Delhi, NCR', '800']\n{\"amount\": 800, \"city\": \"Delhi, NCR\", \"note\": null, \"paid\": true}\nTrue"
+            },
+            "takeaways": [
+              "Use with blocks, explicit encodings and newline='' for CSV files.",
+              "Never split CSV lines on commas yourself; quoted fields break it.",
+              "csv values are strings; convert types explicitly and count failures.",
+              "json.load/dump work with files, loads/dumps with strings.",
+              "Know read_csv options: sep, usecols, dtype, parse_dates, na_values, chunksize.",
+              "Write with index=False unless the index carries real information."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between json.load and json.loads?",
+                "answer": "json.load reads JSON from a file object; json.loads parses a JSON string. Likewise json.dump writes to a file and json.dumps returns a string.",
+                "explanation": "The 's' stands for string. Mention that JSON null becomes None and true becomes True."
+              },
+              {
+                "question": "Why use the csv module instead of line.split(',')?",
+                "answer": "Real CSV files quote fields that contain commas, quotes or newlines. The csv module implements those rules, so 'Delhi, NCR' stays one field; split(',') would break it into two.",
+                "explanation": "A concrete example of a quoted field makes this answer convincing."
+              },
+              {
+                "question": "Which pd.read_csv parameters do you use most and why?",
+                "answer": "usecols to load only needed columns, dtype to control types and memory, parse_dates for date columns, na_values for custom missing markers, sep and encoding for unusual files, and chunksize or nrows for large files.",
+                "explanation": "Interviewers look for awareness of memory and correctness, not a list of every parameter."
+              },
+              {
+                "question": "You open a CSV exported from Excel and the first column is named 'ï»¿id'. What happened?",
+                "answer": "The file starts with a UTF-8 byte-order mark that was read as text. Reading with encoding='utf-8-sig' strips it.",
+                "explanation": "This practical debugging question rewards people who have handled real exports."
+              },
+              {
+                "question": "How would you load a 10 GB CSV that does not fit in memory?",
+                "answer": "Read it in chunks with pd.read_csv(chunksize=...), load only needed columns with usecols, set compact dtypes, aggregate each chunk and combine the partial results. Alternatively, convert it once to Parquet or load it into a database and query it.",
+                "explanation": "This advanced question connects file handling to performance (covered again on Day 26)."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "CSV to JSON regional summary",
+              "difficulty": "Basic",
+              "objective": "Parse a CSV with quoted fields using csv.DictReader, aggregate a numeric column defensively and emit stable JSON.",
+              "statement": "Standard input contains a CSV file with a header row. It always has the columns region and amount, possibly among others and in any order. Sum amount per region. Rows whose amount is blank or not a number are skipped. Print one line of JSON with sorted keys: {\"skipped\": <count>, \"totals\": {<region>: <total rounded to 2 decimals>, ...}, \"valid_rows\": <count>}.",
+              "language": "python",
+              "input_format": "A CSV document: a header line followed by zero or more data lines. Fields may be quoted.",
+              "output_format": "A single line produced by json.dumps(result, sort_keys=True), with totals rounded using round(total, 2).",
+              "example": {
+                "input": "order_id,region,amount\n1,North,1200.50\n2,\"Delhi, NCR\",800\n3,North,\n4,South,450.25\n5,\"Delhi, NCR\",200\n",
+                "output": "{\"skipped\": 1, \"totals\": {\"Delhi, NCR\": 1000.0, \"North\": 1200.5, \"South\": 450.25}, \"valid_rows\": 4}"
+              },
+              "constraints": [
+                "Up to 100000 data rows.",
+                "Region names are used exactly as parsed by the csv module.",
+                "Use json.dumps with sort_keys=True so the output is deterministic."
+              ],
+              "starter": "import csv, io, json, sys\nfrom collections import defaultdict\n\nreader = csv.DictReader(io.StringIO(sys.stdin.read()))\ntotals = defaultdict(float)\nskipped = valid = 0\n\nfor row in reader:\n    # TODO: convert amount, skip bad rows, accumulate\n    pass\n\n# TODO: print the JSON summary\n",
+              "solution": "import csv, io, json, sys\nfrom collections import defaultdict\n\nreader = csv.DictReader(io.StringIO(sys.stdin.read()))\ntotals = defaultdict(float)\nskipped = valid = 0\n\nfor row in reader:\n    try:\n        amount = float(row['amount'])\n    except (TypeError, ValueError):\n        skipped += 1\n        continue\n    totals[row['region']] += amount\n    valid += 1\n\nresult = {\n    'skipped': skipped,\n    'totals': {region: round(total, 2) for region, total in totals.items()},\n    'valid_rows': valid,\n}\nprint(json.dumps(result, sort_keys=True))\n",
+              "explanation": [
+                "Wrap the whole input in io.StringIO so csv.DictReader can parse it like a file, including quoted commas.",
+                "For each row, try float(row['amount']); a ValueError (bad text) or TypeError (missing field) means the row is skipped.",
+                "Accumulate valid amounts per region in a defaultdict(float) and count valid rows.",
+                "Round totals to two decimals to hide float noise such as 0.30000000000000004, then print json.dumps with sort_keys=True."
+              ],
+              "tests": [
+                {
+                  "input": "order_id,region,amount\n1,North,1200.50\n2,\"Delhi, NCR\",800\n3,North,\n4,South,450.25\n5,\"Delhi, NCR\",200\n",
+                  "output": "{\"skipped\": 1, \"totals\": {\"Delhi, NCR\": 1000.0, \"North\": 1200.5, \"South\": 450.25}, \"valid_rows\": 4}"
+                },
+                {
+                  "input": "amount,region,date\n100,East,2024-01-01\nabc,East,2024-01-02\n50.5,West,2024-01-03\n",
+                  "output": "{\"skipped\": 1, \"totals\": {\"East\": 100.0, \"West\": 50.5}, \"valid_rows\": 2}"
+                },
+                {
+                  "input": "order_id,region,amount\n",
+                  "output": "{\"skipped\": 0, \"totals\": {}, \"valid_rows\": 0}"
+                },
+                {
+                  "input": "region,amount\nA,0.1\nA,0.2\nB,10\n",
+                  "output": "{\"skipped\": 0, \"totals\": {\"A\": 0.3, \"B\": 10.0}, \"valid_rows\": 3}"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "How many fields does this CSV reader return?",
+                "code": "import csv, io\nrow = next(csv.reader(io.StringIO('7,\"Pune, MH\",99')))\nprint(len(row))",
+                "options": [
+                  "4",
+                  "2",
+                  "3",
+                  "1"
+                ],
+                "answer": 2,
+                "explanation": "The csv reader keeps the quoted field 'Pune, MH' together, so the row has three fields."
+              },
+              {
+                "type": "concept",
+                "question": "Which function parses a JSON string (not a file) into a Python object?",
+                "options": [
+                  "json.dumps",
+                  "json.parse",
+                  "json.loads",
+                  "json.load"
+                ],
+                "answer": 2,
+                "explanation": "json.loads parses a string. json.load reads from a file object, json.dumps serialises, and json.parse does not exist in Python."
+              },
+              {
+                "type": "scenario",
+                "question": "A colleague's to_csv output gains an extra 'Unnamed: 0' column every time it is re-read. What is the fix?",
+                "options": [
+                  "Use sep=';'",
+                  "Read with encoding='utf-8-sig'",
+                  "Use parse_dates=True",
+                  "Write with df.to_csv(path, index=False)"
+                ],
+                "answer": 3,
+                "explanation": "By default to_csv writes the index as the first column, which read_csv then loads as 'Unnamed: 0'. index=False stops that."
+              },
+              {
+                "type": "code",
+                "question": "Which read_csv call loads only two columns and treats the text 'missing' as NaN?",
+                "options": [
+                  "pd.read_csv(path, select=['id', 'amt'], fillna='missing')",
+                  "pd.read_csv(path)[['id', 'amt']].dropna('missing')",
+                  "pd.read_csv(path, columns=['id', 'amt'], na='missing')",
+                  "pd.read_csv(path, usecols=['id', 'amt'], na_values=['missing'])"
+                ],
+                "answer": 3,
+                "explanation": "usecols limits the columns read and na_values adds extra strings that should be treated as missing."
+              },
+              {
+                "type": "output",
+                "question": "What JSON string does this code print?",
+                "code": "import json\nprint(json.dumps({'ok': True, 'v': None}))",
+                "options": [
+                  "{'ok': True, 'v': None}",
+                  "{\"ok\": True, \"v\": None}",
+                  "{\"ok\": true, \"v\": null}",
+                  "{\"ok\": \"True\", \"v\": \"None\"}"
+                ],
+                "answer": 2,
+                "explanation": "JSON uses lowercase true and null and double quotes, so Python True and None are converted."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "data-analytics-using-python:question:1:1",
+          "day": 1,
+          "topic": "Python Data Types and Core Structures for Analysts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between a list and a tuple, and when would you use each?",
+          "answer": "Both are ordered sequences. A list is mutable, so it suits a collection that grows or changes, such as values read from a file. A tuple is immutable and hashable when its items are, so it suits fixed records and dictionary keys such as (city, month).",
+          "explanation": "A strong answer mentions immutability, hashability and a concrete analytics use, not just syntax differences.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:1:2",
+          "day": 1,
+          "topic": "Python Data Types and Core Structures for Analysts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why does 0.1 + 0.2 not equal 0.3 in Python?",
+          "answer": "Floats are stored in binary using IEEE 754 double precision, and 0.1 and 0.2 have no exact binary representation, so the sum is 0.30000000000000004. Compare with math.isclose or round, and use decimal.Decimal for money when exactness matters.",
+          "explanation": "Interviewers want the cause (binary representation) and the practical fix, especially for financial data.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:1:3",
+          "day": 1,
+          "topic": "Python Data Types and Core Structures for Analysts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When would you use a dict instead of a list?",
+          "answer": "When you need to look up values by a key, for example totals per region. Dict lookups are O(1) on average, while finding an item in a list is O(n).",
+          "explanation": "Mentioning time complexity and a realistic grouping example shows you think about performance.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:1:4",
+          "day": 1,
+          "topic": "Python Data Types and Core Structures for Analysts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between None and NaN?",
+          "answer": "None is Python's object meaning 'no value'. NaN is a special float value meaning 'not a number', used by NumPy and pandas for missing numeric data. NaN is not equal to itself, so missing values are detected with functions such as pd.isna rather than ==.",
+          "explanation": "Good answers connect this to pandas: a float column stores missing values as NaN, while an object column can hold None.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:1:5",
+          "day": 1,
+          "topic": "Python Data Types and Core Structures for Analysts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why does a pandas integer column become float when it has missing values, and how can you avoid it?",
+          "answer": "The classic NaN marker is a float, and NumPy int64 has no missing marker, so pandas upcasts the column to float64. Use the nullable 'Int64' dtype (capital I), which stores missing values as pd.NA while keeping integers.",
+          "explanation": "This advanced question checks whether you understand dtypes rather than only using pandas functions.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:2:1",
+          "day": 2,
+          "topic": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a list comprehension and why would you use it?",
+          "answer": "It is an expression such as [x * 2 for x in values if x > 0] that builds a new list from an iterable with optional filtering. It is concise, readable for simple transformations and usually faster than a loop that calls append.",
+          "explanation": "Mention both readability and speed, and that very complex comprehensions should be rewritten as loops.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:2:2",
+          "day": 2,
+          "topic": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between sorted(x) and x.sort()?",
+          "answer": "sorted() works on any iterable and returns a new list, leaving the original unchanged. list.sort() sorts the list in place and returns None.",
+          "explanation": "Interviewers often show code like x = x.sort() to see if you spot that x becomes None.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:2:3",
+          "day": 2,
+          "topic": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How would you count the frequency of each item in a list?",
+          "answer": "Use collections.Counter(items), which returns a dict-like object of counts and supports most_common(n). Without imports, loop and use counts[item] = counts.get(item, 0) + 1.",
+          "explanation": "Showing both the library way and the manual way demonstrates understanding, not just recall.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:2:4",
+          "day": 2,
+          "topic": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How do you sort a list of records by amount descending and then by name ascending?",
+          "answer": "Use a tuple key: sorted(records, key=lambda r: (-r['amount'], r['name'])). Negating the number reverses its order while names stay ascending. For non-numeric keys, sort twice using stable sorting: first by the secondary key, then by the primary key with reverse=True.",
+          "explanation": "Knowing that Python's sort is stable and how to exploit it is a strong advanced signal.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:2:5",
+          "day": 2,
+          "topic": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When is a comprehension the wrong choice?",
+          "answer": "When it needs several nested loops and conditions, has side effects such as printing or writing files, or when the data is large and a generator expression or pandas vectorised operation would avoid building a full list in memory.",
+          "explanation": "Good answers mention generator expressions, e.g. sum(x for x in values), to avoid creating an intermediate list.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:3:1",
+          "day": 3,
+          "topic": "Functions, Lambdas and Reusable Analysis Code",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "What is a lambda function and when would you use one in data analysis?",
+          "answer": "A lambda is an anonymous single-expression function, such as lambda x: x * 1.18. Analysts use it for short logic passed to another function: sort keys, max/min keys, Series.map, DataFrame.apply or DataFrame.assign.",
+          "explanation": "A strong answer adds the limitation: no statements, so longer logic belongs in a named def.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:3:2",
+          "day": 3,
+          "topic": "Functions, Lambdas and Reusable Analysis Code",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are *args and **kwargs?",
+          "answer": "*args gathers extra positional arguments into a tuple; **kwargs gathers extra keyword arguments into a dict. They are used to write flexible functions and wrappers that pass options on, such as forwarding read options to pd.read_csv.",
+          "explanation": "Give a practical wrapper example rather than only the definition.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:3:3",
+          "day": 3,
+          "topic": "Functions, Lambdas and Reusable Analysis Code",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain the mutable default argument problem.",
+          "answer": "Default values are created once when the function is defined. A default list or dict is therefore shared across calls and keeps earlier changes. The fix is to default to None and create a new object inside the function.",
+          "explanation": "Interviewers like candidates who can show the buggy output and the corrected pattern.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:3:4",
+          "day": 3,
+          "topic": "Functions, Lambdas and Reusable Analysis Code",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "What is the difference between a function that prints and one that returns?",
+          "answer": "Printing only displays a value; the caller receives None. Returning hands the value back so it can be stored, tested, combined or written to a file.",
+          "explanation": "This basic question catches people who build notebooks that cannot be reused.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:3:5",
+          "day": 3,
+          "topic": "Functions, Lambdas and Reusable Analysis Code",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How would you structure a repeated monthly cleaning process in Python?",
+          "answer": "Write small pure functions for each step (load, standardise columns, fix types, remove test data, add derived columns), chain them with DataFrame.pipe or a main function, add docstrings and simple tests on sample data, and keep configuration such as file paths as parameters.",
+          "explanation": "This advanced answer shows engineering habits: modularity, testability and parameterisation.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:4:1",
+          "day": 4,
+          "topic": "File Handling: Reading and Writing CSV and JSON",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between json.load and json.loads?",
+          "answer": "json.load reads JSON from a file object; json.loads parses a JSON string. Likewise json.dump writes to a file and json.dumps returns a string.",
+          "explanation": "The 's' stands for string. Mention that JSON null becomes None and true becomes True.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:4:2",
+          "day": 4,
+          "topic": "File Handling: Reading and Writing CSV and JSON",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why use the csv module instead of line.split(',')?",
+          "answer": "Real CSV files quote fields that contain commas, quotes or newlines. The csv module implements those rules, so 'Delhi, NCR' stays one field; split(',') would break it into two.",
+          "explanation": "A concrete example of a quoted field makes this answer convincing.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:4:3",
+          "day": 4,
+          "topic": "File Handling: Reading and Writing CSV and JSON",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Which pd.read_csv parameters do you use most and why?",
+          "answer": "usecols to load only needed columns, dtype to control types and memory, parse_dates for date columns, na_values for custom missing markers, sep and encoding for unusual files, and chunksize or nrows for large files.",
+          "explanation": "Interviewers look for awareness of memory and correctness, not a list of every parameter.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:4:4",
+          "day": 4,
+          "topic": "File Handling: Reading and Writing CSV and JSON",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "You open a CSV exported from Excel and the first column is named 'ï»¿id'. What happened?",
+          "answer": "The file starts with a UTF-8 byte-order mark that was read as text. Reading with encoding='utf-8-sig' strips it.",
+          "explanation": "This practical debugging question rewards people who have handled real exports.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics-using-python:question:4:5",
+          "day": 4,
+          "topic": "File Handling: Reading and Writing CSV and JSON",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How would you load a 10 GB CSV that does not fit in memory?",
+          "answer": "Read it in chunks with pd.read_csv(chunksize=...), load only needed columns with usecols, set compact dtypes, aggregate each chunk and combine the partial results. Alternatively, convert it once to Parquet or load it into a database and query it.",
+          "explanation": "This advanced question connects file handling to performance (covered again on Day 26).",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "data-analytics-using-python:assignment:1",
+          "title": "Python Data Types and Core Structures for Analysts",
+          "available": true,
+          "focus": "Python data types describe what kind of value a variable holds and which operations are allowed on it. Analysts work mostly with numbers (int, float), text (str), true/false flags (bool), the missing marker None, and four containers: list (ordered, changeable), tuple (ordered, fixed), dict (key to value lookup) and set (unique items). pandas and NumPy are built on top of these ideas, so understanding them explains much of how those libraries behave.",
+          "objectives": [
+            "Explain Python's built-in scalar types (int, float, str, bool, None) and when an analyst meets each one.",
+            "Choose between list, tuple, dict and set for a given data task and justify the choice.",
+            "Describe mutability and why aliasing a list can silently change data.",
+            "Convert raw text values into numbers safely and treat bad values as missing.",
+            "Answer common interview questions on float precision, None and type conversion."
+          ],
+          "assignment": "A single line contains comma-separated values from one spreadsheet column. A value is valid if it converts to a float and is not NaN; everything else (blank, NA, null, text, nan) counts as missing. Print the number of valid and missing values, then the sum, minimum, maximum and mean of the valid values, each with two decimals. If there are no valid values, print the two counts and then 'summary: not available'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Everything read from a file starts as text; convert deliberately and count failures.",
+            "Floats are approximate, so compare with rounding or math.isclose, never with == on computed values.",
+            "Pick the container by the question: order (list), fixed record (tuple), lookup (dict), uniqueness (set).",
+            "Assignment shares mutable objects; copy when you need independence.",
+            "NaN is not equal to itself; use dedicated functions to detect missing values.",
+            "pandas dtypes mirror these types, which explains object columns and int-to-float conversions."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "data-analytics-using-python:assignment:2",
+          "title": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+          "available": true,
+          "focus": "A comprehension is a compact Python expression that builds a new list, dict or set by looping over an iterable, optionally filtering items with a condition. Combined with dictionaries for grouping and counting, comprehensions let an analyst reshape small datasets in a few readable lines, which is exactly what pandas later does at scale.",
+          "objectives": [
+            "Build and transform lists with slicing, sorting and list comprehensions.",
+            "Use dicts, defaultdict and Counter to group and count records.",
+            "Write dict and set comprehensions with conditions.",
+            "Sort records by several keys using key functions.",
+            "Explain when comprehensions help readability and when a loop is clearer."
+          ],
+          "assignment": "Each order line has a product name, a category and a quantity. For each category, compute the total units sold and the number of distinct products. Print the categories sorted by total units descending; break ties by category name ascending. If there are no order lines, print 'no data'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Comprehensions build lists, dicts and sets in one readable expression; keep them simple.",
+            "A trailing if filters items; a leading if-else transforms every item.",
+            "defaultdict and Counter make grouping and counting a single pass over the data.",
+            "sorted() returns a new list; list.sort() sorts in place and returns None.",
+            "Tuple sort keys handle multi-column ordering, with negation for descending numbers.",
+            "These patterns are the mental model behind pandas filtering and groupby."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "data-analytics-using-python:assignment:3",
+          "title": "Functions, Lambdas and Reusable Analysis Code",
+          "available": true,
+          "focus": "A function is a named, reusable block of code that takes inputs (parameters), performs a task and returns a result. A lambda is a small anonymous function written in one expression, typically passed to another function such as sorted or DataFrame.apply. Packaging analysis steps as functions makes notebooks reproducible and lets the same logic run on new data.",
+          "objectives": [
+            "Write functions with positional, keyword and default parameters and clear return values.",
+            "Use *args and **kwargs and explain when they are useful.",
+            "Apply lambda functions as sort keys and in map/filter or pandas apply.",
+            "Explain variable scope and the mutable default argument trap.",
+            "Turn repeated analysis steps into small, testable functions."
+          ],
+          "assignment": "The first line holds ascending bin edges e0,e1,...,ek. A value v belongs to bin i when e(i) < v <= e(i+1). Values that fit no bin are out of range. The second line holds the values to bin (it may be empty). Print each bin as (e(i), e(i+1)]: count in edge order, using the edges exactly as written in the input, then print 'out of range: <count>'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Functions should return results, not just print them.",
+            "Default values are evaluated once; never use a mutable object as a default.",
+            "Lambdas are for short, single-expression logic such as sort keys.",
+            "*args and **kwargs let helpers forward options to library calls.",
+            "Pure, small functions make analysis testable and reproducible.",
+            "pd.cut uses right-closed bins (a, b] by default, just like the banding example."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "data-analytics-using-python:assignment:4",
+          "title": "File Handling: Reading and Writing CSV and JSON",
+          "available": true,
+          "focus": "File handling is reading data from and writing data to files on disk. CSV (comma-separated values) stores a table as plain text, one row per line, while JSON (JavaScript Object Notation) stores nested objects and arrays. Python's built-in csv and json modules parse these formats correctly, and pandas wraps them in read_csv, read_json, to_csv and to_json for table-shaped data.",
+          "objectives": [
+            "Open files safely with context managers and the right encoding.",
+            "Read and write CSV files with the csv module, including quoted fields.",
+            "Load and save JSON with json.load, json.loads, json.dump and json.dumps.",
+            "Use the key pd.read_csv and to_csv options interviewers ask about.",
+            "Handle bad rows without crashing and report what was skipped."
+          ],
+          "assignment": "Standard input contains a CSV file with a header row. It always has the columns region and amount, possibly among others and in any order. Sum amount per region. Rows whose amount is blank or not a number are skipped. Print one line of JSON with sorted keys: {\"skipped\": <count>, \"totals\": {<region>: <total rounded to 2 decimals>, ...}, \"valid_rows\": <count>}.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Use with blocks, explicit encodings and newline='' for CSV files.",
+            "Never split CSV lines on commas yourself; quoted fields break it.",
+            "csv values are strings; convert types explicitly and count failures.",
+            "json.load/dump work with files, loads/dumps with strings.",
+            "Know read_csv options: sep, usecols, dtype, parse_dates, na_values, chunksize.",
+            "Write with index=False unless the index carries real information."
+          ]
+        },
+        {
+          "day": 5,
+          "id": "data-analytics-using-python:assignment:5",
+          "title": "Data quality rules for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain data quality rules for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on data quality rules for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete data quality rules for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "data-analytics-using-python:assignment:6",
+          "title": "Descriptive statistics for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain descriptive statistics for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on descriptive statistics for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete descriptive statistics for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "data-analytics-using-python:assignment:7",
+          "title": "Distribution shape for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain distribution shape for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on distribution shape for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete distribution shape for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "data-analytics-using-python:article:1",
+          "data-analytics-using-python:article:2",
+          "data-analytics-using-python:article:3",
+          "data-analytics-using-python:article:4"
+        ],
+        "questions": [
+          "data-analytics-using-python:question:1:1",
+          "data-analytics-using-python:question:1:2",
+          "data-analytics-using-python:question:1:3",
+          "data-analytics-using-python:question:1:4",
+          "data-analytics-using-python:question:1:5",
+          "data-analytics-using-python:question:2:1",
+          "data-analytics-using-python:question:2:2",
+          "data-analytics-using-python:question:2:3",
+          "data-analytics-using-python:question:2:4",
+          "data-analytics-using-python:question:2:5",
+          "data-analytics-using-python:question:3:1",
+          "data-analytics-using-python:question:3:2",
+          "data-analytics-using-python:question:3:3",
+          "data-analytics-using-python:question:3:4",
+          "data-analytics-using-python:question:3:5",
+          "data-analytics-using-python:question:4:1",
+          "data-analytics-using-python:question:4:2",
+          "data-analytics-using-python:question:4:3",
+          "data-analytics-using-python:question:4:4",
+          "data-analytics-using-python:question:4:5"
+        ],
+        "coding": [
+          "data-analytics-using-python:coding:1",
+          "data-analytics-using-python:coding:2",
+          "data-analytics-using-python:coding:3",
+          "data-analytics-using-python:coding:4"
+        ],
+        "assignments": [
+          "data-analytics-using-python:assignment:1",
+          "data-analytics-using-python:assignment:2",
+          "data-analytics-using-python:assignment:3",
+          "data-analytics-using-python:assignment:4",
+          "data-analytics-using-python:assignment:5",
+          "data-analytics-using-python:assignment:6",
+          "data-analytics-using-python:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Cleaning, statistics and analysis",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "data-analytics-using-python:assignment:8",
+          "title": "Outlier investigation for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain outlier investigation for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on outlier investigation for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete outlier investigation for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "data-analytics-using-python:assignment:9",
+          "title": "Sampling and bias for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain sampling and bias for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on sampling and bias for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete sampling and bias for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "data-analytics-using-python:assignment:10",
+          "title": "Correlation limits for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain correlation limits for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on correlation limits for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete correlation limits for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "data-analytics-using-python:assignment:11",
+          "title": "SQL filtering for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain sql filtering for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on sql filtering for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete sql filtering for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "data-analytics-using-python:assignment:12",
+          "title": "Joins and grain for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain joins and grain for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on joins and grain for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete joins and grain for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "data-analytics-using-python:assignment:13",
+          "title": "Grouping and aggregation for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain grouping and aggregation for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on grouping and aggregation for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete grouping and aggregation for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "data-analytics-using-python:assignment:14",
+          "title": "Window calculations for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain window calculations for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on window calculations for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete window calculations for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "data-analytics-using-python:assignment:8",
+          "data-analytics-using-python:assignment:9",
+          "data-analytics-using-python:assignment:10",
+          "data-analytics-using-python:assignment:11",
+          "data-analytics-using-python:assignment:12",
+          "data-analytics-using-python:assignment:13",
+          "data-analytics-using-python:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Models, dashboards and reliable workflows",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "data-analytics-using-python:assignment:15",
+          "title": "Exploratory analysis for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain exploratory analysis for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on exploratory analysis for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete exploratory analysis for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "data-analytics-using-python:assignment:16",
+          "title": "Feature preparation for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain feature preparation for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on feature preparation for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete feature preparation for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "data-analytics-using-python:assignment:17",
+          "title": "Baseline models for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain baseline models for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on baseline models for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete baseline models for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "data-analytics-using-python:assignment:18",
+          "title": "Train-test separation for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain train-test separation for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on train-test separation for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete train-test separation for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "data-analytics-using-python:assignment:19",
+          "title": "Model evaluation for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain model evaluation for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on model evaluation for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete model evaluation for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "data-analytics-using-python:assignment:20",
+          "title": "Threshold selection for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain threshold selection for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on threshold selection for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete threshold selection for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "data-analytics-using-python:assignment:21",
+          "title": "Chart selection for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain chart selection for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on chart selection for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete chart selection for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "data-analytics-using-python:assignment:22",
+          "title": "Dashboard hierarchy for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain dashboard hierarchy for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on dashboard hierarchy for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete dashboard hierarchy for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "data-analytics-using-python:assignment:15",
+          "data-analytics-using-python:assignment:16",
+          "data-analytics-using-python:assignment:17",
+          "data-analytics-using-python:assignment:18",
+          "data-analytics-using-python:assignment:19",
+          "data-analytics-using-python:assignment:20",
+          "data-analytics-using-python:assignment:21",
+          "data-analytics-using-python:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Projects, communication and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "data-analytics-using-python:assignment:23",
+          "title": "Narrative with evidence for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain narrative with evidence for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on narrative with evidence for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete narrative with evidence for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "data-analytics-using-python:assignment:24",
+          "title": "Reproducible notebooks for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain reproducible notebooks for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on reproducible notebooks for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete reproducible notebooks for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "data-analytics-using-python:assignment:25",
+          "title": "Query performance for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain query performance for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on query performance for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete query performance for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "data-analytics-using-python:assignment:26",
+          "title": "Privacy and minimization for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain privacy and minimization for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on privacy and minimization for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete privacy and minimization for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "data-analytics-using-python:assignment:27",
+          "title": "Stakeholder questions for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain stakeholder questions for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on stakeholder questions for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete stakeholder questions for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "data-analytics-using-python:assignment:28",
+          "title": "Monitoring data drift for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain monitoring data drift for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on monitoring data drift for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete monitoring data drift for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "data-analytics-using-python:assignment:29",
+          "title": "Decision recommendations for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain decision recommendations for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on decision recommendations for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete decision recommendations for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "data-analytics-using-python:assignment:30",
+          "title": "Portfolio walkthrough for Python analytics",
+          "available": false,
+          "focus": "Python analytics",
+          "objectives": [
+            "Explain portfolio walkthrough for python analytics in the context of Python analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small Python analytics case study focused on portfolio walkthrough for python analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for python analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "data-analytics-using-python:assignment:23",
+          "data-analytics-using-python:assignment:24",
+          "data-analytics-using-python:assignment:25",
+          "data-analytics-using-python:assignment:26",
+          "data-analytics-using-python:assignment:27",
+          "data-analytics-using-python:assignment:28",
+          "data-analytics-using-python:assignment:29",
+          "data-analytics-using-python:assignment:30"
+        ]
+      }
+    }
+  ]
+}

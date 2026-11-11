@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { api } from '../lib/api'
+
+// One public availability request per app session; the backend owns the launch gate.
+let gigsStatus: Promise<boolean> | undefined
+const pilotEnabled = () => gigsStatus ??= api.get('/gigs/status/').then(r => r.data.enabled === true).catch(() => false)
 
 const LINKS = [
   ['/blog', 'Blog'],
@@ -12,6 +17,8 @@ const LINKS = [
 /** "Resources" header item: a button that opens a short list (hover, tap or keyboard). Inline list inside the burger menu. */
 export function ResourcesMenu() {
   const [open, setOpen] = useState(false)
+  const [gigsEnabled, setGigsEnabled] = useState(false)
+  useEffect(() => { let active = true; pilotEnabled().then(value => { if (active) setGigsEnabled(value) }); return () => { active = false } }, [])
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (!open) return
@@ -39,6 +46,7 @@ export function ResourcesMenu() {
             <Link to={href}>{label}</Link>
           </li>
         ))}
+        {gigsEnabled && <li><Link to="/gigs">Gigs pilot</Link></li>}
       </ul>
     </div>
   )

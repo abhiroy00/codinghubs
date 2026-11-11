@@ -1,1 +1,11 @@
 /* superseded by learning.css (kept so existing imports keep working) */
+
+/* Source-backed public interview guide, scoped to learning pages. */
+.prep-overview { margin-block: 1.5rem; }
+.prep-topic + .prep-topic { border-top: 1px solid #dce3ef; margin-top: 2rem; padding-top: 2rem; }
+.prep-example-code { max-width: 100%; overflow-x: auto; padding: 1rem; border-radius: .6rem; background: #111827; color: #f3f4f6; font-size: .875rem; white-space: pre; }
+.prep-topic-roadmap { padding-left: 1.4rem; }
+.prep-topic-roadmap li { padding-block: .5rem; overflow-wrap: anywhere; }
+.prep-topic-roadmap span { display: block; font-size: .9rem; color: #475569; }
+.prep-overview .learn-card-actions { gap: 1rem; flex-wrap: wrap; }
+@media (max-width: 640px) { .prep-overview .learn-section { padding: 1rem; } .prep-topic h3 { overflow-wrap: anywhere; } }

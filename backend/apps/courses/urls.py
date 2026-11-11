@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path
+from .roadmap import RoadmapProgressView
 
 from .views import CourseCategoryViewSet, CourseCertificateListView, CourseQuestionListView, CourseViewSet, LearningProgressListView, LearningProgressView, PrepCurriculumView, PrepLessonView, QuizAttemptView
 
@@ -8,6 +9,7 @@ router.register('categories', CourseCategoryViewSet, basename='course-category')
 router.register('', CourseViewSet, basename='course')
 
 urlpatterns = [
+    path('roadmap/<slug:slug>/progress/', RoadmapProgressView.as_view(), name='course-roadmap-progress'),
     path('prep/<slug:slug>/', PrepCurriculumView.as_view(), name='prep-curriculum'),
     path('prep/<slug:slug>/<int:day>/', PrepLessonView.as_view(), name='prep-lesson'),
     path('questions/<slug:slug>/', CourseQuestionListView.as_view(), name='course-questions'),

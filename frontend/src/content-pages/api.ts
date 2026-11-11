@@ -24,7 +24,7 @@ export interface Seo {
   description: string
   canonical: string
   robots: string
-  og: { type: string; title: string; description: string; image: string; url: string }
+  og: { type: string; title: string; description: string; image: string; url: string; alt?: string }
   json_ld: unknown
 }
 

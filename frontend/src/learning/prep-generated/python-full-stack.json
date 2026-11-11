@@ -1,0 +1,553 @@
+{
+  "curriculum": "python-full-stack",
+  "summary": "Available lessons cover Python Fundamentals: Types, Variables and Control Flow; Functions, Arguments, Scope and Closures; Built-in Data Structures and Comprehensions; Object-Oriented Python: Classes, Inheritance and Dunder Methods.",
+  "complete": false,
+  "missingDays": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "roadmap": [
+    {
+      "day": 1,
+      "title": "Python Fundamentals: Types, Variables and Control Flow",
+      "module": "Core Python",
+      "level": "Beginner"
+    },
+    {
+      "day": 2,
+      "title": "Functions, Arguments, Scope and Closures",
+      "module": "Core Python",
+      "level": "Beginner"
+    },
+    {
+      "day": 3,
+      "title": "Built-in Data Structures and Comprehensions",
+      "module": "Core Python",
+      "level": "Beginner"
+    },
+    {
+      "day": 4,
+      "title": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+      "module": "Core Python",
+      "level": "Beginner"
+    }
+  ],
+  "samples": [
+    {
+      "day": 1,
+      "title": "Python Fundamentals: Types, Variables and Control Flow",
+      "level": "Beginner",
+      "definition": "Python is a dynamically typed, strongly typed, interpreted language. A variable is a name that refers to an object; the object, not the name, carries the type. Control flow statements (if, for, while) decide which code runs and how many times, using indentation to mark blocks.",
+      "objectives": [
+        "Explain how Python variables work as names bound to objects.",
+        "Distinguish mutable and immutable built-in types and why it matters.",
+        "Use if/elif/else, for, while, break, continue and the loop else clause correctly.",
+        "Explain truthiness, the difference between == and is, and integer vs float division.",
+        "Write a small stdin/stdout program that combines input parsing, branching and loops."
+      ],
+      "interview": [
+        {
+          "question": "Is Python statically or dynamically typed? Strongly or weakly typed?",
+          "answer": "Dynamically typed, because types are checked at runtime and a name can be rebound to an object of any type. Strongly typed, because it does not implicitly convert between unrelated types; '3' + 4 raises TypeError.",
+          "explanation": "Many candidates confuse dynamic with weak. Giving the '3' + 4 example and contrasting it with JavaScript's '34' shows you understand both axes."
+        },
+        {
+          "question": "What is the difference between == and is?",
+          "answer": "== compares values using __eq__; is compares identity, meaning both names point to the same object. Use is for singletons such as None, True and False.",
+          "explanation": "Mention that small integers and some strings are cached by CPython, so is may appear to work for them, but relying on that is a bug."
+        },
+        {
+          "question": "Which built-in types are mutable and which are immutable? Why does it matter?",
+          "answer": "Mutable: list, dict, set, bytearray. Immutable: int, float, bool, str, tuple, frozenset, bytes. It matters because shared references to mutable objects see in-place changes, and only hashable objects can be dictionary keys or set members.",
+          "explanation": "A strong answer connects mutability to real consequences: aliasing bugs, the mutable default argument trap and hashability."
+        },
+        {
+          "question": "What does the else clause on a for or while loop do?",
+          "answer": "It runs after the loop finishes normally, that is, without hitting break. It is useful for search loops where you need to act when nothing was found.",
+          "explanation": "This is a classic Python-specific question; a short search example demonstrates you have actually used it."
+        },
+        {
+          "question": "Why does 0.1 + 0.2 == 0.3 return False, and how do you handle money in Python?",
+          "answer": "Floats are binary IEEE 754 doubles and cannot represent 0.1 exactly, so the sum is 0.30000000000000004. For money use decimal.Decimal (constructed from strings) or store integer paise/cents; for approximate comparisons use math.isclose.",
+          "explanation": "Interviewers for full-stack roles like this because payment and invoice code must avoid float rounding errors; Django's DecimalField exists for the same reason."
+        }
+      ],
+      "example": {
+        "title": "Mutability in action",
+        "body": "Two names bound to the same list see each other's changes, while rebinding an int creates a new object. This is the root of many subtle bugs, such as a function unexpectedly modifying a list it received.",
+        "code": {
+          "language": "python",
+          "source": "a = [1, 2, 3]\nb = a            # b and a refer to the SAME list\nb.append(4)\nprint(a)         # [1, 2, 3, 4]\nprint(a is b)    # True\n\nx = 10\ny = x\ny += 1           # ints are immutable: y now refers to a new object\nprint(x, y)      # 10 11\n\nc = a[:]         # shallow copy creates a new list\nprint(c == a, c is a)  # True False"
+        }
+      },
+      "practice": {
+        "title": "Student result summary",
+        "statement": "Read a list of students with their marks and print each student's grade, the class average and the topper. Grades: 90 and above is A, 75–89 is B, 60–74 is C, 40–59 is D and below 40 is F. If several students share the highest marks, the topper is the one who appears first. If there are no students, print only 'No students'.",
+        "objective": "Combine input parsing, if/elif grading rules, loops and formatted output."
+      },
+      "takeaways": [
+        "Variables are names bound to objects; the object has the type.",
+        "Python is dynamically but strongly typed.",
+        "Know which types are mutable; it affects copying, defaults and dict keys.",
+        "Use == for value equality and is only for identity checks like is None.",
+        "/ returns float, // floors toward negative infinity.",
+        "A loop's else block runs only when the loop was not exited with break."
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Functions, Arguments, Scope and Closures",
+      "level": "Beginner",
+      "definition": "A function is a named, reusable block of code defined with def that takes parameters and returns a value (None if no return runs). In Python functions are first-class objects, so they can be assigned to variables, passed as arguments and returned from other functions; a closure is a nested function that remembers variables from the scope in which it was created.",
+      "objectives": [
+        "Define functions with positional, keyword, default, *args and **kwargs parameters.",
+        "Explain the LEGB scope rule and when global and nonlocal are needed.",
+        "Avoid the mutable default argument trap and explain why it happens.",
+        "Use functions as first-class objects: pass them, return them and store them in dicts.",
+        "Build closures and lambdas and know their limits."
+      ],
+      "interview": [
+        {
+          "question": "What are *args and **kwargs?",
+          "answer": "*args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dict. The same symbols in a call unpack a sequence or mapping into arguments.",
+          "explanation": "Show both directions (packing in the definition, unpacking in the call) and mention a real use such as wrapper functions in decorators."
+        },
+        {
+          "question": "Why is def f(x, items=[]) dangerous?",
+          "answer": "The default list is created once when the function is defined and shared by every call that uses the default, so items appended in one call appear in the next. Use None as the default and create a new list inside.",
+          "explanation": "This is one of the most common Python interview questions. Explaining that defaults are evaluated at definition time is the key insight."
+        },
+        {
+          "question": "Explain the LEGB rule. What do global and nonlocal do?",
+          "answer": "Python resolves names in Local, Enclosing, Global and Built-in scopes, in that order. global lets a function rebind a module-level name; nonlocal lets a nested function rebind a name in its enclosing function's scope.",
+          "explanation": "Mention UnboundLocalError: assigning to a name anywhere in a function makes it local everywhere in that function."
+        },
+        {
+          "question": "Does Python pass arguments by value or by reference?",
+          "answer": "Neither exactly: it passes object references (call by sharing). The parameter is a new name for the same object, so in-place mutation of a mutable object is visible to the caller, while rebinding the parameter is not.",
+          "explanation": "A good answer gives a two-line example contrasting lst.append(1) with lst = [1]."
+        },
+        {
+          "question": "What is a closure and where is it used in practice?",
+          "answer": "A closure is an inner function that references variables from an enclosing function and keeps them alive after the outer function returns. Closures power decorators, callback factories, memoisation and configuration of handlers.",
+          "explanation": "Strong candidates mention the late-binding gotcha with lambdas in loops and that decorators are just closures applied with @ syntax."
+        }
+      ],
+      "example": {
+        "title": "A closure-based counter and the default-argument trap",
+        "body": "make_counter returns an inner function that keeps its own count using nonlocal. The second part shows how a mutable default leaks state between calls and how the None sentinel fixes it.",
+        "code": {
+          "language": "python",
+          "source": "def make_counter(start=0):\n    count = start\n    def increment(step=1):\n        nonlocal count\n        count += step\n        return count\n    return increment\n\nclicks = make_counter()\nprint(clicks(), clicks(), clicks(5))  # 1 2 7\n\ndef add_bad(item, bucket=[]):\n    bucket.append(item)\n    return bucket\n\ndef add_good(item, bucket=None):\n    bucket = [] if bucket is None else bucket\n    bucket.append(item)\n    return bucket\n\nprint(add_bad('a'), add_bad('b'))    # ['a', 'b'] ['a', 'b']\nprint(add_good('a'), add_good('b'))  # ['a'] ['b']"
+        }
+      },
+      "practice": {
+        "title": "Command calculator with a dispatch table",
+        "statement": "Read commands until the end of input. Each command is an operation name followed by zero or more integers. Supported operations: add (sum of all numbers), mul (product of all numbers), avg (average with two decimals; needs at least one number) and pow (exactly two numbers: base and exponent, exponent >= 0). Print one line per command. Unknown operations print 'Unknown command: <name>'. If avg has no numbers print 'Error: avg needs at least one number'. If pow does not receive exactly two numbers print 'Error: wrong number of arguments for pow'. Skip blank lines.",
+        "objective": "Use first-class functions in a dict, *args for variable arguments and argument-count errors raised by Python itself."
+      },
+      "takeaways": [
+        "*args is a tuple of extra positional arguments; **kwargs is a dict of extra keyword arguments.",
+        "Default values are evaluated once; never use a mutable default.",
+        "Name lookup follows LEGB; assignment makes a name local for the whole function.",
+        "Functions are objects: store them in dicts, pass them, return them.",
+        "A closure remembers variables from its enclosing scope; nonlocal lets it rebind them.",
+        "Python passes object references: mutation is visible to the caller, rebinding is not."
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Built-in Data Structures and Comprehensions",
+      "level": "Beginner",
+      "definition": "Python's built-in data structures are list (ordered, mutable sequence), tuple (ordered, immutable sequence), dict (insertion-ordered mapping of hashable keys to values, backed by a hash table) and set (unordered collection of unique hashable items). Comprehensions are concise expressions that build these collections from an iterable with optional filtering.",
+      "objectives": [
+        "Choose between list, tuple, dict and set based on behaviour and time complexity.",
+        "Write list, dict and set comprehensions and generator expressions.",
+        "Use collections helpers such as Counter, defaultdict and deque.",
+        "Explain shallow versus deep copies of nested structures.",
+        "Sort complex data with key functions and multiple sort criteria."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between a list and a tuple?",
+          "answer": "A list is mutable and a tuple is immutable. Because of that a tuple of hashable items is hashable (usable as a dict key), slightly smaller and faster to create, and communicates a fixed-size record. Lists are for homogeneous collections that grow or change.",
+          "explanation": "Go beyond 'one is mutable': mention hashability and intent (records versus collections)."
+        },
+        {
+          "question": "Why is checking membership in a set faster than in a list?",
+          "answer": "A set is a hash table: Python hashes the value and jumps to its bucket, giving average O(1). A list must compare items one by one, which is O(n).",
+          "explanation": "Mention the practical trick of converting a list to a set before repeated membership tests, and that worst-case hash collisions degrade to O(n)."
+        },
+        {
+          "question": "Are Python dictionaries ordered?",
+          "answer": "Yes. Since Python 3.7 insertion order is guaranteed by the language specification (it was an implementation detail of CPython 3.6). Iteration returns keys in the order they were first inserted.",
+          "explanation": "Interviewers check whether your knowledge is current; mention OrderedDict still exists for move_to_end and order-sensitive equality."
+        },
+        {
+          "question": "What is the difference between a shallow copy and a deep copy?",
+          "answer": "A shallow copy creates a new outer container but references the same inner objects. A deep copy recursively copies all nested objects, so changes to inner lists or dicts are not shared.",
+          "explanation": "Give the nested list example; this ties into bugs when copying configuration dicts or default data."
+        },
+        {
+          "question": "How would you find the k most frequent words in a text, breaking ties alphabetically?",
+          "answer": "Normalise the words, count them with collections.Counter (O(n)), then sort the items with key=lambda kv: (-kv[1], kv[0]) and take the first k. For very large vocabularies heapq.nsmallest(k, items, key=...) avoids sorting everything.",
+          "explanation": "This combines dicts, sorting with tuple keys and complexity analysis, a common screening question."
+        }
+      ],
+      "example": {
+        "title": "Grouping orders with defaultdict and a comprehension",
+        "body": "Group order amounts by city, then build a summary dict with a comprehension. This is the same shape of work a Django view does after fetching rows, before passing a context to a template.",
+        "code": {
+          "language": "python",
+          "source": "from collections import defaultdict\n\norders = [('Delhi', 450), ('Pune', 300), ('Delhi', 120), ('Pune', 80), ('Goa', 999)]\n\nby_city = defaultdict(list)\nfor city, amount in orders:\n    by_city[city].append(amount)\n\nsummary = {city: sum(vals) for city, vals in by_city.items()}\nprint(summary)  # {'Delhi': 570, 'Pune': 380, 'Goa': 999}\n\ntop = sorted(summary.items(), key=lambda kv: -kv[1])[0]\nprint(top)      # ('Goa', 999)"
+        }
+      },
+      "practice": {
+        "title": "Top-k word frequency",
+        "statement": "Read k on the first line and then any number of lines of text. Split the text on whitespace, strip the punctuation characters . , ! ? ; : ( ) from both ends of each word, convert to lowercase and ignore empty results. Print the number of distinct words, then the k most frequent words with their counts. Sort by count descending, then alphabetically. If there are fewer than k distinct words, print them all. If there are no words, print only 'No words'.",
+        "objective": "Use Counter, string normalisation and multi-key sorting to rank words."
+      },
+      "takeaways": [
+        "Lists are dynamic arrays; front insertions and membership tests are O(n).",
+        "Dicts and sets are hash tables with average O(1) lookup; keys must be hashable.",
+        "Dicts keep insertion order since Python 3.7.",
+        "Comprehensions build collections; generator expressions produce items lazily.",
+        "Counter, defaultdict and deque remove a lot of boilerplate.",
+        "Shallow copies share nested objects; use deepcopy when you need full independence."
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+      "level": "Beginner",
+      "definition": "Object-oriented programming (OOP) organises code around objects that bundle data (attributes) with behaviour (methods). In Python a class is a blueprint created with the class keyword, an object is an instance of that class, and special 'dunder' (double underscore) methods let your objects plug into built-in syntax such as printing, comparison, len() and +.",
+      "objectives": [
+        "Define classes with instance attributes, class attributes, methods and properties.",
+        "Use inheritance, method overriding and super() and explain the MRO.",
+        "Implement dunder methods such as __init__, __str__, __repr__, __eq__ and __lt__.",
+        "Distinguish instance methods, @classmethod and @staticmethod.",
+        "Apply polymorphism to remove type-checking if/elif chains."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between __str__ and __repr__?",
+          "answer": "__str__ returns a readable, user-facing string used by print() and str(). __repr__ returns an unambiguous developer-facing string, ideally one that could recreate the object, used by the REPL, logs and containers. If __str__ is missing Python falls back to __repr__.",
+          "explanation": "Mention that a list of objects prints each item's __repr__, which is why defining __repr__ helps debugging."
+        },
+        {
+          "question": "What is the difference between @classmethod and @staticmethod?",
+          "answer": "A classmethod receives the class as cls and can create or inspect instances of that class or its subclasses, making it ideal for alternative constructors. A staticmethod receives neither self nor cls and is just a function grouped inside the class.",
+          "explanation": "An example like User.from_json(data) returning cls(...) shows why cls matters with inheritance."
+        },
+        {
+          "question": "What does super() do, and what is the MRO?",
+          "answer": "super() returns a proxy that delegates method calls to the next class in the Method Resolution Order, the linearised list of base classes Python computes with C3. It makes cooperative multiple inheritance and mixins work.",
+          "explanation": "Relate it to Django mixins: class MyView(LoginRequiredMixin, ListView) works because LoginRequiredMixin.dispatch calls super().dispatch()."
+        },
+        {
+          "question": "If you override __eq__ in a class, what happens to hashing?",
+          "answer": "Python sets __hash__ to None, so instances become unhashable and cannot be used in sets or as dict keys. If the object should be hashable, define __hash__ using the same immutable fields used for equality.",
+          "explanation": "This catches many candidates. Objects that are equal must have equal hashes; mutable objects usually should not be hashable."
+        },
+        {
+          "question": "Explain polymorphism with an example from a web application.",
+          "answer": "Different classes implement the same interface, and the caller uses them interchangeably. For example, EmailNotifier, SmsNotifier and PushNotifier each implement send(user, message); the order service loops over configured notifiers and calls send without checking types.",
+          "explanation": "Concrete, domain-relevant examples score better than 'Dog and Cat both speak'. Mention duck typing as Python's flavour of polymorphism."
+        }
+      ],
+      "example": {
+        "title": "A Money value object with dunder methods",
+        "body": "Money stores amounts as integer paise, supports + and comparisons, has a readable __str__ and a debuggable __repr__, and stays hashable because equality and hash use the same fields.",
+        "code": {
+          "language": "python",
+          "source": "from functools import total_ordering\n\n@total_ordering\nclass Money:\n    def __init__(self, paise, currency='INR'):\n        self.paise = paise\n        self.currency = currency\n\n    @classmethod\n    def from_rupees(cls, rupees):\n        return cls(round(rupees * 100))\n\n    def __add__(self, other):\n        if self.currency != other.currency:\n            raise ValueError('currency mismatch')\n        return Money(self.paise + other.paise, self.currency)\n\n    def __eq__(self, other):\n        return (self.paise, self.currency) == (other.paise, other.currency)\n\n    def __lt__(self, other):\n        return self.paise < other.paise\n\n    def __hash__(self):\n        return hash((self.paise, self.currency))\n\n    def __repr__(self):\n        return f'Money({self.paise}, {self.currency!r})'\n\n    def __str__(self):\n        return f'Rs {self.paise / 100:.2f}'\n\nprice = Money.from_rupees(199.5) + Money(50)\nprint(price, repr(price), price > Money(100))\n# Rs 200.00 Money(20000, 'INR') True"
+        }
+      },
+      "practice": {
+        "title": "Bank accounts with inheritance",
+        "statement": "Simulate a small bank. A Savings account must keep at least 500 after a withdrawal. A Current account may go into overdraft down to -1000. Both start at 0. Commands: 'OPEN savings|current <owner>', 'DEPOSIT <owner> <amount>', 'WITHDRAW <owner> <amount>' and 'REPORT'. After a successful DEPOSIT or WITHDRAW print '<owner> balance: <balance>'. OPEN prints 'Opened <Kind> account for <owner>' where Kind is Savings or Current. REPORT prints every account as '<Kind> <owner>: <balance>' sorted by balance descending, keeping opening order for equal balances, or 'No accounts' if none exist. Errors print 'Error: <message>' with message 'account exists for <owner>', 'no account for <owner>', 'amount must be positive' or 'insufficient funds'.",
+        "objective": "Model accounts with a base class, two subclasses that override one method, and dunder methods for printing and sorting."
+      },
+      "takeaways": [
+        "self is the instance; class attributes are shared by all instances.",
+        "Use super() so cooperative inheritance follows the MRO.",
+        "__str__ is for users, __repr__ is for developers.",
+        "Defining __eq__ requires defining __hash__ if objects must be hashable.",
+        "@classmethod is ideal for alternative constructors; @staticmethod for related helpers.",
+        "Polymorphism replaces type-checking branches with overridden methods."
+      ]
+    }
+  ],
+  "firstLesson": {
+    "day": 1,
+    "title": "Python Fundamentals: Types, Variables and Control Flow",
+    "module": "Core Python",
+    "level": "Beginner",
+    "objectives": [
+      "Explain how Python variables work as names bound to objects.",
+      "Distinguish mutable and immutable built-in types and why it matters.",
+      "Use if/elif/else, for, while, break, continue and the loop else clause correctly.",
+      "Explain truthiness, the difference between == and is, and integer vs float division.",
+      "Write a small stdin/stdout program that combines input parsing, branching and loops."
+    ],
+    "definition": "Python is a dynamically typed, strongly typed, interpreted language. A variable is a name that refers to an object; the object, not the name, carries the type. Control flow statements (if, for, while) decide which code runs and how many times, using indentation to mark blocks.",
+    "theory": [
+      {
+        "heading": "Names, objects and dynamic typing",
+        "body": "In Python every value is an object with an identity, a type and a value. An assignment such as x = 10 does not put 10 into a box called x; it binds the name x to an int object. Rebinding x = 'ten' simply points the name at a different object. That is dynamic typing. Python is still strongly typed: '3' + 4 raises TypeError instead of silently converting, unlike JavaScript.",
+        "points": [
+          "type(x) returns the class of the object the name refers to.",
+          "id(x) returns the object's identity; two names can share one object.",
+          "Strong typing means no implicit conversion between unrelated types.",
+          "Type hints (x: int = 5) document intent but are not enforced at runtime."
+        ]
+      },
+      {
+        "heading": "Built-in types and mutability",
+        "body": "The core scalar types are int (arbitrary precision), float (IEEE 754 double), complex, bool (a subclass of int) and NoneType. Sequence and collection types are str, list, tuple, dict and set. The key interview distinction is mutability: immutable objects (int, float, str, tuple, frozenset) cannot change after creation, so an operation that looks like modification creates a new object. Mutable objects (list, dict, set) change in place, which matters when two names share the same object.",
+        "points": [
+          "Immutable: int, float, bool, str, tuple, frozenset, bytes.",
+          "Mutable: list, dict, set, bytearray and most user-defined objects.",
+          "Only hashable (normally immutable) objects can be dict keys or set members.",
+          "0.1 + 0.2 != 0.3 because of binary floating point; use decimal.Decimal for money."
+        ]
+      },
+      {
+        "heading": "Operators that interviewers probe",
+        "body": "/ always returns a float (7 / 2 == 3.5), // is floor division (7 // 2 == 3, and -7 // 2 == -4 because it floors toward negative infinity) and % follows the sign of the divisor. == compares values by calling __eq__, while is compares identity. Use is only for singletons such as None. and/or short-circuit and return one of their operands, not necessarily a bool: '' or 'guest' evaluates to 'guest'.",
+        "points": [
+          "x is None is the idiomatic None check.",
+          "Chained comparisons work: 0 <= score <= 100.",
+          "Falsy values: None, False, 0, 0.0, '', [], {}, set(), range(0).",
+          "The walrus operator := assigns inside an expression (Python 3.8+)."
+        ]
+      },
+      {
+        "heading": "Control flow",
+        "body": "if/elif/else picks one branch. for iterates over any iterable (lists, strings, dicts, files, ranges); while repeats while a condition is true. break exits the loop, continue skips to the next iteration, and the optional else block on a loop runs only if the loop finished without break, which is handy for search loops. Python 3.10 added match/case for structural pattern matching.",
+        "points": [
+          "range(start, stop, step) is lazy and excludes stop.",
+          "enumerate(items, start=1) gives index and value together.",
+          "zip(a, b) walks two iterables in parallel and stops at the shorter one.",
+          "Indentation is syntax: mixing tabs and spaces causes errors."
+        ]
+      },
+      {
+        "heading": "Strings and input handling",
+        "body": "Strings are immutable sequences of Unicode characters. Common methods are strip, split, join, replace, lower, startswith and format with f-strings. input() always returns a str, so numeric input must be converted with int() or float(). f'{value:.2f}' formats a float with two decimals, which you will use constantly in coding rounds.",
+        "points": [
+          "s.split() with no argument splits on any whitespace and drops empty parts.",
+          "', '.join(words) is the efficient way to build a string from pieces.",
+          "Slicing s[::-1] reverses a string; slices never raise IndexError."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Mutability in action",
+      "body": "Two names bound to the same list see each other's changes, while rebinding an int creates a new object. This is the root of many subtle bugs, such as a function unexpectedly modifying a list it received.",
+      "code": {
+        "language": "python",
+        "source": "a = [1, 2, 3]\nb = a            # b and a refer to the SAME list\nb.append(4)\nprint(a)         # [1, 2, 3, 4]\nprint(a is b)    # True\n\nx = 10\ny = x\ny += 1           # ints are immutable: y now refers to a new object\nprint(x, y)      # 10 11\n\nc = a[:]         # shallow copy creates a new list\nprint(c == a, c is a)  # True False"
+      }
+    },
+    "use_cases": [
+      {
+        "title": "Input validation",
+        "description": "Branching on types and ranges to reject bad form data before it reaches the database."
+      },
+      {
+        "title": "Data processing scripts",
+        "description": "Loops over CSV rows or log lines to compute totals, averages and reports."
+      },
+      {
+        "title": "Business rules",
+        "description": "if/elif chains for pricing tiers, grading, discounts or tax slabs."
+      },
+      {
+        "title": "Automation",
+        "description": "while loops for retry logic and polling a service until a job finishes."
+      }
+    ],
+    "demonstration": {
+      "description": "Use a for loop with an else clause to search for the first number divisible by 7. The else runs only when no break happened.",
+      "code": {
+        "language": "python",
+        "source": "for nums in ([3, 5, 14, 21], [1, 2, 4]):\n    for n in nums:\n        if n % 7 == 0:\n            print('found', n)\n            break\n    else:\n        print('none divisible by 7')\n\nprint(7 / 2, 7 // 2, -7 // 2, 7 % 3)"
+      },
+      "output": "found 14\nnone divisible by 7\n3.5 3 -4 1"
+    },
+    "takeaways": [
+      "Variables are names bound to objects; the object has the type.",
+      "Python is dynamically but strongly typed.",
+      "Know which types are mutable; it affects copying, defaults and dict keys.",
+      "Use == for value equality and is only for identity checks like is None.",
+      "/ returns float, // floors toward negative infinity.",
+      "A loop's else block runs only when the loop was not exited with break."
+    ],
+    "interview": [
+      {
+        "question": "Is Python statically or dynamically typed? Strongly or weakly typed?",
+        "answer": "Dynamically typed, because types are checked at runtime and a name can be rebound to an object of any type. Strongly typed, because it does not implicitly convert between unrelated types; '3' + 4 raises TypeError.",
+        "explanation": "Many candidates confuse dynamic with weak. Giving the '3' + 4 example and contrasting it with JavaScript's '34' shows you understand both axes."
+      },
+      {
+        "question": "What is the difference between == and is?",
+        "answer": "== compares values using __eq__; is compares identity, meaning both names point to the same object. Use is for singletons such as None, True and False.",
+        "explanation": "Mention that small integers and some strings are cached by CPython, so is may appear to work for them, but relying on that is a bug."
+      },
+      {
+        "question": "Which built-in types are mutable and which are immutable? Why does it matter?",
+        "answer": "Mutable: list, dict, set, bytearray. Immutable: int, float, bool, str, tuple, frozenset, bytes. It matters because shared references to mutable objects see in-place changes, and only hashable objects can be dictionary keys or set members.",
+        "explanation": "A strong answer connects mutability to real consequences: aliasing bugs, the mutable default argument trap and hashability."
+      },
+      {
+        "question": "What does the else clause on a for or while loop do?",
+        "answer": "It runs after the loop finishes normally, that is, without hitting break. It is useful for search loops where you need to act when nothing was found.",
+        "explanation": "This is a classic Python-specific question; a short search example demonstrates you have actually used it."
+      },
+      {
+        "question": "Why does 0.1 + 0.2 == 0.3 return False, and how do you handle money in Python?",
+        "answer": "Floats are binary IEEE 754 doubles and cannot represent 0.1 exactly, so the sum is 0.30000000000000004. For money use decimal.Decimal (constructed from strings) or store integer paise/cents; for approximate comparisons use math.isclose.",
+        "explanation": "Interviewers for full-stack roles like this because payment and invoice code must avoid float rounding errors; Django's DecimalField exists for the same reason."
+      }
+    ],
+    "practice": {
+      "kind": "coding",
+      "title": "Student result summary",
+      "difficulty": "Basic",
+      "objective": "Combine input parsing, if/elif grading rules, loops and formatted output.",
+      "statement": "Read a list of students with their marks and print each student's grade, the class average and the topper. Grades: 90 and above is A, 75–89 is B, 60–74 is C, 40–59 is D and below 40 is F. If several students share the highest marks, the topper is the one who appears first. If there are no students, print only 'No students'.",
+      "language": "python",
+      "input_format": "First line: n, the number of students (0 or more). Next n lines: a name (no spaces) and integer marks, separated by a space.",
+      "output_format": "n lines 'name: grade' in input order, then 'Average: x.xx' (two decimals), then 'Topper: name (marks)'. For n = 0 print 'No students'.",
+      "example": {
+        "input": "3\nAsha 92\nRavi 74\nMeena 40\n",
+        "output": "Asha: A\nRavi: C\nMeena: D\nAverage: 68.67\nTopper: Asha (92)"
+      },
+      "constraints": [
+        "0 <= n <= 1000",
+        "Marks are integers from 0 to 100.",
+        "Names contain no spaces."
+      ],
+      "starter": "n = int(input())\nstudents = []\nfor _ in range(n):\n    name, marks = input().split()\n    students.append((name, int(marks)))\n\n# TODO: print grades, average and topper\n",
+      "solution": "def grade(m):\n    if m >= 90:\n        return 'A'\n    elif m >= 75:\n        return 'B'\n    elif m >= 60:\n        return 'C'\n    elif m >= 40:\n        return 'D'\n    return 'F'\n\nn = int(input())\nstudents = []\nfor _ in range(n):\n    name, marks = input().split()\n    students.append((name, int(marks)))\n\nif not students:\n    print('No students')\nelse:\n    for name, marks in students:\n        print(f'{name}: {grade(marks)}')\n    average = sum(m for _, m in students) / len(students)\n    print(f'Average: {average:.2f}')\n    top_name, top_marks = students[0]\n    for name, marks in students[1:]:\n        if marks > top_marks:\n            top_name, top_marks = name, marks\n    print(f'Topper: {top_name} ({top_marks})')\n",
+      "explanation": [
+        "Convert the marks to int, because input() always returns a string.",
+        "Check grade thresholds from highest to lowest so the first matching elif wins.",
+        "Use true division for the average and format it with :.2f.",
+        "Track the topper with a strict > comparison so the earliest student wins a tie.",
+        "Handle the empty case first to avoid dividing by zero."
+      ],
+      "tests": [
+        {
+          "input": "3\nAsha 92\nRavi 74\nMeena 40\n",
+          "output": "Asha: A\nRavi: C\nMeena: D\nAverage: 68.67\nTopper: Asha (92)"
+        },
+        {
+          "input": "0\n",
+          "output": "No students"
+        },
+        {
+          "input": "2\nKiran 75\nArjun 75\n",
+          "output": "Kiran: B\nArjun: B\nAverage: 75.00\nTopper: Kiran (75)"
+        },
+        {
+          "input": "1\nZoya 39\n",
+          "output": "Zoya: F\nAverage: 39.00\nTopper: Zoya (39)"
+        },
+        {
+          "input": "4\nDev 100\nSam 0\nLia 60\nOm 89\n",
+          "output": "Dev: A\nSam: F\nLia: C\nOm: B\nAverage: 62.25\nTopper: Dev (100)"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "type": "output",
+        "question": "What does this floor-division code print?",
+        "code": "print(7 // 2, -7 // 2)",
+        "options": [
+          "3 -4",
+          "3.5 -3.5",
+          "4 -4",
+          "3 -3"
+        ],
+        "answer": 0,
+        "explanation": "// is floor division and rounds toward negative infinity, so -3.5 floors to -4."
+      },
+      {
+        "type": "concept",
+        "question": "Which of these built-in types is mutable?",
+        "options": [
+          "list",
+          "frozenset",
+          "tuple",
+          "str"
+        ],
+        "answer": 0,
+        "explanation": "Lists can be changed in place; tuples, strings and frozensets are immutable."
+      },
+      {
+        "type": "code",
+        "question": "What is the idiomatic way to check whether a variable is None?",
+        "options": [
+          "if not value.exists():",
+          "if value is None:",
+          "if value == None:",
+          "if type(value) == 'None':"
+        ],
+        "answer": 1,
+        "explanation": "None is a singleton, so an identity check with is is correct and cannot be fooled by a custom __eq__."
+      },
+      {
+        "type": "output",
+        "question": "What does this for...else loop print?",
+        "code": "for n in [2, 4, 6]:\n    if n % 2:\n        break\nelse:\n    print('done')",
+        "options": [
+          "Nothing",
+          "2",
+          "An error",
+          "done"
+        ],
+        "answer": 3,
+        "explanation": "No element is odd, so break never runs and the loop's else clause executes."
+      },
+      {
+        "type": "scenario",
+        "question": "An invoice total computed with floats shows 0.30000000000000004. What is the best fix?",
+        "options": [
+          "Convert values to strings before adding",
+          "Use decimal.Decimal or integer paise for currency",
+          "Switch to Python 2",
+          "Round every value to one decimal place"
+        ],
+        "answer": 1,
+        "explanation": "Binary floats cannot represent most decimal fractions exactly; Decimal or integer minor units give exact currency arithmetic."
+      }
+    ]
+  }
+}

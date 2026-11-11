@@ -3,7 +3,7 @@
 // plus dist/sitemap.xml. dist/index.html stays the neutral, noindex SPA shell used for app-only routes
 // (login, register, dashboard, checkout, admin panel). nginx maps URLs to these files (see nginx.conf).
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -17,15 +17,17 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g
 const { renderAll } = await import(pathToFileURL(path.join(root, 'dist-ssr', 'entry-server.js')).href)
 const template = await readFile(path.join(dist, 'index.html'), 'utf8')
 const cssVersion = createHash('md5').update(await readFile(path.join(dist, 'free-session.css'))).digest('hex').slice(0, 8)
+const learningStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(genai-roadmap|learning)-.*\.css$/.test(name))
 
 function buildHead(page) {
-  const canonical = `${SITE}${page.path}`
+  const canonical = page.canonical ?? `${SITE}${page.path}`
+  const imageAlt = page.image?.endsWith('/assets/coding-hubs-school-of-ai-logo.jpeg') ? 'Coding Hubs School of AI logo' : page.title
   const tags = [
     `<title>${esc(page.title)}</title>`,
     `<meta name="description" content="${esc(page.description)}" />`,
-    `<meta name="robots" content="${page.indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow'}" />`,
+    `<meta name="robots" content="${page.robots ?? (page.indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow')}" />`,
   ]
-  if (page.indexable) tags.push(`<link rel="canonical" href="${canonical}" />`)
+  if (page.indexable || page.canonical) tags.push(`<link rel="canonical" href="${canonical}" />`)
   tags.push(
     `<meta property="og:type" content="website" />`,
     `<meta property="og:site_name" content="Coding Hubs School of AI" />`,
@@ -34,11 +36,14 @@ function buildHead(page) {
     `<meta property="og:description" content="${esc(page.description)}" />`,
     `<meta property="og:url" content="${canonical}" />`,
     `<meta property="og:image" content="${page.image}" />`,
+    `<meta property="og:image:alt" content="${esc(imageAlt)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${esc(page.title)}" />`,
     `<meta name="twitter:description" content="${esc(page.description)}" />`,
     `<meta name="twitter:image" content="${page.image}" />`,
+    `<meta name="twitter:image:alt" content="${esc(imageAlt)}" />`,
   )
+  if (page.image?.endsWith('/assets/coding-hubs-school-of-ai-logo.jpeg')) tags.push('<meta property="og:image:width" content="1254" />', '<meta property="og:image:height" content="1254" />')
   // free-session pages: stylesheet in <head> AFTER the app stylesheet so it wins the cascade
   if (page.fsDesign) {
     tags.push(`<link rel="preload" as="image" href="/assets/coding-hubs-school-of-ai-logo-wide.webp" type="image/webp" />`)
@@ -48,6 +53,9 @@ function buildHead(page) {
     tags.push(`<noscript><link rel="stylesheet" href="${FONTS}" /></noscript>`)
   }
   if (page.jsonLd) tags.push(`<script type="application/ld+json">${JSON.stringify(page.jsonLd).replace(/</g, '\\u003c')}</script>`)
+  if (page.path?.startsWith('/interview-prep/')) {
+    for (const file of learningStyles) tags.push(`<link rel="stylesheet" href="/assets/${file}" />`)
+  }
   return tags.join('\n    ')
 }
 
@@ -81,6 +89,10 @@ for (const page of pages) {
 
 // sitemap: indexable canonical URLs only; no <lastmod> (we do not track real content-change dates)
 const urls = pages.filter((p) => p.indexable).map((p) => `${SITE}${p.path}`)
+if (new Set(urls).size !== urls.length) throw new Error('Duplicate sitemap URLs')
+for (const page of pages.filter(p => p.indexable)) {
+  if (page.canonical && page.canonical !== `${SITE}${page.path}`) throw new Error('Noncanonical page in sitemap: ' + page.path)
+}
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
   .map((u) => `  <url><loc>${u}</loc></url>`)
   .join('\n')}\n</urlset>\n`

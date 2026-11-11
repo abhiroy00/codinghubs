@@ -378,6 +378,20 @@ class SeoTests(ContentBase):
         html = self.as_user(None).get('/blog?q=python').content.decode()
         self.assertIn('content="noindex, follow"', html)
 
+    def test_sitemap_excludes_pages_with_a_different_canonical(self):
+        blog = self.published_blog()
+        obj = Blog.objects.get(pk=blog['id'])
+        own_url = f'https://codinghubs.in/blog/{obj.slug}'
+        obj.canonical_url = own_url
+        obj.save()
+        anon = self.as_user(None)
+        self.assertIn(own_url, anon.get('/sitemap-content.xml').content.decode())
+        obj.canonical_url = 'https://example.org/original-article'
+        obj.save()
+        self.assertNotIn(own_url, anon.get('/sitemap-content.xml').content.decode())
+        case = CaseStudy.objects.create(title='Syndicated study', slug='syndicated-study', status='published', published_at=timezone.now(), canonical_url='https://codinghubs.in/case-studies/primary-study')
+        self.assertNotIn('/case-studies/' + case.slug, anon.get('/sitemap-content.xml').content.decode())
+
     def test_json_ld_is_escaped_inside_script(self):
         b = self.make_blog('Break </script><b>out', excerpt='x')
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')

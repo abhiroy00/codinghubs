@@ -1,0 +1,976 @@
+{
+  "slug": "azure-solutions-architect-expert-az-305",
+  "name": "Azure Solutions Architect Expert (AZ-305)",
+  "focus": "Azure architecture and AZ-305 objectives",
+  "track": "cloud",
+  "tools": [
+    "cloud CLI",
+    "IAM",
+    "VPC networking",
+    "Docker",
+    "Terraform",
+    "monitoring dashboards"
+  ],
+  "projects": [
+    {
+      "name": "Azure architecture and AZ-305 objectives: Foundations case study",
+      "description": "Investigate a focused Azure architecture and AZ-305 objectives scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated Azure architecture and AZ-305 objectives use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable Azure architecture and AZ-305 objectives artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    },
+    {
+      "name": "Azure architecture and AZ-305 objectives: Applied workflow",
+      "description": "Build a small, end-to-end Azure architecture and AZ-305 objectives workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated Azure architecture and AZ-305 objectives use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable Azure architecture and AZ-305 objectives artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    },
+    {
+      "name": "Azure architecture and AZ-305 objectives: Portfolio capstone",
+      "description": "Deliver and explain a complete Azure architecture and AZ-305 objectives capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated Azure architecture and AZ-305 objectives use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable Azure architecture and AZ-305 objectives artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "azure-solutions-architect-expert-az-305",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Cloud foundations and identity",
+      "start": 1,
+      "end": 7,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 1,
+          "id": "azure-solutions-architect-expert-az-305:assignment:1",
+          "title": "Shared responsibility for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain shared responsibility for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on shared responsibility for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete shared responsibility for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 2,
+          "id": "azure-solutions-architect-expert-az-305:assignment:2",
+          "title": "Regions and availability zones for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain regions and availability zones for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on regions and availability zones for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete regions and availability zones for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 3,
+          "id": "azure-solutions-architect-expert-az-305:assignment:3",
+          "title": "Identity boundaries for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain identity boundaries for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on identity boundaries for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete identity boundaries for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 4,
+          "id": "azure-solutions-architect-expert-az-305:assignment:4",
+          "title": "Least-privilege policies for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain least-privilege policies for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on least-privilege policies for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete least-privilege policies for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 5,
+          "id": "azure-solutions-architect-expert-az-305:assignment:5",
+          "title": "Network segmentation for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain network segmentation for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on network segmentation for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete network segmentation for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "azure-solutions-architect-expert-az-305:assignment:6",
+          "title": "Subnets and routes for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain subnets and routes for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on subnets and routes for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete subnets and routes for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "azure-solutions-architect-expert-az-305:assignment:7",
+          "title": "Compute selection for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain compute selection for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on compute selection for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete compute selection for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "azure-solutions-architect-expert-az-305:assignment:1",
+          "azure-solutions-architect-expert-az-305:assignment:2",
+          "azure-solutions-architect-expert-az-305:assignment:3",
+          "azure-solutions-architect-expert-az-305:assignment:4",
+          "azure-solutions-architect-expert-az-305:assignment:5",
+          "azure-solutions-architect-expert-az-305:assignment:6",
+          "azure-solutions-architect-expert-az-305:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Networking, compute and architecture",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "azure-solutions-architect-expert-az-305:assignment:8",
+          "title": "Storage classes for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain storage classes for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on storage classes for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete storage classes for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "azure-solutions-architect-expert-az-305:assignment:9",
+          "title": "Managed databases for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain managed databases for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on managed databases for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete managed databases for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "azure-solutions-architect-expert-az-305:assignment:10",
+          "title": "Load balancing for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain load balancing for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on load balancing for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete load balancing for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "azure-solutions-architect-expert-az-305:assignment:11",
+          "title": "Autoscaling behavior for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain autoscaling behavior for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on autoscaling behavior for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete autoscaling behavior for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "azure-solutions-architect-expert-az-305:assignment:12",
+          "title": "Infrastructure as code for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain infrastructure as code for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on infrastructure as code for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete infrastructure as code for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "azure-solutions-architect-expert-az-305:assignment:13",
+          "title": "Configuration separation for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain configuration separation for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on configuration separation for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration separation for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "azure-solutions-architect-expert-az-305:assignment:14",
+          "title": "Secret management for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain secret management for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on secret management for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secret management for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "azure-solutions-architect-expert-az-305:assignment:8",
+          "azure-solutions-architect-expert-az-305:assignment:9",
+          "azure-solutions-architect-expert-az-305:assignment:10",
+          "azure-solutions-architect-expert-az-305:assignment:11",
+          "azure-solutions-architect-expert-az-305:assignment:12",
+          "azure-solutions-architect-expert-az-305:assignment:13",
+          "azure-solutions-architect-expert-az-305:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Reliability, security and operations",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "azure-solutions-architect-expert-az-305:assignment:15",
+          "title": "Encryption boundaries for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain encryption boundaries for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on encryption boundaries for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete encryption boundaries for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "azure-solutions-architect-expert-az-305:assignment:16",
+          "title": "Logging and audit trails for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain logging and audit trails for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on logging and audit trails for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and audit trails for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "azure-solutions-architect-expert-az-305:assignment:17",
+          "title": "Health checks for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain health checks for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on health checks for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete health checks for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "azure-solutions-architect-expert-az-305:assignment:18",
+          "title": "Backup and recovery for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain backup and recovery for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on backup and recovery for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete backup and recovery for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "azure-solutions-architect-expert-az-305:assignment:19",
+          "title": "High availability for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain high availability for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on high availability for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete high availability for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "azure-solutions-architect-expert-az-305:assignment:20",
+          "title": "Disaster recovery objectives for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain disaster recovery objectives for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on disaster recovery objectives for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete disaster recovery objectives for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "azure-solutions-architect-expert-az-305:assignment:21",
+          "title": "Container basics for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain container basics for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on container basics for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete container basics for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "azure-solutions-architect-expert-az-305:assignment:22",
+          "title": "Deployment pipelines for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain deployment pipelines for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on deployment pipelines for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment pipelines for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "azure-solutions-architect-expert-az-305:assignment:15",
+          "azure-solutions-architect-expert-az-305:assignment:16",
+          "azure-solutions-architect-expert-az-305:assignment:17",
+          "azure-solutions-architect-expert-az-305:assignment:18",
+          "azure-solutions-architect-expert-az-305:assignment:19",
+          "azure-solutions-architect-expert-az-305:assignment:20",
+          "azure-solutions-architect-expert-az-305:assignment:21",
+          "azure-solutions-architect-expert-az-305:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, architecture review and interviews",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "azure-solutions-architect-expert-az-305:assignment:23",
+          "title": "Monitoring signals for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain monitoring signals for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on monitoring signals for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete monitoring signals for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "azure-solutions-architect-expert-az-305:assignment:24",
+          "title": "Incident response for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain incident response for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on incident response for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete incident response for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "azure-solutions-architect-expert-az-305:assignment:25",
+          "title": "Cost allocation for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain cost allocation for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on cost allocation for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete cost allocation for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "azure-solutions-architect-expert-az-305:assignment:26",
+          "title": "Capacity planning for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain capacity planning for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on capacity planning for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete capacity planning for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "azure-solutions-architect-expert-az-305:assignment:27",
+          "title": "Service limits for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain service limits for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on service limits for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete service limits for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "azure-solutions-architect-expert-az-305:assignment:28",
+          "title": "Architecture trade-offs for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain architecture trade-offs for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on architecture trade-offs for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete architecture trade-offs for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "azure-solutions-architect-expert-az-305:assignment:29",
+          "title": "Operational runbooks for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain operational runbooks for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on operational runbooks for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete operational runbooks for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "azure-solutions-architect-expert-az-305:assignment:30",
+          "title": "Portfolio walkthrough for Azure architecture and AZ-305 objectives",
+          "available": false,
+          "focus": "Azure architecture and AZ-305 objectives",
+          "objectives": [
+            "Explain portfolio walkthrough for azure architecture and az-305 objectives in the context of Azure architecture and AZ-305 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure architecture and AZ-305 objectives case study focused on portfolio walkthrough for azure architecture and az-305 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for azure architecture and az-305 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "azure-solutions-architect-expert-az-305:assignment:23",
+          "azure-solutions-architect-expert-az-305:assignment:24",
+          "azure-solutions-architect-expert-az-305:assignment:25",
+          "azure-solutions-architect-expert-az-305:assignment:26",
+          "azure-solutions-architect-expert-az-305:assignment:27",
+          "azure-solutions-architect-expert-az-305:assignment:28",
+          "azure-solutions-architect-expert-az-305:assignment:29",
+          "azure-solutions-architect-expert-az-305:assignment:30"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,2203 @@
+{
+  "slug": "azure-administrator-az-104",
+  "name": "Azure Administrator (AZ-104)",
+  "focus": "Azure administration and AZ-104 objectives",
+  "track": "cloud",
+  "tools": [
+    "cloud CLI",
+    "IAM",
+    "VPC networking",
+    "Docker",
+    "Terraform",
+    "monitoring dashboards"
+  ],
+  "projects": [
+    {
+      "name": "Azure administration and AZ-104 objectives: Foundations case study",
+      "description": "Investigate a focused Azure administration and AZ-104 objectives scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated Azure administration and AZ-104 objectives use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable Azure administration and AZ-104 objectives artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    },
+    {
+      "name": "Azure administration and AZ-104 objectives: Applied workflow",
+      "description": "Build a small, end-to-end Azure administration and AZ-104 objectives workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated Azure administration and AZ-104 objectives use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable Azure administration and AZ-104 objectives artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    },
+    {
+      "name": "Azure administration and AZ-104 objectives: Portfolio capstone",
+      "description": "Deliver and explain a complete Azure administration and AZ-104 objectives capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated Azure administration and AZ-104 objectives use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable Azure administration and AZ-104 objectives artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "azure-administrator-az-104",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Cloud foundations and identity",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "azure-administrator-az-104:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "Cloud Computing and Azure Global Infrastructure",
+            "module": "Cloud and Azure foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Explain cloud computing and the CapEx-to-OpEx shift in plain terms.",
+              "Compare IaaS, PaaS and SaaS and apply the shared responsibility model.",
+              "Describe Azure geographies, regions, region pairs and availability zones.",
+              "Choose a region using latency, compliance, service availability and price.",
+              "Answer the opening questions of an Azure administrator interview with confidence."
+            ],
+            "definition": "Cloud computing is the on-demand delivery of compute, storage, networking and software over the internet with pay-as-you-go pricing. Microsoft Azure is Microsoft's public cloud: a global network of datacentres grouped into regions, on which you create resources through a single management layer instead of buying and racking your own hardware.",
+            "theory": [
+              {
+                "heading": "Why organisations move to the cloud",
+                "body": "On-premises IT requires large up-front capital expenditure (CapEx) on servers, storage and datacentre space that must be sized for peak demand and then sits idle most of the time. The cloud converts this into operational expenditure (OpEx): you pay for what you consume, scale up for a festival sale and scale back down the next day. Administrators care about this because it changes their job from replacing failed disks to designing for elasticity, governance and cost control.",
+                "points": [
+                  "High availability: services are designed to keep running despite component failures.",
+                  "Scalability and elasticity: add or remove capacity manually (scale) or automatically (elastic).",
+                  "Agility: provision a VM or database in minutes, not weeks.",
+                  "Global reach: deploy close to users in many countries.",
+                  "Consumption-based pricing: no idle hardware bill, but you must watch for waste."
+                ]
+              },
+              {
+                "heading": "Service models: IaaS, PaaS and SaaS",
+                "body": "The service model decides how much of the stack you manage. In IaaS (Azure Virtual Machines) you manage the operating system, patching, runtime and application while Microsoft manages the physical host. In PaaS (App Service, Azure SQL Database) Microsoft also manages the OS and runtime, so you focus on code, configuration and data. In SaaS (Microsoft 365) you only consume the application and manage your data, users and devices.",
+                "points": [
+                  "IaaS: most control, most responsibility (VMs, managed disks, virtual networks).",
+                  "PaaS: platform handles OS patching and scaling plumbing (App Service, Azure SQL, Functions).",
+                  "SaaS: finished software delivered over the internet (Microsoft 365, Dynamics 365).",
+                  "Serverless (Functions, Logic Apps) is a PaaS style billed per execution."
+                ]
+              },
+              {
+                "heading": "The shared responsibility model",
+                "body": "Security and operations are split between Microsoft and the customer. Microsoft always owns physical datacentres, hosts and the physical network. The customer always owns their data, endpoints (devices) and accounts and identities, in every model. Everything in between moves from the customer towards Microsoft as you go from IaaS to PaaS to SaaS. This is why a breached password is always the customer's problem, even on SaaS.",
+                "points": [
+                  "Always customer: information and data, devices, accounts and identities.",
+                  "Always Microsoft: physical hosts, physical network, physical datacentre.",
+                  "Operating system: customer in IaaS, Microsoft in PaaS and SaaS.",
+                  "Applications and network controls: customer in IaaS, shared in PaaS, Microsoft in SaaS.",
+                  "Identity and directory infrastructure: customer in IaaS, shared in PaaS and SaaS."
+                ]
+              },
+              {
+                "heading": "Azure global infrastructure",
+                "body": "A region is a set of datacentres within a latency-defined perimeter, such as Central India (Pune) or South India (Chennai). Regions are grouped into geographies that respect data-residency and compliance boundaries. Many regions have a paired region in the same geography; Azure staggers platform updates across pairs and prioritises recovery of one region in each pair during a wide outage. Availability zones are physically separate datacentres (independent power, cooling and networking) inside one region, normally three per supported region.",
+                "points": [
+                  "Region: where your resource physically runs; choose it per resource.",
+                  "Availability zone: protects against a datacentre failure inside a region.",
+                  "Region pair: protects against a whole-region disaster; used by GRS storage replication.",
+                  "Sovereign clouds (Azure Government, Azure operated by 21Vianet in China) are isolated instances.",
+                  "Not every service or VM size is available in every region; check before designing."
+                ]
+              },
+              {
+                "heading": "Choosing a region",
+                "body": "Interviewers often ask how you would pick a region. A strong answer weighs four factors in order: compliance and data residency (Indian banking data may need to stay in India), latency to users, availability of the required services and zones, and price, which varies between regions for the same VM size.",
+                "points": [
+                  "Compliance first: some data must not leave the country.",
+                  "Latency: put workloads near users; test with tools such as Azure speed tests.",
+                  "Capability: zones, specific VM series or services may be missing in smaller regions.",
+                  "Cost: the same SKU can cost noticeably more in one region than another."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Listing regions and zone support with Azure CLI",
+              "body": "Before choosing where to deploy, an administrator checks which regions exist and which VM sizes support zones in a region. The CLI queries Azure Resource Manager, so the answer reflects your subscription's actual access.",
+              "code": {
+                "language": "bash",
+                "source": "# All regions available to the subscription\naz account list-locations --query \"[].{name:name, display:displayName, pair:metadata.pairedRegion[0].name}\" -o table\n\n# Which zones a VM size supports in Central India\naz vm list-skus --location centralindia --size Standard_D2s_v5 --zone -o table"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Seasonal retail",
+                "description": "An e-commerce site scales out web servers for a sale weekend and scales back in afterwards, paying only for the extra hours."
+              },
+              {
+                "title": "Data residency",
+                "description": "An Indian fintech keeps customer data in Central India with disaster recovery in South India to satisfy regulator guidance."
+              },
+              {
+                "title": "Datacentre exit",
+                "description": "A company lifts and shifts ageing servers to Azure VMs (IaaS) before modernising to App Service (PaaS)."
+              },
+              {
+                "title": "Global SaaS",
+                "description": "A start-up serves customers in India, Europe and the US by deploying the same template to three regions."
+              }
+            ],
+            "demonstration": {
+              "description": "Map common tasks to the party responsible under each service model. This is the reasoning interviewers want when they ask 'who patches the OS on App Service?'.",
+              "code": {
+                "language": "text",
+                "source": "Task                         IaaS (VM)   PaaS (App Service)   SaaS (Microsoft 365)\nPatch the guest OS           Customer    Microsoft            Microsoft\nConfigure app network rules  Customer    Shared               Microsoft\nProtect user passwords       Customer    Customer             Customer\nReplace a failed disk        Microsoft   Microsoft            Microsoft"
+              },
+              "output": "Data, devices and identities stay with the customer in every model; physical infrastructure stays with Microsoft; the OS moves to Microsoft as soon as you use PaaS."
+            },
+            "takeaways": [
+              "Cloud turns up-front CapEx into consumption-based OpEx and adds elasticity.",
+              "IaaS gives most control and most responsibility; SaaS gives the least of both.",
+              "Data, devices and identities are always the customer's responsibility.",
+              "Availability zones protect against datacentre failure; region pairs protect against regional disasters.",
+              "Pick regions by compliance, latency, service availability and price, in that order.",
+              "Not every VM size or service exists in every region."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between IaaS, PaaS and SaaS? Give an Azure example of each.",
+                "answer": "IaaS provides virtual infrastructure where you manage the OS and above, for example Azure Virtual Machines. PaaS provides a managed platform where you deploy code and data, for example Azure App Service or Azure SQL Database. SaaS is complete software you consume, for example Microsoft 365.",
+                "explanation": "A strong answer ties each model to who patches the operating system, which shows you understand the operational consequence, not just the acronym."
+              },
+              {
+                "question": "Explain the shared responsibility model.",
+                "answer": "Security duties are split between the cloud provider and the customer. Microsoft always secures the physical datacentre, hosts and network. The customer always owns data, devices and identities. Responsibility for the OS, network controls and applications shifts towards Microsoft as you move from IaaS to PaaS to SaaS.",
+                "explanation": "Mention the 'always customer' items explicitly; many candidates wrongly say SaaS makes Microsoft responsible for everything."
+              },
+              {
+                "question": "What is the difference between a region, an availability zone and a region pair?",
+                "answer": "A region is a geographic area containing one or more datacentres. An availability zone is a physically separate datacentre group inside a region with independent power, cooling and network. A region pair links two regions in the same geography for disaster recovery, staggered updates and prioritised recovery.",
+                "explanation": "Link each to the failure it protects against: zone for a datacentre failure, pair for a regional disaster."
+              },
+              {
+                "question": "How would you choose an Azure region for a new workload?",
+                "answer": "First confirm compliance and data-residency requirements, then pick the region with the lowest latency to users that offers the required services, VM sizes and availability zones, and finally compare price between the shortlisted regions.",
+                "explanation": "Ordering the factors shows judgement; compliance is a hard constraint while price is a trade-off."
+              },
+              {
+                "question": "What is the difference between scalability and elasticity?",
+                "answer": "Scalability is the ability to add capacity, either vertically (a bigger VM) or horizontally (more instances). Elasticity is scaling automatically in both directions in response to demand, such as autoscale rules on a scale set.",
+                "explanation": "Interviewers like the vertical versus horizontal distinction and a concrete Azure feature for elasticity."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Shared responsibility lookup",
+              "difficulty": "Basic",
+              "objective": "Encode the Azure shared responsibility model and use it to answer 'who owns this?' questions for any service model.",
+              "statement": "Read a service model (IaaS, PaaS or SaaS, case-insensitive) and a list of responsibility layers. For each layer print who is responsible: Customer, Microsoft or Shared. Use this model: data, devices and accounts are always Customer; physical is always Microsoft; os is Customer for IaaS and Microsoft otherwise; applications and network are Customer for IaaS, Shared for PaaS and Microsoft for SaaS; identity is Customer for IaaS and Shared for PaaS and SaaS. Any other layer name prints Unknown. If the model itself is not one of the three, print only 'Invalid model'.",
+              "language": "python",
+              "input_format": "Line 1: the service model. Line 2: N, the number of layers. Next N lines: one layer name each (case-insensitive).",
+              "output_format": "For each layer, one line '<layer>: <owner>' with the layer in lowercase, or a single line 'Invalid model'.",
+              "example": {
+                "input": "PaaS\n3\nos\ndata\nnetwork\n",
+                "output": "os: Microsoft\ndata: Customer\nnetwork: Shared"
+              },
+              "constraints": [
+                "0 <= N <= 20.",
+                "Trim spaces around every line.",
+                "Layer names are compared in lowercase."
+              ],
+              "starter": "model = input().strip().lower()\nn = int(input())\nlayers = [input().strip().lower() for _ in range(n)]\n\n# TODO: build a table of layer -> (IaaS, PaaS, SaaS) owners and print each answer\n",
+              "solution": "TABLE = {\n    'data': ('Customer', 'Customer', 'Customer'),\n    'devices': ('Customer', 'Customer', 'Customer'),\n    'accounts': ('Customer', 'Customer', 'Customer'),\n    'identity': ('Customer', 'Shared', 'Shared'),\n    'applications': ('Customer', 'Shared', 'Microsoft'),\n    'network': ('Customer', 'Shared', 'Microsoft'),\n    'os': ('Customer', 'Microsoft', 'Microsoft'),\n    'physical': ('Microsoft', 'Microsoft', 'Microsoft'),\n}\nMODELS = {'iaas': 0, 'paas': 1, 'saas': 2}\n\nmodel = input().strip().lower()\nn = int(input())\nlayers = [input().strip().lower() for _ in range(n)]\n\nif model not in MODELS:\n    print('Invalid model')\nelse:\n    col = MODELS[model]\n    for layer in layers:\n        owner = TABLE[layer][col] if layer in TABLE else 'Unknown'\n        print(f'{layer}: {owner}')\n",
+              "explanation": [
+                "Store the model as a dictionary from layer to a tuple of owners for IaaS, PaaS and SaaS.",
+                "Map the service model to a column index; reject anything else with 'Invalid model'.",
+                "For each layer, look up the owner in the chosen column, falling back to 'Unknown'.",
+                "Notice that the 'always customer' rows never change: that is the key interview point."
+              ],
+              "tests": [
+                {
+                  "input": "PaaS\n3\nos\ndata\nnetwork\n",
+                  "output": "os: Microsoft\ndata: Customer\nnetwork: Shared"
+                },
+                {
+                  "input": "iaas\n4\nOS\nPhysical\nidentity\napplications\n",
+                  "output": "os: Customer\nphysical: Microsoft\nidentity: Customer\napplications: Customer"
+                },
+                {
+                  "input": "SAAS\n5\naccounts\nnetwork\nidentity\ndevices\nbilling\n",
+                  "output": "accounts: Customer\nnetwork: Microsoft\nidentity: Shared\ndevices: Customer\nbilling: Unknown"
+                },
+                {
+                  "input": "FaaS\n1\nos\n",
+                  "output": "Invalid model"
+                },
+                {
+                  "input": "paas\n1\n  applications  \n",
+                  "output": "applications: Shared"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Under the shared responsibility model, which item remains the customer's responsibility even for a SaaS application such as Microsoft 365?",
+                "options": [
+                  "Maintaining the physical network",
+                  "Replacing failed datacentre hardware",
+                  "Patching the application servers",
+                  "Securing user accounts and identities"
+                ],
+                "answer": 3,
+                "explanation": "Accounts and identities, data and devices are always the customer's responsibility. Infrastructure and, in SaaS, the application are Microsoft's."
+              },
+              {
+                "type": "scenario",
+                "question": "Your company wants its web application to survive the failure of a single datacentre in Central India without moving to another region. What should you use?",
+                "options": [
+                  "A region pair",
+                  "A second subscription",
+                  "A management group",
+                  "Availability zones"
+                ],
+                "answer": 3,
+                "explanation": "Availability zones are physically separate datacentres within one region, so a zone-redundant deployment survives a single datacentre failure."
+              },
+              {
+                "type": "concept",
+                "question": "Which Azure service is an example of Platform as a Service (PaaS)?",
+                "options": [
+                  "Microsoft 365",
+                  "Azure Dedicated Host",
+                  "Azure App Service",
+                  "Azure Virtual Machines"
+                ],
+                "answer": 2,
+                "explanation": "App Service runs your code on a platform where Microsoft manages the OS and runtime. VMs and Dedicated Host are IaaS; Microsoft 365 is SaaS."
+              },
+              {
+                "type": "scenario",
+                "question": "A bank must keep customer data inside India and wants the lowest latency for users in Mumbai. Which factor must be satisfied before comparing prices between regions?",
+                "options": [
+                  "The number of availability zones",
+                  "Whether the region has the newest VM series",
+                  "Data residency and compliance requirements",
+                  "The size of the region's datacentres"
+                ],
+                "answer": 2,
+                "explanation": "Compliance and residency are hard constraints. Only regions that satisfy them should then be compared on latency, capability and price."
+              },
+              {
+                "type": "concept",
+                "question": "What is a benefit of Azure region pairs?",
+                "options": [
+                  "They remove the need for backups",
+                  "They make every resource zone-redundant automatically",
+                  "They share a single IP address space",
+                  "Planned platform updates are rolled out to one region of the pair at a time"
+                ],
+                "answer": 3,
+                "explanation": "Azure staggers planned updates across the two regions of a pair and prioritises recovering one region of each pair in a widespread outage."
+              }
+            ]
+          }
+        },
+        {
+          "id": "azure-administrator-az-104:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
+            "module": "Cloud and Azure foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Explain what Azure Resource Manager (ARM) is and why every tool goes through it.",
+              "Describe the four-level hierarchy: management groups, subscriptions, resource groups and resources.",
+              "Decide when to create a new subscription versus a new resource group.",
+              "Create and organise resource groups with Azure CLI and PowerShell.",
+              "Explain how settings applied at a higher scope are inherited by lower scopes."
+            ],
+            "definition": "Azure Resource Manager (ARM) is the deployment and management service for Azure: every request from the portal, CLI, PowerShell, SDKs or templates is authenticated, authorised and then sent by ARM to the right resource provider. ARM organises resources in a hierarchy of management groups, subscriptions, resource groups and resources, and access control, policy and budgets applied at one level are inherited by everything beneath it.",
+            "theory": [
+              {
+                "heading": "What Azure Resource Manager does",
+                "body": "ARM is the single control plane in front of all Azure services. When you run 'az vm create', the CLI calls the ARM REST API; ARM checks your identity with Microsoft Entra ID, checks RBAC permissions, evaluates Azure Policy, and only then forwards the request to the Microsoft.Compute resource provider. Because every tool uses the same API, results are consistent and you can describe infrastructure declaratively with ARM templates or Bicep.",
+                "points": [
+                  "Control plane (management.azure.com): create, update, delete and configure resources.",
+                  "Data plane: using the resource itself, such as reading a blob or connecting to a VM.",
+                  "Resource providers (Microsoft.Compute, Microsoft.Storage, Microsoft.Network) must be registered in a subscription.",
+                  "Resource ID format: /subscriptions/{id}/resourceGroups/{rg}/providers/{namespace}/{type}/{name}."
+                ]
+              },
+              {
+                "heading": "The management hierarchy",
+                "body": "Management groups sit at the top and contain subscriptions or other management groups. Every Microsoft Entra tenant has one Tenant Root Group. Below management groups are subscriptions, then resource groups, then resources. The hierarchy exists so that governance (RBAC, Azure Policy) can be applied once at a high level and flow down automatically, instead of being configured on thousands of resources.",
+                "points": [
+                  "Management groups: up to six levels of depth below the root (root and subscription levels not counted).",
+                  "Each management group or subscription has exactly one parent.",
+                  "Subscription: a billing, quota and access boundary, trusted by exactly one Entra tenant.",
+                  "Resource group: a logical container for resources that share a lifecycle.",
+                  "Resource: an individual VM, storage account, VNet, database and so on."
+                ]
+              },
+              {
+                "heading": "Subscriptions as boundaries",
+                "body": "A subscription is where usage is billed and where many quotas (for example vCPUs per region) are enforced. Organisations create separate subscriptions to separate billing (one per department or customer), to separate environments (production and development), to isolate access, or simply because one subscription would hit a scale limit. Subscriptions are grouped under management groups such as Platform, Landing Zones and Sandbox in the Azure landing zone model.",
+                "points": [
+                  "Billing boundary: invoices and cost reports are produced per subscription.",
+                  "Access boundary: owners of one subscription have no rights in another by default.",
+                  "Quota boundary: request vCPU quota increases per subscription and region.",
+                  "A subscription can be moved to a different tenant, but RBAC assignments in it are lost."
+                ]
+              },
+              {
+                "heading": "Resource groups",
+                "body": "A resource group holds resources that are deployed, managed and deleted together, such as the VMs, disks and network interface of one application. A resource group has a location, but that only stores its metadata; the resources inside can live in other regions. Resource groups cannot be nested, and a resource belongs to exactly one resource group at a time, although most resources can be moved between groups and subscriptions.",
+                "points": [
+                  "Group by lifecycle: if things are created and deleted together, keep them together.",
+                  "Deleting a resource group deletes every resource in it, so use locks on production.",
+                  "Moving a resource changes its resource ID, so scripts and alerts referring to it must be updated.",
+                  "Use a naming convention such as rg-<app>-<env>-<region>."
+                ]
+              },
+              {
+                "heading": "Inheritance and scope",
+                "body": "A scope is any level of the hierarchy at which you can assign roles, policies, locks or budgets. Assignments flow downward: a Reader role granted on a management group gives read access to every subscription, resource group and resource beneath it. This is why governance teams build management group structures first and why you should avoid granting broad roles at high scopes.",
+                "points": [
+                  "Scope order from broad to narrow: management group, subscription, resource group, resource.",
+                  "Lower scopes cannot remove rights granted higher up (except deny assignments).",
+                  "Policies at a management group apply to all current and future subscriptions inside it."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Building a small hierarchy with Azure CLI",
+              "body": "A governance team creates a management group for production, moves a subscription into it and creates a resource group for a web application. The resource group metadata lives in Central India.",
+              "code": {
+                "language": "bash",
+                "source": "az account management-group create --name mg-prod --display-name \"Production\"\naz account management-group subscription add --name mg-prod --subscription \"Contoso-Prod\"\n\naz account set --subscription \"Contoso-Prod\"\naz group create --name rg-shop-prod-cin --location centralindia --tags env=prod app=shop\naz group list --query \"[].{name:name, location:location}\" -o table"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Landing zones",
+                "description": "An enterprise uses management groups (Platform, Corp, Online, Sandbox) so security policies apply to every new subscription automatically."
+              },
+              {
+                "title": "Environment isolation",
+                "description": "Separate production and development subscriptions stop a developer's test script from touching production resources."
+              },
+              {
+                "title": "Application lifecycle",
+                "description": "All resources of a short-lived training lab sit in one resource group and are removed with a single delete at the end of the batch."
+              },
+              {
+                "title": "Chargeback",
+                "description": "Each business unit gets its own subscription so its Azure bill can be charged back directly."
+              }
+            ],
+            "demonstration": {
+              "description": "Inspect a resource ID to see the hierarchy encoded inside it, then list everything in a resource group. PowerShell and CLI both call the same ARM API.",
+              "code": {
+                "language": "powershell",
+                "source": "$vm = Get-AzVM -ResourceGroupName rg-shop-prod-cin -Name vm-web-01\n$vm.Id\nGet-AzResource -ResourceGroupName rg-shop-prod-cin | Select-Object Name, ResourceType, Location"
+              },
+              "output": "/subscriptions/1111-.../resourceGroups/rg-shop-prod-cin/providers/Microsoft.Compute/virtualMachines/vm-web-01\n\nName           ResourceType                          Location\nvm-web-01      Microsoft.Compute/virtualMachines     centralindia\nvm-web-01-nic  Microsoft.Network/networkInterfaces   centralindia\nstshopprod01   Microsoft.Storage/storageAccounts     southindia"
+            },
+            "takeaways": [
+              "Every Azure tool talks to Azure Resource Manager, which authenticates, authorises and applies policy.",
+              "Hierarchy: management groups > subscriptions > resource groups > resources.",
+              "Management groups support six levels of depth below the Tenant Root Group.",
+              "A subscription is a billing, quota and access boundary trusted by one Entra tenant.",
+              "Resource groups group by lifecycle; their location stores metadata only.",
+              "Assignments at a higher scope are inherited by every lower scope."
+            ],
+            "interview": [
+              {
+                "question": "What is Azure Resource Manager?",
+                "answer": "ARM is Azure's management layer. All requests from the portal, CLI, PowerShell, SDKs and templates go through it; it authenticates the caller, checks RBAC and policy and forwards the request to the resource provider.",
+                "explanation": "Mention that this is why behaviour is consistent across tools and why templates can be declarative."
+              },
+              {
+                "question": "When would you create a new subscription instead of a new resource group?",
+                "answer": "When you need a separate billing boundary, a strong access or environment boundary such as production versus development, separate quotas, or when an existing subscription is reaching scale limits. Resource groups are for grouping resources with the same lifecycle within a subscription.",
+                "explanation": "Interviewers want the boundary concept: subscriptions separate billing, access and quota; resource groups separate lifecycle."
+              },
+              {
+                "question": "Can a resource group contain resources from different regions?",
+                "answer": "Yes. The resource group's location only stores its metadata. Resources inside can be in any region, although keeping metadata in a compliant region matters for some regulations.",
+                "explanation": "A common trick question. Mention the metadata point and the compliance nuance."
+              },
+              {
+                "question": "What are management groups and why use them?",
+                "answer": "Management groups are containers above subscriptions. Policies and role assignments applied to a management group are inherited by all subscriptions beneath it, so governance is applied once for many subscriptions. They support up to six levels of depth under the Tenant Root Group.",
+                "explanation": "A strong answer gives an example structure (Platform, Landing Zones, Sandbox) and mentions inheritance."
+              },
+              {
+                "question": "What happens when you move a resource to another resource group or subscription?",
+                "answer": "Both source and target groups are locked for writes during the move, and the resource gets a new resource ID. Not all resource types support moving, some have dependencies that must move together, and RBAC assignments made directly on the resource do not move with it.",
+                "explanation": "Mentioning the ID change and the need to update scripts, alerts and role assignments shows real operational experience."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Resolve a scope path in the hierarchy",
+              "difficulty": "Basic",
+              "objective": "Model the ARM hierarchy as parent links and print the inheritance path for any scope.",
+              "statement": "You are given parent links in an Azure hierarchy. Each line 'child parent' says that child is directly under parent; the top of the tree is the name 'root' (the Tenant Root Group). For each query, print the full path from root to the queried scope joined by ' > ', followed by its depth (number of links from root) in the form ' [depth d]'. If the queried name is not in the hierarchy (and is not 'root'), print '<name>: not found'.",
+              "language": "python",
+              "input_format": "Line 1: N. Next N lines: 'child parent'. Next line: Q. Next Q lines: a scope name.",
+              "output_format": "One line per query.",
+              "example": {
+                "input": "3\nmg-corp root\nsub-prod mg-corp\nrg-web sub-prod\n2\nrg-web\nmg-corp\n",
+                "output": "root > mg-corp > sub-prod > rg-web [depth 3]\nroot > mg-corp [depth 1]"
+              },
+              "constraints": [
+                "1 <= N <= 100; names contain no spaces.",
+                "The links form a tree: every child has exactly one parent and there are no cycles.",
+                "Querying 'root' prints 'root [depth 0]'."
+              ],
+              "starter": "n = int(input())\nparent = {}\nfor _ in range(n):\n    child, par = input().split()\n    parent[child] = par\n\nq = int(input())\nfor _ in range(q):\n    name = input().strip()\n    # TODO: walk up the parent links to root, then print the path\n",
+              "solution": "n = int(input())\nparent = {}\nfor _ in range(n):\n    child, par = input().split()\n    parent[child] = par\n\nq = int(input())\nfor _ in range(q):\n    name = input().strip()\n    if name != 'root' and name not in parent:\n        print(f'{name}: not found')\n        continue\n    chain = [name]\n    while chain[-1] != 'root':\n        chain.append(parent[chain[-1]])\n    chain.reverse()\n    print(' > '.join(chain) + f' [depth {len(chain) - 1}]')\n",
+              "explanation": [
+                "Store each child's single parent in a dictionary, exactly like ARM stores one parent per scope.",
+                "For a query, walk upward from the scope until you reach root, collecting names.",
+                "Reverse the list to print from the broadest scope to the narrowest; this is the direction inheritance flows.",
+                "The depth is the number of links, one less than the number of names."
+              ],
+              "tests": [
+                {
+                  "input": "3\nmg-corp root\nsub-prod mg-corp\nrg-web sub-prod\n2\nrg-web\nmg-corp\n",
+                  "output": "root > mg-corp > sub-prod > rg-web [depth 3]\nroot > mg-corp [depth 1]"
+                },
+                {
+                  "input": "5\nmg-platform root\nmg-landing root\nmg-online mg-landing\nsub-shop mg-online\nrg-shop sub-shop\n3\nrg-shop\nmg-platform\nroot\n",
+                  "output": "root > mg-landing > mg-online > sub-shop > rg-shop [depth 4]\nroot > mg-platform [depth 1]\nroot [depth 0]"
+                },
+                {
+                  "input": "1\nsub-dev root\n2\nrg-missing\nsub-dev\n",
+                  "output": "rg-missing: not found\nroot > sub-dev [depth 1]"
+                },
+                {
+                  "input": "4\nrg-a sub-1\nsub-1 mg-b\nmg-b mg-a\nmg-a root\n1\nrg-a\n",
+                  "output": "root > mg-a > mg-b > sub-1 > rg-a [depth 4]"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which component authenticates and authorises every Azure management request before it reaches a resource provider?",
+                "options": [
+                  "Azure Monitor",
+                  "Azure Policy",
+                  "Azure Resource Manager",
+                  "Azure Front Door"
+                ],
+                "answer": 2,
+                "explanation": "ARM is the control plane that every tool calls; it authenticates with Entra ID, checks RBAC and policy and then forwards the request."
+              },
+              {
+                "type": "scenario",
+                "question": "You create a resource group in Central India. Can you deploy a storage account in South India into that resource group?",
+                "options": [
+                  "Only if the regions are a region pair",
+                  "Only after enabling cross-region resource groups",
+                  "Yes, the resource group location only stores metadata",
+                  "No, resources must match the resource group region"
+                ],
+                "answer": 2,
+                "explanation": "Resources in a group can be in any region; the group's location is where its metadata is stored."
+              },
+              {
+                "type": "concept",
+                "question": "How many levels of management group depth are supported below the Tenant Root Group (not counting the root or subscription levels)?",
+                "options": [
+                  "Two",
+                  "Four",
+                  "Ten",
+                  "Six"
+                ],
+                "answer": 3,
+                "explanation": "A management group tree supports up to six levels of depth, excluding the root level and the subscription level."
+              },
+              {
+                "type": "scenario",
+                "question": "Finance wants a separate invoice and separate vCPU quotas for the analytics department. What should you create?",
+                "options": [
+                  "A new tag",
+                  "A new availability zone",
+                  "A new resource group",
+                  "A new subscription"
+                ],
+                "answer": 3,
+                "explanation": "Subscriptions are billing and quota boundaries. Resource groups and tags do not create separate quotas."
+              },
+              {
+                "type": "scenario",
+                "question": "A VM is moved from rg-old to rg-new in the same subscription. What must you expect?",
+                "options": [
+                  "The VM is redeployed and its disks are recreated",
+                  "The VM keeps the same resource ID",
+                  "The VM's resource ID changes, so references to the old ID must be updated",
+                  "The move automatically copies all role assignments"
+                ],
+                "answer": 2,
+                "explanation": "The resource group is part of the resource ID, so the ID changes. Role assignments made directly on the resource are not carried over."
+              }
+            ]
+          }
+        },
+        {
+          "id": "azure-administrator-az-104:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Tags and Resource Locks for Organising and Protecting Resources",
+            "module": "Cloud and Azure foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Design a tagging strategy for cost reporting, ownership and automation.",
+              "Explain why tags are not inherited and how to enforce or inherit them with Azure Policy.",
+              "Compare CanNotDelete and ReadOnly locks and predict which operations each blocks.",
+              "Explain lock inheritance and who is allowed to create or remove locks.",
+              "Recognise the side effects of ReadOnly locks on real services."
+            ],
+            "definition": "Tags are name-value pairs attached to Azure resources, resource groups and subscriptions to add metadata such as cost centre, environment or owner. Resource locks are management-plane safeguards that prevent accidental deletion (CanNotDelete) or any change (ReadOnly) to a scope and everything beneath it, regardless of the user's RBAC role.",
+            "theory": [
+              {
+                "heading": "Why tags matter",
+                "body": "In a large estate, resource names alone cannot answer 'who owns this VM?' or 'how much does the payroll project cost?'. Tags carry that metadata. Cost Management can group and filter spend by tag, automation can shut down every VM tagged autoshutdown=true at 8 pm, and operations teams can find the owner of an alerting resource in seconds.",
+                "points": [
+                  "Common tags: env, costCenter, owner, app, dataClassification.",
+                  "Up to 50 tag name-value pairs per resource, resource group or subscription.",
+                  "Tag names are case-insensitive for operations; tag values are case-sensitive.",
+                  "Not every resource type supports tags, and some (classic resources) cannot be tagged."
+                ]
+              },
+              {
+                "heading": "Tags are not inherited",
+                "body": "A tag on a resource group is not copied to the resources inside it. This surprises many people when a cost report grouped by tag shows a large 'untagged' slice. The fix is Azure Policy: built-in definitions such as 'Require a tag on resources' block untagged deployments, and 'Inherit a tag from the resource group if missing' uses the Modify effect to copy the tag automatically, with a remediation task for existing resources.",
+                "points": [
+                  "Require: use a Deny policy so untagged resources cannot be created.",
+                  "Inherit: use a Modify policy with a managed identity and run remediation for existing resources.",
+                  "Cost Management can also apply tag inheritance for cost data only, without changing resources."
+                ]
+              },
+              {
+                "heading": "Resource locks",
+                "body": "A lock overrides permissions: even an Owner cannot delete a resource with a CanNotDelete lock until the lock is removed. That extra deliberate step is the point; it stops a mistyped 'az group delete' from destroying production. Locks can be applied at subscription, resource group or resource scope and are inherited by all child resources. When different locks apply, the most restrictive one wins.",
+                "points": [
+                  "CanNotDelete (portal: Delete): users can read and modify but not delete.",
+                  "ReadOnly (portal: Read-only): users can read but not modify or delete.",
+                  "Locks apply to control-plane operations sent to management.azure.com.",
+                  "Creating or deleting locks requires Microsoft.Authorization/locks/* actions, held by Owner and User Access Administrator."
+                ]
+              },
+              {
+                "heading": "Side effects of ReadOnly locks",
+                "body": "Because ReadOnly blocks any POST or PUT on the management plane, some apparently harmless actions fail. Listing storage account keys is a POST operation, so a ReadOnly lock can break tools that connect with keys. A ReadOnly lock on a resource group prevents adding new resources to it, and on App Service it can block Visual Studio Server Explorer and scaling. Prefer CanNotDelete unless you truly want a resource frozen.",
+                "points": [
+                  "Storage: ReadOnly blocks listKeys, which can break key-based access in the portal and tools.",
+                  "Resource group: ReadOnly blocks creating new resources inside it.",
+                  "Scale sets and App Service plans: ReadOnly blocks scaling operations.",
+                  "Locks do not block data-plane operations such as writing rows to a database."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Tagging a resource group and locking production",
+              "body": "An administrator merges tags onto an existing resource group without removing other tags, then protects the group from deletion. The lock applies to every resource inside the group.",
+              "code": {
+                "language": "bash",
+                "source": "# Merge tags (keeps existing tags)\naz tag update --resource-id $(az group show -n rg-shop-prod-cin --query id -o tsv) \\\n  --operation Merge --tags costCenter=CC-104 owner=ops@contoso.in\n\n# Prevent deletion of the whole resource group\naz lock create --name lock-no-delete --lock-type CanNotDelete \\\n  --resource-group rg-shop-prod-cin --notes \"Production - raise a change request\"\n\naz lock list --resource-group rg-shop-prod-cin -o table"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Chargeback by cost centre",
+                "description": "Finance groups the monthly Azure bill by the costCenter tag to charge each department."
+              },
+              {
+                "title": "Automated shutdown",
+                "description": "A runbook stops every VM tagged env=dev at night, cutting compute cost for development."
+              },
+              {
+                "title": "Protecting shared networking",
+                "description": "A CanNotDelete lock on the hub virtual network resource group prevents an accidental delete that would cut connectivity for every spoke."
+              },
+              {
+                "title": "Freezing audited configuration",
+                "description": "A ReadOnly lock is placed on a compliance-critical resource during an audit window so no configuration drifts."
+              }
+            ],
+            "demonstration": {
+              "description": "Try to delete a locked resource group as an Owner. The request is rejected even though RBAC allows it; the lock must be removed first.",
+              "code": {
+                "language": "bash",
+                "source": "az group delete --name rg-shop-prod-cin --yes"
+              },
+              "output": "(ScopeLocked) The scope '/subscriptions/.../resourceGroups/rg-shop-prod-cin' cannot perform delete operation because following scope(s) are locked: '/subscriptions/.../resourceGroups/rg-shop-prod-cin'. Please remove the lock and try again."
+            },
+            "takeaways": [
+              "Tags are name-value metadata used for cost, ownership and automation.",
+              "Tags are not inherited; use Azure Policy (Deny or Modify) to require or inherit them.",
+              "CanNotDelete allows modify but blocks delete; ReadOnly blocks modify and delete.",
+              "Locks are inherited by child scopes and override RBAC, even for Owners.",
+              "Only roles with Microsoft.Authorization/locks/* (Owner, User Access Administrator) manage locks.",
+              "ReadOnly locks can break operations that use POST, such as listing storage keys."
+            ],
+            "interview": [
+              {
+                "question": "What are tags used for in Azure?",
+                "answer": "Tags are name-value pairs that add metadata to resources, resource groups and subscriptions. They are used to group costs, identify owners and environments, and drive automation and policy.",
+                "explanation": "Give a concrete tag set (env, owner, costCenter) and a use such as cost reports grouped by tag."
+              },
+              {
+                "question": "If you tag a resource group, do the resources inside get the tag?",
+                "answer": "No. Tags are not inherited. To get that behaviour you assign an Azure Policy such as 'Inherit a tag from the resource group if missing', which uses the Modify effect, and run a remediation task for existing resources.",
+                "explanation": "This is one of the most frequently asked AZ-104 points. Naming the Modify effect and remediation earns extra credit."
+              },
+              {
+                "question": "What is the difference between CanNotDelete and ReadOnly locks?",
+                "answer": "CanNotDelete lets authorised users read and modify a resource but not delete it. ReadOnly lets them only read it; both modification and deletion are blocked.",
+                "explanation": "Add that locks inherit downward and that the most restrictive lock applies."
+              },
+              {
+                "question": "An Owner cannot delete a resource. RBAC looks correct. What would you check?",
+                "answer": "Check for a resource lock on the resource, its resource group or the subscription, because locks override RBAC. Also check for deny assignments, for example from a managed application or a deployment stack.",
+                "explanation": "Interviewers like candidates who think beyond RBAC: locks and deny assignments both block Owners."
+              },
+              {
+                "question": "Why might a ReadOnly lock on a storage account break an application or the portal?",
+                "answer": "Listing account keys is a POST operation on the management plane, which ReadOnly blocks. Tools and portal blades that need the keys fail, even though no data is being changed.",
+                "explanation": "This shows you know locks act on management operations and that 'read' in the portal is not always a GET."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Evaluate resource locks for an operation",
+              "difficulty": "Basic",
+              "objective": "Simulate how Azure combines inherited locks and decides whether a read, write or delete is allowed.",
+              "statement": "Scopes are written as slash-separated paths, for example 'sub1/rg-web/vm1'. A lock on a scope applies to that scope and every path beneath it (whole segments only: a lock on 'sub1/rg' does not apply to 'sub1/rg-web'). Lock types are CanNotDelete (blocks delete) and ReadOnly (blocks write and delete). Reads are never blocked. For each operation, find all locks that apply; if any of them blocks the operation, print 'BLOCKED by <type> at <scope>' choosing ReadOnly before CanNotDelete and, among locks of the same type, the one closest to the top (fewest segments). Otherwise print 'ALLOWED'.",
+              "language": "python",
+              "input_format": "Line 1: L. Next L lines: '<scope> <type>'. Next line: Q. Next Q lines: '<operation> <path>' where operation is read, write or delete.",
+              "output_format": "One line per operation.",
+              "example": {
+                "input": "2\nsub1/rg-web CanNotDelete\nsub1/rg-web/st1 ReadOnly\n3\ndelete sub1/rg-web/vm1\nwrite sub1/rg-web/vm1\nwrite sub1/rg-web/st1\n",
+                "output": "BLOCKED by CanNotDelete at sub1/rg-web\nALLOWED\nBLOCKED by ReadOnly at sub1/rg-web/st1"
+              },
+              "constraints": [
+                "0 <= L <= 50, 1 <= Q <= 50.",
+                "Paths contain no spaces and no trailing slash.",
+                "Operation names are lowercase."
+              ],
+              "starter": "l = int(input())\nlocks = [input().split() for _ in range(l)]\nq = int(input())\nfor _ in range(q):\n    op, path = input().split()\n    # TODO: find applicable locks and decide\n",
+              "solution": "def applies(scope, path):\n    s = scope.split('/')\n    p = path.split('/')\n    return p[:len(s)] == s\n\nBLOCKS = {'ReadOnly': {'write', 'delete'}, 'CanNotDelete': {'delete'}}\nRANK = {'ReadOnly': 0, 'CanNotDelete': 1}\n\nl = int(input())\nlocks = [input().split() for _ in range(l)]\nq = int(input())\nfor _ in range(q):\n    op, path = input().split()\n    hits = [(RANK[t], len(s.split('/')), s, t) for s, t in locks\n            if applies(s, path) and op in BLOCKS[t]]\n    if hits:\n        _, _, scope, kind = min(hits)\n        print(f'BLOCKED by {kind} at {scope}')\n    else:\n        print('ALLOWED')\n",
+              "explanation": [
+                "A lock applies when its path segments are a prefix of the target path's segments; comparing segment lists avoids the 'rg' versus 'rg-web' trap.",
+                "Keep only locks that both apply and block the requested operation (reads are never blocked).",
+                "Sort candidates by restrictiveness first (ReadOnly before CanNotDelete) and then by depth, and report the first.",
+                "If nothing blocks the operation, it is allowed; RBAC would then decide in real Azure."
+              ],
+              "tests": [
+                {
+                  "input": "2\nsub1/rg-web CanNotDelete\nsub1/rg-web/st1 ReadOnly\n3\ndelete sub1/rg-web/vm1\nwrite sub1/rg-web/vm1\nwrite sub1/rg-web/st1\n",
+                  "output": "BLOCKED by CanNotDelete at sub1/rg-web\nALLOWED\nBLOCKED by ReadOnly at sub1/rg-web/st1"
+                },
+                {
+                  "input": "1\nsub1/rg CanNotDelete\n2\ndelete sub1/rg-web/vm1\ndelete sub1/rg/vm1\n",
+                  "output": "ALLOWED\nBLOCKED by CanNotDelete at sub1/rg"
+                },
+                {
+                  "input": "2\nsub1 ReadOnly\nsub1/rg-a ReadOnly\n3\nread sub1/rg-a/vm\nwrite sub1/rg-a/vm\ndelete sub1\n",
+                  "output": "ALLOWED\nBLOCKED by ReadOnly at sub1\nBLOCKED by ReadOnly at sub1"
+                },
+                {
+                  "input": "0\n2\ndelete sub9/rg/x\nwrite sub9\n",
+                  "output": "ALLOWED\nALLOWED"
+                },
+                {
+                  "input": "2\nsub1 CanNotDelete\nsub1/rg-db/sql1 ReadOnly\n2\ndelete sub1/rg-db/sql1\nwrite sub1/rg-db/sql2\n",
+                  "output": "BLOCKED by ReadOnly at sub1/rg-db/sql1\nALLOWED"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "scenario",
+                "question": "You add the tag costCenter=CC-104 to a resource group. A week later, a cost report grouped by costCenter shows the group's VMs as untagged. Why?",
+                "options": [
+                  "Tag values are case-insensitive",
+                  "Tags on a resource group are not inherited by its resources",
+                  "Cost data takes a month to refresh",
+                  "VM resources do not support tags"
+                ],
+                "answer": 1,
+                "explanation": "Tags are not inherited. Use a Modify policy to inherit the tag or enable tag inheritance in Cost Management."
+              },
+              {
+                "type": "concept",
+                "question": "Which lock type still allows an administrator to resize a VM but prevents the VM from being deleted?",
+                "options": [
+                  "ReadOnly",
+                  "CanNotDelete",
+                  "NoWrite",
+                  "DenyAll"
+                ],
+                "answer": 1,
+                "explanation": "CanNotDelete allows read and modify operations but blocks deletion. ReadOnly would block the resize too."
+              },
+              {
+                "type": "scenario",
+                "question": "A resource group has a CanNotDelete lock and a storage account inside it has a ReadOnly lock. What can a Contributor do to the storage account?",
+                "options": [
+                  "Delete it, because Contributor overrides locks",
+                  "Nothing, not even read",
+                  "Read its configuration only",
+                  "Change its configuration but not delete it"
+                ],
+                "answer": 2,
+                "explanation": "Locks are inherited and the most restrictive applies, so ReadOnly wins and only reads are possible."
+              },
+              {
+                "type": "concept",
+                "question": "Which built-in role can create and delete management locks?",
+                "options": [
+                  "Contributor",
+                  "Reader",
+                  "User Access Administrator",
+                  "Storage Account Contributor"
+                ],
+                "answer": 2,
+                "explanation": "Lock management needs Microsoft.Authorization/locks/* actions, included in Owner and User Access Administrator but not in Contributor."
+              },
+              {
+                "type": "scenario",
+                "question": "After a ReadOnly lock is placed on a storage account, users report that the portal cannot show the account's access keys. What is the cause?",
+                "options": [
+                  "Keys are deleted when any lock is applied",
+                  "The storage firewall was enabled by the lock",
+                  "Listing keys is a POST operation that ReadOnly blocks",
+                  "ReadOnly locks rotate the keys automatically"
+                ],
+                "answer": 2,
+                "explanation": "listKeys is a POST on the management plane, which ReadOnly locks block. Use CanNotDelete unless a full freeze is needed."
+              }
+            ]
+          }
+        },
+        {
+          "id": "azure-administrator-az-104:article:4",
+          "slug": "day-4",
+          "lesson": {
+            "day": 4,
+            "title": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
+            "module": "Cloud and Azure foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Compare the Azure portal, Cloud Shell, Azure CLI and Azure PowerShell and know when to use each.",
+              "Translate common tasks between az commands and Az PowerShell cmdlets.",
+              "Filter and format CLI output with --query (JMESPath) and --output.",
+              "Explain how Cloud Shell authenticates and persists files.",
+              "Write a small, repeatable script instead of clicking through the portal."
+            ],
+            "definition": "Azure offers several front ends to the same Azure Resource Manager API: the web-based Azure portal, the cross-platform Azure CLI (az commands), the Azure PowerShell Az module (Verb-AzNoun cmdlets) and Azure Cloud Shell, a browser-based shell with both tools pre-installed and already signed in. Because they all call ARM, anything created with one can be managed with another.",
+            "theory": [
+              {
+                "heading": "The Azure portal",
+                "body": "The portal at portal.azure.com is the best place to explore a service, see dashboards and understand options, and it is used heavily in the AZ-104 exam's scenario questions. It is a poor tool for repeatable work: clicking through 20 blades to build a lab cannot be reviewed, version-controlled or rerun. Many blades offer an 'Export template' or 'Download a template for automation' link, which is a useful bridge to infrastructure as code.",
+                "points": [
+                  "Good for discovery, one-off changes, dashboards and viewing metrics.",
+                  "Supports custom dashboards and Azure Advisor recommendations.",
+                  "Every portal action is recorded in the Activity Log like any other ARM call."
+                ]
+              },
+              {
+                "heading": "Azure CLI",
+                "body": "Azure CLI is a cross-platform command-line tool written in Python, installed on Windows, macOS and Linux. Commands follow 'az <group> <subgroup> <action>', for example 'az vm create'. Output is JSON by default; '--output table' or '-o tsv' make it readable or script-friendly, and '--query' applies a JMESPath expression to pick fields. CLI scripts fit naturally in Bash and in CI/CD pipelines.",
+                "points": [
+                  "Sign in: az login; choose subscription: az account set --subscription <name>.",
+                  "Output formats: json, jsonc, table, tsv, yaml, none.",
+                  "JMESPath example: --query \"[?powerState=='VM running'].name\".",
+                  "Use 'az <command> --help' and 'az find' to discover syntax."
+                ]
+              },
+              {
+                "heading": "Azure PowerShell",
+                "body": "The Az PowerShell module provides cmdlets named Verb-AzNoun, such as New-AzResourceGroup and Get-AzVM. PowerShell returns .NET objects rather than text, so you can pipe objects into Where-Object or Select-Object without parsing. It is popular with Windows administrators and in Azure Automation runbooks. The older AzureRM module is retired; use Az.",
+                "points": [
+                  "Sign in: Connect-AzAccount; choose subscription: Set-AzContext -Subscription <name>.",
+                  "Objects, not strings: Get-AzVM | Where-Object Location -eq 'centralindia'.",
+                  "Runs on Windows PowerShell 5.1 and cross-platform PowerShell 7."
+                ]
+              },
+              {
+                "heading": "Azure Cloud Shell",
+                "body": "Cloud Shell is a browser-based terminal available from the portal, shell.azure.com, the mobile app and VS Code. It offers Bash or PowerShell, includes Azure CLI, Az PowerShell, Terraform, kubectl, git and editors, and signs you in automatically with your portal identity. Sessions can be ephemeral, or you can mount an Azure file share so that files in your home directory persist between sessions. Sessions time out after about 20 minutes without interaction.",
+                "points": [
+                  "No local installation and always up-to-date tools.",
+                  "Persistent storage uses an Azure Files share in a storage account you choose.",
+                  "Runs as you: it has exactly your RBAC permissions, no more.",
+                  "Can be deployed into a virtual network to reach private resources."
+                ]
+              },
+              {
+                "heading": "Choosing the right tool",
+                "body": "Use the portal to learn and to inspect; use CLI or PowerShell for repeatable tasks and bulk changes; use ARM templates or Bicep for whole environments. Scripts should be idempotent where possible: running 'az group create' twice simply returns the existing group, but other commands fail if the resource exists, so scripts often check first.",
+                "points": [
+                  "One-off investigation: portal.",
+                  "Bulk or repeatable operations: CLI or PowerShell scripts.",
+                  "Full environments under version control: Bicep or ARM templates (Day 19).",
+                  "Scheduled operational tasks: Azure Automation runbooks or Functions."
+                ]
+              }
+            ],
+            "example": {
+              "title": "The same task in CLI and PowerShell",
+              "body": "Create a resource group and list running VMs in it. Notice that CLI filters JSON with JMESPath while PowerShell filters objects in the pipeline.",
+              "code": {
+                "language": "bash",
+                "source": "# Azure CLI\naz group create -n rg-lab-dev -l centralindia\naz vm list -g rg-lab-dev -d --query \"[?powerState=='VM running'].{name:name,size:hardwareProfile.vmSize}\" -o table\n\n# Azure PowerShell\nNew-AzResourceGroup -Name rg-lab-dev -Location centralindia\nGet-AzVM -ResourceGroupName rg-lab-dev -Status |\n  Where-Object PowerState -eq 'VM running' |\n  Select-Object Name, @{n='Size';e={$_.HardwareProfile.VmSize}}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Bulk stop of dev VMs",
+                "description": "A short CLI loop stops all VMs tagged env=dev every evening, something impractical in the portal."
+              },
+              {
+                "title": "Exam and interview labs",
+                "description": "Learners rebuild the same lab repeatedly from a script, saving time and Azure credit."
+              },
+              {
+                "title": "Reporting",
+                "description": "PowerShell exports every VM's size, region and tags to CSV for an audit."
+              },
+              {
+                "title": "Locked-down laptops",
+                "description": "Engineers without local admin rights use Cloud Shell from the browser instead of installing tools."
+              }
+            ],
+            "demonstration": {
+              "description": "Use --query and --output to turn verbose JSON into a clean report of resource groups and locations.",
+              "code": {
+                "language": "bash",
+                "source": "az group list --query \"[?location=='centralindia'].name\" -o tsv"
+              },
+              "output": "rg-lab-dev\nrg-shop-prod-cin\nNetworkWatcherRG"
+            },
+            "takeaways": [
+              "Portal, CLI, PowerShell and Cloud Shell all call the same Azure Resource Manager API.",
+              "Azure CLI uses az <group> <action>; filter with --query (JMESPath) and format with -o.",
+              "Az PowerShell uses Verb-AzNoun cmdlets and returns objects you can pipe.",
+              "Cloud Shell is pre-authenticated, browser-based and can persist files on an Azure file share.",
+              "Use scripts or Bicep for anything you need to repeat; use the portal to explore."
+            ],
+            "interview": [
+              {
+                "question": "What tools can you use to manage Azure resources?",
+                "answer": "The Azure portal, Azure CLI, Azure PowerShell, Cloud Shell, REST APIs and SDKs, and infrastructure-as-code tools such as ARM templates, Bicep and Terraform. All of them go through Azure Resource Manager.",
+                "explanation": "Mentioning that they share ARM shows you understand why they are interchangeable."
+              },
+              {
+                "question": "When would you prefer Azure CLI or PowerShell over the portal?",
+                "answer": "For repeatable, bulk or scheduled tasks, for anything that should be reviewed and version-controlled, and in pipelines. The portal is better for exploration and one-off checks.",
+                "explanation": "Interviewers look for an automation mindset; give a real example such as stopping all dev VMs nightly."
+              },
+              {
+                "question": "How does Cloud Shell store files between sessions?",
+                "answer": "If you choose persistent storage, Cloud Shell mounts an Azure Files share from a storage account in your subscription as your home drive, so scripts and files survive. Ephemeral sessions keep nothing after they end.",
+                "explanation": "Knowing that storage is an Azure file share you pay for, and that sessions time out, shows hands-on use."
+              },
+              {
+                "question": "How do you filter Azure CLI output to show only the names of running VMs?",
+                "answer": "Use 'az vm list -d' with a JMESPath query such as --query \"[?powerState=='VM running'].name\" and -o tsv or -o table.",
+                "explanation": "The -d (show details) flag is needed for powerState; mentioning it signals real experience."
+              },
+              {
+                "question": "What is the key difference in how CLI and PowerShell return results?",
+                "answer": "Azure CLI returns text, JSON by default, which you shape with --query and parse in scripts. Azure PowerShell returns .NET objects whose properties can be filtered and selected directly in the pipeline.",
+                "explanation": "This explains why teams choose one or the other and why mixing them in one script is awkward."
+              }
+            ],
+            "practice": {
+              "kind": "exercise",
+              "title": "Script a reusable lab environment",
+              "difficulty": "Basic",
+              "objective": "Replace a sequence of portal clicks with a repeatable script and its PowerShell equivalent.",
+              "statement": "Your trainer creates the same lab for every batch: a resource group rg-az104-lab in Central India tagged env=lab and owner=<your email>, a general-purpose v2 storage account with locally redundant storage, and a CanNotDelete lock on the group. Write an Azure CLI script that builds it, a query that proves it exists, and the PowerShell equivalent of the resource group and lock steps. Finally, write the single command that removes everything at the end of the batch and explain why it fails until the lock is removed.",
+              "deliverable": "A commented Bash script using az commands, the equivalent PowerShell lines for two steps, and a short note on clean-up.",
+              "steps": [
+                "Select the correct subscription with az account set.",
+                "Create the resource group with location and tags.",
+                "Create a StorageV2 account with Standard_LRS, using a globally unique lowercase name.",
+                "Create a CanNotDelete lock on the resource group.",
+                "Verify with az resource list and a --query that prints name and type as a table.",
+                "Write the PowerShell equivalents of the group and lock commands.",
+                "Write the clean-up commands in the correct order."
+              ],
+              "checklist": [
+                "Storage account name is 3-24 lowercase letters and numbers only.",
+                "Tags use the key=value syntax in CLI and a hashtable in PowerShell.",
+                "The lock is removed before the resource group is deleted.",
+                "The script can be rerun without changing the result for the group creation step.",
+                "The verification query returns readable output, not raw JSON."
+              ],
+              "sample_answer": "#!/bin/bash\nset -e\naz account set --subscription \"AZ104-Training\"\nRG=rg-az104-lab; LOC=centralindia\naz group create -n $RG -l $LOC --tags env=lab owner=student@example.com\naz storage account create -n stlab$RANDOM$RANDOM -g $RG -l $LOC --kind StorageV2 --sku Standard_LRS\naz lock create -n lock-lab --lock-type CanNotDelete -g $RG\naz resource list -g $RG --query \"[].{name:name,type:type}\" -o table\n\n# PowerShell equivalents\nNew-AzResourceGroup -Name rg-az104-lab -Location centralindia -Tag @{env='lab'; owner='student@example.com'}\nNew-AzResourceLock -LockName lock-lab -LockLevel CanNotDelete -ResourceGroupName rg-az104-lab\n\n# Clean-up\naz lock delete -n lock-lab -g $RG\naz group delete -n $RG --yes --no-wait\n\nNote: 'az group delete' alone fails with ScopeLocked because the CanNotDelete lock overrides RBAC; deleting the lock first is a deliberate second step. $RANDOM keeps the storage name unique, and 'az group create' is idempotent, so rerunning it updates rather than fails."
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which Azure CLI parameter applies a JMESPath expression to filter command output?",
+                "options": [
+                  "--query",
+                  "--filter",
+                  "--select",
+                  "--where"
+                ],
+                "answer": 0,
+                "explanation": "--query takes a JMESPath expression; --output (-o) controls the format."
+              },
+              {
+                "type": "scenario",
+                "question": "An engineer on a locked-down laptop cannot install software but needs to run Az PowerShell commands against Azure today. What should they use?",
+                "options": [
+                  "Azure Cloud Shell",
+                  "Azure Advisor",
+                  "Azure Storage Explorer",
+                  "Azure Data Box"
+                ],
+                "answer": 0,
+                "explanation": "Cloud Shell runs in the browser with Azure CLI and Az PowerShell pre-installed and pre-authenticated."
+              },
+              {
+                "type": "concept",
+                "question": "Where does Azure Cloud Shell store files that persist between sessions?",
+                "options": [
+                  "In the browser's local storage",
+                  "In an Azure Files share in a storage account",
+                  "On a managed disk attached to your VM",
+                  "In Microsoft Entra ID"
+                ],
+                "answer": 1,
+                "explanation": "Persistent Cloud Shell mounts an Azure file share as the home directory."
+              },
+              {
+                "type": "code",
+                "question": "Which PowerShell cmdlet is the equivalent of 'az group create'?",
+                "options": [
+                  "Create-AzGroup",
+                  "New-AzResourceGroup",
+                  "Set-AzResourceGroup",
+                  "Add-AzResourceGroup"
+                ],
+                "answer": 1,
+                "explanation": "Az PowerShell uses the New verb for creation: New-AzResourceGroup."
+              },
+              {
+                "type": "scenario",
+                "question": "You need a nightly job that stops all VMs tagged env=dev and the steps must be reviewable in source control. Which approach is most appropriate?",
+                "options": [
+                  "Stop the VMs manually in the portal each night",
+                  "Create a custom portal dashboard",
+                  "A version-controlled script run on a schedule, for example an Automation runbook",
+                  "Ask Microsoft support to stop them"
+                ],
+                "answer": 2,
+                "explanation": "Repeatable, scheduled, reviewable work belongs in scripts or runbooks, not manual portal actions."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "azure-administrator-az-104:question:1:1",
+          "day": 1,
+          "topic": "Cloud Computing and Azure Global Infrastructure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between IaaS, PaaS and SaaS? Give an Azure example of each.",
+          "answer": "IaaS provides virtual infrastructure where you manage the OS and above, for example Azure Virtual Machines. PaaS provides a managed platform where you deploy code and data, for example Azure App Service or Azure SQL Database. SaaS is complete software you consume, for example Microsoft 365.",
+          "explanation": "A strong answer ties each model to who patches the operating system, which shows you understand the operational consequence, not just the acronym.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:1:2",
+          "day": 1,
+          "topic": "Cloud Computing and Azure Global Infrastructure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain the shared responsibility model.",
+          "answer": "Security duties are split between the cloud provider and the customer. Microsoft always secures the physical datacentre, hosts and network. The customer always owns data, devices and identities. Responsibility for the OS, network controls and applications shifts towards Microsoft as you move from IaaS to PaaS to SaaS.",
+          "explanation": "Mention the 'always customer' items explicitly; many candidates wrongly say SaaS makes Microsoft responsible for everything.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:1:3",
+          "day": 1,
+          "topic": "Cloud Computing and Azure Global Infrastructure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between a region, an availability zone and a region pair?",
+          "answer": "A region is a geographic area containing one or more datacentres. An availability zone is a physically separate datacentre group inside a region with independent power, cooling and network. A region pair links two regions in the same geography for disaster recovery, staggered updates and prioritised recovery.",
+          "explanation": "Link each to the failure it protects against: zone for a datacentre failure, pair for a regional disaster.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:1:4",
+          "day": 1,
+          "topic": "Cloud Computing and Azure Global Infrastructure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How would you choose an Azure region for a new workload?",
+          "answer": "First confirm compliance and data-residency requirements, then pick the region with the lowest latency to users that offers the required services, VM sizes and availability zones, and finally compare price between the shortlisted regions.",
+          "explanation": "Ordering the factors shows judgement; compliance is a hard constraint while price is a trade-off.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:1:5",
+          "day": 1,
+          "topic": "Cloud Computing and Azure Global Infrastructure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between scalability and elasticity?",
+          "answer": "Scalability is the ability to add capacity, either vertically (a bigger VM) or horizontally (more instances). Elasticity is scaling automatically in both directions in response to demand, such as autoscale rules on a scale set.",
+          "explanation": "Interviewers like the vertical versus horizontal distinction and a concrete Azure feature for elasticity.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:2:1",
+          "day": 2,
+          "topic": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is Azure Resource Manager?",
+          "answer": "ARM is Azure's management layer. All requests from the portal, CLI, PowerShell, SDKs and templates go through it; it authenticates the caller, checks RBAC and policy and forwards the request to the resource provider.",
+          "explanation": "Mention that this is why behaviour is consistent across tools and why templates can be declarative.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:2:2",
+          "day": 2,
+          "topic": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When would you create a new subscription instead of a new resource group?",
+          "answer": "When you need a separate billing boundary, a strong access or environment boundary such as production versus development, separate quotas, or when an existing subscription is reaching scale limits. Resource groups are for grouping resources with the same lifecycle within a subscription.",
+          "explanation": "Interviewers want the boundary concept: subscriptions separate billing, access and quota; resource groups separate lifecycle.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:2:3",
+          "day": 2,
+          "topic": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Can a resource group contain resources from different regions?",
+          "answer": "Yes. The resource group's location only stores its metadata. Resources inside can be in any region, although keeping metadata in a compliant region matters for some regulations.",
+          "explanation": "A common trick question. Mention the metadata point and the compliance nuance.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:2:4",
+          "day": 2,
+          "topic": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are management groups and why use them?",
+          "answer": "Management groups are containers above subscriptions. Policies and role assignments applied to a management group are inherited by all subscriptions beneath it, so governance is applied once for many subscriptions. They support up to six levels of depth under the Tenant Root Group.",
+          "explanation": "A strong answer gives an example structure (Platform, Landing Zones, Sandbox) and mentions inheritance.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:2:5",
+          "day": 2,
+          "topic": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What happens when you move a resource to another resource group or subscription?",
+          "answer": "Both source and target groups are locked for writes during the move, and the resource gets a new resource ID. Not all resource types support moving, some have dependencies that must move together, and RBAC assignments made directly on the resource do not move with it.",
+          "explanation": "Mentioning the ID change and the need to update scripts, alerts and role assignments shows real operational experience.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:3:1",
+          "day": 3,
+          "topic": "Tags and Resource Locks for Organising and Protecting Resources",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are tags used for in Azure?",
+          "answer": "Tags are name-value pairs that add metadata to resources, resource groups and subscriptions. They are used to group costs, identify owners and environments, and drive automation and policy.",
+          "explanation": "Give a concrete tag set (env, owner, costCenter) and a use such as cost reports grouped by tag.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:3:2",
+          "day": 3,
+          "topic": "Tags and Resource Locks for Organising and Protecting Resources",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "If you tag a resource group, do the resources inside get the tag?",
+          "answer": "No. Tags are not inherited. To get that behaviour you assign an Azure Policy such as 'Inherit a tag from the resource group if missing', which uses the Modify effect, and run a remediation task for existing resources.",
+          "explanation": "This is one of the most frequently asked AZ-104 points. Naming the Modify effect and remediation earns extra credit.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:3:3",
+          "day": 3,
+          "topic": "Tags and Resource Locks for Organising and Protecting Resources",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between CanNotDelete and ReadOnly locks?",
+          "answer": "CanNotDelete lets authorised users read and modify a resource but not delete it. ReadOnly lets them only read it; both modification and deletion are blocked.",
+          "explanation": "Add that locks inherit downward and that the most restrictive lock applies.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:3:4",
+          "day": 3,
+          "topic": "Tags and Resource Locks for Organising and Protecting Resources",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "An Owner cannot delete a resource. RBAC looks correct. What would you check?",
+          "answer": "Check for a resource lock on the resource, its resource group or the subscription, because locks override RBAC. Also check for deny assignments, for example from a managed application or a deployment stack.",
+          "explanation": "Interviewers like candidates who think beyond RBAC: locks and deny assignments both block Owners.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:3:5",
+          "day": 3,
+          "topic": "Tags and Resource Locks for Organising and Protecting Resources",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why might a ReadOnly lock on a storage account break an application or the portal?",
+          "answer": "Listing account keys is a POST operation on the management plane, which ReadOnly blocks. Tools and portal blades that need the keys fail, even though no data is being changed.",
+          "explanation": "This shows you know locks act on management operations and that 'read' in the portal is not always a GET.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:4:1",
+          "day": 4,
+          "topic": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What tools can you use to manage Azure resources?",
+          "answer": "The Azure portal, Azure CLI, Azure PowerShell, Cloud Shell, REST APIs and SDKs, and infrastructure-as-code tools such as ARM templates, Bicep and Terraform. All of them go through Azure Resource Manager.",
+          "explanation": "Mentioning that they share ARM shows you understand why they are interchangeable.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:4:2",
+          "day": 4,
+          "topic": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When would you prefer Azure CLI or PowerShell over the portal?",
+          "answer": "For repeatable, bulk or scheduled tasks, for anything that should be reviewed and version-controlled, and in pipelines. The portal is better for exploration and one-off checks.",
+          "explanation": "Interviewers look for an automation mindset; give a real example such as stopping all dev VMs nightly.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:4:3",
+          "day": 4,
+          "topic": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How does Cloud Shell store files between sessions?",
+          "answer": "If you choose persistent storage, Cloud Shell mounts an Azure Files share from a storage account in your subscription as your home drive, so scripts and files survive. Ephemeral sessions keep nothing after they end.",
+          "explanation": "Knowing that storage is an Azure file share you pay for, and that sessions time out, shows hands-on use.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:4:4",
+          "day": 4,
+          "topic": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How do you filter Azure CLI output to show only the names of running VMs?",
+          "answer": "Use 'az vm list -d' with a JMESPath query such as --query \"[?powerState=='VM running'].name\" and -o tsv or -o table.",
+          "explanation": "The -d (show details) flag is needed for powerState; mentioning it signals real experience.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "azure-administrator-az-104:question:4:5",
+          "day": 4,
+          "topic": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the key difference in how CLI and PowerShell return results?",
+          "answer": "Azure CLI returns text, JSON by default, which you shape with --query and parse in scripts. Azure PowerShell returns .NET objects whose properties can be filtered and selected directly in the pipeline.",
+          "explanation": "This explains why teams choose one or the other and why mixing them in one script is awkward.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "azure-administrator-az-104:assignment:1",
+          "title": "Cloud Computing and Azure Global Infrastructure",
+          "available": true,
+          "focus": "Cloud computing is the on-demand delivery of compute, storage, networking and software over the internet with pay-as-you-go pricing. Microsoft Azure is Microsoft's public cloud: a global network of datacentres grouped into regions, on which you create resources through a single management layer instead of buying and racking your own hardware.",
+          "objectives": [
+            "Explain cloud computing and the CapEx-to-OpEx shift in plain terms.",
+            "Compare IaaS, PaaS and SaaS and apply the shared responsibility model.",
+            "Describe Azure geographies, regions, region pairs and availability zones.",
+            "Choose a region using latency, compliance, service availability and price.",
+            "Answer the opening questions of an Azure administrator interview with confidence."
+          ],
+          "assignment": "Read a service model (IaaS, PaaS or SaaS, case-insensitive) and a list of responsibility layers. For each layer print who is responsible: Customer, Microsoft or Shared. Use this model: data, devices and accounts are always Customer; physical is always Microsoft; os is Customer for IaaS and Microsoft otherwise; applications and network are Customer for IaaS, Shared for PaaS and Microsoft for SaaS; identity is Customer for IaaS and Shared for PaaS and SaaS. Any other layer name prints Unknown. If the model itself is not one of the three, print only 'Invalid model'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Cloud turns up-front CapEx into consumption-based OpEx and adds elasticity.",
+            "IaaS gives most control and most responsibility; SaaS gives the least of both.",
+            "Data, devices and identities are always the customer's responsibility.",
+            "Availability zones protect against datacentre failure; region pairs protect against regional disasters.",
+            "Pick regions by compliance, latency, service availability and price, in that order.",
+            "Not every VM size or service exists in every region."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "azure-administrator-az-104:assignment:2",
+          "title": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
+          "available": true,
+          "focus": "Azure Resource Manager (ARM) is the deployment and management service for Azure: every request from the portal, CLI, PowerShell, SDKs or templates is authenticated, authorised and then sent by ARM to the right resource provider. ARM organises resources in a hierarchy of management groups, subscriptions, resource groups and resources, and access control, policy and budgets applied at one level are inherited by everything beneath it.",
+          "objectives": [
+            "Explain what Azure Resource Manager (ARM) is and why every tool goes through it.",
+            "Describe the four-level hierarchy: management groups, subscriptions, resource groups and resources.",
+            "Decide when to create a new subscription versus a new resource group.",
+            "Create and organise resource groups with Azure CLI and PowerShell.",
+            "Explain how settings applied at a higher scope are inherited by lower scopes."
+          ],
+          "assignment": "You are given parent links in an Azure hierarchy. Each line 'child parent' says that child is directly under parent; the top of the tree is the name 'root' (the Tenant Root Group). For each query, print the full path from root to the queried scope joined by ' > ', followed by its depth (number of links from root) in the form ' [depth d]'. If the queried name is not in the hierarchy (and is not 'root'), print '<name>: not found'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Every Azure tool talks to Azure Resource Manager, which authenticates, authorises and applies policy.",
+            "Hierarchy: management groups > subscriptions > resource groups > resources.",
+            "Management groups support six levels of depth below the Tenant Root Group.",
+            "A subscription is a billing, quota and access boundary trusted by one Entra tenant.",
+            "Resource groups group by lifecycle; their location stores metadata only.",
+            "Assignments at a higher scope are inherited by every lower scope."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "azure-administrator-az-104:assignment:3",
+          "title": "Tags and Resource Locks for Organising and Protecting Resources",
+          "available": true,
+          "focus": "Tags are name-value pairs attached to Azure resources, resource groups and subscriptions to add metadata such as cost centre, environment or owner. Resource locks are management-plane safeguards that prevent accidental deletion (CanNotDelete) or any change (ReadOnly) to a scope and everything beneath it, regardless of the user's RBAC role.",
+          "objectives": [
+            "Design a tagging strategy for cost reporting, ownership and automation.",
+            "Explain why tags are not inherited and how to enforce or inherit them with Azure Policy.",
+            "Compare CanNotDelete and ReadOnly locks and predict which operations each blocks.",
+            "Explain lock inheritance and who is allowed to create or remove locks.",
+            "Recognise the side effects of ReadOnly locks on real services."
+          ],
+          "assignment": "Scopes are written as slash-separated paths, for example 'sub1/rg-web/vm1'. A lock on a scope applies to that scope and every path beneath it (whole segments only: a lock on 'sub1/rg' does not apply to 'sub1/rg-web'). Lock types are CanNotDelete (blocks delete) and ReadOnly (blocks write and delete). Reads are never blocked. For each operation, find all locks that apply; if any of them blocks the operation, print 'BLOCKED by <type> at <scope>' choosing ReadOnly before CanNotDelete and, among locks of the same type, the one closest to the top (fewest segments). Otherwise print 'ALLOWED'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Tags are name-value metadata used for cost, ownership and automation.",
+            "Tags are not inherited; use Azure Policy (Deny or Modify) to require or inherit them.",
+            "CanNotDelete allows modify but blocks delete; ReadOnly blocks modify and delete.",
+            "Locks are inherited by child scopes and override RBAC, even for Owners.",
+            "Only roles with Microsoft.Authorization/locks/* (Owner, User Access Administrator) manage locks.",
+            "ReadOnly locks can break operations that use POST, such as listing storage keys."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "azure-administrator-az-104:assignment:4",
+          "title": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
+          "available": true,
+          "focus": "Azure offers several front ends to the same Azure Resource Manager API: the web-based Azure portal, the cross-platform Azure CLI (az commands), the Azure PowerShell Az module (Verb-AzNoun cmdlets) and Azure Cloud Shell, a browser-based shell with both tools pre-installed and already signed in. Because they all call ARM, anything created with one can be managed with another.",
+          "objectives": [
+            "Compare the Azure portal, Cloud Shell, Azure CLI and Azure PowerShell and know when to use each.",
+            "Translate common tasks between az commands and Az PowerShell cmdlets.",
+            "Filter and format CLI output with --query (JMESPath) and --output.",
+            "Explain how Cloud Shell authenticates and persists files.",
+            "Write a small, repeatable script instead of clicking through the portal."
+          ],
+          "assignment": "Your trainer creates the same lab for every batch: a resource group rg-az104-lab in Central India tagged env=lab and owner=<your email>, a general-purpose v2 storage account with locally redundant storage, and a CanNotDelete lock on the group. Write an Azure CLI script that builds it, a query that proves it exists, and the PowerShell equivalent of the resource group and lock steps. Finally, write the single command that removes everything at the end of the batch and explain why it fails until the lock is removed.",
+          "steps": [
+            "Select the correct subscription with az account set.",
+            "Create the resource group with location and tags.",
+            "Create a StorageV2 account with Standard_LRS, using a globally unique lowercase name.",
+            "Create a CanNotDelete lock on the resource group.",
+            "Verify with az resource list and a --query that prints name and type as a table.",
+            "Write the PowerShell equivalents of the group and lock commands.",
+            "Write the clean-up commands in the correct order."
+          ],
+          "revision": [
+            "Portal, CLI, PowerShell and Cloud Shell all call the same Azure Resource Manager API.",
+            "Azure CLI uses az <group> <action>; filter with --query (JMESPath) and format with -o.",
+            "Az PowerShell uses Verb-AzNoun cmdlets and returns objects you can pipe.",
+            "Cloud Shell is pre-authenticated, browser-based and can persist files on an Azure file share.",
+            "Use scripts or Bicep for anything you need to repeat; use the portal to explore."
+          ]
+        },
+        {
+          "day": 5,
+          "id": "azure-administrator-az-104:assignment:5",
+          "title": "Network segmentation for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain network segmentation for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on network segmentation for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete network segmentation for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "azure-administrator-az-104:assignment:6",
+          "title": "Subnets and routes for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain subnets and routes for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on subnets and routes for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete subnets and routes for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "azure-administrator-az-104:assignment:7",
+          "title": "Compute selection for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain compute selection for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on compute selection for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete compute selection for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "azure-administrator-az-104:article:1",
+          "azure-administrator-az-104:article:2",
+          "azure-administrator-az-104:article:3",
+          "azure-administrator-az-104:article:4"
+        ],
+        "questions": [
+          "azure-administrator-az-104:question:1:1",
+          "azure-administrator-az-104:question:1:2",
+          "azure-administrator-az-104:question:1:3",
+          "azure-administrator-az-104:question:1:4",
+          "azure-administrator-az-104:question:1:5",
+          "azure-administrator-az-104:question:2:1",
+          "azure-administrator-az-104:question:2:2",
+          "azure-administrator-az-104:question:2:3",
+          "azure-administrator-az-104:question:2:4",
+          "azure-administrator-az-104:question:2:5",
+          "azure-administrator-az-104:question:3:1",
+          "azure-administrator-az-104:question:3:2",
+          "azure-administrator-az-104:question:3:3",
+          "azure-administrator-az-104:question:3:4",
+          "azure-administrator-az-104:question:3:5",
+          "azure-administrator-az-104:question:4:1",
+          "azure-administrator-az-104:question:4:2",
+          "azure-administrator-az-104:question:4:3",
+          "azure-administrator-az-104:question:4:4",
+          "azure-administrator-az-104:question:4:5"
+        ],
+        "coding": [
+          "azure-administrator-az-104:coding:1",
+          "azure-administrator-az-104:coding:2",
+          "azure-administrator-az-104:coding:3"
+        ],
+        "assignments": [
+          "azure-administrator-az-104:assignment:1",
+          "azure-administrator-az-104:assignment:2",
+          "azure-administrator-az-104:assignment:3",
+          "azure-administrator-az-104:assignment:4",
+          "azure-administrator-az-104:assignment:5",
+          "azure-administrator-az-104:assignment:6",
+          "azure-administrator-az-104:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Networking, compute and architecture",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "azure-administrator-az-104:assignment:8",
+          "title": "Storage classes for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain storage classes for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on storage classes for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete storage classes for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "azure-administrator-az-104:assignment:9",
+          "title": "Managed databases for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain managed databases for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on managed databases for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete managed databases for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "azure-administrator-az-104:assignment:10",
+          "title": "Load balancing for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain load balancing for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on load balancing for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete load balancing for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "azure-administrator-az-104:assignment:11",
+          "title": "Autoscaling behavior for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain autoscaling behavior for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on autoscaling behavior for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete autoscaling behavior for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "azure-administrator-az-104:assignment:12",
+          "title": "Infrastructure as code for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain infrastructure as code for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on infrastructure as code for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete infrastructure as code for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "azure-administrator-az-104:assignment:13",
+          "title": "Configuration separation for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain configuration separation for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on configuration separation for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration separation for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "azure-administrator-az-104:assignment:14",
+          "title": "Secret management for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain secret management for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on secret management for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secret management for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "azure-administrator-az-104:assignment:8",
+          "azure-administrator-az-104:assignment:9",
+          "azure-administrator-az-104:assignment:10",
+          "azure-administrator-az-104:assignment:11",
+          "azure-administrator-az-104:assignment:12",
+          "azure-administrator-az-104:assignment:13",
+          "azure-administrator-az-104:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Reliability, security and operations",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "azure-administrator-az-104:assignment:15",
+          "title": "Encryption boundaries for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain encryption boundaries for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on encryption boundaries for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete encryption boundaries for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "azure-administrator-az-104:assignment:16",
+          "title": "Logging and audit trails for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain logging and audit trails for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on logging and audit trails for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and audit trails for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "azure-administrator-az-104:assignment:17",
+          "title": "Health checks for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain health checks for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on health checks for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete health checks for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "azure-administrator-az-104:assignment:18",
+          "title": "Backup and recovery for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain backup and recovery for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on backup and recovery for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete backup and recovery for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "azure-administrator-az-104:assignment:19",
+          "title": "High availability for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain high availability for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on high availability for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete high availability for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "azure-administrator-az-104:assignment:20",
+          "title": "Disaster recovery objectives for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain disaster recovery objectives for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on disaster recovery objectives for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete disaster recovery objectives for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "azure-administrator-az-104:assignment:21",
+          "title": "Container basics for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain container basics for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on container basics for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete container basics for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "azure-administrator-az-104:assignment:22",
+          "title": "Deployment pipelines for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain deployment pipelines for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on deployment pipelines for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment pipelines for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "azure-administrator-az-104:assignment:15",
+          "azure-administrator-az-104:assignment:16",
+          "azure-administrator-az-104:assignment:17",
+          "azure-administrator-az-104:assignment:18",
+          "azure-administrator-az-104:assignment:19",
+          "azure-administrator-az-104:assignment:20",
+          "azure-administrator-az-104:assignment:21",
+          "azure-administrator-az-104:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, architecture review and interviews",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "azure-administrator-az-104:assignment:23",
+          "title": "Monitoring signals for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain monitoring signals for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on monitoring signals for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete monitoring signals for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "azure-administrator-az-104:assignment:24",
+          "title": "Incident response for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain incident response for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on incident response for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete incident response for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "azure-administrator-az-104:assignment:25",
+          "title": "Cost allocation for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain cost allocation for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on cost allocation for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete cost allocation for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "azure-administrator-az-104:assignment:26",
+          "title": "Capacity planning for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain capacity planning for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on capacity planning for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete capacity planning for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "azure-administrator-az-104:assignment:27",
+          "title": "Service limits for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain service limits for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on service limits for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete service limits for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "azure-administrator-az-104:assignment:28",
+          "title": "Architecture trade-offs for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain architecture trade-offs for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on architecture trade-offs for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete architecture trade-offs for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "azure-administrator-az-104:assignment:29",
+          "title": "Operational runbooks for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain operational runbooks for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on operational runbooks for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete operational runbooks for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "azure-administrator-az-104:assignment:30",
+          "title": "Portfolio walkthrough for Azure administration and AZ-104 objectives",
+          "available": false,
+          "focus": "Azure administration and AZ-104 objectives",
+          "objectives": [
+            "Explain portfolio walkthrough for azure administration and az-104 objectives in the context of Azure administration and AZ-104 objectives",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small Azure administration and AZ-104 objectives case study focused on portfolio walkthrough for azure administration and az-104 objectives. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for azure administration and az-104 objectives problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "azure-administrator-az-104:assignment:23",
+          "azure-administrator-az-104:assignment:24",
+          "azure-administrator-az-104:assignment:25",
+          "azure-administrator-az-104:assignment:26",
+          "azure-administrator-az-104:assignment:27",
+          "azure-administrator-az-104:assignment:28",
+          "azure-administrator-az-104:assignment:29",
+          "azure-administrator-az-104:assignment:30"
+        ]
+      }
+    }
+  ]
+}

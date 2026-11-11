@@ -1,0 +1,625 @@
+[
+  {
+    "slug": "ai-ml-deep-learning",
+    "title": "AI, machine learning and deep learning",
+    "concept": "AI is the broad task-oriented field; machine learning fits patterns from data, and deep learning uses multilayer neural networks. Rules, classifiers and generators can coexist inside one product. The correct choice follows the decision and its error costs, not a fashionable model label.",
+    "mechanism": "Define inputs and acceptance criteria, establish a deterministic baseline and compare on unseen examples. Separate training, which estimates parameters, from inference, which applies a fixed version. Inspect per-class errors and operational constraints before increasing complexity.",
+    "boundary": "High training accuracy is not evidence of generalization. An LLM prediction must never replace deterministic authorization.",
+    "example": "A synthetic support router compares a keyword rule and classifier on ambiguous and misspelled tickets, scoring urgent-ticket recall separately.",
+    "application": "Route a support request with a classifier, enforce access with application permissions and draft the reply with a grounded generator.",
+    "angles": [
+      {
+        "question": "Can a rules-only router be AI without machine learning?",
+        "answer": "Yes: AI is broader than learned parameter fitting. Identify the intelligent task and explain which behavior is explicitly programmed rather than learned."
+      },
+      {
+        "question": "Why must training and inference be separated in a ticket classifier?",
+        "answer": "Training fits parameters from examples; inference applies a frozen version to new tickets. Separation enables reproducible tests, versioned rollout and rollback."
+      },
+      {
+        "question": "When would extra neural-network depth fail to solve routing errors?",
+        "answer": "More capacity cannot repair missing labels, leakage or an unrepresentative evaluation set. Inspect those causes before choosing a deeper model."
+      },
+      {
+        "question": "How would you compare a keyword router with a neural classifier fairly?",
+        "answer": "Freeze the same unseen labeled examples, compare per-class errors and include latency and maintenance cost. Do not tune on final test labels."
+      },
+      {
+        "question": "Implement confusion counts for one routing label.",
+        "answer": "Count true positives, false positives and false negatives with an explicit positive label. Validate unequal lengths, empty input and all-positive predictions."
+      },
+      {
+        "question": "Where should a predictor and an authorization rule meet?",
+        "answer": "The predictor may suggest a route, while server-side identity and object permissions decide access. Model confidence cannot grant a permission."
+      },
+      {
+        "question": "Urgent tickets are missed despite high overall accuracy. What changes?",
+        "answer": "Measure urgent-class recall, precision and error cost. Consider threshold tuning or review queues instead of optimizing only the majority class."
+      },
+      {
+        "question": "Offline routing succeeds but rollout fails. What would you inspect?",
+        "answer": "Compare preprocessing, input distribution, label meaning and model version across environments. Reproduce an actual failing request before retraining."
+      },
+      {
+        "question": "How would you defend a simple baseline in a technical interview?",
+        "answer": "State constraints and show the controlled comparison. Explain the evidence required to justify complexity rather than treating a larger model as progress."
+      },
+      {
+        "question": "Which artifacts make a routing project discussion credible?",
+        "answer": "Provide split rationale, versioned data, confusion analysis and measured limitations. Describe your real contribution without inventing customer results or scale."
+      }
+    ],
+    "code": "def counts(expected,predicted,positive):\n    if len(expected)!=len(predicted): raise ValueError('length mismatch')\n    pairs=list(zip(expected,predicted))\n    return (sum(a==positive and b==positive for a,b in pairs),\n            sum(a!=positive and b==positive for a,b in pairs),\n            sum(a==positive and b!=positive for a,b in pairs))\nassert counts([],[],'u')==(0,0,0)\nprint(counts(['u','n','u'],['u','u','n'],'u'))\n",
+    "expected": "(1, 1, 1)",
+    "sources": [
+      "autograd",
+      "generation"
+    ],
+    "tags": [
+      "AI",
+      "ML",
+      "deep learning",
+      "baselines"
+    ]
+  },
+  {
+    "slug": "generative-discriminative",
+    "title": "Generative versus discriminative models",
+    "concept": "A classifier predicts a defined label from features; a generator models and emits data conditioned on context. Token-sequence probability is not a calibrated probability that a real-world claim is true. A product can use both kinds of model without confusing their evaluation contracts.",
+    "mechanism": "For autoregressive generation, factor sequence probability into conditional next-token probabilities. Compute sums of log probabilities to avoid numerical underflow. Evaluate label correctness and generated explanation support separately because one can succeed while the other fails.",
+    "boundary": "A plausible explanation is not proof of correct classification or evidence that the explanation reflects the actual decision process.",
+    "example": "A synthetic moderation task scores the predicted category separately from the evidence supporting a generated policy explanation.",
+    "application": "Classify a policy issue, retrieve an approved clause and draft text; enforce consequential actions through a separately validated workflow.",
+    "angles": [
+      {
+        "question": "How does a label prediction differ from sequence generation?",
+        "answer": "A classifier selects from a defined output set; a generator produces a token sequence. Their contracts require different success criteria."
+      },
+      {
+        "question": "How is a sentence likelihood computed autoregressively?",
+        "answer": "Multiply each token probability conditioned on its prefix. In practice accumulate log probabilities because direct products underflow on long sequences."
+      },
+      {
+        "question": "Why can a correct label have an unreliable explanation?",
+        "answer": "The explanation may contain invented or irrelevant reasoning even when the label matches. Score category correctness and evidence support independently."
+      },
+      {
+        "question": "How would you constrain an LLM moderation category?",
+        "answer": "Use an enum schema, reject malformed output and test the category distribution on unseen examples. Keep enforcement permissions outside generated prose."
+      },
+      {
+        "question": "Compute sequence log-likelihood from token probabilities.",
+        "answer": "Validate the probability interval, handle zero as negative infinity and define empty input. Do not silently discard impossible tokens."
+      },
+      {
+        "question": "Design a classifier-plus-drafter support pipeline.",
+        "answer": "Separate routing, authorized evidence retrieval, drafting and output validation. Preserve model versions and distinguish a proposal from an approved action."
+      },
+      {
+        "question": "The classifier works but rationales cite nonexistent policies. What ships?",
+        "answer": "Retain only independently validated capabilities if appropriate. Suppress unreliable rationales until evidence checks and grounded evaluation demonstrate acceptable behavior."
+      },
+      {
+        "question": "All long-sequence probability scores become zero. What is wrong?",
+        "answer": "Direct multiplication is likely underflowing. Accumulate logs and justify any length normalization against the intended comparison."
+      },
+      {
+        "question": "How would you defend separate label and explanation metrics?",
+        "answer": "Show an example where one output succeeds and the other fails. Explain why averaging unrelated metrics can conceal a critical failure."
+      },
+      {
+        "question": "How should a classification-versus-generation experiment be presented?",
+        "answer": "Provide a shared input contract and two scorecards. Report the synthetic-data limits instead of asserting production reliability from a demo."
+      }
+    ],
+    "code": "import math\ndef log_probability(values):\n    if any(p<0 or p>1 for p in values): raise ValueError('probability')\n    return sum(math.log(p) if p else -math.inf for p in values)\nassert log_probability([])==0\nassert log_probability([0])==-math.inf\nprint(round(log_probability([0.5,0.25]),4))\n",
+    "expected": "-2.0794",
+    "sources": [
+      "generation"
+    ],
+    "tags": [
+      "generative models",
+      "classification",
+      "likelihood"
+    ]
+  },
+  {
+    "slug": "data-splits-leakage",
+    "title": "Data splits and leakage",
+    "concept": "Leakage lets information unavailable at prediction time influence training or evaluation. Duplicate document revisions, future labels and transformations fitted on all data can produce optimistic results. The evaluation partition must represent the deployment boundary rather than an arbitrary set of rows.",
+    "mechanism": "Choose the independence unit before splitting: users, document families or time periods may matter more than rows. Fit learned preprocessing only on training data, freeze final evaluation data and audit both exact duplicates and related examples across partitions.",
+    "boundary": "A clean split reduces optimistic bias but does not remove annotation errors, domain shift or a poorly defined target.",
+    "example": "A synthetic handbook dataset groups all revisions of the same document before splitting its question rows.",
+    "application": "Use entity-aware or chronological validation for assistants operating on related support histories or evolving document collections.",
+    "angles": [
+      {
+        "question": "Why can a random row split leak a document benchmark?",
+        "answer": "Rows can share paragraphs, document revisions or answer text. Split the underlying document family so copied evidence cannot make evaluation trivial."
+      },
+      {
+        "question": "When should a chronological split replace shuffling?",
+        "answer": "Use chronology when deployment predicts future cases from past evidence. Verify feature timestamps reflect what existed at the decision boundary."
+      },
+      {
+        "question": "Can fitting a vocabulary on all data contaminate evaluation?",
+        "answer": "Yes: learned preprocessing can incorporate held-out distribution information. Fit transformations on training data and freeze them before final evaluation."
+      },
+      {
+        "question": "How would you audit benchmark duplicates?",
+        "answer": "Normalize exact copies with documented rules, inspect shared IDs and assess near-duplicate families. Preserve a reproducible mapping of exclusions."
+      },
+      {
+        "question": "Write a document-ID overlap detector across three partitions.",
+        "answer": "Compare sets of meaningful group identifiers and return intersections. Include empty partitions and repeated IDs within a partition."
+      },
+      {
+        "question": "How would you isolate a final evaluation partition in an experiment service?",
+        "answer": "Version datasets and restrict adaptive tuning against final scores. Record configurations and avoid letting repeated test feedback become training information."
+      },
+      {
+        "question": "A system fails on documents uploaded after the benchmark period. Why?",
+        "answer": "Investigate temporal leakage and domain shift. Compare source versions, labels and preprocessing before dismissing newer examples as invalid."
+      },
+      {
+        "question": "A duplicate detector misses whitespace variants. What changes?",
+        "answer": "Add documented normalization and, where appropriate, near-duplicate checks. Avoid destroying distinctions that the actual task needs to retain."
+      },
+      {
+        "question": "How would you discuss unusually high benchmark scores responsibly?",
+        "answer": "State split units, leakage checks and baseline results first. Treat suspiciously high scores as a reason to investigate shortcuts."
+      },
+      {
+        "question": "What should accompany a portfolio evaluation dataset?",
+        "answer": "Document provenance, permitted use, grouping rules and contamination risks. Publish only authorized or synthetic examples and a reproducible evaluator."
+      }
+    ],
+    "code": "def overlap(train,validation,test):\n    a,b,c=map(set,(train,validation,test))\n    return sorted((a&b)|(a&c)|(b&c))\nassert overlap([],[],[])==[]\nprint(overlap(['a','b'],['c'],['b','d']))\n",
+    "expected": "['b']",
+    "sources": [
+      "autograd",
+      "rag"
+    ],
+    "tags": [
+      "datasets",
+      "evaluation",
+      "leakage"
+    ]
+  },
+  {
+    "slug": "neurons-and-mlp",
+    "title": "Neurons, perceptrons and MLPs",
+    "concept": "A neuron combines a weighted sum, a bias and usually an activation. A perceptron expresses a linear boundary; an MLP composes layers to learn intermediate representations. These numerical functions do not imply human-like understanding or explainability by themselves.",
+    "mechanism": "Write the input, weight and bias shapes before a forward pass. Each layer maps feature vectors to another representation. Without nonlinear activations, a stack of affine transformations remains one affine transformation, even when the implementation contains many named layers.",
+    "boundary": "Extra width and depth increase capacity and cost. First check splits, labels and preprocessing; overfitting is not solved by making the network larger.",
+    "example": "A toy two-feature network computes a dense layer and clips negative pre-activations with ReLU.",
+    "application": "Benchmark a small MLP on structured numerical features before introducing a transformer into an unrelated prediction task.",
+    "angles": [
+      {
+        "question": "What do weights and bias contribute to a neuron?",
+        "answer": "Weights scale input contributions while the bias shifts the threshold. Demonstrate with explicit numbers instead of comparing the unit to a human brain."
+      },
+      {
+        "question": "Why do stacked linear layers remain linear or affine?",
+        "answer": "Composition preserves the affine function class. A nonlinear activation between layers changes what relationships the network can represent."
+      },
+      {
+        "question": "How would you diagnose low training error and high validation error?",
+        "answer": "Inspect split quality, capacity and regularization before interpreting learned features. Compare a simpler baseline under the same preprocessing."
+      },
+      {
+        "question": "How should a batched dense layer validate shapes?",
+        "answer": "Require consistent feature widths and matching output rows and biases. Reject incompatible dimensions instead of silently truncating with zip."
+      },
+      {
+        "question": "Implement a dense layer followed by ReLU using lists.",
+        "answer": "Check dimensions, compute each weighted sum and bias, then zero negative results. Include mismatched inputs and a negative pre-activation case."
+      },
+      {
+        "question": "Where could an MLP sit inside an LLM product?",
+        "answer": "It may rank structured candidates or score numeric features. Keep its contract, evaluation and version independent from the generation component."
+      },
+      {
+        "question": "Raw currencies and small normalized frequencies enter the same layer. What matters?",
+        "answer": "Inspect feature scales and training-fitted normalization. Poor conditioning can dominate optimization before architectural capacity becomes the limiting factor."
+      },
+      {
+        "question": "A dense layer silently ignores one feature. Which implementation pattern is suspicious?",
+        "answer": "Unchecked zip stops at the shorter sequence. Validate shapes and add an explicit mismatch regression case at the boundary."
+      },
+      {
+        "question": "How would you justify an MLP baseline to a research interviewer?",
+        "answer": "Connect the hypothesis class and nonlinearities to the task. Use measured errors to justify complexity rather than assuming hidden units imply understanding."
+      },
+      {
+        "question": "What must a neural-network demo show beyond a forward pass?",
+        "answer": "Include shape checks, reproducible splits, optimization settings and held-out results. State the failure cases and what evidence would justify another architecture."
+      }
+    ],
+    "code": "def dense_relu(x,weights,biases):\n    if len(weights)!=len(biases) or any(len(row)!=len(x) for row in weights):\n        raise ValueError('shape mismatch')\n    return [max(0,sum(a*b for a,b in zip(x,row))+bias) for row,bias in zip(weights,biases)]\nassert dense_relu([0],[[1]],[-1])==[0]\nprint(dense_relu([2,-1],[[1,1],[-2,1]],[0,1]))\n",
+    "expected": "[1, 0]",
+    "sources": [
+      "autograd"
+    ],
+    "tags": [
+      "neural networks",
+      "MLP",
+      "perceptron",
+      "shapes"
+    ]
+  },
+  {
+    "slug": "activation-functions",
+    "title": "Activation functions and saturation",
+    "concept": "Activations introduce nonlinearity into a neural network. Sigmoid, tanh, ReLU and GELU differ in range and gradient behavior. Their effects depend on the architecture, objective and input distribution; naming an activation does not establish a universal accuracy or performance advantage.",
+    "mechanism": "Inspect both values and derivatives over actual pre-activation ranges. Sigmoid saturates at extreme magnitudes, reducing its derivative. ReLU zeros negative values and can create persistently inactive units. Numerical stability, initialization and feature scaling all influence the resulting learning signal.",
+    "boundary": "ReLU does not guarantee immunity to vanishing gradients, and a saturated probability is not automatically calibrated confidence.",
+    "example": "A stable sigmoid uses different equivalent expressions on positive and negative inputs, avoiding exp overflow.",
+    "application": "Inspect activation and gradient distributions when training stalls before changing the network width or learning objective.",
+    "angles": [
+      {
+        "question": "Why do hidden layers need nonlinear activations?",
+        "answer": "Without nonlinearity, repeated affine maps collapse into one. Activations expand the function class rather than merely rescaling an output."
+      },
+      {
+        "question": "How does sigmoid saturation affect backpropagation?",
+        "answer": "Its derivative becomes small at extreme pre-activations, weakening gradient flow through that path. Assess the full graph instead of blaming a single layer."
+      },
+      {
+        "question": "Can ReLU everywhere guarantee healthy gradients?",
+        "answer": "No: persistently negative pre-activations can have zero gradient. Initialization, input scales and other graph operations still affect optimization."
+      },
+      {
+        "question": "How would you compare two activations experimentally?",
+        "answer": "Control data splits, optimizer and parameter budget. Record convergence and activation distributions alongside held-out quality and hardware measurements."
+      },
+      {
+        "question": "Implement sigmoid without overflow for large negative input.",
+        "answer": "Use an equivalent negative-input branch whose exponential argument is nonpositive. Test zero and extreme values rather than only small inputs."
+      },
+      {
+        "question": "How should a service version the interpretation of output activations?",
+        "answer": "Keep logit, probability and threshold conventions with the model. Consumers must not apply sigmoid twice or interpret hidden activations as calibrated risk."
+      },
+      {
+        "question": "A hidden layer is almost always zero. What evidence is useful?",
+        "answer": "Inspect signs, feature scaling, initialization and gradient norms across batches. Distinguish temporary sparse activations from permanently inactive units."
+      },
+      {
+        "question": "Sigmoid crashes at minus one thousand. What is wrong?",
+        "answer": "The direct expression exponentiates a huge positive value. Use a stable formula and preserve extreme-value tests instead of clipping outputs after failure."
+      },
+      {
+        "question": "How would you compare GELU and ReLU in an interview?",
+        "answer": "Explain their behavior and propose a task-specific controlled benchmark. Avoid a universal quality or latency claim unsupported by measurements."
+      },
+      {
+        "question": "How should activation diagnostics appear in a project review?",
+        "answer": "Show distributions, gradient summaries and a controlled intervention. Separate supported root causes from plausible but untested explanations."
+      }
+    ],
+    "code": "import math\ndef sigmoid(x):\n    if x>=0:return 1/(1+math.exp(-x))\n    z=math.exp(x)\n    return z/(1+z)\nassert sigmoid(-1000)==0\nassert sigmoid(1000)==1\nprint(sigmoid(0))\n",
+    "expected": "0.5",
+    "sources": [
+      "autograd"
+    ],
+    "tags": [
+      "activation",
+      "ReLU",
+      "sigmoid",
+      "GELU"
+    ]
+  },
+  {
+    "slug": "gradients-backprop",
+    "title": "Gradients and backpropagation",
+    "concept": "Backpropagation computes loss derivatives through a computation graph using the chain rule. An optimizer uses those derivatives and its own state to update parameters. Automatic differentiation does not select a valid objective, fix data leakage or prove a model will generalize.",
+    "mechanism": "Run the forward computation, form a scalar loss, apply the intended accumulation policy, differentiate and update. Monitor finite values and shapes. Check a hand-derived scalar gradient with central finite differences, recognizing that this diagnostic depends on step size and floating-point precision.",
+    "boundary": "Gradient accumulation can be intentional. Detaching a tensor or crossing a nondifferentiable boundary can remove a required learning path.",
+    "example": "For prediction w*x and squared error, compare the analytic derivative with losses evaluated at small positive and negative weight perturbations.",
+    "application": "Use gradient checks for custom objectives and finite-value instrumentation when a training run stops updating or becomes unstable.",
+    "angles": [
+      {
+        "question": "What does backpropagation compute before the optimizer acts?",
+        "answer": "It computes loss derivatives with respect to graph parameters. The optimizer separately applies an update rule using those derivatives and any stored state."
+      },
+      {
+        "question": "How does the chain rule connect a loss to an early parameter?",
+        "answer": "Multiply local derivatives along dependency paths and sum contributions where paths join. Work through a scalar graph rather than memorizing disconnected formulas."
+      },
+      {
+        "question": "When is gradient accumulation intentional?",
+        "answer": "Several microbatches can form an effective batch with consistent loss scaling. Reset at the documented optimizer boundary instead of every arbitrary backward call."
+      },
+      {
+        "question": "How would you verify a custom derivative before training?",
+        "answer": "Compare analytic and central finite-difference values on small examples, vary perturbation size and use tolerances. Investigate disagreement before scaling up."
+      },
+      {
+        "question": "Differentiate squared error for prediction w times x.",
+        "answer": "The derivative is twice the residual times x. Compare the formula against symmetric perturbations and test multiple target and input combinations."
+      },
+      {
+        "question": "Which checkpoint state is needed for reliable training resumption?",
+        "answer": "Keep model, optimizer, scheduler and sampling states with step and configuration. Parameters alone do not reproduce the same optimization trajectory."
+      },
+      {
+        "question": "Loss becomes NaN after one batch. What do you inspect?",
+        "answer": "Locate the first nonfinite input, activation, loss or gradient. Preserve the failing batch and test arithmetic and update scale before restarting blindly."
+      },
+      {
+        "question": "A parameter affects the forward value but has no gradient. Why?",
+        "answer": "Inspect detach operations, gradient-tracking settings and graph construction. Distinguish a missing dependency path from a legitimate zero derivative at one input."
+      },
+      {
+        "question": "How would you explain a failed training experiment in an interview?",
+        "answer": "Present the reproducible symptom and controlled hypotheses with gradient evidence. Do not label an untested architecture change as a proven root-cause fix."
+      },
+      {
+        "question": "What makes a custom-loss project technically convincing?",
+        "answer": "Provide the objective contract, derivative reasoning, numerical checks and boundaries. Include diagnosed failures without claiming the tiny exercise validates production training."
+      }
+    ],
+    "code": "def loss(w,x,y):return (w*x-y)**2\nw,x,y,eps=2.0,3.0,4.0,1e-5\nanalytic=2*(w*x-y)*x\nnumeric=(loss(w+eps,x,y)-loss(w-eps,x,y))/(2*eps)\nassert abs(analytic-numeric)<1e-6\nprint(round(analytic,1))\n",
+    "expected": "12.0",
+    "sources": [
+      "autograd"
+    ],
+    "tags": [
+      "backpropagation",
+      "gradients",
+      "optimization"
+    ]
+  },
+  {
+    "slug": "nlp-tokenization",
+    "title": "NLP, tokens and tokenization",
+    "concept": "Tokenizers encode text into model-specific discrete units. A token is not necessarily a word, character or fixed byte count. Subword boundaries vary with vocabulary, script, punctuation and tokenizer version. The tokenizer is part of the model contract, not an interchangeable display utility.",
+    "mechanism": "Count the exact serialized prompt, including role delimiters and special tokens, with a compatible tokenizer. Reserve output capacity and preserve offsets when normalizing or segmenting documents. Character or byte heuristics can illustrate encoding behavior but cannot guarantee an LLM token budget.",
+    "boundary": "Changing token IDs changes their learned embedding meanings. Multilingual inputs can violate English-derived token heuristics even when their character count seems small.",
+    "example": "A synthetic accented string illustrates different Python character and UTF-8 byte counts; neither value is labeled as an actual LLM token count.",
+    "application": "Budget multilingual prompts and maintain traceable document offsets for extraction, retrieval and source citations.",
+    "angles": [
+      {
+        "question": "Why is a token not simply a word?",
+        "answer": "Boundaries follow a particular encoding scheme. Words can split into multiple units, while whitespace and punctuation can contribute tokens of their own."
+      },
+      {
+        "question": "What belongs in the complete input-and-output budget?",
+        "answer": "Include serialized messages, delimiters, retrieved text and reserved generation. Count with the matching tokenizer before accepting the request."
+      },
+      {
+        "question": "Why can a vocabulary change invalidate an existing checkpoint?",
+        "answer": "Token IDs index learned embedding and output rows. Reordered or changed vocabularies alter those meanings even if the model weights themselves are unchanged."
+      },
+      {
+        "question": "How would you preserve citations across text normalization?",
+        "answer": "Carry stable document IDs and offset mappings through each transformation. Do not point into original text using offsets from a different normalized representation."
+      },
+      {
+        "question": "Return character and UTF-8 byte counts for a string.",
+        "answer": "Compare Python string length with encoded byte length using multibyte text. Explicitly state that neither count is a production token estimator."
+      },
+      {
+        "question": "Where should tokenizer compatibility be enforced?",
+        "answer": "Version tokenizer and prompt format with the model, and validate budgets at the service boundary. Silent downstream truncation changes the task."
+      },
+      {
+        "question": "A non-English prompt exceeds a limit despite an English estimate. What changes?",
+        "answer": "Replace the heuristic with exact model-tokenizer counting. Test representative scripts and allocate evidence and output budgets explicitly."
+      },
+      {
+        "question": "Citations shift after whitespace cleanup. What should be debugged?",
+        "answer": "Trace normalization and chunk-offset transformations. Restore a mapping to original sections or use stable structural references instead of incompatible offsets."
+      },
+      {
+        "question": "How would you discuss context limits in an engineering interview?",
+        "answer": "Describe what is counted, prioritized, summarized or rejected. Explain how budget decisions affect evidence coverage and are validated."
+      },
+      {
+        "question": "What should a multilingual budget project demonstrate?",
+        "answer": "Include varied scripts, exact tokenizer versions, round-trip checks and boundary behavior. Do not generalize from a few examples to every language."
+      }
+    ],
+    "code": "def sizes(text):return len(text),len(text.encode('utf-8'))\nassert sizes('')==(0,0)\nassert sizes('AI')==(2,2)\nprint(sizes('café'))\n",
+    "expected": "(4, 5)",
+    "sources": [
+      "generation"
+    ],
+    "tags": [
+      "NLP",
+      "tokenization",
+      "Unicode",
+      "context budgets"
+    ]
+  },
+  {
+    "slug": "embeddings-vectors",
+    "title": "Embeddings and vector representations",
+    "concept": "Embeddings represent items as numeric vectors learned for a task. Similarity can propose retrieval candidates, but it does not certify truth, permission or equivalence. Meaningful scores depend on model compatibility, preprocessing, normalization and the chosen distance function.",
+    "mechanism": "Encode documents and queries in compatible spaces, validate dimensions and evaluate relevance on labeled examples. Cosine divides the dot product by norms, so zero vectors require a policy. Keep source versions and access metadata beside vectors rather than relying on geometry to encode permissions.",
+    "boundary": "Mixing old document embeddings with a new query model can return plausible-looking numbers with meaningless rankings. Index migrations need evaluation and rollback.",
+    "example": "A two-dimensional toy search compares identical, orthogonal and zero vectors using an explicit cosine implementation.",
+    "application": "Retrieve candidate evidence semantically, then enforce authorization, freshness and support checks before generating text.",
+    "angles": [
+      {
+        "question": "What does embedding similarity capture rather than guarantee?",
+        "answer": "It captures learned relationships useful to an objective. It is neither a truth certificate nor an authorization decision and must be assessed with relevance examples."
+      },
+      {
+        "question": "Why can dot product and cosine produce different rankings?",
+        "answer": "Dot product includes magnitude; cosine normalizes it. Choose according to the embedding model contract and validate on task-specific relevance data."
+      },
+      {
+        "question": "When can a high similarity score be operationally wrong?",
+        "answer": "A topically similar passage may be stale, contradictory or unauthorized. Separate semantic relevance from source authority and the user's access rights."
+      },
+      {
+        "question": "How would you migrate embedding models safely?",
+        "answer": "Build a versioned new index, encode compatible queries and run the same relevance benchmark. Switch through a measured rollout with rollback available."
+      },
+      {
+        "question": "Implement cosine similarity with zero-vector handling.",
+        "answer": "Check dimensions, calculate dot product and norms, and define the zero-norm result. Test identical, orthogonal, zero and mismatched inputs."
+      },
+      {
+        "question": "What metadata must accompany a stored embedding?",
+        "answer": "Retain chunk ID, source version, model version, access rules and freshness information. A numeric vector alone cannot support auditing or safe serving."
+      },
+      {
+        "question": "A domain acronym retrieves irrelevant documents. What alternative helps?",
+        "answer": "Test lexical or hybrid retrieval on exact-identifier examples. Inspect chunking and vocabulary behavior instead of assuming embeddings encode every acronym correctly."
+      },
+      {
+        "question": "Rankings become arbitrary after a model upgrade. What is the first check?",
+        "answer": "Verify query/document embedding versions, dimensions and normalization. A successful database call does not establish representation compatibility."
+      },
+      {
+        "question": "How would you justify a similarity threshold to an interviewer?",
+        "answer": "Show positive and negative relevance distributions and explain miss costs versus unsupported context. Do not copy a universal threshold from another model."
+      },
+      {
+        "question": "What should an embedding-search portfolio report disclose?",
+        "answer": "Document corpus permission, relevance labels, model versions and failures. Distinguish retrieval quality from downstream grounded-answer quality."
+      }
+    ],
+    "code": "import math\ndef cosine(a,b):\n    if len(a)!=len(b):raise ValueError('dimensions')\n    denominator=math.sqrt(sum(x*x for x in a)*sum(y*y for y in b))\n    return sum(x*y for x,y in zip(a,b))/denominator if denominator else 0.0\nassert cosine([0,0],[1,2])==0\nassert cosine([1,0],[0,1])==0\nprint(round(cosine([1,1],[1,1]),3))\n",
+    "expected": "1.0",
+    "sources": [
+      "rag",
+      "generation"
+    ],
+    "tags": [
+      "embeddings",
+      "vectors",
+      "cosine",
+      "semantic search"
+    ]
+  },
+  {
+    "slug": "probability-next-token",
+    "title": "Probability and next-token prediction",
+    "concept": "An autoregressive language model predicts a distribution over the next token given context. Training loss and the later decoding policy are distinct. A likely token continuation can be fluent while its resulting claim remains unsupported by the permitted evidence.",
+    "mechanism": "Normalize logits with a stable softmax by subtracting their maximum before exponentiation. Compare observed targets with the distribution using a suitable loss. Distinguish changes to the model from changes to sampling, and assess final task outcomes in addition to held-out token prediction.",
+    "boundary": "Lower perplexity alone does not prove a factual assistant is safer or more useful. Token likelihood is not a direct confidence estimate for a real-world assertion.",
+    "example": "A synthetic vocabulary demonstrates stable normalization for large logits and invariance under a common additive shift.",
+    "application": "Use probability calculations to reason about generation while evaluating evidence support and user-task success separately.",
+    "angles": [
+      {
+        "question": "What event is predicted in next-token modeling?",
+        "answer": "The model predicts a vocabulary token conditioned on its prefix. It does not directly estimate the truth of every complete statement it may generate."
+      },
+      {
+        "question": "Why subtract the largest logit before softmax?",
+        "answer": "A common shift leaves the distribution unchanged while avoiding unnecessary exponential overflow. Normalize shifted exponentials and validate extreme inputs."
+      },
+      {
+        "question": "Why might lower perplexity fail to improve factual Q&A?",
+        "answer": "The metric measures token prediction under a dataset distribution. Retrieval coverage, abstention and factual support require separate product-level evaluation."
+      },
+      {
+        "question": "How would you validate a custom token scorer?",
+        "answer": "Check normalization, finite values, boundary inputs and agreement with a trusted implementation. Evaluate on held-out data rather than preferred demonstration outputs."
+      },
+      {
+        "question": "Implement stable softmax for logits near one thousand.",
+        "answer": "Reject invalid inputs, subtract the maximum and normalize exponentials. Verify common-shift invariance and that probabilities sum to one within tolerance."
+      },
+      {
+        "question": "Where should token scores be separated from user confidence?",
+        "answer": "Treat raw likelihood as a technical signal. Any user-facing confidence label needs task-specific calibration against outcomes instead of a direct score conversion."
+      },
+      {
+        "question": "A model confidently completes a wrong policy statement. What should happen?",
+        "answer": "Check authoritative evidence and correct or abstain when support is missing. High sequence likelihood cannot override the source or an application permission."
+      },
+      {
+        "question": "Softmax returns NaN for large logits. What is suspicious?",
+        "answer": "Inspect exponential overflow and nonfinite inputs. Stabilize normalization and add extreme-value regression cases rather than clipping probabilities afterward."
+      },
+      {
+        "question": "How would you explain probabilistic generation to a product interviewer?",
+        "answer": "Separate the conditional distribution from the decoding choice and give a concrete failure example. Avoid equating the most likely completion with factual certainty."
+      },
+      {
+        "question": "What should a toy scoring notebook claim?",
+        "answer": "Demonstrate stable mathematics and a clear vocabulary contract. Do not present it as training or evaluating a production-scale foundation model."
+      }
+    ],
+    "code": "import math\ndef softmax(xs):\n    if not xs or not all(math.isfinite(x) for x in xs):raise ValueError('logits')\n    values=[math.exp(x-max(xs)) for x in xs]\n    return [x/sum(values) for x in values]\na=softmax([1000,1001,1002])\nassert abs(sum(a)-1)<1e-12\nassert all(abs(x-y)<1e-12 for x,y in zip(a,softmax([0,1,2])))\nprint([round(x,4) for x in a])\n",
+    "expected": "[0.09, 0.2447, 0.6652]",
+    "sources": [
+      "generation",
+      "attention"
+    ],
+    "tags": [
+      "probability",
+      "softmax",
+      "language models",
+      "loss"
+    ]
+  },
+  {
+    "slug": "hallucinations-and-limits",
+    "title": "GPT-style models, hallucinations and limits",
+    "concept": "GPT-style generation can produce unsupported or incorrect content that remains persuasive. Grounding, validation and abstention reduce particular failure modes but do not guarantee universal correctness. A citation must correspond to accessible evidence that actually supports the relevant claim.",
+    "mechanism": "Separate source availability, retrieval relevance, evidence coverage and answer faithfulness. Test missing, stale and conflicting evidence. Validate source IDs deterministically and evaluate semantic support separately; a valid-looking reference can still be attached to an unsupported assertion.",
+    "boundary": "A refusal policy can fail too. Measure unnecessary refusals alongside unsupported answers instead of declaring a system fully truthful after a few successful examples.",
+    "example": "A synthetic policy answer is checked against an allowed document-ID set. This identity check is explicitly not a proof of semantic entailment.",
+    "application": "Offer evidence-grounded assistance with a clear escalation or abstention path for missing and contradictory information.",
+    "angles": [
+      {
+        "question": "How does an unsupported answer differ from an outdated one?",
+        "answer": "An unsupported claim lacks permitted evidence; an outdated answer may rely on once-correct evidence that no longer applies. Both require a source and time boundary."
+      },
+      {
+        "question": "How do you distinguish retrieval failure from generation failure?",
+        "answer": "First inspect whether supporting evidence existed and was retrieved. Correct evidence followed by an unsupported answer needs a different repair from missing evidence."
+      },
+      {
+        "question": "Do citations eliminate hallucinations?",
+        "answer": "No: a citation can be nonexistent, irrelevant or misattached. Validate identity and access, then assess whether evidence supports each important claim."
+      },
+      {
+        "question": "How would you implement insufficient-evidence handling?",
+        "answer": "Define the support contract, detect gaps or conflicts and return a limited answer or escalation. Test false refusals as well as unsupported completions."
+      },
+      {
+        "question": "Reject citations outside a supplied evidence set.",
+        "answer": "Compare identifiers deterministically and return unknown references. State clearly that allowed IDs alone do not establish that an answer follows from their content."
+      },
+      {
+        "question": "Where should hallucination controls sit in a system?",
+        "answer": "Check retrieval before generation and important claims afterward. Keep consequential actions behind independent validation and appropriate human review."
+      },
+      {
+        "question": "Two authorized policy sources disagree. What should the assistant do?",
+        "answer": "Expose the conflict and source versions, then apply the documented authority or escalation rule. Do not invent certainty by selecting convenient text."
+      },
+      {
+        "question": "A benchmark reports zero hallucinations on ten easy queries. What is missing?",
+        "answer": "Add missing-evidence, contradiction and adversarial cases and report sampling limits. A narrow benchmark cannot establish universal reliability."
+      },
+      {
+        "question": "How would you answer a claim that an LLM can be made fully truthful?",
+        "answer": "Reject an absolute guarantee and propose bounded controls with measurable failure categories. Distinguish improved reliability from impossible-to-fail behavior."
+      },
+      {
+        "question": "What should a grounded-assistant capstone demonstrate?",
+        "answer": "Use an authorized corpus, supported and unsupported queries, citation checks and abstention tests. Present residual failures without inventing client outcomes."
+      }
+    ],
+    "code": "def unknown_citations(cited,evidence):\n    return sorted(set(cited)-set(evidence))\nassert unknown_citations([],['a'])==[]\nprint(unknown_citations(['a','x','x'],['a','b']))\n",
+    "expected": "['x']",
+    "sources": [
+      "rag",
+      "generation",
+      "owasp"
+    ],
+    "tags": [
+      "GPT",
+      "hallucinations",
+      "grounding",
+      "abstention"
+    ]
+  }
+]

@@ -1,0 +1,1915 @@
+{
+  "slug": "prompt-engineering",
+  "name": "Prompt Engineering",
+  "focus": "prompt engineering",
+  "track": "ai",
+  "tools": [
+    "Python",
+    "LLM APIs",
+    "Jupyter",
+    "Git",
+    "REST APIs",
+    "vector search"
+  ],
+  "projects": [
+    {
+      "name": "prompt engineering: Foundations case study",
+      "description": "Investigate a focused prompt engineering scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated prompt engineering use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable prompt engineering artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "AI problem framing",
+        "prompt and context design",
+        "retrieval workflows"
+      ]
+    },
+    {
+      "name": "prompt engineering: Applied workflow",
+      "description": "Build a small, end-to-end prompt engineering workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated prompt engineering use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable prompt engineering artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "AI problem framing",
+        "prompt and context design",
+        "retrieval workflows"
+      ]
+    },
+    {
+      "name": "prompt engineering: Portfolio capstone",
+      "description": "Deliver and explain a complete prompt engineering capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated prompt engineering use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable prompt engineering artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "AI problem framing",
+        "prompt and context design",
+        "retrieval workflows"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "prompt-engineering",
+  "levels": [
+    {
+      "level": 1,
+      "title": "AI foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "prompt-engineering:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "What Prompt Engineering Is and How LLMs Read Prompts",
+            "module": "How LLMs read prompts",
+            "level": "Beginner",
+            "objectives": [
+              "Define prompt engineering and explain why it matters for products built on LLMs.",
+              "Explain how text is split into tokens before a model processes it.",
+              "Describe next-token prediction and why the prompt conditions every generated token.",
+              "Estimate the token count of a prompt and reason about cost and limits.",
+              "Answer foundational interview questions on prompts, tokens and model behaviour."
+            ],
+            "definition": "Prompt engineering is the practice of designing, testing and refining the input given to a large language model (LLM) so that it reliably produces useful, correct and well-formatted output. An LLM never sees words directly: the prompt is split into tokens, converted to numbers, and the model predicts the most suitable next token again and again, each time conditioned on the prompt and everything generated so far.",
+            "theory": [
+              {
+                "heading": "What prompt engineering is (and is not)",
+                "body": "A prompt is everything the model receives for a request: system instructions, the user's message, examples, retrieved documents and conversation history. Prompt engineering is the discipline of shaping that input deliberately and measuring the result. It is not a bag of magic phrases. In production it looks like software engineering: you write a specification for the model, test it on many inputs, version it and monitor it.",
+                "points": [
+                  "Goal: reliable behaviour across many inputs, not one impressive answer.",
+                  "Levers: instructions, context, examples, output format, sampling settings.",
+                  "It is usually the cheapest and fastest way to change model behaviour, before retrieval (RAG) or fine-tuning."
+                ]
+              },
+              {
+                "heading": "Tokens: the unit the model actually reads",
+                "body": "A tokenizer splits text into tokens using a fixed vocabulary learned from data, typically with byte-pair encoding (BPE) or a similar sub-word method. Common English words are often a single token, rare words are split into several pieces, and spaces and punctuation are part of tokens. A rough rule for English is about four characters, or three-quarters of a word, per token. Text in Hindi, Tamil or other scripts that were less common in the tokenizer's training data usually needs noticeably more tokens for the same meaning.",
+                "points": [
+                  "Each token maps to an integer ID; the model works on these IDs, not on letters.",
+                  "Pricing, context limits and output limits are all measured in tokens.",
+                  "Tokenization explains odd failures such as miscounting letters in a word or struggling with reversed strings.",
+                  "Different model families use different tokenizers, so counts differ between providers."
+                ]
+              },
+              {
+                "heading": "How a model turns a prompt into an answer",
+                "body": "An LLM is trained to predict the next token. At inference time it reads all prompt tokens, computes a probability distribution over the whole vocabulary for the next token, picks one (according to the sampling settings), appends it and repeats until it emits a stop token or reaches the output limit. Because each new token depends on every token before it, the prompt steers the entire answer: the instructions, the examples and even the first words of the response all change what comes next.",
+                "points": [
+                  "Autoregressive: output is generated one token at a time, left to right.",
+                  "The model has no memory between API calls; the application resends history each time.",
+                  "Chat models are base models further trained to follow instructions and conversation roles."
+                ]
+              },
+              {
+                "heading": "Why prompts matter in real systems",
+                "body": "The same model can be a poor or an excellent component depending on its prompt. A vague request produces generic, variable answers; a precise request with context, constraints and an output format produces answers that downstream code can parse and users can trust. Because every token costs money and latency, good prompts are also efficient: they include what the model needs and leave out what it does not.",
+                "points": [
+                  "Quality: clearer prompts reduce ambiguity and hallucination.",
+                  "Consistency: explicit formats make output machine-readable.",
+                  "Cost and latency: fewer, better-chosen tokens are cheaper and faster."
+                ]
+              },
+              {
+                "heading": "Limitations to keep in mind",
+                "body": "Prompting cannot teach a model knowledge it does not have, guarantee correctness, or make a probabilistic system fully deterministic. Small wording changes can shift results, and a prompt tuned for one model may behave differently on another. That is why prompt engineering always pairs with evaluation, which this course covers from Day 20 onwards.",
+                "points": [
+                  "Knowledge gaps need retrieval or tools, not cleverer wording.",
+                  "Outputs vary between runs and model versions.",
+                  "Prompts must be tested on representative data, not a single example."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Counting tokens with a real tokenizer",
+              "body": "OpenAI's open-source tiktoken library exposes the tokenizers used by its models. Encoding a short sentence shows that the token count is not the word count, and that rare words split into several pieces. Other providers offer token-counting endpoints in their SDKs for the same purpose.",
+              "code": {
+                "language": "python",
+                "source": "import tiktoken  # pip install tiktoken\n\nenc = tiktoken.get_encoding(\"o200k_base\")\ntext = \"Summarise this email in 3 bullet points.\"\nids = enc.encode(text)\nprint(len(text.split()), \"words\")\nprint(len(ids), \"tokens\")\nprint([enc.decode([i]) for i in ids])\n# The pieces show leading spaces attached to words, e.g. ' email'"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Customer support assistants",
+                "description": "Prompts define tone, policy limits and escalation rules so a chat assistant answers consistently for every customer."
+              },
+              {
+                "title": "Document processing",
+                "description": "Prompts turn invoices, resumes or contracts into structured fields without training a custom model."
+              },
+              {
+                "title": "Developer tools",
+                "description": "Code assistants rely on carefully assembled prompts containing the open file, related code and the user's instruction."
+              },
+              {
+                "title": "Budgeting and capacity planning",
+                "description": "Token estimates per request drive monthly cost forecasts and decide whether long documents need chunking."
+              }
+            ],
+            "demonstration": {
+              "description": "Send a vague prompt and a specific prompt to the same chat model. The model, data and settings are identical; only the prompt changes, and so does the usefulness of the output.",
+              "code": {
+                "language": "text",
+                "source": "Vague:    Tell me about this ticket.\nSpecific: You are a support analyst. Read the ticket below and reply with three lines:\n          Category: one of billing, technical, account\n          Urgency: low, medium or high\n          Summary: one sentence under 20 words\n          Ticket: \"I was charged twice for my March plan and need a refund before the 5th.\""
+              },
+              "output": "Vague    -> a loose paragraph restating the ticket, different in length and structure on every run.\nSpecific -> Category: billing\n            Urgency: high\n            Summary: Customer was double-charged for March and needs a refund before the 5th."
+            },
+            "takeaways": [
+              "Prompt engineering is designing and testing model input for reliable, useful output.",
+              "Models read tokens, not words; roughly four English characters per token.",
+              "Generation is next-token prediction, so the whole prompt conditions every output token.",
+              "Cost, latency and context limits are all counted in tokens.",
+              "Prompting cannot add missing knowledge or guarantee correctness; evaluation is essential.",
+              "The same prompt can behave differently across models, so test when you switch."
+            ],
+            "interview": [
+              {
+                "question": "What is prompt engineering?",
+                "answer": "It is the practice of designing, testing and refining the input to an LLM, including instructions, context, examples and output format, so the model produces reliable, useful output for a task.",
+                "explanation": "Strong answers stress reliability across many inputs and mention testing, rather than describing it as finding magic words."
+              },
+              {
+                "question": "What is a token, and why should a prompt engineer care?",
+                "answer": "A token is a sub-word unit produced by the model's tokenizer; the model reads and generates tokens. Context limits, pricing and output limits are all measured in tokens, so token count drives cost, latency and how much context fits.",
+                "explanation": "Mention the rough four-characters-per-token rule for English and that non-English scripts often need more tokens."
+              },
+              {
+                "question": "Why does an LLM sometimes fail to count the letters in a word?",
+                "answer": "The model sees tokens, not individual characters. A word like 'strawberry' may be one or a few tokens, so character-level facts are not directly visible and must be inferred.",
+                "explanation": "This shows you understand tokenization as a cause of failure. A good follow-up is that asking the model to spell the word out or to use a code tool fixes it."
+              },
+              {
+                "question": "How does an LLM generate a response from a prompt?",
+                "answer": "It processes the prompt tokens, predicts a probability distribution for the next token, selects one using the sampling settings, appends it and repeats until a stop condition. Each token is conditioned on the prompt and all previous output.",
+                "explanation": "Use the word autoregressive and link it to why the beginning of a prompt and of the response strongly shape the rest."
+              },
+              {
+                "question": "When is prompt engineering not enough, and what would you use instead?",
+                "answer": "When the model lacks the knowledge (use retrieval or tools), when the task needs a consistent style or format that prompts cannot hold at scale (consider fine-tuning), or when the base capability is too weak (use a stronger model).",
+                "explanation": "Interviewers want the escalation ladder: prompt first, then RAG or tools, then fine-tuning, chosen by the type of failure."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Estimate prompt tokens against a budget",
+              "difficulty": "Basic",
+              "objective": "Practise thinking in tokens rather than words by implementing a simple, deterministic token estimator and a budget check.",
+              "statement": "Real tokenizers are learned, but a useful approximation is: split the text into pieces, where a piece is either a run of ASCII letters and digits or a single other non-space character (punctuation, symbols). A letter/digit run of length L costs ceil(L / 4) tokens; every other piece costs 1 token. Read a token budget and a prompt, then report the number of pieces, the estimated tokens and whether the prompt fits.",
+              "language": "python",
+              "input_format": "First line: an integer budget B. All remaining lines (possibly none) form the prompt text, joined by newlines.",
+              "output_format": "Four lines:\nPieces: <p>\nTokens: <t>\nBudget: <B>\nStatus: FITS, <B - t> left   (when t <= B)\nStatus: OVER by <t - B>      (when t > B)",
+              "example": {
+                "input": "20\nSummarise this email in 3 bullet points.\n",
+                "output": "Pieces: 8\nTokens: 13\nBudget: 20\nStatus: FITS, 7 left"
+              },
+              "constraints": [
+                "0 <= B <= 1000000.",
+                "Whitespace (spaces, tabs, newlines) separates pieces and costs nothing.",
+                "Letter/digit runs use only A-Z, a-z and 0-9."
+              ],
+              "starter": "import sys, re, math\n\nlines = sys.stdin.read().split('\\n')\nbudget = int(lines[0])\ntext = '\\n'.join(lines[1:])\n\n# TODO: split text into pieces, estimate tokens, print the four lines\n",
+              "solution": "import sys, re, math\n\nlines = sys.stdin.read().split('\\n')\nbudget = int(lines[0])\ntext = '\\n'.join(lines[1:])\n\npieces = re.findall(r'[A-Za-z0-9]+|[^A-Za-z0-9\\s]', text)\ntokens = 0\nfor p in pieces:\n    if p[0].isascii() and p[0].isalnum():\n        tokens += math.ceil(len(p) / 4)\n    else:\n        tokens += 1\n\nprint(f'Pieces: {len(pieces)}')\nprint(f'Tokens: {tokens}')\nprint(f'Budget: {budget}')\nif tokens <= budget:\n    print(f'Status: FITS, {budget - tokens} left')\nelse:\n    print(f'Status: OVER by {tokens - budget}')\n",
+              "explanation": [
+                "Read everything, take the first line as the budget and rejoin the rest as the prompt text.",
+                "Use one regular expression with two alternatives: a run of ASCII letters/digits, or any single non-space character.",
+                "Charge ceil(len / 4) for word-like pieces, mirroring the four-characters-per-token rule, and 1 for punctuation.",
+                "Compare the total with the budget and print how much room is left or how far over the prompt is."
+              ],
+              "tests": [
+                {
+                  "input": "20\nSummarise this email in 3 bullet points.\n",
+                  "output": "Pieces: 8\nTokens: 13\nBudget: 20\nStatus: FITS, 7 left"
+                },
+                {
+                  "input": "5\nHello, world!\n",
+                  "output": "Pieces: 4\nTokens: 6\nBudget: 5\nStatus: OVER by 1"
+                },
+                {
+                  "input": "10\n",
+                  "output": "Pieces: 0\nTokens: 0\nBudget: 10\nStatus: FITS, 10 left"
+                },
+                {
+                  "input": "12\ndef add(a, b):\n    return a + b\n",
+                  "output": "Pieces: 12\nTokens: 13\nBudget: 12\nStatus: OVER by 1"
+                },
+                {
+                  "input": "13\nSummarise this email in 3 bullet points.\n",
+                  "output": "Pieces: 8\nTokens: 13\nBudget: 13\nStatus: FITS, 0 left"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "What does an LLM actually process when it reads a prompt?",
+                "options": [
+                  "Token IDs produced by a tokenizer",
+                  "Individual characters only",
+                  "Grammar trees built from the text",
+                  "Whole sentences"
+                ],
+                "answer": 0,
+                "explanation": "The tokenizer converts text into sub-word tokens mapped to integer IDs, and the model operates on those IDs."
+              },
+              {
+                "type": "concept",
+                "question": "Roughly how many characters of English text make up one token on average?",
+                "options": [
+                  "Twenty",
+                  "About four",
+                  "One",
+                  "Ten"
+                ],
+                "answer": 1,
+                "explanation": "A common rule of thumb is about four characters (roughly three-quarters of a word) per token for English. It varies by tokenizer and language."
+              },
+              {
+                "type": "scenario",
+                "question": "The same paragraph translated into Hindi costs noticeably more to process than the English version. What is the most likely reason?",
+                "options": [
+                  "Hindi prompts always use a larger model",
+                  "The Hindi text is split into more tokens by the tokenizer",
+                  "Providers charge extra for non-English languages",
+                  "The model translates the text to English first"
+                ],
+                "answer": 1,
+                "explanation": "Tokenizers trained mostly on English represent other scripts less efficiently, so the same meaning takes more tokens, and billing is per token."
+              },
+              {
+                "type": "concept",
+                "question": "Why does the beginning of a prompt influence the entire response?",
+                "options": [
+                  "The model reads only the first sentence",
+                  "The model stores the prompt permanently in its weights",
+                  "Each generated token is predicted conditioned on all earlier tokens",
+                  "Providers cache only the first line"
+                ],
+                "answer": 2,
+                "explanation": "Generation is autoregressive: every next token depends on the prompt and all output generated so far."
+              },
+              {
+                "type": "scenario",
+                "question": "A model keeps giving outdated answers about your company's new refund policy. Which fix addresses the root cause?",
+                "options": [
+                  "Provide the current policy text in the prompt or via retrieval",
+                  "Ask the model to try harder",
+                  "Reduce the maximum output tokens",
+                  "Increase the temperature"
+                ],
+                "answer": 0,
+                "explanation": "The model lacks the knowledge. Supplying the policy as context (or with RAG) fixes the gap; wording tricks cannot add missing facts."
+              }
+            ]
+          }
+        },
+        {
+          "id": "prompt-engineering:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "Context Windows, Token Budgets and Conversation Memory",
+            "module": "How LLMs read prompts",
+            "level": "Beginner",
+            "objectives": [
+              "Explain what a context window is and how input and output share it.",
+              "Describe why chat models appear to remember and how history is actually resent.",
+              "Plan a token budget for system prompt, history, retrieved context and output.",
+              "Compare truncation, summarisation and retrieval as strategies for long conversations.",
+              "Explain the 'lost in the middle' effect and how prompt layout addresses it."
+            ],
+            "definition": "A context window is the maximum number of tokens a model can consider in one request, counting the system prompt, conversation history, any documents or examples, and the tokens it generates in reply. Anything outside the window is invisible to the model, so applications must decide what to include, what to compress and what to leave out.",
+            "theory": [
+              {
+                "heading": "What the context window contains",
+                "body": "Every request is assembled fresh by the application. A typical chat request contains a system prompt, the earlier turns of the conversation, any retrieved documents or tool results, the new user message and room for the answer. Model APIs are stateless: the model does not keep yesterday's chat in memory. The application resends whatever history it wants the model to see, so 'memory' is really a prompt-assembly decision.",
+                "points": [
+                  "Input tokens + output tokens must fit within the window.",
+                  "A separate max output setting caps how long the answer may be.",
+                  "If a request is too long, the API either rejects it or the application must trim it first."
+                ]
+              },
+              {
+                "heading": "Why bigger windows do not solve everything",
+                "body": "Modern models accept anywhere from tens of thousands to over a million tokens, but filling the window has costs. You pay for every input token on every call, latency rises with prompt length, and models do not use all positions equally well. Research such as 'Lost in the Middle' (Liu et al., 2023) found that models retrieve facts placed at the start or end of a long context more reliably than facts buried in the middle.",
+                "points": [
+                  "Cost: long history is billed again on every turn.",
+                  "Latency: more input tokens means a slower time to first token.",
+                  "Attention dilution: irrelevant text can distract the model and lower accuracy.",
+                  "Place key instructions and the question where the model attends well, typically at the start and the end."
+                ]
+              },
+              {
+                "heading": "Budgeting tokens",
+                "body": "Treat the window like a budget with reserved slices. Reserve the output first (for example 1,000 tokens), keep the system prompt fixed, then share the rest between recent history and retrieved context. When the total would overflow, a policy decides what to drop. Writing this policy down is part of designing the prompt, not an afterthought.",
+                "points": [
+                  "Fixed: system prompt and output reservation.",
+                  "Variable: history, retrieved chunks, tool outputs.",
+                  "Always keep the system prompt and the latest user message."
+                ]
+              },
+              {
+                "heading": "Strategies for long conversations and documents",
+                "body": "Three common strategies keep requests inside the budget. A sliding window keeps only the most recent turns. Summarisation replaces old turns with a short running summary written by the model. Retrieval stores past turns or documents outside the prompt and fetches only the relevant pieces for each new question. Production assistants often combine them: a summary of older turns, the last few turns verbatim and retrieved facts.",
+                "points": [
+                  "Sliding window: simple and cheap, but forgets early facts such as the user's name.",
+                  "Running summary: preserves gist, but loses detail and can introduce errors.",
+                  "Retrieval memory: scales well, but depends on search quality."
+                ]
+              },
+              {
+                "heading": "Related concepts",
+                "body": "Prompt caching lets providers reuse the processed form of an unchanged prompt prefix, reducing cost and latency for long, repeated system prompts (Day 26). Chunking splits long documents to fit retrieval systems (Day 18). Output limits matter too: if the answer is cut off by the maximum output setting, the API reports a length stop reason and the text is incomplete.",
+                "points": [
+                  "Check the stop or finish reason to detect truncated answers.",
+                  "Stable prefixes first and variable content last makes caching effective."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Budgeting a support-bot request",
+              "body": "A support bot runs on a model with a 32,000-token window. The team reserves 1,000 tokens for the answer and 1,500 for the system prompt, leaves up to 6,000 tokens for retrieved help-centre articles and gives the remaining room to history. When a long chat exceeds the budget, the oldest turns are replaced by a summary, but the system prompt and the newest user message are never dropped.",
+              "code": {
+                "language": "python",
+                "source": "WINDOW = 32_000\nreserve_output = 1_000\nsystem_prompt = 1_500\nretrieved = 6_000\nhistory_budget = WINDOW - reserve_output - system_prompt - retrieved\nprint(history_budget)  # 23500 tokens available for conversation history"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Multi-turn chat assistants",
+                "description": "Sliding windows plus a running summary keep long customer conversations within budget without losing key facts."
+              },
+              {
+                "title": "Long-document question answering",
+                "description": "Contracts or policy manuals are chunked and only relevant sections are placed in the window."
+              },
+              {
+                "title": "Coding assistants",
+                "description": "Tools pick the open file, related definitions and recent edits rather than the whole repository."
+              },
+              {
+                "title": "Cost control",
+                "description": "Trimming history and capping output length directly reduces per-request token spend."
+              }
+            ],
+            "demonstration": {
+              "description": "A sliding-window trimmer keeps the system message and then walks backwards from the newest message, adding turns while they fit. The newest turns survive; the oldest are dropped first.",
+              "code": {
+                "language": "text",
+                "source": "Budget: 20 tokens (cost = words + 2 per message)\nsystem: You are a helpful tutor.            -> 7\nuser: What is a token?                      -> 6\nassistant: A sub-word unit the model reads. -> 8\nuser: And a context window?                 -> 6"
+              },
+              "output": "Kept: system (7) + latest user (6) = 13 tokens.\nAdding the assistant turn would make 21 > 20, so it and everything older are dropped.\nThe model now cannot see the earlier answer, which is why summaries or retrieval are often added."
+            },
+            "takeaways": [
+              "The context window holds input and output together; both are counted in tokens.",
+              "APIs are stateless: the application resends history it wants the model to see.",
+              "Long prompts cost more, run slower and can bury important facts in the middle.",
+              "Reserve output tokens first, keep the system prompt and latest user message always.",
+              "Combine sliding windows, summaries and retrieval for long conversations.",
+              "Check the finish reason to catch answers truncated by the output limit."
+            ],
+            "interview": [
+              {
+                "question": "What is a context window?",
+                "answer": "The maximum number of tokens the model can attend to in one request, including system prompt, history, documents and the generated output.",
+                "explanation": "Mention explicitly that output tokens share the window; many candidates forget this."
+              },
+              {
+                "question": "How does a chatbot remember earlier messages if the model is stateless?",
+                "answer": "The application stores the conversation and resends the relevant history with every request. The model only knows what is in the current prompt.",
+                "explanation": "This shows you understand that memory is an application design choice, which leads naturally to trimming and summarisation strategies."
+              },
+              {
+                "question": "Your conversation exceeds the context window. What are your options?",
+                "answer": "Drop the oldest turns with a sliding window, replace them with a running summary, move past turns or documents into a retrieval store and fetch only relevant pieces, or switch to a model with a larger window if cost allows.",
+                "explanation": "A strong answer covers trade-offs: sliding windows forget early facts, summaries lose detail, retrieval depends on search quality."
+              },
+              {
+                "question": "What is the 'lost in the middle' problem and how do you design around it?",
+                "answer": "Models tend to use information at the beginning and end of a long context more reliably than information in the middle. Put key instructions first, the question last, keep context focused and order retrieved chunks so the most relevant are near the edges.",
+                "explanation": "Citing the finding and turning it into concrete layout rules shows applied knowledge rather than trivia."
+              },
+              {
+                "question": "If a model supports a million tokens, why not send the whole knowledge base every time?",
+                "answer": "Every input token is billed and adds latency on every call, irrelevant text can distract the model and reduce accuracy, and the knowledge base changes. Retrieval of relevant chunks is usually cheaper, faster and more accurate; long context suits one-off analysis of a single large document.",
+                "explanation": "Interviewers look for cost, latency and quality reasoning, plus a fair note on when long context is the right tool."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Trim chat history to fit a token budget",
+              "difficulty": "Basic",
+              "objective": "Implement the sliding-window policy that real chat applications use to keep requests inside the context window.",
+              "statement": "Each message costs (number of whitespace-separated words in its text) + 2 tokens. If the first message has role system, it must always be kept. Then walk backwards from the newest message, keeping messages while the running total stays within the budget; stop at the first message that does not fit so the kept history stays contiguous. Print the kept messages in their original order and a summary line. If the system message alone exceeds the budget, print only: ERROR: system prompt does not fit",
+              "language": "python",
+              "input_format": "First line: integer budget B. Each following non-empty line is a message in the form role: text (split at the first colon; trim spaces).",
+              "output_format": "Kept messages as 'role: text', one per line, oldest first, then a line 'Kept: <k> of <n>, tokens: <t>'. Or the single ERROR line.",
+              "example": {
+                "input": "20\nsystem: You are a helpful tutor.\nuser: What is a token?\nassistant: A sub-word unit the model reads.\nuser: And a context window?\n",
+                "output": "system: You are a helpful tutor.\nuser: And a context window?\nKept: 2 of 4, tokens: 13"
+              },
+              "constraints": [
+                "1 <= number of messages <= 1000; 0 <= B <= 10^6.",
+                "Only the first message can be a system message.",
+                "Blank lines are ignored."
+              ],
+              "starter": "import sys\n\nlines = sys.stdin.read().split('\\n')\nbudget = int(lines[0])\nmessages = []\nfor line in lines[1:]:\n    if line.strip():\n        role, text = line.split(':', 1)\n        messages.append((role.strip(), text.strip()))\n\n# TODO: keep the system message, then add newest messages while they fit\n",
+              "solution": "import sys\n\nlines = sys.stdin.read().split('\\n')\nbudget = int(lines[0])\nmessages = []\nfor line in lines[1:]:\n    if line.strip():\n        role, text = line.split(':', 1)\n        messages.append((role.strip(), text.strip()))\n\ndef cost(msg):\n    return len(msg[1].split()) + 2\n\nkept_front = []\nrest = messages\ntotal = 0\nif messages and messages[0][0] == 'system':\n    total = cost(messages[0])\n    if total > budget:\n        print('ERROR: system prompt does not fit')\n        sys.exit(0)\n    kept_front = [messages[0]]\n    rest = messages[1:]\n\nkept_tail = []\nfor msg in reversed(rest):\n    c = cost(msg)\n    if total + c > budget:\n        break\n    total += c\n    kept_tail.append(msg)\nkept = kept_front + list(reversed(kept_tail))\n\nfor role, text in kept:\n    print(f'{role}: {text}')\nprint(f'Kept: {len(kept)} of {len(messages)}, tokens: {total}')\n",
+              "explanation": [
+                "Parse each line into (role, text) by splitting at the first colon only, so colons inside the text survive.",
+                "If the first message is a system message, charge it first; if it alone is over budget, report the error.",
+                "Walk the remaining messages from newest to oldest, adding each while it fits and stopping at the first that does not.",
+                "Reverse the collected tail to restore chronological order and print the kept messages with the totals."
+              ],
+              "tests": [
+                {
+                  "input": "20\nsystem: You are a helpful tutor.\nuser: What is a token?\nassistant: A sub-word unit the model reads.\nuser: And a context window?\n",
+                  "output": "system: You are a helpful tutor.\nuser: And a context window?\nKept: 2 of 4, tokens: 13"
+                },
+                {
+                  "input": "100\nsystem: You are a helpful tutor.\nuser: What is a token?\nassistant: A sub-word unit the model reads.\nuser: And a context window?\n",
+                  "output": "system: You are a helpful tutor.\nuser: What is a token?\nassistant: A sub-word unit the model reads.\nuser: And a context window?\nKept: 4 of 4, tokens: 27"
+                },
+                {
+                  "input": "10\nuser: hi there\nassistant: hello\nuser: explain RAG briefly please\n",
+                  "output": "assistant: hello\nuser: explain RAG briefly please\nKept: 2 of 3, tokens: 9"
+                },
+                {
+                  "input": "5\nsystem: You must always answer in formal English.\nuser: hello\n",
+                  "output": "ERROR: system prompt does not fit"
+                },
+                {
+                  "input": "7\nsystem: Be brief.\nuser: one two three\n",
+                  "output": "system: Be brief.\nKept: 1 of 2, tokens: 4"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which tokens count towards a model's context window?",
+                "options": [
+                  "Prompt tokens and generated output tokens together",
+                  "Only tokens generated by the model",
+                  "Only the user's latest message",
+                  "Only the system prompt and history"
+                ],
+                "answer": 0,
+                "explanation": "The window covers everything in the request plus the tokens generated in reply."
+              },
+              {
+                "type": "concept",
+                "question": "Why does a chat model seem to remember earlier turns?",
+                "options": [
+                  "Earlier turns are cached permanently in the tokenizer",
+                  "The application resends earlier turns as part of each new prompt",
+                  "The model updates its weights after every message",
+                  "The provider stores a private memory inside the model"
+                ],
+                "answer": 1,
+                "explanation": "Model APIs are stateless. Apparent memory comes from history the application includes in each request."
+              },
+              {
+                "type": "scenario",
+                "question": "In a 60-turn chat, the bot forgets the user's name given in turn 1. The app uses a pure sliding window. What is the best fix?",
+                "options": [
+                  "Raise the temperature",
+                  "Ask the user to repeat their name every turn",
+                  "Delete the system prompt to free space",
+                  "Keep a running summary or stored key facts that are always included"
+                ],
+                "answer": 3,
+                "explanation": "A sliding window drops old turns. A running summary or a small always-included memory of key facts preserves important early information."
+              },
+              {
+                "type": "concept",
+                "question": "According to the 'lost in the middle' finding, where is a key fact least reliably used in a long prompt?",
+                "options": [
+                  "Buried in the middle",
+                  "At the very end",
+                  "Inside the system prompt",
+                  "At the very beginning"
+                ],
+                "answer": 0,
+                "explanation": "Models tend to use information at the start and end of long contexts better than information in the middle."
+              },
+              {
+                "type": "output",
+                "question": "Messages cost words + 2 tokens. With a budget of 10, a system message 'Be concise.' and a user message 'Explain tokens in detail please', what does the sliding-window trimmer keep?",
+                "options": [
+                  "Only the system message, 4 tokens",
+                  "Nothing; it reports an error",
+                  "Both messages, 11 tokens",
+                  "Only the user message"
+                ],
+                "answer": 0,
+                "explanation": "System costs 2 + 2 = 4. The user message costs 5 + 2 = 7, and 4 + 7 = 11 exceeds 10, so only the system message is kept."
+              }
+            ]
+          }
+        },
+        {
+          "id": "prompt-engineering:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Sampling Controls: Temperature, Top-k and Top-p",
+            "module": "How LLMs read prompts",
+            "level": "Beginner",
+            "objectives": [
+              "Explain how logits become a probability distribution with softmax.",
+              "Describe how temperature reshapes that distribution.",
+              "Distinguish top-k and top-p (nucleus) sampling and when each helps.",
+              "Choose sampling settings for extraction, coding, chat and creative tasks.",
+              "Explain why temperature 0 is not a guarantee of identical outputs."
+            ],
+            "definition": "Sampling controls decide how a model picks the next token from its predicted probability distribution. Temperature sharpens or flattens the distribution, top-k keeps only the k most likely tokens, and top-p (nucleus sampling) keeps the smallest set of tokens whose probabilities add up to p. Together with the prompt, these settings determine how focused or varied the output is.",
+            "theory": [
+              {
+                "heading": "From logits to probabilities",
+                "body": "At each step the model outputs a score, called a logit, for every token in its vocabulary. The softmax function turns these scores into probabilities that sum to 1: p_i = exp(z_i) / sum_j exp(z_j). Decoding then chooses a token from this distribution. Greedy decoding always takes the most likely token; sampling draws randomly according to the probabilities, which allows variety.",
+                "points": [
+                  "Logit: an unnormalised score; higher means more likely.",
+                  "Softmax: exponentiate and normalise so probabilities sum to 1.",
+                  "Greedy: deterministic in principle but can be repetitive and bland."
+                ]
+              },
+              {
+                "heading": "Temperature",
+                "body": "Temperature T divides every logit before softmax: p_i = softmax(z_i / T). A T below 1 widens the gap between likely and unlikely tokens, so the top choice dominates and output becomes focused and repeatable. A T above 1 shrinks the gaps, so less likely tokens are chosen more often, giving more diverse but riskier output. T = 0 is treated by APIs as greedy decoding. Typical ranges differ by provider, often 0 to 1 or 0 to 2.",
+                "points": [
+                  "Low (0 to 0.3): extraction, classification, SQL, code, factual Q&A.",
+                  "Medium (0.5 to 0.8): conversational answers, explanations.",
+                  "High (0.9 and above): brainstorming, stories, varied marketing copy."
+                ]
+              },
+              {
+                "heading": "Top-k and top-p (nucleus) sampling",
+                "body": "Top-k keeps only the k highest-probability tokens and renormalises them before sampling. Its weakness is that k is fixed: when the model is confident, k = 50 still admits nonsense tokens; when it is uncertain, k = 5 may cut good options. Top-p, introduced by Holtzman et al. (2019), adapts: it sorts tokens by probability and keeps the smallest set whose cumulative probability reaches p. A confident step keeps one or two tokens; an uncertain step keeps many.",
+                "points": [
+                  "Top-p 0.9 to 0.95 is a common default for open-ended generation.",
+                  "Order of operations in many implementations: temperature, then top-k, then top-p, then sample.",
+                  "Providers usually advise tuning temperature or top-p, not both at once, because they interact."
+                ]
+              },
+              {
+                "heading": "Other generation settings",
+                "body": "Beyond sampling, several parameters shape output. Max tokens caps answer length. Stop sequences end generation when a given string appears. Frequency and presence penalties (offered by some providers) discourage repetition. A seed parameter, where supported, improves reproducibility. Not every model exposes every control; some reasoning models fix or ignore sampling parameters.",
+                "points": [
+                  "Max tokens: protects latency and cost but can truncate answers.",
+                  "Stop sequences: useful to end at a delimiter in completion-style prompts.",
+                  "Check the documentation of each model; supported parameters vary."
+                ]
+              },
+              {
+                "heading": "Limitations: why temperature 0 is not perfectly deterministic",
+                "body": "Even at temperature 0, outputs can differ between calls. Floating-point arithmetic on GPUs, batching with other requests, and silent model updates can change logits slightly, and when two tokens are nearly tied, a tiny change flips the choice and the rest of the answer diverges. For repeatability, pin the model version, use low temperature, constrain the output format and validate results, instead of assuming identical text.",
+                "points": [
+                  "Pin model versions in production.",
+                  "Design checks around meaning and format, not exact string equality."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Same prompt, different temperatures",
+              "body": "Suppose the model's logits for the next word after 'The capital of France is' are Paris 3.0, Lyon 1.5, London 1.0, banana -2.0. At T = 1, Paris gets about 73 percent. At T = 0.5 the logits double in effect and Paris rises to about 94 percent. At T = 2 they halve and Paris drops to about 52 percent, so wrong answers appear far more often. The code computes this directly.",
+              "code": {
+                "language": "python",
+                "source": "import math\n\nlogits = {\"Paris\": 3.0, \"Lyon\": 1.5, \"London\": 1.0, \"banana\": -2.0}\n\ndef softmax(scores, t):\n    exps = {k: math.exp(v / t) for k, v in scores.items()}\n    total = sum(exps.values())\n    return {k: round(v / total, 3) for k, v in exps.items()}\n\nfor t in (0.5, 1.0, 2.0):\n    print(t, softmax(logits, t))\n# 0.5 {'Paris': 0.935, 'Lyon': 0.047, 'London': 0.017, 'banana': 0.0}\n# 1.0 {'Paris': 0.733, 'Lyon': 0.163, 'London': 0.099, 'banana': 0.005}\n# 2.0 {'Paris': 0.517, 'Lyon': 0.244, 'London': 0.19, 'banana': 0.049}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Data extraction pipelines",
+                "description": "Temperature 0 to 0.2 keeps field values stable so the same invoice yields the same JSON across runs."
+              },
+              {
+                "title": "Creative writing tools",
+                "description": "Higher temperature or top-p produces varied taglines, story ideas and campaign options."
+              },
+              {
+                "title": "Self-consistency voting",
+                "description": "Moderate temperature generates diverse reasoning paths that are then majority-voted (Day 11)."
+              },
+              {
+                "title": "Code assistants",
+                "description": "Low temperature for completing code; slightly higher when proposing several alternative implementations."
+              }
+            ],
+            "demonstration": {
+              "description": "Apply temperature 1, then top-p 0.9, to the four-candidate distribution. Tokens are sorted by probability and added until the cumulative probability reaches 0.9; the survivors are renormalised.",
+              "code": {
+                "language": "text",
+                "source": "Probabilities at T=1: Paris 0.733, Lyon 0.163, London 0.099, banana 0.005\nCumulative:           0.733,       0.896,      0.995  -> reaches 0.9 at London\nNucleus: {Paris, Lyon, London}; banana is removed"
+              },
+              "output": "Renormalised nucleus:\nParis 0.736\nLyon 0.164\nLondon 0.100\nThe nonsense token 'banana' can never be sampled, yet sensible alternatives remain possible."
+            },
+            "takeaways": [
+              "Softmax turns logits into probabilities; decoding picks from them.",
+              "Temperature below 1 sharpens the distribution; above 1 flattens it.",
+              "Top-k keeps a fixed number of tokens; top-p keeps an adaptive set by cumulative probability.",
+              "Use low temperature for factual and structured tasks, higher for creative ones.",
+              "Tune temperature or top-p, usually not both.",
+              "Temperature 0 reduces but does not eliminate run-to-run variation."
+            ],
+            "interview": [
+              {
+                "question": "What does the temperature parameter do?",
+                "answer": "It divides the logits before softmax. Lower values make the distribution peakier so the most likely tokens dominate; higher values flatten it so less likely tokens are sampled more often.",
+                "explanation": "State the formula softmax(z / T) and the practical effect: focused versus diverse output."
+              },
+              {
+                "question": "What temperature would you use for extracting fields from invoices, and why?",
+                "answer": "Low, around 0 to 0.2, because the task has one correct answer and we want consistent, repeatable output that downstream code can parse.",
+                "explanation": "Linking the setting to the task's nature (one right answer versus many good answers) is what interviewers look for."
+              },
+              {
+                "question": "Explain the difference between top-k and top-p sampling.",
+                "answer": "Top-k keeps the k most probable tokens regardless of their probabilities. Top-p keeps the smallest set of tokens whose cumulative probability reaches p, so the candidate set shrinks when the model is confident and grows when it is uncertain.",
+                "explanation": "Highlight why top-p is adaptive and give a concrete failure of fixed k."
+              },
+              {
+                "question": "Why might you get different outputs at temperature 0?",
+                "answer": "Non-deterministic GPU floating-point operations, request batching and model updates can change logits slightly; near-ties then flip and the continuation diverges.",
+                "explanation": "Strong candidates add mitigations: pin model versions, use seeds where supported and validate meaning rather than exact text."
+              },
+              {
+                "question": "Can sampling settings fix a model that gives wrong facts?",
+                "answer": "Only partly. Lower temperature reduces random low-probability errors, but if the model's most likely answer is wrong, greedy decoding returns that wrong answer confidently. Wrong knowledge needs grounding, retrieval or tools.",
+                "explanation": "This separates decoding randomness from knowledge errors, a distinction senior interviewers probe."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Build the nucleus-sampling candidate set",
+              "difficulty": "Basic",
+              "objective": "Implement temperature scaling, softmax, top-k and top-p filtering exactly as a decoder does before drawing a token.",
+              "statement": "Given candidate tokens with logits and the settings temperature T, top-k K and top-p P, print the tokens that could be sampled and their renormalised probabilities. If T is 0, use greedy decoding: print only the token with the highest logit (ties broken alphabetically) with probability 1.000. Otherwise: compute softmax(logit / T); sort by probability descending, ties alphabetically; if K > 0 keep only the first K; then keep tokens in order until the cumulative probability reaches at least P; renormalise the kept probabilities so they sum to 1.",
+              "language": "python",
+              "input_format": "Line 1: T K P (float, integer, float). Line 2: n. Next n lines: token logit.",
+              "output_format": "One line per kept token, in sorted order: '<token> <probability>' with probability to 3 decimal places.",
+              "example": {
+                "input": "1 0 0.9\n4\nParis 3.0\nLyon 1.5\nLondon 1.0\nbanana -2.0\n",
+                "output": "Paris 0.736\nLyon 0.164\nLondon 0.100"
+              },
+              "constraints": [
+                "1 <= n <= 1000; tokens contain no spaces.",
+                "0 <= T <= 5; K = 0 means top-k is disabled; 0 < P <= 1.",
+                "Use a tiny tolerance (1e-9) when comparing the cumulative sum with P."
+              ],
+              "starter": "import sys, math\n\ndata = sys.stdin.read().split('\\n')\nt_str, k_str, p_str = data[0].split()\ntemperature, top_k, top_p = float(t_str), int(k_str), float(p_str)\nn = int(data[1])\ncands = [(line.split()[0], float(line.split()[1])) for line in data[2:2 + n]]\n\n# TODO: greedy when T == 0; otherwise softmax(logit / T), top-k, top-p, renormalise\n",
+              "solution": "import sys, math\n\ndata = sys.stdin.read().split('\\n')\nt_str, k_str, p_str = data[0].split()\ntemperature, top_k, top_p = float(t_str), int(k_str), float(p_str)\nn = int(data[1])\ncands = []\nfor line in data[2:2 + n]:\n    tok, logit = line.split()\n    cands.append((tok, float(logit)))\n\nif temperature == 0:\n    best = sorted(cands, key=lambda c: (-c[1], c[0]))[0]\n    print(f'{best[0]} 1.000')\n    sys.exit(0)\n\nscaled = [l / temperature for _, l in cands]\nm = max(scaled)\nexps = [math.exp(s - m) for s in scaled]\ntotal = sum(exps)\nprobs = sorted(((tok, e / total) for (tok, _), e in zip(cands, exps)), key=lambda c: (-c[1], c[0]))\n\nif top_k > 0:\n    probs = probs[:top_k]\n\nkept, cum = [], 0.0\nfor tok, p in probs:\n    kept.append((tok, p))\n    cum += p\n    if cum >= top_p - 1e-9:\n        break\n\nz = sum(p for _, p in kept)\nfor tok, p in kept:\n    print(f'{tok} {p / z:.3f}')\n",
+              "explanation": [
+                "Handle T = 0 separately as greedy decoding, because dividing by zero is undefined and APIs treat it as argmax.",
+                "Divide logits by T and subtract the maximum before exponentiating; this numerically stable softmax avoids overflow.",
+                "Sort by probability (ties alphabetically) and cut to the first K when top-k is enabled.",
+                "Accumulate probabilities until the running total reaches P, then renormalise the kept set and print it."
+              ],
+              "tests": [
+                {
+                  "input": "1 0 0.9\n4\nParis 3.0\nLyon 1.5\nLondon 1.0\nbanana -2.0\n",
+                  "output": "Paris 0.736\nLyon 0.164\nLondon 0.100"
+                },
+                {
+                  "input": "0 0 1.0\n3\nyes 1.0\nno 2.0\nmaybe 2.0\n",
+                  "output": "maybe 1.000"
+                },
+                {
+                  "input": "0.5 0 0.9\n4\nParis 3.0\nLyon 1.5\nLondon 1.0\nbanana -2.0\n",
+                  "output": "Paris 1.000"
+                },
+                {
+                  "input": "2 2 1.0\n4\nParis 3.0\nLyon 1.5\nLondon 1.0\nbanana -2.0\n",
+                  "output": "Paris 0.679\nLyon 0.321"
+                },
+                {
+                  "input": "1 0 1.0\n3\na 0.0\nb 0.0\nc 0.0\n",
+                  "output": "a 0.333\nb 0.333\nc 0.333"
+                },
+                {
+                  "input": "1 0 0.5\n3\na 0.0\nb 0.0\nc 0.0\n",
+                  "output": "a 0.500\nb 0.500"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "What happens to the next-token distribution when temperature is lowered from 1.0 to 0.2?",
+                "options": [
+                  "It becomes sharper, so the top tokens dominate",
+                  "It becomes uniform",
+                  "Low-probability tokens become more likely",
+                  "The vocabulary size shrinks permanently"
+                ],
+                "answer": 0,
+                "explanation": "Dividing logits by a small T magnifies differences between them, concentrating probability on the most likely tokens."
+              },
+              {
+                "type": "concept",
+                "question": "How does top-p (nucleus) sampling choose its candidate set?",
+                "options": [
+                  "It always keeps exactly p tokens",
+                  "It keeps the smallest set of top tokens whose cumulative probability reaches p",
+                  "It removes the p most likely tokens",
+                  "It keeps tokens with probability above p each"
+                ],
+                "answer": 1,
+                "explanation": "Tokens are sorted by probability and added until their cumulative probability reaches p; the set size adapts to the model's confidence."
+              },
+              {
+                "type": "scenario",
+                "question": "You are generating SQL queries from natural-language questions for a reporting tool. Which setting is most appropriate?",
+                "options": [
+                  "Temperature 1.5 for creativity",
+                  "Top-p 1.0 with temperature 2",
+                  "Random temperature per request",
+                  "Low temperature, around 0 to 0.2"
+                ],
+                "answer": 3,
+                "explanation": "SQL generation needs precise, consistent output, so low temperature is preferred."
+              },
+              {
+                "type": "output",
+                "question": "Probabilities after temperature are A 0.5, B 0.3, C 0.15, D 0.05. With top-p = 0.8, which tokens remain?",
+                "options": [
+                  "A and B",
+                  "B, C and D",
+                  "A only",
+                  "A, B, C and D"
+                ],
+                "answer": 0,
+                "explanation": "Cumulative: A 0.5, then A+B 0.8, which reaches 0.8, so the nucleus is {A, B}."
+              },
+              {
+                "type": "scenario",
+                "question": "At temperature 0, a pipeline's outputs still differ slightly between some runs. What is the most reasonable explanation?",
+                "options": [
+                  "The prompt is re-tokenised differently each time",
+                  "Temperature 0 is ignored by every provider",
+                  "Numerical non-determinism or batching flips near-tied tokens",
+                  "The tokenizer is random"
+                ],
+                "answer": 2,
+                "explanation": "Small floating-point and batching differences can change near-tied logits, so greedy decoding is not perfectly reproducible in practice."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "prompt-engineering:question:1:1",
+          "day": 1,
+          "topic": "What Prompt Engineering Is and How LLMs Read Prompts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is prompt engineering?",
+          "answer": "It is the practice of designing, testing and refining the input to an LLM, including instructions, context, examples and output format, so the model produces reliable, useful output for a task.",
+          "explanation": "Strong answers stress reliability across many inputs and mention testing, rather than describing it as finding magic words.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:1:2",
+          "day": 1,
+          "topic": "What Prompt Engineering Is and How LLMs Read Prompts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a token, and why should a prompt engineer care?",
+          "answer": "A token is a sub-word unit produced by the model's tokenizer; the model reads and generates tokens. Context limits, pricing and output limits are all measured in tokens, so token count drives cost, latency and how much context fits.",
+          "explanation": "Mention the rough four-characters-per-token rule for English and that non-English scripts often need more tokens.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:1:3",
+          "day": 1,
+          "topic": "What Prompt Engineering Is and How LLMs Read Prompts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why does an LLM sometimes fail to count the letters in a word?",
+          "answer": "The model sees tokens, not individual characters. A word like 'strawberry' may be one or a few tokens, so character-level facts are not directly visible and must be inferred.",
+          "explanation": "This shows you understand tokenization as a cause of failure. A good follow-up is that asking the model to spell the word out or to use a code tool fixes it.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:1:4",
+          "day": 1,
+          "topic": "What Prompt Engineering Is and How LLMs Read Prompts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How does an LLM generate a response from a prompt?",
+          "answer": "It processes the prompt tokens, predicts a probability distribution for the next token, selects one using the sampling settings, appends it and repeats until a stop condition. Each token is conditioned on the prompt and all previous output.",
+          "explanation": "Use the word autoregressive and link it to why the beginning of a prompt and of the response strongly shape the rest.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:1:5",
+          "day": 1,
+          "topic": "What Prompt Engineering Is and How LLMs Read Prompts",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When is prompt engineering not enough, and what would you use instead?",
+          "answer": "When the model lacks the knowledge (use retrieval or tools), when the task needs a consistent style or format that prompts cannot hold at scale (consider fine-tuning), or when the base capability is too weak (use a stronger model).",
+          "explanation": "Interviewers want the escalation ladder: prompt first, then RAG or tools, then fine-tuning, chosen by the type of failure.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:2:1",
+          "day": 2,
+          "topic": "Context Windows, Token Budgets and Conversation Memory",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a context window?",
+          "answer": "The maximum number of tokens the model can attend to in one request, including system prompt, history, documents and the generated output.",
+          "explanation": "Mention explicitly that output tokens share the window; many candidates forget this.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:2:2",
+          "day": 2,
+          "topic": "Context Windows, Token Budgets and Conversation Memory",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How does a chatbot remember earlier messages if the model is stateless?",
+          "answer": "The application stores the conversation and resends the relevant history with every request. The model only knows what is in the current prompt.",
+          "explanation": "This shows you understand that memory is an application design choice, which leads naturally to trimming and summarisation strategies.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:2:3",
+          "day": 2,
+          "topic": "Context Windows, Token Budgets and Conversation Memory",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Your conversation exceeds the context window. What are your options?",
+          "answer": "Drop the oldest turns with a sliding window, replace them with a running summary, move past turns or documents into a retrieval store and fetch only relevant pieces, or switch to a model with a larger window if cost allows.",
+          "explanation": "A strong answer covers trade-offs: sliding windows forget early facts, summaries lose detail, retrieval depends on search quality.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:2:4",
+          "day": 2,
+          "topic": "Context Windows, Token Budgets and Conversation Memory",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the 'lost in the middle' problem and how do you design around it?",
+          "answer": "Models tend to use information at the beginning and end of a long context more reliably than information in the middle. Put key instructions first, the question last, keep context focused and order retrieved chunks so the most relevant are near the edges.",
+          "explanation": "Citing the finding and turning it into concrete layout rules shows applied knowledge rather than trivia.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:2:5",
+          "day": 2,
+          "topic": "Context Windows, Token Budgets and Conversation Memory",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "If a model supports a million tokens, why not send the whole knowledge base every time?",
+          "answer": "Every input token is billed and adds latency on every call, irrelevant text can distract the model and reduce accuracy, and the knowledge base changes. Retrieval of relevant chunks is usually cheaper, faster and more accurate; long context suits one-off analysis of a single large document.",
+          "explanation": "Interviewers look for cost, latency and quality reasoning, plus a fair note on when long context is the right tool.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:3:1",
+          "day": 3,
+          "topic": "Sampling Controls: Temperature, Top-k and Top-p",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does the temperature parameter do?",
+          "answer": "It divides the logits before softmax. Lower values make the distribution peakier so the most likely tokens dominate; higher values flatten it so less likely tokens are sampled more often.",
+          "explanation": "State the formula softmax(z / T) and the practical effect: focused versus diverse output.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:3:2",
+          "day": 3,
+          "topic": "Sampling Controls: Temperature, Top-k and Top-p",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What temperature would you use for extracting fields from invoices, and why?",
+          "answer": "Low, around 0 to 0.2, because the task has one correct answer and we want consistent, repeatable output that downstream code can parse.",
+          "explanation": "Linking the setting to the task's nature (one right answer versus many good answers) is what interviewers look for.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:3:3",
+          "day": 3,
+          "topic": "Sampling Controls: Temperature, Top-k and Top-p",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain the difference between top-k and top-p sampling.",
+          "answer": "Top-k keeps the k most probable tokens regardless of their probabilities. Top-p keeps the smallest set of tokens whose cumulative probability reaches p, so the candidate set shrinks when the model is confident and grows when it is uncertain.",
+          "explanation": "Highlight why top-p is adaptive and give a concrete failure of fixed k.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:3:4",
+          "day": 3,
+          "topic": "Sampling Controls: Temperature, Top-k and Top-p",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "Why might you get different outputs at temperature 0?",
+          "answer": "Non-deterministic GPU floating-point operations, request batching and model updates can change logits slightly; near-ties then flip and the continuation diverges.",
+          "explanation": "Strong candidates add mitigations: pin model versions, use seeds where supported and validate meaning rather than exact text.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "prompt-engineering:question:3:5",
+          "day": 3,
+          "topic": "Sampling Controls: Temperature, Top-k and Top-p",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Can sampling settings fix a model that gives wrong facts?",
+          "answer": "Only partly. Lower temperature reduces random low-probability errors, but if the model's most likely answer is wrong, greedy decoding returns that wrong answer confidently. Wrong knowledge needs grounding, retrieval or tools.",
+          "explanation": "This separates decoding randomness from knowledge errors, a distinction senior interviewers probe.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "prompt-engineering:assignment:1",
+          "title": "What Prompt Engineering Is and How LLMs Read Prompts",
+          "available": true,
+          "focus": "Prompt engineering is the practice of designing, testing and refining the input given to a large language model (LLM) so that it reliably produces useful, correct and well-formatted output. An LLM never sees words directly: the prompt is split into tokens, converted to numbers, and the model predicts the most suitable next token again and again, each time conditioned on the prompt and everything generated so far.",
+          "objectives": [
+            "Define prompt engineering and explain why it matters for products built on LLMs.",
+            "Explain how text is split into tokens before a model processes it.",
+            "Describe next-token prediction and why the prompt conditions every generated token.",
+            "Estimate the token count of a prompt and reason about cost and limits.",
+            "Answer foundational interview questions on prompts, tokens and model behaviour."
+          ],
+          "assignment": "Real tokenizers are learned, but a useful approximation is: split the text into pieces, where a piece is either a run of ASCII letters and digits or a single other non-space character (punctuation, symbols). A letter/digit run of length L costs ceil(L / 4) tokens; every other piece costs 1 token. Read a token budget and a prompt, then report the number of pieces, the estimated tokens and whether the prompt fits.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Prompt engineering is designing and testing model input for reliable, useful output.",
+            "Models read tokens, not words; roughly four English characters per token.",
+            "Generation is next-token prediction, so the whole prompt conditions every output token.",
+            "Cost, latency and context limits are all counted in tokens.",
+            "Prompting cannot add missing knowledge or guarantee correctness; evaluation is essential.",
+            "The same prompt can behave differently across models, so test when you switch."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "prompt-engineering:assignment:2",
+          "title": "Context Windows, Token Budgets and Conversation Memory",
+          "available": true,
+          "focus": "A context window is the maximum number of tokens a model can consider in one request, counting the system prompt, conversation history, any documents or examples, and the tokens it generates in reply. Anything outside the window is invisible to the model, so applications must decide what to include, what to compress and what to leave out.",
+          "objectives": [
+            "Explain what a context window is and how input and output share it.",
+            "Describe why chat models appear to remember and how history is actually resent.",
+            "Plan a token budget for system prompt, history, retrieved context and output.",
+            "Compare truncation, summarisation and retrieval as strategies for long conversations.",
+            "Explain the 'lost in the middle' effect and how prompt layout addresses it."
+          ],
+          "assignment": "Each message costs (number of whitespace-separated words in its text) + 2 tokens. If the first message has role system, it must always be kept. Then walk backwards from the newest message, keeping messages while the running total stays within the budget; stop at the first message that does not fit so the kept history stays contiguous. Print the kept messages in their original order and a summary line. If the system message alone exceeds the budget, print only: ERROR: system prompt does not fit",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "The context window holds input and output together; both are counted in tokens.",
+            "APIs are stateless: the application resends history it wants the model to see.",
+            "Long prompts cost more, run slower and can bury important facts in the middle.",
+            "Reserve output tokens first, keep the system prompt and latest user message always.",
+            "Combine sliding windows, summaries and retrieval for long conversations.",
+            "Check the finish reason to catch answers truncated by the output limit."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "prompt-engineering:assignment:3",
+          "title": "Sampling Controls: Temperature, Top-k and Top-p",
+          "available": true,
+          "focus": "Sampling controls decide how a model picks the next token from its predicted probability distribution. Temperature sharpens or flattens the distribution, top-k keeps only the k most likely tokens, and top-p (nucleus sampling) keeps the smallest set of tokens whose probabilities add up to p. Together with the prompt, these settings determine how focused or varied the output is.",
+          "objectives": [
+            "Explain how logits become a probability distribution with softmax.",
+            "Describe how temperature reshapes that distribution.",
+            "Distinguish top-k and top-p (nucleus) sampling and when each helps.",
+            "Choose sampling settings for extraction, coding, chat and creative tasks.",
+            "Explain why temperature 0 is not a guarantee of identical outputs."
+          ],
+          "assignment": "Given candidate tokens with logits and the settings temperature T, top-k K and top-p P, print the tokens that could be sampled and their renormalised probabilities. If T is 0, use greedy decoding: print only the token with the highest logit (ties broken alphabetically) with probability 1.000. Otherwise: compute softmax(logit / T); sort by probability descending, ties alphabetically; if K > 0 keep only the first K; then keep tokens in order until the cumulative probability reaches at least P; renormalise the kept probabilities so they sum to 1.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Softmax turns logits into probabilities; decoding picks from them.",
+            "Temperature below 1 sharpens the distribution; above 1 flattens it.",
+            "Top-k keeps a fixed number of tokens; top-p keeps an adaptive set by cumulative probability.",
+            "Use low temperature for factual and structured tasks, higher for creative ones.",
+            "Tune temperature or top-p, usually not both.",
+            "Temperature 0 reduces but does not eliminate run-to-run variation."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "prompt-engineering:assignment:4",
+          "title": "Prompt structure for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain prompt structure for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on prompt structure for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete prompt structure for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 5,
+          "id": "prompt-engineering:assignment:5",
+          "title": "Few-shot examples for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain few-shot examples for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on few-shot examples for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete few-shot examples for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "prompt-engineering:assignment:6",
+          "title": "Structured outputs for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain structured outputs for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on structured outputs for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete structured outputs for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "prompt-engineering:assignment:7",
+          "title": "Tool calling for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain tool calling for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on tool calling for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete tool calling for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "prompt-engineering:article:1",
+          "prompt-engineering:article:2",
+          "prompt-engineering:article:3"
+        ],
+        "questions": [
+          "prompt-engineering:question:1:1",
+          "prompt-engineering:question:1:2",
+          "prompt-engineering:question:1:3",
+          "prompt-engineering:question:1:4",
+          "prompt-engineering:question:1:5",
+          "prompt-engineering:question:2:1",
+          "prompt-engineering:question:2:2",
+          "prompt-engineering:question:2:3",
+          "prompt-engineering:question:2:4",
+          "prompt-engineering:question:2:5",
+          "prompt-engineering:question:3:1",
+          "prompt-engineering:question:3:2",
+          "prompt-engineering:question:3:3",
+          "prompt-engineering:question:3:4",
+          "prompt-engineering:question:3:5"
+        ],
+        "coding": [
+          "prompt-engineering:coding:1",
+          "prompt-engineering:coding:2",
+          "prompt-engineering:coding:3"
+        ],
+        "assignments": [
+          "prompt-engineering:assignment:1",
+          "prompt-engineering:assignment:2",
+          "prompt-engineering:assignment:3",
+          "prompt-engineering:assignment:4",
+          "prompt-engineering:assignment:5",
+          "prompt-engineering:assignment:6",
+          "prompt-engineering:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Models, prompts and workflows",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "prompt-engineering:assignment:8",
+          "title": "Embeddings for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain embeddings for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on embeddings for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete embeddings for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "prompt-engineering:assignment:9",
+          "title": "Vector search for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain vector search for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on vector search for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete vector search for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "prompt-engineering:assignment:10",
+          "title": "Retrieval pipelines for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain retrieval pipelines for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on retrieval pipelines for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete retrieval pipelines for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "prompt-engineering:assignment:11",
+          "title": "Document chunking for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain document chunking for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on document chunking for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete document chunking for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "prompt-engineering:assignment:12",
+          "title": "Grounded answers for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain grounded answers for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on grounded answers for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete grounded answers for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "prompt-engineering:assignment:13",
+          "title": "Conversation state for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain conversation state for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on conversation state for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete conversation state for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "prompt-engineering:assignment:14",
+          "title": "Model selection for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain model selection for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on model selection for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete model selection for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "prompt-engineering:assignment:8",
+          "prompt-engineering:assignment:9",
+          "prompt-engineering:assignment:10",
+          "prompt-engineering:assignment:11",
+          "prompt-engineering:assignment:12",
+          "prompt-engineering:assignment:13",
+          "prompt-engineering:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Retrieval, evaluation and application design",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "prompt-engineering:assignment:15",
+          "title": "Latency and cost trade-offs for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain latency and cost trade-offs for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on latency and cost trade-offs for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete latency and cost trade-offs for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "prompt-engineering:assignment:16",
+          "title": "Output evaluation for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain output evaluation for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on output evaluation for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete output evaluation for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "prompt-engineering:assignment:17",
+          "title": "Test-set design for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain test-set design for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on test-set design for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete test-set design for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "prompt-engineering:assignment:18",
+          "title": "Hallucination checks for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain hallucination checks for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on hallucination checks for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete hallucination checks for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "prompt-engineering:assignment:19",
+          "title": "Prompt injection risks for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain prompt injection risks for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on prompt injection risks for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete prompt injection risks for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "prompt-engineering:assignment:20",
+          "title": "Privacy boundaries for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain privacy boundaries for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on privacy boundaries for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete privacy boundaries for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "prompt-engineering:assignment:21",
+          "title": "API integration for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain api integration for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on api integration for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete api integration for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "prompt-engineering:assignment:22",
+          "title": "Error handling for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain error handling for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on error handling for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete error handling for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "prompt-engineering:assignment:15",
+          "prompt-engineering:assignment:16",
+          "prompt-engineering:assignment:17",
+          "prompt-engineering:assignment:18",
+          "prompt-engineering:assignment:19",
+          "prompt-engineering:assignment:20",
+          "prompt-engineering:assignment:21",
+          "prompt-engineering:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Production projects and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "prompt-engineering:assignment:23",
+          "title": "User feedback loops for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain user feedback loops for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on user feedback loops for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete user feedback loops for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "prompt-engineering:assignment:24",
+          "title": "Observability for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain observability for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on observability for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete observability for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "prompt-engineering:assignment:25",
+          "title": "Versioned prompts for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain versioned prompts for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on versioned prompts for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete versioned prompts for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "prompt-engineering:assignment:26",
+          "title": "Fallback behavior for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain fallback behavior for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on fallback behavior for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete fallback behavior for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "prompt-engineering:assignment:27",
+          "title": "Accessibility for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain accessibility for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on accessibility for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete accessibility for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "prompt-engineering:assignment:28",
+          "title": "Deployment readiness for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain deployment readiness for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on deployment readiness for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment readiness for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "prompt-engineering:assignment:29",
+          "title": "Product measurement for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain product measurement for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on product measurement for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete product measurement for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "prompt-engineering:assignment:30",
+          "title": "Portfolio walkthrough for prompt engineering",
+          "available": false,
+          "focus": "prompt engineering",
+          "objectives": [
+            "Explain portfolio walkthrough for prompt engineering in the context of prompt engineering",
+            "Create a reviewable example using the relevant Python, LLM APIs, Jupyter tools"
+          ],
+          "assignment": "Create a small prompt engineering case study focused on portfolio walkthrough for prompt engineering. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for prompt engineering problem and its acceptance criteria",
+            "Select a suitable tool from Python, LLM APIs, Jupyter, Git, REST APIs, vector search and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "prompt-engineering:assignment:23",
+          "prompt-engineering:assignment:24",
+          "prompt-engineering:assignment:25",
+          "prompt-engineering:assignment:26",
+          "prompt-engineering:assignment:27",
+          "prompt-engineering:assignment:28",
+          "prompt-engineering:assignment:29",
+          "prompt-engineering:assignment:30"
+        ]
+      }
+    }
+  ]
+}

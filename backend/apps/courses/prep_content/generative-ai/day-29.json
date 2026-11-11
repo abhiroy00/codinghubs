@@ -146,7 +146,7 @@
       "Output preserves non-email text exactly."
     ],
     "starter": "message = input()\n\n# TODO: validate length and sanitise emails\n",
-    "solution": "message = input()\n\nif len(message) > 500:\n    print('Message too long')\nelse:\n    sanitised = ' '.join('[redacted]' if '@' in token else token for token in message.split())\n    print(sanitised)\n",
+    "solution": "message = input()\n\nif len(message) > 500:\n    print('Message too long')\nelse:\n    import re\n    sanitised = re.sub(r'\\S+', lambda m: '[redacted]' if '@' in m.group() else m.group(), message)\n    print(sanitised)\n",
     "explanation": [
       "Read the message.",
       "If longer than 500 characters, print 'Message too long' and stop.",
@@ -163,8 +163,12 @@
         "output": "Hello world"
       },
       {
-        "input": "x\" * 600 + \"\\n\"",
+        "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n",
         "output": "Message too long"
+      },
+      {
+        "input": "Hi  there\tperson@example.test\n",
+        "output": "Hi  there\t[redacted]"
       }
     ]
   },

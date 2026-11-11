@@ -155,8 +155,8 @@ def shop_sitemap(request):
     for u in rows:
         out.append(f'  <url><loc>{escape(u)}</loc></url>')
     for qs, base in ((payloads.public_products(), '/store'), (payloads.public_projects(), '/projects'), (payloads.public_guides(), '/project-guides')):
-        for slug, mod in qs.values_list('slug', 'updated_at'):
-            out.append(f'  <url><loc>{escape(settings.SITE_URL + base + "/" + slug)}</loc><lastmod>{mod.date().isoformat()}</lastmod></url>')
+        for url, mod in content_services.canonical_sitemap_rows(qs, base):
+            out.append(f'  <url><loc>{escape(url)}</loc><lastmod>{mod.date().isoformat()}</lastmod></url>')
     out.append('</urlset>')
     r = HttpResponse('\n'.join(out) + '\n', content_type='application/xml; charset=utf-8')
     r['Cache-Control'] = 'public, max-age=0, must-revalidate'

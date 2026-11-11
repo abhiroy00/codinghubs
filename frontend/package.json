@@ -5,13 +5,22 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "npm run genai:sync && npm run roadmap:sync",
     "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "validate:locations": "node scripts/validate-locations.mjs",
-    "validate:seo": "node scripts/validate-seo.mjs",
-    "validate": "npm run validate:seo && npm run validate:locations",
-    "seo:smoke": "node scripts/seo-smoke.mjs"
+    "validate:seo": "node scripts/validate-seo.mjs && node scripts/validate-genai-seo.mjs",
+    "validate": "npm run prep:check && npm run genai:check && npm run roadmap:check && npm run validate:genai && npm run validate:roadmaps && npm run validate:seo && npm run validate:locations",
+    "roadmap:sync": "node scripts/sync-course-roadmaps.mjs",
+    "roadmap:check": "node scripts/sync-course-roadmaps.mjs --check",
+    "validate:roadmaps": "node scripts/validate-course-roadmaps.mjs",
+    "genai:sync": "node scripts/sync-genai-content.mjs",
+    "genai:check": "node scripts/sync-genai-content.mjs --check",
+    "validate:genai": "node scripts/validate-genai.mjs",
+    "seo:smoke": "node scripts/seo-smoke.mjs",
+    "prep:sync": "node scripts/sync-prep-content.mjs",
+    "prep:check": "node scripts/sync-prep-content.mjs --check"
   },
   "dependencies": {
     "axios": "^1.20.0",

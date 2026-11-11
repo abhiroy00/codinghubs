@@ -70,6 +70,11 @@ def head_tags(seo: dict, with_og=True) -> str:
             f'<meta name="twitter:description" content="{escape(og["description"])}">',
             f'<meta name="twitter:image" content="{escape(og["image"])}">',
         ]
+    if og and with_og:
+        image_alt = 'Coding Hubs School of AI logo' if og['image'] == services.LOGO_URL else og['title']
+        tags += [f'<meta property="og:image:alt" content="{escape(image_alt)}">', f'<meta name="twitter:image:alt" content="{escape(image_alt)}">']
+        if og['image'] == services.LOGO_URL:
+            tags += ['<meta property="og:image:width" content="1254">', '<meta property="og:image:height" content="1254">']
     if seo.get('json_ld'):
         tags.append('<script type="application/ld+json">' + json.dumps(seo['json_ld']).replace('<', '\\u003c') + '</script>')
     return '\n    '.join(tags)
@@ -215,8 +220,8 @@ def case_detail(request, slug):
 @require_GET
 def content_sitemap(request):
     rows = [(f'{settings.SITE_URL}/blog', None), (f'{settings.SITE_URL}/case-studies', None)]
-    rows += [(f'{settings.SITE_URL}/blog/{s}', u) for s, u in public_blog_qs().values_list('slug', 'updated_at')]
-    rows += [(f'{settings.SITE_URL}/case-studies/{s}', u) for s, u in public_case_qs().values_list('slug', 'updated_at')]
+    rows += list(services.canonical_sitemap_rows(public_blog_qs(), '/blog'))
+    rows += list(services.canonical_sitemap_rows(public_case_qs(), '/case-studies'))
     out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for loc, mod in rows:
         out.append(f'  <url><loc>{escape(loc)}</loc>' + (f'<lastmod>{mod.date().isoformat()}</lastmod>' if mod else '') + '</url>')

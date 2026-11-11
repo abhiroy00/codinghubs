@@ -1,0 +1,21 @@
+.gig-shell { max-width: 58rem; margin: auto; padding: 1.5rem 0 4rem; color: #17243b; overflow-wrap: anywhere; }
+.gig-shell header { margin-block: 1.5rem 2rem; }
+.gig-shell h1 { font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; margin-block: .5rem 1rem; }
+.gig-shell h2 { font-size: 1.4rem; margin-block: 1.25rem .75rem; }
+.gig-shell h3 { font-size: 1.1rem; margin-block: 1rem .5rem; }
+.gig-shell p { line-height: 1.7; margin-block: .75rem; }
+.gig-shell a { color: #173ea6; text-decoration: underline; text-underline-offset: .2em; }
+.gig-kicker { font-weight: 700; letter-spacing: .08em; font-size: .8rem; }
+.gig-panel { border: 1px solid #d7e0ed; background: #fff; border-radius: .75rem; padding: clamp(1rem, 3vw, 1.5rem); margin-block: 1.25rem; }
+.gig-form { display: grid; gap: 1rem; margin-block: 1.25rem; }
+.gig-form label { display: grid; gap: .5rem; font-weight: 600; }
+.gig-form input, .gig-form textarea { width: 100%; min-width: 0; border: 1px solid #8996ac; border-radius: .4rem; padding: .75rem; font: inherit; color: #17243b; background: #fff; box-sizing: border-box; }
+.gig-shell button { cursor: pointer; border: 1px solid #193b87; border-radius: .4rem; padding: .65rem 1rem; color: #fff; background: #193b87; font: inherit; min-height: 44px; }
+.gig-shell button:disabled { opacity: .5; cursor: default; }
+.gig-shell :focus-visible { outline: 3px solid #be8000; outline-offset: 3px; }
+.gig-actions { display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
+.gig-text { white-space: pre-wrap; }
+.gig-error, .gig-feedback { border: 1px solid currentColor; border-radius: .4rem; padding: 1rem; }
+.gig-error { color: #9a1b1b; background: #fff4f4; }
+.gig-feedback { color: #165c36; background: #f1fbf5; }
+@media (max-width: 600px) { .gig-actions { align-items: stretch; } .gig-actions button { flex: 1 1 auto; } .gig-shell { padding-inline: .25rem; } }

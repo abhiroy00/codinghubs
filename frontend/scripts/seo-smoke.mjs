@@ -3,7 +3,7 @@
 const base = (process.argv[2] || 'https://codinghubs.in').replace(/\/$/, '')
 const problems = []
 const fail = (m) => problems.push(m)
-const get = (url, init = {}) => fetch(url, { redirect: 'manual', headers: { 'user-agent': 'seo-smoke' }, ...init })
+const get = (url, init = {}) => fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(15000), headers: { 'user-agent': 'seo-smoke' }, ...init })
 
 async function retry(url, init) {
   let r
@@ -24,18 +24,35 @@ if (!sitemapUrls.length) fail('robots.txt lists no Sitemap')
 const disallowed = [...robotsTxt.matchAll(/^Disallow:\s*(\S+)/gim)].map((m) => m[1])
 
 const urls = new Set()
-for (const sm of sitemapUrls) {
+const sitemapFiles = new Set()
+const visiting = new Set()
+const xmlDecode = value => value.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+async function readSitemap(sm, depth = 0) {
+  if (depth > 3 || visiting.has(sm)) { fail(`sitemap index cycle or excessive nesting: ${sm}`); return }
+  let parsed
+  try { parsed = new URL(sm) } catch { fail(`invalid sitemap URL: ${sm}`); return }
+  if (parsed.origin !== new URL(base).origin || parsed.username || parsed.password) { fail(`sitemap outside selected site: ${sm}`); return }
+  if (sitemapFiles.has(sm)) return
+  sitemapFiles.add(sm)
+  visiting.add(sm)
   const r = await retry(sm)
-  if (r.status !== 200) { fail(`sitemap ${sm} -> ${r.status}`); continue }
+  if (r.status !== 200) { fail(`sitemap ${sm} -> ${r.status}`); visiting.delete(sm); return }
   const xml = await r.text()
-  if (!xml.includes('<urlset') && !xml.includes('<sitemapindex')) fail(`sitemap ${sm} is not XML`)
-  for (const m of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) urls.add(m[1])
+  if (!xml.includes('<urlset') && !xml.includes('<sitemapindex')) { fail(`sitemap ${sm} is not XML`); visiting.delete(sm); return }
+  const entries = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => xmlDecode(m[1]))
+  if (xml.includes('<sitemapindex')) {
+    for (const child of entries) await readSitemap(child, depth + 1)
+  } else {
+    for (const url of entries) urls.add(url)
+  }
+  visiting.delete(sm)
 }
+for (const sm of sitemapUrls) await readSitemap(sm)
 
 // 2. every sitemap URL: 200, self canonical, indexable, title/description/h1, valid JSON-LD
 const titles = new Map()
 for (const u of urls) {
-  if (!u.startsWith(base)) { fail(`${u}: sitemap URL is not on ${base}`); continue }
+  if (new URL(u).origin !== new URL(base).origin) { fail(`${u}: sitemap URL is not on ${base}`); continue }
   const path = new URL(u).pathname
   if (disallowed.some((d) => d !== '/' && path.startsWith(d))) fail(`${u}: listed in sitemap but disallowed in robots.txt`)
   const r = await retry(u)

@@ -1,0 +1,304 @@
+{
+  "reviewed_at": "2026-11-11",
+  "sources": {
+    "attention": {
+      "id": "attention",
+      "title": "Attention Is All You Need",
+      "url": "https://research.google/pubs/attention-is-all-you-need/",
+      "kind": "research",
+      "checked_at": "2026-11-11"
+    },
+    "autograd": {
+      "id": "autograd",
+      "title": "PyTorch automatic differentiation",
+      "url": "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "generation": {
+      "id": "generation",
+      "title": "Hugging Face text generation",
+      "url": "https://huggingface.co/docs/transformers/llm_tutorial",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "lora": {
+      "id": "lora",
+      "title": "Hugging Face LoRA concepts",
+      "url": "https://huggingface.co/docs/peft/main/en/conceptual_guides/lora",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "rag": {
+      "id": "rag",
+      "title": "Microsoft RAG design and evaluation",
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "agents": {
+      "id": "agents",
+      "title": "Anthropic building effective agents",
+      "url": "https://www.anthropic.com/research/building-effective-agents",
+      "kind": "engineering",
+      "checked_at": "2026-11-11"
+    },
+    "langgraph": {
+      "id": "langgraph",
+      "title": "LangGraph stateful orchestration",
+      "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "mcp": {
+      "id": "mcp",
+      "title": "Model Context Protocol architecture",
+      "url": "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture",
+      "kind": "specification",
+      "checked_at": "2026-11-11"
+    },
+    "ragas": {
+      "id": "ragas",
+      "title": "Ragas evaluation metrics",
+      "url": "https://docs.ragas.io/en/stable/concepts/metrics/",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "owasp": {
+      "id": "owasp",
+      "title": "OWASP GenAI threat categories",
+      "url": "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/",
+      "kind": "security",
+      "checked_at": "2026-11-11"
+    },
+    "nim": {
+      "id": "nim",
+      "title": "NVIDIA NIM benchmarking metrics",
+      "url": "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "kubernetes": {
+      "id": "kubernetes",
+      "title": "Kubernetes Deployments",
+      "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "fastapi": {
+      "id": "fastapi",
+      "title": "FastAPI concurrency",
+      "url": "https://fastapi.tiangolo.com/async/",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "llama": {
+      "id": "llama",
+      "title": "The Llama 3 Herd of Models",
+      "url": "https://ai.meta.com/research/publications/the-llama-3-herd-of-models",
+      "kind": "research",
+      "checked_at": "2026-11-11"
+    },
+    "bedrock": {
+      "id": "bedrock",
+      "title": "Amazon Bedrock Knowledge Bases",
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
+      "kind": "documentation",
+      "checked_at": "2026-11-11"
+    },
+    "company-1": {
+      "id": "company-1",
+      "title": "Google hiring process",
+      "url": "https://www.google.com/about/careers/applications/how-we-hire/",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-2": {
+      "id": "company-2",
+      "title": "Google DeepMind careers",
+      "url": "https://deepmind.google/careers/",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-3": {
+      "id": "company-3",
+      "title": "Microsoft technical interviewing",
+      "url": "https://careers.microsoft.com/v2/global/en/hiring-tips/technical-interviewing",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-4": {
+      "id": "company-4",
+      "title": "Amazon applied scientist preparation",
+      "url": "https://amazon.jobs/content/en/how-we-hire/applied-scientist-interview-prep",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-5": {
+      "id": "company-5",
+      "title": "Bedrock Knowledge Bases documentation",
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-6": {
+      "id": "company-6",
+      "title": "Meta Llama research",
+      "url": "https://ai.meta.com/research/publications/the-llama-3-herd-of-models",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-7": {
+      "id": "company-7",
+      "title": "OpenAI interview guide",
+      "url": "https://openai.com/interview-guide/",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-8": {
+      "id": "company-8",
+      "title": "Anthropic careers",
+      "url": "https://www.anthropic.com/careers",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-9": {
+      "id": "company-9",
+      "title": "NVIDIA how we hire",
+      "url": "https://www.nvidia.com/en-us/about-nvidia/careers/how-we-hire/",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-10": {
+      "id": "company-10",
+      "title": "Apple machine-learning and AI roles",
+      "url": "https://jobs.apple.com/en-us/search?team=machine-learning-and-ai-SFTWR-MCHLN",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-11": {
+      "id": "company-11",
+      "title": "Accenture Customer AI Engineer",
+      "url": "https://www.accenture.com/us-en/careers/jobdetails?id=R00314667_en",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-12": {
+      "id": "company-12",
+      "title": "Deloitte GenAI engineering role",
+      "url": "https://southasiacareers.deloitte.com/job/Bengaluru-Lead-Junior-Associate-GenAI-Engineering-Bengaluru-Engineering-as-a-Service-Operate/60366144/",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-13": {
+      "id": "company-13",
+      "title": "TCS AI careers",
+      "url": "https://www.tcs.com/careers/india/tcs-ai-careers",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-14": {
+      "id": "company-14",
+      "title": "Infosys public GenAI developer roles",
+      "url": "https://career.infosys.com/joblist?countrycode=IN&type=ALL",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-15": {
+      "id": "company-15",
+      "title": "Wipro GenAI Engineer Lead",
+      "url": "https://careers.wipro.com/job/Gen-AI-Engineer-Lead/198667-en_US/",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    },
+    "company-16": {
+      "id": "company-16",
+      "title": "Capgemini Python GenAI Engineer",
+      "url": "https://careers.capgemini.com/job/Hyderabad-Python-Gen-AI-Engineer/1448465033/",
+      "kind": "public company guidance or role/research evidence",
+      "checked_at": "2026-11-11"
+    }
+  },
+  "companies": [
+    {
+      "name": "Google",
+      "source": "company-1",
+      "focus": "Problem solving and clear technical reasoning"
+    },
+    {
+      "name": "Google DeepMind",
+      "source": "company-2",
+      "focus": "Research reasoning and scientific evaluation"
+    },
+    {
+      "name": "Microsoft",
+      "source": "company-3",
+      "focus": "Technical problem solving and system design"
+    },
+    {
+      "name": "Amazon",
+      "source": "company-4",
+      "focus": "Coding, scientific depth and evidence-led discussion"
+    },
+    {
+      "name": "AWS",
+      "source": "company-5",
+      "focus": "Cloud AI architecture study lens; not interview-format evidence"
+    },
+    {
+      "name": "Meta",
+      "source": "company-6",
+      "focus": "Foundation-model research study lens; not interview-format evidence"
+    },
+    {
+      "name": "OpenAI",
+      "source": "company-7",
+      "focus": "Collaboration, technical ability and safe AI engineering"
+    },
+    {
+      "name": "Anthropic",
+      "source": "company-8",
+      "focus": "AI engineering and responsible research study lens"
+    },
+    {
+      "name": "NVIDIA",
+      "source": "company-9",
+      "focus": "Technical coding and engineering discussion"
+    },
+    {
+      "name": "Apple",
+      "source": "company-10",
+      "focus": "Model infrastructure, evaluation and product integration"
+    },
+    {
+      "name": "Accenture",
+      "source": "company-11",
+      "focus": "Python, RAG, evaluation and enterprise delivery"
+    },
+    {
+      "name": "Deloitte",
+      "source": "company-12",
+      "focus": "GenAI engineering and client solution delivery"
+    },
+    {
+      "name": "TCS",
+      "source": "company-13",
+      "focus": "AI/ML foundations and applied engineering"
+    },
+    {
+      "name": "Infosys",
+      "source": "company-14",
+      "focus": "Python, ML, scalable AI and integration"
+    },
+    {
+      "name": "Wipro",
+      "source": "company-15",
+      "focus": "Python, agents, cloud deployment and observability"
+    },
+    {
+      "name": "Capgemini",
+      "source": "company-16",
+      "focus": "Python, RAG, LLMOps and production governance"
+    }
+  ]
+}

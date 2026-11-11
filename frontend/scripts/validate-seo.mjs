@@ -6,7 +6,7 @@ import path from 'node:path'
 
 const dist = path.resolve(import.meta.dirname, '..', 'dist')
 const SITE = 'https://codinghubs.in'
-const APP_ONLY = /^\/(login|register|dashboard|courses|admin-panel|ai)(\/|$)/
+const APP_ONLY = /^\/(login|register|dashboard|enroll|cart|checkout|payment|my-account|admin-panel|ai|gigs)(\/|$)/
 const PROXIED = /^\/(api|admin|static)\//
 const failures = []
 const warnings = []
@@ -43,8 +43,13 @@ if (/<lastmod>/.test(sitemapXml)) warn('sitemap.xml has <lastmod>; only keep it 
 
 // ---------- robots.txt ----------
 const robots = await read('robots.txt')
-if (!robots.includes(`Sitemap: ${SITE}/sitemap.xml`)) fail('robots.txt has no Sitemap line')
-for (const sm of ['sitemap-content.xml', 'sitemap-shop.xml']) if (!robots.includes(`Sitemap: ${SITE}/${sm}`)) fail(`robots.txt has no Sitemap line for ${sm}`)
+if (!robots.includes(`Sitemap: ${SITE}/sitemap-index.xml`)) fail('robots.txt has no master Sitemap line')
+const sitemapIndex = await read('sitemap-index.xml')
+if (!sitemapIndex.startsWith('<?xml') || !/<sitemapindex\s+xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9"/.test(sitemapIndex) || !sitemapIndex.trim().endsWith('</sitemapindex>')) fail('sitemap-index.xml is not a sitemap index')
+const children = [...sitemapIndex.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])
+const expectedChildren = ['sitemap.xml', 'sitemap-content.xml', 'sitemap-shop.xml'].map(name => `${SITE}/${name}`)
+if (children.length !== expectedChildren.length || new Set(children).size !== children.length || expectedChildren.some(url => !children.includes(url))) fail('sitemap index must reference exactly the three public child sitemaps')
+if (/<lastmod>/.test(sitemapIndex)) fail('Sitemap index must not invent child modification dates')
 const contentShell = await read('content-shell.html')
 if (!contentShell.includes('<!--SEO_HEAD-->') || !contentShell.includes('<!--SSR_ROOT-->')) fail('content-shell.html is missing its SEO_HEAD / SSR_ROOT markers (the backend fills them)')
 const disallows = [...robots.matchAll(/^Disallow:\s*(\S+)/gim)].map((m) => m[1])
@@ -147,6 +152,35 @@ while (queue.length) {
   }
 }
 for (const pg of pages) if (!reach.has(pg.urlPath)) fail(`orphan (not reachable from the home page via HTML links): ${pg.urlPath}`)
+
+// ---------- source-backed prep coverage and preserved non-indexable routes ----------
+const sources = JSON.parse(await readFile(path.resolve(import.meta.dirname, '../src/learning/prep-generated/manifest.json'), 'utf8'))
+const catalog = await readFile(path.resolve(import.meta.dirname, '../src/learning/catalog.ts'), 'utf8')
+const courseSlugs = [...catalog.matchAll(/^  \['([^']+)',/gm)].map(m => m[1])
+for (const slug of courseSlugs) {
+  const p = '/interview-prep/' + slug + '/'
+  const html = await read('interview-prep/' + slug + '/index.html')
+  const source = sources[slug]
+  const ready = (source?.availableDays ?? 0) >= 3
+  const indexed = ready && source.primary === slug
+  if (urls.includes(SITE + p) !== indexed) fail('Prep source/sitemap mismatch: ' + p)
+  if (indexed) {
+    for (const id of ['prep-outcomes', 'prep-answers', 'prep-roadmap']) if (!html.includes('id="' + id + '"')) fail(p + ' missing readable guide section ' + id)
+    const guide = JSON.parse(await readFile(path.resolve(import.meta.dirname, '../src/learning/prep-generated/' + source.curriculum + '.json'), 'utf8'))
+    for (const sample of guide.samples) {
+      if (!html.includes(sample.interview[0].question.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;'))) fail(p + ' missing source-backed answer ' + sample.day)
+    }
+  } else if (!ready && !/<meta name="robots" content="noindex, follow"/.test(html)) fail(p + ' should remain noindex until distinct content is available')
+  if (ready && source.primary !== slug && /<meta name="robots" content="noindex/.test(html)) fail(p + ' should use canonical consolidation without noindex')
+  if (/is a core concept in|It improves reliability, maintainability and clarity|An unrelated concept/.test(html) && source) fail(p + ' exposes source template placeholders')
+  const expected = SITE + '/interview-prep/' + (source?.primary ?? slug) + '/'
+  if (!html.includes('<link rel="canonical" href="' + expected + '"')) fail(p + ' canonical differs from source mapping')
+}
+if (urls.some(u => /\/gigs(?:\/|$)/.test(u))) fail('Staged marketplace must stay outside the sitemap')
+if (/<lastmod>/.test(sitemapXml)) fail('Static sitemap has lastmod without a tracked content timestamp')
+for (const p of ['/login', '/register', '/dashboard', '/checkout', '/my-account', '/gigs']) {
+  if (disallows.some(d => p.startsWith(d))) fail(p + ' must be crawlable so noindex can be read')
+}
 
 // ---------- non-indexable pages ----------
 const notFound = await read('404.html')

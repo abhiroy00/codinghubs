@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { loadContent } from './locations/content-loader'
 import './styles/global.css'
+import { loadPrepGuide } from './learning/prep-content'
+import { loadGenAILevel } from './learning/genai-content'
 import { prefetchRoutesWhenIdle } from './lib/prefetch'
 
 async function start() {
@@ -24,6 +26,12 @@ async function start() {
     : /^\/locations\/?$/.test(path) ? import('./locations/LocationsIndex')
     : null
   if (lazyPage) await lazyPage.catch(() => null)
+  const prep = path.match(/^\/interview-prep\/([^/]+)\/?$/)
+  const genai = path.match(/^\/interview-prep\/generative-ai\/levels\/(\d+)(\/|$)/)
+  if(genai) await Promise.all([import('./learning/GenAILearning'),loadGenAILevel(Number(genai[1]))]).catch(()=>null)
+  const subject=path.match(/^\/interview-prep\/([^/]+)\/levels\//)
+  if(subject&&subject[1]!=='generative-ai') await Promise.all([import('./learning/CourseRoadmapLearning'),import('./learning/course-roadmap-content').then(m=>m.loadCourseRoadmap(subject[1]))]).catch(()=>null)
+  if (prep) await loadPrepGuide(prep[1]).catch(() => null)
   prefetchRoutesWhenIdle()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>

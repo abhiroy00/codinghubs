@@ -16,11 +16,20 @@ import { LocationsIndex } from './locations/LocationsIndex'
 import { LocationView } from './locations/LocationView'
 import { INDEX_DESCRIPTION, INDEX_TITLE, indexJsonLd, locationJsonLd } from './locations/seo'
 import { LOCATIONS, SITE_URL, locationPath } from './locations/registry'
+import { learningMeta } from './seo/learning'
+import { PREP_SOURCES } from './learning/prep-content'
+import type { PrepGuide } from './learning/prep-content'
 import { COURSE_CATALOG } from './learning/catalog'
 import { CourseDetails, CourseDirectory, InterviewPrep } from './learning/CourseLearning'
 import { LearnFrame } from './learning/LearnFrame'
+import { GenAILearning } from './learning/GenAILearning'
+import { CourseRoadmapLearning } from './learning/CourseRoadmapLearning'
+import { COURSE_ROADMAPS,courseLevelPath,type CourseRoadmapData } from './learning/course-roadmap-content'
+import { courseRoadmapMeta } from './learning/course-roadmap-seo'
+import { genaiMeta } from './learning/genai-seo'
+import { GENAI_LEVELS,genaiPath,type GenAILevel } from './learning/genai-content'
 import type { LocationContent } from './locations/types'
-import { HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
+import { HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -32,17 +41,9 @@ function renderLearningPage(path: string, element: ReactNode) {
   )
 }
 
-/** WebPage and, for a course page, a Course node without any price or rating. */
-function learningJsonLd(path: string, name: string, description: string, _trail: [string, string][], course = false) {
-  const url = `${SITE_URL}${path}`
-  const graph: Record<string, unknown>[] = [
-    organizationNode(),
-    { '@type': 'WebPage', '@id': `${url}#webpage`, url, name, description, inLanguage: 'en-IN', about: { '@id': ORG_ID } },
-  ]
-  if (course) graph.push({ '@type': 'Course', name, description, url, provider: { '@id': ORG_ID }, inLanguage: 'en-IN' })
-  return { '@context': 'https://schema.org', '@graph': graph }
-}
-
+const prepModules = import.meta.glob<{ default: PrepGuide }>('./learning/prep-generated/*.json', { eager: true })
+const genaiModules = import.meta.glob<{default:GenAILevel}>('./learning/genai-generated/level-*.json',{eager:true})
+const courseRoadmapModules = import.meta.glob<{default:CourseRoadmapData}>(['./learning/course-roadmaps/*.json','!./learning/course-roadmaps/manifest.json'],{eager:true})
 export interface PrerenderedPage {
   /** File written under dist/ */
   file: string
@@ -52,6 +53,8 @@ export interface PrerenderedPage {
   description: string
   image: string
   indexable: boolean
+  canonical?: string
+  robots?: string
   /** true when the page uses the free-session design, so its stylesheet is linked statically in <head> */
   fsDesign: boolean
   html: string
@@ -60,6 +63,30 @@ export interface PrerenderedPage {
 
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
   const pages: PrerenderedPage[] = []
+  for(const course of Object.values(COURSE_ROADMAPS)) {
+    const data=courseRoadmapModules[`./learning/course-roadmaps/${course.slug}.json`].default
+    for(const level of course.levels) {
+      const routes=[{suffix:'',article:undefined as string|undefined,day:undefined as number|undefined},...level.articles.map(a=>({suffix:`articles/${a.slug}/`,article:a.slug,day:undefined})),...level.days.map(d=>({suffix:`days/${d.day}/`,article:undefined,day:d.day}))]
+      for(const route of routes) {
+        const path=courseLevelPath(course.slug,level.level)+route.suffix
+        const seo=courseRoadmapMeta(course.slug,level.level,route.article,route.day)
+        const pattern='/interview-prep/:slug/levels/:level/'+(route.article?'articles/:article/':route.day?'days/:day/':'')
+        pages.push({file:path.slice(1)+'index.html',path,title:seo.title,description:seo.description,image:LOGO_URL,indexable:seo.robots.startsWith('index'),canonical:seo.canonical,robots:seo.robots,fsDesign:true,jsonLd:seo.json_ld,
+          html:renderToString(<AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<CourseRoadmapLearning initialData={data}/>}/></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
+      }
+    }
+  }
+  for(const level of GENAI_LEVELS) {
+    const data=genaiModules[`./learning/genai-generated/level-${level.level}.json`].default
+    const routes=[{suffix:'',article:undefined as string|undefined,day:undefined as number|undefined},...level.articleSlugs.map(a=>({suffix:`articles/${a.slug}/`,article:a.slug,day:undefined})),...level.days.map(d=>({suffix:`days/${d.day}/`,article:undefined,day:d.day}))]
+    for(const route of routes) {
+      const path=genaiPath(level.level)+route.suffix
+      const seo=genaiMeta(level.level,route.article,route.day)
+      const pattern='/interview-prep/generative-ai/levels/:level/'+(route.article?'articles/:article/':route.day?'days/:day/':'')
+      pages.push({file:path.slice(1)+'index.html',path,title:seo.title,description:seo.description,image:LOGO_URL,indexable:true,canonical:seo.canonical,robots:seo.robots,fsDesign:true,jsonLd:seo.json_ld,
+        html:renderToString(<AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<GenAILearning initialData={data}/>}/></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
+    }
+  }
 
   pages.push({
     file: 'home.html',
@@ -79,38 +106,27 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     jsonLd: HOME_META.jsonLd,
   })
 
-  pages.push({
-    file: 'courses/index.html', path: '/courses/', title: 'Courses | Coding Hubs School of AI',
-    description: 'Explore the Coding Hubs School of AI course catalog and course-specific learning paths.',
-    image: LOGO_URL, indexable: true, fsDesign: true,
-    html: renderLearningPage('/courses', <CourseDirectory />),
-    jsonLd: learningJsonLd('/courses/', 'Courses', 'Explore the Coding Hubs School of AI course catalog and course-specific learning paths.', [['Home', '/'], ['Courses', '/courses/']]),
-  })
-  for (const course of COURSE_CATALOG) {
-    const path = `/courses/${course.slug}/`
+  const learningPages = [
+    { kind:'courses' as const, slug:undefined, element:<CourseDirectory /> },
+    ...COURSE_CATALOG.flatMap(course => {
+      const source = PREP_SOURCES[course.slug]
+      const guide = source ? prepModules['./learning/prep-generated/' + source.curriculum + '.json']?.default : undefined
+      return [
+        { kind:'courses' as const, slug:course.slug, element:<CourseDetails /> },
+        { kind:'interview-prep' as const, slug:course.slug, element:<InterviewPrep initialGuide={guide} /> },
+      ]
+    }),
+    { kind:'interview-prep' as const, slug:undefined, element:<InterviewPrep /> },
+  ]
+  for (const item of learningPages) {
+    const seo = learningMeta(item.kind, item.slug)
+    const pagePath = '/' + item.kind + '/' + (item.slug ? item.slug + '/' : '')
     pages.push({
-      file: `courses/${course.slug}/index.html`, path, title: `${course.name} Course | Coding Hubs`,
-      description: course.summary, image: LOGO_URL, indexable: true, fsDesign: true,
-      html: renderLearningPage(path, <CourseDetails />),
-      jsonLd: learningJsonLd(path, course.name, course.summary, [['Home', '/'], ['Courses', '/courses/'], [course.name, path]], true),
-    })
-    const prepPath = `/interview-prep/${course.slug}/`
-    pages.push({
-      file: `interview-prep/${course.slug}/index.html`, path: prepPath, title: `${course.name}: 30-Day Prep | Coding Hubs`,
-      description: `A 30-day ${course.name} interview preparation roadmap with daily theory, questions, quizzes and practical challenges.`,
-      image: LOGO_URL, indexable: true, fsDesign: true,
-      html: renderLearningPage(prepPath, <InterviewPrep />),
-      jsonLd: learningJsonLd(prepPath, `${course.name}: 30-Day Interview Prep`, `A 30-day ${course.name} interview preparation roadmap.`, [['Home', '/'], ['Interview Prep', '/interview-prep/'], [course.name, prepPath]]),
+      file:pagePath.slice(1) + 'index.html', path:pagePath, title:seo.title, description:seo.description,
+      image:seo.og.image, canonical:seo.canonical, robots:seo.robots, indexable:seo.robots.startsWith('index') && seo.canonical === SITE_URL + pagePath, fsDesign:true,
+      html:renderLearningPage(pagePath, item.element), jsonLd:seo.json_ld,
     })
   }
-  pages.push({
-    file: 'interview-prep/index.html', path: '/interview-prep/', title: 'Interview Preparation Dashboard | Coding Hubs School of AI',
-    description: 'Choose a course-specific 30-day roadmap and track your daily interview preparation progress.',
-    image: LOGO_URL, indexable: true, fsDesign: true,
-    html: renderLearningPage('/interview-prep', <InterviewPrep />),
-    jsonLd: learningJsonLd('/interview-prep/', 'Interview Preparation Dashboard', 'Choose a course-specific 30-day roadmap and track your daily interview preparation progress.', [['Home', '/'], ['Interview Prep', '/interview-prep/']]),
-  })
-
 
   for (const meta of PROGRAM_METAS) {
     pages.push({

@@ -45,6 +45,16 @@ class Course(models.Model):
         return self.price * 100
 
 
+class RoadmapProgress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='roadmap_progress')
+    course_slug = models.SlugField(max_length=120, default='generative-ai')
+    completed = models.JSONField(default=dict, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'course_slug'], name='unique_user_roadmap_course')]
+
+
 class LearningProgress(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='learning_progress')
     course_slug = models.SlugField(max_length=120)

@@ -1,0 +1,805 @@
+{
+  "curriculum": "generative-ai",
+  "summary": "From GenAI and LLM fundamentals through prompting, APIs, RAG, fine-tuning, agents, multimodal AI, evaluation and deployment, ending with system design and a capstone.",
+  "complete": true,
+  "missingDays": [],
+  "roadmap": [
+    {
+      "day": 1,
+      "title": "Introduction to Generative AI: Definition, Working & Applications",
+      "module": "GenAI foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 2,
+      "title": "AI vs Machine Learning vs Deep Learning vs Generative AI",
+      "module": "GenAI foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 3,
+      "title": "Generative AI vs Predictive AI",
+      "module": "GenAI foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 4,
+      "title": "Introduction to Large Language Models (LLMs)",
+      "module": "GenAI foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 5,
+      "title": "How LLMs Work: Training, Inference & Prediction",
+      "module": "GenAI foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 6,
+      "title": "Tokens, Tokenization & Context Windows",
+      "module": "GenAI foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 7,
+      "title": "Embeddings & Semantic Representations",
+      "module": "GenAI foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 8,
+      "title": "Transformer Architecture Explained",
+      "module": "Transformers, prompting & APIs",
+      "level": "Intermediate"
+    },
+    {
+      "day": 9,
+      "title": "Self-Attention & Multi-Head Attention",
+      "module": "Transformers, prompting & APIs",
+      "level": "Intermediate"
+    },
+    {
+      "day": 10,
+      "title": "Prompt Engineering Fundamentals",
+      "module": "Transformers, prompting & APIs",
+      "level": "Intermediate"
+    },
+    {
+      "day": 11,
+      "title": "Few-Shot Prompting & Chain-of-Thought Patterns",
+      "module": "Transformers, prompting & APIs",
+      "level": "Intermediate"
+    },
+    {
+      "day": 12,
+      "title": "Advanced Prompting Techniques",
+      "module": "Transformers, prompting & APIs",
+      "level": "Intermediate"
+    },
+    {
+      "day": 13,
+      "title": "Working with LLM APIs",
+      "module": "Transformers, prompting & APIs",
+      "level": "Intermediate"
+    },
+    {
+      "day": 14,
+      "title": "API Parameters and Sampling",
+      "module": "Transformers, prompting & APIs",
+      "level": "Intermediate"
+    },
+    {
+      "day": 15,
+      "title": "Structured Outputs and Function Calling",
+      "module": "Transformers, prompting & APIs",
+      "level": "Intermediate"
+    },
+    {
+      "day": 16,
+      "title": "RAG Fundamentals",
+      "module": "Retrieval & agents",
+      "level": "Intermediate"
+    },
+    {
+      "day": 17,
+      "title": "Vector Embeddings and Similarity Search",
+      "module": "Retrieval & agents",
+      "level": "Intermediate"
+    },
+    {
+      "day": 18,
+      "title": "Building a RAG Pipeline",
+      "module": "Retrieval & agents",
+      "level": "Intermediate"
+    },
+    {
+      "day": 19,
+      "title": "Fine-Tuning Fundamentals",
+      "module": "Fine-tuning & alignment",
+      "level": "Advanced"
+    },
+    {
+      "day": 20,
+      "title": "Data Preparation for Fine-Tuning",
+      "module": "Fine-tuning & alignment",
+      "level": "Advanced"
+    },
+    {
+      "day": 21,
+      "title": "Evaluating Fine-Tuned Models",
+      "module": "Fine-tuning & alignment",
+      "level": "Advanced"
+    },
+    {
+      "day": 22,
+      "title": "AI Agents Fundamentals",
+      "module": "Agents & tools",
+      "level": "Advanced"
+    },
+    {
+      "day": 23,
+      "title": "ReAct and Tool-Using Agents",
+      "module": "Agents & tools",
+      "level": "Advanced"
+    },
+    {
+      "day": 24,
+      "title": "Multi-Agent Systems",
+      "module": "Agents & tools",
+      "level": "Advanced"
+    },
+    {
+      "day": 25,
+      "title": "Multimodal AI Fundamentals",
+      "module": "Multimodal AI",
+      "level": "Advanced"
+    },
+    {
+      "day": 26,
+      "title": "Working with Image and Audio Models",
+      "module": "Multimodal AI",
+      "level": "Advanced"
+    },
+    {
+      "day": 27,
+      "title": "Multimodal Applications",
+      "module": "Multimodal AI",
+      "level": "Advanced"
+    },
+    {
+      "day": 28,
+      "title": "Evaluation and Benchmarking",
+      "module": "Evaluation & deployment",
+      "level": "Advanced"
+    },
+    {
+      "day": 29,
+      "title": "Deployment, Safety and Responsible AI",
+      "module": "Evaluation & deployment",
+      "level": "Advanced"
+    },
+    {
+      "day": 30,
+      "title": "System Design and Capstone Project",
+      "module": "Evaluation & deployment",
+      "level": "Advanced"
+    }
+  ],
+  "samples": [
+    {
+      "day": 1,
+      "title": "Introduction to Generative AI: Definition, Working & Applications",
+      "level": "Beginner",
+      "definition": "Generative Artificial Intelligence (Generative AI) is a branch of AI that creates new content, such as text, images, audio, video, music or computer code, by learning patterns from existing training data. Instead of only classifying or predicting, a generative model produces new outputs in response to an instruction called a prompt.",
+      "objectives": [
+        "Define Generative AI in simple, technically accurate terms.",
+        "Explain the basic process a generative model follows to produce content.",
+        "Identify the main types of Generative AI and well-known tools for each.",
+        "Recognise real-world applications, benefits and limitations.",
+        "Experiment with prompts and answer foundational interview questions."
+      ],
+      "interview": [
+        {
+          "question": "What is Generative AI?",
+          "answer": "Generative AI is a type of AI that creates new content such as text, images, audio, video or code by learning patterns from training data.",
+          "explanation": "Interviewers expect the key contrast: it generates new content rather than only labelling or predicting. Mention that output is guided by a prompt."
+        },
+        {
+          "question": "How is Generative AI different from traditional AI?",
+          "answer": "Traditional AI usually classifies, predicts or detects patterns, for example spam detection. Generative AI produces new content, for example drafting an email. Many real systems combine both.",
+          "explanation": "Give one example of each and note they are complementary, which shows practical understanding rather than a memorised definition."
+        },
+        {
+          "question": "What is a prompt, and why does it matter?",
+          "answer": "A prompt is the instruction, question or context given to a model. Its wording, context and constraints strongly influence the quality and format of the output.",
+          "explanation": "Strong answers add that a good prompt states the task, audience, format and constraints; this leads into prompt engineering (Days 10–12)."
+        },
+        {
+          "question": "What is an AI hallucination, and how would you reduce its impact?",
+          "answer": "A hallucination is generated information that is incorrect, unsupported or fabricated, even though it sounds plausible. Its impact is reduced by verifying facts against reliable sources, grounding the model in trusted documents and keeping a human review step for important outputs.",
+          "explanation": "Naming mitigations (verification, grounding with retrieval, human review) shows awareness of production risks, not just the definition."
+        },
+        {
+          "question": "Name some Generative AI tools and what they generate.",
+          "answer": "Chat assistants such as ChatGPT, Gemini and Claude generate text and code; DALL·E generates images; GitHub Copilot assists with code; Sora generates video.",
+          "explanation": "Group tools by modality and note that capabilities change quickly, so the categories matter more than the brand names."
+        }
+      ],
+      "example": {
+        "title": "Generating code from a prompt",
+        "body": "A learner types: 'Write a Python program to check whether a number is prime.' A text-and-code model returns a function, explains the logic (a prime has no divisors other than 1 and itself, so it is enough to test divisors up to the square root) and shows sample output. The learner should still run and test the code, because generated code can contain mistakes.",
+        "code": {
+          "language": "python",
+          "source": "def is_prime(n):\n    if n < 2:\n        return False\n    d = 2\n    while d * d <= n:\n        if n % d == 0:\n            return False\n        d += 1\n    return True\n\nprint(is_prime(7))   # True\nprint(is_prime(12))  # False"
+        }
+      },
+      "practice": {
+        "title": "Build a reusable prompt template",
+        "statement": "Write a program that reads a topic, an audience, a tone and a number of examples, then prints a well-structured prompt. The tone must be one of formal, friendly or simple; any other value is replaced by friendly. The number of examples must be between 1 and 5; values outside that range are clamped to the nearest limit.",
+        "objective": "Practise structuring a prompt with an explicit task, audience, tone and output format, the levers that change a generative model's output."
+      },
+      "takeaways": [
+        "Generative AI creates new content from patterns learned during training.",
+        "It is built with machine-learning and deep-learning techniques; LLMs are used for language tasks.",
+        "A prompt guides the output: changing audience, tone or detail changes the result.",
+        "Generative and traditional AI solve different problems and are often combined.",
+        "Outputs can be wrong (hallucinations) or biased, so verify important information.",
+        "Applications span education, software, support, marketing, healthcare and security."
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Tokens, Tokenization & Context Windows",
+      "level": "Beginner",
+      "definition": "A token is the basic unit of text an LLM reads and writes: a whole word, part of a word, a punctuation mark or a byte sequence. Tokenisation is the process of converting text into a sequence of token IDs from the model's fixed vocabulary. The context window is the maximum number of tokens, prompt plus generated output, that the model can handle in a single request.",
+      "objectives": [
+        "Explain what a token is and why LLMs work on tokens rather than characters or words.",
+        "Describe subword tokenisation algorithms such as BPE, WordPiece and SentencePiece.",
+        "Estimate token counts and explain why the same text costs different tokens in different languages.",
+        "Define the context window and how input and output tokens share it.",
+        "Apply strategies for handling text that does not fit in the context window."
+      ],
+      "interview": [
+        {
+          "question": "What is a token in an LLM?",
+          "answer": "A token is a unit of text from the model's vocabulary, typically a word or a word piece, mapped to an integer ID. Models process and generate sequences of these IDs.",
+          "explanation": "Give the rule of thumb (about 4 English characters per token) and mention that pricing and limits are in tokens."
+        },
+        {
+          "question": "Why do LLMs use subword tokenisation?",
+          "answer": "It balances vocabulary size and sequence length: frequent words stay whole, rare words split into reusable pieces, and no input is ever out-of-vocabulary.",
+          "explanation": "Contrast with word-level (huge vocabulary, OOV issues) and character-level (very long sequences)."
+        },
+        {
+          "question": "How does BPE build its vocabulary?",
+          "answer": "Start with characters or bytes, count adjacent pairs across the corpus, merge the most frequent pair into a new token, and repeat until the target vocabulary size is reached. Encoding applies the learned merges in order.",
+          "explanation": "Interviewers may ask you to perform two or three merges by hand on a tiny corpus; practise this."
+        },
+        {
+          "question": "What is a context window, and what happens when you exceed it?",
+          "answer": "It is the maximum number of tokens, prompt plus output, the model can handle per request. Exceeding it causes an API error or truncation, so the application must trim, summarise or retrieve selectively.",
+          "explanation": "Mention reserving output tokens and the 'lost in the middle' effect for very long inputs."
+        },
+        {
+          "question": "Why might an LLM fail to count the letter 'r' in 'strawberry'?",
+          "answer": "The model sees tokens such as 'str', 'aw', 'berry', not individual characters, so letter-level information is not directly visible to it.",
+          "explanation": "A popular question that tests whether you truly understand tokenisation. Mention workarounds: spell the word out first or use a code tool."
+        }
+      ],
+      "example": {
+        "title": "Counting tokens with tiktoken",
+        "body": "OpenAI's tiktoken library exposes the exact tokeniser of its models. The snippet counts tokens for an English and a Hindi sentence with similar meaning. The exact numbers depend on the encoding, but the Hindi sentence typically needs noticeably more tokens.",
+        "code": {
+          "language": "python",
+          "source": "import tiktoken\n\nenc = tiktoken.get_encoding('o200k_base')   # encoding used by GPT-4o family models\nfor text in ['How are you today?', 'आज आप कैसे हैं?']:\n    ids = enc.encode(text)\n    print(len(ids), ids[:6])\n\nprint([enc.decode([i]) for i in enc.encode('tokenization')])\n# e.g. ['token', 'ization']  (exact split depends on the encoding)"
+        }
+      },
+      "practice": {
+        "title": "Toy tokeniser and context-window check",
+        "statement": "Implement a toy tokeniser. First split the text into words (runs of letters, digits or underscores) and punctuation marks (every other non-space character is its own piece). Each punctuation mark is one token. Each word is split into pieces of 4 characters from the left (the last piece may be shorter), and each piece is one token. Print the pieces joined by '|', the token count, the input budget (window minus reserved output) and whether the prompt fits.",
+        "objective": "Count tokens with a simple subword rule and check a prompt against a context window with reserved output tokens."
+      },
+      "takeaways": [
+        "LLMs read and write tokens, usually subword pieces from a fixed vocabulary.",
+        "BPE, WordPiece and SentencePiece are the main subword tokenisation families.",
+        "Roughly 4 English characters per token; other languages often need more tokens.",
+        "The context window covers prompt and output together; reserve space for the answer.",
+        "Long contexts cost more, are slower and can 'lose' information in the middle.",
+        "Use truncation, summarisation or retrieval when content is too long."
+      ]
+    },
+    {
+      "day": 12,
+      "title": "Advanced Prompting Techniques",
+      "level": "Intermediate",
+      "definition": "Advanced prompting techniques are structured ways to compose instructions, examples, delimiters and chained calls so that a language model reliably completes complex, multi-step tasks. They go beyond a single prompt by separating concerns across stages, constraining output with clear formats, and adding guardrails against unsafe or off-topic behaviour.",
+      "objectives": [
+        "Apply role prompting, decomposition and prompt chaining to complex tasks.",
+        "Explain how delimiters and few-shot examples reduce ambiguity in prompts.",
+        "Design a prompt chain where one stage's output feeds the next stage.",
+        "Iterate on a prompt using test cases instead of guesswork.",
+        "Recognise prompt injection risks and how to defend against them."
+      ],
+      "interview": [
+        {
+          "question": "What is prompt chaining and when is it useful?",
+          "answer": "Prompt chaining splits a task into a sequence of prompts where each stage's output feeds the next. It is useful for complex work because each stage is small, testable and easy to debug.",
+          "explanation": "Name a concrete chain such as extract → validate → summarise to show practical understanding."
+        },
+        {
+          "question": "Why use delimiters in a prompt?",
+          "answer": "Delimiters mark where instructions end and untrusted user data begins, preventing the user's input from being read as new commands and reducing prompt injection risk.",
+          "explanation": "Mention triple quotes, XML tags or clear headings as examples."
+        },
+        {
+          "question": "What is prompt injection and how can you reduce it?",
+          "answer": "Prompt injection is when untrusted input tricks a model into ignoring its instructions. Defences include delimiters, system-message separation, input validation and treating model output as untrusted.",
+          "explanation": "Show awareness that this is a production safety concern, not just a prompt-quality issue."
+        },
+        {
+          "question": "How do role, task and context differ in a prompt?",
+          "answer": "The role sets expertise and tone, the task states the exact work, and the context provides audience, constraints and references. Together they reduce guesswork and improve consistency.",
+          "explanation": "Give one example of each to make the distinction concrete."
+        },
+        {
+          "question": "Why test prompts with cases instead of guessing?",
+          "answer": "Prompt behaviour is probabilistic, so a change that looks better on one input may fail on another. Test cases reveal regressions and measure real improvement.",
+          "explanation": "Connect this to evaluation (covered later in the course)."
+        }
+      ],
+      "example": {
+        "title": "Chained prompt for summarising a support ticket",
+        "body": "A support agent pastes a ticket. The first prompt extracts the issue type and priority. The second prompt drafts a reply using those fields. A third prompt checks the reply against safety rules before it is sent. Each stage is small enough to test and fix independently.",
+        "code": {
+          "language": "text",
+          "source": "Stage 1 - Extract:\nTicket: {{ticket}}\nReturn: Issue type, Priority, Customer name.\n\nStage 2 - Draft reply:\nIssue type: {{type}}\nPriority: {{priority}}\nCustomer: {{name}}\nWrite a polite, short reply.\n\nStage 3 - Safety check:\nReply: {{draft}}\nFlag any personal data, promises or unsafe claims."
+        }
+      },
+      "practice": {
+        "title": "Build a safe chained prompt assembler",
+        "statement": "Read a role, a task, a context and an untrusted user input. Print a single prompt that uses <<< and >>> delimiters around the user input, then the role, task and context as labelled sections. If the user input contains the substring '>>>', replace it with '[redacted]' before inserting it.",
+        "objective": "Assemble a chained prompt with delimiters that separates instructions from untrusted input, practising safe prompt construction."
+      },
+      "takeaways": [
+        "Separate role, task and context so the model knows exactly what to do.",
+        "Use delimiters to keep instructions and user input apart.",
+        "Prompt chaining makes complex work testable one stage at a time.",
+        "Validate intermediate results before passing them to the next stage.",
+        "Prompt injection is a real risk; use delimiters, validation and output sanitisation.",
+        "Iterate on prompts with test cases rather than guessing."
+      ]
+    },
+    {
+      "day": 18,
+      "title": "Building a RAG Pipeline",
+      "level": "Intermediate",
+      "definition": "A RAG pipeline connects a retrieval system to a generative model so answers are grounded in external documents. It loads documents, splits them into chunks, embeds and stores them, then at query time retrieves the most relevant chunks, inserts them into the prompt, and asks the model to answer using only that context. Each stage can be tested independently.",
+      "objectives": [
+        "Assemble a simple RAG pipeline: load, chunk, embed, store, retrieve and answer.",
+        "Write a function that chunks text into overlapping pieces.",
+        "Retrieve the top-k most similar chunks for a query.",
+        "Build an augmented prompt that instructs the model to answer from context.",
+        "Explain how to evaluate whether the answer is grounded in the retrieved context."
+      ],
+      "interview": [
+        {
+          "question": "What are the two phases of a RAG pipeline?",
+          "answer": "Offline indexing: load, chunk, embed and store documents. Online querying: embed the query, retrieve top-k chunks, augment the prompt and generate an answer.",
+          "explanation": "Emphasise that indexing happens once, querying happens per user request."
+        },
+        {
+          "question": "Why use overlap when chunking?",
+          "answer": "Overlap keeps related text together across chunk boundaries so no sentence or idea is split in half and lost.",
+          "explanation": "Mention chunk size and overlap as tuning parameters."
+        },
+        {
+          "question": "What is top-k retrieval?",
+          "answer": "Embed the query and return the k stored chunks with the highest similarity to it.",
+          "explanation": "Tune k so enough context is retrieved without filling the window."
+        },
+        {
+          "question": "What should an augmented prompt include?",
+          "answer": "Instructions, labelled context chunks and the user question, plus a directive to answer only from the context and say 'I do not know' when unsupported.",
+          "explanation": "Citations help users verify answers."
+        },
+        {
+          "question": "How do you tell if a RAG answer is grounded?",
+          "answer": "Every claim in the answer must be traceable to a retrieved chunk; unsupported claims are hallucinations.",
+          "explanation": "Citations and source checking are the practical check."
+        }
+      ],
+      "example": {
+        "title": "RAG for an HR handbook",
+        "body": "Documents: the employee handbook. Chunks include leave policy, benefits and code of conduct. Query: 'How many sick days?' Retrieval returns the sick-leave chunk. The augmented prompt includes that chunk, and the model answers with the exact number and cites the handbook section.",
+        "code": {
+          "language": "python",
+          "source": "chunks = retrieve(query, top_k=3)\ncontext = '\\n'.join(f'[{c.source}] {c.text}' for c in chunks)\nprompt = f'''Answer using only the context below.\nContext:\n{context}\n\nQuestion: {query}\nAnswer:'''\nanswer = generate(prompt)"
+        }
+      },
+      "practice": {
+        "title": "Chunk text with overlap",
+        "statement": "Read a text string, a chunk size and an overlap size. Split the text into chunks of up to chunk_size characters, where consecutive chunks overlap by overlap characters. Print each chunk on its own line. If the text is empty, print nothing.",
+        "objective": "Implement overlapping text chunking, the first stage of a RAG pipeline."
+      },
+      "takeaways": [
+        "RAG combines retrieval with generation so answers are grounded in documents.",
+        "Offline: load, chunk, embed, store; online: embed, retrieve, augment, generate.",
+        "Chunk with overlap and keep metadata for source citations.",
+        "Top-k retrieval selects the most relevant chunks for the query.",
+        "The augmented prompt instructs the model to use only the context.",
+        "Grounding means every answer claim traces to a retrieved chunk."
+      ]
+    },
+    {
+      "day": 24,
+      "title": "Multi-Agent Systems",
+      "level": "Advanced",
+      "definition": "A multi-agent system is a group of agents, each with a role and tools, that work together to complete a task. Agents can specialise (researcher, writer, critic) and pass work between them. Coordination ensures they do not duplicate work or contradict each other, while the added complexity brings higher cost and latency.",
+      "objectives": [
+        "Explain what a multi-agent system is and why multiple agents help.",
+        "Describe common patterns: planner-worker, critic-reviser and debate.",
+        "Explain how agents communicate and hand off work.",
+        "Discuss coordination, consistency and cost in multi-agent systems.",
+        "Compare a single agent with a multi-agent system for a real task."
+      ],
+      "interview": [
+        {
+          "question": "What is a multi-agent system?",
+          "answer": "A group of specialised agents that collaborate, each with a role, to complete a task together.",
+          "explanation": "Mention roles such as researcher, writer and critic."
+        },
+        {
+          "question": "Name two multi-agent patterns.",
+          "answer": "Planner-worker (plan then execute) and critic-reviser (draft, critique, revise). Debate is another.",
+          "explanation": "Give a one-sentence example of each."
+        },
+        {
+          "question": "How do agents hand off work?",
+          "answer": "One agent's output becomes the next agent's input, with context carried along so nothing is lost.",
+          "explanation": "Shared state or a message bus keeps agents aligned."
+        },
+        {
+          "question": "What is a downside of multi-agent systems?",
+          "answer": "More agents mean more LLM calls, higher cost and greater latency. They are overkill for simple tasks.",
+          "explanation": "Start with one agent and scale up only when necessary."
+        },
+        {
+          "question": "How do you keep agents consistent?",
+          "answer": "Use an orchestrator or shared plan, and add a critic or verification step to catch contradictions before the final answer.",
+          "explanation": "Consistency checks prevent conflicting outputs."
+        }
+      ],
+      "example": {
+        "title": "Writing a blog post with three agents",
+        "body": "A researcher agent finds facts on the topic. A writer agent drafts the post from those facts. A critic agent checks the draft for accuracy and tone, and sends it back for revision. The final post combines research, writing and review.",
+        "code": {
+          "language": "text",
+          "source": "Researcher: finds sources and summaries.\nWriter: drafts the blog post using the sources.\nCritic: checks accuracy and tone, requests changes.\nWriter: revises the draft.\nFinal: reviewed, accurate post."
+        }
+      },
+      "practice": {
+        "title": "Design a multi-agent workflow",
+        "statement": "Choose a complex task such as producing a weekly newsletter, building a feature, or auditing a document. Describe: (1) the overall goal, (2) the agents and their roles, (3) how they communicate and hand off work, (4) the coordination mechanism (orchestrator, shared plan or critic), and (5) the cost/quality trade-off versus using one agent.",
+        "objective": "Plan roles, communication, coordination and cost trade-offs for a multi-agent system."
+      },
+      "takeaways": [
+        "Multi-agent systems use specialised agents that collaborate on a task.",
+        "Patterns include planner-worker, critic-reviser and debate.",
+        "Agents communicate by passing output as input and through handoffs.",
+        "Coordination prevents duplication and contradiction.",
+        "Multi-agent systems cost more and are slower; use them for complex tasks.",
+        "Start with one agent and add more only when needed."
+      ]
+    },
+    {
+      "day": 30,
+      "title": "System Design and Capstone Project",
+      "level": "Advanced",
+      "definition": "System design for generative AI means choosing models, tools, data flows and safety controls so the application is useful, reliable and safe. A capstone design brings together the whole course: prompting for behaviour, RAG for facts, agents for actions, evaluation for quality, and deployment controls for safety. The design should state the goal, components, data flow, techniques used and how success is measured.",
+      "objectives": [
+        "Design a small end-to-end generative AI system with models, tools and safety.",
+        "Choose the right technique for each part: prompting, RAG, fine-tuning or agents.",
+        "Sketch the architecture: frontend, backend proxy, model API and vector store.",
+        "Plan evaluation, monitoring and human review.",
+        "Present a capstone design covering the full 30-day curriculum."
+      ],
+      "interview": [
+        {
+          "question": "How do you choose between prompting, RAG, fine-tuning and agents?",
+          "answer": "Prompting for behaviour, RAG for documents and facts, fine-tuning for consistent format or style, agents for multi-step tool-using tasks.",
+          "explanation": "Justify each choice with the part of the system it serves."
+        },
+        {
+          "question": "What components go in a generative AI architecture?",
+          "answer": "Frontend, backend proxy (keys and validation), model API, vector store for RAG, and a cache.",
+          "explanation": "Draw data flow arrows between them."
+        },
+        {
+          "question": "How do you evaluate before release?",
+          "answer": "Score the system on a held-out evaluation set using exact match, ROUGE or an LLM judge, and spot-check failures.",
+          "explanation": "Set release thresholds and compare options."
+        },
+        {
+          "question": "What safety controls are needed in production?",
+          "answer": "Input validation, output sanitisation, rate limiting, protected API keys, human review for high-stakes decisions and escalation.",
+          "explanation": "Monitor and have a rollback plan."
+        },
+        {
+          "question": "How does each course day feed the capstone?",
+          "answer": "Foundations pick the model, prompting shapes behaviour, APIs build the proxy, RAG adds documents, evaluation scores quality and deployment adds safety.",
+          "explanation": "The capstone is the integration of all 29 days."
+        }
+      ],
+      "example": {
+        "title": "A company HR assistant capstone",
+        "body": "Goal: answer employee questions from the HR handbook. Components: frontend chat, backend proxy, vector store with handbook chunks, LLM for answers, escalation button. Flow: user asks → backend retrieves handbook chunks → builds RAG prompt → LLM answers → sanitise → show. Evaluation: 50 held-out Q&A pairs scored by exact match and LLM judge. Safety: rate limit, PII redaction, human HR contact for disputes.",
+        "code": {
+          "language": "text",
+          "source": "Frontend (chat) → Backend proxy (key, validate)\n         → Vector store (handbook chunks)\n         → LLM (RAG answer)\n         → Sanitise → User\n         ↓ Escalation → Human HR"
+        }
+      },
+      "practice": {
+        "title": "Design your capstone generative AI system",
+        "statement": "Choose a real application such as an HR assistant, a support bot or a study companion. Write a capstone design document with: (1) the goal and users, (2) the techniques used for each part and why, (3) the architecture sketch with components and data flow, (4) the evaluation plan with metrics and a held-out set, and (5) the safety controls and human-review points.",
+        "objective": "Integrate the whole 30-day curriculum into a single system design."
+      },
+      "takeaways": [
+        "Choose prompting, RAG, fine-tuning or agents based on the need.",
+        "Sketch architecture: frontend, backend proxy, model API, vector store, cache.",
+        "Data flow: validate, retrieve, prompt, generate, sanitise, respond.",
+        "Evaluate on a held-out set before release; monitor in production.",
+        "Safety: validate input, sanitise output, rate-limit, protect keys.",
+        "Humans review high-stakes decisions; users can escalate."
+      ]
+    }
+  ],
+  "firstLesson": {
+    "day": 1,
+    "title": "Introduction to Generative AI: Definition, Working & Applications",
+    "module": "GenAI foundations",
+    "level": "Beginner",
+    "objectives": [
+      "Define Generative AI in simple, technically accurate terms.",
+      "Explain the basic process a generative model follows to produce content.",
+      "Identify the main types of Generative AI and well-known tools for each.",
+      "Recognise real-world applications, benefits and limitations.",
+      "Experiment with prompts and answer foundational interview questions."
+    ],
+    "definition": "Generative Artificial Intelligence (Generative AI) is a branch of AI that creates new content, such as text, images, audio, video, music or computer code, by learning patterns from existing training data. Instead of only classifying or predicting, a generative model produces new outputs in response to an instruction called a prompt.",
+    "theory": [
+      {
+        "heading": "What Generative AI means",
+        "body": "Traditional AI systems are usually built to analyse data: they classify an email as spam, predict a price or detect an anomaly. Generative AI systems learn the structure of their training data well enough to produce new examples that follow the same patterns. A language model that has learned how sentences are formed can write a new paragraph; an image model that has learned visual patterns can create a new picture from a description.",
+        "points": [
+          "Generative AI is a category within AI, built with machine learning and deep learning.",
+          "It produces new content rather than only a label or a number.",
+          "Outputs are guided by a prompt: the instruction, question or context given to the model."
+        ]
+      },
+      {
+        "heading": "How Generative AI works",
+        "body": "A generative system is built in two phases. In training, the model learns patterns, relationships and structure from a large dataset. In generation (inference), it receives a prompt and uses its learned parameters to produce an output step by step. For a text model, each step predicts a likely next piece of text given everything so far.",
+        "points": [
+          "Data collection: gather relevant text, images, audio, video or code.",
+          "Data preprocessing: clean, filter and prepare the data.",
+          "Model training: learn patterns with machine-learning or deep-learning methods.",
+          "User prompt: receive an instruction or input.",
+          "Content generation: produce an output from the prompt and the learned parameters.",
+          "Output: return generated text, images, audio, video or code."
+        ]
+      },
+      {
+        "heading": "Types of Generative AI",
+        "body": "Generative models are grouped by the kind of content they produce. Many modern systems are multimodal: they accept and produce more than one type of content, for example a text question about an uploaded image.",
+        "points": [
+          "Text generation: human-like text such as answers, summaries and emails (chat assistants).",
+          "Image generation: images from text prompts (text-to-image tools).",
+          "Code generation: code suggestions and complete functions (coding assistants).",
+          "Audio generation: speech, sound or music (text-to-speech tools).",
+          "Video generation: new or transformed video (text-to-video tools).",
+          "Multimodal generation: works across several input and output types."
+        ]
+      },
+      {
+        "heading": "Generative AI vs traditional (discriminative) AI",
+        "body": "Discriminative or predictive models learn the boundary between categories and answer questions such as 'Is this email spam?'. Generative models learn how the data itself is formed and answer requests such as 'Draft a reply to this email.' The two approaches are complementary: a support system can use a classifier to route a ticket and a generative model to draft the response.",
+        "points": [
+          "Traditional AI: classifies, predicts or detects patterns (e.g. spam detection).",
+          "Generative AI: creates new content from learned patterns (e.g. drafting an email).",
+          "Generative AI does not replace all traditional methods; they are often combined."
+        ]
+      },
+      {
+        "heading": "Advantages and limitations",
+        "body": "Generative AI can automate repetitive drafting, speed up summarising and ideation, personalise content and assist developers. Its outputs, however, are probabilistic: a model can produce fluent text that is wrong. Responsible use means verifying important facts, protecting private data and being aware of bias, licensing and cost.",
+        "points": [
+          "Advantages: automation, productivity, creativity, personalisation, developer support, accessibility.",
+          "Hallucinations: convincing but incorrect or fabricated information.",
+          "Bias: outputs can reflect biases in training data or system design.",
+          "Privacy: do not enter sensitive data without checking the tool's data policy.",
+          "Copyright and cost: ownership questions and significant compute requirements."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Generating code from a prompt",
+      "body": "A learner types: 'Write a Python program to check whether a number is prime.' A text-and-code model returns a function, explains the logic (a prime has no divisors other than 1 and itself, so it is enough to test divisors up to the square root) and shows sample output. The learner should still run and test the code, because generated code can contain mistakes.",
+      "code": {
+        "language": "python",
+        "source": "def is_prime(n):\n    if n < 2:\n        return False\n    d = 2\n    while d * d <= n:\n        if n % d == 0:\n            return False\n        d += 1\n    return True\n\nprint(is_prime(7))   # True\nprint(is_prime(12))  # False"
+      }
+    },
+    "use_cases": [
+      {
+        "title": "Education",
+        "description": "AI tutors, lesson summaries and personalised practice material adapted to a learner's level."
+      },
+      {
+        "title": "Software development",
+        "description": "Code generation, debugging assistance, test generation and documentation drafts."
+      },
+      {
+        "title": "Customer support and banking",
+        "description": "Drafting replies, summarising conversations and processing documents, with human review for important decisions."
+      },
+      {
+        "title": "Marketing and e-commerce",
+        "description": "Campaign drafts, advertisement variations, product descriptions and shopping assistants."
+      },
+      {
+        "title": "Healthcare and cybersecurity",
+        "description": "Clinical documentation assistance, research support and threat-intelligence summaries, where accuracy checks are essential."
+      }
+    ],
+    "demonstration": {
+      "description": "Send the same request to a generative model while changing only the audience. The structure of the prompt stays the same; the output changes in vocabulary, depth and examples. Exact wording varies between models and runs.",
+      "code": {
+        "language": "text",
+        "source": "Prompt A: Explain Python programming in simple words to a 12-year-old. Give three real-world examples.\nPrompt B: Explain Python programming to a software engineer moving from Java. Give three real-world examples."
+      },
+      "output": "Prompt A → short sentences and everyday examples (making games, automating homework reminders, drawing pictures).\nPrompt B → mentions dynamic typing and libraries, with examples such as automation scripts, web back ends (Django) and data analysis (pandas)."
+    },
+    "takeaways": [
+      "Generative AI creates new content from patterns learned during training.",
+      "It is built with machine-learning and deep-learning techniques; LLMs are used for language tasks.",
+      "A prompt guides the output: changing audience, tone or detail changes the result.",
+      "Generative and traditional AI solve different problems and are often combined.",
+      "Outputs can be wrong (hallucinations) or biased, so verify important information.",
+      "Applications span education, software, support, marketing, healthcare and security."
+    ],
+    "interview": [
+      {
+        "question": "What is Generative AI?",
+        "answer": "Generative AI is a type of AI that creates new content such as text, images, audio, video or code by learning patterns from training data.",
+        "explanation": "Interviewers expect the key contrast: it generates new content rather than only labelling or predicting. Mention that output is guided by a prompt."
+      },
+      {
+        "question": "How is Generative AI different from traditional AI?",
+        "answer": "Traditional AI usually classifies, predicts or detects patterns, for example spam detection. Generative AI produces new content, for example drafting an email. Many real systems combine both.",
+        "explanation": "Give one example of each and note they are complementary, which shows practical understanding rather than a memorised definition."
+      },
+      {
+        "question": "What is a prompt, and why does it matter?",
+        "answer": "A prompt is the instruction, question or context given to a model. Its wording, context and constraints strongly influence the quality and format of the output.",
+        "explanation": "Strong answers add that a good prompt states the task, audience, format and constraints; this leads into prompt engineering (Days 10–12)."
+      },
+      {
+        "question": "What is an AI hallucination, and how would you reduce its impact?",
+        "answer": "A hallucination is generated information that is incorrect, unsupported or fabricated, even though it sounds plausible. Its impact is reduced by verifying facts against reliable sources, grounding the model in trusted documents and keeping a human review step for important outputs.",
+        "explanation": "Naming mitigations (verification, grounding with retrieval, human review) shows awareness of production risks, not just the definition."
+      },
+      {
+        "question": "Name some Generative AI tools and what they generate.",
+        "answer": "Chat assistants such as ChatGPT, Gemini and Claude generate text and code; DALL·E generates images; GitHub Copilot assists with code; Sora generates video.",
+        "explanation": "Group tools by modality and note that capabilities change quickly, so the categories matter more than the brand names."
+      }
+    ],
+    "practice": {
+      "kind": "coding",
+      "title": "Build a reusable prompt template",
+      "difficulty": "Basic",
+      "objective": "Practise structuring a prompt with an explicit task, audience, tone and output format, the levers that change a generative model's output.",
+      "statement": "Write a program that reads a topic, an audience, a tone and a number of examples, then prints a well-structured prompt. The tone must be one of formal, friendly or simple; any other value is replaced by friendly. The number of examples must be between 1 and 5; values outside that range are clamped to the nearest limit.",
+      "language": "python",
+      "input_format": "Four lines: topic, audience, tone, number of examples (an integer).",
+      "output_format": "Exactly four lines:\nTask: Explain <topic>.\nAudience: <audience>\nTone: <tone>\nFormat: Give <n> real-world example(s) as a numbered list.\nUse 'example' when n is 1 and 'examples' otherwise.",
+      "example": {
+        "input": "Python programming\na 12-year-old student\nsimple\n3\n",
+        "output": "Task: Explain Python programming.\nAudience: a 12-year-old student\nTone: simple\nFormat: Give 3 real-world examples as a numbered list."
+      },
+      "constraints": [
+        "Topic and audience are non-empty lines; trim surrounding spaces.",
+        "Tone comparison is case-insensitive; print the tone in lowercase.",
+        "The number of examples is an integer; clamp it to the range 1–5."
+      ],
+      "starter": "topic = input().strip()\naudience = input().strip()\ntone = input().strip().lower()\nn = int(input())\n\n# TODO: validate the tone and clamp n, then print the four lines\n",
+      "solution": "topic = input().strip()\naudience = input().strip()\ntone = input().strip().lower()\nn = int(input())\n\nif tone not in ('formal', 'friendly', 'simple'):\n    tone = 'friendly'\nn = max(1, min(5, n))\nnoun = 'example' if n == 1 else 'examples'\n\nprint(f'Task: Explain {topic}.')\nprint(f'Audience: {audience}')\nprint(f'Tone: {tone}')\nprint(f'Format: Give {n} real-world {noun} as a numbered list.')\n",
+      "explanation": [
+        "Read the four inputs, trimming spaces and lowercasing the tone so 'Formal' and 'formal' are treated the same.",
+        "Replace any tone outside the allowed set with the default 'friendly'.",
+        "Clamp the number of examples with max(1, min(5, n)) so the prompt never asks for zero or too many.",
+        "Choose the singular or plural noun, then print the four labelled lines: task, audience, tone and format."
+      ],
+      "tests": [
+        {
+          "input": "Python programming\na 12-year-old student\nsimple\n3\n",
+          "output": "Task: Explain Python programming.\nAudience: a 12-year-old student\nTone: simple\nFormat: Give 3 real-world examples as a numbered list."
+        },
+        {
+          "input": "machine learning\nbank managers\nFORMAL\n1\n",
+          "output": "Task: Explain machine learning.\nAudience: bank managers\nTone: formal\nFormat: Give 1 real-world example as a numbered list."
+        },
+        {
+          "input": "cloud computing\ncollege students\nsarcastic\n9\n",
+          "output": "Task: Explain cloud computing.\nAudience: college students\nTone: friendly\nFormat: Give 5 real-world examples as a numbered list."
+        },
+        {
+          "input": "  neural networks  \n  doctors \nfriendly\n0\n",
+          "output": "Task: Explain neural networks.\nAudience: doctors\nTone: friendly\nFormat: Give 1 real-world example as a numbered list."
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "type": "concept",
+        "question": "What is the primary purpose of Generative AI?",
+        "options": [
+          "Storing large datasets efficiently",
+          "Replacing all traditional AI methods",
+          "Sorting data into fixed categories",
+          "Creating new content from learned patterns"
+        ],
+        "answer": 3,
+        "explanation": "Generative AI produces new content such as text, images or code. It complements rather than replaces traditional AI."
+      },
+      {
+        "type": "concept",
+        "question": "In Generative AI, what is a prompt?",
+        "options": [
+          "The model's training dataset",
+          "A measure of model accuracy",
+          "The instruction or input given to the model",
+          "The hardware used to run the model"
+        ],
+        "answer": 2,
+        "explanation": "A prompt is the instruction, question or context that guides what the model generates."
+      },
+      {
+        "type": "scenario",
+        "question": "A team needs to automatically flag fraudulent card transactions. Which approach fits this task best?",
+        "options": [
+          "A text-to-video model",
+          "A generative model that writes marketing copy",
+          "A predictive (discriminative) model that classifies transactions",
+          "A text-to-image model"
+        ],
+        "answer": 2,
+        "explanation": "Flagging fraud is a classification task, the classic use of predictive AI. Generative AI is better suited to creating content."
+      },
+      {
+        "type": "concept",
+        "question": "Which of these is an AI hallucination?",
+        "options": [
+          "A model refusing an unsafe request",
+          "A slow response from the model",
+          "A model answering in a different language",
+          "A confident answer citing a research paper that does not exist"
+        ],
+        "answer": 3,
+        "explanation": "A hallucination is plausible-sounding but incorrect or fabricated output, such as an invented citation."
+      },
+      {
+        "type": "scenario",
+        "question": "You ask a model to explain machine learning to a 12-year-old, then to a data engineer. Why do the answers differ?",
+        "options": [
+          "Generative AI always returns random text",
+          "The second prompt used a different file format",
+          "The model was retrained between the two prompts",
+          "The audience in the prompt changes the vocabulary, depth and examples"
+        ],
+        "answer": 3,
+        "explanation": "Prompts guide the output. Changing the audience changes the level of detail and the examples the model chooses."
+      }
+    ]
+  }
+}

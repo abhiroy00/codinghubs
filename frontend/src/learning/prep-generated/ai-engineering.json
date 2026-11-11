@@ -1,0 +1,557 @@
+{
+  "curriculum": "ai-engineering",
+  "summary": "Available lessons cover Python for AI: Data Structures, NumPy Thinking and Clean Data Code; Linear Algebra Essentials: Vectors, Matrices and the Dot Product; Probability and Statistics for Machine Learning; The Machine Learning Workflow: From Problem Framing to Baselines.",
+  "complete": false,
+  "missingDays": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "roadmap": [
+    {
+      "day": 1,
+      "title": "Python for AI: Data Structures, NumPy Thinking and Clean Data Code",
+      "module": "Foundations: Python and maths",
+      "level": "Beginner"
+    },
+    {
+      "day": 2,
+      "title": "Linear Algebra Essentials: Vectors, Matrices and the Dot Product",
+      "module": "Foundations: Python and maths",
+      "level": "Beginner"
+    },
+    {
+      "day": 3,
+      "title": "Probability and Statistics for Machine Learning",
+      "module": "Foundations: Python and maths",
+      "level": "Beginner"
+    },
+    {
+      "day": 4,
+      "title": "The Machine Learning Workflow: From Problem Framing to Baselines",
+      "module": "Foundations: Python and maths",
+      "level": "Beginner"
+    }
+  ],
+  "samples": [
+    {
+      "day": 1,
+      "title": "Python for AI: Data Structures, NumPy Thinking and Clean Data Code",
+      "level": "Beginner",
+      "definition": "Python for AI is the subset of Python skills an AI engineer uses every day: core data structures, functions and generators, and the scientific stack (NumPy, pandas) that stores numbers in contiguous typed arrays and runs operations in compiled code. The goal is code that is readable, correct with messy data and fast enough because heavy numeric work is pushed into vectorised libraries instead of Python loops.",
+      "objectives": [
+        "Explain why Python dominates AI engineering and where its performance limits are.",
+        "Choose the right built-in structure (list, tuple, dict, set) for a data task.",
+        "Describe vectorisation and broadcasting in NumPy and why they are faster than loops.",
+        "Distinguish views from copies and avoid common mutation bugs in data code.",
+        "Write a small, robust preprocessing step that handles missing values."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between a list and a NumPy array?",
+          "answer": "A list holds references to arbitrary Python objects of any type, so each element is boxed and operations run in the interpreter. A NumPy array holds one fixed dtype in contiguous memory, supports element-wise maths and broadcasting, and runs operations in optimised C, which makes it far faster and more memory-efficient for numbers.",
+          "explanation": "Strong answers mention contiguous memory, a single dtype and vectorised execution, then give a quick example such as adding two arrays without a loop."
+        },
+        {
+          "question": "What is broadcasting? Give an example.",
+          "answer": "Broadcasting is NumPy's rule for combining arrays of different shapes without copying data. Shapes are aligned from the right and each dimension must match or be 1. For example, a (100, 3) matrix minus a (3,) vector of column means subtracts the means from every row.",
+          "explanation": "Mention the alignment rule and a realistic ML use such as feature centring or adding a bias vector to a batch of activations."
+        },
+        {
+          "question": "Why should you avoid a mutable default argument such as def add(item, bucket=[])?",
+          "answer": "Default values are evaluated once when the function is defined, so every call that omits bucket shares and mutates the same list. Use bucket=None and create a new list inside the function.",
+          "explanation": "This is a classic Python screening question; explaining when defaults are evaluated shows real understanding."
+        },
+        {
+          "question": "How would you process a 40 GB CSV file on a machine with 16 GB of RAM?",
+          "answer": "Stream it: read in chunks (pandas read_csv with chunksize, or a generator over lines), aggregate or transform each chunk and write results incrementally. Alternatives include columnar formats such as Parquet with only the needed columns, or engines such as Polars, DuckDB or Spark.",
+          "explanation": "Interviewers look for constant-memory thinking, choosing only needed columns and knowing when to switch to an out-of-core tool."
+        },
+        {
+          "question": "Does the GIL stop Python from being useful for parallel ML workloads?",
+          "answer": "The Global Interpreter Lock lets only one thread run Python bytecode at a time, which limits CPU-bound pure-Python threads. NumPy and PyTorch release the GIL inside compiled kernels, I/O-bound work benefits from threads or asyncio, and CPU-bound Python work can use multiprocessing (as PyTorch DataLoader workers do).",
+          "explanation": "A strong answer separates CPU-bound from I/O-bound work and notes that heavy maths already runs outside the GIL. Mentioning that free-threaded Python builds now exist is a bonus."
+        }
+      ],
+      "example": {
+        "title": "Standardising features with broadcasting",
+        "body": "Standardisation rescales each feature to mean 0 and standard deviation 1 so that features measured in different units (age in years, income in rupees) contribute comparably to distance-based or gradient-based models. With NumPy the whole matrix is standardised in one line, and the statistics are computed on the training split only.",
+        "code": {
+          "language": "python",
+          "source": "import numpy as np\n\nX_train = np.array([[25, 30000.0], [32, 52000.0], [47, 91000.0]])\nX_test = np.array([[29, 40000.0]])\n\nmu = X_train.mean(axis=0)          # shape (2,)\nsigma = X_train.std(axis=0)        # shape (2,)\nsigma[sigma == 0] = 1.0            # avoid division by zero\n\nX_train_s = (X_train - mu) / sigma  # (3, 2) - (2,) broadcasts per row\nX_test_s = (X_test - mu) / sigma    # reuse training statistics\nprint(X_train_s.round(2))\nprint(X_test_s.round(2))"
+        }
+      },
+      "practice": {
+        "title": "Impute and standardise a feature column",
+        "statement": "Read one line of comma-separated values for a single numeric feature. Some values are the text NA (missing). Compute the mean and the population standard deviation of the present values only. Replace each NA with that mean, then convert every value to a z-score: (value - mean) / std. If std is 0, every z-score is 0. If no values are present, print only the line no data.",
+        "objective": "Practise the everyday preprocessing step of handling missing values and computing z-scores, the operation StandardScaler performs."
+      },
+      "takeaways": [
+        "Python is the glue; NumPy, PyTorch and similar libraries do the heavy maths in compiled code.",
+        "Pick data structures by access pattern: dict and set for fast lookup, list for order, tuple for fixed records.",
+        "Vectorise numeric work and learn broadcasting rules; check shapes constantly.",
+        "Slices are views and fancy indexing makes copies; copy explicitly when you need independence.",
+        "Stream large data with generators and compute preprocessing statistics on training data only.",
+        "Handle missing values deliberately and document the choice."
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Linear Algebra Essentials: Vectors, Matrices and the Dot Product",
+      "level": "Beginner",
+      "definition": "Linear algebra is the mathematics of vectors (ordered lists of numbers) and matrices (rectangular grids of numbers) and the linear operations on them. In AI, a data point is a vector of features, a dataset is a matrix, a neural-network layer is a matrix multiplication followed by a non-linearity, and an embedding is a vector whose direction encodes meaning.",
+      "objectives": [
+        "Represent data, model weights and embeddings as vectors and matrices.",
+        "Compute and interpret dot products, norms and cosine similarity.",
+        "Apply the shape rule for matrix multiplication and spot shape errors quickly.",
+        "Explain transpose, identity, inverse, rank and eigenvectors at an interview level.",
+        "Implement matrix multiplication by hand with a shape check."
+      ],
+      "interview": [
+        {
+          "question": "What is a dot product and what does it tell you?",
+          "answer": "It is the sum of element-wise products of two equal-length vectors. Its sign and size show how aligned the vectors are: positive when they point the same way, zero when orthogonal, negative when opposite, scaled by their lengths.",
+          "explanation": "Link it to ML: neurons compute dot products of inputs and weights, and attention scores are dot products of queries and keys."
+        },
+        {
+          "question": "Why is cosine similarity preferred over raw dot product for comparing text embeddings?",
+          "answer": "Cosine similarity normalises by vector length, so it compares meaning (direction) rather than magnitude, which can depend on text length or model quirks. If embeddings are already L2-normalised, dot product and cosine give the same ranking.",
+          "explanation": "Mentioning the normalised-embedding shortcut shows you understand how vector databases are configured in practice."
+        },
+        {
+          "question": "A layer has input (32, 512) and weights (512, 256). What is the output shape and roughly how many multiply-adds are needed?",
+          "answer": "The output is (32, 256). The cost is about 32 * 512 * 256 = 4,194,304 multiply-adds.",
+          "explanation": "Interviewers check that you can apply the shape rule and estimate compute, a skill used when sizing models and hardware."
+        },
+        {
+          "question": "What is the rank of a matrix and why does low rank matter in AI?",
+          "answer": "Rank is the number of linearly independent rows or columns. A low-rank matrix can be written as the product of two thin matrices, so it can be stored and learned with far fewer parameters. LoRA uses this to fine-tune large models cheaply, and PCA uses it to compress data.",
+          "explanation": "Connecting an abstract concept to a modern technique such as LoRA is what distinguishes a strong answer."
+        },
+        {
+          "question": "What are eigenvectors and how does PCA use them?",
+          "answer": "An eigenvector of a square matrix keeps its direction when multiplied by the matrix; it is only scaled by its eigenvalue. PCA computes eigenvectors of the covariance matrix (or uses SVD of centred data); the eigenvectors with the largest eigenvalues are the directions of greatest variance and become the principal components.",
+          "explanation": "A strong answer notes that data must be centred first and that the explained variance ratio is used to choose how many components to keep."
+        }
+      ],
+      "example": {
+        "title": "A dense layer is one matrix product",
+        "body": "A batch of 4 samples with 3 features passes through a layer with 2 output units. The weight matrix has shape (3, 2) and the bias has shape (2,). The output shape (4, 2) follows from the shape rule, and the bias is broadcast to every row.",
+        "code": {
+          "language": "python",
+          "source": "import numpy as np\n\nX = np.array([[1.0, 0.5, -1.0],\n              [0.0, 2.0, 1.0],\n              [3.0, -1.0, 0.0],\n              [1.0, 1.0, 1.0]])   # (4, 3)\nW = np.array([[0.2, -0.5],\n              [0.1, 0.3],\n              [-0.4, 0.8]])        # (3, 2)\nb = np.array([0.1, 0.0])           # (2,)\n\nY = X @ W + b                      # (4, 2)\nprint(Y.shape)                     # (4, 2)\n\nq = np.array([1.0, 2.0]); d = np.array([2.0, 4.0])\ncos = q @ d / (np.linalg.norm(q) * np.linalg.norm(d))\nprint(round(float(cos), 4))        # 1.0: same direction"
+        }
+      },
+      "practice": {
+        "title": "Matrix multiplication with a shape check",
+        "statement": "Read matrix A (m x n) and matrix B (n2 x p) of integers. If n is not equal to n2, print shape mismatch: (m,n) @ (n2,p). Otherwise compute C = A @ B, print its shape, its rows, and its trace (sum of the main diagonal) if C is square, or trace=n/a if it is not.",
+        "objective": "Implement the core operation behind every neural-network layer and practise the shape rule."
+      },
+      "takeaways": [
+        "Data, weights and embeddings are vectors and matrices; check shapes first when debugging.",
+        "(m, n) @ (n, p) gives (m, p); inner dimensions must match.",
+        "Dot product measures alignment; cosine similarity compares direction only.",
+        "Matrix multiplication is not commutative and is different from element-wise multiplication.",
+        "Rank counts independent directions; low-rank ideas power PCA, SVD and LoRA.",
+        "A layer's compute cost is roughly m * n * p multiply-adds."
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Probability and Statistics for Machine Learning",
+      "level": "Beginner",
+      "definition": "Probability is the mathematics of uncertainty: it assigns numbers between 0 and 1 to events and describes how likely different outcomes are. Statistics uses data to estimate those probabilities and the parameters of distributions. Machine learning models are statistical models: a classifier outputs a probability distribution over classes and training chooses the parameters that make the observed data most likely.",
+      "objectives": [
+        "Explain random variables, distributions, expectation and variance in plain terms.",
+        "Apply conditional probability and Bayes' theorem to realistic problems.",
+        "Recognise the normal, Bernoulli, binomial and categorical distributions in ML.",
+        "Connect maximum likelihood to common loss functions such as MSE and cross-entropy.",
+        "Avoid base-rate mistakes when interpreting classifier outputs."
+      ],
+      "interview": [
+        {
+          "question": "State Bayes' theorem and explain each term.",
+          "answer": "P(A | B) = P(B | A) P(A) / P(B). P(A) is the prior belief, P(B | A) is the likelihood of the evidence if A is true, P(B) is the overall probability of the evidence and P(A | B) is the posterior, the updated belief after seeing B.",
+          "explanation": "Follow with a concrete example such as a medical test or spam filter, and mention the base-rate fallacy."
+        },
+        {
+          "question": "What is the difference between probability and likelihood?",
+          "answer": "Probability treats parameters as fixed and asks how probable different data are. Likelihood treats the observed data as fixed and asks how well different parameter values explain it. Training maximises the likelihood over parameters.",
+          "explanation": "This shows you understand why training is framed as maximum likelihood and why the negative log-likelihood becomes the loss."
+        },
+        {
+          "question": "Why does minimising cross-entropy make sense for classification?",
+          "answer": "Cross-entropy is the negative log-likelihood of the true labels under the model's predicted distribution. Minimising it maximises the probability the model assigns to correct classes, and it strongly penalises confident wrong predictions.",
+          "explanation": "Bonus: mention that for one-hot labels cross-entropy equals the negative log of the predicted probability of the correct class."
+        },
+        {
+          "question": "When would you report the median or p95 instead of the mean?",
+          "answer": "For skewed or heavy-tailed data such as API latency, income or session length, the mean is pulled by outliers. The median describes the typical case, and p95 or p99 describe the tail that users actually feel.",
+          "explanation": "Linking statistics to service-level objectives in production AI systems shows engineering maturity."
+        },
+        {
+          "question": "A rare-disease test is 99 percent sensitive and 95 percent specific, and prevalence is 1 percent. A patient tests positive. What is the chance they have the disease?",
+          "answer": "About 17 percent. P(+) = 0.99 * 0.01 + 0.05 * 0.99 = 0.0594, and P(disease | +) = 0.0099 / 0.0594, which is about 0.167.",
+          "explanation": "Interviewers want the calculation and the insight: with rare positives, false positives dominate, so precision is low even with a good test."
+        }
+      ],
+      "example": {
+        "title": "Why a 99 percent accurate fraud alert is mostly wrong",
+        "body": "Suppose 1 percent of transactions are fraud, the detector catches 99 percent of fraud (sensitivity) and correctly clears 95 percent of genuine transactions (specificity). Bayes' theorem shows that only about 17 percent of flagged transactions are actually fraud, because the 5 percent false-alarm rate is applied to the 99 percent of genuine traffic.",
+        "code": {
+          "language": "python",
+          "source": "prior = 0.01          # P(fraud)\nsens = 0.99           # P(alert | fraud)\nspec = 0.95           # P(no alert | genuine)\n\np_alert = sens * prior + (1 - spec) * (1 - prior)\nposterior = sens * prior / p_alert\nprint(round(p_alert, 4))    # 0.0594\nprint(round(posterior, 4))  # 0.1667"
+        }
+      },
+      "practice": {
+        "title": "Bayesian update for a diagnostic alert",
+        "statement": "Read the prior probability of the condition, the test sensitivity P(+ | condition) and the specificity P(- | no condition). Compute P(+), the posterior P(condition | +) and P(condition | -). If the conditioning event has probability 0 (smaller than 1e-12), print undefined for that posterior.",
+        "objective": "Apply Bayes' theorem and the law of total probability to compute what a positive or negative alert really means."
+      },
+      "takeaways": [
+        "Classifier outputs are probability distributions: Bernoulli for binary, categorical for multi-class.",
+        "Bayes' theorem combines a prior with evidence; ignoring the prior causes base-rate errors.",
+        "Use median and percentiles for skewed data such as latency.",
+        "Minimising MSE or cross-entropy is maximum likelihood under Gaussian or Bernoulli assumptions.",
+        "L2 regularisation is equivalent to a Gaussian prior on the weights.",
+        "A p-value is not the probability that your model is better."
+      ]
+    },
+    {
+      "day": 4,
+      "title": "The Machine Learning Workflow: From Problem Framing to Baselines",
+      "level": "Beginner",
+      "definition": "The machine learning workflow is the repeatable sequence of steps used to turn a business problem into a working model: frame the problem, collect and understand data, prepare features, split the data, establish a baseline, train and tune models, evaluate on held-out data, deploy and monitor. Each step has typical failure modes, and most real-world ML failures come from data and process mistakes rather than from the choice of algorithm.",
+      "objectives": [
+        "Describe the end-to-end ML lifecycle from problem framing to monitoring.",
+        "Frame a business problem as an ML task with a measurable target and metric.",
+        "Split data into train, validation and test sets correctly, including time-based splits.",
+        "Identify and prevent data leakage.",
+        "Build a simple baseline before training complex models."
+      ],
+      "interview": [
+        {
+          "question": "Walk me through the steps of an ML project.",
+          "answer": "Frame the problem and metric, collect and explore data, clean and engineer features, split into train, validation and test, build a baseline, train and tune models, evaluate on the test set, deploy, then monitor and retrain.",
+          "explanation": "Interviewers want structure plus judgement: mention that most time goes into data and that monitoring closes the loop."
+        },
+        {
+          "question": "Why do we need both a validation set and a test set?",
+          "answer": "The validation set is used repeatedly to choose hyperparameters and models, so its score becomes optimistically biased. The test set is held back and used once to give an unbiased estimate of performance on new data.",
+          "explanation": "Mention cross-validation as an alternative to a fixed validation set when data is limited."
+        },
+        {
+          "question": "What is data leakage? Give two examples.",
+          "answer": "Leakage is when training uses information unavailable at prediction time. Examples: scaling or imputing with statistics from the full dataset before splitting, and using a feature recorded after the outcome, such as 'account closed date' when predicting churn.",
+          "explanation": "Strong answers also say how to prevent it: pipelines, time-aware splits, feature timestamp audits and deduplication."
+        },
+        {
+          "question": "How would you split data for a model that predicts next week's sales?",
+          "answer": "Use a time-based split: train on older periods and validate and test on later periods, ideally with rolling or expanding windows (walk-forward validation). A random split would let the model see the future.",
+          "explanation": "This tests whether you think about how the model is used in production, not just about the mechanics of splitting."
+        },
+        {
+          "question": "Your new model reaches 95 percent accuracy. Why might that not be impressive?",
+          "answer": "If 95 percent of samples belong to one class, predicting that class always also gives 95 percent. Compare against a majority-class baseline and use metrics suited to imbalance such as precision, recall, F1 or PR-AUC.",
+          "explanation": "This shows baseline thinking and leads naturally into evaluation metrics (Day 8)."
+        }
+      ],
+      "example": {
+        "title": "A leak-free scikit-learn workflow",
+        "body": "A Pipeline bundles preprocessing and the model so that cross-validation fits the scaler only on each training fold. A DummyClassifier provides the majority-class baseline to compare against.",
+        "code": {
+          "language": "python",
+          "source": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split, cross_val_score\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.dummy import DummyClassifier\n\nX, y = load_breast_cancer(return_X_y=True)\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, stratify=y, random_state=0)\n\nbaseline = DummyClassifier(strategy='most_frequent').fit(X_tr, y_tr)\nmodel = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))\nprint('cv:', cross_val_score(model, X_tr, y_tr, cv=5).mean().round(3))\nmodel.fit(X_tr, y_tr)\nprint('baseline test:', round(baseline.score(X_te, y_te), 3))\nprint('model test:', round(model.score(X_te, y_te), 3))"
+        }
+      },
+      "practice": {
+        "title": "Time-based split with a majority-class baseline",
+        "statement": "Labels are given in time order. Hold out the last n_test labels as the test set, where n_test = floor(n * fraction), clamped to the range 1 to n - 1. Using the training labels only, find the majority class (break ties by choosing the alphabetically smallest label). Print the split sizes, the training label counts, the baseline label and the baseline's accuracy on the test set.",
+        "objective": "Practise a leak-free split for time-ordered data and compute the baseline every model must beat."
+      },
+      "takeaways": [
+        "Frame the problem first: target, prediction moment, action and metric.",
+        "Train fits parameters, validation selects models, test is used once at the end.",
+        "Split by time for temporal data and by group for repeated entities.",
+        "Leakage gives great offline scores and poor production results; fit preprocessing on train only.",
+        "Always compare against a simple baseline such as the majority class.",
+        "The workflow is a loop: monitoring in production feeds the next iteration."
+      ]
+    }
+  ],
+  "firstLesson": {
+    "day": 1,
+    "title": "Python for AI: Data Structures, NumPy Thinking and Clean Data Code",
+    "module": "Foundations: Python and maths",
+    "level": "Beginner",
+    "objectives": [
+      "Explain why Python dominates AI engineering and where its performance limits are.",
+      "Choose the right built-in structure (list, tuple, dict, set) for a data task.",
+      "Describe vectorisation and broadcasting in NumPy and why they are faster than loops.",
+      "Distinguish views from copies and avoid common mutation bugs in data code.",
+      "Write a small, robust preprocessing step that handles missing values."
+    ],
+    "definition": "Python for AI is the subset of Python skills an AI engineer uses every day: core data structures, functions and generators, and the scientific stack (NumPy, pandas) that stores numbers in contiguous typed arrays and runs operations in compiled code. The goal is code that is readable, correct with messy data and fast enough because heavy numeric work is pushed into vectorised libraries instead of Python loops.",
+    "theory": [
+      {
+        "heading": "Why Python is the language of AI",
+        "body": "Python itself is slow for tight numeric loops, but it is an excellent glue language. NumPy, PyTorch, TensorFlow and scikit-learn implement their heavy maths in C, C++ or CUDA and expose a Python API. An AI engineer writes the orchestration in Python and lets the libraries do the arithmetic. This is why interviewers care less about clever loops and more about whether you know how to keep work inside the fast libraries.",
+        "points": [
+          "Huge ecosystem: NumPy, pandas, scikit-learn, PyTorch, Hugging Face, FastAPI.",
+          "Readable syntax makes experiments and reviews quick.",
+          "Performance comes from compiled back ends, not from the interpreter."
+        ]
+      },
+      {
+        "heading": "Built-in data structures and when to use each",
+        "body": "Lists are ordered and mutable, good for building sequences. Tuples are immutable, so they can be dictionary keys and signal fixed records such as (height, width). Dictionaries give average O(1) lookup by key and are ideal for vocabularies (token to id) and configuration. Sets give O(1) membership tests and remove duplicates, for example checking whether a word is a stop word.",
+        "points": [
+          "list: ordered, mutable, O(1) append, O(n) membership test.",
+          "tuple: immutable, hashable when its items are hashable.",
+          "dict: key to value mapping, insertion ordered since Python 3.7.",
+          "set: unique items, fast membership and set algebra."
+        ]
+      },
+      {
+        "heading": "Vectorisation and broadcasting",
+        "body": "A NumPy array stores values of one dtype in a contiguous block of memory. An expression such as (X - X.mean(axis=0)) / X.std(axis=0) runs one optimised C loop over the whole array instead of millions of Python-level operations, which is often 10 to 100 times faster. Broadcasting lets arrays of different shapes combine: a (1000, 3) matrix minus a (3,) vector subtracts the vector from every row without copying it 1000 times. Shapes are compared from the right; each pair of dimensions must be equal or one of them must be 1.",
+        "points": [
+          "Prefer array expressions over Python for loops for numeric work.",
+          "Know your shapes: most bugs in ML code are shape bugs.",
+          "axis=0 reduces over rows (one result per column); axis=1 reduces over columns."
+        ]
+      },
+      {
+        "heading": "Views, copies and mutation pitfalls",
+        "body": "Basic NumPy slicing returns a view that shares memory with the original, so writing to the slice changes the source array. Fancy indexing (with a list or boolean mask) returns a copy. In plain Python, assigning a list to a new name does not copy it, and a mutable default argument such as def f(x=[]) is shared across calls. These bugs silently corrupt training data, so call .copy() when you need independence.",
+        "points": [
+          "arr[1:3] is a view; arr[[1, 2]] and arr[arr > 0] are copies.",
+          "Never use a mutable object as a default argument; use None and create it inside.",
+          "pandas may warn about chained assignment; use .loc for clear, single-step writes."
+        ]
+      },
+      {
+        "heading": "Handling large data and missing values",
+        "body": "Real datasets do not fit in memory and contain gaps. Generators (yield) stream records one at a time, so a 50 GB log file can be processed with constant memory. Missing values must be handled deliberately: drop them, impute them (mean, median, a constant) or add an indicator column. Imputation statistics must be computed on training data only and reused on validation and test data, otherwise information leaks from the evaluation set.",
+        "points": [
+          "Use generators or chunked reads (pandas read_csv with chunksize) for big files.",
+          "NaN propagates through arithmetic; np.nanmean ignores it.",
+          "Fit preprocessing on the training split, then apply it everywhere."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Standardising features with broadcasting",
+      "body": "Standardisation rescales each feature to mean 0 and standard deviation 1 so that features measured in different units (age in years, income in rupees) contribute comparably to distance-based or gradient-based models. With NumPy the whole matrix is standardised in one line, and the statistics are computed on the training split only.",
+      "code": {
+        "language": "python",
+        "source": "import numpy as np\n\nX_train = np.array([[25, 30000.0], [32, 52000.0], [47, 91000.0]])\nX_test = np.array([[29, 40000.0]])\n\nmu = X_train.mean(axis=0)          # shape (2,)\nsigma = X_train.std(axis=0)        # shape (2,)\nsigma[sigma == 0] = 1.0            # avoid division by zero\n\nX_train_s = (X_train - mu) / sigma  # (3, 2) - (2,) broadcasts per row\nX_test_s = (X_test - mu) / sigma    # reuse training statistics\nprint(X_train_s.round(2))\nprint(X_test_s.round(2))"
+      }
+    },
+    "use_cases": [
+      {
+        "title": "Feature preprocessing",
+        "description": "Scaling, encoding and imputing tabular features before training a model with scikit-learn or PyTorch."
+      },
+      {
+        "title": "Tokeniser vocabularies",
+        "description": "Dictionaries map tokens to integer ids and sets hold special tokens or stop words for fast lookup."
+      },
+      {
+        "title": "Streaming data loaders",
+        "description": "Generators yield batches from huge files or object storage so training never loads the full dataset into RAM."
+      },
+      {
+        "title": "Evaluation scripts",
+        "description": "Vectorised NumPy code computes metrics over millions of predictions in milliseconds."
+      },
+      {
+        "title": "Serving glue code",
+        "description": "Python with FastAPI wraps a compiled model, validates inputs and formats outputs."
+      }
+    ],
+    "demonstration": {
+      "description": "Compare a Python loop with a vectorised NumPy expression on one million numbers. Both compute the same sum of squares, but the vectorised version runs in compiled code. Exact timings depend on the machine; the ratio is what matters.",
+      "code": {
+        "language": "python",
+        "source": "import time\nimport numpy as np\n\nx = np.random.default_rng(0).random(1_000_000)\n\nt = time.perf_counter()\ntotal = 0.0\nfor v in x:\n    total += v * v\nloop_s = time.perf_counter() - t\n\nt = time.perf_counter()\ntotal_np = float(np.dot(x, x))\nvec_s = time.perf_counter() - t\n\nprint(round(total, 3) == round(total_np, 3))\nprint(f'loop {loop_s:.3f}s, vectorised {vec_s:.4f}s')"
+      },
+      "output": "True\nloop 0.250s, vectorised 0.0007s   (typical laptop: the vectorised call is hundreds of times faster)"
+    },
+    "takeaways": [
+      "Python is the glue; NumPy, PyTorch and similar libraries do the heavy maths in compiled code.",
+      "Pick data structures by access pattern: dict and set for fast lookup, list for order, tuple for fixed records.",
+      "Vectorise numeric work and learn broadcasting rules; check shapes constantly.",
+      "Slices are views and fancy indexing makes copies; copy explicitly when you need independence.",
+      "Stream large data with generators and compute preprocessing statistics on training data only.",
+      "Handle missing values deliberately and document the choice."
+    ],
+    "interview": [
+      {
+        "question": "What is the difference between a list and a NumPy array?",
+        "answer": "A list holds references to arbitrary Python objects of any type, so each element is boxed and operations run in the interpreter. A NumPy array holds one fixed dtype in contiguous memory, supports element-wise maths and broadcasting, and runs operations in optimised C, which makes it far faster and more memory-efficient for numbers.",
+        "explanation": "Strong answers mention contiguous memory, a single dtype and vectorised execution, then give a quick example such as adding two arrays without a loop."
+      },
+      {
+        "question": "What is broadcasting? Give an example.",
+        "answer": "Broadcasting is NumPy's rule for combining arrays of different shapes without copying data. Shapes are aligned from the right and each dimension must match or be 1. For example, a (100, 3) matrix minus a (3,) vector of column means subtracts the means from every row.",
+        "explanation": "Mention the alignment rule and a realistic ML use such as feature centring or adding a bias vector to a batch of activations."
+      },
+      {
+        "question": "Why should you avoid a mutable default argument such as def add(item, bucket=[])?",
+        "answer": "Default values are evaluated once when the function is defined, so every call that omits bucket shares and mutates the same list. Use bucket=None and create a new list inside the function.",
+        "explanation": "This is a classic Python screening question; explaining when defaults are evaluated shows real understanding."
+      },
+      {
+        "question": "How would you process a 40 GB CSV file on a machine with 16 GB of RAM?",
+        "answer": "Stream it: read in chunks (pandas read_csv with chunksize, or a generator over lines), aggregate or transform each chunk and write results incrementally. Alternatives include columnar formats such as Parquet with only the needed columns, or engines such as Polars, DuckDB or Spark.",
+        "explanation": "Interviewers look for constant-memory thinking, choosing only needed columns and knowing when to switch to an out-of-core tool."
+      },
+      {
+        "question": "Does the GIL stop Python from being useful for parallel ML workloads?",
+        "answer": "The Global Interpreter Lock lets only one thread run Python bytecode at a time, which limits CPU-bound pure-Python threads. NumPy and PyTorch release the GIL inside compiled kernels, I/O-bound work benefits from threads or asyncio, and CPU-bound Python work can use multiprocessing (as PyTorch DataLoader workers do).",
+        "explanation": "A strong answer separates CPU-bound from I/O-bound work and notes that heavy maths already runs outside the GIL. Mentioning that free-threaded Python builds now exist is a bonus."
+      }
+    ],
+    "practice": {
+      "kind": "coding",
+      "title": "Impute and standardise a feature column",
+      "difficulty": "Basic",
+      "objective": "Practise the everyday preprocessing step of handling missing values and computing z-scores, the operation StandardScaler performs.",
+      "statement": "Read one line of comma-separated values for a single numeric feature. Some values are the text NA (missing). Compute the mean and the population standard deviation of the present values only. Replace each NA with that mean, then convert every value to a z-score: (value - mean) / std. If std is 0, every z-score is 0. If no values are present, print only the line no data.",
+      "language": "python",
+      "input_format": "One line of comma-separated tokens; each token is a number or NA (spaces around tokens may appear).",
+      "output_format": "Four lines:\ncount=<present> missing=<missing>\nmean=<mean with 2 decimals>\nstd=<std with 2 decimals>\nthe z-scores with 2 decimals separated by single spaces (print 0.00, never -0.00).\nOr the single line no data.",
+      "example": {
+        "input": "10,20,NA,40,50\n",
+        "output": "count=4 missing=1\nmean=30.00\nstd=15.81\n-1.26 -0.63 0.00 0.63 1.26"
+      },
+      "constraints": [
+        "1 to 1000 tokens.",
+        "NA is matched case-insensitively after trimming spaces.",
+        "Use the population standard deviation (divide by the number of present values)."
+      ],
+      "starter": "tokens = [t.strip() for t in input().split(',')]\n\n# TODO: separate present values from NA, compute mean and std,\n# impute, then print the four required lines\n",
+      "solution": "import math\n\ntokens = [t.strip() for t in input().split(',')]\nvalues = [None if t.upper() == 'NA' else float(t) for t in tokens]\npresent = [v for v in values if v is not None]\n\ndef fmt(v):\n    s = f'{v:.2f}'\n    return '0.00' if s == '-0.00' else s\n\nif not present:\n    print('no data')\nelse:\n    mean = sum(present) / len(present)\n    std = math.sqrt(sum((v - mean) ** 2 for v in present) / len(present))\n    filled = [mean if v is None else v for v in values]\n    z = [(v - mean) / std if std > 0 else 0.0 for v in filled]\n    print(f'count={len(present)} missing={len(values) - len(present)}')\n    print(f'mean={fmt(mean)}')\n    print(f'std={fmt(std)}')\n    print(' '.join(fmt(v) for v in z))\n",
+      "explanation": [
+        "Split on commas, trim each token and map NA to None and everything else to float.",
+        "Compute the mean and population standard deviation from present values only, so missing entries do not distort the statistics.",
+        "Impute each missing value with the mean, which gives it a z-score of exactly 0.",
+        "Guard the division: a constant column has std 0, so all z-scores are 0.",
+        "Format with two decimals and normalise -0.00 to 0.00 for clean output."
+      ],
+      "tests": [
+        {
+          "input": "10,20,NA,40,50\n",
+          "output": "count=4 missing=1\nmean=30.00\nstd=15.81\n-1.26 -0.63 0.00 0.63 1.26"
+        },
+        {
+          "input": "7,7,7,7\n",
+          "output": "count=4 missing=0\nmean=7.00\nstd=0.00\n0.00 0.00 0.00 0.00"
+        },
+        {
+          "input": "NA, na ,NA\n",
+          "output": "no data"
+        },
+        {
+          "input": "-2, 0, 2\n",
+          "output": "count=3 missing=0\nmean=0.00\nstd=1.63\n-1.22 0.00 1.22"
+        },
+        {
+          "input": "5\n",
+          "output": "count=1 missing=0\nmean=5.00\nstd=0.00\n0.00"
+        },
+        {
+          "input": "1,na,3,NA\n",
+          "output": "count=2 missing=2\nmean=2.00\nstd=1.00\n-1.00 0.00 1.00 0.00"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "type": "concept",
+        "question": "Which Python structure gives average O(1) membership tests and automatically removes duplicates?",
+        "options": [
+          "set",
+          "string",
+          "list",
+          "tuple"
+        ],
+        "answer": 0,
+        "explanation": "A set is a hash table of unique items, so membership checks are O(1) on average and duplicates are dropped."
+      },
+      {
+        "type": "output",
+        "question": "What does this NumPy slice code print?",
+        "code": "import numpy as np\na = np.array([1, 2, 3, 4])\nb = a[1:3]\nb[0] = 99\nprint(a)",
+        "options": [
+          "[ 1 99  3  4]",
+          "[1 2 3 4]",
+          "[99  2  3  4]",
+          "An error is raised"
+        ],
+        "answer": 0,
+        "explanation": "Basic slicing returns a view that shares memory, so changing b[0] changes a[1]."
+      },
+      {
+        "type": "concept",
+        "question": "A matrix X has shape (500, 4) and m has shape (4,). What is the shape of X - m?",
+        "options": [
+          "It raises a broadcasting error",
+          "(500, 4)",
+          "(4,)",
+          "(4, 500)"
+        ],
+        "answer": 1,
+        "explanation": "Shapes align from the right: 4 matches 4, and m is broadcast across all 500 rows."
+      },
+      {
+        "type": "scenario",
+        "question": "You compute the mean for imputing missing ages using the full dataset before splitting into train and test. What is the problem?",
+        "options": [
+          "The mean will always be zero",
+          "Information from the test set leaks into training",
+          "Imputation is never allowed in ML",
+          "Means cannot be computed with missing values"
+        ],
+        "answer": 1,
+        "explanation": "Preprocessing statistics must be fitted on training data only; using test rows leaks information and inflates evaluation scores."
+      },
+      {
+        "type": "code",
+        "question": "Which function signature avoids the shared-state bug when collecting items across calls?",
+        "options": [
+          "def collect(x, out=None):  # then out = [] if out is None",
+          "def collect(x, out=[None]):",
+          "def collect(x, out=[]):",
+          "def collect(x, out=list()):"
+        ],
+        "answer": 0,
+        "explanation": "Defaults are evaluated once at definition time. Using None and creating a new list inside the function gives each call its own list."
+      }
+    ]
+  }
+}

@@ -1,0 +1,695 @@
+{
+  "curriculum": "python-programming",
+  "summary": "Available lessons cover Python Overview and the Execution Model; Variables, Dynamic Typing and Object References; Numbers and Strings: Slicing, Formatting and Methods; Operators, Expressions and Precedence; Control Flow: Conditionals, Loops and Loop Control; Functions: Parameters, Arguments and Return Values; Scope, Namespaces and Closures; Built-in Data Structures: Lists, Tuples, Sets and Dictionaries; Strings, Formatting and Regular Expressions.",
+  "complete": false,
+  "missingDays": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "roadmap": [
+    {
+      "day": 1,
+      "title": "Python Overview and the Execution Model",
+      "module": "Python foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 2,
+      "title": "Variables, Dynamic Typing and Object References",
+      "module": "Python foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 3,
+      "title": "Numbers and Strings: Slicing, Formatting and Methods",
+      "module": "Python foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 4,
+      "title": "Operators, Expressions and Precedence",
+      "module": "Python foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 5,
+      "title": "Control Flow: Conditionals, Loops and Loop Control",
+      "module": "Python foundations",
+      "level": "Beginner"
+    },
+    {
+      "day": 6,
+      "title": "Functions: Parameters, Arguments and Return Values",
+      "module": "Functions and scope",
+      "level": "Beginner"
+    },
+    {
+      "day": 7,
+      "title": "Scope, Namespaces and Closures",
+      "module": "Functions and scope",
+      "level": "Intermediate"
+    },
+    {
+      "day": 8,
+      "title": "Built-in Data Structures: Lists, Tuples, Sets and Dictionaries",
+      "module": "Data structures",
+      "level": "Intermediate"
+    },
+    {
+      "day": 9,
+      "title": "Strings, Formatting and Regular Expressions",
+      "module": "Strings and text processing",
+      "level": "Intermediate"
+    }
+  ],
+  "samples": [
+    {
+      "day": 1,
+      "title": "Python Overview and the Execution Model",
+      "level": "Beginner",
+      "definition": "Python is a high-level, general-purpose, dynamically typed programming language that emphasises readability. The standard implementation, CPython, first compiles a source file into bytecode (a low-level, platform-independent instruction set) and then executes that bytecode on the Python Virtual Machine, an interpreter loop written in C.",
+      "objectives": [
+        "Describe what Python is and why it is popular for back-end, automation and data work.",
+        "Explain how CPython compiles source code to bytecode and runs it on a virtual machine.",
+        "Distinguish compile-time errors (SyntaxError) from run-time errors (NameError, TypeError).",
+        "Explain the role of __name__ == '__main__' and .pyc caching.",
+        "Answer the classic 'Is Python compiled or interpreted?' interview question precisely."
+      ],
+      "interview": [
+        {
+          "question": "Is Python a compiled or an interpreted language?",
+          "answer": "Both, in the CPython implementation. Source code is compiled to bytecode, and the bytecode is executed by the Python Virtual Machine, an interpreter. It is not compiled ahead of time to native machine code.",
+          "explanation": "Saying only 'interpreted' is the common weak answer. A strong answer names the pipeline (source -> AST -> bytecode -> PVM) and mentions that PyPy adds JIT compilation."
+        },
+        {
+          "question": "What is the purpose of if __name__ == '__main__':?",
+          "answer": "It runs the guarded block only when the file is executed directly. When the file is imported, __name__ is the module name, so the block is skipped and importing has no side effects.",
+          "explanation": "Mention practical uses: CLI entry points, quick demos and avoiding duplicate work when multiprocessing re-imports the main module on Windows."
+        },
+        {
+          "question": "What are .pyc files and __pycache__?",
+          "answer": ".pyc files hold the compiled bytecode of imported modules, stored in __pycache__ with a version tag. Python reuses them when the source is unchanged, which speeds up imports. They do not make code run faster once loaded.",
+          "explanation": "Interviewers check that you know caching affects start-up time only, and that the main script is not cached."
+        },
+        {
+          "question": "A file has a syntax error on its last line. Does the first print statement run?",
+          "answer": "No. The whole file is parsed and compiled before execution starts, so the SyntaxError is raised before any statement runs. A NameError on the last line, by contrast, would only occur after the earlier lines had executed.",
+          "explanation": "This tests real understanding of the execution model: compile-time versus run-time errors."
+        },
+        {
+          "question": "What are the main limitations of Python, and how do teams work around them?",
+          "answer": "CPU-bound code is slower than in compiled languages, the GIL stops threads running Python bytecode in parallel, objects use more memory and type errors surface at run time. Teams use C-backed libraries (NumPy), multiprocessing or native extensions for speed, PyPy for some workloads, and type hints with mypy plus tests for correctness.",
+          "explanation": "Balanced answers that pair each limitation with a mitigation sound like real engineering experience."
+        }
+      ],
+      "example": {
+        "title": "A module that is also a script",
+        "body": "This file defines a reusable function and runs a quick demo only when executed directly. Another file can import greet without printing anything, because in that case __name__ is 'greetings', not '__main__'.",
+        "code": {
+          "language": "python",
+          "source": "# greetings.py\ndef greet(name):\n    return f'Hello, {name}!'\n\nprint('module name:', __name__)\n\nif __name__ == '__main__':\n    print(greet('Asha'))\n\n# python greetings.py      -> module name: __main__ / Hello, Asha!\n# >>> import greetings      -> module name: greetings"
+        }
+      },
+      "practice": {
+        "title": "Syntax checker without running the code",
+        "statement": "Read a small Python program and report whether it compiles. Do not execute it. If it compiles, print OK followed by the number of non-blank lines. If it does not, print the line number of the syntax error reported by the compiler. IndentationError is a kind of SyntaxError and must be reported the same way.",
+        "objective": "Use Python's compile step to detect syntax errors before execution, mirroring how CPython compiles a whole file before running it."
+      },
+      "takeaways": [
+        "CPython compiles source to bytecode, then the Python Virtual Machine interprets the bytecode.",
+        "A SyntaxError anywhere in a file prevents any of it from running; NameError and TypeError appear only when the line executes.",
+        ".pyc files in __pycache__ cache bytecode of imported modules to speed up start-up.",
+        "if __name__ == '__main__': separates script behaviour from importable code.",
+        "Python trades raw CPU speed for readability and productivity; heavy lifting is delegated to C extensions.",
+        "CPython, PyPy, Jython and MicroPython are different implementations of the same language."
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Variables, Dynamic Typing and Object References",
+      "level": "Beginner",
+      "definition": "In Python a variable is a name that refers to an object stored in memory. Assignment binds a name to an object; it never copies the object. Python is dynamically typed, meaning the type belongs to the object and is checked at run time, so the same name can refer to an int now and a string later.",
+      "objectives": [
+        "Explain that Python variables are names bound to objects, not boxes holding values.",
+        "Contrast dynamic typing with static typing and strong typing with weak typing.",
+        "Use id(), type(), isinstance(), == and is correctly.",
+        "Predict the effect of assignment, rebinding and in-place mutation on shared objects.",
+        "Recognise interning and small-integer caching as implementation details."
+      ],
+      "interview": [
+        {
+          "question": "What does it mean that Python is dynamically typed?",
+          "answer": "Types are attached to objects rather than variables and are checked at run time. A name can refer to an int and later to a str, and you never declare types.",
+          "explanation": "Add that Python is still strongly typed ('3' + 4 raises TypeError) to stand out."
+        },
+        {
+          "question": "What is the difference between == and is?",
+          "answer": "== checks whether two objects have equal values (via __eq__). is checks whether two names refer to the same object in memory. Use is for None and other singletons.",
+          "explanation": "Give the list example: [1] == [1] is True, [1] is [1] is False."
+        },
+        {
+          "question": "Why might a = 256; b = 256; a is b be True but the same test with 257 be False?",
+          "answer": "CPython caches small integers from -5 to 256, so both names get the same cached object. Larger integers may be created separately, so identity is not guaranteed. This is an implementation detail, and numbers should always be compared with ==.",
+          "explanation": "Interviewers want you to know the reason and the lesson: never rely on is for value comparison."
+        },
+        {
+          "question": "After a = [1, 2]; b = a; b += [3], what is a? What if the lists were tuples?",
+          "answer": "a is [1, 2, 3] because += on a list mutates it in place and both names share it. With tuples, b += (3,) creates a new tuple and rebinds b, so a stays (1, 2).",
+          "explanation": "This shows you understand that += calls __iadd__ when available (mutable types) and falls back to creating a new object for immutable types."
+        },
+        {
+          "question": "Are type hints enforced at run time? Why use them?",
+          "answer": "No. The interpreter stores them in __annotations__ but does not check them. They are used by static checkers (mypy, pyright), IDEs and frameworks such as FastAPI and pydantic, which read them deliberately to validate data.",
+          "explanation": "Mentioning that some libraries opt in to run-time validation shows current, practical knowledge."
+        }
+      ],
+      "example": {
+        "title": "Rebinding versus mutating",
+        "body": "Both names start out pointing to the same list. Mutating through one name is visible through the other, but rebinding one name to a new object breaks the link without affecting the other name.",
+        "code": {
+          "language": "python",
+          "source": "scores = [70, 85]\nbackup = scores            # same list, two names\nbackup.append(90)          # mutate the shared object\nprint(scores)              # [70, 85, 90]\n\nbackup = [0]               # rebind backup to a new list\nprint(scores, backup)      # [70, 85, 90] [0]\nprint(scores is backup)    # False"
+        }
+      },
+      "practice": {
+        "title": "Literal type inspector",
+        "statement": "Each input line contains one Python literal. For each line print the name of its type and whether that type is mutable or immutable. Parse literals safely with ast.literal_eval instead of eval. Treat list, dict and set as mutable; every other type produced by a literal is immutable.",
+        "objective": "Practise reasoning about the run-time type of values and whether each type is mutable."
+      },
+      "takeaways": [
+        "Variables are names bound to objects; assignment never copies.",
+        "Python is dynamically and strongly typed.",
+        "== compares values; is compares identity. Use is only with None, True and False.",
+        "Mutating a shared object is visible through every name that refers to it; rebinding is not.",
+        "Small-integer caching and string interning are CPython optimisations, not guarantees.",
+        "Type hints are documentation for tools; the interpreter does not enforce them."
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Numbers and Strings: Slicing, Formatting and Methods",
+      "level": "Beginner",
+      "definition": "Python's numeric types are int (arbitrary precision integers), float (64-bit IEEE 754 binary floating point) and complex, with Decimal and Fraction available in the standard library for exact arithmetic. A str is an immutable sequence of Unicode characters that supports indexing, slicing, a rich set of methods and formatted string literals (f-strings).",
+      "objectives": [
+        "Use int, float, complex and Decimal appropriately and explain floating-point error.",
+        "Slice strings with start, stop and step, including negative indices.",
+        "Format output with f-strings and format specifiers.",
+        "Apply common string methods: split, join, strip, replace, find, startswith, upper and title.",
+        "Explain why strings are immutable and why ''.join is preferred over += in loops."
+      ],
+      "interview": [
+        {
+          "question": "Why does 0.1 + 0.2 not equal 0.3 in Python?",
+          "answer": "Floats are stored in binary, and 0.1 and 0.2 have no exact binary representation, so the sum is 0.30000000000000004. Compare with math.isclose, or use Decimal or integers for exact values.",
+          "explanation": "Mention that this is IEEE 754 behaviour shared by most languages, not a Python bug."
+        },
+        {
+          "question": "How do you reverse a string in Python?",
+          "answer": "Use slicing with a step of -1: s[::-1]. Alternatively ''.join(reversed(s)).",
+          "explanation": "Interviewers often follow up with a palindrome check: s == s[::-1], possibly after normalising case and removing non-alphanumeric characters."
+        },
+        {
+          "question": "Why are strings immutable, and what are the consequences?",
+          "answer": "Immutability lets strings be hashed and used as dict keys and set members, makes them safe to share between names and threads, and enables interning. The consequence is that every modification creates a new string, so repeated += in a loop is inefficient compared with ''.join.",
+          "explanation": "Linking immutability to hashability and performance shows depth."
+        },
+        {
+          "question": "What is the difference between str.find and str.index?",
+          "answer": "Both return the lowest index of a substring. find returns -1 when it is not found; index raises ValueError.",
+          "explanation": "Choose find when absence is normal, index when absence is an error you want surfaced."
+        },
+        {
+          "question": "What does round(2.5) return, and why?",
+          "answer": "2. Python 3 uses round half to even (banker's rounding), so .5 cases round to the nearest even number. This reduces bias when many values are rounded. For commercial rounding use Decimal.quantize with ROUND_HALF_UP.",
+          "explanation": "A surprising-output question that tests attention to numeric details."
+        }
+      ],
+      "example": {
+        "title": "Cleaning and formatting a user record",
+        "body": "Raw input often has stray spaces and inconsistent case. Chaining methods cleans it, slicing extracts parts and an f-string produces aligned output.",
+        "code": {
+          "language": "python",
+          "source": "raw = '   priya SHARMA , 9876543210 '\nname, phone = [part.strip() for part in raw.split(',')]\nname = name.title()                # 'Priya Sharma'\nmasked = '*' * 6 + phone[-4:]      # '******3210'\nprint(f'{name:<15}|{masked:>12}|')\nprint(f'{0.1 + 0.2 = }')            # debugging specifier (3.8+)\nprint(round(2.5), round(3.5))       # 2 4  (round half to even)"
+        }
+      },
+      "practice": {
+        "title": "Aligned invoice formatter",
+        "statement": "Read invoice lines of the form item_name quantity unit_price. Item names use underscores instead of spaces and may have any case. For each line print the item name with underscores replaced by spaces in title case, left-aligned in 14 characters, then the quantity right-aligned in 4 characters, then the line amount right-aligned in 10 characters with exactly two decimals. Finally print TOTAL left-aligned in 18 characters followed by the grand total right-aligned in 10 characters. To avoid floating-point error, convert prices to integer paise before multiplying.",
+        "objective": "Combine string methods, integer arithmetic for money and f-string alignment to produce a clean report."
+      },
+      "takeaways": [
+        "ints have unlimited precision; floats are approximate, so compare them with math.isclose.",
+        "Use integer paise/cents or Decimal for money.",
+        "Slices exclude the stop index, accept negative indices and never raise IndexError.",
+        "Strings are immutable; methods return new strings.",
+        "Join many pieces with ''.join(list) instead of += in a loop.",
+        "f-strings with format specifiers handle alignment, decimals and separators."
+      ]
+    },
+    {
+      "day": 4,
+      "title": "Operators, Expressions and Precedence",
+      "level": "Beginner",
+      "definition": "An operator is a symbol or keyword that combines values (operands) into an expression that Python evaluates to a single object. Python groups operators into arithmetic, comparison, logical, bitwise, identity, membership and assignment operators, and evaluates them according to fixed precedence and associativity rules.",
+      "objectives": [
+        "Use arithmetic operators correctly, including floor division and modulo with negative numbers.",
+        "Explain short-circuit evaluation and why and/or return operands rather than booleans.",
+        "Read chained comparisons and operator precedence without guessing.",
+        "Apply bitwise operators to classic interview tasks.",
+        "Use the walrus operator := and augmented assignment appropriately."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between / and // in Python 3?",
+          "answer": "/ is true division and always returns a float. // is floor division: it rounds the result down toward negative infinity, returning an int for int operands, so -7 // 2 is -4.",
+          "explanation": "Mentioning the negative-number behaviour separates a strong answer from a memorised one."
+        },
+        {
+          "question": "What does 'a or b' return?",
+          "answer": "It returns a if a is truthy, otherwise b. It does not convert the result to a bool, and b is not evaluated when a is truthy.",
+          "explanation": "Link it to idioms such as name = value or 'default', and warn that 0 or '' are also replaced, which may be unintended."
+        },
+        {
+          "question": "How do you check whether a number is a power of two without loops?",
+          "answer": "n > 0 and n & (n - 1) == 0. A power of two has exactly one set bit, and subtracting 1 flips that bit and all lower bits, so the AND is zero.",
+          "explanation": "Explaining why the trick works is more important than the formula itself."
+        },
+        {
+          "question": "What does 1 < 3 > 2 evaluate to, and why?",
+          "answer": "True. Python chains comparisons, so it means 1 < 3 and 3 > 2, both of which are true.",
+          "explanation": "Shows you know chaining is a language feature, not left-to-right evaluation of booleans."
+        },
+        {
+          "question": "What is the walrus operator and when would you use it?",
+          "answer": "The assignment expression := (Python 3.8) binds a name as part of an expression. It avoids repeating a computation, for example while (chunk := f.read(1024)): process(chunk) or [y for x in data if (y := f(x)) > 0].",
+          "explanation": "Mention it should be used where it improves clarity, not to cram logic into one line."
+        }
+      ],
+      "example": {
+        "title": "Wrapping indices with modulo",
+        "body": "Because % takes the sign of the divisor, moving backwards around a circular list never produces a negative index. This is a common trick in rotation and circular-buffer problems.",
+        "code": {
+          "language": "python",
+          "source": "days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']\ntoday = 1                       # Tue\nprint(days[(today - 3) % 7])    # Sat: (-2) % 7 == 5\nprint(days[(today + 10) % 7])   # Fri: 11 % 7 == 4\nhours, minutes = divmod(135, 60)\nprint(hours, minutes)           # 2 15"
+        }
+      },
+      "practice": {
+        "title": "Bitwise number inspector",
+        "statement": "For each non-negative integer, print: the number, its binary representation without the 0b prefix, the count of 1 bits, 'yes' or 'no' for whether it is a power of two (using n & (n - 1)), and 'even' or 'odd' decided with n & 1.",
+        "objective": "Apply bitwise operators to answer classic questions about an integer's binary form."
+      },
+      "takeaways": [
+        "/ always returns a float; // floors toward negative infinity.",
+        "% takes the sign of the divisor, so it wraps negative indices cleanly.",
+        "** is right-associative and binds tighter than unary minus.",
+        "and/or short-circuit and return one of their operands, not necessarily a bool.",
+        "n & (n - 1) == 0 (with n > 0) detects powers of two.",
+        "Use parentheses whenever precedence is not obvious to a reader."
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Control Flow: Conditionals, Loops and Loop Control",
+      "level": "Beginner",
+      "definition": "Control flow is the order in which a program's statements run. Python selects a branch with the conditional statement if/elif/else, which tests truthiness, and repeats work with two loops: for, which visits each item of an iterable in turn, and while, which repeats as long as a condition stays true. break, continue and the optional else clause attached to a loop give fine-grained control over how iteration ends.",
+      "objectives": [
+        "Write if/elif/else chains that choose between mutually exclusive branches.",
+        "Iterate over sequences and ranges with for loops and use while for sentinel-driven repetition.",
+        "Use break, continue and the loop else clause to control iteration precisely.",
+        "Explain when the else attached to a loop runs and why it pairs with break.",
+        "Recognise pitfalls such as mutating a list while iterating over it."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between break and continue?",
+          "answer": "break exits the innermost loop immediately. continue skips the remaining statements of the current iteration and moves straight to the next pass, where the loop condition is tested again.",
+          "explanation": "Mention that neither statement affects an outer loop, which is a common follow-up question about nested loops."
+        },
+        {
+          "question": "What does the else clause on a for or while loop do?",
+          "answer": "It runs after the loop finishes normally, meaning only if the loop was not exited with break. It is typically used to handle the not-found case of a search without a flag variable.",
+          "explanation": "A strong answer contrasts it with the if/else else and gives a search example such as for/else over a list of records."
+        },
+        {
+          "question": "How do you loop with an index in Python, and why avoid range(len(items))?",
+          "answer": "Use for i, item in enumerate(items). range(len(items)) works but is less readable and error-prone because you index the sequence yourself and lose the direct reference to the item.",
+          "explanation": "enumerate also accepts a start value, which is handy for numbering lines starting at one."
+        },
+        {
+          "question": "Why does deleting items from a list while looping over it skip elements?",
+          "answer": "Removing an element shifts every later element one position left, but the iterator's internal index still moves forward, so the element that slid into the current position is never visited. Iterate over a copy, delete in reverse, or build a new list instead.",
+          "explanation": "The same class of bug affects any sequence whose length changes during iteration."
+        },
+        {
+          "question": "When would you choose while over for?",
+          "answer": "When the number of iterations is not known in advance, for example reading until a sentinel value, retrying an operation until it succeeds, or advancing a value until some condition holds. for is preferable whenever you are walking over the items of an iterable.",
+          "explanation": "Interviewers like to hear that for loops are implemented on top of the iterator protocol and handling IndexError manually is not idiomatic."
+        }
+      ],
+      "example": {
+        "title": "A search loop with break and else",
+        "body": "This program searches a list for the first valid code and stops as soon as it finds one. The else clause reports failure only when no item ever broke the loop, which is exactly how a search should behave.",
+        "code": {
+          "language": "python",
+          "source": "codes = ['A12', 'B7', 'X9', 'C3']\n\nfor code in codes:\n    if len(code) == 2 and code[0].isalpha():\n        print('accepted:', code)\n        break\n    print('rejected:', code)\nelse:\n    print('no valid code found')\n\nn = 5\nwhile n > 0:\n    if n == 3:\n        n -= 1\n        continue\n    print('count', n)\n    n -= 1"
+        }
+      },
+      "practice": {
+        "title": "Collatz sequence length",
+        "statement": "The Collatz process maps an even number n to n / 2 and an odd number n to 3 * n + 1, repeating until n reaches 1. For each starting value print the starting value and the number of steps needed to reach 1. A starting value of 1 takes zero steps.",
+        "objective": "Use a while loop to iterate a numeric process until it reaches a fixed point and count the steps."
+      },
+      "takeaways": [
+        "if/elif/else selects exactly one branch; truthiness avoids comparisons with True.",
+        "Use for over iterables and while when the number of iterations is unknown.",
+        "break stops the innermost loop; continue skips to the next pass.",
+        "A loop else runs only when no break occurred, making it ideal for searches.",
+        "Never mutate a list while iterating it; iterate over a copy or build a new list."
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Functions: Parameters, Arguments and Return Values",
+      "level": "Beginner",
+      "definition": "A function is a named block of code that performs a task and can be called repeatedly with different inputs. A parameter is a name listed in the function definition; an argument is the actual object supplied at the call site. Parameters can be positional, keyword, defaulted, collected into *args and **kwargs, or restricted to positional-only or keyword-only, and a function may return one value, several values packed in a tuple, or None.",
+      "objectives": [
+        "Define functions with def and explain the difference between parameters and arguments.",
+        "Use positional, keyword and default arguments, and avoid the mutable default trap.",
+        "Accept a variable number of arguments with *args and **kwargs and unpack them when calling.",
+        "Mark positional-only and keyword-only parameters with / and *.",
+        "Explain why a function without return returns None and how to return several values."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between a parameter and an argument?",
+          "answer": "A parameter is the placeholder name in the function definition; an argument is the actual value passed when the function is called. Parameters are bound to the argument objects at call time.",
+          "explanation": "This sounds trivial but interviewers use it to check that you use precise vocabulary when discussing signatures."
+        },
+        {
+          "question": "Why is def add_item(item, box=[]) dangerous?",
+          "answer": "Default values are evaluated once, when the def runs, so the same list object is reused by every call and items accumulate across unrelated calls. Default to None and create the list inside the function instead.",
+          "explanation": "This is the classic mutable-default-argument question; showing the fix demonstrates real experience."
+        },
+        {
+          "question": "How do *args and **kwargs work?",
+          "answer": "*args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dictionary. At the call site, * unpacks a sequence into positional arguments and ** unpacks a mapping into keyword arguments.",
+          "explanation": "Mention their role in writing decorators and wrappers that must forward unknown arguments unchanged."
+        },
+        {
+          "question": "What does a function return if it has no return statement?",
+          "answer": "None. Falling off the end of a function is equivalent to returning None, so functions that only print or modify state still return None.",
+          "explanation": "A good follow-up answer notes that returning several values is really returning a tuple, which the caller can unpack."
+        },
+        {
+          "question": "What do the / and * markers in a parameter list mean?",
+          "answer": "Parameters before / are positional-only and cannot be passed by name; parameters after a bare * are keyword-only and must be passed by name. They let library authors make APIs explicit and keep internal parameter names free to change.",
+          "explanation": "Mention built-in examples such as pow(x, y, /) and that keyword-only arguments prevent confusing positional boolean calls."
+        }
+      ],
+      "example": {
+        "title": "The mutable default pitfall",
+        "body": "The first version shares one list between all calls because the default is created once. The corrected version uses None as a sentinel and builds a fresh list on every call, which is the safe pattern.",
+        "code": {
+          "language": "python",
+          "source": "def buggy(item, box=[]):\n    box.append(item)\n    return box\n\nprint(buggy('a'))    # ['a']\nprint(buggy('b'))    # ['a', 'b']  shared list!\n\ndef fixed(item, box=None):\n    if box is None:\n        box = []\n    box.append(item)\n    return box\n\nprint(fixed('a'))    # ['a']\nprint(fixed('b'))    # ['b']  fresh list"
+        }
+      },
+      "practice": {
+        "title": "Greatest common divisor and least common multiple",
+        "statement": "Read N pairs of non-negative integers. For each pair print the greatest common divisor and the least common multiple on one line. Define a function gcd(a, b) using Euclid's algorithm, and derive lcm(a, b) from it as a // gcd(a, b) * b, guarding the case where both numbers are zero.",
+        "objective": "Implement Euclid's algorithm in a reusable helper function and call it from a loop."
+      },
+      "takeaways": [
+        "Parameters are the names in the definition; arguments are the values you pass.",
+        "Defaults are evaluated once at definition time, so never default to a mutable object.",
+        "Use None as a sentinel and create the list or dict inside the function.",
+        "*args collects extra positional arguments and **kwargs extra keyword arguments.",
+        "A function without return returns None; multiple return values arrive as a tuple.",
+        "Functions are objects, so they can be passed around as callbacks and keys."
+      ]
+    }
+  ],
+  "firstLesson": {
+    "day": 1,
+    "title": "Python Overview and the Execution Model",
+    "module": "Python foundations",
+    "level": "Beginner",
+    "objectives": [
+      "Describe what Python is and why it is popular for back-end, automation and data work.",
+      "Explain how CPython compiles source code to bytecode and runs it on a virtual machine.",
+      "Distinguish compile-time errors (SyntaxError) from run-time errors (NameError, TypeError).",
+      "Explain the role of __name__ == '__main__' and .pyc caching.",
+      "Answer the classic 'Is Python compiled or interpreted?' interview question precisely."
+    ],
+    "definition": "Python is a high-level, general-purpose, dynamically typed programming language that emphasises readability. The standard implementation, CPython, first compiles a source file into bytecode (a low-level, platform-independent instruction set) and then executes that bytecode on the Python Virtual Machine, an interpreter loop written in C.",
+    "theory": [
+      {
+        "heading": "What Python is and why companies use it",
+        "body": "Python was created by Guido van Rossum and first released in 1991. Its design favours readable code, a large standard library ('batteries included') and fast development over raw execution speed. That trade-off is why it dominates scripting, web back ends (Django, Flask, FastAPI), data engineering, machine learning and test automation: developer time is usually more expensive than CPU time, and performance-critical parts can be delegated to C extensions such as NumPy.",
+        "points": [
+          "High-level: memory management, garbage collection and data structures are built in.",
+          "Dynamically typed: types belong to objects, not variables, and are checked at run time.",
+          "Multi-paradigm: procedural, object-oriented and functional styles are all supported.",
+          "Python 2 reached end of life in 2020; interviews assume Python 3."
+        ]
+      },
+      {
+        "heading": "Compiled or interpreted? Both",
+        "body": "When you run python app.py, CPython reads the whole file, tokenises and parses it into an abstract syntax tree, and compiles that tree into bytecode. Only then does the Python Virtual Machine (PVM) start executing the bytecode instruction by instruction. So Python is compiled to bytecode and the bytecode is interpreted. It is not compiled to native machine code ahead of time the way C is.",
+        "points": [
+          "Source (.py) -> tokens -> AST -> bytecode (code objects) -> executed by the PVM.",
+          "Because the whole file is compiled first, a SyntaxError anywhere stops the program before line 1 runs.",
+          "Name lookups, attribute access and type checks happen at run time, so a NameError only appears when that line executes.",
+          "The dis module shows the bytecode: import dis; dis.dis(func)."
+        ]
+      },
+      {
+        "heading": "Bytecode caching and .pyc files",
+        "body": "When a module is imported, CPython saves its compiled bytecode in a __pycache__ folder as a .pyc file named for the interpreter version, for example utils.cpython-311.pyc. On the next import, if the source has not changed, Python skips compilation and loads the cached bytecode. This speeds up start-up, not execution. The main script you run directly is compiled every time and is not cached.",
+        "points": [
+          ".pyc files are a start-up optimisation, not a way to hide or speed up code.",
+          "They are version-specific, which is why the interpreter tag is in the file name.",
+          "Deleting __pycache__ is always safe; Python regenerates it."
+        ]
+      },
+      {
+        "heading": "Implementations and the __main__ module",
+        "body": "Python is a language specification with several implementations: CPython (the reference, written in C), PyPy (a JIT compiler that can make long-running pure-Python code much faster), Jython (JVM) and MicroPython (microcontrollers). Whichever implementation runs it, the file you execute directly becomes the module named __main__. The idiom if __name__ == '__main__': lets a file act both as an importable module and as a script: the guarded code runs only when the file is executed directly.",
+        "points": [
+          "Imported module: __name__ is the module's name, e.g. 'utils'.",
+          "Executed script: __name__ is '__main__'.",
+          "Put test calls and CLI entry points under the guard so imports have no side effects."
+        ]
+      },
+      {
+        "heading": "Strengths and limitations to state in interviews",
+        "body": "Python's strengths are readability, a huge ecosystem, rapid prototyping and portability. Its limitations are slower CPU-bound execution than compiled languages, the Global Interpreter Lock that prevents CPython threads from running Python bytecode in parallel, higher memory use per object and run-time rather than compile-time type errors. Good engineers mitigate these with profiling, C-backed libraries, multiprocessing, and type hints checked by tools such as mypy.",
+        "points": [
+          "Everything is an object, including functions, classes and modules.",
+          "Indentation is syntax: blocks are defined by consistent indentation, not braces.",
+          "Type hints are optional annotations; the interpreter does not enforce them."
+        ]
+      }
+    ],
+    "example": {
+      "title": "A module that is also a script",
+      "body": "This file defines a reusable function and runs a quick demo only when executed directly. Another file can import greet without printing anything, because in that case __name__ is 'greetings', not '__main__'.",
+      "code": {
+        "language": "python",
+        "source": "# greetings.py\ndef greet(name):\n    return f'Hello, {name}!'\n\nprint('module name:', __name__)\n\nif __name__ == '__main__':\n    print(greet('Asha'))\n\n# python greetings.py      -> module name: __main__ / Hello, Asha!\n# >>> import greetings      -> module name: greetings"
+      }
+    },
+    "use_cases": [
+      {
+        "title": "Web back ends",
+        "description": "Django, Flask and FastAPI power APIs and websites; Python's readability speeds up team development."
+      },
+      {
+        "title": "Automation and scripting",
+        "description": "Renaming files, scraping reports, calling APIs and gluing systems together in a few lines."
+      },
+      {
+        "title": "Data and machine learning",
+        "description": "pandas, NumPy, scikit-learn and PyTorch use Python as a friendly front end to fast C/C++ code."
+      },
+      {
+        "title": "Testing and DevOps",
+        "description": "pytest, Selenium, Ansible and many CI tools are written in or scripted with Python."
+      }
+    ],
+    "demonstration": {
+      "description": "Use the dis module to see the bytecode CPython generates for a tiny function. Exact opcode names differ between Python versions (for example BINARY_ADD in 3.8 became BINARY_OP in 3.11), which is exactly why bytecode is an implementation detail rather than part of the language.",
+      "code": {
+        "language": "python",
+        "source": "import dis\n\ndef add(a, b):\n    return a + b\n\ndis.dis(add)"
+      },
+      "output": "  LOAD_FAST    a\n  LOAD_FAST    b\n  BINARY_OP    0 (+)      # BINARY_ADD on older versions\n  RETURN_VALUE\n(line numbers and extra RESUME instructions vary by version)"
+    },
+    "takeaways": [
+      "CPython compiles source to bytecode, then the Python Virtual Machine interprets the bytecode.",
+      "A SyntaxError anywhere in a file prevents any of it from running; NameError and TypeError appear only when the line executes.",
+      ".pyc files in __pycache__ cache bytecode of imported modules to speed up start-up.",
+      "if __name__ == '__main__': separates script behaviour from importable code.",
+      "Python trades raw CPU speed for readability and productivity; heavy lifting is delegated to C extensions.",
+      "CPython, PyPy, Jython and MicroPython are different implementations of the same language."
+    ],
+    "interview": [
+      {
+        "question": "Is Python a compiled or an interpreted language?",
+        "answer": "Both, in the CPython implementation. Source code is compiled to bytecode, and the bytecode is executed by the Python Virtual Machine, an interpreter. It is not compiled ahead of time to native machine code.",
+        "explanation": "Saying only 'interpreted' is the common weak answer. A strong answer names the pipeline (source -> AST -> bytecode -> PVM) and mentions that PyPy adds JIT compilation."
+      },
+      {
+        "question": "What is the purpose of if __name__ == '__main__':?",
+        "answer": "It runs the guarded block only when the file is executed directly. When the file is imported, __name__ is the module name, so the block is skipped and importing has no side effects.",
+        "explanation": "Mention practical uses: CLI entry points, quick demos and avoiding duplicate work when multiprocessing re-imports the main module on Windows."
+      },
+      {
+        "question": "What are .pyc files and __pycache__?",
+        "answer": ".pyc files hold the compiled bytecode of imported modules, stored in __pycache__ with a version tag. Python reuses them when the source is unchanged, which speeds up imports. They do not make code run faster once loaded.",
+        "explanation": "Interviewers check that you know caching affects start-up time only, and that the main script is not cached."
+      },
+      {
+        "question": "A file has a syntax error on its last line. Does the first print statement run?",
+        "answer": "No. The whole file is parsed and compiled before execution starts, so the SyntaxError is raised before any statement runs. A NameError on the last line, by contrast, would only occur after the earlier lines had executed.",
+        "explanation": "This tests real understanding of the execution model: compile-time versus run-time errors."
+      },
+      {
+        "question": "What are the main limitations of Python, and how do teams work around them?",
+        "answer": "CPU-bound code is slower than in compiled languages, the GIL stops threads running Python bytecode in parallel, objects use more memory and type errors surface at run time. Teams use C-backed libraries (NumPy), multiprocessing or native extensions for speed, PyPy for some workloads, and type hints with mypy plus tests for correctness.",
+        "explanation": "Balanced answers that pair each limitation with a mitigation sound like real engineering experience."
+      }
+    ],
+    "practice": {
+      "kind": "coding",
+      "title": "Syntax checker without running the code",
+      "difficulty": "Basic",
+      "objective": "Use Python's compile step to detect syntax errors before execution, mirroring how CPython compiles a whole file before running it.",
+      "statement": "Read a small Python program and report whether it compiles. Do not execute it. If it compiles, print OK followed by the number of non-blank lines. If it does not, print the line number of the syntax error reported by the compiler. IndentationError is a kind of SyntaxError and must be reported the same way.",
+      "language": "python",
+      "input_format": "The first line is an integer N. The next N lines are the program's source code (indentation preserved).",
+      "output_format": "Either 'OK <k>' where k is the number of non-blank source lines, or 'SyntaxError on line <L>'.",
+      "example": {
+        "input": "3\nx = 10\nif x > 5\n    print(x)\n",
+        "output": "SyntaxError on line 2"
+      },
+      "constraints": [
+        "1 <= N <= 50.",
+        "Use compile(source, '<input>', 'exec'); never call exec or eval on the input.",
+        "A line containing only spaces counts as blank."
+      ],
+      "starter": "import sys\n\nlines = sys.stdin.read().split('\\n')\nn = int(lines[0])\ncode_lines = lines[1:n + 1]\nsource = '\\n'.join(code_lines) + '\\n'\n\n# TODO: compile the source and print the result\n",
+      "solution": "import sys\n\nlines = sys.stdin.read().split('\\n')\nn = int(lines[0])\ncode_lines = lines[1:n + 1]\nsource = '\\n'.join(code_lines) + '\\n'\n\ntry:\n    compile(source, '<input>', 'exec')\nexcept SyntaxError as err:\n    print(f'SyntaxError on line {err.lineno}')\nelse:\n    non_blank = sum(1 for line in code_lines if line.strip())\n    print(f'OK {non_blank}')\n",
+      "explanation": [
+        "Read all input and keep exactly N source lines, preserving their indentation.",
+        "compile() runs the tokenizer, parser and bytecode compiler but executes nothing, just like the first phase of python file.py.",
+        "Catch SyntaxError; IndentationError and TabError are subclasses, so one except clause handles all of them. err.lineno holds the line number.",
+        "In the else block (no exception), count lines whose strip() is non-empty and print OK with the count."
+      ],
+      "tests": [
+        {
+          "input": "3\nx = 10\nif x > 5\n    print(x)\n",
+          "output": "SyntaxError on line 2"
+        },
+        {
+          "input": "4\ndef add(a, b):\n    return a + b\n\nprint(add(2, 3))\n",
+          "output": "OK 3"
+        },
+        {
+          "input": "3\nprint('start')\n  print('indented')\nprint('end')\n",
+          "output": "SyntaxError on line 2"
+        },
+        {
+          "input": "2\nprint(undefined_name)\nresult = 1 / 0\n",
+          "output": "OK 2"
+        },
+        {
+          "input": "1\n1 = x\n",
+          "output": "SyntaxError on line 1"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "type": "concept",
+        "question": "What does CPython produce from a .py source file before executing it?",
+        "options": [
+          "Bytecode that runs on the Python Virtual Machine",
+          "Java bytecode for the JVM",
+          "An executable .exe file",
+          "Native machine code for the current CPU"
+        ],
+        "answer": 0,
+        "explanation": "CPython compiles source to bytecode, which its virtual machine then interprets. PyPy can JIT-compile further, but CPython does not produce native code."
+      },
+      {
+        "type": "output",
+        "question": "What does this program print when run as a script?",
+        "code": "print('start')\n\ndef report():\n    return missing_variable\n\nprint('end')",
+        "options": [
+          "start and end on two lines",
+          "SyntaxError",
+          "NameError before anything is printed",
+          "start, then a NameError"
+        ],
+        "answer": 0,
+        "explanation": "Names inside a function body are looked up only when the function runs. report() is never called, so no NameError occurs and both lines print."
+      },
+      {
+        "type": "scenario",
+        "question": "utils.py ends with print('loaded'). You want the message only when running python utils.py, not when another file imports utils. What should you do?",
+        "options": [
+          "Wrap the print in a try/except block",
+          "Put the print under if __name__ == '__main__':",
+          "Rename the file to __main__.py",
+          "Delete the __pycache__ folder"
+        ],
+        "answer": 1,
+        "explanation": "When imported, __name__ is 'utils'; when run directly, it is '__main__'. The guard runs the code only in the second case."
+      },
+      {
+        "type": "concept",
+        "question": "What is the main benefit of the .pyc files stored in __pycache__?",
+        "options": [
+          "They make loops execute faster",
+          "They hide source code from other developers",
+          "They allow Python 3.8 bytecode to run on Python 3.12",
+          "They skip recompilation on import, so start-up is faster"
+        ],
+        "answer": 3,
+        "explanation": "Cached bytecode avoids reparsing unchanged modules. Execution speed is the same, and .pyc files are version-specific."
+      },
+      {
+        "type": "scenario",
+        "question": "A 200-line script has a missing colon on line 200. What happens when you run it?",
+        "options": [
+          "A SyntaxError is raised and no line runs",
+          "Python skips line 200 and finishes normally",
+          "Python inserts the colon automatically",
+          "Lines 1 to 199 run, then a SyntaxError is raised"
+        ],
+        "answer": 0,
+        "explanation": "The whole file is compiled before execution starts, so a syntax error anywhere prevents every line from running."
+      }
+    ]
+  }
+}

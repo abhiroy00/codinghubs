@@ -1,0 +1,1929 @@
+{
+  "slug": "ai-integrated-full-stack",
+  "name": "AI-Integrated Full Stack",
+  "focus": "AI-integrated full-stack development",
+  "track": "development",
+  "tools": [
+    "Git",
+    "REST APIs",
+    "SQL",
+    "VS Code",
+    "Docker",
+    "automated tests"
+  ],
+  "projects": [
+    {
+      "name": "AI-integrated full-stack development: Foundations case study",
+      "description": "Investigate a focused AI-integrated full-stack development scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated AI-integrated full-stack development use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable AI-integrated full-stack development artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    },
+    {
+      "name": "AI-integrated full-stack development: Applied workflow",
+      "description": "Build a small, end-to-end AI-integrated full-stack development workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated AI-integrated full-stack development use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable AI-integrated full-stack development artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    },
+    {
+      "name": "AI-integrated full-stack development: Portfolio capstone",
+      "description": "Deliver and explain a complete AI-integrated full-stack development capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated AI-integrated full-stack development use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable AI-integrated full-stack development artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "ai-integrated-full-stack",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Programming and application foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "ai-integrated-full-stack:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+            "module": "Web and JavaScript foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Explain what happens between typing a URL and seeing a rendered page.",
+              "Describe the structure of an HTTP request and response: method, path, headers, body and status code.",
+              "Distinguish safe and idempotent HTTP methods and explain why the difference matters for retries.",
+              "Group status codes into their five classes and choose the right one for common situations.",
+              "Parse a raw HTTP request in JavaScript."
+            ],
+            "definition": "The web is a client-server system: a client such as a browser sends an HTTP request to a server, and the server returns an HTTP response. HTTP is a stateless, text-based application protocol (binary-framed in HTTP/2 and HTTP/3) that runs over TCP or QUIC, usually wrapped in TLS as HTTPS. DNS translates a human-readable domain name into the IP address the client connects to.",
+            "theory": [
+              {
+                "heading": "From URL to page",
+                "body": "When a user opens https://codinghub.in/courses, the browser first resolves the domain to an IP address through DNS (checking its own cache, the operating system, then a recursive resolver). It opens a TCP connection (or a QUIC connection for HTTP/3), performs a TLS handshake to encrypt the channel and verify the server's certificate, and sends an HTTP request. The server returns HTML, the browser parses it, discovers CSS, JavaScript and images, and fetches those with further requests before rendering.",
+                "points": [
+                  "DNS: domain name to IP address, cached according to its TTL.",
+                  "TCP/QUIC: a reliable connection to the server's IP and port (443 for HTTPS).",
+                  "TLS: encryption plus certificate-based server identity.",
+                  "HTTP: the request/response exchange itself.",
+                  "Rendering: HTML parsed into the DOM, CSS into the CSSOM, then layout and paint."
+                ]
+              },
+              {
+                "heading": "Anatomy of a request and a response",
+                "body": "A request has a method (GET, POST, PUT, PATCH, DELETE), a target path with an optional query string, headers (metadata such as Host, Content-Type, Authorization, Cookie) and an optional body. A response has a status code, headers (Content-Type, Cache-Control, Set-Cookie) and a body. Headers are case-insensitive; the Host header lets one IP address serve many domains.",
+                "points": [
+                  "Request line: METHOD /path?query HTTP/1.1",
+                  "Headers: Name: value, one per line, ended by a blank line.",
+                  "Body: JSON, form data or a file; its type is declared in Content-Type.",
+                  "Response: status line, headers, blank line, body."
+                ]
+              },
+              {
+                "heading": "Methods: safe and idempotent",
+                "body": "A safe method does not change server state (GET, HEAD, OPTIONS). An idempotent method has the same effect whether it is sent once or many times (the safe methods plus PUT and DELETE). POST is neither, which is why a network retry of a POST can create two orders or charge a card twice. Clients and proxies retry idempotent requests automatically; for POST you need an idempotency key or deduplication on the server.",
+                "points": [
+                  "GET reads, POST creates or triggers actions, PUT replaces, PATCH partially updates, DELETE removes.",
+                  "Idempotent does not mean the same response: a second DELETE may return 404, but the state is the same.",
+                  "Calling an LLM endpoint is usually a POST, so retries must be designed deliberately."
+                ]
+              },
+              {
+                "heading": "Status code classes",
+                "body": "Status codes tell the client what happened without parsing the body. 1xx is informational, 2xx success, 3xx redirection, 4xx a client error the client should fix, and 5xx a server error the client may retry later. Using precise codes lets front ends, monitoring and load balancers behave correctly.",
+                "points": [
+                  "200 OK, 201 Created, 204 No Content.",
+                  "301/308 permanent redirect, 302/307 temporary, 304 Not Modified (cache still valid).",
+                  "400 Bad Request, 401 Unauthenticated, 403 Forbidden, 404 Not Found, 409 Conflict, 422 validation failed, 429 Too Many Requests.",
+                  "500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout."
+                ]
+              },
+              {
+                "heading": "Statelessness, cookies and the AI web app",
+                "body": "HTTP itself remembers nothing between requests, so state is carried explicitly: cookies, tokens in the Authorization header, or IDs in the URL. A typical AI web app has a React client, an API server that holds secrets and talks to the database and the LLM provider, and a CDN for static files. Understanding this request flow is the base for later topics such as streaming, authentication and rate limiting.",
+                "points": [
+                  "Stateless servers scale horizontally: any instance can handle any request.",
+                  "The browser never calls the LLM provider directly with a secret key; the back end does.",
+                  "HTTP/2 multiplexes many requests on one connection; HTTP/3 runs over QUIC (UDP)."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A chat request and its response",
+              "body": "The React front end sends the user's message to its own back end. The POST carries JSON and a bearer token. The server answers 201 with JSON. Notice the blank line separating headers from the body and the Content-Type header describing the body format.",
+              "code": {
+                "language": "http",
+                "source": "POST /api/chats/17/messages HTTP/1.1\nHost: app.codinghub.in\nContent-Type: application/json\nAuthorization: Bearer eyJhbGciOi...\n\n{\"content\": \"Explain closures in JavaScript\"}\n\nHTTP/1.1 201 Created\nContent-Type: application/json\nLocation: /api/chats/17/messages/90\n\n{\"id\": 90, \"role\": \"user\", \"content\": \"Explain closures in JavaScript\"}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Debugging with DevTools",
+                "description": "The Network tab shows every request's method, status, headers, timing and payload, which is the first place to look when a feature fails."
+              },
+              {
+                "title": "Designing safe retries",
+                "description": "Knowing which methods are idempotent tells you which failed calls a client can repeat automatically and which need idempotency keys."
+              },
+              {
+                "title": "Caching and performance",
+                "description": "Cache-Control, ETag and 304 responses let browsers and CDNs avoid downloading unchanged files."
+              },
+              {
+                "title": "Error handling in the UI",
+                "description": "A front end shows 'please sign in' for 401, 'not allowed' for 403 and 'try again shortly' for 429 or 503."
+              }
+            ],
+            "demonstration": {
+              "description": "Use fetch from the browser console to call a public JSON endpoint and inspect the parts of the response. The status, headers and body are separate pieces of the HTTP message.",
+              "code": {
+                "language": "javascript",
+                "source": "const res = await fetch('https://jsonplaceholder.typicode.com/todos/1');\nconsole.log(res.status, res.ok);                  // status code and 2xx check\nconsole.log(res.headers.get('content-type'));      // header lookup is case-insensitive\nconst data = await res.json();                     // parse the body\nconsole.log(data.title);"
+              },
+              "output": "200 true\napplication/json; charset=utf-8\ndelectus aut autem"
+            },
+            "takeaways": [
+              "DNS resolves the name, TCP/QUIC connects, TLS secures, HTTP exchanges the request and response.",
+              "A request is method + target + headers + optional body; a response is status + headers + body.",
+              "Safe methods do not change state; idempotent methods can be repeated with the same effect.",
+              "POST is not idempotent, so retries need an idempotency key or server-side deduplication.",
+              "4xx means the client must change something; 5xx means the server failed and a retry may succeed.",
+              "HTTP is stateless; cookies and tokens carry identity between requests."
+            ],
+            "interview": [
+              {
+                "question": "What happens when you type a URL into the browser and press Enter?",
+                "answer": "The browser parses the URL, resolves the domain through DNS, opens a TCP (or QUIC) connection, performs a TLS handshake for HTTPS, sends an HTTP request, receives the response, then parses HTML, fetches sub-resources (CSS, JS, images) and renders the page.",
+                "explanation": "Interviewers want the ordered chain, not every detail. Mention caching at each layer (DNS cache, HTTP cache) and that rendering involves the DOM and CSSOM for extra credit."
+              },
+              {
+                "question": "What is the difference between GET and POST?",
+                "answer": "GET retrieves a resource, is safe and idempotent, sends parameters in the URL and can be cached and bookmarked. POST submits data in the body to create something or trigger an action; it is neither safe nor idempotent and is not cached by default.",
+                "explanation": "Avoid saying POST is 'more secure': both are visible to anyone without HTTPS. The real difference is semantics, idempotency and caching."
+              },
+              {
+                "question": "What is the difference between 401 and 403?",
+                "answer": "401 Unauthorized means the request is not authenticated: credentials are missing or invalid. 403 Forbidden means the server knows who you are but you lack permission for this resource.",
+                "explanation": "A strong answer adds the UI consequence: on 401 redirect to login or refresh the token; on 403 show an access-denied message, because logging in again will not help."
+              },
+              {
+                "question": "What does idempotent mean, and why does it matter for an API that calls an LLM?",
+                "answer": "An idempotent operation produces the same server state whether it runs once or many times. LLM calls are usually POSTs that cost money and may create records, so blind retries can double charges or duplicate messages. Use idempotency keys or deduplicate on the server before retrying.",
+                "explanation": "Linking HTTP semantics to cost and duplicate data shows you think about production behaviour, not just definitions."
+              },
+              {
+                "question": "Why is HTTP called stateless, and how do web apps keep users logged in?",
+                "answer": "Each request is independent and the server keeps no built-in memory of earlier requests. Apps carry state explicitly: a session ID in a cookie that maps to server-side data, or a signed token (such as a JWT) sent on every request.",
+                "explanation": "Mention that statelessness is what allows horizontal scaling behind a load balancer, which leads naturally into session storage choices (Day 14)."
+              },
+              {
+                "question": "What changed in HTTP/2 and HTTP/3?",
+                "answer": "HTTP/2 uses binary framing and multiplexes many concurrent streams over one TCP connection, with header compression. HTTP/3 runs over QUIC on UDP, which removes TCP head-of-line blocking and makes connection setup faster, especially on mobile networks.",
+                "explanation": "You do not need protocol internals; showing why multiplexing helps pages with many assets is enough."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Parse a raw HTTP request",
+              "difficulty": "Basic",
+              "objective": "Read the parts of an HTTP request the way a server framework does, and classify the method as safe and/or idempotent.",
+              "statement": "The input is a raw HTTP/1.1 request: a request line, header lines until a blank line, and an optional body. Print the method, the path without the query string, the decoded query parameters, the Host header and whether the method is safe and idempotent. Safe methods: GET, HEAD, OPTIONS. Idempotent methods: the safe ones plus PUT and DELETE.",
+              "language": "javascript",
+              "input_format": "Line 1: METHOD TARGET HTTP/1.1. Then zero or more 'Name: value' header lines, a blank line, and an optional body (ignored).",
+              "output_format": "Six lines:\nMethod: <method>\nPath: <path>\nQuery: <k=v; k=v> in original order, or 'none'\nHost: <host header value> or 'missing'\nSafe: yes|no\nIdempotent: yes|no",
+              "example": {
+                "input": "GET /api/courses?page=2&q=ai+tools HTTP/1.1\nHost: codinghub.in\nAccept: application/json\n\n",
+                "output": "Method: GET\nPath: /api/courses\nQuery: page=2; q=ai tools\nHost: codinghub.in\nSafe: yes\nIdempotent: yes"
+              },
+              "constraints": [
+                "Header names are case-insensitive (host, Host and HOST are the same header).",
+                "Query keys and values are URL-decoded; '+' means a space.",
+                "A parameter without '=' has an empty value (print 'key=')."
+              ],
+              "starter": "const lines = stdin.replace(/\\r/g, '').split('\\n');\nconst [method, target] = lines[0].trim().split(/\\s+/);\n\n// TODO: read headers until the blank line (store names in lowercase)\n// TODO: split the target into path and query, decode the query\n// TODO: print the six lines\n",
+              "solution": "const lines = stdin.replace(/\\r/g, '').split('\\n');\nconst [method, target] = lines[0].trim().split(/\\s+/);\n\nconst headers = {};\nfor (let i = 1; i < lines.length; i++) {\n  const line = lines[i];\n  if (line.trim() === '') break;\n  const idx = line.indexOf(':');\n  if (idx === -1) continue;\n  headers[line.slice(0, idx).trim().toLowerCase()] = line.slice(idx + 1).trim();\n}\n\nconst q = target.indexOf('?');\nconst path = q === -1 ? target : target.slice(0, q);\nconst query = q === -1 ? '' : target.slice(q + 1);\nconst decode = (s) => decodeURIComponent(s.replace(/\\+/g, ' '));\nconst pairs = query.split('&').filter(Boolean).map((part) => {\n  const eq = part.indexOf('=');\n  const key = eq === -1 ? part : part.slice(0, eq);\n  const value = eq === -1 ? '' : part.slice(eq + 1);\n  return decode(key) + '=' + decode(value);\n});\n\nconst safe = ['GET', 'HEAD', 'OPTIONS'].includes(method);\nconst idempotent = safe || ['PUT', 'DELETE'].includes(method);\n\nconsole.log('Method: ' + method);\nconsole.log('Path: ' + path);\nconsole.log('Query: ' + (pairs.length ? pairs.join('; ') : 'none'));\nconsole.log('Host: ' + (headers.host || 'missing'));\nconsole.log('Safe: ' + (safe ? 'yes' : 'no'));\nconsole.log('Idempotent: ' + (idempotent ? 'yes' : 'no'));\n",
+              "explanation": [
+                "Split the input into lines; the first line holds the method and the request target.",
+                "Read headers until the first blank line, storing names in lowercase so lookups are case-insensitive.",
+                "Split the target at the first '?' into path and query string.",
+                "Split the query on '&', split each pair at the first '=', and URL-decode both sides after turning '+' into spaces.",
+                "Classify the method with two small lists: safe methods, and idempotent methods (safe plus PUT and DELETE)."
+              ],
+              "tests": [
+                {
+                  "input": "GET /api/courses?page=2&q=ai+tools HTTP/1.1\nHost: codinghub.in\nAccept: application/json\n\n",
+                  "output": "Method: GET\nPath: /api/courses\nQuery: page=2; q=ai tools\nHost: codinghub.in\nSafe: yes\nIdempotent: yes"
+                },
+                {
+                  "input": "POST /api/chat HTTP/1.1\nhost: api.example.com\nContent-Type: application/json\n\n{\"message\":\"hi\"}\n",
+                  "output": "Method: POST\nPath: /api/chat\nQuery: none\nHost: api.example.com\nSafe: no\nIdempotent: no"
+                },
+                {
+                  "input": "DELETE /api/notes/42?force HTTP/1.1\nAuthorization: Bearer abc\n\n",
+                  "output": "Method: DELETE\nPath: /api/notes/42\nQuery: force=\nHost: missing\nSafe: no\nIdempotent: yes"
+                },
+                {
+                  "input": "PUT /search?name=Ravi%20Kumar&tag=%23ai HTTP/1.1\nHOST: localhost:8000\n\n",
+                  "output": "Method: PUT\nPath: /search\nQuery: name=Ravi Kumar; tag=#ai\nHost: localhost:8000\nSafe: no\nIdempotent: yes"
+                },
+                {
+                  "input": "HEAD / HTTP/1.1\nHost: codinghub.in\n\n",
+                  "output": "Method: HEAD\nPath: /\nQuery: none\nHost: codinghub.in\nSafe: yes\nIdempotent: yes"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "What is the job of DNS when a browser opens a website?",
+                "options": [
+                  "Translating a domain name into an IP address",
+                  "Compressing HTTP headers",
+                  "Encrypting traffic between browser and server",
+                  "Rendering HTML into pixels"
+                ],
+                "answer": 0,
+                "explanation": "DNS maps names such as codinghub.in to IP addresses. Encryption is TLS's job and rendering is the browser engine's."
+              },
+              {
+                "type": "concept",
+                "question": "Which HTTP method is idempotent but NOT safe?",
+                "options": [
+                  "PUT",
+                  "GET",
+                  "POST",
+                  "HEAD"
+                ],
+                "answer": 3,
+                "explanation": "PUT changes state (not safe) but repeating the same PUT leaves the same state (idempotent). GET and HEAD are both; POST is neither."
+              },
+              {
+                "type": "scenario",
+                "question": "A logged-in student calls an admin-only endpoint. The server recognises the student's valid token. Which status code fits best?",
+                "options": [
+                  "400 Bad Request",
+                  "403 Forbidden",
+                  "401 Unauthorized",
+                  "404 Not Found"
+                ],
+                "answer": 1,
+                "explanation": "The user is authenticated but not permitted, which is 403. 401 is for missing or invalid credentials."
+              },
+              {
+                "type": "scenario",
+                "question": "A mobile client's POST /api/orders times out and the client retries automatically. Two orders appear. What is the most robust fix?",
+                "options": [
+                  "Switch the endpoint to GET",
+                  "Send an idempotency key so the server can detect the duplicate",
+                  "Increase the client timeout to five minutes",
+                  "Return 500 for every second request"
+                ],
+                "answer": 1,
+                "explanation": "POST is not idempotent. An idempotency key lets the server return the first result for a repeated request instead of creating a duplicate."
+              },
+              {
+                "type": "output",
+                "question": "What does this print?",
+                "code": "const res = new Response('{}', { status: 503 });\nconsole.log(res.ok, Math.floor(res.status / 100));",
+                "options": [
+                  "false 5",
+                  "true 503",
+                  "true 5",
+                  "false 503"
+                ],
+                "answer": 0,
+                "explanation": "res.ok is true only for 200–299, so it is false. Math.floor(503 / 100) gives the status class 5 (server error)."
+              }
+            ]
+          }
+        },
+        {
+          "id": "ai-integrated-full-stack:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
+            "module": "Web and JavaScript foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Explain the differences between var, let and const, including hoisting and the temporal dead zone.",
+              "Define a closure and use one to keep private state.",
+              "Use destructuring, spread/rest, template literals, optional chaining and nullish coalescing correctly.",
+              "Transform data with map, filter, reduce and sort without mutating the source.",
+              "Explain how arrow functions treat this differently from regular functions."
+            ],
+            "definition": "ES6 (ECMAScript 2015) and later versions added block-scoped variables, arrow functions, classes, modules, destructuring, spread syntax, promises and many array and object helpers to JavaScript. A closure is a function bundled with the variables of the scope it was created in, so it can read and update those variables even after the outer function has returned.",
+            "theory": [
+              {
+                "heading": "var, let and const",
+                "body": "var is function-scoped and hoisted with the value undefined, so it leaks out of blocks such as if and for. let and const are block-scoped; they are hoisted too, but reading them before the declaration line throws a ReferenceError (the temporal dead zone). const prevents reassignment of the binding, not mutation of the object it points to. Modern code uses const by default and let when the variable must be reassigned.",
+                "points": [
+                  "const user = {}; user.name = 'Asha' is allowed; user = {} is not.",
+                  "for (let i ...) creates a fresh i per iteration; for (var i ...) shares one i.",
+                  "Avoid var in new code."
+                ]
+              },
+              {
+                "heading": "Closures",
+                "body": "Every function remembers the lexical environment where it was defined. When an inner function is returned or passed as a callback, it still has access to the outer variables. This is how JavaScript creates private state without classes, and it is the mechanism behind React hooks, event handlers, debounce utilities and module patterns. A classic bug is a stale closure: a callback captures an old value and keeps using it after the value has changed.",
+                "points": [
+                  "Private state: a counter factory exposes increment() but hides count.",
+                  "Function factories: makeMultiplier(3) returns a function that multiplies by 3.",
+                  "Stale closures appear in React effects and timers that capture old state."
+                ]
+              },
+              {
+                "heading": "Modern syntax you will use daily",
+                "body": "Destructuring pulls values out of objects and arrays; spread copies or merges them; rest collects remaining items. Optional chaining (a?.b) stops at null or undefined instead of throwing, and nullish coalescing (x ?? fallback) uses the fallback only for null or undefined, unlike || which also replaces 0, '' and false. These features are everywhere in React props and API response handling.",
+                "points": [
+                  "const { name, role = 'student' } = user; default applies only when the value is undefined.",
+                  "const next = { ...state, count: state.count + 1 } makes a shallow copy.",
+                  "res.data?.choices?.[0]?.message ?? 'No reply' guards a deeply nested API field.",
+                  "Template literals: `Hello ${name}` with embedded expressions."
+                ]
+              },
+              {
+                "heading": "Array methods and immutability",
+                "body": "map transforms each item, filter keeps items that pass a test, reduce folds a list into one value, find returns the first match, and some/every test conditions. They return new values instead of modifying the input, which is exactly what React state updates require. Note that sort and reverse mutate the original array; use [...arr].sort() or the newer toSorted() to stay immutable.",
+                "points": [
+                  "map → same length, transformed items.",
+                  "filter → same or fewer items, unchanged.",
+                  "reduce(fn, initial) → any shape: a number, an object, a grouped map.",
+                  "sort compares as strings by default: [10, 9, 1].sort() gives [1, 10, 9]."
+                ]
+              },
+              {
+                "heading": "Arrow functions and this",
+                "body": "A regular function gets this from how it is called (obj.method() sets this to obj). An arrow function has no own this: it uses this from the surrounding scope. That makes arrows ideal for callbacks inside methods, but wrong as object methods that need the object as this. Arrows also have no arguments object and cannot be used with new.",
+                "points": [
+                  "Use arrows for callbacks: items.map((x) => x * 2).",
+                  "Use regular methods when you need the object as this."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A closure-based usage tracker",
+              "body": "This factory keeps a per-user token count private. Callers can add usage and read the total, but cannot change count directly because it only exists inside the closure.",
+              "code": {
+                "language": "javascript",
+                "source": "function createUsageTracker(limit) {\n  let used = 0;                       // private: only the inner functions can see it\n  return {\n    add(tokens) {\n      if (used + tokens > limit) return false;\n      used += tokens;\n      return true;\n    },\n    remaining: () => limit - used,\n  };\n}\n\nconst tracker = createUsageTracker(1000);\ntracker.add(400);\ntracker.add(700);                     // rejected: would exceed the limit\nconsole.log(tracker.remaining());     // 600\nconsole.log(tracker.used);            // undefined"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Shaping API responses",
+                "description": "map and filter turn a raw list of records into the exact props a React component needs."
+              },
+              {
+                "title": "Aggregations in the browser",
+                "description": "reduce groups items by category or sums prices in a cart without a library."
+              },
+              {
+                "title": "Encapsulated utilities",
+                "description": "Closures power debounce, throttle, memoize and per-user counters."
+              },
+              {
+                "title": "Safe access to nested data",
+                "description": "Optional chaining and ?? handle missing fields in LLM or third-party API responses without crashes."
+              }
+            ],
+            "demonstration": {
+              "description": "Group chat messages by role and count tokens per role with one reduce call, then show that the input array was not modified.",
+              "code": {
+                "language": "javascript",
+                "source": "const messages = [\n  { role: 'user', tokens: 12 },\n  { role: 'assistant', tokens: 140 },\n  { role: 'user', tokens: 9 },\n];\nconst totals = messages.reduce((acc, { role, tokens }) => {\n  acc[role] = (acc[role] ?? 0) + tokens;\n  return acc;\n}, {});\nconsole.log(totals);\nconsole.log(messages.length);"
+              },
+              "output": "{ user: 21, assistant: 140 }\n3"
+            },
+            "takeaways": [
+              "Prefer const, use let for reassignment, avoid var.",
+              "A closure keeps access to its outer variables; it enables private state and is behind React hooks.",
+              "?? falls back only for null/undefined; || also replaces 0, '' and false.",
+              "map, filter and reduce return new values; sort and reverse mutate unless you copy first.",
+              "Spread makes shallow copies: nested objects are still shared.",
+              "Arrow functions take this from the surrounding scope."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between var, let and const?",
+                "answer": "var is function-scoped and initialised to undefined when hoisted. let and const are block-scoped and sit in the temporal dead zone until declared. const cannot be reassigned, though an object it holds can still be mutated.",
+                "explanation": "Mention the loop example (var shares one variable across iterations) and that const is about the binding, not deep immutability."
+              },
+              {
+                "question": "What is a closure? Give a practical example.",
+                "answer": "A closure is a function that remembers variables from the scope where it was created. Example: a counter factory that returns increment and get functions sharing a private count, or a debounce function that remembers its timer ID between calls.",
+                "explanation": "A concrete use (private state, debounce, React hooks) is what separates a strong answer from a memorised definition."
+              },
+              {
+                "question": "What does this print, and why? for (var i = 0; i < 3; i++) setTimeout(() => console.log(i));",
+                "answer": "It prints 3, 3, 3. var creates one function-scoped i shared by all callbacks, and the callbacks run after the loop has finished. Changing var to let prints 0, 1, 2 because let creates a new binding per iteration.",
+                "explanation": "This classic question tests scope, closures and the event loop together. Explain both the cause and the fix."
+              },
+              {
+                "question": "When would you use reduce instead of map or filter?",
+                "answer": "Use reduce when the result has a different shape from the input, for example a total, an object keyed by category, or a lookup map. Use map for one-to-one transforms and filter for selecting items, because they are clearer.",
+                "explanation": "Interviewers like hearing that readability matters: chaining filter then map is often clearer than one clever reduce."
+              },
+              {
+                "question": "Is the spread operator a deep copy? Why does this matter in React?",
+                "answer": "No. Spread copies only the top level; nested objects and arrays are shared references. In React, mutating a nested object after spreading changes the old state too, which can cause missed re-renders or bugs. Copy every level you change, or use structuredClone or a helper like Immer.",
+                "explanation": "Connecting shallow copies to React's reference-equality checks shows you understand why immutability matters, not just the rule."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Course leaderboard with map, filter and reduce",
+              "difficulty": "Basic",
+              "objective": "Practise the parse → validate → group → aggregate pipeline using array methods and immutable sorting.",
+              "statement": "Each input line is 'name,course,score'. A record is valid when name and course are non-empty and score is a number from 0 to 100. Group valid records by course and, for each course in alphabetical order, print the average score (one decimal place), the top student (highest score; ties go to the alphabetically first name) and the number of students. Finally print how many lines were skipped as invalid. If there are no valid records, print 'No valid records' before the skipped count.",
+              "language": "javascript",
+              "input_format": "Zero or more non-empty lines 'name,course,score'. Surrounding spaces around each field are ignored.",
+              "output_format": "One line per course: '<course>: avg=<x.x> top=<name> (<score>) count=<n>', then 'Skipped: <k>'.",
+              "example": {
+                "input": "Asha,react,88\nRavi,react,92\nMeena,node,75\nKiran,node,75\nZoya,react,70\n",
+                "output": "node: avg=75.0 top=Kiran (75) count=2\nreact: avg=83.3 top=Ravi (92) count=3\nSkipped: 0"
+              },
+              "constraints": [
+                "Scores may be decimals; print them as JavaScript prints numbers (75, 99.5).",
+                "Course names are compared with plain string ordering.",
+                "Do not mutate the parsed array when sorting; copy it first."
+              ],
+              "starter": "const rows = stdin.split('\\n').map((l) => l.trim()).filter(Boolean);\n\n// TODO: parse each row into { name, course, score }\n// TODO: filter valid rows, group with reduce, print each course\n",
+              "solution": "const rows = stdin.split('\\n').map((l) => l.trim()).filter(Boolean);\n\nconst parsed = rows.map((line) => {\n  const [name = '', course = '', raw = ''] = line.split(',').map((s) => s.trim());\n  const score = raw === '' ? NaN : Number(raw);\n  return { name, course, score };\n});\n\nconst isValid = ({ name, course, score }) =>\n  name !== '' && course !== '' && Number.isFinite(score) && score >= 0 && score <= 100;\nconst valid = parsed.filter(isValid);\n\nconst byCourse = valid.reduce((acc, r) => {\n  (acc[r.course] = acc[r.course] || []).push(r);\n  return acc;\n}, {});\n\nconst courses = Object.keys(byCourse).sort();\nif (courses.length === 0) console.log('No valid records');\nfor (const course of courses) {\n  const list = byCourse[course];\n  const avg = list.reduce((sum, r) => sum + r.score, 0) / list.length;\n  const top = [...list].sort((a, b) => b.score - a.score || (a.name < b.name ? -1 : 1))[0];\n  console.log(`${course}: avg=${avg.toFixed(1)} top=${top.name} (${top.score}) count=${list.length}`);\n}\nconsole.log(`Skipped: ${parsed.length - valid.length}`);\n",
+              "explanation": [
+                "Split into trimmed, non-empty lines and map each to an object with destructuring defaults for missing fields.",
+                "Convert the score with Number, treating an empty string as NaN so it fails validation.",
+                "filter keeps valid records; reduce groups them into an object keyed by course.",
+                "For each course (sorted keys), compute the average with reduce and find the top student by sorting a copy with a two-level comparator.",
+                "The skipped count is the difference between parsed and valid lengths."
+              ],
+              "tests": [
+                {
+                  "input": "Asha,react,88\nRavi,react,92\nMeena,node,75\nKiran,node,75\nZoya,react,70\n",
+                  "output": "node: avg=75.0 top=Kiran (75) count=2\nreact: avg=83.3 top=Ravi (92) count=3\nSkipped: 0"
+                },
+                {
+                  "input": "Dev,python,101\nNeha,python,64\nOm,python,abc\nIra,ai,99.5\n",
+                  "output": "ai: avg=99.5 top=Ira (99.5) count=1\npython: avg=64.0 top=Neha (64) count=1\nSkipped: 2"
+                },
+                {
+                  "input": "Ana,js,-5\n",
+                  "output": "No valid records\nSkipped: 1"
+                },
+                {
+                  "input": " Sam , react , 50 \nTia,react,50\n,react,90\nUma,,80\n",
+                  "output": "react: avg=50.0 top=Sam (50) count=2\nSkipped: 2"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this code print?",
+                "code": "const fns = [];\nfor (let i = 0; i < 3; i++) fns.push(() => i);\nconsole.log(fns.map((f) => f()).join(','));",
+                "options": [
+                  "3,3,3",
+                  "0,1,2",
+                  "undefined,undefined,undefined",
+                  "0,0,0"
+                ],
+                "answer": 1,
+                "explanation": "let creates a new binding of i for each iteration, so each closure captures its own value."
+              },
+              {
+                "type": "output",
+                "question": "What is logged?",
+                "code": "const count = 0;\nconsole.log(count || 10, count ?? 10);",
+                "options": [
+                  "0 10",
+                  "10 0",
+                  "0 0",
+                  "10 10"
+                ],
+                "answer": 1,
+                "explanation": "|| treats 0 as falsy and returns 10; ?? only falls back for null or undefined, so it returns 0."
+              },
+              {
+                "type": "code",
+                "question": "Which line updates a React-style state object immutably, adding a tag to its tags array?",
+                "options": [
+                  "const next = { ...state, tags: [...state.tags, 'ai'] };",
+                  "state.tags.push('ai'); const next = state;",
+                  "const next = state; next.tags = next.tags.concat('ai');",
+                  "const next = { ...state }; next.tags.push('ai');"
+                ],
+                "answer": 3,
+                "explanation": "Only the first copies both the object and the nested array. The last one shares the original tags array, so push mutates old state."
+              },
+              {
+                "type": "concept",
+                "question": "Why can an arrow function be a poor choice for an object method that uses this?",
+                "options": [
+                  "Arrow functions take this from the surrounding scope, not from the object",
+                  "Arrow functions cannot read outer variables",
+                  "Arrow functions cannot return objects",
+                  "Arrow functions always run asynchronously"
+                ],
+                "answer": 0,
+                "explanation": "Arrows do not bind their own this, so inside an object literal this refers to the outer scope rather than the object."
+              },
+              {
+                "type": "output",
+                "question": "What does [10, 9, 1].sort() return?",
+                "options": [
+                  "[1, 9, 10]",
+                  "[1, 10, 9]",
+                  "[10, 9, 1]",
+                  "[9, 10, 1]"
+                ],
+                "answer": 1,
+                "explanation": "Without a comparator, sort converts items to strings: '1' < '10' < '9'. Use sort((a, b) => a - b) for numbers."
+              }
+            ]
+          }
+        },
+        {
+          "id": "ai-integrated-full-stack:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Asynchronous JavaScript: Event Loop, Promises and async/await",
+            "module": "Web and JavaScript foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Explain how a single-threaded JavaScript runtime handles slow I/O without blocking.",
+              "Describe the call stack, the microtask queue and the task (macrotask) queue, and the order they run in.",
+              "Use promises and async/await, including proper error handling with try/catch.",
+              "Predict the output order of code mixing synchronous logs, promises and timers.",
+              "Recognise common async bugs such as missing await and accidental sequential requests."
+            ],
+            "definition": "JavaScript runs your code on a single thread, so long operations such as network requests, timers and file reads are handed to the environment (the browser or Node.js) and their results come back later as queued callbacks. The event loop runs those callbacks when the call stack is empty. A Promise represents a value that will be available in the future, and async/await is syntax that lets you write promise-based code in a readable, top-to-bottom style.",
+            "theory": [
+              {
+                "heading": "Why asynchronous code exists",
+                "body": "If JavaScript waited synchronously for a 3-second LLM response, the browser could not repaint or respond to clicks and a Node.js server could not serve any other request. Instead, the runtime starts the operation, keeps running other code, and calls your code back when the result is ready. This non-blocking model is why one Node.js process can handle thousands of concurrent connections that mostly wait on I/O.",
+                "points": [
+                  "I/O-bound work (network, disk, database) fits the async model well.",
+                  "CPU-bound work (image processing, large loops) still blocks the thread; move it to a Worker or worker_threads.",
+                  "await pauses only the current async function, not the whole program."
+                ]
+              },
+              {
+                "heading": "Call stack, microtasks and tasks",
+                "body": "The event loop repeats one cycle: run a task to completion, then run every microtask in the microtask queue (including microtasks added while draining), then let the browser render if needed, then take the next task. Promise callbacks (then, catch, finally, code after await) and queueMicrotask are microtasks. setTimeout, setInterval, I/O callbacks and UI events are tasks. So a resolved promise's callback always runs before a setTimeout(fn, 0) scheduled at the same moment.",
+                "points": [
+                  "Synchronous code first, until the stack is empty.",
+                  "Then all microtasks, in FIFO order.",
+                  "Then one macrotask, followed again by all microtasks.",
+                  "setTimeout(fn, 0) means 'as a later task', not 'immediately'."
+                ]
+              },
+              {
+                "heading": "Promises",
+                "body": "A promise is pending, then settles once as fulfilled (with a value) or rejected (with a reason); after settling it never changes. then returns a new promise, which is what makes chaining work: whatever a then callback returns becomes the next value, and a thrown error skips to the nearest catch. Always return or await promises you create; a promise that is created but not awaited can fail silently as an unhandled rejection.",
+                "points": [
+                  "new Promise((resolve, reject) => ...) wraps callback-style APIs.",
+                  "Promise.resolve(v) and Promise.reject(e) create settled promises.",
+                  "finally runs on both outcomes, useful for hiding a loading spinner."
+                ]
+              },
+              {
+                "heading": "async/await and error handling",
+                "body": "An async function always returns a promise. Inside it, await pauses until the awaited promise settles, then resumes with its value or throws its rejection reason, so ordinary try/catch works. A frequent performance bug is awaiting independent requests one after another; start them together and await Promise.all instead. A frequent correctness bug is forgetting await, which returns a pending promise and lets errors escape your try/catch.",
+                "points": [
+                  "Sequential: const a = await getA(); const b = await getB(); takes timeA + timeB.",
+                  "Parallel: const [a, b] = await Promise.all([getA(), getB()]); takes max(timeA, timeB).",
+                  "fetch only rejects on network failure; check res.ok for 4xx/5xx."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Fetching a chat reply with proper error handling",
+              "body": "This helper awaits the response, converts HTTP error statuses into thrown errors (fetch does not do that by itself) and always clears the loading state in finally.",
+              "code": {
+                "language": "javascript",
+                "source": "async function sendMessage(text, setLoading) {\n  setLoading(true);\n  try {\n    const res = await fetch('/api/chat', {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({ message: text }),\n    });\n    if (!res.ok) throw new Error(`Request failed with ${res.status}`);\n    const data = await res.json();\n    return data.reply;\n  } catch (err) {\n    console.error(err.message);\n    return 'Sorry, something went wrong.';\n  } finally {\n    setLoading(false);\n  }\n}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Calling APIs from React",
+                "description": "Every data fetch, form submission and LLM request in the front end is asynchronous."
+              },
+              {
+                "title": "Parallel data loading",
+                "description": "A dashboard loads profile, courses and notifications at once with Promise.all."
+              },
+              {
+                "title": "Non-blocking servers",
+                "description": "An Express handler awaits a database query and an LLM call while Node.js keeps serving other users."
+              },
+              {
+                "title": "Responsive UIs",
+                "description": "Long work is split or moved off the main thread so typing and scrolling stay smooth."
+              }
+            ],
+            "demonstration": {
+              "description": "Predict the order before running. Synchronous logs come first, then the microtask from the promise, then the timer task.",
+              "code": {
+                "language": "javascript",
+                "source": "console.log('1: script start');\nsetTimeout(() => console.log('4: timeout'), 0);\nPromise.resolve().then(() => console.log('3: promise'));\n(async () => {\n  console.log('2: inside async, before await');\n  await null;\n  console.log('3b: after await');\n})();\nconsole.log('2b: script end');"
+              },
+              "output": "1: script start\n2: inside async, before await\n2b: script end\n3: promise\n3b: after await\n4: timeout"
+            },
+            "takeaways": [
+              "JavaScript is single-threaded; the event loop runs queued callbacks when the stack is empty.",
+              "Microtasks (promise callbacks, code after await) run before the next macrotask (timers, I/O, events).",
+              "An async function always returns a promise; await unwraps it or throws its rejection.",
+              "Use Promise.all for independent requests instead of sequential awaits.",
+              "fetch resolves on HTTP errors; check res.ok yourself.",
+              "CPU-heavy work blocks the event loop; offload it."
+            ],
+            "interview": [
+              {
+                "question": "Explain the event loop.",
+                "answer": "JavaScript executes code on one call stack. Async operations are handled by the runtime, and their callbacks are queued. When the stack is empty, the event loop runs all pending microtasks (promise reactions), then takes the next macrotask (timer, I/O, UI event), runs it, drains microtasks again, and repeats.",
+                "explanation": "The key detail interviewers check is the microtask-before-macrotask rule. A small example (promise logs before setTimeout 0) makes the answer convincing."
+              },
+              {
+                "question": "What is the difference between a promise and a callback?",
+                "answer": "A callback is a function you pass to be called later; nesting many leads to 'callback hell' and inconsistent error handling. A promise is an object representing a future result that settles once, can be chained, composes with Promise.all, and propagates errors to a single catch.",
+                "explanation": "Mention the trust guarantees: a promise settles only once, and its callbacks always run asynchronously."
+              },
+              {
+                "question": "What does async/await do under the hood?",
+                "answer": "An async function returns a promise. Each await suspends the function and schedules its continuation as a microtask once the awaited promise settles; the result is returned or the rejection is thrown at the await point. It is syntax over promises, not a new threading model.",
+                "explanation": "Say clearly that await does not block the thread: other code keeps running while the function is suspended."
+              },
+              {
+                "question": "Your page makes three independent API calls with three awaits in a row and feels slow. What would you change?",
+                "answer": "Start all three requests first and await them together with Promise.all, so total time is the slowest call rather than the sum. If one failure should not cancel the others, use Promise.allSettled and handle each result.",
+                "explanation": "This is a very common practical question. Mentioning allSettled for partial failure shows depth."
+              },
+              {
+                "question": "Why might a try/catch around an async call not catch an error?",
+                "answer": "If the promise is not awaited (or returned) inside the try block, the function continues and the try block exits before the rejection happens, so the rejection becomes unhandled. Also, fetch does not reject on 404 or 500, so there is nothing to catch unless you check res.ok and throw.",
+                "explanation": "Covering both the missing-await bug and the fetch status behaviour shows real debugging experience."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Simulate the event loop",
+              "difficulty": "Basic",
+              "objective": "Apply the event-loop rules (synchronous first, then all microtasks, then one macrotask at a time) to predict execution order.",
+              "statement": "Each input line is a statement in a script: '<type> <label>' or '<type> <label> then <type> <label>'. The type is sync, micro or macro. Processing a statement means: sync runs immediately, micro is added to the microtask queue, macro is added to the macrotask queue. When a task runs it prints its label; if it has a 'then' part, that child statement is processed at that moment. After the whole script, drain the microtask queue completely (including microtasks added while draining), then repeatedly run one macrotask followed by draining microtasks, until both queues are empty. Print labels in the order they run.",
+              "language": "javascript",
+              "input_format": "One statement per line. Labels contain no spaces.",
+              "output_format": "One label per line in execution order.",
+              "example": {
+                "input": "sync start\nmacro timeout\nmicro promise\nsync end\n",
+                "output": "start\nend\npromise\ntimeout"
+              },
+              "constraints": [
+                "At most one 'then' per line (children have no further children).",
+                "Queues are FIFO.",
+                "1 to 50 statements."
+              ],
+              "starter": "const statements = stdin.split('\\n').map((l) => l.trim()).filter(Boolean);\nconst micro = [];\nconst macro = [];\n\n// TODO: parse each line into { type, label, child }\n// TODO: dispatch(task) and run(task), then drain the queues\n",
+              "solution": "const lines = stdin.split('\\n').map((l) => l.trim()).filter(Boolean);\nconst micro = [];\nconst macro = [];\nconst out = [];\n\nfunction parse(line) {\n  const [head, tail] = line.split(' then ');\n  const [type, label] = head.trim().split(/\\s+/);\n  return { type, label, child: tail ? parse(tail) : null };\n}\n\nfunction run(task) {\n  out.push(task.label);\n  if (task.child) dispatch(task.child);\n}\n\nfunction dispatch(task) {\n  if (task.type === 'sync') run(task);\n  else if (task.type === 'micro') micro.push(task);\n  else macro.push(task);\n}\n\nfunction drainMicrotasks() {\n  while (micro.length) run(micro.shift());\n}\n\nlines.map(parse).forEach(dispatch);\ndrainMicrotasks();\nwhile (macro.length) {\n  run(macro.shift());\n  drainMicrotasks();\n}\nconsole.log(out.join('\\n'));\n",
+              "explanation": [
+                "Parse each line into a task object; the part after ' then ' becomes a child task.",
+                "dispatch runs sync tasks immediately and pushes micro and macro tasks onto FIFO queues.",
+                "run records the label and dispatches the child, so a microtask can schedule a macrotask and vice versa.",
+                "After the script, drain microtasks fully; the while loop also picks up microtasks added during draining.",
+                "Then run exactly one macrotask at a time, draining microtasks after each, which mirrors the real event loop."
+              ],
+              "tests": [
+                {
+                  "input": "sync start\nmacro timeout\nmicro promise\nsync end\n",
+                  "output": "start\nend\npromise\ntimeout"
+                },
+                {
+                  "input": "macro t1 then micro m-in-t1\nmacro t2\nmicro m1 then macro t3\nsync s\n",
+                  "output": "s\nm1\nt1\nm-in-t1\nt2\nt3"
+                },
+                {
+                  "input": "micro a then micro b\nmicro c\nsync d then micro e\n",
+                  "output": "d\na\nc\ne\nb"
+                },
+                {
+                  "input": "sync x then sync y\nmacro z\n",
+                  "output": "x\ny\nz"
+                },
+                {
+                  "input": "macro only\n",
+                  "output": "only"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "In what order are the letters logged?",
+                "code": "console.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
+                "options": [
+                  "A C D B",
+                  "A D C B",
+                  "A B C D",
+                  "A D B C"
+                ],
+                "answer": 1,
+                "explanation": "Synchronous logs A and D run first, then the promise microtask C, then the timer task B."
+              },
+              {
+                "type": "concept",
+                "question": "What does an async function return when you call it?",
+                "options": [
+                  "Always a Promise",
+                  "The value of its return statement, synchronously",
+                  "undefined until the function finishes",
+                  "A generator object"
+                ],
+                "answer": 3,
+                "explanation": "An async function always returns a promise that resolves with the returned value or rejects with the thrown error."
+              },
+              {
+                "type": "scenario",
+                "question": "A page awaits getProfile(), then getCourses(), then getNotifications(). Each takes about 300 ms and none depends on another. What is the best improvement?",
+                "options": [
+                  "Start all three and await Promise.all",
+                  "Call them inside a for loop with await",
+                  "Wrap each call in setTimeout",
+                  "Use var instead of const for the results"
+                ],
+                "answer": 0,
+                "explanation": "Independent requests should run concurrently; Promise.all reduces total time from about 900 ms to about 300 ms."
+              },
+              {
+                "type": "concept",
+                "question": "A promise's executor calls resolve('ok') and then reject(new Error('x')). What is the promise's final state?",
+                "options": [
+                  "Rejected with Error('x')",
+                  "Fulfilled with 'ok'",
+                  "Pending forever",
+                  "It throws a TypeError"
+                ],
+                "answer": 1,
+                "explanation": "A promise settles only once. The first call wins; the later reject is ignored."
+              },
+              {
+                "type": "output",
+                "question": "What is printed?",
+                "code": "async function f() {\n  console.log(1);\n  await null;\n  console.log(2);\n}\nf();\nconsole.log(3);",
+                "options": [
+                  "1 3 2",
+                  "2 1 3",
+                  "1 2 3",
+                  "3 1 2"
+                ],
+                "answer": 3,
+                "explanation": "The async function runs synchronously until the first await, so 1 prints first. The rest is a microtask, so 3 prints before 2."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "ai-integrated-full-stack:question:1:1",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What happens when you type a URL into the browser and press Enter?",
+          "answer": "The browser parses the URL, resolves the domain through DNS, opens a TCP (or QUIC) connection, performs a TLS handshake for HTTPS, sends an HTTP request, receives the response, then parses HTML, fetches sub-resources (CSS, JS, images) and renders the page.",
+          "explanation": "Interviewers want the ordered chain, not every detail. Mention caching at each layer (DNS cache, HTTP cache) and that rendering involves the DOM and CSSOM for extra credit.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:1:2",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between GET and POST?",
+          "answer": "GET retrieves a resource, is safe and idempotent, sends parameters in the URL and can be cached and bookmarked. POST submits data in the body to create something or trigger an action; it is neither safe nor idempotent and is not cached by default.",
+          "explanation": "Avoid saying POST is 'more secure': both are visible to anyone without HTTPS. The real difference is semantics, idempotency and caching.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:1:3",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between 401 and 403?",
+          "answer": "401 Unauthorized means the request is not authenticated: credentials are missing or invalid. 403 Forbidden means the server knows who you are but you lack permission for this resource.",
+          "explanation": "A strong answer adds the UI consequence: on 401 redirect to login or refresh the token; on 403 show an access-denied message, because logging in again will not help.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:1:4",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does idempotent mean, and why does it matter for an API that calls an LLM?",
+          "answer": "An idempotent operation produces the same server state whether it runs once or many times. LLM calls are usually POSTs that cost money and may create records, so blind retries can double charges or duplicate messages. Use idempotency keys or deduplicate on the server before retrying.",
+          "explanation": "Linking HTTP semantics to cost and duplicate data shows you think about production behaviour, not just definitions.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:1:5",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why is HTTP called stateless, and how do web apps keep users logged in?",
+          "answer": "Each request is independent and the server keeps no built-in memory of earlier requests. Apps carry state explicitly: a session ID in a cookie that maps to server-side data, or a signed token (such as a JWT) sent on every request.",
+          "explanation": "Mention that statelessness is what allows horizontal scaling behind a load balancer, which leads naturally into session storage choices (Day 14).",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:1:6",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What changed in HTTP/2 and HTTP/3?",
+          "answer": "HTTP/2 uses binary framing and multiplexes many concurrent streams over one TCP connection, with header compression. HTTP/3 runs over QUIC on UDP, which removes TCP head-of-line blocking and makes connection setup faster, especially on mobile networks.",
+          "explanation": "You do not need protocol internals; showing why multiplexing helps pages with many assets is enough.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:2:1",
+          "day": 2,
+          "topic": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between var, let and const?",
+          "answer": "var is function-scoped and initialised to undefined when hoisted. let and const are block-scoped and sit in the temporal dead zone until declared. const cannot be reassigned, though an object it holds can still be mutated.",
+          "explanation": "Mention the loop example (var shares one variable across iterations) and that const is about the binding, not deep immutability.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:2:2",
+          "day": 2,
+          "topic": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a closure? Give a practical example.",
+          "answer": "A closure is a function that remembers variables from the scope where it was created. Example: a counter factory that returns increment and get functions sharing a private count, or a debounce function that remembers its timer ID between calls.",
+          "explanation": "A concrete use (private state, debounce, React hooks) is what separates a strong answer from a memorised definition.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:2:3",
+          "day": 2,
+          "topic": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does this print, and why? for (var i = 0; i < 3; i++) setTimeout(() => console.log(i));",
+          "answer": "It prints 3, 3, 3. var creates one function-scoped i shared by all callbacks, and the callbacks run after the loop has finished. Changing var to let prints 0, 1, 2 because let creates a new binding per iteration.",
+          "explanation": "This classic question tests scope, closures and the event loop together. Explain both the cause and the fix.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:2:4",
+          "day": 2,
+          "topic": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When would you use reduce instead of map or filter?",
+          "answer": "Use reduce when the result has a different shape from the input, for example a total, an object keyed by category, or a lookup map. Use map for one-to-one transforms and filter for selecting items, because they are clearer.",
+          "explanation": "Interviewers like hearing that readability matters: chaining filter then map is often clearer than one clever reduce.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:2:5",
+          "day": 2,
+          "topic": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Is the spread operator a deep copy? Why does this matter in React?",
+          "answer": "No. Spread copies only the top level; nested objects and arrays are shared references. In React, mutating a nested object after spreading changes the old state too, which can cause missed re-renders or bugs. Copy every level you change, or use structuredClone or a helper like Immer.",
+          "explanation": "Connecting shallow copies to React's reference-equality checks shows you understand why immutability matters, not just the rule.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:3:1",
+          "day": 3,
+          "topic": "Asynchronous JavaScript: Event Loop, Promises and async/await",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain the event loop.",
+          "answer": "JavaScript executes code on one call stack. Async operations are handled by the runtime, and their callbacks are queued. When the stack is empty, the event loop runs all pending microtasks (promise reactions), then takes the next macrotask (timer, I/O, UI event), runs it, drains microtasks again, and repeats.",
+          "explanation": "The key detail interviewers check is the microtask-before-macrotask rule. A small example (promise logs before setTimeout 0) makes the answer convincing.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:3:2",
+          "day": 3,
+          "topic": "Asynchronous JavaScript: Event Loop, Promises and async/await",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between a promise and a callback?",
+          "answer": "A callback is a function you pass to be called later; nesting many leads to 'callback hell' and inconsistent error handling. A promise is an object representing a future result that settles once, can be chained, composes with Promise.all, and propagates errors to a single catch.",
+          "explanation": "Mention the trust guarantees: a promise settles only once, and its callbacks always run asynchronously.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:3:3",
+          "day": 3,
+          "topic": "Asynchronous JavaScript: Event Loop, Promises and async/await",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does async/await do under the hood?",
+          "answer": "An async function returns a promise. Each await suspends the function and schedules its continuation as a microtask once the awaited promise settles; the result is returned or the rejection is thrown at the await point. It is syntax over promises, not a new threading model.",
+          "explanation": "Say clearly that await does not block the thread: other code keeps running while the function is suspended.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:3:4",
+          "day": 3,
+          "topic": "Asynchronous JavaScript: Event Loop, Promises and async/await",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Your page makes three independent API calls with three awaits in a row and feels slow. What would you change?",
+          "answer": "Start all three requests first and await them together with Promise.all, so total time is the slowest call rather than the sum. If one failure should not cancel the others, use Promise.allSettled and handle each result.",
+          "explanation": "This is a very common practical question. Mentioning allSettled for partial failure shows depth.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "ai-integrated-full-stack:question:3:5",
+          "day": 3,
+          "topic": "Asynchronous JavaScript: Event Loop, Promises and async/await",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why might a try/catch around an async call not catch an error?",
+          "answer": "If the promise is not awaited (or returned) inside the try block, the function continues and the try block exits before the rejection happens, so the rejection becomes unhandled. Also, fetch does not reject on 404 or 500, so there is nothing to catch unless you check res.ok and throw.",
+          "explanation": "Covering both the missing-await bug and the fetch status behaviour shows real debugging experience.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "ai-integrated-full-stack:assignment:1",
+          "title": "How the Web Works: HTTP, DNS and Client-Server Architecture",
+          "available": true,
+          "focus": "The web is a client-server system: a client such as a browser sends an HTTP request to a server, and the server returns an HTTP response. HTTP is a stateless, text-based application protocol (binary-framed in HTTP/2 and HTTP/3) that runs over TCP or QUIC, usually wrapped in TLS as HTTPS. DNS translates a human-readable domain name into the IP address the client connects to.",
+          "objectives": [
+            "Explain what happens between typing a URL and seeing a rendered page.",
+            "Describe the structure of an HTTP request and response: method, path, headers, body and status code.",
+            "Distinguish safe and idempotent HTTP methods and explain why the difference matters for retries.",
+            "Group status codes into their five classes and choose the right one for common situations.",
+            "Parse a raw HTTP request in JavaScript."
+          ],
+          "assignment": "The input is a raw HTTP/1.1 request: a request line, header lines until a blank line, and an optional body. Print the method, the path without the query string, the decoded query parameters, the Host header and whether the method is safe and idempotent. Safe methods: GET, HEAD, OPTIONS. Idempotent methods: the safe ones plus PUT and DELETE.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "DNS resolves the name, TCP/QUIC connects, TLS secures, HTTP exchanges the request and response.",
+            "A request is method + target + headers + optional body; a response is status + headers + body.",
+            "Safe methods do not change state; idempotent methods can be repeated with the same effect.",
+            "POST is not idempotent, so retries need an idempotency key or server-side deduplication.",
+            "4xx means the client must change something; 5xx means the server failed and a retry may succeed.",
+            "HTTP is stateless; cookies and tokens carry identity between requests."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "ai-integrated-full-stack:assignment:2",
+          "title": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
+          "available": true,
+          "focus": "ES6 (ECMAScript 2015) and later versions added block-scoped variables, arrow functions, classes, modules, destructuring, spread syntax, promises and many array and object helpers to JavaScript. A closure is a function bundled with the variables of the scope it was created in, so it can read and update those variables even after the outer function has returned.",
+          "objectives": [
+            "Explain the differences between var, let and const, including hoisting and the temporal dead zone.",
+            "Define a closure and use one to keep private state.",
+            "Use destructuring, spread/rest, template literals, optional chaining and nullish coalescing correctly.",
+            "Transform data with map, filter, reduce and sort without mutating the source.",
+            "Explain how arrow functions treat this differently from regular functions."
+          ],
+          "assignment": "Each input line is 'name,course,score'. A record is valid when name and course are non-empty and score is a number from 0 to 100. Group valid records by course and, for each course in alphabetical order, print the average score (one decimal place), the top student (highest score; ties go to the alphabetically first name) and the number of students. Finally print how many lines were skipped as invalid. If there are no valid records, print 'No valid records' before the skipped count.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Prefer const, use let for reassignment, avoid var.",
+            "A closure keeps access to its outer variables; it enables private state and is behind React hooks.",
+            "?? falls back only for null/undefined; || also replaces 0, '' and false.",
+            "map, filter and reduce return new values; sort and reverse mutate unless you copy first.",
+            "Spread makes shallow copies: nested objects are still shared.",
+            "Arrow functions take this from the surrounding scope."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "ai-integrated-full-stack:assignment:3",
+          "title": "Asynchronous JavaScript: Event Loop, Promises and async/await",
+          "available": true,
+          "focus": "JavaScript runs your code on a single thread, so long operations such as network requests, timers and file reads are handed to the environment (the browser or Node.js) and their results come back later as queued callbacks. The event loop runs those callbacks when the call stack is empty. A Promise represents a value that will be available in the future, and async/await is syntax that lets you write promise-based code in a readable, top-to-bottom style.",
+          "objectives": [
+            "Explain how a single-threaded JavaScript runtime handles slow I/O without blocking.",
+            "Describe the call stack, the microtask queue and the task (macrotask) queue, and the order they run in.",
+            "Use promises and async/await, including proper error handling with try/catch.",
+            "Predict the output order of code mixing synchronous logs, promises and timers.",
+            "Recognise common async bugs such as missing await and accidental sequential requests."
+          ],
+          "assignment": "Each input line is a statement in a script: '<type> <label>' or '<type> <label> then <type> <label>'. The type is sync, micro or macro. Processing a statement means: sync runs immediately, micro is added to the microtask queue, macro is added to the macrotask queue. When a task runs it prints its label; if it has a 'then' part, that child statement is processed at that moment. After the whole script, drain the microtask queue completely (including microtasks added while draining), then repeatedly run one macrotask followed by draining microtasks, until both queues are empty. Print labels in the order they run.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "JavaScript is single-threaded; the event loop runs queued callbacks when the stack is empty.",
+            "Microtasks (promise callbacks, code after await) run before the next macrotask (timers, I/O, events).",
+            "An async function always returns a promise; await unwraps it or throws its rejection.",
+            "Use Promise.all for independent requests instead of sequential awaits.",
+            "fetch resolves on HTTP errors; check res.ok yourself.",
+            "CPU-heavy work blocks the event loop; offload it."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "ai-integrated-full-stack:assignment:4",
+          "title": "Control flow for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain control flow for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on control flow for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete control flow for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 5,
+          "id": "ai-integrated-full-stack:assignment:5",
+          "title": "Collections and iteration for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain collections and iteration for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on collections and iteration for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete collections and iteration for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "ai-integrated-full-stack:assignment:6",
+          "title": "Error handling for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain error handling for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on error handling for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete error handling for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "ai-integrated-full-stack:assignment:7",
+          "title": "Module boundaries for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain module boundaries for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on module boundaries for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete module boundaries for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "ai-integrated-full-stack:article:1",
+          "ai-integrated-full-stack:article:2",
+          "ai-integrated-full-stack:article:3"
+        ],
+        "questions": [
+          "ai-integrated-full-stack:question:1:1",
+          "ai-integrated-full-stack:question:1:2",
+          "ai-integrated-full-stack:question:1:3",
+          "ai-integrated-full-stack:question:1:4",
+          "ai-integrated-full-stack:question:1:5",
+          "ai-integrated-full-stack:question:1:6",
+          "ai-integrated-full-stack:question:2:1",
+          "ai-integrated-full-stack:question:2:2",
+          "ai-integrated-full-stack:question:2:3",
+          "ai-integrated-full-stack:question:2:4",
+          "ai-integrated-full-stack:question:2:5",
+          "ai-integrated-full-stack:question:3:1",
+          "ai-integrated-full-stack:question:3:2",
+          "ai-integrated-full-stack:question:3:3",
+          "ai-integrated-full-stack:question:3:4",
+          "ai-integrated-full-stack:question:3:5"
+        ],
+        "coding": [
+          "ai-integrated-full-stack:coding:1",
+          "ai-integrated-full-stack:coding:2",
+          "ai-integrated-full-stack:coding:3"
+        ],
+        "assignments": [
+          "ai-integrated-full-stack:assignment:1",
+          "ai-integrated-full-stack:assignment:2",
+          "ai-integrated-full-stack:assignment:3",
+          "ai-integrated-full-stack:assignment:4",
+          "ai-integrated-full-stack:assignment:5",
+          "ai-integrated-full-stack:assignment:6",
+          "ai-integrated-full-stack:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Data, APIs and application workflows",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "ai-integrated-full-stack:assignment:8",
+          "title": "Dependency management for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain dependency management for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on dependency management for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete dependency management for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "ai-integrated-full-stack:assignment:9",
+          "title": "HTTP request lifecycle for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain http request lifecycle for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on http request lifecycle for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete http request lifecycle for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "ai-integrated-full-stack:assignment:10",
+          "title": "API contract design for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain api contract design for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on api contract design for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete api contract design for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "ai-integrated-full-stack:assignment:11",
+          "title": "Database modeling for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain database modeling for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on database modeling for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete database modeling for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "ai-integrated-full-stack:assignment:12",
+          "title": "CRUD behavior for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain crud behavior for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on crud behavior for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete crud behavior for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "ai-integrated-full-stack:assignment:13",
+          "title": "Authentication flow for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain authentication flow for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on authentication flow for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authentication flow for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "ai-integrated-full-stack:assignment:14",
+          "title": "Authorization checks for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain authorization checks for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on authorization checks for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authorization checks for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "ai-integrated-full-stack:assignment:8",
+          "ai-integrated-full-stack:assignment:9",
+          "ai-integrated-full-stack:assignment:10",
+          "ai-integrated-full-stack:assignment:11",
+          "ai-integrated-full-stack:assignment:12",
+          "ai-integrated-full-stack:assignment:13",
+          "ai-integrated-full-stack:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Quality, security and architecture",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "ai-integrated-full-stack:assignment:15",
+          "title": "Input sanitization for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain input sanitization for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on input sanitization for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete input sanitization for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "ai-integrated-full-stack:assignment:16",
+          "title": "State management for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain state management for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on state management for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete state management for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "ai-integrated-full-stack:assignment:17",
+          "title": "Component design for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain component design for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on component design for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete component design for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "ai-integrated-full-stack:assignment:18",
+          "title": "Form handling for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain form handling for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on form handling for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete form handling for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "ai-integrated-full-stack:assignment:19",
+          "title": "Loading and error states for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain loading and error states for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on loading and error states for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete loading and error states for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "ai-integrated-full-stack:assignment:20",
+          "title": "Unit testing for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain unit testing for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on unit testing for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete unit testing for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "ai-integrated-full-stack:assignment:21",
+          "title": "Integration testing for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain integration testing for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on integration testing for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete integration testing for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "ai-integrated-full-stack:assignment:22",
+          "title": "Debugging strategy for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain debugging strategy for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on debugging strategy for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete debugging strategy for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "ai-integrated-full-stack:assignment:15",
+          "ai-integrated-full-stack:assignment:16",
+          "ai-integrated-full-stack:assignment:17",
+          "ai-integrated-full-stack:assignment:18",
+          "ai-integrated-full-stack:assignment:19",
+          "ai-integrated-full-stack:assignment:20",
+          "ai-integrated-full-stack:assignment:21",
+          "ai-integrated-full-stack:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, portfolio and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "ai-integrated-full-stack:assignment:23",
+          "title": "Logging and observability for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain logging and observability for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on logging and observability for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and observability for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "ai-integrated-full-stack:assignment:24",
+          "title": "Performance profiling for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain performance profiling for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on performance profiling for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete performance profiling for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "ai-integrated-full-stack:assignment:25",
+          "title": "Accessibility checks for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain accessibility checks for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on accessibility checks for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete accessibility checks for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "ai-integrated-full-stack:assignment:26",
+          "title": "Configuration management for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain configuration management for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on configuration management for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration management for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "ai-integrated-full-stack:assignment:27",
+          "title": "Secure secrets handling for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain secure secrets handling for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on secure secrets handling for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secure secrets handling for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "ai-integrated-full-stack:assignment:28",
+          "title": "Deployment workflow for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain deployment workflow for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on deployment workflow for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment workflow for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "ai-integrated-full-stack:assignment:29",
+          "title": "Code review for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain code review for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on code review for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete code review for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "ai-integrated-full-stack:assignment:30",
+          "title": "Portfolio walkthrough for AI-integrated full-stack development",
+          "available": false,
+          "focus": "AI-integrated full-stack development",
+          "objectives": [
+            "Explain portfolio walkthrough for ai-integrated full-stack development in the context of AI-integrated full-stack development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-integrated full-stack development case study focused on portfolio walkthrough for ai-integrated full-stack development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for ai-integrated full-stack development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "ai-integrated-full-stack:assignment:23",
+          "ai-integrated-full-stack:assignment:24",
+          "ai-integrated-full-stack:assignment:25",
+          "ai-integrated-full-stack:assignment:26",
+          "ai-integrated-full-stack:assignment:27",
+          "ai-integrated-full-stack:assignment:28",
+          "ai-integrated-full-stack:assignment:29",
+          "ai-integrated-full-stack:assignment:30"
+        ]
+      }
+    }
+  ]
+}

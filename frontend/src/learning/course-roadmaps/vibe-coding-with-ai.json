@@ -1,0 +1,2219 @@
+{
+  "slug": "vibe-coding-with-ai",
+  "name": "Vibe Coding with AI",
+  "focus": "AI-assisted product development",
+  "track": "development",
+  "tools": [
+    "Git",
+    "REST APIs",
+    "SQL",
+    "VS Code",
+    "Docker",
+    "automated tests"
+  ],
+  "projects": [
+    {
+      "name": "AI-assisted portfolio website",
+      "description": "Create a responsive portfolio by planning, prompting, inspecting and iterating on AI-generated code.",
+      "objectives": [
+        "Keep design decisions intentional",
+        "Verify accessibility and mobile behavior"
+      ],
+      "requirements": [
+        "Portfolio goals and reference content",
+        "Manual review checklist"
+      ],
+      "steps": [
+        "Write a clear scope and page outline.",
+        "Generate a small first version with an AI coding assistant.",
+        "Review code, responsive behavior and keyboard access.",
+        "Publish and record prompt iterations."
+      ],
+      "outcome": "A responsive portfolio with a documented AI workflow.",
+      "skills": [
+        "prompt and context design",
+        "frontend development",
+        "quality review"
+      ]
+    },
+    {
+      "name": "AI-assisted landing page",
+      "description": "Build and measure a landing page with clear audience, offer and conversion goal.",
+      "objectives": [
+        "Generate components from precise requirements",
+        "Test content, layout and form states"
+      ],
+      "requirements": [
+        "Audience and offer brief",
+        "Mobile and form acceptance criteria"
+      ],
+      "steps": [
+        "Define content hierarchy and CTA.",
+        "Generate the page in reviewable steps.",
+        "Validate responsive and error states.",
+        "Measure a test goal and document changes."
+      ],
+      "outcome": "A landing page prototype and iteration log.",
+      "skills": [
+        "AI-assisted product development",
+        "frontend development",
+        "measurement"
+      ]
+    },
+    {
+      "name": "AI chatbot and full-stack capstone",
+      "description": "Create an AI-powered app with a frontend, API, persistence and a grounded assistant.",
+      "objectives": [
+        "Review generated code and dependencies",
+        "Add tests and safe fallback behavior"
+      ],
+      "requirements": [
+        "Scoped product brief",
+        "Knowledge source and test questions"
+      ],
+      "steps": [
+        "Plan the UI and backend contract.",
+        "Build and inspect one feature at a time.",
+        "Add retrieval, permissions and evaluation.",
+        "Deploy a tested capstone and explain limitations."
+      ],
+      "outcome": "A full-stack AI app with evidence of human review.",
+      "skills": [
+        "AI integration",
+        "full-stack development",
+        "testing"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "vibe-coding-with-ai",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Programming and application foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "vibe-coding-with-ai:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "What Vibe Coding Is: Promise, Workflow and Risks",
+            "module": "Foundations of AI-assisted development",
+            "level": "Beginner",
+            "objectives": [
+              "Define vibe coding and distinguish it from disciplined AI-assisted engineering.",
+              "Describe the basic loop: describe, generate, run, inspect, refine.",
+              "Explain where vibe coding shines (prototypes, glue code) and where it is dangerous (auth, payments, data).",
+              "List the main risks of accepting code you have not read: bugs, security holes, licence and maintenance debt.",
+              "Answer interview questions about your personal policy for using AI-generated code."
+            ],
+            "definition": "Vibe coding is a style of building software where you describe what you want in natural language and let an AI assistant write most of the code, judging progress mainly by whether the result runs and looks right. The term was popularised by Andrej Karpathy in early 2025. In professional settings it is a starting point: engineers still own the code, so they read, test and review what the AI produces before it ships.",
+            "theory": [
+              {
+                "heading": "From autocomplete to describing whole features",
+                "body": "Early coding assistants completed a line or a function as you typed. Modern assistants can take a paragraph of requirements and produce several files, run commands and fix their own errors. This shifts the developer's job from typing every line to specifying intent, steering the assistant and verifying the result. Vibe coding is the extreme end of this spectrum: you mostly accept what the model writes and react to what you see.",
+                "points": [
+                  "Inline completion: suggests the next lines inside the editor.",
+                  "Chat assistants: answer questions and generate snippets you paste in.",
+                  "Agentic assistants: edit multiple files, run tests and iterate with less supervision.",
+                  "The more autonomy the tool has, the more important review and tests become."
+                ]
+              },
+              {
+                "heading": "The vibe coding loop",
+                "body": "The workflow is a fast feedback loop. You state a goal, the assistant generates code, you run it, observe what happens and describe the next change or the error. The loop is powerful because each iteration is cheap. It becomes risky when the only check is 'it seems to work', because many defects (security, edge cases, performance) are invisible in a quick manual test.",
+                "points": [
+                  "Describe: state the goal, constraints and context.",
+                  "Generate: let the assistant write or edit code.",
+                  "Run: execute the app or tests.",
+                  "Inspect: read the diff and the behaviour, not just the screen.",
+                  "Refine: give precise feedback or roll back and try again."
+                ]
+              },
+              {
+                "heading": "Where it works well and where it does not",
+                "body": "Vibe coding is excellent for throwaway prototypes, internal tools, learning a new library, boilerplate and UI experiments, because the cost of a hidden bug is low and speed matters most. It is a poor fit for authentication, payments, personal data, concurrency and anything regulated, because a subtle mistake can leak data or lose money and the person who accepted the code may not understand it well enough to fix it.",
+                "points": [
+                  "Good fit: prototypes, demos, scripts, scaffolding, exploring an unfamiliar API.",
+                  "Poor fit without careful review: auth, payments, data migrations, security-sensitive logic.",
+                  "Rule of thumb: the higher the cost of a bug, the more you must read and test."
+                ]
+              },
+              {
+                "heading": "Risks of accepting unread code",
+                "body": "Language models predict plausible code; plausible is not the same as correct. Generated code can call functions that do not exist, use outdated APIs, skip input validation, hard-code secrets, add unnecessary dependencies or duplicate logic. Over time a codebase built from unreviewed generations becomes hard to change because nobody holds a mental model of it.",
+                "points": [
+                  "Correctness: off-by-one errors, missed edge cases, invented APIs (hallucinations).",
+                  "Security: injection, missing authorisation checks, exposed keys.",
+                  "Supply chain: unknown or even non-existent packages suggested by the model.",
+                  "Maintainability: inconsistent style, duplicated code, no tests.",
+                  "Ownership: you are accountable for every line you merge, whoever wrote it."
+                ]
+              },
+              {
+                "heading": "Responsible AI-assisted engineering",
+                "body": "Teams that use AI well keep the speed and add guardrails: small changes, version control checkpoints, automated tests, linters, code review and security scanning. The engineer acts as an editor and reviewer. Interviewers increasingly ask how you use AI, and the strongest answer shows both productivity and judgement.",
+                "points": [
+                  "Work in small, reviewable steps and commit often.",
+                  "Ask for tests alongside code and run them.",
+                  "Read every diff; ask the AI to explain anything unclear.",
+                  "Scale review effort with risk."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A prototype that works but is not production-ready",
+              "body": "A student asks an assistant: 'Build a page where users sign up with email and password and see a dashboard.' Within minutes the page works in the browser. A review then finds that passwords are stored in plain text in localStorage, there is no server-side check, and the dashboard is visible to anyone who edits a flag in the browser. The demo is fine for a hackathon; shipping it would be a security incident. The fix is to move authentication to a server, hash passwords and check sessions on every request.",
+              "code": {
+                "language": "javascript",
+                "source": "// Generated quickly: works in a demo, unsafe in production\nfunction signUp(email, password) {\n  localStorage.setItem('user', JSON.stringify({ email, password })); // plain-text password in the browser\n  localStorage.setItem('isLoggedIn', 'true'); // any visitor can set this flag\n}\n\n// What review should ask for instead:\n// - send credentials to a server over HTTPS\n// - hash passwords on the server (e.g. bcrypt or argon2)\n// - issue a session cookie and verify it on every protected request"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Hackathon prototypes",
+                "description": "Turn an idea into a clickable demo in hours to test whether users care, accepting that the code may be rewritten."
+              },
+              {
+                "title": "Internal tools and scripts",
+                "description": "Generate a CSV cleaner or a small admin page where the audience is small and the blast radius of a bug is limited."
+              },
+              {
+                "title": "Learning a new framework",
+                "description": "Ask the assistant to scaffold a feature, then read and question the code to learn the framework's patterns."
+              },
+              {
+                "title": "Boilerplate in production apps",
+                "description": "Generate forms, types, tests and configuration, with normal code review before merge."
+              }
+            ],
+            "demonstration": {
+              "description": "Compare a 'pure vibe' request with a disciplined one for the same feature. The second prompt states constraints and asks for tests, which makes the output easier to verify.",
+              "code": {
+                "language": "text",
+                "source": "Vibe prompt:\n  Make a function that validates Indian phone numbers.\n\nDisciplined prompt:\n  Write a JavaScript function isValidIndianMobile(s) that returns true for 10-digit\n  numbers starting with 6-9, optionally prefixed by +91 or 0, ignoring spaces.\n  Return false for anything else. Include 6 example calls with expected results,\n  covering an empty string and a number with letters."
+              },
+              "output": "Vibe prompt -> a regex that may or may not handle +91, spaces or a leading 0; you cannot tell without testing.\nDisciplined prompt -> a function plus explicit cases such as isValidIndianMobile('+91 98765 43210') === true and isValidIndianMobile('12345') === false, which you can run immediately."
+            },
+            "takeaways": [
+              "Vibe coding means describing intent and letting AI write the code, judging by results.",
+              "The core loop is describe, generate, run, inspect and refine.",
+              "It is ideal for prototypes and low-risk code, risky for auth, payments and data.",
+              "Plausible code is not proven code: read diffs and run tests.",
+              "You own every line you merge, regardless of who or what wrote it.",
+              "Scale the amount of review with the cost of a bug."
+            ],
+            "interview": [
+              {
+                "question": "What is vibe coding?",
+                "answer": "It is building software by describing what you want in natural language and letting an AI assistant generate most of the code, iterating based on whether the result works, rather than writing and reasoning about every line yourself.",
+                "explanation": "A strong answer adds that it is great for speed and prototypes, and that professional use adds review and testing on top."
+              },
+              {
+                "question": "How do you use AI coding tools in your own work?",
+                "answer": "I use them for scaffolding, boilerplate, exploring unfamiliar APIs and drafting tests. I keep changes small, read every diff, run tests and ask the assistant to explain code I do not understand. For security-sensitive code I review line by line.",
+                "explanation": "Interviewers want evidence of judgement. Mention concrete practices (small diffs, tests, review) rather than just 'I use Copilot'."
+              },
+              {
+                "question": "What are the main risks of shipping AI-generated code without review?",
+                "answer": "Hidden bugs and missed edge cases, security flaws such as injection or missing authorisation, hallucinated or outdated APIs and packages, leaked secrets, and code nobody on the team understands well enough to maintain.",
+                "explanation": "Group risks into correctness, security, supply chain and maintainability; that structure signals senior thinking."
+              },
+              {
+                "question": "When would you deliberately choose a fast vibe-coding approach?",
+                "answer": "For a prototype to validate an idea, a one-off script, or a demo where speed matters more than long-term quality, as long as it is clearly labelled and not deployed with real user data.",
+                "explanation": "Showing you can match rigour to risk is better than saying 'never' or 'always'."
+              },
+              {
+                "question": "A teammate merged a large AI-generated pull request that 'works'. What would you check?",
+                "answer": "Whether there are tests and they pass, input validation and authorisation on any endpoints, secrets in code or config, new dependencies and their legitimacy, error handling, and whether the change can be split into smaller reviewable parts.",
+                "explanation": "This scenario tests review habits. Prioritise by risk and suggest process improvements such as size limits on AI-generated PRs."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Triage AI-generated changes by risk",
+              "difficulty": "Basic",
+              "objective": "Turn the idea 'scale review effort with risk' into a simple, explicit scoring rule.",
+              "statement": "A team receives several AI-generated changes. Each change has a name, a number of changed lines, an area and whether it includes tests. Score each change: area weight ui=1, logic=2, data=3, auth=4, payments=4 (any other area counts as 2). Add 2 if more than 400 lines changed, otherwise add 1 if more than 100 lines changed. Add 2 if the change has no tests. A score of 6 or more is HIGH, 4 or 5 is MEDIUM, anything lower is LOW. Print each change's level, then the change to review first (highest score; on a tie, the earliest one).",
+              "language": "javascript",
+              "input_format": "First line: N (number of changes). Next N lines: name|lines|area|tests where tests is yes or no.",
+              "output_format": "N lines of the form '<name>: <LEVEL> (score <s>)', then one line 'Review first: <name>'.",
+              "example": {
+                "input": "4\nnavbar|40|ui|yes\ncheckout|250|payments|no\nlogin|80|auth|yes\nreport|500|data|yes\n",
+                "output": "navbar: LOW (score 1)\ncheckout: HIGH (score 7)\nlogin: MEDIUM (score 4)\nreport: MEDIUM (score 5)\nReview first: checkout"
+              },
+              "constraints": [
+                "1 <= N <= 100; line counts are non-negative integers.",
+                "Area and the tests flag are case-insensitive; trim spaces around fields.",
+                "The input is a global string named stdin; print with console.log."
+              ],
+              "starter": "const lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst weights = { ui: 1, logic: 2, data: 3, auth: 4, payments: 4 };\n\n// TODO: score each change, print its level, then the change to review first\n",
+              "solution": "const lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst weights = { ui: 1, logic: 2, data: 3, auth: 4, payments: 4 };\nlet best = null;\nfor (let i = 1; i <= n; i++) {\n  const [name, size, area, tests] = lines[i].split('|').map(s => s.trim());\n  const count = parseInt(size, 10);\n  let score = weights[area.toLowerCase()] || 2;\n  if (count > 400) score += 2;\n  else if (count > 100) score += 1;\n  if (tests.toLowerCase() !== 'yes') score += 2;\n  const level = score >= 6 ? 'HIGH' : score >= 4 ? 'MEDIUM' : 'LOW';\n  console.log(`${name}: ${level} (score ${score})`);\n  if (!best || score > best.score) best = { name, score };\n}\nconsole.log(`Review first: ${best.name}`);\n",
+              "explanation": [
+                "Split the input into lines and read N from the first line.",
+                "For each change, split on '|' and trim every field.",
+                "Start from the area weight (default 2), then add size and missing-test penalties.",
+                "Map the score to HIGH, MEDIUM or LOW with two thresholds.",
+                "Track the highest score using a strict '>' so the earliest change wins ties."
+              ],
+              "tests": [
+                {
+                  "input": "4\nnavbar|40|ui|yes\ncheckout|250|payments|no\nlogin|80|auth|yes\nreport|500|data|yes\n",
+                  "output": "navbar: LOW (score 1)\ncheckout: HIGH (score 7)\nlogin: MEDIUM (score 4)\nreport: MEDIUM (score 5)\nReview first: checkout"
+                },
+                {
+                  "input": "1\nhelper|10|logic|no\n",
+                  "output": "helper: MEDIUM (score 4)\nReview first: helper"
+                },
+                {
+                  "input": "2\nwidget|101|misc|YES\napi | 401 | Auth | No\n",
+                  "output": "widget: LOW (score 3)\napi: HIGH (score 8)\nReview first: api"
+                },
+                {
+                  "input": "2\na|100|data|no\nb|150|auth|yes\n",
+                  "output": "a: MEDIUM (score 5)\nb: MEDIUM (score 5)\nReview first: a"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which description best matches vibe coding?",
+                "options": [
+                  "Describing intent in natural language and letting AI generate most of the code, judging by results",
+                  "Pair programming with another human over video",
+                  "Compiling code without running any tests",
+                  "Writing every line by hand and using AI only for documentation"
+                ],
+                "answer": 0,
+                "explanation": "Vibe coding relies on natural-language intent and AI generation, with progress judged mainly by whether the result works."
+              },
+              {
+                "type": "scenario",
+                "question": "Which task is the safest fit for a fast, lightly reviewed vibe-coding approach?",
+                "options": [
+                  "A throwaway prototype to show a UI idea to classmates",
+                  "A database migration on production customer data",
+                  "Payment refund logic for a live store",
+                  "Password reset flow for a banking app"
+                ],
+                "answer": 0,
+                "explanation": "A throwaway prototype has a low cost of failure. The others can lose money or leak data if a subtle bug slips through."
+              },
+              {
+                "type": "concept",
+                "question": "Why is 'it runs and looks right' an insufficient check for AI-generated code?",
+                "options": [
+                  "AI-generated code cannot be version controlled",
+                  "Many defects such as missing authorisation or edge-case bugs are invisible in a quick manual test",
+                  "Generated code always fails to compile",
+                  "Browsers cannot run AI-generated JavaScript"
+                ],
+                "answer": 1,
+                "explanation": "Security flaws, edge cases and performance problems often do not show up when you click through the happy path."
+              },
+              {
+                "type": "code",
+                "question": "A generated signup stores this in the browser. What is the most serious problem?",
+                "code": "localStorage.setItem('user', JSON.stringify({ email, password }));\nlocalStorage.setItem('isLoggedIn', 'true');",
+                "options": [
+                  "JSON.stringify is slower than string concatenation",
+                  "localStorage keys must be uppercase",
+                  "The email should be stored before the password",
+                  "The password is stored in plain text and login state is a client-side flag anyone can set"
+                ],
+                "answer": 3,
+                "explanation": "Plain-text passwords in the browser and a forgeable login flag mean there is no real authentication. Auth must be verified on a server."
+              },
+              {
+                "type": "scenario",
+                "question": "Your team wants to keep AI speed but reduce risk. Which practice helps most?",
+                "options": [
+                  "Keep changes small, commit often and require tests plus review before merge",
+                  "Disable linters because AI code has its own style",
+                  "Let the assistant choose and install any packages it suggests",
+                  "Accept large multi-file generations in one commit to save time"
+                ],
+                "answer": 0,
+                "explanation": "Small reviewable steps with tests and review keep the fast loop while catching mistakes early."
+              }
+            ]
+          }
+        },
+        {
+          "id": "vibe-coding-with-ai:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "How AI Coding Assistants Work: Tokens, Context and Prediction",
+            "module": "Foundations of AI-assisted development",
+            "level": "Beginner",
+            "objectives": [
+              "Explain that a large language model generates code by predicting the next token.",
+              "Describe tokens, the context window and why context size limits what the model can 'see'.",
+              "Explain how assistants build context from open files, search results and instructions.",
+              "Relate temperature and training cut-off to non-determinism and outdated APIs.",
+              "Choose which files to give an assistant when the context budget is limited."
+            ],
+            "definition": "An AI coding assistant is an application built on a large language model (LLM), a neural network trained on huge amounts of text and code to predict the next token given the tokens before it. The assistant collects relevant context (your prompt, open files, project rules, search results), sends it to the model, and turns the predicted tokens into suggestions, chat answers or file edits. The model has no live view of your project beyond what fits in that context.",
+            "theory": [
+              {
+                "heading": "Next-token prediction",
+                "body": "LLMs are trained to predict the next token in a sequence. During generation the model repeatedly picks a likely next token, appends it and predicts again. Because it has seen millions of programs, the most likely continuation of a function signature is often a correct body. But the model optimises for likelihood, not truth, so it can confidently produce code that calls functions which do not exist or that matches an older version of a library.",
+                "points": [
+                  "Generation is autoregressive: one token at a time, each conditioned on the previous ones.",
+                  "Fluent output is not evidence of correctness.",
+                  "Common patterns are reproduced well; rare or new APIs are more error-prone."
+                ]
+              },
+              {
+                "heading": "Tokens and the context window",
+                "body": "Text is split into tokens, which are word pieces. In English text and code a token is roughly three to four characters on average, though this varies by tokenizer and language. The context window is the maximum number of tokens the model can consider in one request, including your prompt, the files sent and the answer it writes. Anything outside the window simply does not exist for the model, which is why assistants sometimes 'forget' earlier instructions in a long chat.",
+                "points": [
+                  "Context includes system instructions, chat history, attached files and the output.",
+                  "Larger windows help, but irrelevant context can still distract the model.",
+                  "Pricing and latency usually grow with the number of tokens processed."
+                ]
+              },
+              {
+                "heading": "How an assistant builds context",
+                "body": "The tool, not the model, decides what to send. Inline completion typically sends the code around your cursor plus snippets from related open files. Chat and agent tools may search the repository, read files, include project rule files (such as a rules or instructions markdown file) and add tool results like test output. Better context usually beats a cleverer prompt: if the model sees your existing types and helper functions, it reuses them instead of inventing new ones.",
+                "points": [
+                  "Cursor context: the file you are editing and nearby code.",
+                  "Retrieval: search over the repository to find relevant files.",
+                  "Project instructions: conventions, commands and do-not-touch rules.",
+                  "Tool feedback: compiler errors, test results and terminal output fed back into the loop."
+                ]
+              },
+              {
+                "heading": "Sampling, temperature and non-determinism",
+                "body": "Instead of always choosing the single most likely token, models sample from a probability distribution. Temperature controls how spread out that sampling is: low values give more predictable output, higher values give more variety. This is why the same prompt can return different code on different runs. For code, teams usually prefer low variability and rely on tests to verify whichever version they keep.",
+                "points": [
+                  "Same prompt, different runs, possibly different code.",
+                  "Low temperature is common for code generation.",
+                  "Reproducibility comes from tests and version control, not from the model."
+                ]
+              },
+              {
+                "heading": "Training cut-off and agents",
+                "body": "A model's knowledge stops at its training cut-off, so it may suggest deprecated APIs or miss a library's newest version. Agentic assistants reduce this by calling tools: reading documentation, running the code and reacting to errors. An agent is the same model in a loop that can take actions, observe results and decide the next step, which is powerful but needs limits on what it may change or run.",
+                "points": [
+                  "Check versions: ask which library version the code targets.",
+                  "Paste current documentation when using new APIs.",
+                  "Agents loop over plan, act, observe; give them a sandbox and review their diffs."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Why the assistant invented a helper",
+              "body": "A developer asks an assistant in a fresh chat to 'add a function to format prices like the rest of the app'. The model has not seen the existing formatPrice helper in utils/money.js, so it writes a new one using toFixed(2) and the dollar sign. After the developer attaches utils/money.js, the assistant reuses formatPrice and the rupee format. The model was not 'wrong'; it lacked context.",
+              "code": {
+                "language": "javascript",
+                "source": "// utils/money.js (existing helper the model had not seen)\nexport function formatPrice(paise) {\n  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(paise / 100);\n}\n\n// With the file in context, the generated code reuses it:\nimport { formatPrice } from './utils/money.js';\nconsole.log(formatPrice(129900)); // ₹1,299.00"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Inline completion",
+                "description": "Predicts the next lines from the surrounding code, ideal for repetitive patterns and boilerplate."
+              },
+              {
+                "title": "Repository-aware chat",
+                "description": "Answers questions such as 'where is the session checked?' by retrieving relevant files into context."
+              },
+              {
+                "title": "Agentic edits",
+                "description": "Plans a multi-file change, edits files, runs tests and iterates on failures under developer supervision."
+              },
+              {
+                "title": "Code explanation",
+                "description": "Summarises unfamiliar code for onboarding, using the file itself as context."
+              }
+            ],
+            "demonstration": {
+              "description": "Estimate whether a set of files fits in a context budget using the rough rule of about four characters per token. Real tokenizers differ, so treat this as an estimate and leave room for the model's answer.",
+              "code": {
+                "language": "javascript",
+                "source": "const files = [\n  { path: 'src/app.js', chars: 12000 },\n  { path: 'src/db.js', chars: 6000 },\n  { path: 'package-lock.json', chars: 400000 }\n];\nconst estimate = chars => Math.ceil(chars / 4);\nfor (const f of files) console.log(f.path, estimate(f.chars), 'tokens');\nconst total = files.reduce((sum, f) => sum + estimate(f.chars), 0);\nconsole.log('total', total);"
+              },
+              "output": "src/app.js 3000 tokens\nsrc/db.js 1500 tokens\npackage-lock.json 100000 tokens\ntotal 104500\n\nThe lock file alone dwarfs the useful code, so it should be left out of the context."
+            },
+            "takeaways": [
+              "LLMs generate code token by token by predicting likely continuations.",
+              "The context window limits what the model can see; outside it, information does not exist.",
+              "Assistants build context from cursor code, retrieval, project rules and tool output.",
+              "Sampling makes output vary between runs; tests make results trustworthy.",
+              "Training cut-offs cause outdated API suggestions; supply current docs when it matters.",
+              "Relevant, focused context improves output more than long, noisy context."
+            ],
+            "interview": [
+              {
+                "question": "How does an LLM generate code?",
+                "answer": "It predicts the next token from the tokens before it, appends the chosen token and repeats until it finishes. It learned which continuations are likely from training on large amounts of code and text.",
+                "explanation": "Mention that it optimises for likelihood, not correctness; that explains hallucinated APIs."
+              },
+              {
+                "question": "What is a context window and why does it matter for coding assistants?",
+                "answer": "It is the maximum number of tokens the model can process in one request, including the prompt, files and the answer. Code outside the window is invisible to the model, so it may duplicate helpers or ignore conventions it cannot see.",
+                "explanation": "Strong answers connect context limits to practical behaviour such as forgetting instructions in long chats."
+              },
+              {
+                "question": "Why does the same prompt sometimes give different code?",
+                "answer": "Models sample tokens from a probability distribution, and settings such as temperature add variation. Context differences between runs also change the result.",
+                "explanation": "Add that this is why you verify with tests rather than expecting identical output."
+              },
+              {
+                "question": "Why might an assistant suggest a deprecated API, and how do you prevent it?",
+                "answer": "Its knowledge stops at its training cut-off and older usage is often more common in training data. Specify versions, paste current documentation or let an agent read the docs, and verify by running the code.",
+                "explanation": "Naming a concrete mitigation such as pinning versions in the prompt shows practical experience."
+              },
+              {
+                "question": "What makes an agentic coding assistant different from autocomplete?",
+                "answer": "An agent runs the model in a loop with tools: it can read and edit files, run commands and tests, observe results and decide the next step. Autocomplete only predicts text at the cursor.",
+                "explanation": "Mention the extra responsibility: sandboxing, permission prompts and reviewing the final diff."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Pack files into a context budget",
+              "difficulty": "Basic",
+              "objective": "Practise choosing context for an assistant when the token budget is limited.",
+              "statement": "You have a token budget and a list of files. Estimate each file's tokens as ceil(chars / 4). Consider files in order of priority (1 is most important); files with equal priority keep their input order. Include a file if it fits in the remaining budget, otherwise skip it and continue with the next file. Print the included files, the skipped files and the tokens used.",
+              "language": "javascript",
+              "input_format": "First line: budget B. Each following line: path|chars|priority.",
+              "output_format": "Three lines:\nIncluded: <paths in the order considered, comma-separated, or none>\nSkipped: <paths in the order considered, or none>\nTokens used: <used>/<B>",
+              "example": {
+                "input": "1000\nsrc/app.js|2000|1\nREADME.md|1200|3\nsrc/db.js|1600|2\ntests/app.test.js|800|2\n",
+                "output": "Included: src/app.js, src/db.js\nSkipped: tests/app.test.js, README.md\nTokens used: 900/1000"
+              },
+              "constraints": [
+                "1 <= B <= 10^7; chars and priority are non-negative integers.",
+                "There is at least one file.",
+                "Separate names with a comma and a space."
+              ],
+              "starter": "const lines = stdin.trim().split('\\n');\nconst budget = parseInt(lines[0], 10);\nconst files = lines.slice(1).map((line, index) => {\n  const [path, chars, priority] = line.split('|');\n  return { path: path.trim(), tokens: Math.ceil(Number(chars) / 4), priority: Number(priority), index };\n});\n\n// TODO: sort by priority (stable), then include files greedily\n",
+              "solution": "const lines = stdin.trim().split('\\n');\nconst budget = parseInt(lines[0], 10);\nconst files = lines.slice(1).map((line, index) => {\n  const [path, chars, priority] = line.split('|');\n  return { path: path.trim(), tokens: Math.ceil(Number(chars) / 4), priority: Number(priority), index };\n});\nfiles.sort((a, b) => a.priority - b.priority || a.index - b.index);\nlet used = 0;\nconst included = [];\nconst skipped = [];\nfor (const f of files) {\n  if (used + f.tokens <= budget) {\n    used += f.tokens;\n    included.push(f.path);\n  } else {\n    skipped.push(f.path);\n  }\n}\nconsole.log('Included: ' + (included.length ? included.join(', ') : 'none'));\nconsole.log('Skipped: ' + (skipped.length ? skipped.join(', ') : 'none'));\nconsole.log(`Tokens used: ${used}/${budget}`);\n",
+              "explanation": [
+                "Parse each file and estimate tokens with Math.ceil(chars / 4).",
+                "Sort by priority, breaking ties by the original index so the order is stable.",
+                "Walk the sorted list and include a file only if it fits in the remaining budget.",
+                "Skipped files do not stop the loop: a later, smaller file may still fit.",
+                "Print 'none' for empty lists and the used/total budget."
+              ],
+              "tests": [
+                {
+                  "input": "1000\nsrc/app.js|2000|1\nREADME.md|1200|3\nsrc/db.js|1600|2\ntests/app.test.js|800|2\n",
+                  "output": "Included: src/app.js, src/db.js\nSkipped: tests/app.test.js, README.md\nTokens used: 900/1000"
+                },
+                {
+                  "input": "100\nbig.txt|401|1\n",
+                  "output": "Included: none\nSkipped: big.txt\nTokens used: 0/100"
+                },
+                {
+                  "input": "50\na|10|5\nb|200|1\nc|1|1\n",
+                  "output": "Included: b\nSkipped: c, a\nTokens used: 50/50"
+                },
+                {
+                  "input": "300\nx|400|2\ny|399|1\n",
+                  "output": "Included: y, x\nSkipped: none\nTokens used: 200/300"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "At its core, how does a large language model produce code?",
+                "options": [
+                  "It predicts the next token repeatedly, each time conditioned on previous tokens",
+                  "It runs every possible program and returns the fastest",
+                  "It looks up complete programs in a database",
+                  "It compiles the prompt into machine code"
+                ],
+                "answer": 0,
+                "explanation": "LLMs are autoregressive next-token predictors; code emerges one token at a time."
+              },
+              {
+                "type": "concept",
+                "question": "What counts toward the context window of a single request?",
+                "options": [
+                  "Only the model's training data",
+                  "Only the user's latest message",
+                  "System instructions, chat history, attached files and the generated answer",
+                  "Only the files on disk in the project"
+                ],
+                "answer": 2,
+                "explanation": "Everything the model processes in the request, including its own output, uses the window."
+              },
+              {
+                "type": "scenario",
+                "question": "An assistant keeps writing a new date-formatting helper even though the project already has one. What is the most likely fix?",
+                "options": [
+                  "Increase the temperature",
+                  "Ask the same question again until it changes",
+                  "Switch off syntax highlighting",
+                  "Include the existing helper file or project conventions in the context"
+                ],
+                "answer": 3,
+                "explanation": "The model can only reuse code it can see. Supplying the helper in context solves the duplication."
+              },
+              {
+                "type": "output",
+                "question": "Using the rough four-characters-per-token estimate with rounding up, how many tokens does a 1,001-character file use?",
+                "code": "Math.ceil(1001 / 4)",
+                "options": [
+                  "250",
+                  "1001",
+                  "4",
+                  "251"
+                ],
+                "answer": 3,
+                "explanation": "1001 / 4 = 250.25, and Math.ceil rounds up to 251."
+              },
+              {
+                "type": "scenario",
+                "question": "The assistant suggests a function that was removed in the latest major version of a library. Why does this happen?",
+                "options": [
+                  "The context window was too large",
+                  "JavaScript does not support new library versions",
+                  "The editor's font is outdated",
+                  "The model's knowledge is limited by its training cut-off and older usage is common in its data"
+                ],
+                "answer": 3,
+                "explanation": "Training cut-off and the prevalence of older examples cause outdated suggestions. Provide current docs and versions."
+              }
+            ]
+          }
+        },
+        {
+          "id": "vibe-coding-with-ai:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "HTML Semantics and Document Structure",
+            "module": "The web platform",
+            "level": "Beginner",
+            "objectives": [
+              "Explain what semantic HTML is and why it matters for accessibility, SEO and maintenance.",
+              "Use landmark elements (header, nav, main, article, section, aside, footer) correctly.",
+              "Build a logical heading hierarchy and connect form inputs to labels.",
+              "Spot 'div soup' and non-semantic patterns in AI-generated markup.",
+              "Write a program that checks a heading outline for skipped levels."
+            ],
+            "definition": "Semantic HTML means choosing elements for what content is, not how it looks: a navigation menu goes in nav, the primary content in main, a clickable action in button, and section titles in h1–h6. Browsers, search engines and assistive technologies such as screen readers use these meanings to understand and navigate the page. Styling is applied separately with CSS.",
+            "theory": [
+              {
+                "heading": "Why semantics matter",
+                "body": "A screen reader user can jump between headings, landmarks and form fields only if the markup exposes them. Search engines use headings and structure to understand topics. Developers read semantic markup faster because element names describe intent. AI assistants often generate nested divs with click handlers because that pattern is common in training data, so reviewing generated markup for semantics is a real interview topic.",
+                "points": [
+                  "Accessibility: built-in roles, keyboard behaviour and names come free with native elements.",
+                  "SEO: clear structure helps crawlers understand the page.",
+                  "Maintainability: <nav> says more than <div class=\"top-thing\">."
+                ]
+              },
+              {
+                "heading": "Landmarks and sectioning elements",
+                "body": "Landmark elements divide a page into regions that assistive technology can list and jump to. header and footer hold introductory and closing content; nav holds major navigation links; main holds the unique primary content and should appear once per page; aside holds tangential content; article is self-contained content that could stand alone, such as a blog post or a product card; section groups related content that has its own heading.",
+                "points": [
+                  "Use one visible <main> per page.",
+                  "<article> for independently distributable items; <section> for thematic groups with a heading.",
+                  "Use <div> only when no semantic element fits, typically for styling wrappers."
+                ]
+              },
+              {
+                "heading": "Headings form an outline",
+                "body": "Headings h1 to h6 create the document outline that screen reader users navigate. Start with a single h1 describing the page, and go down one level at a time: an h2 followed directly by an h4 skips a level and suggests missing structure. Choose heading levels by structure, never by font size; change the size with CSS instead.",
+                "points": [
+                  "One h1 per page is the widely recommended convention.",
+                  "Do not skip levels when going deeper (h2 -> h3, not h2 -> h4).",
+                  "Going back up (h4 -> h2) is fine when a new section starts."
+                ]
+              },
+              {
+                "heading": "Interactive elements and forms",
+                "body": "Use <button> for actions and <a href> for navigation. A div with an onclick handler is not focusable with the keyboard and is not announced as a button. Every form control needs an accessible name, usually from a <label for> that matches the input's id. Native input types (email, tel, number, date) give mobile keyboards and basic validation for free.",
+                "points": [
+                  "<button type=\"submit\"> inside <form> submits on Enter.",
+                  "<label for=\"email\"> + <input id=\"email\" type=\"email\">.",
+                  "Images need meaningful alt text, or alt=\"\" if decorative."
+                ]
+              },
+              {
+                "heading": "The document skeleton",
+                "body": "Every page should declare <!DOCTYPE html> for standards mode, set lang on the html element so screen readers pronounce text correctly, declare UTF-8 encoding and include a responsive viewport meta tag. A descriptive <title> appears in tabs and search results. These lines are short but frequently missing from quick generated snippets.",
+                "points": [
+                  "<html lang=\"en\"> or the page's language.",
+                  "<meta charset=\"utf-8\"> and <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">.",
+                  "A unique, descriptive <title> per page."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Refactoring generated 'div soup' into semantic HTML",
+              "body": "An assistant generated a header built from divs, with a clickable div as the menu button. The refactor uses header, nav, a real button and a list of links. Visual appearance can stay identical through CSS, but keyboard users can now tab to the button, screen readers announce a navigation landmark, and the code explains itself.",
+              "code": {
+                "language": "html",
+                "source": "<!-- Before -->\n<div class=\"top\">\n  <div class=\"logo\">Coding Hub</div>\n  <div class=\"menu-btn\" onclick=\"toggleMenu()\">Menu</div>\n  <div class=\"links\"><div onclick=\"go('/courses')\">Courses</div></div>\n</div>\n\n<!-- After -->\n<header class=\"top\">\n  <a href=\"/\" class=\"logo\">Coding Hub</a>\n  <button type=\"button\" aria-expanded=\"false\" aria-controls=\"site-nav\">Menu</button>\n  <nav id=\"site-nav\" aria-label=\"Main\">\n    <ul>\n      <li><a href=\"/courses\">Courses</a></li>\n    </ul>\n  </nav>\n</header>"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Accessible landing pages",
+                "description": "Landmarks and headings let screen reader users skip directly to pricing or contact sections."
+              },
+              {
+                "title": "Content sites and blogs",
+                "description": "article, time and heading structure help search engines and feed readers understand posts."
+              },
+              {
+                "title": "Forms for sign-up and checkout",
+                "description": "Labels, input types and real buttons improve completion rates on mobile and with assistive tech."
+              },
+              {
+                "title": "Reviewing AI-generated UI",
+                "description": "A quick semantics checklist catches clickable divs, missing labels and skipped headings before merge."
+              }
+            ],
+            "demonstration": {
+              "description": "A minimal, semantic page skeleton. Open it in a browser and use a screen reader's landmarks list or the browser's accessibility tree to see header, navigation, main and footer regions.",
+              "code": {
+                "language": "html",
+                "source": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Vibe Coding Course | Coding Hub</title>\n</head>\n<body>\n  <header><a href=\"/\">Coding Hub</a></header>\n  <nav aria-label=\"Main\"><a href=\"/courses\">Courses</a></nav>\n  <main>\n    <h1>Vibe Coding with AI</h1>\n    <section>\n      <h2>What you will learn</h2>\n      <p>Prompting, reviewing and shipping AI-assisted code.</p>\n    </section>\n    <form>\n      <label for=\"email\">Email</label>\n      <input id=\"email\" type=\"email\" required>\n      <button type=\"submit\">Join waitlist</button>\n    </form>\n  </main>\n  <footer><p>&copy; Coding Hub</p></footer>\n</body>\n</html>"
+              },
+              "output": "Accessibility tree (simplified): banner, navigation \"Main\", main -> heading level 1 \"Vibe Coding with AI\" -> heading level 2 \"What you will learn\" -> textbox \"Email\" -> button \"Join waitlist\", contentinfo."
+            },
+            "takeaways": [
+              "Choose elements for meaning; style with CSS.",
+              "Landmarks (header, nav, main, footer) make pages navigable for assistive technology.",
+              "Use one h1 and do not skip heading levels when going deeper.",
+              "Use <button> for actions and <a href> for navigation, never clickable divs.",
+              "Every input needs a label; every meaningful image needs alt text.",
+              "Review AI-generated markup for div soup; it is a common weakness."
+            ],
+            "interview": [
+              {
+                "question": "What is semantic HTML?",
+                "answer": "Using HTML elements according to the meaning of the content, such as nav for navigation, button for actions and h1–h6 for headings, rather than generic divs and spans styled to look right.",
+                "explanation": "Add the benefits: accessibility, SEO and readable code."
+              },
+              {
+                "question": "What is the difference between section, article and div?",
+                "answer": "article is self-contained content that makes sense on its own, like a post or a product card. section groups thematically related content, normally with a heading. div has no meaning and is used for layout or styling hooks when nothing else fits.",
+                "explanation": "Interviewers like the 'could it be syndicated on its own?' test for article."
+              },
+              {
+                "question": "Why is <div onclick> a bad substitute for <button>?",
+                "answer": "A div is not focusable by keyboard, does not respond to Enter or Space, and is not announced as a button by screen readers. Recreating that needs tabindex, a role and key handlers, while <button> provides it all natively.",
+                "explanation": "This is the most common accessibility flaw in generated UIs, so mention you check for it in reviews."
+              },
+              {
+                "question": "How should headings be structured on a page?",
+                "answer": "One h1 that describes the page, then h2 for main sections, h3 for subsections and so on, without skipping levels when going deeper. Levels reflect structure; visual size is controlled by CSS.",
+                "explanation": "Mention that screen reader users navigate by headings, which is why the outline matters."
+              },
+              {
+                "question": "What would you check when reviewing an AI-generated form?",
+                "answer": "Each input has an associated label, appropriate input types and autocomplete attributes, a real submit button inside a form element, visible error messages tied to fields, and server-side validation in addition to any HTML validation.",
+                "explanation": "Linking client-side semantics to server-side validation shows full-stack awareness."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Check a page's heading outline",
+              "difficulty": "Basic",
+              "objective": "Apply heading-hierarchy rules by building an outline and reporting structural problems.",
+              "statement": "Each input line is a heading such as 'h2 Courses'. Print the outline: each heading on its own line as '- <text>' indented by two spaces per level below h1. Then report issues in document order: the first heading is not h1 ('first heading is hN, expected h1'), a heading goes deeper by more than one level compared with the previous heading ('skipped from hA to hB at '<text>''), and every h1 after the first ('extra h1 '<text>''). Print each issue as 'Issue: <message>', then 'Result: OK' or 'Result: <n> issue(s)'.",
+              "language": "javascript",
+              "input_format": "One heading per line: h1–h6 (case-insensitive), a space, then the heading text.",
+              "output_format": "The indented outline, then zero or more 'Issue: ...' lines, then the Result line.",
+              "example": {
+                "input": "h1 Store\nh2 Products\nh4 Pricing\nh1 Footer title\n",
+                "output": "- Store\n  - Products\n      - Pricing\n- Footer title\nIssue: skipped from h2 to h4 at 'Pricing'\nIssue: extra h1 'Footer title'\nResult: 2 issue(s)"
+              },
+              "constraints": [
+                "1 to 200 headings; ignore blank lines.",
+                "Going up any number of levels (for example h4 to h2) is allowed.",
+                "Trim the heading text."
+              ],
+              "starter": "const items = stdin.trim().split('\\n').map(l => l.trim()).filter(Boolean).map(l => {\n  const m = l.match(/^h([1-6])\\s+(.*)$/i);\n  return { level: Number(m[1]), text: m[2].trim() };\n});\n\n// TODO: print the outline, collect issues, print the result\n",
+              "solution": "const items = stdin.trim().split('\\n').map(l => l.trim()).filter(Boolean).map(l => {\n  const m = l.match(/^h([1-6])\\s+(.*)$/i);\n  return { level: Number(m[1]), text: m[2].trim() };\n});\nconst issues = [];\nlet prev = 0;\nlet h1Count = 0;\nitems.forEach((h, i) => {\n  console.log('  '.repeat(h.level - 1) + '- ' + h.text);\n  if (i === 0 && h.level !== 1) issues.push(`first heading is h${h.level}, expected h1`);\n  if (i > 0 && h.level > prev + 1) issues.push(`skipped from h${prev} to h${h.level} at '${h.text}'`);\n  if (h.level === 1) {\n    h1Count++;\n    if (h1Count > 1) issues.push(`extra h1 '${h.text}'`);\n  }\n  prev = h.level;\n});\nissues.forEach(msg => console.log('Issue: ' + msg));\nconsole.log(issues.length ? `Result: ${issues.length} issue(s)` : 'Result: OK');\n",
+              "explanation": [
+                "Parse each line with a regular expression into a level (1–6) and text.",
+                "Print the outline with '  '.repeat(level - 1) so nesting is visible.",
+                "Only the first heading is checked against h1; later headings are compared with the previous level.",
+                "A jump deeper by more than one level is a skip; moving back up is allowed.",
+                "Count h1 elements and flag every one after the first, then print the summary."
+              ],
+              "tests": [
+                {
+                  "input": "h1 Coding Hub\nh2 Courses\nh3 Vibe Coding\nh2 Contact\n",
+                  "output": "- Coding Hub\n  - Courses\n    - Vibe Coding\n  - Contact\nResult: OK"
+                },
+                {
+                  "input": "h1 Store\nh2 Products\nh4 Pricing\nh1 Footer title\n",
+                  "output": "- Store\n  - Products\n      - Pricing\n- Footer title\nIssue: skipped from h2 to h4 at 'Pricing'\nIssue: extra h1 'Footer title'\nResult: 2 issue(s)"
+                },
+                {
+                  "input": "h3 Intro\nh4 Detail\n",
+                  "output": "    - Intro\n      - Detail\nIssue: first heading is h3, expected h1\nResult: 1 issue(s)"
+                },
+                {
+                  "input": "H1 Title\n\nH2 A\nH3 B\nH2   C  \n",
+                  "output": "- Title\n  - A\n    - B\n  - C\nResult: OK"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which element should wrap the primary, unique content of a page?",
+                "options": [
+                  "<main>",
+                  "<section>",
+                  "<aside>",
+                  "<div id=\"content\">"
+                ],
+                "answer": 0,
+                "explanation": "<main> is the landmark for the page's primary content and should appear once."
+              },
+              {
+                "type": "code",
+                "question": "What is the main accessibility problem with this markup?",
+                "code": "<div class=\"btn\" onclick=\"save()\">Save</div>",
+                "options": [
+                  "It cannot be focused or activated with the keyboard and is not announced as a button",
+                  "The class name is too short",
+                  "onclick only works in older browsers",
+                  "Divs cannot contain text"
+                ],
+                "answer": 0,
+                "explanation": "Native <button> provides focus, keyboard activation and the button role; a div provides none of these."
+              },
+              {
+                "type": "scenario",
+                "question": "A designer wants a sub-section title to look small. The structure calls for an h2. What should you do?",
+                "options": [
+                  "Use a bold <span> instead of a heading",
+                  "Keep the h2 and reduce its size with CSS",
+                  "Use an <h2> inside a <small> element",
+                  "Use an h5 because it is smaller"
+                ],
+                "answer": 1,
+                "explanation": "Heading level reflects structure; visual size is a CSS concern."
+              },
+              {
+                "type": "concept",
+                "question": "How is an input most reliably given an accessible name?",
+                "options": [
+                  "A title attribute on the form",
+                  "Bold text placed next to the input",
+                  "A placeholder attribute",
+                  "A <label> whose for attribute matches the input's id"
+                ],
+                "answer": 3,
+                "explanation": "An associated label provides a persistent accessible name and enlarges the click target. Placeholders disappear when typing."
+              },
+              {
+                "type": "scenario",
+                "question": "A product listing shows many independent product cards that could each be shared on their own. Which element suits each card?",
+                "options": [
+                  "<article>",
+                  "<nav>",
+                  "<footer>",
+                  "<aside>"
+                ],
+                "answer": 0,
+                "explanation": "<article> represents self-contained content that makes sense independently, like a product card or post."
+              }
+            ]
+          }
+        },
+        {
+          "id": "vibe-coding-with-ai:article:4",
+          "slug": "day-4",
+          "lesson": {
+            "day": 4,
+            "title": "CSS Layout: Box Model, Flexbox and Grid",
+            "module": "The web platform",
+            "level": "Beginner",
+            "objectives": [
+              "Explain the CSS box model and why box-sizing: border-box is the common default.",
+              "Use flexbox for one-dimensional layouts and explain flex-grow, flex-shrink and flex-basis.",
+              "Use CSS grid for two-dimensional layouts with grid-template-columns, fr units and gap.",
+              "Choose between flexbox and grid for a given layout.",
+              "Compute how flexbox distributes free space between items."
+            ],
+            "definition": "CSS layout is how the browser sizes and positions boxes. Every element is a box made of content, padding, border and margin (the box model). Flexbox arranges items along a single axis (a row or a column) and distributes spare space between them, while CSS grid places items into rows and columns at the same time. Together they replace older float- and table-based layouts.",
+            "theory": [
+              {
+                "heading": "The box model",
+                "body": "Each box has content, padding, border and margin. With the default box-sizing: content-box, width sets only the content, so padding and border are added on top and a 'width: 300px' card with 20px padding becomes 340px wide. With box-sizing: border-box, width includes padding and border, which makes sizes predictable. Most modern resets apply border-box to every element for this reason.",
+                "points": [
+                  "content-box: rendered width = width + padding + border.",
+                  "border-box: rendered width = width (padding and border fit inside).",
+                  "Vertical margins between blocks can collapse; padding and border never do."
+                ]
+              },
+              {
+                "heading": "Flexbox: one-dimensional layout",
+                "body": "display: flex makes children flex items laid out along the main axis (row by default). justify-content aligns items along the main axis and align-items along the cross axis. gap adds space between items. Flexbox is ideal for navbars, toolbars, centering and rows of cards that wrap, because items size themselves based on content and available space.",
+                "points": [
+                  "flex-direction: row | column sets the main axis.",
+                  "justify-content: space-between spreads items; align-items: center centres them vertically in a row.",
+                  "flex-wrap: wrap lets items move to new lines.",
+                  "Centering anything: display: flex; justify-content: center; align-items: center."
+                ]
+              },
+              {
+                "heading": "How flex items share space",
+                "body": "Each item starts at its flex-basis (its preferred size). The browser subtracts all bases and gaps from the container size. Positive free space is shared in proportion to flex-grow. Negative free space (overflow) is removed in proportion to flex-shrink multiplied by the item's basis, so larger items shrink more. The shorthand flex: 1 means grow 1, shrink 1, basis 0, which is why several flex: 1 items become equal width.",
+                "points": [
+                  "free = container - sum(bases) - gaps.",
+                  "Growing: item gets basis + free * grow / totalGrow.",
+                  "Shrinking: item loses |free| * (shrink * basis) / sum(shrink * basis).",
+                  "Real browsers also respect min-width (often the content size), which can stop items shrinking."
+                ]
+              },
+              {
+                "heading": "Grid: two-dimensional layout",
+                "body": "display: grid defines rows and columns on the container. grid-template-columns: repeat(3, 1fr) creates three equal columns, where fr is a fraction of the remaining space. repeat(auto-fit, minmax(220px, 1fr)) creates as many columns as fit, each at least 220px, which gives responsive card grids without media queries. Items can span cells with grid-column: span 2 or be placed into named areas.",
+                "points": [
+                  "fr units divide space left after fixed tracks and gaps.",
+                  "minmax(min, max) bounds a track's size.",
+                  "grid-template-areas gives readable page layouts (header, sidebar, main)."
+                ]
+              },
+              {
+                "heading": "Choosing flexbox or grid",
+                "body": "Use flexbox when content drives the layout in one direction: a row of buttons, a navbar, aligning an icon with text. Use grid when the layout drives the content in two directions: a page skeleton, a dashboard or an image gallery with aligned rows and columns. They combine well: a grid for the page and flexbox inside each card.",
+                "points": [
+                  "Flexbox: content-first, one axis.",
+                  "Grid: layout-first, two axes.",
+                  "Avoid floats and absolute positioning for general layout."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A dashboard shell with grid and a toolbar with flexbox",
+              "body": "The page uses grid areas for the header, sidebar and main region. Inside the header, flexbox pushes the logo left and the actions right. The cards area uses auto-fit and minmax so the number of columns adapts to the screen width.",
+              "code": {
+                "language": "css",
+                "source": "*, *::before, *::after { box-sizing: border-box; }\n\n.shell {\n  display: grid;\n  grid-template-columns: 240px 1fr;\n  grid-template-areas:\n    \"header header\"\n    \"sidebar main\";\n  min-height: 100vh;\n}\n.header { grid-area: header; display: flex; justify-content: space-between; align-items: center; gap: 12px; }\n.sidebar { grid-area: sidebar; }\n.main { grid-area: main; }\n\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 16px;\n}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Navigation bars",
+                "description": "Flexbox with space-between and align-items: center aligns logo, links and buttons in one row."
+              },
+              {
+                "title": "Card galleries",
+                "description": "Grid with auto-fit and minmax produces responsive columns without breakpoints."
+              },
+              {
+                "title": "Application shells",
+                "description": "Grid template areas lay out header, sidebar and content clearly."
+              },
+              {
+                "title": "Form rows",
+                "description": "Flexbox lets an input grow (flex: 1) while a button keeps its natural width."
+              }
+            ],
+            "demonstration": {
+              "description": "Three items in a 600px flex row with a 20px gap. The sidebar has flex: 0 1 200px; content and ads have flex-grow 1 with bases of 200px and 100px. Free space is 600 - 500 - 40 = 60px, split equally between the two growing items.",
+              "code": {
+                "language": "css",
+                "source": ".row { display: flex; width: 600px; gap: 20px; }\n.sidebar { flex: 0 1 200px; }\n.content { flex: 1 1 200px; }\n.ads { flex: 1 1 100px; }"
+              },
+              "output": "sidebar: 200px (grow 0)\ncontent: 200 + 30 = 230px\nads: 100 + 30 = 130px"
+            },
+            "takeaways": [
+              "Use box-sizing: border-box so width includes padding and border.",
+              "Flexbox handles one axis; grid handles rows and columns together.",
+              "Free space is shared by flex-grow; overflow is removed by flex-shrink weighted by basis.",
+              "flex: 1 means grow 1, shrink 1, basis 0, giving equal widths.",
+              "repeat(auto-fit, minmax(...)) creates responsive grids without media queries.",
+              "Combine them: grid for the page, flexbox for components."
+            ],
+            "interview": [
+              {
+                "question": "Explain the CSS box model.",
+                "answer": "Every element is a box with content, padding, border and margin. With content-box sizing, width applies to content only and padding and border add to it; with border-box, width includes padding and border.",
+                "explanation": "Mentioning why teams set border-box globally shows practical experience."
+              },
+              {
+                "question": "When do you use flexbox versus grid?",
+                "answer": "Flexbox for one-dimensional layouts where content size drives placement, such as navbars and button rows. Grid for two-dimensional layouts where I define rows and columns, such as page shells and galleries. I often nest flexbox inside grid items.",
+                "explanation": "Giving one concrete example of each is what interviewers look for."
+              },
+              {
+                "question": "How do you centre an element horizontally and vertically?",
+                "answer": "Make the parent display: flex with justify-content: center and align-items: center, or display: grid with place-items: center.",
+                "explanation": "Both modern answers are accepted; avoid only quoting old absolute-position hacks."
+              },
+              {
+                "question": "What does flex: 1 mean?",
+                "answer": "It is shorthand for flex-grow: 1, flex-shrink: 1 and flex-basis: 0%. Because every item starts from zero and grows equally, items with flex: 1 share the space equally regardless of content (subject to their minimum content size).",
+                "explanation": "Contrast with flex: auto (basis auto), where items start from their content size."
+              },
+              {
+                "question": "An AI-generated layout overflows on small screens. How do you debug it?",
+                "answer": "Inspect elements in DevTools to find the widest box, check for fixed widths, long unbroken words, images without max-width: 100%, and flex items that cannot shrink below their content (fix with min-width: 0). Then replace fixed widths with flexible units.",
+                "explanation": "The min-width: 0 detail on flex items is a classic senior-level insight."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Simulate flexbox space distribution",
+              "difficulty": "Basic",
+              "objective": "Understand flex-grow and flex-shrink by computing final item widths.",
+              "statement": "Given a flex container width, a gap and items with basis, grow and shrink, compute each item's final width (ignore minimum content sizes). free = width - sum(bases) - gap * (items - 1). If free >= 0, each item gets basis + free * grow / totalGrow (items keep their basis when totalGrow is 0). If free < 0, each item gets basis + free * (shrink * basis) / sum(shrink * basis) (items keep their basis when that sum is 0). Print the free space, then each item's width rounded to at most two decimals.",
+              "language": "javascript",
+              "input_format": "First line: container width and gap separated by a space. Each following line: name|basis|grow|shrink.",
+              "output_format": "'Free space: <free>' then one line per item: '<name>: <width>' with at most two decimals and no trailing zeros.",
+              "example": {
+                "input": "600 20\nsidebar|200|0|1\ncontent|200|1|1\nads|100|1|1\n",
+                "output": "Free space: 60\nsidebar: 200\ncontent: 230\nads: 130"
+              },
+              "constraints": [
+                "1 to 20 items; all numbers are non-negative integers.",
+                "Format numbers with Number(x.toFixed(2)) so 230.00 prints as 230."
+              ],
+              "starter": "const lines = stdin.trim().split('\\n');\nconst [width, gap] = lines[0].trim().split(/\\s+/).map(Number);\nconst items = lines.slice(1).map(l => {\n  const [name, basis, grow, shrink] = l.split('|');\n  return { name: name.trim(), basis: +basis, grow: +grow, shrink: +shrink };\n});\n\n// TODO: compute free space and distribute it\n",
+              "solution": "const lines = stdin.trim().split('\\n');\nconst [width, gap] = lines[0].trim().split(/\\s+/).map(Number);\nconst items = lines.slice(1).map(l => {\n  const [name, basis, grow, shrink] = l.split('|');\n  return { name: name.trim(), basis: +basis, grow: +grow, shrink: +shrink };\n});\nconst fmt = x => String(Number(x.toFixed(2)));\nconst free = width - items.reduce((s, it) => s + it.basis, 0) - gap * (items.length - 1);\nconsole.log('Free space: ' + fmt(free));\nconst totalGrow = items.reduce((s, it) => s + it.grow, 0);\nconst totalScaled = items.reduce((s, it) => s + it.shrink * it.basis, 0);\nfor (const it of items) {\n  let w = it.basis;\n  if (free >= 0 && totalGrow > 0) w += free * it.grow / totalGrow;\n  if (free < 0 && totalScaled > 0) w += free * (it.shrink * it.basis) / totalScaled;\n  console.log(`${it.name}: ${fmt(w)}`);\n}\n",
+              "explanation": [
+                "Subtract all bases and the gaps between items from the container width to get free space.",
+                "For positive space, share it in proportion to flex-grow.",
+                "For negative space, weight shrinking by shrink * basis, as the CSS specification does.",
+                "Guard against division by zero when nothing can grow or shrink.",
+                "Round with toFixed(2) and convert back to Number to drop trailing zeros."
+              ],
+              "tests": [
+                {
+                  "input": "600 20\nsidebar|200|0|1\ncontent|200|1|1\nads|100|1|1\n",
+                  "output": "Free space: 60\nsidebar: 200\ncontent: 230\nads: 130"
+                },
+                {
+                  "input": "400 0\na|300|1|1\nb|200|1|1\n",
+                  "output": "Free space: -100\na: 240\nb: 160"
+                },
+                {
+                  "input": "500 10\nx|100|0|1\ny|100|0|1\n",
+                  "output": "Free space: 290\nx: 100\ny: 100"
+                },
+                {
+                  "input": "1000 0\na|0|1|1\nb|0|2|1\nc|0|0|1\n",
+                  "output": "Free space: 1000\na: 333.33\nb: 666.67\nc: 0"
+                },
+                {
+                  "input": "300 0\nlogo|200|0|0\nmenu|200|0|1\n",
+                  "output": "Free space: -100\nlogo: 200\nmenu: 100"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "With box-sizing: content-box, what is the rendered width of this element (excluding margin)?",
+                "code": ".card { width: 300px; padding: 20px; border: 2px solid; }",
+                "options": [
+                  "300px",
+                  "320px",
+                  "344px",
+                  "342px"
+                ],
+                "answer": 2,
+                "explanation": "content-box adds padding (20 + 20) and border (2 + 2) to the 300px content: 344px."
+              },
+              {
+                "type": "scenario",
+                "question": "You need a photo gallery whose number of columns adapts to screen width, with aligned rows. Which approach fits best?",
+                "options": [
+                  "Floats with clearfix",
+                  "A table element",
+                  "Absolute positioning for each image",
+                  "display: grid with repeat(auto-fit, minmax(200px, 1fr))"
+                ],
+                "answer": 3,
+                "explanation": "Grid with auto-fit and minmax creates responsive, aligned columns without media queries."
+              },
+              {
+                "type": "concept",
+                "question": "In a flex row, which property aligns items along the vertical (cross) axis?",
+                "options": [
+                  "flex-basis",
+                  "align-items",
+                  "justify-content",
+                  "flex-wrap"
+                ],
+                "answer": 1,
+                "explanation": "In a row, the cross axis is vertical, controlled by align-items. justify-content works on the main axis."
+              },
+              {
+                "type": "output",
+                "question": "A 500px flex container (no gap) has items A (basis 100, grow 1) and B (basis 100, grow 3). How wide is B?",
+                "options": [
+                  "400px",
+                  "250px",
+                  "325px",
+                  "300px"
+                ],
+                "answer": 2,
+                "explanation": "Free space is 300px. B gets 3/4 of it (225px) on top of its 100px basis: 325px."
+              },
+              {
+                "type": "scenario",
+                "question": "A flex item containing a long URL refuses to shrink and overflows its container. What is the usual fix?",
+                "options": [
+                  "Set flex-grow: 0",
+                  "Add z-index: 10",
+                  "Set min-width: 0 on the item (and allow the text to wrap)",
+                  "Change display to inline"
+                ],
+                "answer": 2,
+                "explanation": "Flex items default to min-width: auto (their content size). min-width: 0 lets them shrink; overflow-wrap handles the long word."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "vibe-coding-with-ai:question:1:1",
+          "day": 1,
+          "topic": "What Vibe Coding Is: Promise, Workflow and Risks",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is vibe coding?",
+          "answer": "It is building software by describing what you want in natural language and letting an AI assistant generate most of the code, iterating based on whether the result works, rather than writing and reasoning about every line yourself.",
+          "explanation": "A strong answer adds that it is great for speed and prototypes, and that professional use adds review and testing on top.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:1:2",
+          "day": 1,
+          "topic": "What Vibe Coding Is: Promise, Workflow and Risks",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How do you use AI coding tools in your own work?",
+          "answer": "I use them for scaffolding, boilerplate, exploring unfamiliar APIs and drafting tests. I keep changes small, read every diff, run tests and ask the assistant to explain code I do not understand. For security-sensitive code I review line by line.",
+          "explanation": "Interviewers want evidence of judgement. Mention concrete practices (small diffs, tests, review) rather than just 'I use Copilot'.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:1:3",
+          "day": 1,
+          "topic": "What Vibe Coding Is: Promise, Workflow and Risks",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "What are the main risks of shipping AI-generated code without review?",
+          "answer": "Hidden bugs and missed edge cases, security flaws such as injection or missing authorisation, hallucinated or outdated APIs and packages, leaked secrets, and code nobody on the team understands well enough to maintain.",
+          "explanation": "Group risks into correctness, security, supply chain and maintainability; that structure signals senior thinking.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:1:4",
+          "day": 1,
+          "topic": "What Vibe Coding Is: Promise, Workflow and Risks",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When would you deliberately choose a fast vibe-coding approach?",
+          "answer": "For a prototype to validate an idea, a one-off script, or a demo where speed matters more than long-term quality, as long as it is clearly labelled and not deployed with real user data.",
+          "explanation": "Showing you can match rigour to risk is better than saying 'never' or 'always'.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:1:5",
+          "day": 1,
+          "topic": "What Vibe Coding Is: Promise, Workflow and Risks",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "A teammate merged a large AI-generated pull request that 'works'. What would you check?",
+          "answer": "Whether there are tests and they pass, input validation and authorisation on any endpoints, secrets in code or config, new dependencies and their legitimacy, error handling, and whether the change can be split into smaller reviewable parts.",
+          "explanation": "This scenario tests review habits. Prioritise by risk and suggest process improvements such as size limits on AI-generated PRs.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:2:1",
+          "day": 2,
+          "topic": "How AI Coding Assistants Work: Tokens, Context and Prediction",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "How does an LLM generate code?",
+          "answer": "It predicts the next token from the tokens before it, appends the chosen token and repeats until it finishes. It learned which continuations are likely from training on large amounts of code and text.",
+          "explanation": "Mention that it optimises for likelihood, not correctness; that explains hallucinated APIs.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:2:2",
+          "day": 2,
+          "topic": "How AI Coding Assistants Work: Tokens, Context and Prediction",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a context window and why does it matter for coding assistants?",
+          "answer": "It is the maximum number of tokens the model can process in one request, including the prompt, files and the answer. Code outside the window is invisible to the model, so it may duplicate helpers or ignore conventions it cannot see.",
+          "explanation": "Strong answers connect context limits to practical behaviour such as forgetting instructions in long chats.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:2:3",
+          "day": 2,
+          "topic": "How AI Coding Assistants Work: Tokens, Context and Prediction",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "Why does the same prompt sometimes give different code?",
+          "answer": "Models sample tokens from a probability distribution, and settings such as temperature add variation. Context differences between runs also change the result.",
+          "explanation": "Add that this is why you verify with tests rather than expecting identical output.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:2:4",
+          "day": 2,
+          "topic": "How AI Coding Assistants Work: Tokens, Context and Prediction",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why might an assistant suggest a deprecated API, and how do you prevent it?",
+          "answer": "Its knowledge stops at its training cut-off and older usage is often more common in training data. Specify versions, paste current documentation or let an agent read the docs, and verify by running the code.",
+          "explanation": "Naming a concrete mitigation such as pinning versions in the prompt shows practical experience.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:2:5",
+          "day": 2,
+          "topic": "How AI Coding Assistants Work: Tokens, Context and Prediction",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What makes an agentic coding assistant different from autocomplete?",
+          "answer": "An agent runs the model in a loop with tools: it can read and edit files, run commands and tests, observe results and decide the next step. Autocomplete only predicts text at the cursor.",
+          "explanation": "Mention the extra responsibility: sandboxing, permission prompts and reviewing the final diff.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:3:1",
+          "day": 3,
+          "topic": "HTML Semantics and Document Structure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is semantic HTML?",
+          "answer": "Using HTML elements according to the meaning of the content, such as nav for navigation, button for actions and h1–h6 for headings, rather than generic divs and spans styled to look right.",
+          "explanation": "Add the benefits: accessibility, SEO and readable code.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:3:2",
+          "day": 3,
+          "topic": "HTML Semantics and Document Structure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between section, article and div?",
+          "answer": "article is self-contained content that makes sense on its own, like a post or a product card. section groups thematically related content, normally with a heading. div has no meaning and is used for layout or styling hooks when nothing else fits.",
+          "explanation": "Interviewers like the 'could it be syndicated on its own?' test for article.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:3:3",
+          "day": 3,
+          "topic": "HTML Semantics and Document Structure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why is <div onclick> a bad substitute for <button>?",
+          "answer": "A div is not focusable by keyboard, does not respond to Enter or Space, and is not announced as a button by screen readers. Recreating that needs tabindex, a role and key handlers, while <button> provides it all natively.",
+          "explanation": "This is the most common accessibility flaw in generated UIs, so mention you check for it in reviews.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:3:4",
+          "day": 3,
+          "topic": "HTML Semantics and Document Structure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How should headings be structured on a page?",
+          "answer": "One h1 that describes the page, then h2 for main sections, h3 for subsections and so on, without skipping levels when going deeper. Levels reflect structure; visual size is controlled by CSS.",
+          "explanation": "Mention that screen reader users navigate by headings, which is why the outline matters.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:3:5",
+          "day": 3,
+          "topic": "HTML Semantics and Document Structure",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What would you check when reviewing an AI-generated form?",
+          "answer": "Each input has an associated label, appropriate input types and autocomplete attributes, a real submit button inside a form element, visible error messages tied to fields, and server-side validation in addition to any HTML validation.",
+          "explanation": "Linking client-side semantics to server-side validation shows full-stack awareness.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:4:1",
+          "day": 4,
+          "topic": "CSS Layout: Box Model, Flexbox and Grid",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain the CSS box model.",
+          "answer": "Every element is a box with content, padding, border and margin. With content-box sizing, width applies to content only and padding and border add to it; with border-box, width includes padding and border.",
+          "explanation": "Mentioning why teams set border-box globally shows practical experience.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:4:2",
+          "day": 4,
+          "topic": "CSS Layout: Box Model, Flexbox and Grid",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When do you use flexbox versus grid?",
+          "answer": "Flexbox for one-dimensional layouts where content size drives placement, such as navbars and button rows. Grid for two-dimensional layouts where I define rows and columns, such as page shells and galleries. I often nest flexbox inside grid items.",
+          "explanation": "Giving one concrete example of each is what interviewers look for.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:4:3",
+          "day": 4,
+          "topic": "CSS Layout: Box Model, Flexbox and Grid",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How do you centre an element horizontally and vertically?",
+          "answer": "Make the parent display: flex with justify-content: center and align-items: center, or display: grid with place-items: center.",
+          "explanation": "Both modern answers are accepted; avoid only quoting old absolute-position hacks.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:4:4",
+          "day": 4,
+          "topic": "CSS Layout: Box Model, Flexbox and Grid",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does flex: 1 mean?",
+          "answer": "It is shorthand for flex-grow: 1, flex-shrink: 1 and flex-basis: 0%. Because every item starts from zero and grows equally, items with flex: 1 share the space equally regardless of content (subject to their minimum content size).",
+          "explanation": "Contrast with flex: auto (basis auto), where items start from their content size.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "vibe-coding-with-ai:question:4:5",
+          "day": 4,
+          "topic": "CSS Layout: Box Model, Flexbox and Grid",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "An AI-generated layout overflows on small screens. How do you debug it?",
+          "answer": "Inspect elements in DevTools to find the widest box, check for fixed widths, long unbroken words, images without max-width: 100%, and flex items that cannot shrink below their content (fix with min-width: 0). Then replace fixed widths with flexible units.",
+          "explanation": "The min-width: 0 detail on flex items is a classic senior-level insight.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "vibe-coding-with-ai:assignment:1",
+          "title": "What Vibe Coding Is: Promise, Workflow and Risks",
+          "available": true,
+          "focus": "Vibe coding is a style of building software where you describe what you want in natural language and let an AI assistant write most of the code, judging progress mainly by whether the result runs and looks right. The term was popularised by Andrej Karpathy in early 2025. In professional settings it is a starting point: engineers still own the code, so they read, test and review what the AI produces before it ships.",
+          "objectives": [
+            "Define vibe coding and distinguish it from disciplined AI-assisted engineering.",
+            "Describe the basic loop: describe, generate, run, inspect, refine.",
+            "Explain where vibe coding shines (prototypes, glue code) and where it is dangerous (auth, payments, data).",
+            "List the main risks of accepting code you have not read: bugs, security holes, licence and maintenance debt.",
+            "Answer interview questions about your personal policy for using AI-generated code."
+          ],
+          "assignment": "A team receives several AI-generated changes. Each change has a name, a number of changed lines, an area and whether it includes tests. Score each change: area weight ui=1, logic=2, data=3, auth=4, payments=4 (any other area counts as 2). Add 2 if more than 400 lines changed, otherwise add 1 if more than 100 lines changed. Add 2 if the change has no tests. A score of 6 or more is HIGH, 4 or 5 is MEDIUM, anything lower is LOW. Print each change's level, then the change to review first (highest score; on a tie, the earliest one).",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Vibe coding means describing intent and letting AI write the code, judging by results.",
+            "The core loop is describe, generate, run, inspect and refine.",
+            "It is ideal for prototypes and low-risk code, risky for auth, payments and data.",
+            "Plausible code is not proven code: read diffs and run tests.",
+            "You own every line you merge, regardless of who or what wrote it.",
+            "Scale the amount of review with the cost of a bug."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "vibe-coding-with-ai:assignment:2",
+          "title": "How AI Coding Assistants Work: Tokens, Context and Prediction",
+          "available": true,
+          "focus": "An AI coding assistant is an application built on a large language model (LLM), a neural network trained on huge amounts of text and code to predict the next token given the tokens before it. The assistant collects relevant context (your prompt, open files, project rules, search results), sends it to the model, and turns the predicted tokens into suggestions, chat answers or file edits. The model has no live view of your project beyond what fits in that context.",
+          "objectives": [
+            "Explain that a large language model generates code by predicting the next token.",
+            "Describe tokens, the context window and why context size limits what the model can 'see'.",
+            "Explain how assistants build context from open files, search results and instructions.",
+            "Relate temperature and training cut-off to non-determinism and outdated APIs.",
+            "Choose which files to give an assistant when the context budget is limited."
+          ],
+          "assignment": "You have a token budget and a list of files. Estimate each file's tokens as ceil(chars / 4). Consider files in order of priority (1 is most important); files with equal priority keep their input order. Include a file if it fits in the remaining budget, otherwise skip it and continue with the next file. Print the included files, the skipped files and the tokens used.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "LLMs generate code token by token by predicting likely continuations.",
+            "The context window limits what the model can see; outside it, information does not exist.",
+            "Assistants build context from cursor code, retrieval, project rules and tool output.",
+            "Sampling makes output vary between runs; tests make results trustworthy.",
+            "Training cut-offs cause outdated API suggestions; supply current docs when it matters.",
+            "Relevant, focused context improves output more than long, noisy context."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "vibe-coding-with-ai:assignment:3",
+          "title": "HTML Semantics and Document Structure",
+          "available": true,
+          "focus": "Semantic HTML means choosing elements for what content is, not how it looks: a navigation menu goes in nav, the primary content in main, a clickable action in button, and section titles in h1–h6. Browsers, search engines and assistive technologies such as screen readers use these meanings to understand and navigate the page. Styling is applied separately with CSS.",
+          "objectives": [
+            "Explain what semantic HTML is and why it matters for accessibility, SEO and maintenance.",
+            "Use landmark elements (header, nav, main, article, section, aside, footer) correctly.",
+            "Build a logical heading hierarchy and connect form inputs to labels.",
+            "Spot 'div soup' and non-semantic patterns in AI-generated markup.",
+            "Write a program that checks a heading outline for skipped levels."
+          ],
+          "assignment": "Each input line is a heading such as 'h2 Courses'. Print the outline: each heading on its own line as '- <text>' indented by two spaces per level below h1. Then report issues in document order: the first heading is not h1 ('first heading is hN, expected h1'), a heading goes deeper by more than one level compared with the previous heading ('skipped from hA to hB at '<text>''), and every h1 after the first ('extra h1 '<text>''). Print each issue as 'Issue: <message>', then 'Result: OK' or 'Result: <n> issue(s)'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Choose elements for meaning; style with CSS.",
+            "Landmarks (header, nav, main, footer) make pages navigable for assistive technology.",
+            "Use one h1 and do not skip heading levels when going deeper.",
+            "Use <button> for actions and <a href> for navigation, never clickable divs.",
+            "Every input needs a label; every meaningful image needs alt text.",
+            "Review AI-generated markup for div soup; it is a common weakness."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "vibe-coding-with-ai:assignment:4",
+          "title": "CSS Layout: Box Model, Flexbox and Grid",
+          "available": true,
+          "focus": "CSS layout is how the browser sizes and positions boxes. Every element is a box made of content, padding, border and margin (the box model). Flexbox arranges items along a single axis (a row or a column) and distributes spare space between them, while CSS grid places items into rows and columns at the same time. Together they replace older float- and table-based layouts.",
+          "objectives": [
+            "Explain the CSS box model and why box-sizing: border-box is the common default.",
+            "Use flexbox for one-dimensional layouts and explain flex-grow, flex-shrink and flex-basis.",
+            "Use CSS grid for two-dimensional layouts with grid-template-columns, fr units and gap.",
+            "Choose between flexbox and grid for a given layout.",
+            "Compute how flexbox distributes free space between items."
+          ],
+          "assignment": "Given a flex container width, a gap and items with basis, grow and shrink, compute each item's final width (ignore minimum content sizes). free = width - sum(bases) - gap * (items - 1). If free >= 0, each item gets basis + free * grow / totalGrow (items keep their basis when totalGrow is 0). If free < 0, each item gets basis + free * (shrink * basis) / sum(shrink * basis) (items keep their basis when that sum is 0). Print the free space, then each item's width rounded to at most two decimals.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Use box-sizing: border-box so width includes padding and border.",
+            "Flexbox handles one axis; grid handles rows and columns together.",
+            "Free space is shared by flex-grow; overflow is removed by flex-shrink weighted by basis.",
+            "flex: 1 means grow 1, shrink 1, basis 0, giving equal widths.",
+            "repeat(auto-fit, minmax(...)) creates responsive grids without media queries.",
+            "Combine them: grid for the page, flexbox for components."
+          ]
+        },
+        {
+          "day": 5,
+          "id": "vibe-coding-with-ai:assignment:5",
+          "title": "Collections and iteration for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain collections and iteration for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on collections and iteration for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete collections and iteration for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "vibe-coding-with-ai:assignment:6",
+          "title": "Error handling for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain error handling for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on error handling for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete error handling for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "vibe-coding-with-ai:assignment:7",
+          "title": "Module boundaries for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain module boundaries for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on module boundaries for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete module boundaries for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "vibe-coding-with-ai:article:1",
+          "vibe-coding-with-ai:article:2",
+          "vibe-coding-with-ai:article:3",
+          "vibe-coding-with-ai:article:4"
+        ],
+        "questions": [
+          "vibe-coding-with-ai:question:1:1",
+          "vibe-coding-with-ai:question:1:2",
+          "vibe-coding-with-ai:question:1:3",
+          "vibe-coding-with-ai:question:1:4",
+          "vibe-coding-with-ai:question:1:5",
+          "vibe-coding-with-ai:question:2:1",
+          "vibe-coding-with-ai:question:2:2",
+          "vibe-coding-with-ai:question:2:3",
+          "vibe-coding-with-ai:question:2:4",
+          "vibe-coding-with-ai:question:2:5",
+          "vibe-coding-with-ai:question:3:1",
+          "vibe-coding-with-ai:question:3:2",
+          "vibe-coding-with-ai:question:3:3",
+          "vibe-coding-with-ai:question:3:4",
+          "vibe-coding-with-ai:question:3:5",
+          "vibe-coding-with-ai:question:4:1",
+          "vibe-coding-with-ai:question:4:2",
+          "vibe-coding-with-ai:question:4:3",
+          "vibe-coding-with-ai:question:4:4",
+          "vibe-coding-with-ai:question:4:5"
+        ],
+        "coding": [
+          "vibe-coding-with-ai:coding:1",
+          "vibe-coding-with-ai:coding:2",
+          "vibe-coding-with-ai:coding:3",
+          "vibe-coding-with-ai:coding:4"
+        ],
+        "assignments": [
+          "vibe-coding-with-ai:assignment:1",
+          "vibe-coding-with-ai:assignment:2",
+          "vibe-coding-with-ai:assignment:3",
+          "vibe-coding-with-ai:assignment:4",
+          "vibe-coding-with-ai:assignment:5",
+          "vibe-coding-with-ai:assignment:6",
+          "vibe-coding-with-ai:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Data, APIs and application workflows",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "vibe-coding-with-ai:assignment:8",
+          "title": "Dependency management for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain dependency management for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on dependency management for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete dependency management for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "vibe-coding-with-ai:assignment:9",
+          "title": "HTTP request lifecycle for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain http request lifecycle for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on http request lifecycle for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete http request lifecycle for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "vibe-coding-with-ai:assignment:10",
+          "title": "API contract design for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain api contract design for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on api contract design for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete api contract design for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "vibe-coding-with-ai:assignment:11",
+          "title": "Database modeling for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain database modeling for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on database modeling for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete database modeling for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "vibe-coding-with-ai:assignment:12",
+          "title": "CRUD behavior for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain crud behavior for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on crud behavior for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete crud behavior for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "vibe-coding-with-ai:assignment:13",
+          "title": "Authentication flow for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain authentication flow for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on authentication flow for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authentication flow for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "vibe-coding-with-ai:assignment:14",
+          "title": "Authorization checks for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain authorization checks for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on authorization checks for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authorization checks for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "vibe-coding-with-ai:assignment:8",
+          "vibe-coding-with-ai:assignment:9",
+          "vibe-coding-with-ai:assignment:10",
+          "vibe-coding-with-ai:assignment:11",
+          "vibe-coding-with-ai:assignment:12",
+          "vibe-coding-with-ai:assignment:13",
+          "vibe-coding-with-ai:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Quality, security and architecture",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "vibe-coding-with-ai:assignment:15",
+          "title": "Input sanitization for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain input sanitization for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on input sanitization for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete input sanitization for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "vibe-coding-with-ai:assignment:16",
+          "title": "State management for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain state management for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on state management for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete state management for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "vibe-coding-with-ai:assignment:17",
+          "title": "Component design for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain component design for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on component design for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete component design for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "vibe-coding-with-ai:assignment:18",
+          "title": "Form handling for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain form handling for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on form handling for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete form handling for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "vibe-coding-with-ai:assignment:19",
+          "title": "Loading and error states for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain loading and error states for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on loading and error states for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete loading and error states for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "vibe-coding-with-ai:assignment:20",
+          "title": "Unit testing for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain unit testing for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on unit testing for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete unit testing for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "vibe-coding-with-ai:assignment:21",
+          "title": "Integration testing for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain integration testing for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on integration testing for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete integration testing for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "vibe-coding-with-ai:assignment:22",
+          "title": "Debugging strategy for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain debugging strategy for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on debugging strategy for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete debugging strategy for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "vibe-coding-with-ai:assignment:15",
+          "vibe-coding-with-ai:assignment:16",
+          "vibe-coding-with-ai:assignment:17",
+          "vibe-coding-with-ai:assignment:18",
+          "vibe-coding-with-ai:assignment:19",
+          "vibe-coding-with-ai:assignment:20",
+          "vibe-coding-with-ai:assignment:21",
+          "vibe-coding-with-ai:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, portfolio and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "vibe-coding-with-ai:assignment:23",
+          "title": "Logging and observability for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain logging and observability for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on logging and observability for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and observability for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "vibe-coding-with-ai:assignment:24",
+          "title": "Performance profiling for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain performance profiling for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on performance profiling for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete performance profiling for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "vibe-coding-with-ai:assignment:25",
+          "title": "Accessibility checks for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain accessibility checks for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on accessibility checks for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete accessibility checks for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "vibe-coding-with-ai:assignment:26",
+          "title": "Configuration management for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain configuration management for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on configuration management for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration management for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "vibe-coding-with-ai:assignment:27",
+          "title": "Secure secrets handling for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain secure secrets handling for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on secure secrets handling for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secure secrets handling for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "vibe-coding-with-ai:assignment:28",
+          "title": "Deployment workflow for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain deployment workflow for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on deployment workflow for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment workflow for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "vibe-coding-with-ai:assignment:29",
+          "title": "Code review for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain code review for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on code review for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete code review for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "vibe-coding-with-ai:assignment:30",
+          "title": "Portfolio walkthrough for AI-assisted product development",
+          "available": false,
+          "focus": "AI-assisted product development",
+          "objectives": [
+            "Explain portfolio walkthrough for ai-assisted product development in the context of AI-assisted product development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small AI-assisted product development case study focused on portfolio walkthrough for ai-assisted product development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for ai-assisted product development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "vibe-coding-with-ai:assignment:23",
+          "vibe-coding-with-ai:assignment:24",
+          "vibe-coding-with-ai:assignment:25",
+          "vibe-coding-with-ai:assignment:26",
+          "vibe-coding-with-ai:assignment:27",
+          "vibe-coding-with-ai:assignment:28",
+          "vibe-coding-with-ai:assignment:29",
+          "vibe-coding-with-ai:assignment:30"
+        ]
+      }
+    }
+  ]
+}

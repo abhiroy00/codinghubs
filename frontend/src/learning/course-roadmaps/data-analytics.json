@@ -1,0 +1,1934 @@
+{
+  "slug": "data-analytics",
+  "name": "Data Analytics",
+  "focus": "data analytics",
+  "track": "data",
+  "tools": [
+    "Python",
+    "pandas",
+    "SQL",
+    "Jupyter",
+    "Power BI",
+    "Git"
+  ],
+  "projects": [
+    {
+      "name": "SQL and Power BI dashboard",
+      "description": "Build a reliable reporting model and dashboard for a defined business question.",
+      "objectives": [
+        "Preserve row grain and metric definitions",
+        "Make trends and exceptions easy to inspect"
+      ],
+      "requirements": [
+        "Sample relational dataset",
+        "Stakeholder metric glossary"
+      ],
+      "steps": [
+        "Validate keys and join cardinality.",
+        "Build SQL measures at the correct grain.",
+        "Create an accessible Power BI layout.",
+        "Reconcile totals and document refresh behavior."
+      ],
+      "outcome": "A tested dashboard with metric definitions.",
+      "skills": [
+        "SQL analysis",
+        "dashboard design",
+        "data quality"
+      ]
+    },
+    {
+      "name": "Business performance analysis",
+      "description": "Explain a performance change with supporting evidence and practical recommendations.",
+      "objectives": [
+        "Separate correlation from cause",
+        "Communicate uncertainty"
+      ],
+      "requirements": [
+        "Business KPI and time range",
+        "Comparable segments"
+      ],
+      "steps": [
+        "Define KPI and baseline.",
+        "Break down performance by segment.",
+        "Investigate plausible drivers.",
+        "Recommend a bounded next action."
+      ],
+      "outcome": "An evidence-based business review.",
+      "skills": [
+        "statistics",
+        "visualization",
+        "stakeholder communication"
+      ]
+    },
+    {
+      "name": "Analytics capstone",
+      "description": "Deliver a repeatable SQL and BI workflow from raw data to decision.",
+      "objectives": [
+        "Create a reproducible refresh path",
+        "Validate stakeholder-facing metrics"
+      ],
+      "requirements": [
+        "Source schema",
+        "Acceptance test cases"
+      ],
+      "steps": [
+        "Model the data and define grain.",
+        "Implement analysis queries.",
+        "Build a decision-focused dashboard.",
+        "Document quality checks and limitations."
+      ],
+      "outcome": "A portfolio-ready analytics solution.",
+      "skills": [
+        "SQL",
+        "data quality",
+        "dashboard design"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "data-analytics",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Data and analytical foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "data-analytics:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "The Data Analyst Role and the Analytics Lifecycle",
+            "module": "Analytics foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Describe what a data analyst does day to day and who they work with.",
+              "Distinguish a data analyst from a data scientist, data engineer and BI developer.",
+              "Explain each phase of the analytics lifecycle: Ask, Prepare, Process, Analyze, Share, Act.",
+              "Turn a vague business request into a clear, measurable analysis question.",
+              "Answer the opening 'tell me about the role' questions in a Data Analyst interview."
+            ],
+            "definition": "A data analyst collects, cleans and analyses data to answer business questions and support decisions. The analytics lifecycle is the repeatable sequence an analyst follows: understand the question (Ask), gather data (Prepare), clean it (Process), explore and calculate (Analyze), communicate the findings (Share) and help the business act on them (Act).",
+            "theory": [
+              {
+                "heading": "What a data analyst actually does",
+                "body": "An analyst sits between raw data and business decisions. A typical week mixes writing SQL queries, cleaning spreadsheets, building or refreshing dashboards, investigating why a metric moved and presenting the answer to managers. The job is less about fancy algorithms and more about asking the right question, getting trustworthy numbers and explaining them clearly. That is why interviewers test SQL, Excel, a BI tool, basic statistics and communication together.",
+                "points": [
+                  "Core tools: SQL, Excel or Google Sheets, a BI tool (Power BI or Tableau), and often Python.",
+                  "Typical outputs: reports, dashboards, ad-hoc analyses, metric definitions and recommendations.",
+                  "Stakeholders: product managers, marketing, finance, operations and leadership.",
+                  "Success is measured by decisions improved, not by the number of charts produced."
+                ]
+              },
+              {
+                "heading": "How the analyst role differs from neighbouring roles",
+                "body": "Data roles overlap, but their centre of gravity differs. Interviewers often ask this to check that you understand where your work starts and stops, and who you depend on.",
+                "points": [
+                  "Data analyst: answers business questions with existing data; focuses on 'what happened and why'.",
+                  "Data scientist: builds predictive or statistical models; focuses on 'what will happen'.",
+                  "Data engineer: builds pipelines and warehouses so that clean data is available to everyone.",
+                  "BI developer: designs semantic models, reports and governed dashboards at scale.",
+                  "Business analyst: focuses on processes and requirements; may use less hands-on data work."
+                ]
+              },
+              {
+                "heading": "The analytics lifecycle, phase by phase",
+                "body": "Most companies describe the work as a cycle, because the result of one analysis usually raises the next question. A popular six-phase version is Ask, Prepare, Process, Analyze, Share and Act. CRISP-DM (business understanding, data understanding, data preparation, modelling, evaluation, deployment) describes the same idea for data-mining projects.",
+                "points": [
+                  "Ask: clarify the business problem, the decision it supports, the stakeholders and the success metric.",
+                  "Prepare: identify sources, check access, permissions and how the data was collected.",
+                  "Process: clean duplicates, missing values, wrong types and inconsistent labels; document every change.",
+                  "Analyze: aggregate, compare segments, look for trends, outliers and relationships.",
+                  "Share: present findings with visuals and a clear recommendation tailored to the audience.",
+                  "Act: the business makes a change; the analyst tracks the impact, which starts the next cycle."
+                ]
+              },
+              {
+                "heading": "Why the Ask phase matters most",
+                "body": "A technically perfect analysis of the wrong question is wasted effort. A request such as 'look into sales' is too vague; a good analyst turns it into 'Which regions caused the 8% drop in March revenue compared with February, and is the cause price, volume or product mix?'. A useful check is SMART: the question should be specific, measurable, action-oriented, relevant and time-bound.",
+                "points": [
+                  "Ask 'What decision will this analysis change?' before touching data.",
+                  "Agree on metric definitions early (for example, what counts as an active customer).",
+                  "Confirm the time period, the granularity and the deadline."
+                ]
+              },
+              {
+                "heading": "Advantages and limitations of a structured lifecycle",
+                "body": "Following a lifecycle keeps work reproducible and makes it easy to explain your process in interviews and to stakeholders. It is not strictly linear: cleaning often reveals that the question must change, and analysis can send you back to collect more data. Real projects loop between phases.",
+                "points": [
+                  "Advantage: fewer surprises, because assumptions are agreed before analysis.",
+                  "Advantage: easier hand-over and auditing because each step is documented.",
+                  "Limitation: data cleaning frequently takes most of the time, so plan for it.",
+                  "Limitation: findings are only as good as the data's quality and collection method."
+                ]
+              }
+            ],
+            "example": {
+              "title": "From a vague request to a lifecycle plan",
+              "body": "The marketing head of an online grocery says 'customers are leaving, look into it'. The analyst applies the lifecycle: Ask — define churn as 'no order in 60 days' and target the question 'Which customer segments churned most in Q2 and why?'. Prepare — pull orders, customers and support tickets from the warehouse. Process — remove test accounts and duplicate customer IDs. Analyze — compare churn by city, first-order channel and delivery delays. Share — a one-page summary showing that customers with two or more late deliveries churn at three times the average rate. Act — operations prioritises delivery slots in the worst areas, and the analyst tracks churn monthly.",
+              "code": {
+                "language": "text",
+                "source": "Ask      -> Define churn = no order in 60 days; question: which segments churned most in Q2?\nPrepare  -> orders, customers, support_tickets tables (Q1–Q2)\nProcess  -> drop test accounts, de-duplicate customer_id, fix city spellings\nAnalyze  -> churn rate by city, channel, number of late deliveries\nShare    -> 'Two or more late deliveries = 3x churn' + recommendation\nAct      -> fix delivery slots; monitor churn monthly (next cycle)"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "E-commerce",
+                "description": "Track conversion, average order value and returns; explain weekly revenue changes to category managers."
+              },
+              {
+                "title": "Banking and fintech",
+                "description": "Monitor loan approvals, defaults and card spends; support risk and collections teams with segment reports."
+              },
+              {
+                "title": "Healthcare operations",
+                "description": "Analyse patient wait times, bed occupancy and appointment no-shows to improve scheduling."
+              },
+              {
+                "title": "Marketing",
+                "description": "Measure campaign performance, cost per acquisition and channel ROI to reallocate budget."
+              },
+              {
+                "title": "Supply chain",
+                "description": "Find delayed shipments, stock-outs and slow-moving inventory across warehouses."
+              }
+            ],
+            "demonstration": {
+              "description": "Rewrite three vague stakeholder requests as SMART analysis questions. Notice how each rewrite names a metric, a comparison, a time period and the decision it supports.",
+              "code": {
+                "language": "text",
+                "source": "1. 'Check app performance'\n2. 'Are our ads working?'\n3. 'Why is support so busy?'"
+              },
+              "output": "1. Did the 7-day retention of users who installed in October fall below September's 32%, and on which Android versions?\n2. Which paid channel had the lowest cost per first order in the last 30 days, so we can move 20% of budget to it?\n3. Which ticket categories grew most between August and October, and how many are caused by delivery delays?"
+            },
+            "takeaways": [
+              "A data analyst turns data into answers that change business decisions.",
+              "The lifecycle is Ask, Prepare, Process, Analyze, Share, Act, and it loops back on itself.",
+              "The Ask phase decides whether the whole analysis is useful; agree on metrics and scope first.",
+              "Data cleaning usually consumes the largest share of an analyst's time.",
+              "Analysts, scientists and engineers overlap but have different primary goals.",
+              "Interviewers test SQL, Excel, BI, statistics and communication because the role needs all five."
+            ],
+            "interview": [
+              {
+                "question": "What does a data analyst do?",
+                "answer": "A data analyst gathers, cleans and analyses data to answer business questions, then communicates findings through reports, dashboards and recommendations so that teams can make better decisions.",
+                "explanation": "Mention the full flow from question to decision and name the tools (SQL, Excel, a BI tool). Ending with 'decisions' shows you understand the purpose, not just the tasks."
+              },
+              {
+                "question": "How is a data analyst different from a data scientist?",
+                "answer": "An analyst mainly explains what happened and why using queries, aggregation and visualisation. A data scientist focuses more on predictive models, experimentation and algorithms. Both need clean data and business understanding, and the line between them varies by company.",
+                "explanation": "Give a concrete contrast, for example analysing last quarter's churn versus building a churn-prediction model, and acknowledge the overlap."
+              },
+              {
+                "question": "Walk me through the steps you follow in an analysis project.",
+                "answer": "I clarify the question and success metric with stakeholders, identify and access the data, clean and validate it, explore and analyse it, share findings with a clear recommendation, and then track what happens after the business acts.",
+                "explanation": "Structure the answer with the lifecycle and add one example from a project. Mentioning validation (checking totals against a trusted source) is a strong signal."
+              },
+              {
+                "question": "A manager asks you to 'look into falling sales'. What do you do first?",
+                "answer": "I ask clarifying questions: which product or region, compared with which period, how sales is defined (gross or net of returns), and what decision depends on the answer. Then I restate the problem as a specific, measurable question and confirm it before pulling data.",
+                "explanation": "Interviewers want to see that you do not jump straight into SQL. Scoping and agreeing on metric definitions prevents rework."
+              },
+              {
+                "question": "Which phase of the lifecycle usually takes the most time, and why?",
+                "answer": "Preparing and processing data usually takes the most time, because real data has duplicates, missing values, inconsistent formats and undocumented business rules that must be fixed and verified before analysis can be trusted.",
+                "explanation": "A strong answer explains the consequence: if cleaning is rushed, every chart and number downstream is wrong, so time spent here protects credibility."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Organise project tasks by lifecycle phase",
+              "difficulty": "Basic",
+              "objective": "Reinforce the order of the analytics lifecycle by grouping project tasks under the correct phase.",
+              "statement": "An analyst has a list of tasks tagged with a lifecycle phase. Print the tasks grouped by phase in lifecycle order: Ask, Prepare, Process, Analyze, Share, Act. Phase names are case-insensitive, and the British spelling 'Analyse' means Analyze. Within a phase, keep the input order. A line whose phase is not one of the six, or whose task is empty, is unrecognised.",
+              "language": "python",
+              "input_format": "First line: n, the number of tasks. Next n lines: phase|task.",
+              "output_format": "For each phase that has tasks, in lifecycle order: '<Phase>: task1; task2'. If no phase has tasks, print 'No tasks'. If any line was unrecognised, finish with 'Unrecognised: <count>'.",
+              "example": {
+                "input": "6\nAsk|Define churn with the marketing head\nProcess|Remove duplicate customer rows\nprepare|Pull last 12 months of orders\nShare|Present findings to leadership\nAnalyse|Compare churn by region\nAct|Launch retention offer in the South\n",
+                "output": "Ask: Define churn with the marketing head\nPrepare: Pull last 12 months of orders\nProcess: Remove duplicate customer rows\nAnalyze: Compare churn by region\nShare: Present findings to leadership\nAct: Launch retention offer in the South"
+              },
+              "constraints": [
+                "0 <= n <= 100",
+                "Trim spaces around the phase and the task.",
+                "Print phase names in their canonical form: Ask, Prepare, Process, Analyze, Share, Act."
+              ],
+              "starter": "n = int(input())\nphases = ['Ask', 'Prepare', 'Process', 'Analyze', 'Share', 'Act']\n\nfor _ in range(n):\n    phase, _, task = input().partition('|')\n    # TODO: normalise the phase name and collect the task\n\n# TODO: print the groups in lifecycle order\n",
+              "solution": "n = int(input())\nphases = ['Ask', 'Prepare', 'Process', 'Analyze', 'Share', 'Act']\ngroups = {p: [] for p in phases}\nunknown = 0\n\nfor _ in range(n):\n    phase, _, task = input().partition('|')\n    phase = phase.strip().capitalize()\n    if phase == 'Analyse':\n        phase = 'Analyze'\n    task = task.strip()\n    if phase in groups and task:\n        groups[phase].append(task)\n    else:\n        unknown += 1\n\nprinted = False\nfor p in phases:\n    if groups[p]:\n        print(p + ': ' + '; '.join(groups[p]))\n        printed = True\nif not printed:\n    print('No tasks')\nif unknown:\n    print(f'Unrecognised: {unknown}')\n",
+              "explanation": [
+                "Create an empty list for each of the six phases, keyed by the canonical name.",
+                "Split each line at the first '|' and normalise the phase with strip() and capitalize(), mapping 'Analyse' to 'Analyze'.",
+                "Append valid tasks to their phase; count lines with an unknown phase or an empty task.",
+                "Loop over the phases in lifecycle order (not input order) and print only non-empty groups.",
+                "Handle the edge cases: no valid tasks prints 'No tasks', and the unrecognised count is printed only when it is above zero."
+              ],
+              "tests": [
+                {
+                  "input": "6\nAsk|Define churn with the marketing head\nProcess|Remove duplicate customer rows\nprepare|Pull last 12 months of orders\nShare|Present findings to leadership\nAnalyse|Compare churn by region\nAct|Launch retention offer in the South\n",
+                  "output": "Ask: Define churn with the marketing head\nPrepare: Pull last 12 months of orders\nProcess: Remove duplicate customer rows\nAnalyze: Compare churn by region\nShare: Present findings to leadership\nAct: Launch retention offer in the South"
+                },
+                {
+                  "input": "4\nAsk|Agree on the KPI\nDeploy|Ship model\nASK|Identify stakeholders\nShare|Build dashboard\n",
+                  "output": "Ask: Agree on the KPI; Identify stakeholders\nShare: Build dashboard\nUnrecognised: 1"
+                },
+                {
+                  "input": "0\n",
+                  "output": "No tasks"
+                },
+                {
+                  "input": "2\nPlan|Kick-off meeting\nProcess|\n",
+                  "output": "No tasks\nUnrecognised: 2"
+                },
+                {
+                  "input": "3\n  analyze  |  Segment customers by city \nAct|Track churn monthly\nanalyze|Check seasonality\n",
+                  "output": "Analyze: Segment customers by city; Check seasonality\nAct: Track churn monthly"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which statement best describes the main goal of a data analyst?",
+                "options": [
+                  "Training deep-learning models for production",
+                  "Managing database servers and backups",
+                  "Building data pipelines and warehouses",
+                  "Turning data into answers that support business decisions"
+                ],
+                "answer": 3,
+                "explanation": "Analysts answer business questions with data. Pipelines are a data-engineering task and production models are usually a data-science task."
+              },
+              {
+                "type": "concept",
+                "question": "In the six-phase analytics lifecycle, which phase comes immediately after Process?",
+                "options": [
+                  "Ask",
+                  "Share",
+                  "Prepare",
+                  "Analyze"
+                ],
+                "answer": 3,
+                "explanation": "The order is Ask, Prepare, Process, Analyze, Share, Act. Data must be cleaned (Process) before it is analysed."
+              },
+              {
+                "type": "scenario",
+                "question": "A stakeholder says 'Give me numbers on customer engagement.' What should you do first?",
+                "options": [
+                  "Build a dashboard with as many engagement charts as possible",
+                  "Run a machine-learning model on the user table",
+                  "Clarify how engagement is defined, for which period and what decision it supports",
+                  "Export every table that mentions customers"
+                ],
+                "answer": 2,
+                "explanation": "The Ask phase comes first: agree on the metric definition, scope and purpose before pulling data."
+              },
+              {
+                "type": "scenario",
+                "question": "While cleaning data you discover that 'region' is missing for 40% of orders, so the regional question cannot be answered as asked. What is the best response?",
+                "options": [
+                  "Silently drop the rows and continue",
+                  "Fill every missing region with the most common region",
+                  "Go back to the stakeholder, explain the gap and agree on an adjusted question or data source",
+                  "Stop the project without telling anyone"
+                ],
+                "answer": 2,
+                "explanation": "The lifecycle is iterative. Data issues found during Process can send you back to Ask or Prepare; communicating the limitation keeps the analysis trustworthy."
+              },
+              {
+                "type": "concept",
+                "question": "Which task belongs to the Act phase?",
+                "options": [
+                  "Writing a SQL query to join orders and customers",
+                  "Agreeing on the definition of an active user",
+                  "Removing duplicate customer records",
+                  "Monitoring churn after a retention campaign is launched"
+                ],
+                "answer": 3,
+                "explanation": "Act is where the business changes something and the analyst tracks the impact, which feeds the next cycle."
+              }
+            ]
+          }
+        },
+        {
+          "id": "data-analytics:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "Types of Analytics: Descriptive, Diagnostic, Predictive and Prescriptive",
+            "module": "Analytics foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Define the four types of analytics and the question each one answers.",
+              "Classify a business question into the correct type of analytics.",
+              "Explain how value and complexity increase from descriptive to prescriptive analytics.",
+              "Compute simple descriptive, diagnostic and naive predictive figures from a monthly series.",
+              "Answer interview questions that ask for examples of each type."
+            ],
+            "definition": "Analytics is commonly grouped into four types by the question it answers. Descriptive analytics tells you what happened, diagnostic analytics explains why it happened, predictive analytics estimates what is likely to happen, and prescriptive analytics recommends what to do about it. Most data-analyst work is descriptive and diagnostic, with simple predictive elements.",
+            "theory": [
+              {
+                "heading": "Descriptive analytics: what happened?",
+                "body": "Descriptive analytics summarises historical data into totals, averages, counts, rates and trends. Monthly sales reports, KPI dashboards and website traffic summaries are descriptive. It is the foundation for everything else: you cannot explain or predict a change you have not measured correctly.",
+                "points": [
+                  "Techniques: aggregation (SUM, COUNT, AVG), grouping, period comparisons, simple charts.",
+                  "Example: 'Revenue in March was ₹12.8 lakh, 5% lower than February.'",
+                  "Tools: SQL, Excel pivot tables, Power BI or Tableau dashboards."
+                ]
+              },
+              {
+                "heading": "Diagnostic analytics: why did it happen?",
+                "body": "Diagnostic analytics digs below a headline number to find its drivers. The analyst breaks the metric down by segment (region, product, channel, customer type), compares periods, checks correlations and rules out data errors. A revenue drop might be explained by fewer orders, lower order value or a mix shift towards cheaper products.",
+                "points": [
+                  "Techniques: drill-down, segmentation, variance (bridge) analysis, correlation, root-cause analysis.",
+                  "Example: 'The drop came almost entirely from Pune, where a competitor opened two stores.'",
+                  "Always check data quality first: a broken tracking tag can look like a business problem."
+                ]
+              },
+              {
+                "heading": "Predictive analytics: what is likely to happen?",
+                "body": "Predictive analytics uses historical patterns to estimate future values or the probability of an event. It ranges from a moving-average forecast in Excel to regression and machine-learning models. Analysts often build simple forecasts; complex models are usually the domain of data scientists.",
+                "points": [
+                  "Techniques: moving averages, trend lines, regression, time-series forecasting, classification models.",
+                  "Example: 'Next month's demand is expected to be about 14,100 units.'",
+                  "Predictions carry uncertainty, so present ranges or confidence where possible."
+                ]
+              },
+              {
+                "heading": "Prescriptive analytics: what should we do?",
+                "body": "Prescriptive analytics recommends an action by combining predictions with business rules, constraints and objectives. Route optimisation, dynamic pricing and inventory reorder points are prescriptive. It delivers the most value but needs the most mature data and the strongest trust from decision-makers.",
+                "points": [
+                  "Techniques: optimisation, simulation, what-if scenarios, decision rules, recommendation engines.",
+                  "Example: 'Reorder 1,200 units of SKU A by Friday to keep the stock-out risk under 5%.'",
+                  "Excel Solver and scenario analysis are entry-level prescriptive tools."
+                ]
+              },
+              {
+                "heading": "How the four types relate",
+                "body": "The four types form a ladder of increasing complexity and business value, sometimes drawn as the Gartner analytics ascendancy model. In practice they are combined: a dashboard (descriptive) shows a dip, a drill-down (diagnostic) finds the cause, a forecast (predictive) estimates next month, and a recommendation (prescriptive) proposes the fix. They are not strictly sequential; a company can run prescriptive pricing while its reporting is still weak, but that is risky.",
+                "points": [
+                  "Hindsight: descriptive and diagnostic. Foresight: predictive and prescriptive.",
+                  "Complexity, data needs and value all rise up the ladder.",
+                  "Some frameworks add a fifth type, cognitive analytics, for self-learning systems."
+                ]
+              }
+            ],
+            "example": {
+              "title": "One business problem, four types of analytics",
+              "body": "A food-delivery company sees fewer weekend orders. Descriptive: weekend orders fell 9% month on month. Diagnostic: the fall is concentrated in two cities where average delivery time rose from 32 to 47 minutes after a rider shortage. Predictive: if delivery times stay at this level, weekend orders are expected to fall another 6% next month. Prescriptive: add 80 weekend riders in those cities with a surge incentive, which the model shows is cheaper than the lost margin.",
+              "code": {
+                "language": "text",
+                "source": "Question                                  Type\nHow many weekend orders did we get?       Descriptive\nWhy did weekend orders drop?              Diagnostic\nHow many orders will we get next month?   Predictive\nHow many riders should we add, and where? Prescriptive"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Retail sales reporting",
+                "description": "Descriptive weekly sales by store and category, with diagnostic drill-downs when a store underperforms."
+              },
+              {
+                "title": "Demand forecasting",
+                "description": "Predictive forecasts of SKU demand so that procurement can plan purchases before festivals."
+              },
+              {
+                "title": "Credit risk",
+                "description": "Predictive default scores combined with prescriptive approval rules and credit limits."
+              },
+              {
+                "title": "Marketing budget allocation",
+                "description": "Diagnostic channel attribution followed by prescriptive reallocation of spend to the best channels."
+              },
+              {
+                "title": "Logistics",
+                "description": "Prescriptive route optimisation that minimises delivery time given riders, traffic and order locations."
+              }
+            ],
+            "demonstration": {
+              "description": "Use a six-month revenue series to produce one figure of each kind. The descriptive figures summarise, the diagnostic figure points to the month that needs explaining, and a naive three-month average acts as a first predictive estimate.",
+              "code": {
+                "language": "python",
+                "source": "months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']\nrevenue = [120000, 135000, 128000, 150000, 132000, 141000]\n\nprint('Total:', sum(revenue))                       # descriptive\nchanges = [(revenue[i] - revenue[i-1]) / revenue[i-1] * 100 for i in range(1, 6)]\nworst = min(range(5), key=lambda i: changes[i])\nprint('Biggest drop:', months[worst + 1], round(changes[worst], 2))  # diagnostic starting point\nprint('Forecast:', sum(revenue[-3:]) / 3)            # naive predictive"
+              },
+              "output": "Total: 806000\nBiggest drop: May -12.0\nForecast: 141000.0"
+            },
+            "takeaways": [
+              "Descriptive = what happened; diagnostic = why; predictive = what will happen; prescriptive = what to do.",
+              "Value and complexity increase from descriptive to prescriptive.",
+              "Diagnostic work relies on segmentation and comparison, and starts by ruling out data errors.",
+              "Predictions are estimates with uncertainty; communicate ranges, not false precision.",
+              "Real analyses combine several types to move from a number to a decision."
+            ],
+            "interview": [
+              {
+                "question": "What are the four types of analytics?",
+                "answer": "Descriptive (what happened), diagnostic (why it happened), predictive (what is likely to happen) and prescriptive (what action to take).",
+                "explanation": "Pair each type with its guiding question and one example. That shows understanding rather than recall of four words."
+              },
+              {
+                "question": "Give an example of diagnostic analytics from a project or a realistic scenario.",
+                "answer": "Monthly app sign-ups fell 15%. I split sign-ups by acquisition channel and device and found the drop came only from Android users arriving via paid ads, which coincided with a broken deep link in a new app release. Fixing the link restored sign-ups.",
+                "explanation": "A strong answer shows a structured drill-down (by channel, device, region, time) and a verified root cause, not just a guess."
+              },
+              {
+                "question": "Is a moving-average forecast predictive analytics? What are its limits?",
+                "answer": "Yes, it is a simple predictive method because it estimates a future value from historical data. It lags behind trends, ignores seasonality and external drivers, and gives no uncertainty range on its own.",
+                "explanation": "Interviewers like candidates who know simple methods and their limitations, and who can say when a more robust model would be needed."
+              },
+              {
+                "question": "Which type of analytics adds the most value, and why don't companies always start there?",
+                "answer": "Prescriptive analytics usually adds the most value because it directly recommends actions. Companies rarely start there because it depends on reliable descriptive data, trusted predictions, clear objectives and constraints, and stakeholder buy-in.",
+                "explanation": "Mention data maturity: without trustworthy descriptive reporting, recommendations cannot be validated or trusted."
+              },
+              {
+                "question": "A dashboard shows conversion dropped yesterday. How do you move from descriptive to diagnostic?",
+                "answer": "First verify the data (tracking, pipeline delays, definition changes). Then break conversion into funnel steps and segments such as device, browser, channel and geography to locate where the drop happens, and check for releases, outages, price changes or campaign changes on that date.",
+                "explanation": "Ruling out data problems first and then decomposing the metric is exactly what a senior analyst does; say both."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Monthly revenue: describe, diagnose, forecast",
+              "difficulty": "Basic",
+              "objective": "Produce descriptive, diagnostic and naive predictive figures from one time series.",
+              "statement": "Read monthly revenue figures in time order. Print the total and the average; the best month (first one if tied); the month with the largest percentage drop compared with the previous month (ignore months whose previous value is 0); and a naive forecast for next month equal to the average of the last three months (or of all months if fewer than three).",
+              "language": "python",
+              "input_format": "First line: n (at least 1). Next n lines: month_name amount.",
+              "output_format": "Total: <x>\nAverage: <x>\nBest month: <month> (<amount>)\nBiggest drop: <month> (<pct>%)  or  Biggest drop: none\nForecast next month: <x>\nAll numbers use exactly 2 decimal places; the percentage is negative.",
+              "example": {
+                "input": "6\nJan 120000\nFeb 135000\nMar 128000\nApr 150000\nMay 132000\nJun 141000\n",
+                "output": "Total: 806000.00\nAverage: 134333.33\nBest month: Apr (150000.00)\nBiggest drop: May (-12.00%)\nForecast next month: 141000.00"
+              },
+              "constraints": [
+                "1 <= n <= 60",
+                "Amounts are non-negative numbers and may contain decimals.",
+                "Print 'none' when no month is lower than its previous month."
+              ],
+              "starter": "n = int(input())\nmonths, values = [], []\nfor _ in range(n):\n    name, amount = input().split()\n    months.append(name)\n    values.append(float(amount))\n\n# TODO: total, average, best month, biggest drop, forecast\n",
+              "solution": "n = int(input())\nmonths, values = [], []\nfor _ in range(n):\n    name, amount = input().split()\n    months.append(name)\n    values.append(float(amount))\n\ntotal = sum(values)\nprint(f'Total: {total:.2f}')\nprint(f'Average: {total / n:.2f}')\n\nbest = max(range(n), key=lambda i: (values[i], -i))\nprint(f'Best month: {months[best]} ({values[best]:.2f})')\n\nworst_i, worst_pct = None, 0.0\nfor i in range(1, n):\n    prev = values[i - 1]\n    if prev == 0:\n        continue\n    pct = (values[i] - prev) / prev * 100\n    if pct < worst_pct:\n        worst_i, worst_pct = i, pct\nif worst_i is None:\n    print('Biggest drop: none')\nelse:\n    print(f'Biggest drop: {months[worst_i]} ({worst_pct:.2f}%)')\n\nlast = values[-3:]\nprint(f'Forecast next month: {sum(last) / len(last):.2f}')\n",
+              "explanation": [
+                "Descriptive: the total and average summarise the whole period.",
+                "Find the best month with max(); the key (value, -index) makes the earliest month win a tie.",
+                "Diagnostic starting point: compute each month-over-month percentage change and keep the most negative one, skipping a zero previous value to avoid division by zero.",
+                "Predictive: a naive forecast averages the last three values; slicing values[-3:] also works when there are fewer than three months.",
+                "Format every number with :.2f so the output is deterministic."
+              ],
+              "tests": [
+                {
+                  "input": "6\nJan 120000\nFeb 135000\nMar 128000\nApr 150000\nMay 132000\nJun 141000\n",
+                  "output": "Total: 806000.00\nAverage: 134333.33\nBest month: Apr (150000.00)\nBiggest drop: May (-12.00%)\nForecast next month: 141000.00"
+                },
+                {
+                  "input": "1\nJan 5000\n",
+                  "output": "Total: 5000.00\nAverage: 5000.00\nBest month: Jan (5000.00)\nBiggest drop: none\nForecast next month: 5000.00"
+                },
+                {
+                  "input": "4\nJan 100\nFeb 200\nMar 300\nApr 400\n",
+                  "output": "Total: 1000.00\nAverage: 250.00\nBest month: Apr (400.00)\nBiggest drop: none\nForecast next month: 300.00"
+                },
+                {
+                  "input": "4\nJan 1000\nFeb 800\nMar 600\nApr 300\n",
+                  "output": "Total: 2700.00\nAverage: 675.00\nBest month: Jan (1000.00)\nBiggest drop: Apr (-50.00%)\nForecast next month: 566.67"
+                },
+                {
+                  "input": "3\nJan 0\nFeb 500\nMar 400\n",
+                  "output": "Total: 900.00\nAverage: 300.00\nBest month: Feb (500.00)\nBiggest drop: Mar (-20.00%)\nForecast next month: 300.00"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which question does diagnostic analytics answer?",
+                "options": [
+                  "What will happen next quarter?",
+                  "What should we do next?",
+                  "Why did it happen?",
+                  "What happened last month?"
+                ],
+                "answer": 2,
+                "explanation": "Diagnostic analytics explains the causes behind a result, typically through drill-down and segmentation."
+              },
+              {
+                "type": "scenario",
+                "question": "A bank recommends a credit limit for each applicant using a risk score and business rules. Which type of analytics is this?",
+                "options": [
+                  "Diagnostic",
+                  "Exploratory only",
+                  "Prescriptive",
+                  "Descriptive"
+                ],
+                "answer": 2,
+                "explanation": "Recommending a specific action (the credit limit) based on predictions and constraints is prescriptive analytics."
+              },
+              {
+                "type": "scenario",
+                "question": "A weekly report shows total orders, average order value and top products for the last seven days. What type of analytics is it?",
+                "options": [
+                  "Predictive",
+                  "Prescriptive",
+                  "Diagnostic",
+                  "Descriptive"
+                ],
+                "answer": 3,
+                "explanation": "Summarising what already happened is descriptive analytics."
+              },
+              {
+                "type": "output",
+                "question": "Revenue for three months is 200, 150 and 180. What is the percentage change from the first to the second month?",
+                "options": [
+                  "+20.00%",
+                  "-16.67%",
+                  "-33.33%",
+                  "-25.00%"
+                ],
+                "answer": 3,
+                "explanation": "(150 - 200) / 200 × 100 = -25%. Percentage change always divides by the earlier (base) value."
+              },
+              {
+                "type": "concept",
+                "question": "Why should an analyst check data quality before starting a diagnostic investigation?",
+                "options": [
+                  "Because diagnostic analytics does not use real data",
+                  "Because predictive models require it by law",
+                  "Because a tracking or pipeline error can look like a real business change",
+                  "Because data quality only matters for prescriptive analytics"
+                ],
+                "answer": 2,
+                "explanation": "Many 'drops' are caused by broken tracking, late data loads or definition changes. Ruling these out first prevents chasing a false cause."
+              }
+            ]
+          }
+        },
+        {
+          "id": "data-analytics:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Data Quality and Data Cleaning Fundamentals",
+            "module": "Analytics foundations",
+            "level": "Beginner",
+            "objectives": [
+              "List the dimensions of data quality: accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+              "Identify common data problems such as duplicates, missing values, inconsistent labels and wrong data types.",
+              "Choose an appropriate treatment for missing values and outliers and justify it.",
+              "Write a repeatable cleaning routine that documents every change.",
+              "Answer interview questions about how you clean and validate data."
+            ],
+            "definition": "Data cleaning (also called data cleansing or wrangling) is the process of detecting and fixing errors, inconsistencies and gaps in a dataset so that analysis produces correct results. It includes removing duplicates, standardising formats, handling missing values, correcting data types and validating values against business rules.",
+            "theory": [
+              {
+                "heading": "Why data cleaning matters",
+                "body": "Every number an analyst reports inherits the errors of the data underneath it. A duplicated order inflates revenue, a city spelled three ways splits one region into three bars, and a text-typed number silently drops out of a SUM. Cleaning is not glamorous, but it is where trust is earned; interviewers often say 'garbage in, garbage out' and expect you to explain how you prevent it.",
+                "points": [
+                  "Analysts commonly spend a large share of project time preparing data.",
+                  "Cleaning errors are hard to spot later because the dashboard still 'looks' fine.",
+                  "Documented, repeatable cleaning lets others reproduce and audit your numbers."
+                ]
+              },
+              {
+                "heading": "Dimensions of data quality",
+                "body": "Data quality is usually judged along a few standard dimensions. Naming them in an interview shows you can check data systematically instead of fixing problems at random.",
+                "points": [
+                  "Accuracy: values reflect reality (a customer's age is truly 29).",
+                  "Completeness: required fields are present (no missing order dates).",
+                  "Consistency: the same thing is recorded the same way everywhere ('Bengaluru' vs 'Bangalore').",
+                  "Validity: values follow rules and formats (age between 0 and 120, valid email pattern).",
+                  "Uniqueness: no unintended duplicate records.",
+                  "Timeliness: data is up to date enough for the decision."
+                ]
+              },
+              {
+                "heading": "Common problems and how to fix them",
+                "body": "Most messy datasets suffer from the same handful of issues. The fix depends on the cause, so investigate before deleting anything. For example, two rows with the same order ID might be a true duplicate, or a legitimate split shipment.",
+                "points": [
+                  "Extra spaces and inconsistent case: TRIM and PROPER/UPPER in Excel, TRIM/UPPER in SQL, strip()/title() in Python.",
+                  "Duplicates: define the business key first (order_id, or customer_id + date), then keep one row.",
+                  "Wrong types: numbers or dates stored as text; convert explicitly and flag failures.",
+                  "Inconsistent categories: map variants to one standard value with a lookup table.",
+                  "Invalid values: negative quantities, ages of 200, future dates; flag or correct using business rules."
+                ]
+              },
+              {
+                "heading": "Handling missing values",
+                "body": "There is no single right way to handle missing data. First ask why it is missing: not collected, not applicable, or lost in a pipeline. Then choose a treatment and state its effect on the results. Deleting rows is simple but can bias the analysis if the missing rows are different from the rest.",
+                "points": [
+                  "Delete rows: acceptable when few rows are affected and missingness is random.",
+                  "Impute: fill with median (robust to outliers), mean, mode, or a group-wise value.",
+                  "Flag: keep the row and mark the value as unknown, often the most honest choice for reporting.",
+                  "Never fill with zero unless zero is truly the correct value; it distorts averages."
+                ]
+              },
+              {
+                "heading": "Outliers and validation",
+                "body": "An outlier is a value far from the rest. It might be an error (an extra zero typed in a price) or a genuine extreme (a bulk corporate order). Detect outliers with rules such as the IQR method or business limits, investigate them, and decide whether to correct, exclude or keep them. After cleaning, validate: compare row counts and totals with the source system or a finance report.",
+                "points": [
+                  "Reconcile totals with a trusted source after cleaning.",
+                  "Keep the raw data untouched; clean into a new table or sheet.",
+                  "Log every rule applied, with counts of affected rows."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Cleaning a customer list",
+              "body": "A CRM export has names in mixed case with extra spaces, the same customer entered twice, a row without an ID, and ages such as 'abc' and 135. The analyst trims and standardises text, removes the repeated ID while keeping the first entry, drops the row without a key, and marks invalid ages as NA instead of guessing. The cleaning log records how many rows each rule touched, so the marketing team knows the final list size and why.",
+              "code": {
+                "language": "text",
+                "source": "Raw:   101, rahul sharma ,MUMBAI,29\nClean: 101,Rahul Sharma,Mumbai,29\n\nRaw:   103,amit kumar,  new delhi ,135\nClean: 103,Amit Kumar,New Delhi,NA   (age outside 0–120)\n\nExcel equivalents: =PROPER(TRIM(B2))   Data > Remove Duplicates   =IF(AND(ISNUMBER(D2),D2>=0,D2<=120),D2,\"NA\")"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "CRM and marketing lists",
+                "description": "De-duplicate customers and standardise emails and phone numbers before a campaign to avoid double messaging."
+              },
+              {
+                "title": "Financial reporting",
+                "description": "Reconcile transaction totals with the ledger and remove test or reversed transactions."
+              },
+              {
+                "title": "Survey analysis",
+                "description": "Handle skipped questions, standardise free-text answers and remove speeders or duplicate submissions."
+              },
+              {
+                "title": "Sales and inventory",
+                "description": "Fix product codes stored as text, unify units of measure and flag negative stock values."
+              },
+              {
+                "title": "HR analytics",
+                "description": "Standardise department names and job titles across systems before headcount and attrition reports."
+              }
+            ],
+            "demonstration": {
+              "description": "Profile a column before cleaning it. Counting distinct raw values reveals that one city has been recorded four different ways; a simple standardisation collapses them into one category.",
+              "code": {
+                "language": "python",
+                "source": "from collections import Counter\ncities = ['Mumbai', ' mumbai', 'MUMBAI ', 'Mumbai', 'Pune', 'pune ']\nprint(Counter(cities))\nclean = [c.strip().title() for c in cities]\nprint(Counter(clean))"
+              },
+              "output": "Counter({'Mumbai': 2, ' mumbai': 1, 'MUMBAI ': 1, 'Pune': 1, 'pune ': 1})\nCounter({'Mumbai': 4, 'Pune': 2})"
+            },
+            "takeaways": [
+              "Clean data is the foundation of trustworthy analysis; errors propagate silently.",
+              "Check quality along accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+              "Define the business key before removing duplicates.",
+              "Choose missing-value treatments deliberately and state their effect; do not default to zero.",
+              "Investigate outliers before removing them; some are real and important.",
+              "Keep raw data intact, log every rule and reconcile totals after cleaning."
+            ],
+            "interview": [
+              {
+                "question": "What is data cleaning and why is it important?",
+                "answer": "Data cleaning is detecting and fixing errors such as duplicates, missing values, inconsistent formats and invalid values. It matters because analysis and decisions are only as reliable as the data behind them.",
+                "explanation": "Back it with a concrete risk, for example duplicate orders inflating revenue, to show you understand the business impact."
+              },
+              {
+                "question": "How do you handle missing values?",
+                "answer": "I first find out why values are missing and how many. Then I choose: delete rows if few and random, impute with median, mode or a group value if the column is needed, or keep and flag them as unknown. I document the choice and check how it changes the results.",
+                "explanation": "Interviewers look for 'it depends' backed by reasoning. Mentioning median over mean for skewed data is a good detail."
+              },
+              {
+                "question": "How would you identify and remove duplicates?",
+                "answer": "Define what makes a record unique, such as order_id or customer email plus phone. In SQL, use GROUP BY on that key with HAVING COUNT(*) > 1 to find duplicates, or ROW_NUMBER() partitioned by the key to keep one row. In Excel, use Remove Duplicates or COUNTIF to flag them.",
+                "explanation": "Stress defining the key first and checking whether 'duplicates' are actually legitimate repeat events."
+              },
+              {
+                "question": "What are the main dimensions of data quality?",
+                "answer": "Accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+                "explanation": "Give a one-line example for two or three of them; it proves you can apply the framework."
+              },
+              {
+                "question": "You find an order of ₹9,99,999 when typical orders are around ₹1,500. What do you do?",
+                "answer": "I would not delete it immediately. I would check the order details and source system to see whether it is a data-entry error, a test transaction or a genuine bulk order. If it is an error, I correct or exclude it and log the change; if genuine, I keep it but may report medians or show results with and without it so one order does not distort averages.",
+                "explanation": "This tests judgement: investigate, decide with business context, and be transparent about the impact on metrics."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Clean a messy customer export",
+              "difficulty": "Basic",
+              "objective": "Apply standard cleaning rules (trim, standardise case, de-duplicate, validate) and report what changed.",
+              "statement": "Read a CSV with columns id,name,city,age. Clean it as follows: trim every field; collapse repeated inner spaces in name and city and convert them to title case; drop rows whose id is empty; drop rows whose id has already been seen (keep the first); replace an age that is not a whole number from 0 to 120 (including an empty age) with NA. Print the cleaned CSV and a cleaning log.",
+              "language": "python",
+              "input_format": "First line: the header id,name,city,age. Following lines: data rows with four comma-separated fields.",
+              "output_format": "The header, then each kept row as id,name,city,age. Then four log lines:\nRows kept: <k>\nDuplicates removed: <d>\nMissing ids removed: <m>\nMissing or invalid ages: <a>",
+              "example": {
+                "input": "id,name,city,age\n101, rahul sharma ,MUMBAI,29\n102,PRIYA  NAIR,pune,abc\n101,Rahul Sharma,Mumbai,29\n,Unknown,Delhi,40\n103,amit kumar,  new delhi ,135\n104,sneha rao,Bengaluru,\n",
+                "output": "id,name,city,age\n101,Rahul Sharma,Mumbai,29\n102,Priya Nair,Pune,NA\n103,Amit Kumar,New Delhi,NA\n104,Sneha Rao,Bengaluru,NA\nRows kept: 4\nDuplicates removed: 1\nMissing ids removed: 1\nMissing or invalid ages: 3"
+              },
+              "constraints": [
+                "Every data row has exactly four fields; fields contain no commas.",
+                "A valid age is made only of digits and lies between 0 and 120 inclusive; print it without leading zeros.",
+                "Ages are checked only for rows that are kept.",
+                "Ignore completely blank lines."
+              ],
+              "starter": "import sys\nimport csv\n\nlines = [l for l in sys.stdin.read().splitlines() if l.strip()]\nrows = list(csv.reader(lines))\nheader, data = rows[0], rows[1:]\n\n# TODO: clean each row, track seen ids, count every rule\n",
+              "solution": "import sys\nimport csv\n\nlines = [l for l in sys.stdin.read().splitlines() if l.strip()]\nrows = list(csv.reader(lines))\nheader, data = rows[0], rows[1:]\n\ndef tidy(text):\n    return ' '.join(text.split()).title()\n\nseen = set()\nkept = []\nduplicates = missing_ids = bad_ages = 0\nfor raw in data:\n    rid, name, city, age = [field.strip() for field in raw]\n    if not rid:\n        missing_ids += 1\n        continue\n    if rid in seen:\n        duplicates += 1\n        continue\n    seen.add(rid)\n    if age.isdigit() and 0 <= int(age) <= 120:\n        age = str(int(age))\n    else:\n        age = 'NA'\n        bad_ages += 1\n    kept.append([rid, tidy(name), tidy(city), age])\n\nprint(','.join(header))\nfor row in kept:\n    print(','.join(row))\nprint(f'Rows kept: {len(kept)}')\nprint(f'Duplicates removed: {duplicates}')\nprint(f'Missing ids removed: {missing_ids}')\nprint(f'Missing or invalid ages: {bad_ages}')\n",
+              "explanation": [
+                "Parse the input with the csv module rather than splitting by hand, which is safer for real CSV files.",
+                "Trim every field first so ' 101' and '101' are treated as the same id.",
+                "Apply the rules in a sensible order: a row without a key cannot be de-duplicated, so drop it first; then drop repeated ids, keeping the first occurrence.",
+                "Standardise text with ' '.join(text.split()) to collapse inner spaces, then title() for consistent case.",
+                "Validate age with isdigit() (which rejects '-3', 'abc' and empty strings) plus a range check, and replace failures with NA instead of guessing.",
+                "Print a log of how many rows each rule affected, which is what a stakeholder or reviewer needs to trust the output."
+              ],
+              "tests": [
+                {
+                  "input": "id,name,city,age\n101, rahul sharma ,MUMBAI,29\n102,PRIYA  NAIR,pune,abc\n101,Rahul Sharma,Mumbai,29\n,Unknown,Delhi,40\n103,amit kumar,  new delhi ,135\n104,sneha rao,Bengaluru,\n",
+                  "output": "id,name,city,age\n101,Rahul Sharma,Mumbai,29\n102,Priya Nair,Pune,NA\n103,Amit Kumar,New Delhi,NA\n104,Sneha Rao,Bengaluru,NA\nRows kept: 4\nDuplicates removed: 1\nMissing ids removed: 1\nMissing or invalid ages: 3"
+                },
+                {
+                  "input": "id,name,city,age\n1,anita,delhi,30\n",
+                  "output": "id,name,city,age\n1,Anita,Delhi,30\nRows kept: 1\nDuplicates removed: 0\nMissing ids removed: 0\nMissing or invalid ages: 0"
+                },
+                {
+                  "input": "id,name,city,age\n",
+                  "output": "id,name,city,age\nRows kept: 0\nDuplicates removed: 0\nMissing ids removed: 0\nMissing or invalid ages: 0"
+                },
+                {
+                  "input": "id,name,city,age\n7,ravi,goa,0\n 7 ,Ravi,Goa,0\n8,o'brien kate,chennai,120\n",
+                  "output": "id,name,city,age\n7,Ravi,Goa,0\n8,O'Brien Kate,Chennai,120\nRows kept: 2\nDuplicates removed: 1\nMissing ids removed: 0\nMissing or invalid ages: 0"
+                },
+                {
+                  "input": "id,name,city,age\n1,a b,x,-3\n2,c d,y,045 \n3,e f,z,121\n",
+                  "output": "id,name,city,age\n1,A B,X,NA\n2,C D,Y,45\n3,E F,Z,NA\nRows kept: 3\nDuplicates removed: 0\nMissing ids removed: 0\nMissing or invalid ages: 2"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "'Bengaluru', 'Bangalore' and 'BLR' all appear in the city column for the same city. Which data-quality dimension is affected?",
+                "options": [
+                  "Uniqueness",
+                  "Accuracy of timestamps",
+                  "Consistency",
+                  "Timeliness"
+                ],
+                "answer": 2,
+                "explanation": "The same real-world value is recorded in different ways, which is a consistency problem. Map the variants to one standard value."
+              },
+              {
+                "type": "scenario",
+                "question": "Income is missing for 3% of customers and the income distribution is highly skewed. If you must impute, which value is usually the safest choice?",
+                "options": [
+                  "Zero",
+                  "The maximum income",
+                  "The mean income",
+                  "The median income"
+                ],
+                "answer": 3,
+                "explanation": "The median is robust to skew and extreme values. Zero or the maximum would distort the distribution, and the mean is pulled by outliers."
+              },
+              {
+                "type": "output",
+                "question": "What does this Python expression return?",
+                "code": "' '.join('  priya   NAIR '.split()).title()",
+                "options": [
+                  "'PRIYA NAIR'",
+                  "'priya nair'",
+                  "'  Priya   Nair '",
+                  "'Priya Nair'"
+                ],
+                "answer": 3,
+                "explanation": "split() with no argument splits on any run of whitespace and drops the ends, join puts single spaces back, and title() capitalises each word."
+              },
+              {
+                "type": "scenario",
+                "question": "Two rows share order_id 5531 with identical amounts but different shipment numbers. What should you do before removing one?",
+                "options": [
+                  "Delete both rows to be safe",
+                  "Keep both without checking",
+                  "Check whether the business allows split shipments under one order before treating them as duplicates",
+                  "Replace the amount with zero in one row"
+                ],
+                "answer": 2,
+                "explanation": "Duplicates must be judged against the business key and process. Split shipments may be legitimate, in which case aggregation rules matter more than deletion."
+              },
+              {
+                "type": "concept",
+                "question": "Which practice makes a cleaning process auditable?",
+                "options": [
+                  "Cleaning differently each time based on intuition",
+                  "Removing all rows that contain any blank cell",
+                  "Keeping the raw data unchanged and logging every rule with the number of rows affected",
+                  "Editing the source file directly to save space"
+                ],
+                "answer": 2,
+                "explanation": "Preserving raw data and logging rules lets anyone reproduce the cleaned dataset and understand its differences from the source."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "data-analytics:question:1:1",
+          "day": 1,
+          "topic": "The Data Analyst Role and the Analytics Lifecycle",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does a data analyst do?",
+          "answer": "A data analyst gathers, cleans and analyses data to answer business questions, then communicates findings through reports, dashboards and recommendations so that teams can make better decisions.",
+          "explanation": "Mention the full flow from question to decision and name the tools (SQL, Excel, a BI tool). Ending with 'decisions' shows you understand the purpose, not just the tasks.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:1:2",
+          "day": 1,
+          "topic": "The Data Analyst Role and the Analytics Lifecycle",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How is a data analyst different from a data scientist?",
+          "answer": "An analyst mainly explains what happened and why using queries, aggregation and visualisation. A data scientist focuses more on predictive models, experimentation and algorithms. Both need clean data and business understanding, and the line between them varies by company.",
+          "explanation": "Give a concrete contrast, for example analysing last quarter's churn versus building a churn-prediction model, and acknowledge the overlap.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:1:3",
+          "day": 1,
+          "topic": "The Data Analyst Role and the Analytics Lifecycle",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Walk me through the steps you follow in an analysis project.",
+          "answer": "I clarify the question and success metric with stakeholders, identify and access the data, clean and validate it, explore and analyse it, share findings with a clear recommendation, and then track what happens after the business acts.",
+          "explanation": "Structure the answer with the lifecycle and add one example from a project. Mentioning validation (checking totals against a trusted source) is a strong signal.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:1:4",
+          "day": 1,
+          "topic": "The Data Analyst Role and the Analytics Lifecycle",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "A manager asks you to 'look into falling sales'. What do you do first?",
+          "answer": "I ask clarifying questions: which product or region, compared with which period, how sales is defined (gross or net of returns), and what decision depends on the answer. Then I restate the problem as a specific, measurable question and confirm it before pulling data.",
+          "explanation": "Interviewers want to see that you do not jump straight into SQL. Scoping and agreeing on metric definitions prevents rework.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:1:5",
+          "day": 1,
+          "topic": "The Data Analyst Role and the Analytics Lifecycle",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Which phase of the lifecycle usually takes the most time, and why?",
+          "answer": "Preparing and processing data usually takes the most time, because real data has duplicates, missing values, inconsistent formats and undocumented business rules that must be fixed and verified before analysis can be trusted.",
+          "explanation": "A strong answer explains the consequence: if cleaning is rushed, every chart and number downstream is wrong, so time spent here protects credibility.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:2:1",
+          "day": 2,
+          "topic": "Types of Analytics: Descriptive, Diagnostic, Predictive and Prescriptive",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are the four types of analytics?",
+          "answer": "Descriptive (what happened), diagnostic (why it happened), predictive (what is likely to happen) and prescriptive (what action to take).",
+          "explanation": "Pair each type with its guiding question and one example. That shows understanding rather than recall of four words.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:2:2",
+          "day": 2,
+          "topic": "Types of Analytics: Descriptive, Diagnostic, Predictive and Prescriptive",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Give an example of diagnostic analytics from a project or a realistic scenario.",
+          "answer": "Monthly app sign-ups fell 15%. I split sign-ups by acquisition channel and device and found the drop came only from Android users arriving via paid ads, which coincided with a broken deep link in a new app release. Fixing the link restored sign-ups.",
+          "explanation": "A strong answer shows a structured drill-down (by channel, device, region, time) and a verified root cause, not just a guess.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:2:3",
+          "day": 2,
+          "topic": "Types of Analytics: Descriptive, Diagnostic, Predictive and Prescriptive",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Is a moving-average forecast predictive analytics? What are its limits?",
+          "answer": "Yes, it is a simple predictive method because it estimates a future value from historical data. It lags behind trends, ignores seasonality and external drivers, and gives no uncertainty range on its own.",
+          "explanation": "Interviewers like candidates who know simple methods and their limitations, and who can say when a more robust model would be needed.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:2:4",
+          "day": 2,
+          "topic": "Types of Analytics: Descriptive, Diagnostic, Predictive and Prescriptive",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Which type of analytics adds the most value, and why don't companies always start there?",
+          "answer": "Prescriptive analytics usually adds the most value because it directly recommends actions. Companies rarely start there because it depends on reliable descriptive data, trusted predictions, clear objectives and constraints, and stakeholder buy-in.",
+          "explanation": "Mention data maturity: without trustworthy descriptive reporting, recommendations cannot be validated or trusted.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:2:5",
+          "day": 2,
+          "topic": "Types of Analytics: Descriptive, Diagnostic, Predictive and Prescriptive",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "A dashboard shows conversion dropped yesterday. How do you move from descriptive to diagnostic?",
+          "answer": "First verify the data (tracking, pipeline delays, definition changes). Then break conversion into funnel steps and segments such as device, browser, channel and geography to locate where the drop happens, and check for releases, outages, price changes or campaign changes on that date.",
+          "explanation": "Ruling out data problems first and then decomposing the metric is exactly what a senior analyst does; say both.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:3:1",
+          "day": 3,
+          "topic": "Data Quality and Data Cleaning Fundamentals",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is data cleaning and why is it important?",
+          "answer": "Data cleaning is detecting and fixing errors such as duplicates, missing values, inconsistent formats and invalid values. It matters because analysis and decisions are only as reliable as the data behind them.",
+          "explanation": "Back it with a concrete risk, for example duplicate orders inflating revenue, to show you understand the business impact.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:3:2",
+          "day": 3,
+          "topic": "Data Quality and Data Cleaning Fundamentals",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How do you handle missing values?",
+          "answer": "I first find out why values are missing and how many. Then I choose: delete rows if few and random, impute with median, mode or a group value if the column is needed, or keep and flag them as unknown. I document the choice and check how it changes the results.",
+          "explanation": "Interviewers look for 'it depends' backed by reasoning. Mentioning median over mean for skewed data is a good detail.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:3:3",
+          "day": 3,
+          "topic": "Data Quality and Data Cleaning Fundamentals",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How would you identify and remove duplicates?",
+          "answer": "Define what makes a record unique, such as order_id or customer email plus phone. In SQL, use GROUP BY on that key with HAVING COUNT(*) > 1 to find duplicates, or ROW_NUMBER() partitioned by the key to keep one row. In Excel, use Remove Duplicates or COUNTIF to flag them.",
+          "explanation": "Stress defining the key first and checking whether 'duplicates' are actually legitimate repeat events.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:3:4",
+          "day": 3,
+          "topic": "Data Quality and Data Cleaning Fundamentals",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are the main dimensions of data quality?",
+          "answer": "Accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+          "explanation": "Give a one-line example for two or three of them; it proves you can apply the framework.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "data-analytics:question:3:5",
+          "day": 3,
+          "topic": "Data Quality and Data Cleaning Fundamentals",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "You find an order of ₹9,99,999 when typical orders are around ₹1,500. What do you do?",
+          "answer": "I would not delete it immediately. I would check the order details and source system to see whether it is a data-entry error, a test transaction or a genuine bulk order. If it is an error, I correct or exclude it and log the change; if genuine, I keep it but may report medians or show results with and without it so one order does not distort averages.",
+          "explanation": "This tests judgement: investigate, decide with business context, and be transparent about the impact on metrics.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "data-analytics:assignment:1",
+          "title": "The Data Analyst Role and the Analytics Lifecycle",
+          "available": true,
+          "focus": "A data analyst collects, cleans and analyses data to answer business questions and support decisions. The analytics lifecycle is the repeatable sequence an analyst follows: understand the question (Ask), gather data (Prepare), clean it (Process), explore and calculate (Analyze), communicate the findings (Share) and help the business act on them (Act).",
+          "objectives": [
+            "Describe what a data analyst does day to day and who they work with.",
+            "Distinguish a data analyst from a data scientist, data engineer and BI developer.",
+            "Explain each phase of the analytics lifecycle: Ask, Prepare, Process, Analyze, Share, Act.",
+            "Turn a vague business request into a clear, measurable analysis question.",
+            "Answer the opening 'tell me about the role' questions in a Data Analyst interview."
+          ],
+          "assignment": "An analyst has a list of tasks tagged with a lifecycle phase. Print the tasks grouped by phase in lifecycle order: Ask, Prepare, Process, Analyze, Share, Act. Phase names are case-insensitive, and the British spelling 'Analyse' means Analyze. Within a phase, keep the input order. A line whose phase is not one of the six, or whose task is empty, is unrecognised.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "A data analyst turns data into answers that change business decisions.",
+            "The lifecycle is Ask, Prepare, Process, Analyze, Share, Act, and it loops back on itself.",
+            "The Ask phase decides whether the whole analysis is useful; agree on metrics and scope first.",
+            "Data cleaning usually consumes the largest share of an analyst's time.",
+            "Analysts, scientists and engineers overlap but have different primary goals.",
+            "Interviewers test SQL, Excel, BI, statistics and communication because the role needs all five."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "data-analytics:assignment:2",
+          "title": "Types of Analytics: Descriptive, Diagnostic, Predictive and Prescriptive",
+          "available": true,
+          "focus": "Analytics is commonly grouped into four types by the question it answers. Descriptive analytics tells you what happened, diagnostic analytics explains why it happened, predictive analytics estimates what is likely to happen, and prescriptive analytics recommends what to do about it. Most data-analyst work is descriptive and diagnostic, with simple predictive elements.",
+          "objectives": [
+            "Define the four types of analytics and the question each one answers.",
+            "Classify a business question into the correct type of analytics.",
+            "Explain how value and complexity increase from descriptive to prescriptive analytics.",
+            "Compute simple descriptive, diagnostic and naive predictive figures from a monthly series.",
+            "Answer interview questions that ask for examples of each type."
+          ],
+          "assignment": "Read monthly revenue figures in time order. Print the total and the average; the best month (first one if tied); the month with the largest percentage drop compared with the previous month (ignore months whose previous value is 0); and a naive forecast for next month equal to the average of the last three months (or of all months if fewer than three).",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Descriptive = what happened; diagnostic = why; predictive = what will happen; prescriptive = what to do.",
+            "Value and complexity increase from descriptive to prescriptive.",
+            "Diagnostic work relies on segmentation and comparison, and starts by ruling out data errors.",
+            "Predictions are estimates with uncertainty; communicate ranges, not false precision.",
+            "Real analyses combine several types to move from a number to a decision."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "data-analytics:assignment:3",
+          "title": "Data Quality and Data Cleaning Fundamentals",
+          "available": true,
+          "focus": "Data cleaning (also called data cleansing or wrangling) is the process of detecting and fixing errors, inconsistencies and gaps in a dataset so that analysis produces correct results. It includes removing duplicates, standardising formats, handling missing values, correcting data types and validating values against business rules.",
+          "objectives": [
+            "List the dimensions of data quality: accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+            "Identify common data problems such as duplicates, missing values, inconsistent labels and wrong data types.",
+            "Choose an appropriate treatment for missing values and outliers and justify it.",
+            "Write a repeatable cleaning routine that documents every change.",
+            "Answer interview questions about how you clean and validate data."
+          ],
+          "assignment": "Read a CSV with columns id,name,city,age. Clean it as follows: trim every field; collapse repeated inner spaces in name and city and convert them to title case; drop rows whose id is empty; drop rows whose id has already been seen (keep the first); replace an age that is not a whole number from 0 to 120 (including an empty age) with NA. Print the cleaned CSV and a cleaning log.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Clean data is the foundation of trustworthy analysis; errors propagate silently.",
+            "Check quality along accuracy, completeness, consistency, validity, uniqueness and timeliness.",
+            "Define the business key before removing duplicates.",
+            "Choose missing-value treatments deliberately and state their effect; do not default to zero.",
+            "Investigate outliers before removing them; some are real and important.",
+            "Keep raw data intact, log every rule and reconcile totals after cleaning."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "data-analytics:assignment:4",
+          "title": "Duplicate detection for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain duplicate detection for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on duplicate detection for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete duplicate detection for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 5,
+          "id": "data-analytics:assignment:5",
+          "title": "Data quality rules for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain data quality rules for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on data quality rules for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete data quality rules for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "data-analytics:assignment:6",
+          "title": "Descriptive statistics for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain descriptive statistics for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on descriptive statistics for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete descriptive statistics for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "data-analytics:assignment:7",
+          "title": "Distribution shape for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain distribution shape for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on distribution shape for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete distribution shape for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "data-analytics:article:1",
+          "data-analytics:article:2",
+          "data-analytics:article:3"
+        ],
+        "questions": [
+          "data-analytics:question:1:1",
+          "data-analytics:question:1:2",
+          "data-analytics:question:1:3",
+          "data-analytics:question:1:4",
+          "data-analytics:question:1:5",
+          "data-analytics:question:2:1",
+          "data-analytics:question:2:2",
+          "data-analytics:question:2:3",
+          "data-analytics:question:2:4",
+          "data-analytics:question:2:5",
+          "data-analytics:question:3:1",
+          "data-analytics:question:3:2",
+          "data-analytics:question:3:3",
+          "data-analytics:question:3:4",
+          "data-analytics:question:3:5"
+        ],
+        "coding": [
+          "data-analytics:coding:1",
+          "data-analytics:coding:2",
+          "data-analytics:coding:3"
+        ],
+        "assignments": [
+          "data-analytics:assignment:1",
+          "data-analytics:assignment:2",
+          "data-analytics:assignment:3",
+          "data-analytics:assignment:4",
+          "data-analytics:assignment:5",
+          "data-analytics:assignment:6",
+          "data-analytics:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Cleaning, statistics and analysis",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "data-analytics:assignment:8",
+          "title": "Outlier investigation for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain outlier investigation for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on outlier investigation for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete outlier investigation for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "data-analytics:assignment:9",
+          "title": "Sampling and bias for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain sampling and bias for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on sampling and bias for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete sampling and bias for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "data-analytics:assignment:10",
+          "title": "Correlation limits for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain correlation limits for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on correlation limits for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete correlation limits for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "data-analytics:assignment:11",
+          "title": "SQL filtering for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain sql filtering for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on sql filtering for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete sql filtering for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "data-analytics:assignment:12",
+          "title": "Joins and grain for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain joins and grain for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on joins and grain for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete joins and grain for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "data-analytics:assignment:13",
+          "title": "Grouping and aggregation for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain grouping and aggregation for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on grouping and aggregation for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete grouping and aggregation for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "data-analytics:assignment:14",
+          "title": "Window calculations for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain window calculations for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on window calculations for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete window calculations for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "data-analytics:assignment:8",
+          "data-analytics:assignment:9",
+          "data-analytics:assignment:10",
+          "data-analytics:assignment:11",
+          "data-analytics:assignment:12",
+          "data-analytics:assignment:13",
+          "data-analytics:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Models, dashboards and reliable workflows",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "data-analytics:assignment:15",
+          "title": "Exploratory analysis for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain exploratory analysis for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on exploratory analysis for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete exploratory analysis for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "data-analytics:assignment:16",
+          "title": "Feature preparation for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain feature preparation for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on feature preparation for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete feature preparation for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "data-analytics:assignment:17",
+          "title": "Baseline models for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain baseline models for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on baseline models for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete baseline models for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "data-analytics:assignment:18",
+          "title": "Train-test separation for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain train-test separation for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on train-test separation for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete train-test separation for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "data-analytics:assignment:19",
+          "title": "Model evaluation for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain model evaluation for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on model evaluation for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete model evaluation for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "data-analytics:assignment:20",
+          "title": "Threshold selection for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain threshold selection for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on threshold selection for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete threshold selection for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "data-analytics:assignment:21",
+          "title": "Chart selection for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain chart selection for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on chart selection for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete chart selection for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "data-analytics:assignment:22",
+          "title": "Dashboard hierarchy for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain dashboard hierarchy for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on dashboard hierarchy for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete dashboard hierarchy for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "data-analytics:assignment:15",
+          "data-analytics:assignment:16",
+          "data-analytics:assignment:17",
+          "data-analytics:assignment:18",
+          "data-analytics:assignment:19",
+          "data-analytics:assignment:20",
+          "data-analytics:assignment:21",
+          "data-analytics:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Projects, communication and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "data-analytics:assignment:23",
+          "title": "Narrative with evidence for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain narrative with evidence for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on narrative with evidence for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete narrative with evidence for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "data-analytics:assignment:24",
+          "title": "Reproducible notebooks for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain reproducible notebooks for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on reproducible notebooks for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete reproducible notebooks for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "data-analytics:assignment:25",
+          "title": "Query performance for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain query performance for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on query performance for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete query performance for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "data-analytics:assignment:26",
+          "title": "Privacy and minimization for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain privacy and minimization for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on privacy and minimization for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete privacy and minimization for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "data-analytics:assignment:27",
+          "title": "Stakeholder questions for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain stakeholder questions for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on stakeholder questions for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete stakeholder questions for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "data-analytics:assignment:28",
+          "title": "Monitoring data drift for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain monitoring data drift for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on monitoring data drift for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete monitoring data drift for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "data-analytics:assignment:29",
+          "title": "Decision recommendations for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain decision recommendations for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on decision recommendations for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete decision recommendations for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "data-analytics:assignment:30",
+          "title": "Portfolio walkthrough for data analytics",
+          "available": false,
+          "focus": "data analytics",
+          "objectives": [
+            "Explain portfolio walkthrough for data analytics in the context of data analytics",
+            "Create a reviewable example using the relevant Python, pandas, SQL tools"
+          ],
+          "assignment": "Create a small data analytics case study focused on portfolio walkthrough for data analytics. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for data analytics problem and its acceptance criteria",
+            "Select a suitable tool from Python, pandas, SQL, Jupyter, Power BI, Git and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "data-analytics:assignment:23",
+          "data-analytics:assignment:24",
+          "data-analytics:assignment:25",
+          "data-analytics:assignment:26",
+          "data-analytics:assignment:27",
+          "data-analytics:assignment:28",
+          "data-analytics:assignment:29",
+          "data-analytics:assignment:30"
+        ]
+      }
+    }
+  ]
+}

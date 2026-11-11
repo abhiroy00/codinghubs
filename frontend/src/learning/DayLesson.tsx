@@ -106,6 +106,7 @@ export function Practice({ practice, draftKey, done, onDone }: { practice: Lesso
   useEffect(() => setShowSolution(false), [draftKey])
   return (
     <>
+      <h3>{practice.title}</h3>
       <p className="lesson-meta"><span className={`lesson-level lesson-level-${practice.difficulty.toLowerCase()}`}>{practice.difficulty}</span>{practice.kind === 'coding' ? LANGUAGE_NAMES[practice.language] : 'Practical exercise'}</p>
       <p><b>Objective:</b> {practice.objective}</p>
       <p>{practice.statement}</p>

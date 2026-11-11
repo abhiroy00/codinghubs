@@ -1,0 +1,1589 @@
+{
+  "slug": "aws-certified-solutions-architect",
+  "name": "AWS Certified Solutions Architect",
+  "focus": "AWS solutions architecture",
+  "track": "cloud",
+  "tools": [
+    "cloud CLI",
+    "IAM",
+    "VPC networking",
+    "Docker",
+    "Terraform",
+    "monitoring dashboards"
+  ],
+  "projects": [
+    {
+      "name": "AWS solutions architecture: Foundations case study",
+      "description": "Investigate a focused AWS solutions architecture scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated AWS solutions architecture use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable AWS solutions architecture artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    },
+    {
+      "name": "AWS solutions architecture: Applied workflow",
+      "description": "Build a small, end-to-end AWS solutions architecture workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated AWS solutions architecture use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable AWS solutions architecture artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    },
+    {
+      "name": "AWS solutions architecture: Portfolio capstone",
+      "description": "Deliver and explain a complete AWS solutions architecture capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated AWS solutions architecture use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable AWS solutions architecture artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "aws-certified-solutions-architect",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Cloud foundations and identity",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "aws-certified-solutions-architect:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "Cloud Computing Concepts and the AWS Shared Responsibility Model",
+            "module": "Cloud & AWS Foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Define cloud computing and its five essential characteristics.",
+              "Compare IaaS, PaaS and SaaS and the deployment models (public, private, hybrid).",
+              "Explain the six advantages of cloud computing that AWS highlights, including the CapEx-to-OpEx shift.",
+              "Apply the shared responsibility model to EC2, RDS, Lambda and S3.",
+              "Answer the foundational questions that open almost every cloud architecture interview."
+            ],
+            "definition": "Cloud computing is the on-demand delivery of compute, storage, databases, networking and other IT resources over the internet with pay-as-you-go pricing. Instead of buying and running data-centre hardware, you rent capacity from a provider such as AWS, provision it in minutes through an API, and release it when you no longer need it. Security in the cloud is split between AWS (security OF the cloud) and the customer (security IN the cloud): this split is the shared responsibility model.",
+            "theory": [
+              {
+                "heading": "What makes something 'cloud'",
+                "body": "Not every hosted server is cloud computing. The NIST definition, which interviewers often reference, lists five essential characteristics. A system that lacks self-service provisioning or metered billing is simply outsourced hosting. These characteristics are what let architects design for elasticity rather than buying for peak demand.",
+                "points": [
+                  "On-demand self-service: provision resources through a console or API without a human at the provider.",
+                  "Broad network access: resources are reachable over standard networks from many client types.",
+                  "Resource pooling: the provider serves many customers from shared, multi-tenant infrastructure.",
+                  "Rapid elasticity: capacity scales out and in quickly, often automatically.",
+                  "Measured service: usage is metered and billed, for example per second, per request or per GB."
+                ]
+              },
+              {
+                "heading": "Service models and deployment models",
+                "body": "Service models describe how much of the stack the provider manages. The more the provider manages, the less operational work you do, but the less control you have. Deployment models describe where the infrastructure runs. Most enterprises are hybrid during a migration, keeping some systems on premises while moving others to AWS.",
+                "points": [
+                  "IaaS: you get virtual machines, networks and disks (Amazon EC2, Amazon VPC, Amazon EBS) and manage the OS upwards.",
+                  "PaaS / managed services: the provider runs the OS and platform (Amazon RDS, AWS Elastic Beanstalk); you manage data and configuration.",
+                  "SaaS: complete applications consumed by end users (for example Amazon WorkMail or a third-party CRM).",
+                  "Serverless sits between PaaS and SaaS: you deploy code or configuration (AWS Lambda, Amazon S3, Amazon DynamoDB) and never see servers.",
+                  "Deployment models: public cloud, private cloud (on-premises virtualisation) and hybrid (connected with VPN or Direct Connect)."
+                ]
+              },
+              {
+                "heading": "Why organisations move to AWS",
+                "body": "AWS summarises the business case as six advantages. In interviews, connect each one to an architectural behaviour: for example, 'stop guessing capacity' is why we use Auto Scaling instead of sizing for Diwali-sale peak traffic all year.",
+                "points": [
+                  "Trade fixed expense (CapEx) for variable expense (OpEx).",
+                  "Benefit from massive economies of scale: AWS buys hardware at a scale no single company can.",
+                  "Stop guessing capacity: scale with demand instead of over-provisioning.",
+                  "Increase speed and agility: new resources are minutes away, so experiments are cheap.",
+                  "Stop spending money running and maintaining data centres.",
+                  "Go global in minutes: deploy in multiple Regions close to users."
+                ]
+              },
+              {
+                "heading": "The shared responsibility model",
+                "body": "AWS is responsible for security OF the cloud: the physical data centres, hardware, the global network and the virtualisation layer. The customer is responsible for security IN the cloud: what they put in and how they configure it. The dividing line moves with the service type. For EC2 (infrastructure), you patch the guest OS, configure security groups and manage applications. For RDS (a managed 'container' service), AWS patches the OS and database engine, while you manage database users, network access and encryption settings. For abstracted services such as S3, DynamoDB and Lambda, AWS operates almost everything below your data, code and IAM policies.",
+                "points": [
+                  "Always AWS: physical security, hardware, networking infrastructure, hypervisor.",
+                  "Always customer: data, IAM users and permissions, choosing to enable encryption, application logic.",
+                  "Shared controls: patch management, configuration management and awareness and training apply to both, each at their own layer.",
+                  "A public S3 bucket or an unpatched EC2 OS is a customer failure, not an AWS failure."
+                ]
+              },
+              {
+                "heading": "Pricing fundamentals",
+                "body": "Almost every AWS service follows three cost drivers: compute (time or requests), storage (GB-month) and data transfer. Data transfer INTO AWS is generally free, while data transfer OUT to the internet is charged per GB, and traffic between Availability Zones is also charged. Understanding these drivers early explains many later design choices, such as putting CloudFront in front of S3 or keeping chatty services in the same AZ.",
+                "points": [
+                  "Pay-as-you-go with no upfront commitment by default.",
+                  "Discounts for commitment (Savings Plans, Reserved Instances) and for spare capacity (Spot).",
+                  "The AWS Pricing Calculator estimates cost; AWS Budgets and Cost Explorer track it."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Who patches what? A three-tier app on EC2 vs RDS",
+              "body": "A startup runs its web servers on EC2 and its MySQL database first on EC2, then migrates the database to Amazon RDS. On EC2, the team must patch Ubuntu, upgrade MySQL, configure backups and replication themselves. After moving to RDS, AWS patches the OS and engine during the maintenance window the team chooses, and automated backups are a setting. The team still owns database users, the security group that allows port 3306 only from the web tier, enabling encryption at rest, and the data itself. The responsibility moved; it did not disappear.",
+              "code": {
+                "language": "text",
+                "source": "Layer                     EC2 self-managed DB    Amazon RDS\nPhysical / hypervisor     AWS                    AWS\nGuest OS patching         Customer               AWS\nDB engine patching        Customer               AWS (in your maintenance window)\nSecurity group rules      Customer               Customer\nDB users and data         Customer               Customer\nEncryption at rest        Customer configures    Customer enables (KMS)"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Seasonal e-commerce",
+                "description": "An Indian retailer scales from 10 to 200 servers during festival sales and back down afterwards, paying only for what it used."
+              },
+              {
+                "title": "Startup launch",
+                "description": "A two-person team launches globally using managed services, avoiding hardware purchases and data-centre staff."
+              },
+              {
+                "title": "Data-centre exit",
+                "description": "An enterprise migrates ageing on-premises servers to AWS to stop paying for hardware refreshes and facilities."
+              },
+              {
+                "title": "Compliance-driven workloads",
+                "description": "Banks use the shared responsibility model and AWS Artifact compliance reports to show auditors which controls AWS covers and which they implement."
+              }
+            ],
+            "demonstration": {
+              "description": "Map responsibilities for one layer across four services to see the dividing line move as services become more abstracted.",
+              "code": {
+                "language": "text",
+                "source": "Question: Who is responsible for patching the operating system?\nEC2     -> ?\nRDS     -> ?\nLambda  -> ?\nS3      -> ?"
+              },
+              "output": "EC2     -> Customer (you manage the guest OS)\nRDS     -> AWS (managed service)\nLambda  -> AWS (you supply only code and configuration)\nS3      -> AWS (abstracted service; no OS is visible to you)"
+            },
+            "takeaways": [
+              "Cloud computing means on-demand, self-service, elastic, metered resources delivered over a network.",
+              "IaaS gives the most control and the most responsibility; serverless gives the least of both.",
+              "AWS secures the cloud itself; customers secure everything they put in it and configure.",
+              "Data, IAM and encryption choices are always the customer's responsibility.",
+              "The CapEx-to-OpEx shift and 'stop guessing capacity' explain why elastic architectures exist.",
+              "Compute, storage and data transfer out are the three main cost drivers."
+            ],
+            "interview": [
+              {
+                "question": "What is cloud computing, in one or two sentences?",
+                "answer": "It is on-demand delivery of IT resources such as compute, storage and databases over the internet with pay-as-you-go pricing, so you provision in minutes and pay only for what you use instead of owning hardware.",
+                "explanation": "Strong answers mention self-service, elasticity and metered billing, which distinguish cloud from traditional hosting."
+              },
+              {
+                "question": "Explain IaaS, PaaS and SaaS with an AWS example of each.",
+                "answer": "IaaS provides raw infrastructure such as EC2 instances and VPCs; PaaS provides a managed platform where you deploy code or data, such as Elastic Beanstalk or RDS; SaaS is a finished application such as Amazon WorkMail. Moving from IaaS to SaaS, the provider manages more of the stack.",
+                "explanation": "Interviewers check that you understand the control-versus-responsibility trade-off, not just the acronyms."
+              },
+              {
+                "question": "Describe the AWS shared responsibility model.",
+                "answer": "AWS is responsible for security of the cloud: facilities, hardware, network and hypervisor. The customer is responsible for security in the cloud: data, identity and access, OS and application patching where applicable, network configuration such as security groups, and encryption settings.",
+                "explanation": "Add that the line shifts by service type: on EC2 you patch the OS; on RDS or Lambda AWS does. That nuance separates strong candidates."
+              },
+              {
+                "question": "A customer's S3 bucket with personal data was exposed publicly. Whose responsibility was it?",
+                "answer": "The customer's. Bucket policies, ACLs and Block Public Access settings are configuration in the cloud. AWS provides secure defaults (Block Public Access is on for new buckets) but cannot decide who should access customer data.",
+                "explanation": "Mention preventive controls you would add: account-level Block Public Access, SCPs, AWS Config rules and Macie for sensitive-data discovery."
+              },
+              {
+                "question": "Why might moving to the cloud not reduce cost, and how would you address it?",
+                "answer": "A lift-and-shift that keeps oversized servers running 24x7 can cost more than owned hardware. Savings come from rightsizing, scaling with demand, using managed services, choosing the right purchase options and storage classes, and turning off idle resources.",
+                "explanation": "This shows you understand cost as an architectural property, a theme of the Cost Optimization pillar covered later."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Shared responsibility lookup",
+              "difficulty": "Basic",
+              "objective": "Encode the shared responsibility model as data and apply it to different AWS service categories.",
+              "statement": "Write a program that reads an AWS service name and a comma-separated list of security layers, then prints who owns each layer. Services belong to three categories: infrastructure (EC2), container (RDS, EMR, ElasticBeanstalk) and abstracted (S3, DynamoDB, Lambda, SQS). Ownership by category (infrastructure / container / abstracted): physical AWS/AWS/AWS; hypervisor AWS/AWS/AWS; guest-os Customer/AWS/AWS; platform Customer/AWS/AWS; firewall Customer/Customer/AWS; application Customer/Customer/Customer; data Customer/Customer/Customer; iam Customer/Customer/Customer. Service names and layers are case-insensitive.",
+              "language": "python",
+              "input_format": "Line 1: a service name. Line 2: comma-separated layer names (spaces around commas allowed).",
+              "output_format": "If the service is unknown, print only 'Unknown service: <name as typed>'. Otherwise print 'Service: <NAME IN UPPERCASE> (<category> service)', then one line per layer in input order: '<layer>: AWS' or '<layer>: Customer' (layer in lowercase), or '<layer>: unknown layer'. Finish with 'Customer-managed layers: <c>/<k>' where k counts only known layers.",
+              "example": {
+                "input": "EC2\nphysical, guest-os, firewall, data\n",
+                "output": "Service: EC2 (infrastructure service)\nphysical: AWS\nguest-os: Customer\nfirewall: Customer\ndata: Customer\nCustomer-managed layers: 3/4"
+              },
+              "constraints": [
+                "1 to 10 layers per input.",
+                "Ignore empty entries produced by stray commas.",
+                "Use only the Python standard library."
+              ],
+              "starter": "service = input().strip()\nlayers = [x.strip().lower() for x in input().split(',') if x.strip()]\n\n# TODO: map the service to a category, then look up each layer\n",
+              "solution": "RESP = {\n    'physical': ('AWS', 'AWS', 'AWS'),\n    'hypervisor': ('AWS', 'AWS', 'AWS'),\n    'guest-os': ('Customer', 'AWS', 'AWS'),\n    'platform': ('Customer', 'AWS', 'AWS'),\n    'firewall': ('Customer', 'Customer', 'AWS'),\n    'application': ('Customer', 'Customer', 'Customer'),\n    'data': ('Customer', 'Customer', 'Customer'),\n    'iam': ('Customer', 'Customer', 'Customer'),\n}\nCATEGORY = {'ec2': 0, 'rds': 1, 'emr': 1, 'elasticbeanstalk': 1,\n            's3': 2, 'dynamodb': 2, 'lambda': 2, 'sqs': 2}\nNAMES = ('infrastructure', 'container', 'abstracted')\n\nservice = input().strip()\nlayers = [x.strip().lower() for x in input().split(',') if x.strip()]\nkey = service.lower()\nif key not in CATEGORY:\n    print('Unknown service: ' + service)\nelse:\n    c = CATEGORY[key]\n    print('Service: ' + service.upper() + ' (' + NAMES[c] + ' service)')\n    known = 0\n    customer = 0\n    for layer in layers:\n        if layer in RESP:\n            owner = RESP[layer][c]\n            known += 1\n            if owner == 'Customer':\n                customer += 1\n            print(layer + ': ' + owner)\n        else:\n            print(layer + ': unknown layer')\n    print('Customer-managed layers: ' + str(customer) + '/' + str(known))\n",
+              "explanation": [
+                "Store the model as a dictionary of layer -> (infrastructure, container, abstracted) owners so the rules live in data, not in if-statements.",
+                "Map the service name (lowercased) to a category index; stop with a message if it is unknown.",
+                "For each layer, look up the owner for that category, counting known and customer-owned layers.",
+                "Print the summary ratio, which shows how responsibility shrinks as services become more abstracted."
+              ],
+              "tests": [
+                {
+                  "input": "EC2\nphysical, guest-os, firewall, data\n",
+                  "output": "Service: EC2 (infrastructure service)\nphysical: AWS\nguest-os: Customer\nfirewall: Customer\ndata: Customer\nCustomer-managed layers: 3/4"
+                },
+                {
+                  "input": "rds\nguest-os,platform,firewall,iam\n",
+                  "output": "Service: RDS (container service)\nguest-os: AWS\nplatform: AWS\nfirewall: Customer\niam: Customer\nCustomer-managed layers: 2/4"
+                },
+                {
+                  "input": "Lambda\nhypervisor,GUEST-OS,firewall,application,data\n",
+                  "output": "Service: LAMBDA (abstracted service)\nhypervisor: AWS\nguest-os: AWS\nfirewall: AWS\napplication: Customer\ndata: Customer\nCustomer-managed layers: 2/5"
+                },
+                {
+                  "input": "Lightsail\nphysical\n",
+                  "output": "Unknown service: Lightsail"
+                },
+                {
+                  "input": "s3\ndata,,backups,physical\n",
+                  "output": "Service: S3 (abstracted service)\ndata: Customer\nbackups: unknown layer\nphysical: AWS\nCustomer-managed layers: 1/2"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Under the AWS shared responsibility model, which task is AWS responsible for when a customer uses Amazon EC2?",
+                "options": [
+                  "Configuring security group rules",
+                  "Encrypting data stored on EBS volumes",
+                  "Patching the guest operating system",
+                  "Securing the physical hosts and the hypervisor"
+                ],
+                "answer": 3,
+                "explanation": "On EC2, AWS secures facilities, hardware and virtualisation. The guest OS, security groups and the choice to encrypt are customer responsibilities."
+              },
+              {
+                "type": "scenario",
+                "question": "A company moves its self-managed PostgreSQL database from EC2 to Amazon RDS. Which responsibility moves from the company to AWS?",
+                "options": [
+                  "Creating database users and grants",
+                  "Deciding which IP ranges can reach the database",
+                  "Applying minor database engine patches",
+                  "Classifying the data stored in the database"
+                ],
+                "answer": 2,
+                "explanation": "RDS is a managed service, so AWS patches the OS and database engine (in a maintenance window you choose). Users, network access and data classification remain with the customer."
+              },
+              {
+                "type": "concept",
+                "question": "Which statement best describes the 'trade fixed expense for variable expense' advantage of cloud computing?",
+                "options": [
+                  "You must sign a three-year contract to use AWS",
+                  "Variable costs are eliminated because AWS absorbs them",
+                  "You pay for resources as you consume them instead of investing heavily in data centres up front",
+                  "AWS fixes the price of every service for the life of your account"
+                ],
+                "answer": 2,
+                "explanation": "Cloud converts capital expenditure on hardware into operational expenditure that tracks usage. Commitments are optional discounts, not requirements."
+              },
+              {
+                "type": "scenario",
+                "question": "A developer deploys a function on AWS Lambda. Which item remains the developer's responsibility?",
+                "options": [
+                  "Scaling the underlying servers",
+                  "Patching the runtime's operating system",
+                  "Maintaining the physical network",
+                  "The function code and the IAM permissions of its execution role"
+                ],
+                "answer": 3,
+                "explanation": "For abstracted services, AWS manages servers, OS and scaling. The customer still owns code, configuration, IAM permissions and data."
+              },
+              {
+                "type": "concept",
+                "question": "Which characteristic distinguishes cloud computing from traditional managed hosting?",
+                "options": [
+                  "A third party owns the hardware",
+                  "Applications are accessed over the internet",
+                  "Servers are located in a data centre",
+                  "Resources can be provisioned through self-service and are billed by measured usage"
+                ],
+                "answer": 3,
+                "explanation": "Hosting also uses third-party data centres and the internet. On-demand self-service, rapid elasticity and measured service are what make it cloud."
+              }
+            ]
+          }
+        },
+        {
+          "id": "aws-certified-solutions-architect:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "The AWS Well-Architected Framework: Six Pillars of Good Design",
+            "module": "Cloud & AWS Foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Name the six Well-Architected pillars and the core question each one answers.",
+              "Apply key design principles such as 'design for failure', 'automate' and 'use managed services'.",
+              "Recognise trade-offs between pillars, for example cost versus reliability.",
+              "Use the Well-Architected Tool and Lenses to review a workload.",
+              "Structure any architecture interview answer around the pillars."
+            ],
+            "definition": "The AWS Well-Architected Framework is a set of design principles, questions and best practices for building secure, reliable, efficient, cost-effective and sustainable systems on AWS. It is organised into six pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization and Sustainability. Architects use it both to design new workloads and to review existing ones for risk.",
+            "theory": [
+              {
+                "heading": "Why a framework exists",
+                "body": "Without a shared vocabulary, design reviews become opinion contests. The framework gives teams consistent questions (for example 'How do you back up data?') and lets them record high-risk issues (HRIs) and improvement plans. The SAA-C03 exam is organised around four of the pillars (secure, resilient, high-performing and cost-optimised architectures), so thinking in pillars is also the fastest way to decode exam scenarios.",
+                "points": [
+                  "It is not a compliance standard; it is a structured self-assessment.",
+                  "Reviews are free with the AWS Well-Architected Tool in the console.",
+                  "Lenses extend it for specific domains, such as Serverless, SaaS, Machine Learning and Financial Services."
+                ]
+              },
+              {
+                "heading": "The six pillars",
+                "body": "Each pillar has design principles and best-practice areas. Memorise one sentence and two or three concrete AWS mechanisms per pillar so you can move from principle to implementation in an interview.",
+                "points": [
+                  "Operational Excellence: run and monitor systems and continually improve; infrastructure as code (CloudFormation), small reversible changes, runbooks, learning from failures.",
+                  "Security: protect data and systems; strong identity foundation (least privilege), traceability (CloudTrail), security at every layer, encryption in transit and at rest.",
+                  "Reliability: recover from failure and meet demand; Multi-AZ, automatic recovery, scaling horizontally, testing recovery procedures, managing service quotas.",
+                  "Performance Efficiency: use resources efficiently as demand changes; right instance families, caching, CloudFront, serverless, experimenting often.",
+                  "Cost Optimization: deliver value at the lowest price; pay only for what you use, rightsizing, Savings Plans, Spot, storage tiering, measuring with Cost Explorer.",
+                  "Sustainability: minimise environmental impact; maximise utilisation, use managed services and efficient hardware such as Graviton, reduce unused data."
+                ]
+              },
+              {
+                "heading": "General design principles",
+                "body": "Beyond the pillars, the framework lists principles that the cloud makes possible. They explain why AWS architectures look different from on-premises ones: because capacity is elastic and infrastructure is code, you can test at production scale and replace rather than repair.",
+                "points": [
+                  "Stop guessing your capacity needs.",
+                  "Test systems at production scale, then tear the test environment down.",
+                  "Automate with architectural experimentation in mind (infrastructure as code).",
+                  "Consider evolutionary architectures rather than one big upfront design.",
+                  "Drive architectures using data (metrics, not guesses).",
+                  "Improve through game days that simulate failures."
+                ]
+              },
+              {
+                "heading": "Trade-offs between pillars",
+                "body": "Pillars sometimes pull in different directions. A Multi-Region active-active design maximises reliability but roughly doubles cost. Aggressive Spot usage minimises cost but needs fault-tolerant design. The architect's job is to make these trade-offs explicit and tied to business requirements such as RTO, RPO, budget and compliance. Security is the one pillar that is normally not traded away.",
+                "points": [
+                  "Reliability vs cost: extra AZs, Regions and standby capacity cost money.",
+                  "Performance vs cost: provisioned IOPS and larger instances improve latency at a price.",
+                  "Operational excellence often reduces cost long-term by removing manual toil."
+                ]
+              },
+              {
+                "heading": "Running a Well-Architected review",
+                "body": "A review is a conversation with the workload team, not an audit. You define the workload, answer the questions for each pillar, identify high and medium risks, prioritise them and create an improvement plan. Milestones record progress over time. A good review ends with a short list of actions, for example 'enable Multi-AZ on the orders database' and 'move secrets from environment variables to Secrets Manager'.",
+                "points": [
+                  "Define the workload and its business requirements first.",
+                  "Answer pillar questions honestly; 'we do not do this yet' is a valid answer.",
+                  "Prioritise risks by business impact, then track fixes as milestones."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Reviewing a single-server web application",
+              "body": "A coaching institute runs its student portal on one large EC2 instance with MySQL installed locally, SSH open to 0.0.0.0/0, no backups and manual deployments over FTP. A pillar-by-pillar review produces a clear, prioritised improvement plan instead of a vague 'move to best practices'.",
+              "code": {
+                "language": "text",
+                "source": "Pillar                  Risk found                              Improvement\nSecurity                SSH open to the world, root keys used   Use SSM Session Manager, IAM roles, MFA\nReliability             Single instance, no backups             ALB + Auto Scaling across 2 AZs, RDS Multi-AZ, AWS Backup\nOperational Excellence  Manual FTP deployments                  CloudFormation + CI/CD pipeline\nPerformance             Static files served by EC2              S3 + CloudFront\nCost                    m5.4xlarge running 24x7 at 8% CPU       Rightsize, Savings Plan for baseline\nSustainability          Idle capacity overnight                 Scheduled scaling, Graviton instances"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Pre-launch design review",
+                "description": "Teams review a new architecture against the pillars before go-live to catch single points of failure and missing encryption."
+              },
+              {
+                "title": "Periodic health checks",
+                "description": "Enterprises review critical workloads yearly and track improvements as milestones in the Well-Architected Tool."
+              },
+              {
+                "title": "Partner assessments",
+                "description": "AWS partners run Well-Architected reviews for customers and use the findings to plan remediation projects."
+              },
+              {
+                "title": "Interview answer structure",
+                "description": "Candidates walk through security, reliability, performance and cost for any design question, showing systematic thinking."
+              }
+            ],
+            "demonstration": {
+              "description": "Classify design decisions by the pillar they primarily serve. Practising this mapping makes exam scenarios faster to decode, because each question usually tests one pillar.",
+              "code": {
+                "language": "text",
+                "source": "1. Enable MFA for all IAM users\n2. Deploy the database with RDS Multi-AZ\n3. Buy a Compute Savings Plan for the steady baseline\n4. Put CloudFront in front of the website\n5. Define all infrastructure in CloudFormation\n6. Move to Graviton instances to use less energy per request"
+              },
+              "output": "1 -> Security\n2 -> Reliability\n3 -> Cost Optimization\n4 -> Performance Efficiency\n5 -> Operational Excellence\n6 -> Sustainability (also helps cost)"
+            },
+            "takeaways": [
+              "Six pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, Sustainability.",
+              "The framework is a review method with questions and best practices, not a certification standard.",
+              "Design for failure: assume components will fail and make recovery automatic.",
+              "Every architecture involves trade-offs; tie them to business requirements.",
+              "Use the Well-Architected Tool and Lenses to record risks and improvement plans.",
+              "Structuring answers by pillar is an easy way to sound like an architect in interviews."
+            ],
+            "interview": [
+              {
+                "question": "What are the six pillars of the AWS Well-Architected Framework?",
+                "answer": "Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization and Sustainability.",
+                "explanation": "Give a one-line purpose and one AWS example for each. Listing only names is a weak answer."
+              },
+              {
+                "question": "What is the difference between the Reliability and Performance Efficiency pillars?",
+                "answer": "Reliability is about the workload performing its intended function correctly and recovering from failures, for example Multi-AZ and backups. Performance Efficiency is about using the right resources to meet requirements efficiently as demand changes, for example selecting instance types and adding caching.",
+                "explanation": "Interviewers check you do not confuse 'stays up' with 'runs fast'. Auto Scaling touches both: it adds capacity for demand and replaces unhealthy instances."
+              },
+              {
+                "question": "Give an example of a trade-off between two pillars.",
+                "answer": "Running a warm standby in a second Region improves reliability but increases cost. Using Spot Instances lowers cost but requires a design that tolerates interruptions, which affects reliability.",
+                "explanation": "The strongest answers explain how business requirements such as RTO, RPO and budget decide the trade-off."
+              },
+              {
+                "question": "How would you implement the 'implement a strong identity foundation' principle?",
+                "answer": "Centralise identity with IAM Identity Center or federation, enforce least privilege, use IAM roles instead of long-term access keys, require MFA, and set organisation-wide guardrails with SCPs.",
+                "explanation": "Connect the principle to concrete services; this links forward to the IAM and Organizations lessons."
+              },
+              {
+                "question": "You inherit a workload with no documentation. How would you run a Well-Architected review on it?",
+                "answer": "Identify the business owner and requirements, map the architecture from the console and tags, walk through each pillar's questions with the team, record high-risk issues such as single points of failure or missing backups, prioritise by business impact, and create an improvement plan with milestones in the Well-Architected Tool.",
+                "explanation": "This tests process maturity: start from business context, involve the team, prioritise and track, rather than producing a long unranked list."
+              }
+            ],
+            "practice": {
+              "kind": "exercise",
+              "title": "Well-Architected review of a food-delivery MVP",
+              "difficulty": "Basic",
+              "objective": "Practise identifying risks by pillar and proposing concrete AWS improvements with clear priorities.",
+              "statement": "A food-delivery startup in Bengaluru runs its MVP like this: one EC2 instance in a public subnet hosts the Node.js API, the React build and a MySQL database; the instance has an Elastic IP; SSH (22) and MySQL (3306) are open to 0.0.0.0/0; the developers share the root user's access keys; there are no backups or monitoring; deployments are done by copying files over SSH; the instance is an m5.2xlarge averaging 6% CPU. Traffic triples at lunch and dinner. Perform a Well-Architected review.",
+              "deliverable": "A table of at least one risk per pillar (six pillars), each with severity (High/Medium/Low) and a concrete AWS improvement, followed by the top three actions you would do first and why.",
+              "steps": [
+                "Write down the business requirements you will assume (availability, growth, budget).",
+                "Walk through each pillar and list the risks you see in the description.",
+                "Rate each risk by likelihood and impact.",
+                "Propose a specific AWS service or configuration change for each risk.",
+                "Choose the top three actions and justify the order."
+              ],
+              "checklist": [
+                "All six pillars are covered, including Sustainability.",
+                "Root-key sharing and open ports are treated as High risk.",
+                "Improvements name specific services or settings, not generic advice.",
+                "Trade-offs (for example cost of Multi-AZ) are acknowledged.",
+                "The top three actions are prioritised by business impact."
+              ],
+              "sample_answer": "Assumptions: 99.9% availability target, small team, cost-sensitive.\n\nSecurity (High): root access keys shared and ports 22/3306 open to the world. Fix: delete root access keys, enable MFA on root, create IAM Identity Center users; replace SSH with SSM Session Manager; move MySQL to a private subnet with a security group that only allows the API's security group.\nReliability (High): single instance, database on the same host, no backups. Fix: move data to RDS MySQL Multi-AZ with automated backups; run the API in an Auto Scaling group across two AZs behind an ALB.\nOperational Excellence (Medium): manual SSH deployments, no monitoring. Fix: CloudFormation or CDK for infrastructure, CodePipeline or GitHub Actions for deployments, CloudWatch alarms on 5xx errors and latency.\nPerformance Efficiency (Medium): React build served from the API server; lunch and dinner peaks. Fix: host the frontend on S3 + CloudFront; use target-tracking and scheduled scaling for meal-time peaks.\nCost Optimization (Medium): m5.2xlarge at 6% CPU. Fix: rightsize to smaller instances in the Auto Scaling group (for example t3/t4g or m7g.large), scale in at night, consider a Savings Plan for the baseline once usage is stable.\nSustainability (Low): idle capacity outside meal times. Fix: scale to minimum overnight, use Graviton instances, apply S3 lifecycle rules to old logs.\n\nTop three: (1) remove root keys and close 22/3306 because a breach could end the business; (2) move to RDS Multi-AZ with backups because data loss is unrecoverable; (3) ALB + Auto Scaling across two AZs to survive instance failure and meal-time peaks. Cost and sustainability improvements follow naturally from rightsizing during step 3."
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which Well-Architected pillar focuses on minimising the environmental impact of running cloud workloads?",
+                "options": [
+                  "Cost Optimization",
+                  "Performance Efficiency",
+                  "Operational Excellence",
+                  "Sustainability"
+                ],
+                "answer": 3,
+                "explanation": "Sustainability, added as the sixth pillar in 2021, focuses on maximising utilisation and reducing the resources a workload consumes."
+              },
+              {
+                "type": "scenario",
+                "question": "A team deploys changes manually and cannot reproduce environments. Which pillar's best practice does adopting AWS CloudFormation most directly address?",
+                "options": [
+                  "Sustainability",
+                  "Cost Optimization",
+                  "Operational Excellence",
+                  "Security"
+                ],
+                "answer": 2,
+                "explanation": "Performing operations as code (infrastructure as code) is a core Operational Excellence design principle: repeatable, reviewable, reversible changes."
+              },
+              {
+                "type": "scenario",
+                "question": "An application must keep working if one Availability Zone fails. Which pillar does this requirement belong to?",
+                "options": [
+                  "Performance Efficiency",
+                  "Cost Optimization",
+                  "Reliability",
+                  "Operational Excellence"
+                ],
+                "answer": 2,
+                "explanation": "Recovering from infrastructure failure and meeting availability targets are Reliability concerns, usually solved with Multi-AZ designs."
+              },
+              {
+                "type": "concept",
+                "question": "What is the purpose of a 'lens' in the AWS Well-Architected Tool?",
+                "options": [
+                  "It automatically fixes high-risk issues",
+                  "It estimates the monthly bill of the workload",
+                  "It encrypts the review results",
+                  "It adds domain-specific questions and best practices, such as for serverless or machine learning workloads"
+                ],
+                "answer": 3,
+                "explanation": "Lenses extend the core framework with guidance for specific technologies or industries; they do not remediate or price anything."
+              },
+              {
+                "type": "scenario",
+                "question": "A review finds an application running on large instances at 5% average CPU, 24 hours a day. Which recommendation best addresses the Cost Optimization pillar?",
+                "options": [
+                  "Enable Multi-AZ for the instances",
+                  "Turn on CloudTrail in all Regions",
+                  "Rightsize the instances and scale capacity with demand",
+                  "Add a second Region for disaster recovery"
+                ],
+                "answer": 2,
+                "explanation": "Low utilisation signals over-provisioning. Rightsizing and elastic scaling reduce cost; the other options address reliability or security and add cost."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "aws-certified-solutions-architect:question:1:1",
+          "day": 1,
+          "topic": "Cloud Computing Concepts and the AWS Shared Responsibility Model",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is cloud computing, in one or two sentences?",
+          "answer": "It is on-demand delivery of IT resources such as compute, storage and databases over the internet with pay-as-you-go pricing, so you provision in minutes and pay only for what you use instead of owning hardware.",
+          "explanation": "Strong answers mention self-service, elasticity and metered billing, which distinguish cloud from traditional hosting.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:1:2",
+          "day": 1,
+          "topic": "Cloud Computing Concepts and the AWS Shared Responsibility Model",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain IaaS, PaaS and SaaS with an AWS example of each.",
+          "answer": "IaaS provides raw infrastructure such as EC2 instances and VPCs; PaaS provides a managed platform where you deploy code or data, such as Elastic Beanstalk or RDS; SaaS is a finished application such as Amazon WorkMail. Moving from IaaS to SaaS, the provider manages more of the stack.",
+          "explanation": "Interviewers check that you understand the control-versus-responsibility trade-off, not just the acronyms.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:1:3",
+          "day": 1,
+          "topic": "Cloud Computing Concepts and the AWS Shared Responsibility Model",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Describe the AWS shared responsibility model.",
+          "answer": "AWS is responsible for security of the cloud: facilities, hardware, network and hypervisor. The customer is responsible for security in the cloud: data, identity and access, OS and application patching where applicable, network configuration such as security groups, and encryption settings.",
+          "explanation": "Add that the line shifts by service type: on EC2 you patch the OS; on RDS or Lambda AWS does. That nuance separates strong candidates.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:1:4",
+          "day": 1,
+          "topic": "Cloud Computing Concepts and the AWS Shared Responsibility Model",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "A customer's S3 bucket with personal data was exposed publicly. Whose responsibility was it?",
+          "answer": "The customer's. Bucket policies, ACLs and Block Public Access settings are configuration in the cloud. AWS provides secure defaults (Block Public Access is on for new buckets) but cannot decide who should access customer data.",
+          "explanation": "Mention preventive controls you would add: account-level Block Public Access, SCPs, AWS Config rules and Macie for sensitive-data discovery.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:1:5",
+          "day": 1,
+          "topic": "Cloud Computing Concepts and the AWS Shared Responsibility Model",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why might moving to the cloud not reduce cost, and how would you address it?",
+          "answer": "A lift-and-shift that keeps oversized servers running 24x7 can cost more than owned hardware. Savings come from rightsizing, scaling with demand, using managed services, choosing the right purchase options and storage classes, and turning off idle resources.",
+          "explanation": "This shows you understand cost as an architectural property, a theme of the Cost Optimization pillar covered later.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:2:1",
+          "day": 2,
+          "topic": "The AWS Well-Architected Framework: Six Pillars of Good Design",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are the six pillars of the AWS Well-Architected Framework?",
+          "answer": "Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization and Sustainability.",
+          "explanation": "Give a one-line purpose and one AWS example for each. Listing only names is a weak answer.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:2:2",
+          "day": 2,
+          "topic": "The AWS Well-Architected Framework: Six Pillars of Good Design",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between the Reliability and Performance Efficiency pillars?",
+          "answer": "Reliability is about the workload performing its intended function correctly and recovering from failures, for example Multi-AZ and backups. Performance Efficiency is about using the right resources to meet requirements efficiently as demand changes, for example selecting instance types and adding caching.",
+          "explanation": "Interviewers check you do not confuse 'stays up' with 'runs fast'. Auto Scaling touches both: it adds capacity for demand and replaces unhealthy instances.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:2:3",
+          "day": 2,
+          "topic": "The AWS Well-Architected Framework: Six Pillars of Good Design",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Give an example of a trade-off between two pillars.",
+          "answer": "Running a warm standby in a second Region improves reliability but increases cost. Using Spot Instances lowers cost but requires a design that tolerates interruptions, which affects reliability.",
+          "explanation": "The strongest answers explain how business requirements such as RTO, RPO and budget decide the trade-off.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:2:4",
+          "day": 2,
+          "topic": "The AWS Well-Architected Framework: Six Pillars of Good Design",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How would you implement the 'implement a strong identity foundation' principle?",
+          "answer": "Centralise identity with IAM Identity Center or federation, enforce least privilege, use IAM roles instead of long-term access keys, require MFA, and set organisation-wide guardrails with SCPs.",
+          "explanation": "Connect the principle to concrete services; this links forward to the IAM and Organizations lessons.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "aws-certified-solutions-architect:question:2:5",
+          "day": 2,
+          "topic": "The AWS Well-Architected Framework: Six Pillars of Good Design",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "You inherit a workload with no documentation. How would you run a Well-Architected review on it?",
+          "answer": "Identify the business owner and requirements, map the architecture from the console and tags, walk through each pillar's questions with the team, record high-risk issues such as single points of failure or missing backups, prioritise by business impact, and create an improvement plan with milestones in the Well-Architected Tool.",
+          "explanation": "This tests process maturity: start from business context, involve the team, prioritise and track, rather than producing a long unranked list.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "aws-certified-solutions-architect:assignment:1",
+          "title": "Cloud Computing Concepts and the AWS Shared Responsibility Model",
+          "available": true,
+          "focus": "Cloud computing is the on-demand delivery of compute, storage, databases, networking and other IT resources over the internet with pay-as-you-go pricing. Instead of buying and running data-centre hardware, you rent capacity from a provider such as AWS, provision it in minutes through an API, and release it when you no longer need it. Security in the cloud is split between AWS (security OF the cloud) and the customer (security IN the cloud): this split is the shared responsibility model.",
+          "objectives": [
+            "Define cloud computing and its five essential characteristics.",
+            "Compare IaaS, PaaS and SaaS and the deployment models (public, private, hybrid).",
+            "Explain the six advantages of cloud computing that AWS highlights, including the CapEx-to-OpEx shift.",
+            "Apply the shared responsibility model to EC2, RDS, Lambda and S3.",
+            "Answer the foundational questions that open almost every cloud architecture interview."
+          ],
+          "assignment": "Write a program that reads an AWS service name and a comma-separated list of security layers, then prints who owns each layer. Services belong to three categories: infrastructure (EC2), container (RDS, EMR, ElasticBeanstalk) and abstracted (S3, DynamoDB, Lambda, SQS). Ownership by category (infrastructure / container / abstracted): physical AWS/AWS/AWS; hypervisor AWS/AWS/AWS; guest-os Customer/AWS/AWS; platform Customer/AWS/AWS; firewall Customer/Customer/AWS; application Customer/Customer/Customer; data Customer/Customer/Customer; iam Customer/Customer/Customer. Service names and layers are case-insensitive.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Cloud computing means on-demand, self-service, elastic, metered resources delivered over a network.",
+            "IaaS gives the most control and the most responsibility; serverless gives the least of both.",
+            "AWS secures the cloud itself; customers secure everything they put in it and configure.",
+            "Data, IAM and encryption choices are always the customer's responsibility.",
+            "The CapEx-to-OpEx shift and 'stop guessing capacity' explain why elastic architectures exist.",
+            "Compute, storage and data transfer out are the three main cost drivers."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "aws-certified-solutions-architect:assignment:2",
+          "title": "The AWS Well-Architected Framework: Six Pillars of Good Design",
+          "available": true,
+          "focus": "The AWS Well-Architected Framework is a set of design principles, questions and best practices for building secure, reliable, efficient, cost-effective and sustainable systems on AWS. It is organised into six pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization and Sustainability. Architects use it both to design new workloads and to review existing ones for risk.",
+          "objectives": [
+            "Name the six Well-Architected pillars and the core question each one answers.",
+            "Apply key design principles such as 'design for failure', 'automate' and 'use managed services'.",
+            "Recognise trade-offs between pillars, for example cost versus reliability.",
+            "Use the Well-Architected Tool and Lenses to review a workload.",
+            "Structure any architecture interview answer around the pillars."
+          ],
+          "assignment": "A food-delivery startup in Bengaluru runs its MVP like this: one EC2 instance in a public subnet hosts the Node.js API, the React build and a MySQL database; the instance has an Elastic IP; SSH (22) and MySQL (3306) are open to 0.0.0.0/0; the developers share the root user's access keys; there are no backups or monitoring; deployments are done by copying files over SSH; the instance is an m5.2xlarge averaging 6% CPU. Traffic triples at lunch and dinner. Perform a Well-Architected review.",
+          "steps": [
+            "Write down the business requirements you will assume (availability, growth, budget).",
+            "Walk through each pillar and list the risks you see in the description.",
+            "Rate each risk by likelihood and impact.",
+            "Propose a specific AWS service or configuration change for each risk.",
+            "Choose the top three actions and justify the order."
+          ],
+          "revision": [
+            "Six pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, Sustainability.",
+            "The framework is a review method with questions and best practices, not a certification standard.",
+            "Design for failure: assume components will fail and make recovery automatic.",
+            "Every architecture involves trade-offs; tie them to business requirements.",
+            "Use the Well-Architected Tool and Lenses to record risks and improvement plans.",
+            "Structuring answers by pillar is an easy way to sound like an architect in interviews."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "aws-certified-solutions-architect:assignment:3",
+          "title": "Identity boundaries for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain identity boundaries for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on identity boundaries for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete identity boundaries for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 4,
+          "id": "aws-certified-solutions-architect:assignment:4",
+          "title": "Least-privilege policies for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain least-privilege policies for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on least-privilege policies for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete least-privilege policies for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 5,
+          "id": "aws-certified-solutions-architect:assignment:5",
+          "title": "Network segmentation for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain network segmentation for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on network segmentation for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete network segmentation for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "aws-certified-solutions-architect:assignment:6",
+          "title": "Subnets and routes for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain subnets and routes for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on subnets and routes for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete subnets and routes for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "aws-certified-solutions-architect:assignment:7",
+          "title": "Compute selection for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain compute selection for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on compute selection for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete compute selection for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "aws-certified-solutions-architect:article:1",
+          "aws-certified-solutions-architect:article:2"
+        ],
+        "questions": [
+          "aws-certified-solutions-architect:question:1:1",
+          "aws-certified-solutions-architect:question:1:2",
+          "aws-certified-solutions-architect:question:1:3",
+          "aws-certified-solutions-architect:question:1:4",
+          "aws-certified-solutions-architect:question:1:5",
+          "aws-certified-solutions-architect:question:2:1",
+          "aws-certified-solutions-architect:question:2:2",
+          "aws-certified-solutions-architect:question:2:3",
+          "aws-certified-solutions-architect:question:2:4",
+          "aws-certified-solutions-architect:question:2:5"
+        ],
+        "coding": [
+          "aws-certified-solutions-architect:coding:1"
+        ],
+        "assignments": [
+          "aws-certified-solutions-architect:assignment:1",
+          "aws-certified-solutions-architect:assignment:2",
+          "aws-certified-solutions-architect:assignment:3",
+          "aws-certified-solutions-architect:assignment:4",
+          "aws-certified-solutions-architect:assignment:5",
+          "aws-certified-solutions-architect:assignment:6",
+          "aws-certified-solutions-architect:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Networking, compute and architecture",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "aws-certified-solutions-architect:assignment:8",
+          "title": "Storage classes for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain storage classes for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on storage classes for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete storage classes for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "aws-certified-solutions-architect:assignment:9",
+          "title": "Managed databases for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain managed databases for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on managed databases for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete managed databases for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "aws-certified-solutions-architect:assignment:10",
+          "title": "Load balancing for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain load balancing for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on load balancing for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete load balancing for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "aws-certified-solutions-architect:assignment:11",
+          "title": "Autoscaling behavior for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain autoscaling behavior for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on autoscaling behavior for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete autoscaling behavior for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "aws-certified-solutions-architect:assignment:12",
+          "title": "Infrastructure as code for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain infrastructure as code for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on infrastructure as code for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete infrastructure as code for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "aws-certified-solutions-architect:assignment:13",
+          "title": "Configuration separation for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain configuration separation for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on configuration separation for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration separation for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "aws-certified-solutions-architect:assignment:14",
+          "title": "Secret management for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain secret management for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on secret management for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secret management for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "aws-certified-solutions-architect:assignment:8",
+          "aws-certified-solutions-architect:assignment:9",
+          "aws-certified-solutions-architect:assignment:10",
+          "aws-certified-solutions-architect:assignment:11",
+          "aws-certified-solutions-architect:assignment:12",
+          "aws-certified-solutions-architect:assignment:13",
+          "aws-certified-solutions-architect:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Reliability, security and operations",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "aws-certified-solutions-architect:assignment:15",
+          "title": "Encryption boundaries for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain encryption boundaries for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on encryption boundaries for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete encryption boundaries for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "aws-certified-solutions-architect:assignment:16",
+          "title": "Logging and audit trails for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain logging and audit trails for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on logging and audit trails for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and audit trails for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "aws-certified-solutions-architect:assignment:17",
+          "title": "Health checks for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain health checks for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on health checks for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete health checks for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "aws-certified-solutions-architect:assignment:18",
+          "title": "Backup and recovery for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain backup and recovery for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on backup and recovery for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete backup and recovery for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "aws-certified-solutions-architect:assignment:19",
+          "title": "High availability for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain high availability for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on high availability for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete high availability for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "aws-certified-solutions-architect:assignment:20",
+          "title": "Disaster recovery objectives for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain disaster recovery objectives for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on disaster recovery objectives for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete disaster recovery objectives for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "aws-certified-solutions-architect:assignment:21",
+          "title": "Container basics for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain container basics for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on container basics for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete container basics for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "aws-certified-solutions-architect:assignment:22",
+          "title": "Deployment pipelines for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain deployment pipelines for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on deployment pipelines for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment pipelines for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "aws-certified-solutions-architect:assignment:15",
+          "aws-certified-solutions-architect:assignment:16",
+          "aws-certified-solutions-architect:assignment:17",
+          "aws-certified-solutions-architect:assignment:18",
+          "aws-certified-solutions-architect:assignment:19",
+          "aws-certified-solutions-architect:assignment:20",
+          "aws-certified-solutions-architect:assignment:21",
+          "aws-certified-solutions-architect:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, architecture review and interviews",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "aws-certified-solutions-architect:assignment:23",
+          "title": "Monitoring signals for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain monitoring signals for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on monitoring signals for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete monitoring signals for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "aws-certified-solutions-architect:assignment:24",
+          "title": "Incident response for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain incident response for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on incident response for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete incident response for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "aws-certified-solutions-architect:assignment:25",
+          "title": "Cost allocation for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain cost allocation for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on cost allocation for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete cost allocation for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "aws-certified-solutions-architect:assignment:26",
+          "title": "Capacity planning for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain capacity planning for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on capacity planning for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete capacity planning for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "aws-certified-solutions-architect:assignment:27",
+          "title": "Service limits for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain service limits for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on service limits for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete service limits for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "aws-certified-solutions-architect:assignment:28",
+          "title": "Architecture trade-offs for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain architecture trade-offs for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on architecture trade-offs for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete architecture trade-offs for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "aws-certified-solutions-architect:assignment:29",
+          "title": "Operational runbooks for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain operational runbooks for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on operational runbooks for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete operational runbooks for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "aws-certified-solutions-architect:assignment:30",
+          "title": "Portfolio walkthrough for AWS solutions architecture",
+          "available": false,
+          "focus": "AWS solutions architecture",
+          "objectives": [
+            "Explain portfolio walkthrough for aws solutions architecture in the context of AWS solutions architecture",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small AWS solutions architecture case study focused on portfolio walkthrough for aws solutions architecture. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for aws solutions architecture problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "aws-certified-solutions-architect:assignment:23",
+          "aws-certified-solutions-architect:assignment:24",
+          "aws-certified-solutions-architect:assignment:25",
+          "aws-certified-solutions-architect:assignment:26",
+          "aws-certified-solutions-architect:assignment:27",
+          "aws-certified-solutions-architect:assignment:28",
+          "aws-certified-solutions-architect:assignment:29",
+          "aws-certified-solutions-architect:assignment:30"
+        ]
+      }
+    }
+  ]
+}

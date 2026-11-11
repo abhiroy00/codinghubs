@@ -1,0 +1,623 @@
+[
+  {
+    "slug": "production-api",
+    "title": "Production APIs and FastAPI concurrency",
+    "concept": "A production model API coordinates authentication, validation, model access, deadlines, and response delivery. Asynchronous handlers improve concurrency only when blocking work is managed correctly.",
+    "mechanism": "Validate inputs and token budgets before scheduling inference. Propagate a request deadline across retrieval and generation, cancel unused work, and bound concurrent requests. Use asynchronous clients for network I/O and separate workers for blocking compute. Distinguish request acceptance, model completion, and stream interruption in monitoring and billing.",
+    "boundary": "Async syntax alone does not make CPU-bound Python work parallel. A streaming response can fail after headers have already been sent.",
+    "example": "A chat endpoint rejects oversized prompts before reserving model capacity and stops generation when the client disconnects.",
+    "application": "Reliable interactive GenAI services with bounded resource consumption.",
+    "angles": [
+      {
+        "question": "What responsibilities belong outside the model call in an API?",
+        "answer": "Authentication, authorization, validation, rate limits, timeouts, and error handling belong at explicit application boundaries. A model response should not bypass those controls."
+      },
+      {
+        "question": "Why can a synchronous model client block an async endpoint?",
+        "answer": "Blocking I/O occupies the event-loop thread and delays unrelated requests. Use a supported async client or isolate blocking calls with bounded workers."
+      },
+      {
+        "question": "How should deadlines propagate across retrieval and generation?",
+        "answer": "Allocate one end-to-end budget and pass remaining time downstream. Independent full-length timeouts can multiply total latency and leave abandoned work running."
+      },
+      {
+        "question": "Implement idempotency for a paid generation endpoint.",
+        "answer": "Bind an idempotency key to user and request payload, persist status and result, reject conflicting reuse, and avoid duplicate upstream work where possible."
+      },
+      {
+        "question": "Write exponential retry delays with a maximum cap.",
+        "answer": "Increase delay geometrically, cap the maximum, add jitter in real clients, and retry only classified transient failures within the request deadline."
+      },
+      {
+        "question": "Design backpressure for an overloaded chat API.",
+        "answer": "Bound queue length and concurrency, return explicit retry information, prioritize appropriately, and avoid accepting more work than inference capacity can finish."
+      },
+      {
+        "question": "A client disconnects during generation. What should happen?",
+        "answer": "Cancel downstream work when supported, release resources, record partial delivery, and apply a documented usage policy without automatically repeating the request."
+      },
+      {
+        "question": "Why do p99 API latencies spike despite low average CPU?",
+        "answer": "Check queue waits, upstream throttling, event-loop blocking, connection pools, and long generations. Average CPU can conceal serialized bottlenecks."
+      },
+      {
+        "question": "Explain your API reliability choices during a technical screening.",
+        "answer": "Describe explicit deadlines, bounded concurrency, failure categories, and cancellation behavior. Support claims with load-test evidence and known limits."
+      },
+      {
+        "question": "What should an API project demonstrate under failure?",
+        "answer": "Include upstream timeout, invalid input, rate limit, duplicate request, disconnect, and graceful shutdown cases with observable outcomes."
+      }
+    ],
+    "code": "print([min(8,2**attempt) for attempt in range(5)])\n",
+    "expected": "[1, 2, 4, 8, 8]",
+    "sources": [
+      "fastapi",
+      "nim"
+    ],
+    "tags": [
+      "production",
+      "api"
+    ]
+  },
+  {
+    "slug": "rag-system-design",
+    "title": "Scalable RAG system design",
+    "concept": "Scalable RAG separates ingestion throughput from interactive retrieval and generation latency. Consistency, tenant isolation, and freshness are architectural concerns rather than prompt settings.",
+    "mechanism": "Use durable queues for ingestion, versioned document stores, index build status, and explicit activation of complete revisions. Partition data and capacity according to access and workload needs. Scale retrieval and inference independently, monitor queue age, and design degraded modes that preserve authorization and clearly disclose missing evidence.",
+    "boundary": "Eventual consistency must be visible in document readiness. Scaling replicas does not fix stale data or insecure shared caches.",
+    "example": "A corporate assistant keeps interactive answers responsive while a large document import runs in background workers.",
+    "application": "Multi-tenant knowledge platforms with changing documents and uneven traffic.",
+    "angles": [
+      {
+        "question": "Why separate ingestion and query workloads?",
+        "answer": "Ingestion is throughput-oriented and bursty; queries have interactive deadlines. Separate queues and resources prevent imports from starving users."
+      },
+      {
+        "question": "What consistency contract should document updates expose?",
+        "answer": "State when a revision becomes searchable and whether queries can see older versions. Activate complete revisions rather than mixing partial updates."
+      },
+      {
+        "question": "How can a shared answer cache cross tenant boundaries?",
+        "answer": "A cache key that omits tenant or permission context may reuse private answers. Scope keys and revalidate access before serving cached evidence."
+      },
+      {
+        "question": "Implement atomic activation of a new document revision.",
+        "answer": "Build all derived artifacts under a new revision, validate completeness, switch an active pointer, and retire the previous revision after safe rollback windows."
+      },
+      {
+        "question": "Write a cache key that includes authorization scope.",
+        "answer": "Include tenant, effective permission version, model and prompt versions, query, and corpus revision. Avoid logging raw secrets while constructing the key."
+      },
+      {
+        "question": "Design a RAG service for bursty enterprise imports.",
+        "answer": "Use durable ingestion jobs, bounded workers, per-tenant quotas, separate interactive capacity, and observable readiness with retryable failures."
+      },
+      {
+        "question": "One tenant floods the service and others slow down. What changes?",
+        "answer": "Add per-tenant concurrency and queue limits, fair scheduling, and capacity isolation where needed. Measure noisy-neighbor effects under load."
+      },
+      {
+        "question": "Why do answers alternate between old and new policy text?",
+        "answer": "Replicas or caches may use inconsistent revision pointers. Trace the active corpus version and make cache invalidation and rollout behavior explicit."
+      },
+      {
+        "question": "How do you approach a system-design interview with unclear requirements?",
+        "answer": "Ask about scale, freshness, access boundaries, latency, and availability, then state assumptions and compare architectures against those constraints."
+      },
+      {
+        "question": "What should a scalable RAG project report beyond a diagram?",
+        "answer": "Include capacity assumptions, revision semantics, failure recovery, load results, isolation tests, and operational costs under a reproducible workload."
+      }
+    ],
+    "code": "def key(tenant,permission,revision,query): return (tenant,permission,revision,query)\nprint(key('team-a',2,'r3','policy'))\n",
+    "expected": "('team-a', 2, 'r3', 'policy')",
+    "sources": [
+      "rag",
+      "bedrock",
+      "kubernetes"
+    ],
+    "tags": [
+      "rag",
+      "system",
+      "design"
+    ]
+  },
+  {
+    "slug": "evaluation-judges",
+    "title": "LLM evaluation, RAGAS and model judges",
+    "concept": "Evaluation measures behavior against a defined task and evidence standard. Retrieval metrics, answer correctness, faithfulness, and user outcomes describe different properties.",
+    "mechanism": "Create versioned cases with expected evidence, answer rubrics, and failure categories. Use deterministic checks where possible and model judges for clearly scoped judgments. Calibrate judges against human labels, blind model identity, vary answer order, and report uncertainty. Keep evaluation data separate from training and prompt development when estimating generalization.",
+    "boundary": "A high automated score is not proof of correctness. Judges can be biased by answer length, position, style, or shared model errors.",
+    "example": "A policy assistant is evaluated separately for evidence retrieval, supported claims, and correct abstention.",
+    "application": "Release gates and regression diagnosis for changing GenAI applications.",
+    "angles": [
+      {
+        "question": "How do correctness and faithfulness differ?",
+        "answer": "Correctness concerns whether the answer is right for the task; faithfulness concerns whether claims are supported by supplied evidence. An answer can satisfy one and fail the other."
+      },
+      {
+        "question": "What does context recall require as a reference?",
+        "answer": "It requires known evidence or answer-support annotations. Without a meaningful reference, a recall score may measure a proxy rather than true evidence coverage."
+      },
+      {
+        "question": "Why can an LLM judge favor longer answers?",
+        "answer": "Verbosity may appear comprehensive even when it adds unsupported claims. Use explicit rubrics, length controls, and human calibration to detect this bias."
+      },
+      {
+        "question": "Implement a judge calibration study.",
+        "answer": "Sample representative cases, obtain independent human labels, run a fixed judge rubric, compare agreement and failure segments, and revise the metric before using release thresholds."
+      },
+      {
+        "question": "Write a pass-rate summary that handles an empty test set.",
+        "answer": "Return an explicit undefined or no-data state for zero cases rather than claiming a perfect score. Report numerator and denominator alongside the rate."
+      },
+      {
+        "question": "Design an evaluation suite for a RAG release.",
+        "answer": "Include retrieval labels, claim support, answer correctness, abstention, security, latency, and cost with stable datasets and targeted regression cases."
+      },
+      {
+        "question": "A new model improves judge scores but users complain. What next?",
+        "answer": "Audit judge bias, task distribution, hidden regressions, and actual user outcomes. Review representative examples manually before accepting the aggregate score."
+      },
+      {
+        "question": "Why do repeated judge runs disagree?",
+        "answer": "Sampling, rubric ambiguity, and model sensitivity can cause variance. Fix settings, repeat a calibrated sample, and report uncertainty rather than treating one run as absolute truth."
+      },
+      {
+        "question": "Explain evaluation tradeoffs in an MNC-style interview.",
+        "answer": "Separate deterministic checks, human review, and model-based scoring. Explain where each is reliable, its cost, and how disagreements lead to investigation."
+      },
+      {
+        "question": "What makes an evaluation project reproducible?",
+        "answer": "Save cases, references, rubric, judge version, prompts, settings, raw judgments, aggregation logic, and examples of metric failures."
+      }
+    ],
+    "code": "def rate(results): return sum(results)/len(results) if results else None\nprint(rate([True,False,True]))\n",
+    "expected": "0.6666666666666666",
+    "sources": [
+      "ragas",
+      "rag"
+    ],
+    "tags": [
+      "evaluation",
+      "judges"
+    ]
+  },
+  {
+    "slug": "guardrails-injection",
+    "title": "Guardrails, prompt injection and AI security",
+    "concept": "Prompt injection occurs when untrusted content attempts to redirect application behavior. It is a trust-boundary problem, including indirect instructions hidden in retrieved documents or tool results.",
+    "mechanism": "Map trusted instructions, user input, retrieved evidence, tools, and credentials separately. Enforce authorization in application code, validate tool arguments, restrict network access, and minimize privileges. Use detection and content screening as additional controls, then test complete attack paths and sensitive side effects rather than relying on a single safety prompt.",
+    "boundary": "No prompt-only defense guarantees protection. Sanitizing text does not replace least privilege and server-side authorization.",
+    "example": "A malicious document asks a support agent to send customer records to an external address; the tool policy blocks the action.",
+    "application": "Tool-connected enterprise assistants exposed to untrusted documents.",
+    "angles": [
+      {
+        "question": "How does indirect prompt injection differ from a direct malicious request?",
+        "answer": "The attacker places instructions in content the application later retrieves or receives from a tool, crossing a boundary the user may not control."
+      },
+      {
+        "question": "Why are delimiters insufficient as a complete defense?",
+        "answer": "Models may still interpret enclosed text as instructions. Delimiters help communication but cannot enforce authorization, network policy, or data boundaries."
+      },
+      {
+        "question": "How can an apparently read-only tool enable exfiltration?",
+        "answer": "Query parameters or outbound URLs can carry sensitive data. Restrict destinations, minimize data exposure, and inspect tool semantics beyond operation names."
+      },
+      {
+        "question": "Implement a safe external-link tool policy.",
+        "answer": "Parse and validate destinations, allow approved schemes and hosts, block private network targets where appropriate, and enforce authorization independently of model suggestions."
+      },
+      {
+        "question": "Write a strict operation allowlist.",
+        "answer": "Compare operation names against a fixed approved set and reject everything else before dispatch. Also validate arguments and credentials for permitted operations."
+      },
+      {
+        "question": "Design defense in depth for an email-capable assistant.",
+        "answer": "Separate drafting from sending, bind approval to exact recipients and content, restrict tools, audit actions, and treat retrieved messages as untrusted."
+      },
+      {
+        "question": "A retrieved page instructs the agent to ignore policies. What should users see?",
+        "answer": "The application should ignore those instructions, preserve normal task behavior, and fail safely if evidence is compromised. Avoid exposing sensitive internal details."
+      },
+      {
+        "question": "Why did a guardrail pass while a tool still caused harm?",
+        "answer": "The guardrail may have inspected text but not the actual tool action or arguments. Trace the full decision path and enforce business policy at execution."
+      },
+      {
+        "question": "How do you describe AI security work without claiming perfect safety?",
+        "answer": "Explain the threat model, controls, tested attacks, residual risks, and response process. Present evidence of bounded behavior rather than universal immunity."
+      },
+      {
+        "question": "What belongs in a prompt-injection security project?",
+        "answer": "Include an attack corpus, trust-boundary diagram, tool policy, isolation tests, observed failures, and regression cases for repaired attack paths."
+      }
+    ],
+    "code": "allowed={'search','summarize'}\nprint('send_email' in allowed)\n",
+    "expected": "False",
+    "sources": [
+      "owasp",
+      "agents",
+      "mcp"
+    ],
+    "tags": [
+      "guardrails",
+      "injection"
+    ]
+  },
+  {
+    "slug": "responsible-ai-privacy",
+    "title": "Responsible AI, privacy and human oversight",
+    "concept": "Responsible deployment requires understanding affected users, sensitive data, failure consequences, and appropriate human control. Average quality metrics can hide unequal or harmful outcomes.",
+    "mechanism": "Document intended use and exclusions, minimize collected data, define retention and access, and evaluate relevant user and language segments. Provide an escalation route for uncertain or consequential outputs. Review data provenance and consent before training or logging, and keep operational evidence sufficient for investigation without retaining unnecessary personal information.",
+    "boundary": "Removing names does not guarantee anonymization. Technical controls support policy obligations but do not replace qualified review of applicable requirements.",
+    "example": "A hiring-support prototype tests language and accessibility differences and leaves consequential decisions to accountable reviewers.",
+    "application": "GenAI systems handling personal data or decisions affecting people.",
+    "angles": [
+      {
+        "question": "What is data minimization in a GenAI application?",
+        "answer": "Collect and expose only information required for the task. Apply it to prompts, tool results, logs, evaluation datasets, and retained conversations."
+      },
+      {
+        "question": "Why are aggregate metrics insufficient for fairness assessment?",
+        "answer": "A strong average can hide concentrated failures for specific languages or user groups. Evaluate relevant segments and inspect the causes and impacts."
+      },
+      {
+        "question": "How can supposedly anonymous text remain identifiable?",
+        "answer": "Combinations of rare facts or contextual details can reveal identity. Redaction requires a realistic threat model and assessment of residual information."
+      },
+      {
+        "question": "Implement privacy-aware request logging.",
+        "answer": "Record operational identifiers and metrics by default, redact sensitive content, restrict access, set retention, and require deliberate controls for diagnostic payload capture."
+      },
+      {
+        "question": "Write a minimal field projection for an audit event.",
+        "answer": "Select an explicit allowlist of operational fields instead of logging the entire request object. Review values as well as field names."
+      },
+      {
+        "question": "Design human oversight for consequential advice.",
+        "answer": "Define escalation thresholds, give reviewers evidence and limitations, record accountable decisions, and prevent automated actions beyond the system's approved scope."
+      },
+      {
+        "question": "A user requests deletion of conversation history. What systems are involved?",
+        "answer": "Inspect primary storage, backups, analytics, traces, caches, and derived evaluation data according to the documented retention and deletion process."
+      },
+      {
+        "question": "Why did redacted logs still expose personal information?",
+        "answer": "Sensitive details may appear in free text or nested tool payloads. Audit actual log paths and test structured and unstructured redaction."
+      },
+      {
+        "question": "How would you discuss a responsible-AI tradeoff in an interview?",
+        "answer": "State the affected users, potential harm, measured evidence, chosen control, and remaining limitations. Avoid presenting a checklist as proof of safe outcomes."
+      },
+      {
+        "question": "What documentation belongs in a responsible deployment project?",
+        "answer": "Include intended use, data flow, retention, evaluation segments, oversight policy, incident process, and known limitations supported by tests."
+      }
+    ],
+    "code": "event={'request_id':'r1','latency_ms':20,'email':'private@example.test'}\nprint({k:event[k] for k in ['request_id','latency_ms']})\n",
+    "expected": "{'request_id': 'r1', 'latency_ms': 20}",
+    "sources": [
+      "owasp",
+      "llama"
+    ],
+    "tags": [
+      "responsible",
+      "ai",
+      "privacy"
+    ]
+  },
+  {
+    "slug": "llmops-monitoring",
+    "title": "LLMOps, observability and controlled releases",
+    "concept": "LLMOps manages the versions and operational behavior of model-powered applications. Model, prompt, retriever, corpus, and tool changes can each alter outcomes.",
+    "mechanism": "Attach version identifiers and request correlation IDs to traces. Monitor quality samples, error rates, token usage, latency stages, and retrieval health. Compare releases on fixed evaluation sets and controlled traffic, define rollback criteria, and preserve compatible configurations. Separate content drift from infrastructure faults so corrective actions target the actual cause.",
+    "boundary": "Monitoring only successful HTTP responses misses unsupported answers and broken evidence. Content logging must respect privacy and access controls.",
+    "example": "A prompt release is canaried and rolled back when supported-answer quality falls despite stable API latency.",
+    "application": "Operating changing GenAI services with measurable release risk.",
+    "angles": [
+      {
+        "question": "What needs versioning besides the model?",
+        "answer": "Prompts, tools, retrieval settings, embedding models, corpus revisions, and evaluation rubrics can change behavior and should be traceable."
+      },
+      {
+        "question": "Which metrics distinguish inference and retrieval latency?",
+        "answer": "Record separate stage timings, queue delay, time to first token, and generation duration. End-to-end latency alone cannot localize the bottleneck."
+      },
+      {
+        "question": "Why can data drift occur without a code deployment?",
+        "answer": "User queries, document contents, and upstream services can change independently. Compare current traffic and evidence against the evaluation baseline."
+      },
+      {
+        "question": "Implement a canary release gate.",
+        "answer": "Route a controlled traffic share, compare quality and operational metrics with the baseline, enforce guardrails, and keep an automatic or explicit rollback path."
+      },
+      {
+        "question": "Write a release compatibility check for configuration versions.",
+        "answer": "Validate that embedding and index versions match and that required prompt and tool schemas are present before admitting traffic."
+      },
+      {
+        "question": "Design privacy-conscious distributed traces.",
+        "answer": "Use correlation IDs, stage metrics, controlled sampling, and restricted payload access. Retain only the content needed for approved debugging."
+      },
+      {
+        "question": "Quality falls while infrastructure dashboards remain green. What next?",
+        "answer": "Inspect retrieval freshness, prompt changes, upstream model revisions, and query distribution. Review failures with annotated evidence rather than scaling replicas immediately."
+      },
+      {
+        "question": "Why cannot an old prompt simply be restored during rollback?",
+        "answer": "Tool schemas, index versions, and model behavior may have changed. Roll back a compatible configuration bundle and test the complete request path."
+      },
+      {
+        "question": "Explain an operational incident in a behavioral interview.",
+        "answer": "Use a truthful situation-action-result account, describe your contribution and evidence, and distinguish measured recovery from assumptions or team-wide claims."
+      },
+      {
+        "question": "What should an LLMOps portfolio project include?",
+        "answer": "Provide version manifests, evaluation gates, canary comparison, alert examples, rollback exercise, and an incident review with actionable findings."
+      }
+    ],
+    "code": "config={'encoder':'v2','index_encoder':'v2'}\nprint(config['encoder']==config['index_encoder'])\n",
+    "expected": "True",
+    "sources": [
+      "nim",
+      "kubernetes",
+      "ragas"
+    ],
+    "tags": [
+      "llmops",
+      "monitoring"
+    ]
+  },
+  {
+    "slug": "latency-token-cost",
+    "title": "Latency, token cost and caching",
+    "concept": "GenAI cost and latency depend on prompt length, generated length, model choice, concurrency, and caching. Optimize against an explicit quality target rather than minimizing one metric in isolation.",
+    "mechanism": "Measure queue time, retrieval time, prefill, time to first token, and decode rate separately. Budget input and output tokens, remove redundant evidence, and compare routing or caching strategies on representative traffic. Include cache misses and invalidation behavior, and compute cost from actual metered units and current configured prices.",
+    "boundary": "Caching can serve stale or unauthorized content when keys omit revision or permission scope. Faster responses are not useful if answer quality drops below requirements.",
+    "example": "A support assistant shortens redundant context and bounds output while retaining required citations.",
+    "application": "Cost-aware interactive systems with service-level latency and quality objectives.",
+    "angles": [
+      {
+        "question": "How do time to first token and total completion time differ?",
+        "answer": "The first measures responsiveness before output starts; the second includes the full generation. Long outputs may have good initial response time but slow completion."
+      },
+      {
+        "question": "What factors determine a token-based request cost estimate?",
+        "answer": "Use separately metered input and output tokens, configured unit prices, and any documented cache rates. Do not assume every provider bills the same way."
+      },
+      {
+        "question": "Why can a high cache hit rate still harm users?",
+        "answer": "Hits may contain stale evidence or answers from a different permission scope. Measure correctness and freshness alongside hit rate."
+      },
+      {
+        "question": "Implement a per-request token budget.",
+        "answer": "Reserve output capacity and fixed prompt overhead, select evidence within the remaining input budget, and reject or shorten requests that cannot fit safely."
+      },
+      {
+        "question": "Write a cost estimator with separate input and output rates.",
+        "answer": "Multiply each token count by its corresponding unit rate and sum them, making the pricing unit explicit and externally configurable."
+      },
+      {
+        "question": "Design quality-aware model routing.",
+        "answer": "Use task requirements and validated signals to select models, keep fallbacks bounded, and compare quality, latency, and cost across query segments."
+      },
+      {
+        "question": "A cheaper model increases total spending. Why?",
+        "answer": "More retries, longer outputs, lower cache reuse, or escalations can outweigh the lower unit price. Measure total cost per successful task."
+      },
+      {
+        "question": "Why did prompt trimming worsen factual accuracy?",
+        "answer": "Required evidence or exceptions may have been removed. Audit retained passages and evaluate support coverage before adopting the shorter prompt."
+      },
+      {
+        "question": "How do you present an optimization result in an interview?",
+        "answer": "State the workload, baseline, quality constraint, percentile latency, and cost denominator. Disclose regressions and avoid extrapolating beyond measured traffic."
+      },
+      {
+        "question": "Build an optimization project with defensible results.",
+        "answer": "Retain workload samples, token accounting, cache policy, quality checks, latency distributions, and comparisons under the same conditions."
+      }
+    ],
+    "code": "input_tokens,output_tokens=1000,200\ninput_rate,output_rate=2,8\nprint((input_tokens*input_rate+output_tokens*output_rate)/1_000_000)\n",
+    "expected": "0.0036",
+    "sources": [
+      "nim",
+      "generation"
+    ],
+    "tags": [
+      "latency",
+      "token",
+      "cost"
+    ]
+  },
+  {
+    "slug": "gpu-inference",
+    "title": "GPU inference, batching and KV memory",
+    "concept": "GPU inference performance depends on model weights, activations, KV cache, memory bandwidth, and scheduling. Different request phases stress hardware differently.",
+    "mechanism": "Prefill processes prompt tokens and builds state, while decoding produces tokens incrementally using cached keys and values. Estimate memory for weights and KV cache separately, measure realistic context and concurrency, and evaluate batching policies. Track queue delay and tail latency because maximizing throughput can reduce interactive responsiveness.",
+    "boundary": "Checkpoint size alone is not the runtime memory requirement. KV cache scales with sequence length and active requests, and architecture changes such as grouped-query attention affect its size.",
+    "example": "A serving team bounds long contexts to prevent one batch from exhausting memory for other users.",
+    "application": "Capacity planning and efficient self-hosted language-model serving.",
+    "angles": [
+      {
+        "question": "What does the KV cache avoid during decoding?",
+        "answer": "It avoids recomputing prior token keys and values for every new token. It consumes memory that grows with retained sequence state."
+      },
+      {
+        "question": "Which dimensions determine a basic KV memory estimate?",
+        "answer": "Layers, key-value heads, head dimension, sequence length, active batch size, and bytes per element determine a simplified estimate for keys and values."
+      },
+      {
+        "question": "Why does higher throughput sometimes worsen p95 latency?",
+        "answer": "Larger batches and queue waits can improve device utilization while delaying individual requests. Interactive workloads need latency-aware scheduling."
+      },
+      {
+        "question": "Implement admission control from a KV memory budget.",
+        "answer": "Estimate memory for requested context and output reservation, include runtime overhead and fragmentation headroom, and reject or queue requests beyond safe capacity."
+      },
+      {
+        "question": "Write the simplified KV cache byte formula.",
+        "answer": "Multiply two for keys and values by layers, KV heads, head dimension, token count, batch size, and bytes per element. State architectural assumptions."
+      },
+      {
+        "question": "Design inference capacity for mixed short and long prompts.",
+        "answer": "Use length-aware scheduling, bounded contexts, separate queues where useful, and benchmarks that include realistic generation lengths and arrival bursts."
+      },
+      {
+        "question": "A model fits on the GPU but fails under concurrency. Why?",
+        "answer": "Runtime activations and KV caches add memory beyond weights. Inspect active sequence lengths, allocation fragmentation, and admission limits."
+      },
+      {
+        "question": "Why is GPU utilization low while requests queue?",
+        "answer": "CPU preprocessing, network I/O, batching configuration, or serialized dispatch may starve the device. Trace the entire serving pipeline."
+      },
+      {
+        "question": "Explain an inference benchmark to an NVIDIA-oriented study interviewer.",
+        "answer": "Describe hardware, runtime, precision, batch policy, context distribution, throughput, and tail latency. Treat this as original practice rather than a reported company question."
+      },
+      {
+        "question": "What should an inference capacity project publish?",
+        "answer": "Include hardware and runtime versions, memory estimates, workload distributions, concurrency sweeps, failure limits, and latency-throughput curves."
+      }
+    ],
+    "code": "layers,heads,dim,tokens,batch,bytes_per=2,2,4,10,1,2\nprint(2*layers*heads*dim*tokens*batch*bytes_per)\n",
+    "expected": "640",
+    "sources": [
+      "nim",
+      "llama"
+    ],
+    "tags": [
+      "gpu",
+      "inference"
+    ]
+  },
+  {
+    "slug": "docker-k8s-cloud",
+    "title": "Docker, Kubernetes and cloud deployment",
+    "concept": "Containers package an application runtime, while orchestration manages replicas, networking, rollout, and recovery. Successful deployment also requires model readiness, secrets, and external dependencies.",
+    "mechanism": "Build reproducible images, run with minimal privileges, configure health and readiness separately, and inject secrets through approved runtime mechanisms. Set resource requests and limits, handle termination gracefully, and roll out compatible configuration versions. Test dependency failures and cold starts before promising availability.",
+    "boundary": "A running container is not necessarily ready to serve model requests. GPU scheduling and memory requirements need explicit configuration and measurement.",
+    "example": "A new replica loads its model before readiness passes, preventing traffic from reaching an incomplete startup.",
+    "application": "Repeatable deployment of API and inference services on cloud infrastructure.",
+    "angles": [
+      {
+        "question": "How do liveness and readiness checks differ?",
+        "answer": "Liveness detects an unhealthy process that may need restart; readiness determines whether a replica should receive traffic. Model loading often affects readiness."
+      },
+      {
+        "question": "Why avoid embedding API keys in container images?",
+        "answer": "Image layers and registries can retain secrets beyond runtime access. Inject scoped secrets at runtime and rotate exposed credentials."
+      },
+      {
+        "question": "How can an aggressive liveness probe cause a restart loop?",
+        "answer": "A slow startup or temporary dependency failure may trigger restarts before initialization finishes. Configure startup behavior and avoid treating every dependency issue as process death."
+      },
+      {
+        "question": "Implement graceful shutdown for in-flight generation.",
+        "answer": "Stop accepting new requests, mark the replica unready, allow bounded draining, cancel remaining work after the deadline, and release resources."
+      },
+      {
+        "question": "Write a readiness decision using model and dependency state.",
+        "answer": "Return ready only when required initialization and critical dependencies are available. Avoid checking optional services in a way that removes all capacity unnecessarily."
+      },
+      {
+        "question": "Design a safe rolling update for an inference API.",
+        "answer": "Keep compatible replicas available, account for model-loading time and GPU capacity, use readiness gates, monitor regressions, and retain rollback configuration."
+      },
+      {
+        "question": "A cloud deployment works locally but cannot reach the model endpoint. What do you inspect?",
+        "answer": "Check network egress, DNS, credentials, region configuration, firewall policy, and timeouts without printing secret values."
+      },
+      {
+        "question": "Why are pods pending despite free CPU?",
+        "answer": "GPU resources, memory requests, node affinity, quotas, or image constraints may prevent scheduling. Inspect scheduler events and actual resource availability."
+      },
+      {
+        "question": "How do you discuss cloud portability honestly?",
+        "answer": "Separate portable application interfaces from provider-specific storage, identity, inference, and networking. Identify tested environments and remaining migration work."
+      },
+      {
+        "question": "What artifacts belong in a deployment project?",
+        "answer": "Include reproducible images, manifests, secret references, resource assumptions, readiness checks, rollback steps, and a documented failure drill."
+      }
+    ],
+    "code": "def ready(model_loaded,critical_dependency): return model_loaded and critical_dependency\nprint(ready(True,False))\n",
+    "expected": "False",
+    "sources": [
+      "kubernetes",
+      "fastapi",
+      "nim"
+    ],
+    "tags": [
+      "docker",
+      "k8s",
+      "cloud"
+    ]
+  },
+  {
+    "slug": "incident-response-projects",
+    "title": "Production debugging and MNC mock interviews",
+    "concept": "Production debugging starts with a reproducible symptom, bounded impact, and evidence. Interview preparation should demonstrate reasoning and truthful engineering ownership rather than memorized claims.",
+    "mechanism": "Establish the incident timeline, scope affected users, compare recent changes, and inspect correlated stage metrics. Mitigate safely before pursuing a complete root cause, preserve relevant evidence with privacy controls, and verify recovery using user-facing outcomes. Convert findings into tests, monitoring, and ownership changes, then explain tradeoffs in a structured project discussion.",
+    "boundary": "Correlation with a deployment is not proof of causation. Do not invent production experience or claim that original practice questions were asked by a company.",
+    "example": "A RAG incident is traced to a stale index activation pointer; rollback restores current evidence and a revision check prevents recurrence.",
+    "application": "Incident response, portfolio reviews, system-design discussions, and behavioral interviews.",
+    "angles": [
+      {
+        "question": "What separates mitigation from root-cause analysis?",
+        "answer": "Mitigation reduces current impact, while root-cause analysis explains the failure mechanism. A safe rollback may restore service before the underlying defect is fully understood."
+      },
+      {
+        "question": "Which evidence helps localize a GenAI quality regression?",
+        "answer": "Compare request traces, corpus and model versions, retrieval candidates, prompt versions, and representative failed answers against a known-good baseline."
+      },
+      {
+        "question": "Why can a successful rollback fail to restore users' experience?",
+        "answer": "Stale caches, incompatible schemas, in-flight jobs, or external changes may remain. Verify complete user journeys rather than deployment status alone."
+      },
+      {
+        "question": "Implement an incident triage checklist.",
+        "answer": "Record severity, affected paths, onset, recent changes, safe mitigations, owners, and verification steps. Keep the checklist short enough to use under pressure."
+      },
+      {
+        "question": "Write a regression detector comparing a metric with a threshold.",
+        "answer": "Validate nonempty samples, compute the chosen metric, and flag threshold breaches. Include sample size and uncertainty before automating consequential decisions."
+      },
+      {
+        "question": "Design a mock interview for a production GenAI project.",
+        "answer": "Ask for requirements, architecture, evidence, failure handling, security, evaluation, cost, and personal contribution. Probe one concrete tradeoff in depth."
+      },
+      {
+        "question": "An interviewer asks about a failure you have not experienced. How should you respond?",
+        "answer": "State that you have not handled that situation directly, then explain a reasoned approach or a clearly labeled simulated exercise."
+      },
+      {
+        "question": "How do you debug a hallucination spike after document updates?",
+        "answer": "Compare ingestion revisions, retrieval coverage, conflicting passages, cache invalidation, and generator inputs. Use a known-answer set to isolate the broken stage."
+      },
+      {
+        "question": "Give a truthful behavioral answer about a difficult technical tradeoff.",
+        "answer": "Describe a real situation, your responsibility, the options considered, your action, and observed results. Clearly identify team work and unmeasured outcomes."
+      },
+      {
+        "question": "What makes a final GenAI capstone interview-ready?",
+        "answer": "Provide runnable instructions, evidence-backed evaluation, architecture decisions, security boundaries, operational limits, and a concise explanation of your own implementation work."
+      }
+    ],
+    "code": "def regression(before,after,tolerance): return after < before-tolerance\nprint(regression(0.9,0.7,0.05))\n",
+    "expected": "True",
+    "sources": [
+      "rag",
+      "ragas",
+      "owasp",
+      "nim"
+    ],
+    "tags": [
+      "incident",
+      "response",
+      "projects"
+    ]
+  }
+]

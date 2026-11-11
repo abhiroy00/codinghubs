@@ -25,6 +25,14 @@ LOGO_URL = f'{settings.SITE_URL}/assets/coding-hubs-school-of-ai-logo.jpeg'
 MODELS = {'blog': Blog, 'case': CaseStudy}
 BASE_PATH = {'blog': '/blog', 'case': '/case-studies'}
 
+
+def canonical_sitemap_rows(queryset, base):
+    """A published page pointing at another canonical is not a preferred sitemap URL."""
+    for slug, modified, canonical in queryset.values_list('slug', 'updated_at', 'canonical_url'):
+        url = f'{settings.SITE_URL}{base}/{slug}'
+        if not canonical or canonical == url:
+            yield url, modified
+
 SNAPSHOT_SKIP = {'id', 'created_at', 'updated_at', 'created_by', 'tags', 'related'}
 
 

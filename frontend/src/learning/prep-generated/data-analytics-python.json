@@ -1,0 +1,551 @@
+{
+  "curriculum": "data-analytics-python",
+  "summary": "Available lessons cover Python Data Types and Core Structures for Analysts; Lists, Dictionaries and Comprehensions for Data Wrangling; Functions, Lambdas and Reusable Analysis Code; File Handling: Reading and Writing CSV and JSON.",
+  "complete": false,
+  "missingDays": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "roadmap": [
+    {
+      "day": 1,
+      "title": "Python Data Types and Core Structures for Analysts",
+      "module": "Python foundations for analysts",
+      "level": "Beginner"
+    },
+    {
+      "day": 2,
+      "title": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+      "module": "Python foundations for analysts",
+      "level": "Beginner"
+    },
+    {
+      "day": 3,
+      "title": "Functions, Lambdas and Reusable Analysis Code",
+      "module": "Python foundations for analysts",
+      "level": "Beginner"
+    },
+    {
+      "day": 4,
+      "title": "File Handling: Reading and Writing CSV and JSON",
+      "module": "Python foundations for analysts",
+      "level": "Beginner"
+    }
+  ],
+  "samples": [
+    {
+      "day": 1,
+      "title": "Python Data Types and Core Structures for Analysts",
+      "level": "Beginner",
+      "definition": "Python data types describe what kind of value a variable holds and which operations are allowed on it. Analysts work mostly with numbers (int, float), text (str), true/false flags (bool), the missing marker None, and four containers: list (ordered, changeable), tuple (ordered, fixed), dict (key to value lookup) and set (unique items). pandas and NumPy are built on top of these ideas, so understanding them explains much of how those libraries behave.",
+      "objectives": [
+        "Explain Python's built-in scalar types (int, float, str, bool, None) and when an analyst meets each one.",
+        "Choose between list, tuple, dict and set for a given data task and justify the choice.",
+        "Describe mutability and why aliasing a list can silently change data.",
+        "Convert raw text values into numbers safely and treat bad values as missing.",
+        "Answer common interview questions on float precision, None and type conversion."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between a list and a tuple, and when would you use each?",
+          "answer": "Both are ordered sequences. A list is mutable, so it suits a collection that grows or changes, such as values read from a file. A tuple is immutable and hashable when its items are, so it suits fixed records and dictionary keys such as (city, month).",
+          "explanation": "A strong answer mentions immutability, hashability and a concrete analytics use, not just syntax differences."
+        },
+        {
+          "question": "Why does 0.1 + 0.2 not equal 0.3 in Python?",
+          "answer": "Floats are stored in binary using IEEE 754 double precision, and 0.1 and 0.2 have no exact binary representation, so the sum is 0.30000000000000004. Compare with math.isclose or round, and use decimal.Decimal for money when exactness matters.",
+          "explanation": "Interviewers want the cause (binary representation) and the practical fix, especially for financial data."
+        },
+        {
+          "question": "When would you use a dict instead of a list?",
+          "answer": "When you need to look up values by a key, for example totals per region. Dict lookups are O(1) on average, while finding an item in a list is O(n).",
+          "explanation": "Mentioning time complexity and a realistic grouping example shows you think about performance."
+        },
+        {
+          "question": "What is the difference between None and NaN?",
+          "answer": "None is Python's object meaning 'no value'. NaN is a special float value meaning 'not a number', used by NumPy and pandas for missing numeric data. NaN is not equal to itself, so missing values are detected with functions such as pd.isna rather than ==.",
+          "explanation": "Good answers connect this to pandas: a float column stores missing values as NaN, while an object column can hold None."
+        },
+        {
+          "question": "Why does a pandas integer column become float when it has missing values, and how can you avoid it?",
+          "answer": "The classic NaN marker is a float, and NumPy int64 has no missing marker, so pandas upcasts the column to float64. Use the nullable 'Int64' dtype (capital I), which stores missing values as pd.NA while keeping integers.",
+          "explanation": "This advanced question checks whether you understand dtypes rather than only using pandas functions."
+        }
+      ],
+      "example": {
+        "title": "Cleaning a raw list of order amounts",
+        "body": "A store exports order amounts as text, with some blanks and typing errors. We convert what we can to floats, count what we cannot, and compute a safe average. The same steps happen inside pd.to_numeric(errors='coerce').",
+        "code": {
+          "language": "python",
+          "source": "raw = ['1250', '980.5', '', 'NA', '1100', 'abc']\nvalues, missing = [], 0\nfor item in raw:\n    try:\n        values.append(float(item))\n    except ValueError:\n        missing += 1\n\nprint(values)                  # [1250.0, 980.5, 1100.0]\nprint(missing)                 # 3\nprint(round(sum(values) / len(values), 2))  # 1110.17"
+        }
+      },
+      "practice": {
+        "title": "Summarise a column of raw values",
+        "statement": "A single line contains comma-separated values from one spreadsheet column. A value is valid if it converts to a float and is not NaN; everything else (blank, NA, null, text, nan) counts as missing. Print the number of valid and missing values, then the sum, minimum, maximum and mean of the valid values, each with two decimals. If there are no valid values, print the two counts and then 'summary: not available'.",
+        "objective": "Convert raw text values into numbers safely, count missing entries and compute basic summary statistics, as you would before trusting a column."
+      },
+      "takeaways": [
+        "Everything read from a file starts as text; convert deliberately and count failures.",
+        "Floats are approximate, so compare with rounding or math.isclose, never with == on computed values.",
+        "Pick the container by the question: order (list), fixed record (tuple), lookup (dict), uniqueness (set).",
+        "Assignment shares mutable objects; copy when you need independence.",
+        "NaN is not equal to itself; use dedicated functions to detect missing values.",
+        "pandas dtypes mirror these types, which explains object columns and int-to-float conversions."
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Lists, Dictionaries and Comprehensions for Data Wrangling",
+      "level": "Beginner",
+      "definition": "A comprehension is a compact Python expression that builds a new list, dict or set by looping over an iterable, optionally filtering items with a condition. Combined with dictionaries for grouping and counting, comprehensions let an analyst reshape small datasets in a few readable lines, which is exactly what pandas later does at scale.",
+      "objectives": [
+        "Build and transform lists with slicing, sorting and list comprehensions.",
+        "Use dicts, defaultdict and Counter to group and count records.",
+        "Write dict and set comprehensions with conditions.",
+        "Sort records by several keys using key functions.",
+        "Explain when comprehensions help readability and when a loop is clearer."
+      ],
+      "interview": [
+        {
+          "question": "What is a list comprehension and why would you use it?",
+          "answer": "It is an expression such as [x * 2 for x in values if x > 0] that builds a new list from an iterable with optional filtering. It is concise, readable for simple transformations and usually faster than a loop that calls append.",
+          "explanation": "Mention both readability and speed, and that very complex comprehensions should be rewritten as loops."
+        },
+        {
+          "question": "What is the difference between sorted(x) and x.sort()?",
+          "answer": "sorted() works on any iterable and returns a new list, leaving the original unchanged. list.sort() sorts the list in place and returns None.",
+          "explanation": "Interviewers often show code like x = x.sort() to see if you spot that x becomes None."
+        },
+        {
+          "question": "How would you count the frequency of each item in a list?",
+          "answer": "Use collections.Counter(items), which returns a dict-like object of counts and supports most_common(n). Without imports, loop and use counts[item] = counts.get(item, 0) + 1.",
+          "explanation": "Showing both the library way and the manual way demonstrates understanding, not just recall."
+        },
+        {
+          "question": "How do you sort a list of records by amount descending and then by name ascending?",
+          "answer": "Use a tuple key: sorted(records, key=lambda r: (-r['amount'], r['name'])). Negating the number reverses its order while names stay ascending. For non-numeric keys, sort twice using stable sorting: first by the secondary key, then by the primary key with reverse=True.",
+          "explanation": "Knowing that Python's sort is stable and how to exploit it is a strong advanced signal."
+        },
+        {
+          "question": "When is a comprehension the wrong choice?",
+          "answer": "When it needs several nested loops and conditions, has side effects such as printing or writing files, or when the data is large and a generator expression or pandas vectorised operation would avoid building a full list in memory.",
+          "explanation": "Good answers mention generator expressions, e.g. sum(x for x in values), to avoid creating an intermediate list."
+        }
+      ],
+      "example": {
+        "title": "Revenue per region with a dict comprehension and defaultdict",
+        "body": "We turn raw rows into records with zip, keep only paid orders with a comprehension, then accumulate revenue per region. The pandas equivalent is df[df.status == 'paid'].groupby('region')['amount'].sum().",
+        "code": {
+          "language": "python",
+          "source": "from collections import defaultdict\n\nheader = ['region', 'amount', 'status']\nrows = [['North', 500, 'paid'], ['South', 300, 'refunded'],\n        ['North', 250, 'paid'], ['South', 400, 'paid']]\nrecords = [dict(zip(header, r)) for r in rows]\npaid = [r for r in records if r['status'] == 'paid']\n\nrevenue = defaultdict(int)\nfor r in paid:\n    revenue[r['region']] += r['amount']\nprint(dict(revenue))   # {'North': 750, 'South': 400}"
+        }
+      },
+      "practice": {
+        "title": "Category units and distinct products",
+        "statement": "Each order line has a product name, a category and a quantity. For each category, compute the total units sold and the number of distinct products. Print the categories sorted by total units descending; break ties by category name ascending. If there are no order lines, print 'no data'.",
+        "objective": "Group records with dictionaries and sets, then sort the result by several keys."
+      },
+      "takeaways": [
+        "Comprehensions build lists, dicts and sets in one readable expression; keep them simple.",
+        "A trailing if filters items; a leading if-else transforms every item.",
+        "defaultdict and Counter make grouping and counting a single pass over the data.",
+        "sorted() returns a new list; list.sort() sorts in place and returns None.",
+        "Tuple sort keys handle multi-column ordering, with negation for descending numbers.",
+        "These patterns are the mental model behind pandas filtering and groupby."
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Functions, Lambdas and Reusable Analysis Code",
+      "level": "Beginner",
+      "definition": "A function is a named, reusable block of code that takes inputs (parameters), performs a task and returns a result. A lambda is a small anonymous function written in one expression, typically passed to another function such as sorted or DataFrame.apply. Packaging analysis steps as functions makes notebooks reproducible and lets the same logic run on new data.",
+      "objectives": [
+        "Write functions with positional, keyword and default parameters and clear return values.",
+        "Use *args and **kwargs and explain when they are useful.",
+        "Apply lambda functions as sort keys and in map/filter or pandas apply.",
+        "Explain variable scope and the mutable default argument trap.",
+        "Turn repeated analysis steps into small, testable functions."
+      ],
+      "interview": [
+        {
+          "question": "What is a lambda function and when would you use one in data analysis?",
+          "answer": "A lambda is an anonymous single-expression function, such as lambda x: x * 1.18. Analysts use it for short logic passed to another function: sort keys, max/min keys, Series.map, DataFrame.apply or DataFrame.assign.",
+          "explanation": "A strong answer adds the limitation: no statements, so longer logic belongs in a named def."
+        },
+        {
+          "question": "What are *args and **kwargs?",
+          "answer": "*args gathers extra positional arguments into a tuple; **kwargs gathers extra keyword arguments into a dict. They are used to write flexible functions and wrappers that pass options on, such as forwarding read options to pd.read_csv.",
+          "explanation": "Give a practical wrapper example rather than only the definition."
+        },
+        {
+          "question": "Explain the mutable default argument problem.",
+          "answer": "Default values are created once when the function is defined. A default list or dict is therefore shared across calls and keeps earlier changes. The fix is to default to None and create a new object inside the function.",
+          "explanation": "Interviewers like candidates who can show the buggy output and the corrected pattern."
+        },
+        {
+          "question": "What is the difference between a function that prints and one that returns?",
+          "answer": "Printing only displays a value; the caller receives None. Returning hands the value back so it can be stored, tested, combined or written to a file.",
+          "explanation": "This basic question catches people who build notebooks that cannot be reused."
+        },
+        {
+          "question": "How would you structure a repeated monthly cleaning process in Python?",
+          "answer": "Write small pure functions for each step (load, standardise columns, fix types, remove test data, add derived columns), chain them with DataFrame.pipe or a main function, add docstrings and simple tests on sample data, and keep configuration such as file paths as parameters.",
+          "explanation": "This advanced answer shows engineering habits: modularity, testability and parameterisation."
+        }
+      ],
+      "example": {
+        "title": "A reusable age-banding function",
+        "body": "Marketing wants customers grouped into age bands. We write one function that assigns a band and reuse it for any list. In pandas the same idea is pd.cut(df['age'], bins=[0, 18, 35, 60, 100]), which also uses right-closed intervals such as (18, 35].",
+        "code": {
+          "language": "python",
+          "source": "def age_band(age, edges=(0, 18, 35, 60, 100)):\n    \"\"\"Return the (low, high] band label for age, or None if outside.\"\"\"\n    for low, high in zip(edges, edges[1:]):\n        if low < age <= high:\n            return f'({low}, {high}]'\n    return None\n\nages = [16, 18, 22, 47, 70]\nprint([age_band(a) for a in ages])\n# ['(0, 18]', '(0, 18]', '(18, 35]', '(35, 60]', '(60, 100]']"
+        }
+      },
+      "practice": {
+        "title": "Bin values like pd.cut",
+        "statement": "The first line holds ascending bin edges e0,e1,...,ek. A value v belongs to bin i when e(i) < v <= e(i+1). Values that fit no bin are out of range. The second line holds the values to bin (it may be empty). Print each bin as (e(i), e(i+1)]: count in edge order, using the edges exactly as written in the input, then print 'out of range: <count>'.",
+        "objective": "Write a reusable function that assigns values to right-closed bins and counts how many fall in each, mirroring pd.cut followed by value_counts."
+      },
+      "takeaways": [
+        "Functions should return results, not just print them.",
+        "Default values are evaluated once; never use a mutable object as a default.",
+        "Lambdas are for short, single-expression logic such as sort keys.",
+        "*args and **kwargs let helpers forward options to library calls.",
+        "Pure, small functions make analysis testable and reproducible.",
+        "pd.cut uses right-closed bins (a, b] by default, just like the banding example."
+      ]
+    },
+    {
+      "day": 4,
+      "title": "File Handling: Reading and Writing CSV and JSON",
+      "level": "Beginner",
+      "definition": "File handling is reading data from and writing data to files on disk. CSV (comma-separated values) stores a table as plain text, one row per line, while JSON (JavaScript Object Notation) stores nested objects and arrays. Python's built-in csv and json modules parse these formats correctly, and pandas wraps them in read_csv, read_json, to_csv and to_json for table-shaped data.",
+      "objectives": [
+        "Open files safely with context managers and the right encoding.",
+        "Read and write CSV files with the csv module, including quoted fields.",
+        "Load and save JSON with json.load, json.loads, json.dump and json.dumps.",
+        "Use the key pd.read_csv and to_csv options interviewers ask about.",
+        "Handle bad rows without crashing and report what was skipped."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between json.load and json.loads?",
+          "answer": "json.load reads JSON from a file object; json.loads parses a JSON string. Likewise json.dump writes to a file and json.dumps returns a string.",
+          "explanation": "The 's' stands for string. Mention that JSON null becomes None and true becomes True."
+        },
+        {
+          "question": "Why use the csv module instead of line.split(',')?",
+          "answer": "Real CSV files quote fields that contain commas, quotes or newlines. The csv module implements those rules, so 'Delhi, NCR' stays one field; split(',') would break it into two.",
+          "explanation": "A concrete example of a quoted field makes this answer convincing."
+        },
+        {
+          "question": "Which pd.read_csv parameters do you use most and why?",
+          "answer": "usecols to load only needed columns, dtype to control types and memory, parse_dates for date columns, na_values for custom missing markers, sep and encoding for unusual files, and chunksize or nrows for large files.",
+          "explanation": "Interviewers look for awareness of memory and correctness, not a list of every parameter."
+        },
+        {
+          "question": "You open a CSV exported from Excel and the first column is named 'ï»¿id'. What happened?",
+          "answer": "The file starts with a UTF-8 byte-order mark that was read as text. Reading with encoding='utf-8-sig' strips it.",
+          "explanation": "This practical debugging question rewards people who have handled real exports."
+        },
+        {
+          "question": "How would you load a 10 GB CSV that does not fit in memory?",
+          "answer": "Read it in chunks with pd.read_csv(chunksize=...), load only needed columns with usecols, set compact dtypes, aggregate each chunk and combine the partial results. Alternatively, convert it once to Parquet or load it into a database and query it.",
+          "explanation": "This advanced question connects file handling to performance (covered again on Day 26)."
+        }
+      ],
+      "example": {
+        "title": "From CSV to a JSON summary",
+        "body": "We read an orders file with DictReader, total the amounts per region and save the result as JSON for a dashboard. The pandas version is df.groupby('region')['amount'].sum().to_json().",
+        "code": {
+          "language": "python",
+          "source": "import csv, json\nfrom collections import defaultdict\n\ntotals = defaultdict(float)\nwith open('orders.csv', encoding='utf-8', newline='') as f:\n    for row in csv.DictReader(f):\n        totals[row['region']] += float(row['amount'])\n\nwith open('summary.json', 'w', encoding='utf-8') as f:\n    json.dump(dict(totals), f, indent=2, sort_keys=True)\n\n# pandas equivalent\n# import pandas as pd\n# df = pd.read_csv('orders.csv', usecols=['region', 'amount'])\n# df.groupby('region')['amount'].sum().to_json('summary.json')"
+        }
+      },
+      "practice": {
+        "title": "CSV to JSON regional summary",
+        "statement": "Standard input contains a CSV file with a header row. It always has the columns region and amount, possibly among others and in any order. Sum amount per region. Rows whose amount is blank or not a number are skipped. Print one line of JSON with sorted keys: {\"skipped\": <count>, \"totals\": {<region>: <total rounded to 2 decimals>, ...}, \"valid_rows\": <count>}.",
+        "objective": "Parse a CSV with quoted fields using csv.DictReader, aggregate a numeric column defensively and emit stable JSON."
+      },
+      "takeaways": [
+        "Use with blocks, explicit encodings and newline='' for CSV files.",
+        "Never split CSV lines on commas yourself; quoted fields break it.",
+        "csv values are strings; convert types explicitly and count failures.",
+        "json.load/dump work with files, loads/dumps with strings.",
+        "Know read_csv options: sep, usecols, dtype, parse_dates, na_values, chunksize.",
+        "Write with index=False unless the index carries real information."
+      ]
+    }
+  ],
+  "firstLesson": {
+    "day": 1,
+    "title": "Python Data Types and Core Structures for Analysts",
+    "module": "Python foundations for analysts",
+    "level": "Beginner",
+    "objectives": [
+      "Explain Python's built-in scalar types (int, float, str, bool, None) and when an analyst meets each one.",
+      "Choose between list, tuple, dict and set for a given data task and justify the choice.",
+      "Describe mutability and why aliasing a list can silently change data.",
+      "Convert raw text values into numbers safely and treat bad values as missing.",
+      "Answer common interview questions on float precision, None and type conversion."
+    ],
+    "definition": "Python data types describe what kind of value a variable holds and which operations are allowed on it. Analysts work mostly with numbers (int, float), text (str), true/false flags (bool), the missing marker None, and four containers: list (ordered, changeable), tuple (ordered, fixed), dict (key to value lookup) and set (unique items). pandas and NumPy are built on top of these ideas, so understanding them explains much of how those libraries behave.",
+    "theory": [
+      {
+        "heading": "Scalar types an analyst uses every day",
+        "body": "Every value read from a file starts life as a string. Turning '1,250' or '3.5' into numbers is the analyst's first job, and mistakes here flow into every later calculation. Integers have unlimited precision in Python, while floats follow the IEEE 754 double-precision standard, which cannot represent most decimal fractions exactly.",
+        "points": [
+          "int: whole numbers such as order counts; unlimited size.",
+          "float: decimals such as prices; 0.1 + 0.2 gives 0.30000000000000004.",
+          "str: text such as city names; immutable, so methods return new strings.",
+          "bool: True/False flags; True behaves as 1 in arithmetic, so sum(flags) counts True values.",
+          "None: Python's 'no value' marker; pandas shows missing numbers as NaN instead."
+        ]
+      },
+      {
+        "heading": "Containers: list, tuple, dict and set",
+        "body": "The container you pick decides how fast lookups are and whether data can change. A list keeps order and allows duplicates, which suits a column of values. A dict maps keys to values with average O(1) lookup, which suits counts per category or a row represented as column-to-value. A set removes duplicates and answers membership questions quickly. A tuple is a fixed record, useful as a dictionary key such as (city, month).",
+        "points": [
+          "list: [120, 85, 97]; ordered, mutable, allows duplicates.",
+          "tuple: ('Pune', 2024); ordered, immutable, hashable if its items are.",
+          "dict: {'Pune': 120}; key lookup, insertion order preserved since Python 3.7.",
+          "set: {'Pune', 'Delhi'}; unique items, fast 'in' checks, no order."
+        ]
+      },
+      {
+        "heading": "Mutability and aliasing",
+        "body": "Assigning a list to another name does not copy it; both names point to the same object. If you append to one, the other changes too. This is the same reason pandas warns about modifying a slice of a DataFrame: you must know whether you hold a view or a copy. Use list(x), x.copy() or copy.deepcopy(x) when you need an independent copy.",
+        "points": [
+          "Mutable: list, dict, set. Immutable: int, float, str, tuple, bool.",
+          "b = a shares the object; b = a.copy() makes a shallow copy.",
+          "Default arguments such as def f(x=[]) are created once and shared between calls."
+        ]
+      },
+      {
+        "heading": "Type conversion and missing values",
+        "body": "Real data contains blanks, 'NA', 'null' and typing errors. Calling float() on such text raises ValueError, so analysts wrap conversion in try/except and count failures as missing rather than crashing. The string 'nan' does convert to a float NaN, and NaN is not equal to itself, which is why missing-value checks use special functions (math.isnan, pandas isna) instead of ==.",
+        "points": [
+          "int('42') works; int('4.5') raises ValueError; int(float('4.5')) truncates to 4.",
+          "float('nan') != float('nan') is True.",
+          "Decide explicitly whether missing values are skipped, filled or reported."
+        ]
+      },
+      {
+        "heading": "Why this matters in pandas",
+        "body": "pandas columns have a dtype such as int64, float64, object, bool or datetime64. A single text value in a numeric column turns it into object dtype, which is slower and breaks arithmetic. An integer column with a missing value becomes float64 because NaN is a float, unless you use the nullable Int64 dtype. Knowing the underlying Python types lets you predict and fix these surprises.",
+        "points": [
+          "One bad string makes a column object dtype.",
+          "Missing values in an int column turn it into float64.",
+          "Nullable dtypes (Int64, boolean, string) keep a proper missing marker, pd.NA."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Cleaning a raw list of order amounts",
+      "body": "A store exports order amounts as text, with some blanks and typing errors. We convert what we can to floats, count what we cannot, and compute a safe average. The same steps happen inside pd.to_numeric(errors='coerce').",
+      "code": {
+        "language": "python",
+        "source": "raw = ['1250', '980.5', '', 'NA', '1100', 'abc']\nvalues, missing = [], 0\nfor item in raw:\n    try:\n        values.append(float(item))\n    except ValueError:\n        missing += 1\n\nprint(values)                  # [1250.0, 980.5, 1100.0]\nprint(missing)                 # 3\nprint(round(sum(values) / len(values), 2))  # 1110.17"
+      }
+    },
+    "use_cases": [
+      {
+        "title": "Data import checks",
+        "description": "Converting text columns from CSV exports into numbers and counting values that failed conversion before analysis starts."
+      },
+      {
+        "title": "Category counts",
+        "description": "Using a dict to count orders per city or a set to find the distinct products sold."
+      },
+      {
+        "title": "Composite keys",
+        "description": "Using tuples such as (region, month) as dictionary keys to store monthly totals per region."
+      },
+      {
+        "title": "Flag columns",
+        "description": "Storing booleans like is_returned and summing them to count returns, the same trick used on pandas boolean masks."
+      }
+    ],
+    "demonstration": {
+      "description": "Run these lines in a Python shell to see the behaviours interviewers ask about: float precision, aliasing, NaN comparison and set deduplication.",
+      "code": {
+        "language": "python",
+        "source": "print(0.1 + 0.2 == 0.3)\nprint(round(0.1 + 0.2, 2) == 0.3)\na = [1, 2]\nb = a\nb.append(3)\nprint(a)\nx = float('nan')\nprint(x == x)\nprint(len({'Pune', 'Delhi', 'Pune'}))\nprint(sum([True, False, True, True]))"
+      },
+      "output": "False\nTrue\n[1, 2, 3]\nFalse\n2\n3"
+    },
+    "takeaways": [
+      "Everything read from a file starts as text; convert deliberately and count failures.",
+      "Floats are approximate, so compare with rounding or math.isclose, never with == on computed values.",
+      "Pick the container by the question: order (list), fixed record (tuple), lookup (dict), uniqueness (set).",
+      "Assignment shares mutable objects; copy when you need independence.",
+      "NaN is not equal to itself; use dedicated functions to detect missing values.",
+      "pandas dtypes mirror these types, which explains object columns and int-to-float conversions."
+    ],
+    "interview": [
+      {
+        "question": "What is the difference between a list and a tuple, and when would you use each?",
+        "answer": "Both are ordered sequences. A list is mutable, so it suits a collection that grows or changes, such as values read from a file. A tuple is immutable and hashable when its items are, so it suits fixed records and dictionary keys such as (city, month).",
+        "explanation": "A strong answer mentions immutability, hashability and a concrete analytics use, not just syntax differences."
+      },
+      {
+        "question": "Why does 0.1 + 0.2 not equal 0.3 in Python?",
+        "answer": "Floats are stored in binary using IEEE 754 double precision, and 0.1 and 0.2 have no exact binary representation, so the sum is 0.30000000000000004. Compare with math.isclose or round, and use decimal.Decimal for money when exactness matters.",
+        "explanation": "Interviewers want the cause (binary representation) and the practical fix, especially for financial data."
+      },
+      {
+        "question": "When would you use a dict instead of a list?",
+        "answer": "When you need to look up values by a key, for example totals per region. Dict lookups are O(1) on average, while finding an item in a list is O(n).",
+        "explanation": "Mentioning time complexity and a realistic grouping example shows you think about performance."
+      },
+      {
+        "question": "What is the difference between None and NaN?",
+        "answer": "None is Python's object meaning 'no value'. NaN is a special float value meaning 'not a number', used by NumPy and pandas for missing numeric data. NaN is not equal to itself, so missing values are detected with functions such as pd.isna rather than ==.",
+        "explanation": "Good answers connect this to pandas: a float column stores missing values as NaN, while an object column can hold None."
+      },
+      {
+        "question": "Why does a pandas integer column become float when it has missing values, and how can you avoid it?",
+        "answer": "The classic NaN marker is a float, and NumPy int64 has no missing marker, so pandas upcasts the column to float64. Use the nullable 'Int64' dtype (capital I), which stores missing values as pd.NA while keeping integers.",
+        "explanation": "This advanced question checks whether you understand dtypes rather than only using pandas functions."
+      }
+    ],
+    "practice": {
+      "kind": "coding",
+      "title": "Summarise a column of raw values",
+      "difficulty": "Basic",
+      "objective": "Convert raw text values into numbers safely, count missing entries and compute basic summary statistics, as you would before trusting a column.",
+      "statement": "A single line contains comma-separated values from one spreadsheet column. A value is valid if it converts to a float and is not NaN; everything else (blank, NA, null, text, nan) counts as missing. Print the number of valid and missing values, then the sum, minimum, maximum and mean of the valid values, each with two decimals. If there are no valid values, print the two counts and then 'summary: not available'.",
+      "language": "python",
+      "input_format": "One line of comma-separated values. Spaces around values should be ignored.",
+      "output_format": "count: <n>\nmissing: <m>\nsum: <x.xx>\nmin: <x.xx>\nmax: <x.xx>\nmean: <x.xx>\nor, when n is 0, the two count lines followed by 'summary: not available'.",
+      "example": {
+        "input": "12, 7.5, NA, 3, , abc\n",
+        "output": "count: 3\nmissing: 3\nsum: 22.50\nmin: 3.00\nmax: 12.00\nmean: 7.50"
+      },
+      "constraints": [
+        "The line has between 1 and 1000 comma-separated tokens.",
+        "Treat the token 'nan' (any case) as missing even though float() accepts it.",
+        "Format every number with exactly two decimals."
+      ],
+      "starter": "line = input()\nvalues, missing = [], 0\n\nfor token in line.split(','):\n    token = token.strip()\n    # TODO: convert to float, count missing values\n\n# TODO: print the summary\n",
+      "solution": "import math\n\nline = input()\nvalues, missing = [], 0\nfor token in line.split(','):\n    token = token.strip()\n    try:\n        number = float(token)\n    except ValueError:\n        missing += 1\n        continue\n    if math.isnan(number):\n        missing += 1\n    else:\n        values.append(number)\n\nprint(f'count: {len(values)}')\nprint(f'missing: {missing}')\nif values:\n    total = sum(values)\n    print(f'sum: {total:.2f}')\n    print(f'min: {min(values):.2f}')\n    print(f'max: {max(values):.2f}')\n    print(f'mean: {total / len(values):.2f}')\nelse:\n    print('summary: not available')\n",
+      "explanation": [
+        "Split the line on commas and strip spaces from each token.",
+        "Try float(); a ValueError means the token is missing. Also treat NaN as missing because float('nan') succeeds.",
+        "Keep valid numbers in a list and count the rest.",
+        "If any values exist, compute sum, min, max and mean and format them with two decimals; otherwise print the fallback line."
+      ],
+      "tests": [
+        {
+          "input": "12, 7.5, NA, 3, , abc\n",
+          "output": "count: 3\nmissing: 3\nsum: 22.50\nmin: 3.00\nmax: 12.00\nmean: 7.50"
+        },
+        {
+          "input": "10,20,25\n",
+          "output": "count: 3\nmissing: 0\nsum: 55.00\nmin: 10.00\nmax: 25.00\nmean: 18.33"
+        },
+        {
+          "input": "NA,,null\n",
+          "output": "count: 0\nmissing: 3\nsummary: not available"
+        },
+        {
+          "input": "-4.5, 2, NaN, 8\n",
+          "output": "count: 3\nmissing: 1\nsum: 5.50\nmin: -4.50\nmax: 8.00\nmean: 1.83"
+        },
+        {
+          "input": "42\n",
+          "output": "count: 1\nmissing: 0\nsum: 42.00\nmin: 42.00\nmax: 42.00\nmean: 42.00"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "type": "output",
+        "question": "What does this list aliasing code print?",
+        "code": "a = [10, 20]\nb = a\nb.append(30)\nprint(len(a))",
+        "options": [
+          "Error",
+          "None",
+          "2",
+          "3"
+        ],
+        "answer": 3,
+        "explanation": "b = a makes both names refer to the same list, so appending through b also changes a, which now has 3 items."
+      },
+      {
+        "type": "concept",
+        "question": "Which container is the best choice for counting how many orders came from each city?",
+        "options": [
+          "A tuple of city names",
+          "A set of city names",
+          "A dict mapping city to count",
+          "A string of city names joined by commas"
+        ],
+        "answer": 2,
+        "explanation": "A dict gives O(1) lookup and update per city. A set loses the counts and a tuple cannot be updated."
+      },
+      {
+        "type": "output",
+        "question": "What does this NaN comparison print?",
+        "code": "x = float('nan')\nprint(x == x)",
+        "options": [
+          "nan",
+          "ValueError",
+          "False",
+          "True"
+        ],
+        "answer": 2,
+        "explanation": "By the IEEE 754 standard NaN is not equal to anything, including itself, so the comparison is False."
+      },
+      {
+        "type": "scenario",
+        "question": "A pandas column of customer ages is int64. After loading a new file with two blank ages, the column becomes float64. Why?",
+        "options": [
+          "pandas always stores ages as floats",
+          "The CSV reader rounds all numbers",
+          "Blank cells are read as zero",
+          "Missing values are stored as NaN, which is a float, so the column is upcast"
+        ],
+        "answer": 3,
+        "explanation": "NumPy int64 cannot hold NaN, so pandas upcasts to float64. The nullable Int64 dtype avoids this."
+      },
+      {
+        "type": "concept",
+        "question": "Which of these can be used as a dictionary key?",
+        "options": [
+          "{'Pune': 2024}",
+          "{'Pune', 2024}",
+          "['Pune', 2024]",
+          "('Pune', 2024)"
+        ],
+        "answer": 3,
+        "explanation": "Dictionary keys must be hashable. A tuple of immutable items is hashable; lists, dicts and sets are mutable and are not."
+      }
+    ]
+  }
+}

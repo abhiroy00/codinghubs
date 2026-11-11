@@ -1,16 +1,9 @@
 User-agent: *
 Allow: /
+# Authorization protects private data. Public app/login URLs remain crawlable
+# so crawlers can see their noindex headers; robots.txt is not a removal tool.
 Disallow: /admin/
 Disallow: /admin-panel
 Disallow: /api/
-Disallow: /dashboard
-Disallow: /login
-Disallow: /register
-Disallow: /cart
-Disallow: /checkout
-Disallow: /payment/
-Disallow: /my-account
 
-Sitemap: https://codinghubs.in/sitemap.xml
-Sitemap: https://codinghubs.in/sitemap-content.xml
-Sitemap: https://codinghubs.in/sitemap-shop.xml
+Sitemap: https://codinghubs.in/sitemap-index.xml

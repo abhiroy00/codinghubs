@@ -1,0 +1,1930 @@
+{
+  "slug": "net-full-stack",
+  "name": ".NET Full Stack",
+  "focus": ".NET full-stack applications",
+  "track": "development",
+  "tools": [
+    "Git",
+    "REST APIs",
+    "SQL",
+    "VS Code",
+    "Docker",
+    "automated tests"
+  ],
+  "projects": [
+    {
+      "name": ".NET full-stack applications: Foundations case study",
+      "description": "Investigate a focused .NET full-stack applications scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated .NET full-stack applications use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable .NET full-stack applications artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    },
+    {
+      "name": ".NET full-stack applications: Applied workflow",
+      "description": "Build a small, end-to-end .NET full-stack applications workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated .NET full-stack applications use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable .NET full-stack applications artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    },
+    {
+      "name": ".NET full-stack applications: Portfolio capstone",
+      "description": "Deliver and explain a complete .NET full-stack applications capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated .NET full-stack applications use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable .NET full-stack applications artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "net-full-stack",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Programming and application foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "net-full-stack:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
+            "module": ".NET and C# fundamentals",
+            "level": "Beginner",
+            "objectives": [
+              "Explain what .NET is and how C# source code becomes running machine code.",
+              "Describe the role of the CLR, JIT compiler, garbage collector and base class library.",
+              "Distinguish the Common Type System (CTS) from the Common Language Specification (CLS).",
+              "Compare modern .NET (5, 6, 8 and later) with the Windows-only .NET Framework and .NET Standard.",
+              "Answer the classic opening questions of a .NET interview with confidence."
+            ],
+            "definition": ".NET is a free, open-source, cross-platform developer platform from Microsoft for building web, desktop, mobile, cloud and console applications. Code written in C#, F# or VB.NET is compiled into Intermediate Language (IL) and executed by the Common Language Runtime (CLR), which manages memory, type safety and security for it. Code that runs under the CLR's control is called managed code.",
+            "theory": [
+              {
+                "heading": "From C# source to running code",
+                "body": "The C# compiler (Roslyn) does not produce machine code. It produces an assembly (.dll or .exe) containing Intermediate Language plus metadata that describes every type and member. When the program runs, the CLR loads the assembly and the Just-In-Time (JIT) compiler turns each method's IL into native machine code the first time that method is called. This two-step design is why the same assembly runs on Windows, Linux and macOS, and why tools can inspect types through reflection.",
+                "points": [
+                  "Compile time: C# -> IL + metadata, packaged in an assembly.",
+                  "Run time: the CLR loads the assembly, verifies it and JIT-compiles methods on first call.",
+                  "Tiered compilation: a quick first JIT, then hot methods are recompiled with full optimisation.",
+                  "ReadyToRun and Native AOT pre-compile to native code to improve start-up time."
+                ]
+              },
+              {
+                "heading": "The Common Language Runtime (CLR)",
+                "body": "The CLR is the execution engine of .NET. Because it controls execution, it can provide services that unmanaged languages such as C or C++ leave to the programmer. The most important is automatic memory management: the garbage collector (GC) reclaims objects that are no longer reachable, so developers rarely free memory by hand. The GC is generational (Gen 0, 1, 2 plus the Large Object Heap) because most objects die young, which keeps collections cheap.",
+                "points": [
+                  "Memory management through a generational garbage collector.",
+                  "Type safety and IL verification, so code cannot read arbitrary memory.",
+                  "Structured exception handling that works across languages.",
+                  "Thread management, security checks and interop with native (unmanaged) code."
+                ]
+              },
+              {
+                "heading": "CTS, CLS and the base class library",
+                "body": "The Common Type System (CTS) defines how types are declared and used inside the runtime, so a class written in F# can be consumed from C#. Every C# keyword type is an alias for a CTS type: int is System.Int32 and string is System.String. The Common Language Specification (CLS) is a smaller subset of rules that every .NET language must support; unsigned integers such as uint are part of the CTS but not of the CLS, so public APIs meant for all languages avoid them. The Base Class Library (BCL) provides the ready-made types every app uses: collections, I/O, networking, LINQ and more.",
+                "points": [
+                  "CTS: the full type system, with value types and reference types.",
+                  "CLS: the interoperable subset; mark libraries with [assembly: CLSCompliant(true)] to have the compiler check it.",
+                  "BCL: System, System.Collections.Generic, System.IO, System.Linq and so on."
+                ]
+              },
+              {
+                "heading": ".NET vs .NET Framework vs .NET Standard",
+                "body": ".NET Framework (1.0 to 4.8.x) is the original Windows-only implementation; it is still supported but receives only fixes. .NET Core started in 2016 as a cross-platform, open-source rewrite, and from version 5 it was renamed simply .NET. New projects should target a current version such as .NET 8 (long-term support). .NET Standard was a specification of APIs shared by both implementations, used to write libraries that worked on either; for new code that only targets modern .NET it is no longer needed.",
+                "points": [
+                  ".NET Framework: Windows only, IIS-centric, System.Web, maintenance mode.",
+                  "Modern .NET: cross-platform, side-by-side installs, high performance, containers, yearly releases.",
+                  "LTS releases (even numbers such as .NET 8) get three years of support; STS releases get less.",
+                  ".NET Standard 2.0 is still useful for libraries that must also run on .NET Framework."
+                ]
+              },
+              {
+                "heading": "Managed vs unmanaged code",
+                "body": "Managed code runs under the CLR and benefits from garbage collection, type checks and exception handling. Unmanaged code (a C++ DLL or a Win32 API) runs directly on the operating system, and the CLR cannot track its memory. .NET can call it through P/Invoke or COM interop, but resources such as file handles or native memory must then be released explicitly, which is why IDisposable and the using statement exist.",
+                "points": [
+                  "Managed: memory reclaimed by the GC, verified IL.",
+                  "Unmanaged: manual lifetime management, no runtime safety net.",
+                  "Bridge: P/Invoke, COM interop and SafeHandle wrappers."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Keyword aliases map to CTS types",
+              "body": "The C# keywords int and string are just aliases. Both lines below compile to exactly the same IL, and GetType() reveals the underlying CTS type that every .NET language shares.",
+              "code": {
+                "language": "csharp",
+                "source": "using System;\n\nclass Program\n{\n    static void Main()\n    {\n        int a = 42;\n        System.Int32 b = 42;          // identical to int\n        string s = \"hi\";\n\n        Console.WriteLine(a.GetType());            // System.Int32\n        Console.WriteLine(b.GetType() == a.GetType()); // True\n        Console.WriteLine(s.GetType().IsValueType);    // False (reference type)\n        Console.WriteLine(Environment.Version);        // runtime version, e.g. 8.0.x\n    }\n}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Cross-platform web APIs",
+                "description": "ASP.NET Core services built on modern .NET run on Linux containers in Azure, AWS or on-premises Kubernetes."
+              },
+              {
+                "title": "Enterprise line-of-business apps",
+                "description": "Banks, insurers and Indian IT service companies maintain large .NET Framework estates and migrate them to .NET 8."
+              },
+              {
+                "title": "Desktop applications",
+                "description": "WPF and Windows Forms apps for internal tools, and .NET MAUI for cross-platform desktop and mobile clients."
+              },
+              {
+                "title": "Cloud and serverless",
+                "description": "Azure Functions and background worker services written in C# on the same runtime."
+              },
+              {
+                "title": "Shared libraries",
+                "description": "One class library consumed by a web API, a console tool and a test project because all compile to IL."
+              }
+            ],
+            "demonstration": {
+              "description": "Create a console app with the .NET CLI, build it and inspect what the compiler produced. The build output is an assembly containing IL; the runtime JIT-compiles it when you run the program.",
+              "code": {
+                "language": "bash",
+                "source": "dotnet --list-sdks\ndotnet new console -n HelloClr\ncd HelloClr\ndotnet build\ndotnet run\n# Optional: view the IL of Main with the ildasm / ILSpy tool\n# IL_0000: ldstr \"Hello, World!\"\n# IL_0005: call void [System.Console]System.Console::WriteLine(string)\n# IL_000a: ret"
+              },
+              "output": "8.0.4xx [C:\\Program Files\\dotnet\\sdk]\nThe template \"Console App\" was created successfully.\nBuild succeeded. bin/Debug/net8.0/HelloClr.dll\nHello, World!"
+            },
+            "takeaways": [
+              "C# compiles to IL plus metadata; the CLR's JIT turns IL into native code at run time.",
+              "The CLR provides garbage collection, type safety, exception handling and threading.",
+              "CTS defines all runtime types; CLS is the cross-language subset (uint is CTS but not CLS).",
+              "C# keywords such as int and string are aliases for System.Int32 and System.String.",
+              "Modern .NET (8+) is cross-platform and open source; .NET Framework 4.8 is Windows-only and in maintenance.",
+              "Managed code is controlled by the CLR; unmanaged resources still need explicit cleanup via IDisposable."
+            ],
+            "interview": [
+              {
+                "question": "What is the CLR and what does it do?",
+                "answer": "The Common Language Runtime is the .NET execution engine. It loads assemblies, JIT-compiles IL to native code, manages memory with the garbage collector, enforces type safety and handles exceptions and threads.",
+                "explanation": "List three or four concrete services rather than saying 'it runs code'. Mentioning JIT and GC together shows you understand the managed execution model."
+              },
+              {
+                "question": "What is the difference between CTS and CLS?",
+                "answer": "CTS is the complete set of types and rules the runtime supports. CLS is a subset of those rules that all .NET languages agree to support, so a CLS-compliant library can be used from any .NET language. For example, uint exists in the CTS but is not CLS-compliant.",
+                "explanation": "The uint example is what separates a memorised answer from an understood one. You can add that [CLSCompliant(true)] makes the compiler warn about violations."
+              },
+              {
+                "question": "What is managed code, and how is it different from unmanaged code?",
+                "answer": "Managed code runs under the CLR, which handles memory, type checks and exceptions. Unmanaged code runs directly on the OS (for example a native C++ DLL), so its memory and handles must be released manually. .NET calls unmanaged code through P/Invoke or COM interop.",
+                "explanation": "Connect the answer to IDisposable: unmanaged resources are the reason the dispose pattern exists, which interviewers often ask next."
+              },
+              {
+                "question": "Explain the difference between .NET Framework, .NET Core and .NET 5+.",
+                "answer": ".NET Framework is the original Windows-only runtime, now in maintenance at 4.8.x. .NET Core was the cross-platform, open-source rewrite. From version 5 it became the single unified '.NET', with yearly releases; even-numbered versions such as .NET 8 are LTS.",
+                "explanation": "Strong candidates mention why companies migrate: Linux containers, performance, side-by-side versions and the fact that new features land only in modern .NET."
+              },
+              {
+                "question": "What is JIT compilation, and what are ReadyToRun and Native AOT?",
+                "answer": "JIT compiles each method's IL to native code on first call, optionally recompiling hot methods with more optimisation (tiered compilation). ReadyToRun ships pre-compiled native code inside the assembly to reduce start-up time while keeping JIT as a fallback. Native AOT compiles the whole app ahead of time into a self-contained native executable with no JIT, giving fast start-up and small memory but limiting reflection and dynamic code.",
+                "explanation": "This is an advanced follow-up. Mention trade-offs: AOT suits serverless and containers where cold start matters, but features like runtime code generation are restricted."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "CTS type inspector",
+              "difficulty": "Basic",
+              "objective": "Reinforce how C# keywords map to Common Type System types, which are value or reference types, and which are not CLS-compliant.",
+              "statement": "Read N C# type names. For each, print the CTS type it is an alias for and whether it is a value type (with its size) or a reference type. Unsigned and signed-byte aliases sbyte, ushort, uint and ulong must also be flagged as not CLS-compliant. Names are case-sensitive: only lower-case keyword aliases are recognised. Finish with a summary line.\n\nKnown aliases: bool System.Boolean 1, byte System.Byte 1, sbyte System.SByte 1, char System.Char 2, short System.Int16 2, ushort System.UInt16 2, int System.Int32 4, uint System.UInt32 4, long System.Int64 8, ulong System.UInt64 8, float System.Single 4, double System.Double 8, decimal System.Decimal 16, string System.String (reference), object System.Object (reference).",
+              "language": "csharp",
+              "input_format": "First line: N. Next N lines: one type name each (surrounding spaces should be trimmed).",
+              "output_format": "One line per name:\n<name> => <CTS type> | value type | <size> byte(s)[ | not CLS-compliant]\n<name> => <CTS type> | reference type\n<name> => not a C# built-in alias\nUse 'byte' when the size is 1, otherwise 'bytes'. Then:\nSummary: <v> value, <r> reference, <u> unknown, <c> not CLS-compliant",
+              "example": {
+                "input": "5\nint\nstring\ndecimal\nuint\nString\n",
+                "output": "int => System.Int32 | value type | 4 bytes\nstring => System.String | reference type\ndecimal => System.Decimal | value type | 16 bytes\nuint => System.UInt32 | value type | 4 bytes | not CLS-compliant\nString => not a C# built-in alias\nSummary: 3 value, 1 reference, 1 unknown, 1 not CLS-compliant"
+              },
+              "constraints": [
+                "1 <= N <= 100",
+                "Matching is case-sensitive after trimming spaces.",
+                "Use a Dictionary for the lookup rather than a long if/else chain."
+              ],
+              "starter": "using System;\nusing System.Collections.Generic;\n\nclass Program\n{\n    static void Main()\n    {\n        string[] lines = Console.In.ReadToEnd().Replace(\"\\r\", \"\").Split('\\n');\n        int n = int.Parse(lines[0].Trim());\n        // TODO: build a Dictionary from alias to CTS name and size (or \"ref\")\n        // TODO: print one line per name, then the summary line\n    }\n}\n",
+              "solution": "using System;\nusing System.Collections.Generic;\n\nclass Program\n{\n    static void Main()\n    {\n        var map = new Dictionary<string, string[]>();\n        map[\"bool\"] = new string[] { \"System.Boolean\", \"1\" };\n        map[\"byte\"] = new string[] { \"System.Byte\", \"1\" };\n        map[\"sbyte\"] = new string[] { \"System.SByte\", \"1\" };\n        map[\"char\"] = new string[] { \"System.Char\", \"2\" };\n        map[\"short\"] = new string[] { \"System.Int16\", \"2\" };\n        map[\"ushort\"] = new string[] { \"System.UInt16\", \"2\" };\n        map[\"int\"] = new string[] { \"System.Int32\", \"4\" };\n        map[\"uint\"] = new string[] { \"System.UInt32\", \"4\" };\n        map[\"long\"] = new string[] { \"System.Int64\", \"8\" };\n        map[\"ulong\"] = new string[] { \"System.UInt64\", \"8\" };\n        map[\"float\"] = new string[] { \"System.Single\", \"4\" };\n        map[\"double\"] = new string[] { \"System.Double\", \"8\" };\n        map[\"decimal\"] = new string[] { \"System.Decimal\", \"16\" };\n        map[\"string\"] = new string[] { \"System.String\", \"ref\" };\n        map[\"object\"] = new string[] { \"System.Object\", \"ref\" };\n        var nonCls = new HashSet<string> { \"sbyte\", \"ushort\", \"uint\", \"ulong\" };\n\n        string[] lines = Console.In.ReadToEnd().Replace(\"\\r\", \"\").Split('\\n');\n        int n = int.Parse(lines[0].Trim());\n        int values = 0, refs = 0, unknown = 0, notCls = 0;\n        for (int i = 1; i <= n; i++)\n        {\n            string name = i < lines.Length ? lines[i].Trim() : \"\";\n            string[] info;\n            if (!map.TryGetValue(name, out info))\n            {\n                Console.WriteLine(name + \" => not a C# built-in alias\");\n                unknown++;\n                continue;\n            }\n            if (info[1] == \"ref\")\n            {\n                Console.WriteLine(name + \" => \" + info[0] + \" | reference type\");\n                refs++;\n                continue;\n            }\n            string line = name + \" => \" + info[0] + \" | value type | \" + info[1] + (info[1] == \"1\" ? \" byte\" : \" bytes\");\n            if (nonCls.Contains(name))\n            {\n                line += \" | not CLS-compliant\";\n                notCls++;\n            }\n            Console.WriteLine(line);\n            values++;\n        }\n        Console.WriteLine(\"Summary: \" + values + \" value, \" + refs + \" reference, \" + unknown + \" unknown, \" + notCls + \" not CLS-compliant\");\n    }\n}\n",
+              "explanation": [
+                "Store each keyword alias in a Dictionary with its CTS name and either its size in bytes or the marker 'ref' for reference types.",
+                "Keep the four non-CLS aliases in a HashSet so the check is a single Contains call.",
+                "Read all input at once, strip carriage returns and trim each name, so Windows line endings and stray spaces do not break matching.",
+                "Use TryGetValue: an unknown name (including 'String', which is a type name, not a keyword) prints the 'not a C# built-in alias' line.",
+                "Count value, reference, unknown and non-CLS names while printing, then print the summary."
+              ],
+              "tests": [
+                {
+                  "input": "5\nint\nstring\ndecimal\nuint\nString\n",
+                  "output": "int => System.Int32 | value type | 4 bytes\nstring => System.String | reference type\ndecimal => System.Decimal | value type | 16 bytes\nuint => System.UInt32 | value type | 4 bytes | not CLS-compliant\nString => not a C# built-in alias\nSummary: 3 value, 1 reference, 1 unknown, 1 not CLS-compliant"
+                },
+                {
+                  "input": "3\nbool\nobject\n  char  \n",
+                  "output": "bool => System.Boolean | value type | 1 byte\nobject => System.Object | reference type\nchar => System.Char | value type | 2 bytes\nSummary: 2 value, 1 reference, 0 unknown, 0 not CLS-compliant"
+                },
+                {
+                  "input": "4\nsbyte\nulong\ndouble\ninteger\n",
+                  "output": "sbyte => System.SByte | value type | 1 byte | not CLS-compliant\nulong => System.UInt64 | value type | 8 bytes | not CLS-compliant\ndouble => System.Double | value type | 8 bytes\ninteger => not a C# built-in alias\nSummary: 3 value, 0 reference, 1 unknown, 2 not CLS-compliant"
+                },
+                {
+                  "input": "1\nlong\n",
+                  "output": "long => System.Int64 | value type | 8 bytes\nSummary: 1 value, 0 reference, 0 unknown, 0 not CLS-compliant"
+                },
+                {
+                  "input": "4\nfloat\nushort\nshort\nbyte\n",
+                  "output": "float => System.Single | value type | 4 bytes\nushort => System.UInt16 | value type | 2 bytes | not CLS-compliant\nshort => System.Int16 | value type | 2 bytes\nbyte => System.Byte | value type | 1 byte\nSummary: 4 value, 0 reference, 0 unknown, 1 not CLS-compliant"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "What does the C# compiler produce when you build a .NET project?",
+                "options": [
+                  "JavaScript that runs in the CLR",
+                  "A text file of source code interpreted line by line",
+                  "Native machine code for the current CPU only",
+                  "An assembly containing Intermediate Language and metadata"
+                ],
+                "answer": 3,
+                "explanation": "Roslyn emits IL plus metadata in an assembly. The CLR's JIT compiler converts IL to native code at run time."
+              },
+              {
+                "type": "concept",
+                "question": "Which type is part of the Common Type System but NOT CLS-compliant?",
+                "options": [
+                  "int",
+                  "string",
+                  "decimal",
+                  "uint"
+                ],
+                "answer": 3,
+                "explanation": "Unsigned integers (uint, ushort, ulong) and sbyte exist in the CTS, but some .NET languages do not support them, so they are outside the CLS."
+              },
+              {
+                "type": "output",
+                "question": "What type name does this code print?",
+                "code": "int x = 5;\nConsole.WriteLine(x.GetType().FullName);",
+                "options": [
+                  "Int",
+                  "System.Integer",
+                  "System.Int32",
+                  "int"
+                ],
+                "answer": 2,
+                "explanation": "int is a C# alias for the CTS type System.Int32, and FullName returns the namespace-qualified CTS name."
+              },
+              {
+                "type": "scenario",
+                "question": "A team must run a new web API in Linux Docker containers. Which target framework should they choose?",
+                "options": [
+                  ".NET Framework 4.8",
+                  ".NET Standard 2.0",
+                  ".NET 8",
+                  "Classic ASP.NET Web Forms"
+                ],
+                "answer": 2,
+                "explanation": ".NET 8 is cross-platform and LTS. .NET Framework is Windows-only, and .NET Standard is a library specification, not a runtime you can host an app on."
+              },
+              {
+                "type": "concept",
+                "question": "Which statement about the .NET garbage collector is correct?",
+                "options": [
+                  "It must be called manually with GC.Collect() after every allocation",
+                  "It only runs when the application exits",
+                  "It frees unmanaged file handles automatically as soon as a variable goes out of scope",
+                  "It is generational, because most objects die young and collecting Gen 0 is cheap"
+                ],
+                "answer": 3,
+                "explanation": "The GC is generational (Gen 0/1/2 plus the Large Object Heap). It reclaims managed memory automatically; unmanaged handles still need Dispose."
+              }
+            ]
+          }
+        },
+        {
+          "id": "net-full-stack:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "C# Types: Value vs Reference, Boxing and Nullable Types",
+            "module": ".NET and C# fundamentals",
+            "level": "Beginner",
+            "objectives": [
+              "Explain the difference between value types and reference types and how assignment behaves for each.",
+              "Describe where values are stored (stack, heap, inline in objects) without repeating the common myths.",
+              "Explain boxing and unboxing, why they cost performance and how generics avoid them.",
+              "Use nullable value types (int?), the ?? operator and nullable reference type annotations.",
+              "Choose between struct, class and record for a given data model."
+            ],
+            "definition": "Every C# type is either a value type or a reference type. A variable of a value type (int, double, bool, struct, enum) holds the data itself, so assignment copies the data. A variable of a reference type (class, string, array, interface, delegate, record class) holds a reference to an object on the managed heap, so assignment copies only the reference and both variables then point to the same object.",
+            "theory": [
+              {
+                "heading": "Copy semantics: the real difference",
+                "body": "The difference that matters in code is what happens on assignment and when passing arguments. Copying a value type duplicates the data, so changing the copy never affects the original. Copying a reference type duplicates the pointer, so a change through one variable is visible through the other. Method parameters are passed by value by default in both cases: for a reference type that means the method receives a copy of the reference, so it can mutate the object but cannot make the caller's variable point somewhere else unless the parameter is declared ref.",
+                "points": [
+                  "Value types: built-in numerics, bool, char, DateTime, decimal, enums, structs, tuples (ValueTuple).",
+                  "Reference types: classes, string, arrays, delegates, interfaces, object, record classes.",
+                  "Value types derive from System.ValueType, which derives from System.Object.",
+                  "== on reference types compares references by default unless the operator is overloaded (string overloads it)."
+                ]
+              },
+              {
+                "heading": "Stack, heap and the common myth",
+                "body": "'Value types live on the stack and reference types on the heap' is only partly true. Reference type objects always live on the managed heap. A value type lives wherever its container lives: a local int is on the stack (or in a register), but an int field inside a class instance is stored inline in that object on the heap, and an int[] array stores its elements on the heap. The stack is cheap and freed automatically when a method returns; the heap is managed by the garbage collector.",
+                "points": [
+                  "Local value-type variables: stack or CPU registers.",
+                  "Value-type fields of a class and array elements: inline on the heap.",
+                  "Captured variables in lambdas and async methods are hoisted into heap objects."
+                ]
+              },
+              {
+                "heading": "Boxing and unboxing",
+                "body": "Boxing converts a value type to object (or to an interface it implements) by allocating a new heap object and copying the value into it. Unboxing extracts the value back and requires an explicit cast to exactly the original type. Each boxing operation allocates memory and adds GC pressure, which is why the non-generic ArrayList and Hashtable are slow for numbers and why generic List<int> was such an improvement: it stores ints without boxing.",
+                "points": [
+                  "object o = 42;  // boxing: heap allocation and copy",
+                  "int n = (int)o; // unboxing: type check and copy",
+                  "(long)o where o holds a boxed int throws InvalidCastException.",
+                  "Hidden boxing: string.Format with value types in older code, non-generic collections, calling an interface method on a struct through the interface."
+                ]
+              },
+              {
+                "heading": "Nullable value types and nullable reference types",
+                "body": "A value type normally cannot be null. Nullable<T>, written T?, adds a HasValue flag so int? can represent 'no value', which is essential for database columns that allow NULL. The null-coalescing operator ?? supplies a fallback and ?. stops a member access chain when something is null. Since C# 8, nullable reference types (enabled by default in new projects with <Nullable>enable</Nullable>) let the compiler warn when a string that may be null is dereferenced; string? documents that null is allowed, while string means it should not be.",
+                "points": [
+                  "int? x = null; x.HasValue is false; x.GetValueOrDefault() is 0.",
+                  "x ?? -1 returns -1 when x is null.",
+                  "Nullable reference types are a compile-time analysis only; they do not change the runtime type.",
+                  "The null-forgiving operator ! silences a warning, so use it sparingly."
+                ]
+              },
+              {
+                "heading": "struct vs class vs record",
+                "body": "Use a struct for small, immutable values that are copied cheaply (roughly 16 bytes or less), such as a point or a money amount. Use a class for entities with identity, behaviour and longer lifetimes. A record (C# 9) is a type designed for data: it gets value-based equality, a readable ToString and non-destructive mutation with the with expression. record is a reference type by default; record struct is a value type.",
+                "points": [
+                  "Large mutable structs are a common bug source because every assignment silently copies them.",
+                  "Two record instances with the same property values are equal; two class instances are not unless Equals is overridden.",
+                  "Default values: 0 for numbers, false for bool, null for references, all-zero for structs."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Copying a struct vs copying a class",
+              "body": "The struct copy is independent, while both class variables point to one object. The boxed copy keeps the old value because boxing copied the int into a new heap object.",
+              "code": {
+                "language": "csharp",
+                "source": "using System;\n\nstruct PointS { public int X; }\nclass PointC { public int X; }\n\nclass Program\n{\n    static void Main()\n    {\n        PointS s1 = new PointS { X = 1 };\n        PointS s2 = s1;   // copies the data\n        s2.X = 99;\n        Console.WriteLine(s1.X); // 1\n\n        PointC c1 = new PointC { X = 1 };\n        PointC c2 = c1;   // copies the reference\n        c2.X = 99;\n        Console.WriteLine(c1.X); // 99\n\n        int n = 10;\n        object boxed = n; // boxing\n        n = 20;\n        Console.WriteLine(boxed); // 10\n        int back = (int)boxed;    // unboxing\n        Console.WriteLine(back + n); // 30\n    }\n}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Database NULLs",
+                "description": "Map an optional SQL column such as DiscountPercent to decimal? so 'no discount' is different from 0."
+              },
+              {
+                "title": "High-performance code",
+                "description": "Use small readonly structs and generic collections to avoid allocations and boxing in hot paths such as parsers or game loops."
+              },
+              {
+                "title": "DTOs and API contracts",
+                "description": "Use records for request and response models, getting value equality and concise syntax."
+              },
+              {
+                "title": "Avoiding shared-state bugs",
+                "description": "Knowing that lists are reference types prevents bugs where two parts of the app accidentally modify the same collection."
+              }
+            ],
+            "demonstration": {
+              "description": "Passing a reference type by value versus by ref. The method can change the object's contents, but only a ref parameter can replace the caller's object.",
+              "code": {
+                "language": "csharp",
+                "source": "static void Rename(Person p) { p.Name = \"Ravi\"; p = new Person { Name = \"Temp\" }; }\nstatic void Replace(ref Person p) { p = new Person { Name = \"Meera\" }; }\n\nvar person = new Person { Name = \"Asha\" };\nRename(person);\nConsole.WriteLine(person.Name);\nReplace(ref person);\nConsole.WriteLine(person.Name);"
+              },
+              "output": "Ravi\nMeera"
+            },
+            "takeaways": [
+              "Value types copy data on assignment; reference types copy the reference.",
+              "Reference objects live on the heap; value types live wherever their container lives.",
+              "Boxing allocates a heap object; unboxing needs a cast to the exact original type.",
+              "Generic collections such as List<int> avoid boxing.",
+              "int? models a missing value; ?? supplies a default; nullable reference types add compile-time null checks.",
+              "Prefer small immutable structs, classes for entities and records for data with value equality."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between a value type and a reference type?",
+                "answer": "A value-type variable holds its data directly and assignment copies the data. A reference-type variable holds a reference to a heap object and assignment copies the reference, so both variables see the same object. Examples: int and struct are value types; class, string and arrays are reference types.",
+                "explanation": "Lead with copy semantics, then give examples. Avoid saying only 'stack vs heap', because interviewers often follow up with 'where is an int field of a class stored?'."
+              },
+              {
+                "question": "What are boxing and unboxing, and why should you avoid unnecessary boxing?",
+                "answer": "Boxing wraps a value type in a heap-allocated object when it is converted to object or an interface. Unboxing copies it back with an explicit cast. Each box allocates memory and creates garbage, so in loops it hurts performance; generics avoid it.",
+                "explanation": "Mention a concrete source such as ArrayList versus List<int>, and that unboxing to the wrong type throws InvalidCastException."
+              },
+              {
+                "question": "Is string a value type or a reference type? Why does it behave like a value?",
+                "answer": "string is a reference type, but it is immutable and overloads == to compare contents. Any 'change' creates a new string, so sharing a reference is safe and it feels like a value.",
+                "explanation": "Linking immutability to safe sharing and to interning shows depth. It also prepares for StringBuilder questions."
+              },
+              {
+                "question": "When would you use a struct instead of a class?",
+                "answer": "For small, short-lived, logically single values that are ideally immutable, such as coordinates, money or a date range, where avoiding heap allocations matters. Use a class when the type is large, has identity, needs inheritance or is frequently passed around and mutated.",
+                "explanation": "Strong answers mention the copying cost of large structs and that structs cannot inherit from other structs or classes (they can implement interfaces)."
+              },
+              {
+                "question": "What are nullable reference types in C# 8+, and do they change runtime behaviour?",
+                "answer": "They are a compile-time feature: with <Nullable>enable</Nullable>, string means 'should not be null' and string? means 'may be null', and the compiler warns about possible null dereferences. At run time both are still System.String; no checks are inserted.",
+                "explanation": "Distinguish them clearly from Nullable<T> for value types, which is a real runtime struct with HasValue and Value."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Nullable sensor readings",
+              "difficulty": "Basic",
+              "objective": "Use int? to represent missing values, aggregate only real values and fill gaps with the null-coalescing operator.",
+              "statement": "A sensor sends readings separated by spaces. A token that is a valid integer is a reading; any other token (for example null, NA or abc) is a missing reading. Parse each token into an int? and print: the number of valid readings, the number of missing readings, the sum of valid readings (it may exceed the int range), the maximum valid reading, the average of valid readings with two decimals, and the sequence where each missing reading is replaced by the most recent valid reading before it, or 0 if there is none. Print n/a for maximum and average when there are no valid readings.",
+              "language": "csharp",
+              "input_format": "One line of whitespace-separated tokens (at least one).",
+              "output_format": "Valid: <count>\nMissing: <count>\nSum: <sum>\nMax: <max or n/a>\nAverage: <average with 2 decimals or n/a>\nFilled: <filled values separated by single spaces>",
+              "example": {
+                "input": "12 null 7 abc -3 10\n",
+                "output": "Valid: 4\nMissing: 2\nSum: 26\nMax: 12\nAverage: 6.50\nFilled: 12 12 7 7 -3 10"
+              },
+              "constraints": [
+                "1 <= number of tokens <= 1000",
+                "Valid readings fit in a 32-bit int; use a long for the sum.",
+                "Format the average with a dot as the decimal separator (InvariantCulture)."
+              ],
+              "starter": "using System;\nusing System.Collections.Generic;\nusing System.Globalization;\n\nclass Program\n{\n    static void Main()\n    {\n        string[] tokens = Console.In.ReadToEnd().Split(new char[] { ' ', '\\t', '\\r', '\\n' }, StringSplitOptions.RemoveEmptyEntries);\n        var readings = new List<int?>();\n        // TODO: parse each token with int.TryParse into an int? (null when invalid)\n        // TODO: compute the statistics and the filled sequence using ??\n    }\n}\n",
+              "solution": "using System;\nusing System.Collections.Generic;\nusing System.Globalization;\n\nclass Program\n{\n    static void Main()\n    {\n        string[] tokens = Console.In.ReadToEnd().Split(new char[] { ' ', '\\t', '\\r', '\\n' }, StringSplitOptions.RemoveEmptyEntries);\n        var readings = new List<int?>();\n        foreach (string t in tokens)\n        {\n            int v;\n            readings.Add(int.TryParse(t, out v) ? v : (int?)null);\n        }\n\n        int valid = 0, missing = 0;\n        long sum = 0;\n        int? max = null;\n        int? last = null;\n        var filled = new List<string>();\n        foreach (int? r in readings)\n        {\n            if (r.HasValue)\n            {\n                valid++;\n                sum += r.Value;\n                if (!max.HasValue || r.Value > max.Value) max = r;\n                last = r;\n            }\n            else\n            {\n                missing++;\n            }\n            int f = r ?? last ?? 0;\n            filled.Add(f.ToString(CultureInfo.InvariantCulture));\n        }\n\n        Console.WriteLine(\"Valid: \" + valid);\n        Console.WriteLine(\"Missing: \" + missing);\n        Console.WriteLine(\"Sum: \" + sum);\n        Console.WriteLine(\"Max: \" + (max.HasValue ? max.Value.ToString(CultureInfo.InvariantCulture) : \"n/a\"));\n        Console.WriteLine(\"Average: \" + (valid == 0 ? \"n/a\" : ((double)sum / valid).ToString(\"F2\", CultureInfo.InvariantCulture)));\n        Console.WriteLine(\"Filled: \" + string.Join(\" \", filled));\n    }\n}\n",
+              "explanation": [
+                "Split the whole input on whitespace and turn each token into an int? using int.TryParse; failures become null.",
+                "Track count, sum (as long, to avoid overflow) and the maximum, which itself is an int? that starts as null.",
+                "For the filled sequence use r ?? last ?? 0: the reading if present, otherwise the last valid reading, otherwise 0.",
+                "Cast the sum to double before dividing so the average is not truncated by integer division.",
+                "Print n/a when max has no value and when there are no valid readings."
+              ],
+              "tests": [
+                {
+                  "input": "12 null 7 abc -3 10\n",
+                  "output": "Valid: 4\nMissing: 2\nSum: 26\nMax: 12\nAverage: 6.50\nFilled: 12 12 7 7 -3 10"
+                },
+                {
+                  "input": "null null 5\n",
+                  "output": "Valid: 1\nMissing: 2\nSum: 5\nMax: 5\nAverage: 5.00\nFilled: 0 0 5"
+                },
+                {
+                  "input": "x y\n",
+                  "output": "Valid: 0\nMissing: 2\nSum: 0\nMax: n/a\nAverage: n/a\nFilled: 0 0"
+                },
+                {
+                  "input": "-4 -9 -1\n",
+                  "output": "Valid: 3\nMissing: 0\nSum: -14\nMax: -1\nAverage: -4.67\nFilled: -4 -9 -1"
+                },
+                {
+                  "input": "2147483647 2147483647 n\n",
+                  "output": "Valid: 2\nMissing: 1\nSum: 4294967294\nMax: 2147483647\nAverage: 2147483647.00\nFilled: 2147483647 2147483647 2147483647"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this boxing example print?",
+                "code": "int a = 10;\nobject o = a;\na = 20;\nConsole.WriteLine(o);",
+                "options": [
+                  "20",
+                  "0",
+                  "10",
+                  "It does not compile"
+                ],
+                "answer": 2,
+                "explanation": "Boxing copies the value 10 into a new heap object. Changing a afterwards does not affect the boxed copy."
+              },
+              {
+                "type": "output",
+                "question": "Given struct P { public int X; }, what does this print?",
+                "code": "P p1 = new P();\np1.X = 1;\nP p2 = p1;\np2.X = 5;\nConsole.WriteLine(p1.X);",
+                "options": [
+                  "0",
+                  "6",
+                  "1",
+                  "5"
+                ],
+                "answer": 2,
+                "explanation": "Structs are value types, so p2 is an independent copy. Changing p2.X leaves p1.X at 1."
+              },
+              {
+                "type": "code",
+                "question": "What happens when this code runs?",
+                "code": "object o = 5;\nlong l = (long)o;",
+                "options": [
+                  "l becomes 5",
+                  "l becomes 0",
+                  "Compile-time error",
+                  "InvalidCastException at run time"
+                ],
+                "answer": 3,
+                "explanation": "A boxed value can only be unboxed to its exact type (int here). Use (long)(int)o or Convert.ToInt64(o)."
+              },
+              {
+                "type": "concept",
+                "question": "Where is an int field of a class instance stored?",
+                "options": [
+                  "In a separate boxed object",
+                  "In the CPU cache only",
+                  "Always on the stack",
+                  "Inline inside the object on the managed heap"
+                ],
+                "answer": 3,
+                "explanation": "Value-type fields are stored inline in their containing object. Because the object is on the heap, so is the field."
+              },
+              {
+                "type": "scenario",
+                "question": "A SQL column DiscountPercent allows NULL, meaning 'no discount configured', which differs from 0. Which C# property type models it best?",
+                "options": [
+                  "int",
+                  "object",
+                  "decimal?",
+                  "string"
+                ],
+                "answer": 2,
+                "explanation": "Nullable<decimal> distinguishes 'no value' (null) from a real 0 and keeps strong typing. object would require boxing and casts."
+              }
+            ]
+          }
+        },
+        {
+          "id": "net-full-stack:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
+            "module": ".NET and C# fundamentals",
+            "level": "Beginner",
+            "objectives": [
+              "Explain why strings are immutable and what that means for performance.",
+              "Decide when to use StringBuilder instead of string concatenation.",
+              "Use ref, out, in and params parameters correctly and explain their differences.",
+              "Apply the TryParse-style 'Try' pattern with out parameters.",
+              "Compare strings correctly using ordinal and culture-aware comparisons."
+            ],
+            "definition": "A C# string is an immutable sequence of UTF-16 characters: every operation that seems to change it (ToUpper, Replace, +) returns a new string. StringBuilder is a mutable buffer for building text efficiently in loops. Method parameters are passed by value by default; the ref, out and in modifiers pass a variable by reference, and params lets a method accept a variable number of arguments.",
+            "theory": [
+              {
+                "heading": "String immutability and interning",
+                "body": "Once created, a string object never changes. s.ToUpper() returns a new string and leaves s untouched, which is a classic interview trap. Immutability makes strings thread-safe and safe to use as dictionary keys, and it lets the runtime intern literals: identical string literals in an assembly share one object. The cost is that repeated concatenation in a loop creates a new string each time, copying all previous characters, which is O(n^2) work for n appends.",
+                "points": [
+                  "s = s + x creates a new string; the old one becomes garbage.",
+                  "Literals and compile-time constant expressions are interned automatically.",
+                  "string.Concat, string.Join and interpolation are fine for a fixed, small number of parts.",
+                  "Use string.IsNullOrWhiteSpace to validate input."
+                ]
+              },
+              {
+                "heading": "StringBuilder",
+                "body": "StringBuilder keeps an internal resizable character buffer. Append writes into the buffer and only ToString() creates the final string, so building text in a loop becomes linear. Use it when the number of appends is large or unknown, such as generating CSV rows, reports or SQL in a loop. For two or three pieces, plain concatenation or interpolation is clearer and the compiler already optimises it.",
+                "points": [
+                  "Append, AppendLine, Insert, Remove, Replace and Clear modify the buffer in place.",
+                  "Pass an initial capacity when you know the approximate size to avoid resizes.",
+                  "StringBuilder is not thread-safe; do not share one across threads."
+                ]
+              },
+              {
+                "heading": "ref, out, in and params",
+                "body": "ref passes a variable by reference: the method can read and replace the caller's variable, and the caller must initialise it first. out is also by reference but the method must assign it before returning, and the caller need not initialise it; it is used to return extra values, as in int.TryParse(text, out int n). in passes by reference read-only, which avoids copying large structs. params lets callers pass a comma-separated list that arrives as an array, as in string.Join(\",\", a, b, c).",
+                "points": [
+                  "ref: two-way, must be initialised by the caller.",
+                  "out: one-way out, must be assigned by the method.",
+                  "in: read-only reference, useful for large readonly structs.",
+                  "params must be the last parameter, and only one is allowed.",
+                  "Optional parameters and named arguments: Send(to, subject: \"Hi\", urgent: true)."
+                ]
+              },
+              {
+                "heading": "The Try pattern",
+                "body": "The .NET convention for operations that can fail in expected ways is a Try method that returns bool and gives the result through an out parameter: int.TryParse, Dictionary.TryGetValue, Enum.TryParse. It avoids using exceptions for normal control flow, which is both faster and clearer. Use the throwing version (int.Parse) only when invalid input is truly exceptional.",
+                "points": [
+                  "if (int.TryParse(input, out int qty)) { ... } else { show validation error }",
+                  "Exceptions are expensive and should not drive ordinary branching."
+                ]
+              },
+              {
+                "heading": "Comparing strings correctly",
+                "body": "== on strings compares contents ordinally (character codes). For case-insensitive checks use string.Equals(a, b, StringComparison.OrdinalIgnoreCase) rather than a.ToLower() == b.ToLower(), which allocates two strings and can behave unexpectedly in some cultures (the Turkish 'I' problem). Use culture-aware comparison only for text displayed and sorted for humans; use ordinal comparison for identifiers, keys, file paths and protocol values.",
+                "points": [
+                  "StringComparison.Ordinal / OrdinalIgnoreCase for technical strings.",
+                  "StringComparison.CurrentCulture for user-facing sorting.",
+                  "new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase) gives case-insensitive keys."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Concatenation in a loop vs StringBuilder",
+              "body": "Both methods build the same text. The first allocates a new, longer string on every iteration; the second appends into one buffer and allocates the final string once.",
+              "code": {
+                "language": "csharp",
+                "source": "using System;\nusing System.Text;\n\nclass Program\n{\n    static string Slow(int n)\n    {\n        string s = \"\";\n        for (int i = 0; i < n; i++) s += i + \",\";   // n new strings\n        return s;\n    }\n\n    static string Fast(int n)\n    {\n        var sb = new StringBuilder(n * 4);\n        for (int i = 0; i < n; i++) sb.Append(i).Append(',');\n        return sb.ToString();                          // one final string\n    }\n\n    static void Main()\n    {\n        Console.WriteLine(Slow(5)); // 0,1,2,3,4,\n        Console.WriteLine(Fast(5) == Slow(5)); // True\n    }\n}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Report and CSV generation",
+                "description": "Build thousands of rows with StringBuilder before writing a file or HTTP response."
+              },
+              {
+                "title": "Input validation",
+                "description": "Use int.TryParse and DateTime.TryParse on form or query-string values instead of catching exceptions."
+              },
+              {
+                "title": "Case-insensitive lookups",
+                "description": "Compare HTTP header names, usernames or file extensions with OrdinalIgnoreCase."
+              },
+              {
+                "title": "Helper APIs",
+                "description": "Expose params arrays for convenience methods such as Log(string format, params object[] args)."
+              }
+            ],
+            "demonstration": {
+              "description": "Swap two integers with ref, divide with an out remainder and sum a params list.",
+              "code": {
+                "language": "csharp",
+                "source": "static void Swap(ref int a, ref int b) { int t = a; a = b; b = t; }\nstatic int Divide(int a, int b, out int remainder) { remainder = a % b; return a / b; }\nstatic int Sum(params int[] values) { int s = 0; foreach (int v in values) s += v; return s; }\n\nint x = 1, y = 2;\nSwap(ref x, ref y);\nConsole.WriteLine(x + \" \" + y);\nint q = Divide(17, 5, out int r);\nConsole.WriteLine(q + \" r \" + r);\nConsole.WriteLine(Sum(1, 2, 3, 4));"
+              },
+              "output": "2 1\n3 r 2\n10"
+            },
+            "takeaways": [
+              "Strings are immutable: methods like ToUpper return a new string.",
+              "Use StringBuilder for many or unknown numbers of appends; plain concatenation for a few.",
+              "ref needs an initialised variable; out must be assigned by the method; in is a read-only reference.",
+              "Prefer the Try pattern (TryParse, TryGetValue) over exceptions for expected failures.",
+              "Use ordinal comparisons for technical strings and culture-aware ones for display text."
+            ],
+            "interview": [
+              {
+                "question": "Why are strings immutable in .NET?",
+                "answer": "Immutability makes strings thread-safe, safe as dictionary keys and hash codes, and allows interning so identical literals share memory. The trade-off is that every modification creates a new string.",
+                "explanation": "Give the benefits and the cost; then mention StringBuilder as the solution to the cost."
+              },
+              {
+                "question": "When should you use StringBuilder?",
+                "answer": "When building a string from many pieces, especially in a loop where the count is large or unknown. For a handful of pieces, concatenation or interpolation is just as fast and more readable.",
+                "explanation": "Saying 'always use StringBuilder' is a red flag. Explaining the O(n^2) copying of repeated concatenation is a strong answer."
+              },
+              {
+                "question": "What is the difference between ref and out?",
+                "answer": "Both pass a variable by reference. ref requires the caller to initialise the variable and lets the method read and change it. out does not require initialisation, but the method must assign it before returning; it is used to return additional values.",
+                "explanation": "Add in (read-only by reference) for completeness, and cite int.TryParse as the standard out example."
+              },
+              {
+                "question": "How do you compare two strings case-insensitively, and why not use ToLower()?",
+                "answer": "Use string.Equals(a, b, StringComparison.OrdinalIgnoreCase). ToLower() allocates new strings and is culture-sensitive, which can give wrong results (for example the Turkish dotted and dotless I).",
+                "explanation": "Mentioning the culture issue and allocation cost shows production awareness."
+              },
+              {
+                "question": "Explain string interning. Is (object)\"he\" + \"llo\" == (object)\"hello\" true?",
+                "answer": "Interning stores one shared instance per distinct literal. \"he\" + \"llo\" is a compile-time constant, so it is folded to the literal \"hello\" and interned; the reference comparison is true. A string built at run time (for example with StringBuilder or from user input) is not interned automatically, so a reference comparison would be false, although == on strings still compares contents.",
+                "explanation": "This advanced follow-up checks whether you know the difference between reference equality and string's overloaded ==."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Run-length compression with the Try pattern",
+              "difficulty": "Basic",
+              "objective": "Build strings efficiently with StringBuilder and return a result through an out parameter using the .NET Try pattern.",
+              "statement": "Implement static bool TryCompress(string input, out string compressed). Compress runs of the same character as the character followed by the run length, for example aabcccccaaa becomes a2b1c5a3. Run lengths can have several digits. If the compressed text is strictly shorter than the input, return true and give the compressed text; otherwise return false and give the original input in compressed. Comparison is case-sensitive. For each input line print the result and either (saved k), where k is the number of characters saved, or (unchanged).",
+              "language": "csharp",
+              "input_format": "First line: N. Next N lines: one non-empty string of letters each.",
+              "output_format": "N lines: '<compressed> (saved <k>)' or '<original> (unchanged)'.",
+              "example": {
+                "input": "3\naabcccccaaa\nabc\naaaaaaaaaaaa\n",
+                "output": "a2b1c5a3 (saved 3)\nabc (unchanged)\na12 (saved 9)"
+              },
+              "constraints": [
+                "1 <= N <= 100",
+                "1 <= length of each string <= 10000",
+                "Use StringBuilder; repeated string concatenation would be quadratic for long inputs."
+              ],
+              "starter": "using System;\nusing System.Text;\n\nclass Program\n{\n    static bool TryCompress(string input, out string compressed)\n    {\n        // TODO: build the run-length text with a StringBuilder\n        compressed = input;\n        return false;\n    }\n\n    static void Main()\n    {\n        string[] lines = Console.In.ReadToEnd().Replace(\"\\r\", \"\").Split('\\n');\n        int n = int.Parse(lines[0].Trim());\n        for (int i = 1; i <= n; i++)\n        {\n            string s = lines[i].Trim();\n            // TODO: call TryCompress and print the result\n        }\n    }\n}\n",
+              "solution": "using System;\nusing System.Text;\n\nclass Program\n{\n    static bool TryCompress(string input, out string compressed)\n    {\n        var sb = new StringBuilder(input.Length);\n        int i = 0;\n        while (i < input.Length)\n        {\n            char c = input[i];\n            int j = i;\n            while (j < input.Length && input[j] == c) j++;\n            sb.Append(c).Append(j - i);\n            i = j;\n        }\n        compressed = sb.ToString();\n        if (compressed.Length < input.Length) return true;\n        compressed = input;\n        return false;\n    }\n\n    static void Main()\n    {\n        string[] lines = Console.In.ReadToEnd().Replace(\"\\r\", \"\").Split('\\n');\n        int n = int.Parse(lines[0].Trim());\n        for (int i = 1; i <= n; i++)\n        {\n            string s = lines[i].Trim();\n            string result;\n            if (TryCompress(s, out result))\n                Console.WriteLine(result + \" (saved \" + (s.Length - result.Length) + \")\");\n            else\n                Console.WriteLine(result + \" (unchanged)\");\n        }\n    }\n}\n",
+              "explanation": [
+                "Walk the string with two indexes: i marks the start of a run and j advances while the character repeats.",
+                "Append the character and the run length (j - i) to a StringBuilder; Append(int) handles multi-digit counts.",
+                "Only call ToString() once at the end, so the work is linear in the input length.",
+                "Assign the out parameter on every path, as the compiler requires: the compressed text when it is shorter, otherwise the original.",
+                "In Main, branch on the bool result and print the saved count or (unchanged)."
+              ],
+              "tests": [
+                {
+                  "input": "3\naabcccccaaa\nabc\naaaaaaaaaaaa\n",
+                  "output": "a2b1c5a3 (saved 3)\nabc (unchanged)\na12 (saved 9)"
+                },
+                {
+                  "input": "2\naabb\nAAAaaa\n",
+                  "output": "aabb (unchanged)\nA3a3 (saved 2)"
+                },
+                {
+                  "input": "1\nz\n",
+                  "output": "z (unchanged)"
+                },
+                {
+                  "input": "2\nxxxxxxxxxxyyyyyyyyyyyz\nabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\n",
+                  "output": "x10y11z1 (saved 14)\na1b110 (saved 105)"
+                },
+                {
+                  "input": "1\nabababab\n",
+                  "output": "abababab (unchanged)"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this string immutability example print?",
+                "code": "string s = \"abc\";\ns.ToUpper();\nConsole.WriteLine(s);",
+                "options": [
+                  "Abc",
+                  "An empty line",
+                  "ABC",
+                  "abc"
+                ],
+                "answer": 3,
+                "explanation": "Strings are immutable. ToUpper returns a new string, which is discarded here, so s is still abc."
+              },
+              {
+                "type": "concept",
+                "question": "Which statement about out parameters is correct?",
+                "options": [
+                  "The caller must initialise the variable before the call",
+                  "The method may return without assigning it",
+                  "The method must assign it before returning",
+                  "out parameters are read-only inside the method"
+                ],
+                "answer": 2,
+                "explanation": "out passes by reference and requires the method to assign the parameter on every path. Callers do not need to initialise it."
+              },
+              {
+                "type": "scenario",
+                "question": "A loop appends 50,000 log lines into one report string. What is the best approach?",
+                "options": [
+                  "Convert each line to a char[] and back",
+                  "Append each line to a StringBuilder and call ToString() once",
+                  "Use string += in the loop",
+                  "Use string.Format inside the loop on the growing string"
+                ],
+                "answer": 1,
+                "explanation": "Repeated concatenation copies the growing string each time (quadratic). StringBuilder appends into a buffer in linear time."
+              },
+              {
+                "type": "code",
+                "question": "Which is the recommended way to check that a username equals \"admin\" regardless of case?",
+                "options": [
+                  "string.Equals(name, \"admin\", StringComparison.OrdinalIgnoreCase)",
+                  "name.ToLower() == \"admin\"",
+                  "name.ToUpper().Equals(\"ADMIN\") == true",
+                  "name == \"admin\" || name == \"ADMIN\""
+                ],
+                "answer": 0,
+                "explanation": "OrdinalIgnoreCase does not allocate new strings and avoids culture-specific casing rules. The last option misses mixed case such as Admin."
+              },
+              {
+                "type": "output",
+                "question": "What does this params call print?",
+                "code": "static int Sum(params int[] v) { int s = 0; foreach (var x in v) s += x; return s; }\nConsole.WriteLine(Sum() + Sum(2, 3));",
+                "options": [
+                  "0",
+                  "23",
+                  "It does not compile because Sum() has no arguments",
+                  "5"
+                ],
+                "answer": 3,
+                "explanation": "params accepts zero or more arguments. Sum() receives an empty array and returns 0; Sum(2, 3) returns 5; 0 + 5 is 5."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "net-full-stack:question:1:1",
+          "day": 1,
+          "topic": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the CLR and what does it do?",
+          "answer": "The Common Language Runtime is the .NET execution engine. It loads assemblies, JIT-compiles IL to native code, manages memory with the garbage collector, enforces type safety and handles exceptions and threads.",
+          "explanation": "List three or four concrete services rather than saying 'it runs code'. Mentioning JIT and GC together shows you understand the managed execution model.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:1:2",
+          "day": 1,
+          "topic": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between CTS and CLS?",
+          "answer": "CTS is the complete set of types and rules the runtime supports. CLS is a subset of those rules that all .NET languages agree to support, so a CLS-compliant library can be used from any .NET language. For example, uint exists in the CTS but is not CLS-compliant.",
+          "explanation": "The uint example is what separates a memorised answer from an understood one. You can add that [CLSCompliant(true)] makes the compiler warn about violations.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:1:3",
+          "day": 1,
+          "topic": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "What is managed code, and how is it different from unmanaged code?",
+          "answer": "Managed code runs under the CLR, which handles memory, type checks and exceptions. Unmanaged code runs directly on the OS (for example a native C++ DLL), so its memory and handles must be released manually. .NET calls unmanaged code through P/Invoke or COM interop.",
+          "explanation": "Connect the answer to IDisposable: unmanaged resources are the reason the dispose pattern exists, which interviewers often ask next.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:1:4",
+          "day": 1,
+          "topic": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain the difference between .NET Framework, .NET Core and .NET 5+.",
+          "answer": ".NET Framework is the original Windows-only runtime, now in maintenance at 4.8.x. .NET Core was the cross-platform, open-source rewrite. From version 5 it became the single unified '.NET', with yearly releases; even-numbered versions such as .NET 8 are LTS.",
+          "explanation": "Strong candidates mention why companies migrate: Linux containers, performance, side-by-side versions and the fact that new features land only in modern .NET.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:1:5",
+          "day": 1,
+          "topic": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is JIT compilation, and what are ReadyToRun and Native AOT?",
+          "answer": "JIT compiles each method's IL to native code on first call, optionally recompiling hot methods with more optimisation (tiered compilation). ReadyToRun ships pre-compiled native code inside the assembly to reduce start-up time while keeping JIT as a fallback. Native AOT compiles the whole app ahead of time into a self-contained native executable with no JIT, giving fast start-up and small memory but limiting reflection and dynamic code.",
+          "explanation": "This is an advanced follow-up. Mention trade-offs: AOT suits serverless and containers where cold start matters, but features like runtime code generation are restricted.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:2:1",
+          "day": 2,
+          "topic": "C# Types: Value vs Reference, Boxing and Nullable Types",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between a value type and a reference type?",
+          "answer": "A value-type variable holds its data directly and assignment copies the data. A reference-type variable holds a reference to a heap object and assignment copies the reference, so both variables see the same object. Examples: int and struct are value types; class, string and arrays are reference types.",
+          "explanation": "Lead with copy semantics, then give examples. Avoid saying only 'stack vs heap', because interviewers often follow up with 'where is an int field of a class stored?'.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:2:2",
+          "day": 2,
+          "topic": "C# Types: Value vs Reference, Boxing and Nullable Types",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are boxing and unboxing, and why should you avoid unnecessary boxing?",
+          "answer": "Boxing wraps a value type in a heap-allocated object when it is converted to object or an interface. Unboxing copies it back with an explicit cast. Each box allocates memory and creates garbage, so in loops it hurts performance; generics avoid it.",
+          "explanation": "Mention a concrete source such as ArrayList versus List<int>, and that unboxing to the wrong type throws InvalidCastException.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:2:3",
+          "day": 2,
+          "topic": "C# Types: Value vs Reference, Boxing and Nullable Types",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Is string a value type or a reference type? Why does it behave like a value?",
+          "answer": "string is a reference type, but it is immutable and overloads == to compare contents. Any 'change' creates a new string, so sharing a reference is safe and it feels like a value.",
+          "explanation": "Linking immutability to safe sharing and to interning shows depth. It also prepares for StringBuilder questions.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:2:4",
+          "day": 2,
+          "topic": "C# Types: Value vs Reference, Boxing and Nullable Types",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When would you use a struct instead of a class?",
+          "answer": "For small, short-lived, logically single values that are ideally immutable, such as coordinates, money or a date range, where avoiding heap allocations matters. Use a class when the type is large, has identity, needs inheritance or is frequently passed around and mutated.",
+          "explanation": "Strong answers mention the copying cost of large structs and that structs cannot inherit from other structs or classes (they can implement interfaces).",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:2:5",
+          "day": 2,
+          "topic": "C# Types: Value vs Reference, Boxing and Nullable Types",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are nullable reference types in C# 8+, and do they change runtime behaviour?",
+          "answer": "They are a compile-time feature: with <Nullable>enable</Nullable>, string means 'should not be null' and string? means 'may be null', and the compiler warns about possible null dereferences. At run time both are still System.String; no checks are inserted.",
+          "explanation": "Distinguish them clearly from Nullable<T> for value types, which is a real runtime struct with HasValue and Value.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:3:1",
+          "day": 3,
+          "topic": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why are strings immutable in .NET?",
+          "answer": "Immutability makes strings thread-safe, safe as dictionary keys and hash codes, and allows interning so identical literals share memory. The trade-off is that every modification creates a new string.",
+          "explanation": "Give the benefits and the cost; then mention StringBuilder as the solution to the cost.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:3:2",
+          "day": 3,
+          "topic": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When should you use StringBuilder?",
+          "answer": "When building a string from many pieces, especially in a loop where the count is large or unknown. For a handful of pieces, concatenation or interpolation is just as fast and more readable.",
+          "explanation": "Saying 'always use StringBuilder' is a red flag. Explaining the O(n^2) copying of repeated concatenation is a strong answer.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:3:3",
+          "day": 3,
+          "topic": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between ref and out?",
+          "answer": "Both pass a variable by reference. ref requires the caller to initialise the variable and lets the method read and change it. out does not require initialisation, but the method must assign it before returning; it is used to return additional values.",
+          "explanation": "Add in (read-only by reference) for completeness, and cite int.TryParse as the standard out example.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:3:4",
+          "day": 3,
+          "topic": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How do you compare two strings case-insensitively, and why not use ToLower()?",
+          "answer": "Use string.Equals(a, b, StringComparison.OrdinalIgnoreCase). ToLower() allocates new strings and is culture-sensitive, which can give wrong results (for example the Turkish dotted and dotless I).",
+          "explanation": "Mentioning the culture issue and allocation cost shows production awareness.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "net-full-stack:question:3:5",
+          "day": 3,
+          "topic": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain string interning. Is (object)\"he\" + \"llo\" == (object)\"hello\" true?",
+          "answer": "Interning stores one shared instance per distinct literal. \"he\" + \"llo\" is a compile-time constant, so it is folded to the literal \"hello\" and interned; the reference comparison is true. A string built at run time (for example with StringBuilder or from user input) is not interned automatically, so a reference comparison would be false, although == on strings still compares contents.",
+          "explanation": "This advanced follow-up checks whether you know the difference between reference equality and string's overloaded ==.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "net-full-stack:assignment:1",
+          "title": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
+          "available": true,
+          "focus": ".NET is a free, open-source, cross-platform developer platform from Microsoft for building web, desktop, mobile, cloud and console applications. Code written in C#, F# or VB.NET is compiled into Intermediate Language (IL) and executed by the Common Language Runtime (CLR), which manages memory, type safety and security for it. Code that runs under the CLR's control is called managed code.",
+          "objectives": [
+            "Explain what .NET is and how C# source code becomes running machine code.",
+            "Describe the role of the CLR, JIT compiler, garbage collector and base class library.",
+            "Distinguish the Common Type System (CTS) from the Common Language Specification (CLS).",
+            "Compare modern .NET (5, 6, 8 and later) with the Windows-only .NET Framework and .NET Standard.",
+            "Answer the classic opening questions of a .NET interview with confidence."
+          ],
+          "assignment": "Read N C# type names. For each, print the CTS type it is an alias for and whether it is a value type (with its size) or a reference type. Unsigned and signed-byte aliases sbyte, ushort, uint and ulong must also be flagged as not CLS-compliant. Names are case-sensitive: only lower-case keyword aliases are recognised. Finish with a summary line.\n\nKnown aliases: bool System.Boolean 1, byte System.Byte 1, sbyte System.SByte 1, char System.Char 2, short System.Int16 2, ushort System.UInt16 2, int System.Int32 4, uint System.UInt32 4, long System.Int64 8, ulong System.UInt64 8, float System.Single 4, double System.Double 8, decimal System.Decimal 16, string System.String (reference), object System.Object (reference).",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "C# compiles to IL plus metadata; the CLR's JIT turns IL into native code at run time.",
+            "The CLR provides garbage collection, type safety, exception handling and threading.",
+            "CTS defines all runtime types; CLS is the cross-language subset (uint is CTS but not CLS).",
+            "C# keywords such as int and string are aliases for System.Int32 and System.String.",
+            "Modern .NET (8+) is cross-platform and open source; .NET Framework 4.8 is Windows-only and in maintenance.",
+            "Managed code is controlled by the CLR; unmanaged resources still need explicit cleanup via IDisposable."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "net-full-stack:assignment:2",
+          "title": "C# Types: Value vs Reference, Boxing and Nullable Types",
+          "available": true,
+          "focus": "Every C# type is either a value type or a reference type. A variable of a value type (int, double, bool, struct, enum) holds the data itself, so assignment copies the data. A variable of a reference type (class, string, array, interface, delegate, record class) holds a reference to an object on the managed heap, so assignment copies only the reference and both variables then point to the same object.",
+          "objectives": [
+            "Explain the difference between value types and reference types and how assignment behaves for each.",
+            "Describe where values are stored (stack, heap, inline in objects) without repeating the common myths.",
+            "Explain boxing and unboxing, why they cost performance and how generics avoid them.",
+            "Use nullable value types (int?), the ?? operator and nullable reference type annotations.",
+            "Choose between struct, class and record for a given data model."
+          ],
+          "assignment": "A sensor sends readings separated by spaces. A token that is a valid integer is a reading; any other token (for example null, NA or abc) is a missing reading. Parse each token into an int? and print: the number of valid readings, the number of missing readings, the sum of valid readings (it may exceed the int range), the maximum valid reading, the average of valid readings with two decimals, and the sequence where each missing reading is replaced by the most recent valid reading before it, or 0 if there is none. Print n/a for maximum and average when there are no valid readings.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Value types copy data on assignment; reference types copy the reference.",
+            "Reference objects live on the heap; value types live wherever their container lives.",
+            "Boxing allocates a heap object; unboxing needs a cast to the exact original type.",
+            "Generic collections such as List<int> avoid boxing.",
+            "int? models a missing value; ?? supplies a default; nullable reference types add compile-time null checks.",
+            "Prefer small immutable structs, classes for entities and records for data with value equality."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "net-full-stack:assignment:3",
+          "title": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
+          "available": true,
+          "focus": "A C# string is an immutable sequence of UTF-16 characters: every operation that seems to change it (ToUpper, Replace, +) returns a new string. StringBuilder is a mutable buffer for building text efficiently in loops. Method parameters are passed by value by default; the ref, out and in modifiers pass a variable by reference, and params lets a method accept a variable number of arguments.",
+          "objectives": [
+            "Explain why strings are immutable and what that means for performance.",
+            "Decide when to use StringBuilder instead of string concatenation.",
+            "Use ref, out, in and params parameters correctly and explain their differences.",
+            "Apply the TryParse-style 'Try' pattern with out parameters.",
+            "Compare strings correctly using ordinal and culture-aware comparisons."
+          ],
+          "assignment": "Implement static bool TryCompress(string input, out string compressed). Compress runs of the same character as the character followed by the run length, for example aabcccccaaa becomes a2b1c5a3. Run lengths can have several digits. If the compressed text is strictly shorter than the input, return true and give the compressed text; otherwise return false and give the original input in compressed. Comparison is case-sensitive. For each input line print the result and either (saved k), where k is the number of characters saved, or (unchanged).",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Strings are immutable: methods like ToUpper return a new string.",
+            "Use StringBuilder for many or unknown numbers of appends; plain concatenation for a few.",
+            "ref needs an initialised variable; out must be assigned by the method; in is a read-only reference.",
+            "Prefer the Try pattern (TryParse, TryGetValue) over exceptions for expected failures.",
+            "Use ordinal comparisons for technical strings and culture-aware ones for display text."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "net-full-stack:assignment:4",
+          "title": "Control flow for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain control flow for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on control flow for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete control flow for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 5,
+          "id": "net-full-stack:assignment:5",
+          "title": "Collections and iteration for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain collections and iteration for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on collections and iteration for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete collections and iteration for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "net-full-stack:assignment:6",
+          "title": "Error handling for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain error handling for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on error handling for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete error handling for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "net-full-stack:assignment:7",
+          "title": "Module boundaries for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain module boundaries for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on module boundaries for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete module boundaries for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "net-full-stack:article:1",
+          "net-full-stack:article:2",
+          "net-full-stack:article:3"
+        ],
+        "questions": [
+          "net-full-stack:question:1:1",
+          "net-full-stack:question:1:2",
+          "net-full-stack:question:1:3",
+          "net-full-stack:question:1:4",
+          "net-full-stack:question:1:5",
+          "net-full-stack:question:2:1",
+          "net-full-stack:question:2:2",
+          "net-full-stack:question:2:3",
+          "net-full-stack:question:2:4",
+          "net-full-stack:question:2:5",
+          "net-full-stack:question:3:1",
+          "net-full-stack:question:3:2",
+          "net-full-stack:question:3:3",
+          "net-full-stack:question:3:4",
+          "net-full-stack:question:3:5"
+        ],
+        "coding": [
+          "net-full-stack:coding:1",
+          "net-full-stack:coding:2",
+          "net-full-stack:coding:3"
+        ],
+        "assignments": [
+          "net-full-stack:assignment:1",
+          "net-full-stack:assignment:2",
+          "net-full-stack:assignment:3",
+          "net-full-stack:assignment:4",
+          "net-full-stack:assignment:5",
+          "net-full-stack:assignment:6",
+          "net-full-stack:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Data, APIs and application workflows",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "net-full-stack:assignment:8",
+          "title": "Dependency management for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain dependency management for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on dependency management for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete dependency management for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "net-full-stack:assignment:9",
+          "title": "HTTP request lifecycle for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain http request lifecycle for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on http request lifecycle for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete http request lifecycle for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "net-full-stack:assignment:10",
+          "title": "API contract design for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain api contract design for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on api contract design for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete api contract design for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "net-full-stack:assignment:11",
+          "title": "Database modeling for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain database modeling for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on database modeling for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete database modeling for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "net-full-stack:assignment:12",
+          "title": "CRUD behavior for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain crud behavior for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on crud behavior for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete crud behavior for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "net-full-stack:assignment:13",
+          "title": "Authentication flow for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain authentication flow for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on authentication flow for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authentication flow for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "net-full-stack:assignment:14",
+          "title": "Authorization checks for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain authorization checks for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on authorization checks for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authorization checks for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "net-full-stack:assignment:8",
+          "net-full-stack:assignment:9",
+          "net-full-stack:assignment:10",
+          "net-full-stack:assignment:11",
+          "net-full-stack:assignment:12",
+          "net-full-stack:assignment:13",
+          "net-full-stack:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Quality, security and architecture",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "net-full-stack:assignment:15",
+          "title": "Input sanitization for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain input sanitization for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on input sanitization for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete input sanitization for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "net-full-stack:assignment:16",
+          "title": "State management for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain state management for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on state management for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete state management for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "net-full-stack:assignment:17",
+          "title": "Component design for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain component design for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on component design for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete component design for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "net-full-stack:assignment:18",
+          "title": "Form handling for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain form handling for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on form handling for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete form handling for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "net-full-stack:assignment:19",
+          "title": "Loading and error states for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain loading and error states for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on loading and error states for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete loading and error states for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "net-full-stack:assignment:20",
+          "title": "Unit testing for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain unit testing for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on unit testing for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete unit testing for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "net-full-stack:assignment:21",
+          "title": "Integration testing for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain integration testing for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on integration testing for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete integration testing for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "net-full-stack:assignment:22",
+          "title": "Debugging strategy for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain debugging strategy for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on debugging strategy for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete debugging strategy for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "net-full-stack:assignment:15",
+          "net-full-stack:assignment:16",
+          "net-full-stack:assignment:17",
+          "net-full-stack:assignment:18",
+          "net-full-stack:assignment:19",
+          "net-full-stack:assignment:20",
+          "net-full-stack:assignment:21",
+          "net-full-stack:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, portfolio and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "net-full-stack:assignment:23",
+          "title": "Logging and observability for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain logging and observability for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on logging and observability for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and observability for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "net-full-stack:assignment:24",
+          "title": "Performance profiling for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain performance profiling for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on performance profiling for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete performance profiling for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "net-full-stack:assignment:25",
+          "title": "Accessibility checks for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain accessibility checks for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on accessibility checks for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete accessibility checks for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "net-full-stack:assignment:26",
+          "title": "Configuration management for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain configuration management for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on configuration management for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration management for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "net-full-stack:assignment:27",
+          "title": "Secure secrets handling for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain secure secrets handling for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on secure secrets handling for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secure secrets handling for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "net-full-stack:assignment:28",
+          "title": "Deployment workflow for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain deployment workflow for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on deployment workflow for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment workflow for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "net-full-stack:assignment:29",
+          "title": "Code review for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain code review for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on code review for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete code review for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "net-full-stack:assignment:30",
+          "title": "Portfolio walkthrough for .NET full-stack applications",
+          "available": false,
+          "focus": ".NET full-stack applications",
+          "objectives": [
+            "Explain portfolio walkthrough for .net full-stack applications in the context of .NET full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small .NET full-stack applications case study focused on portfolio walkthrough for .net full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for .net full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "net-full-stack:assignment:23",
+          "net-full-stack:assignment:24",
+          "net-full-stack:assignment:25",
+          "net-full-stack:assignment:26",
+          "net-full-stack:assignment:27",
+          "net-full-stack:assignment:28",
+          "net-full-stack:assignment:29",
+          "net-full-stack:assignment:30"
+        ]
+      }
+    }
+  ]
+}

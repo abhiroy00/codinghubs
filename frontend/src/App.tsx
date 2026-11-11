@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import { PrivateRouteMeta } from './seo/PrivateRouteMeta'
 import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { AuthProvider } from './lib/auth-context'
 import { LazyCartDrawer } from './components/LazyCartDrawer'
@@ -9,13 +10,16 @@ import { RegisterPopupProvider } from './lib/register-popup'
 import { FreeSession } from './pages/FreeSession'
 import { NotFound } from './pages/NotFound'
 import { LocationRoute } from './locations/LocationRoute'
-import { LearnFrame } from './learning/LearnFrame'
+const LearnFrame = lazy(() => import('./learning/LearnFrame').then(m => ({ default: m.LearnFrame })))
 
+const GigsPage = lazy(() => import('./gigs/GigsPage').then(m => ({ default: m.GigsPage })))
 const Curriculum = lazy(() => import('./pages/Curriculum').then((m) => ({ default: m.Curriculum })))
 const LocationsIndex = lazy(() => import('./locations/LocationsIndex').then((m) => ({ default: m.LocationsIndex })))
 const CourseDirectory = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.CourseDirectory })))
 const CourseDetails = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.CourseDetails })))
 const InterviewPrep = lazy(() => import('./learning/CourseLearning').then((m) => ({ default: m.InterviewPrep })))
+const GenAILearning = lazy(() => import('./learning/GenAILearning').then(m => ({default:m.GenAILearning})))
+const CourseRoadmapLearning = lazy(() => import('./learning/CourseRoadmapLearning').then(m => ({default:m.CourseRoadmapLearning})))
 const AiHub = lazy(() => import('./ai/AiHub').then((m) => ({ default: m.AiHub })))
 const AnswerEvaluation = lazy(() => import('./ai/AnswerEvaluation').then((m) => ({ default: m.AnswerEvaluation })))
 const MockInterview = lazy(() => import('./ai/MockInterview').then((m) => ({ default: m.MockInterview })))
@@ -57,6 +61,7 @@ export function App() {
     <AuthProvider>
       <BrowserRouter>
         <ScrollManager />
+        <PrivateRouteMeta />
         <LazyCartDrawer />
         <LenisProvider>
           <ModalProvider>
@@ -66,6 +71,9 @@ export function App() {
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
               <Route path="program/:slug" element={<Curriculum />} />
+              <Route path="gigs" element={<GigsPage />} />
+              <Route element={<ProtectedRoute />}><Route path="gigs/workspace" element={<GigsPage workspace />} /></Route>
+              <Route path="gigs/:slug" element={<GigsPage />} />
               <Route path="blog" element={<BlogList />} />
               <Route path="blog/:slug" element={<BlogDetail />} />
               <Route path="case-studies" element={<CaseList />} />
@@ -94,6 +102,12 @@ export function App() {
                 <Route path="courses/:slug" element={<LearnFrame><CourseDetails /></LearnFrame>} />
                 <Route path="interview-prep" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
                 <Route path="interview-prep/:slug" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
+                <Route path="interview-prep/generative-ai/levels/:level" element={<GenAILearning />} />
+                <Route path="interview-prep/generative-ai/levels/:level/articles/:article" element={<GenAILearning />} />
+                <Route path="interview-prep/generative-ai/levels/:level/days/:day" element={<GenAILearning />} />
+                <Route path="interview-prep/:slug/levels/:level" element={<CourseRoadmapLearning />} />
+                <Route path="interview-prep/:slug/levels/:level/articles/:article" element={<CourseRoadmapLearning />} />
+                <Route path="interview-prep/:slug/levels/:level/days/:day" element={<CourseRoadmapLearning />} />
                 <Route path="ai" element={<AiHub />} />
                 <Route path="ai/answer-evaluation" element={<AnswerEvaluation />} />
                 <Route path="ai/mock-interview" element={<MockInterview />} />

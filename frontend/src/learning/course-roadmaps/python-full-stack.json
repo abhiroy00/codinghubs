@@ -1,0 +1,2230 @@
+{
+  "slug": "python-full-stack",
+  "name": "Python Full Stack",
+  "focus": "Python full-stack applications",
+  "track": "development",
+  "tools": [
+    "Git",
+    "REST APIs",
+    "SQL",
+    "VS Code",
+    "Docker",
+    "automated tests"
+  ],
+  "projects": [
+    {
+      "name": "CRUD application",
+      "description": "Build a full-stack record manager with validation and database persistence.",
+      "objectives": [
+        "Define API and schema contracts",
+        "Handle empty, invalid and duplicate inputs"
+      ],
+      "requirements": [
+        "Python backend",
+        "Relational database"
+      ],
+      "steps": [
+        "Model the domain and constraints.",
+        "Build create, read, update and delete endpoints.",
+        "Add validation and ownership checks.",
+        "Test failure and boundary cases."
+      ],
+      "outcome": "A tested CRUD app with documented API behavior.",
+      "skills": [
+        "Python",
+        "API design",
+        "database modeling"
+      ]
+    },
+    {
+      "name": "Authentication system",
+      "description": "Add secure registration, login and per-user resource access.",
+      "objectives": [
+        "Separate identity from permissions",
+        "Protect private endpoints"
+      ],
+      "requirements": [
+        "User model",
+        "Credential and session plan"
+      ],
+      "steps": [
+        "Implement password-safe registration.",
+        "Add authentication and token/session handling.",
+        "Enforce object-level ownership.",
+        "Test unauthorized and cross-user access."
+      ],
+      "outcome": "A secure authentication flow with permission tests.",
+      "skills": [
+        "authentication",
+        "authorization",
+        "testing"
+      ]
+    },
+    {
+      "name": "Full-stack web application",
+      "description": "Deliver a Python web app from responsive frontend to production-ready API.",
+      "objectives": [
+        "Keep UI and API states consistent",
+        "Ship with repeatable configuration"
+      ],
+      "requirements": [
+        "User story and acceptance criteria",
+        "Deployment environment"
+      ],
+      "steps": [
+        "Design data model and routes.",
+        "Build responsive pages and form states.",
+        "Add tests, logs and secure settings.",
+        "Deploy and document operations."
+      ],
+      "outcome": "A full-stack app and deployment walkthrough.",
+      "skills": [
+        "application architecture",
+        "API design",
+        "deployment"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "python-full-stack",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Programming and application foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "python-full-stack:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "Python Fundamentals: Types, Variables and Control Flow",
+            "module": "Core Python",
+            "level": "Beginner",
+            "objectives": [
+              "Explain how Python variables work as names bound to objects.",
+              "Distinguish mutable and immutable built-in types and why it matters.",
+              "Use if/elif/else, for, while, break, continue and the loop else clause correctly.",
+              "Explain truthiness, the difference between == and is, and integer vs float division.",
+              "Write a small stdin/stdout program that combines input parsing, branching and loops."
+            ],
+            "definition": "Python is a dynamically typed, strongly typed, interpreted language. A variable is a name that refers to an object; the object, not the name, carries the type. Control flow statements (if, for, while) decide which code runs and how many times, using indentation to mark blocks.",
+            "theory": [
+              {
+                "heading": "Names, objects and dynamic typing",
+                "body": "In Python every value is an object with an identity, a type and a value. An assignment such as x = 10 does not put 10 into a box called x; it binds the name x to an int object. Rebinding x = 'ten' simply points the name at a different object. That is dynamic typing. Python is still strongly typed: '3' + 4 raises TypeError instead of silently converting, unlike JavaScript.",
+                "points": [
+                  "type(x) returns the class of the object the name refers to.",
+                  "id(x) returns the object's identity; two names can share one object.",
+                  "Strong typing means no implicit conversion between unrelated types.",
+                  "Type hints (x: int = 5) document intent but are not enforced at runtime."
+                ]
+              },
+              {
+                "heading": "Built-in types and mutability",
+                "body": "The core scalar types are int (arbitrary precision), float (IEEE 754 double), complex, bool (a subclass of int) and NoneType. Sequence and collection types are str, list, tuple, dict and set. The key interview distinction is mutability: immutable objects (int, float, str, tuple, frozenset) cannot change after creation, so an operation that looks like modification creates a new object. Mutable objects (list, dict, set) change in place, which matters when two names share the same object.",
+                "points": [
+                  "Immutable: int, float, bool, str, tuple, frozenset, bytes.",
+                  "Mutable: list, dict, set, bytearray and most user-defined objects.",
+                  "Only hashable (normally immutable) objects can be dict keys or set members.",
+                  "0.1 + 0.2 != 0.3 because of binary floating point; use decimal.Decimal for money."
+                ]
+              },
+              {
+                "heading": "Operators that interviewers probe",
+                "body": "/ always returns a float (7 / 2 == 3.5), // is floor division (7 // 2 == 3, and -7 // 2 == -4 because it floors toward negative infinity) and % follows the sign of the divisor. == compares values by calling __eq__, while is compares identity. Use is only for singletons such as None. and/or short-circuit and return one of their operands, not necessarily a bool: '' or 'guest' evaluates to 'guest'.",
+                "points": [
+                  "x is None is the idiomatic None check.",
+                  "Chained comparisons work: 0 <= score <= 100.",
+                  "Falsy values: None, False, 0, 0.0, '', [], {}, set(), range(0).",
+                  "The walrus operator := assigns inside an expression (Python 3.8+)."
+                ]
+              },
+              {
+                "heading": "Control flow",
+                "body": "if/elif/else picks one branch. for iterates over any iterable (lists, strings, dicts, files, ranges); while repeats while a condition is true. break exits the loop, continue skips to the next iteration, and the optional else block on a loop runs only if the loop finished without break, which is handy for search loops. Python 3.10 added match/case for structural pattern matching.",
+                "points": [
+                  "range(start, stop, step) is lazy and excludes stop.",
+                  "enumerate(items, start=1) gives index and value together.",
+                  "zip(a, b) walks two iterables in parallel and stops at the shorter one.",
+                  "Indentation is syntax: mixing tabs and spaces causes errors."
+                ]
+              },
+              {
+                "heading": "Strings and input handling",
+                "body": "Strings are immutable sequences of Unicode characters. Common methods are strip, split, join, replace, lower, startswith and format with f-strings. input() always returns a str, so numeric input must be converted with int() or float(). f'{value:.2f}' formats a float with two decimals, which you will use constantly in coding rounds.",
+                "points": [
+                  "s.split() with no argument splits on any whitespace and drops empty parts.",
+                  "', '.join(words) is the efficient way to build a string from pieces.",
+                  "Slicing s[::-1] reverses a string; slices never raise IndexError."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Mutability in action",
+              "body": "Two names bound to the same list see each other's changes, while rebinding an int creates a new object. This is the root of many subtle bugs, such as a function unexpectedly modifying a list it received.",
+              "code": {
+                "language": "python",
+                "source": "a = [1, 2, 3]\nb = a            # b and a refer to the SAME list\nb.append(4)\nprint(a)         # [1, 2, 3, 4]\nprint(a is b)    # True\n\nx = 10\ny = x\ny += 1           # ints are immutable: y now refers to a new object\nprint(x, y)      # 10 11\n\nc = a[:]         # shallow copy creates a new list\nprint(c == a, c is a)  # True False"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Input validation",
+                "description": "Branching on types and ranges to reject bad form data before it reaches the database."
+              },
+              {
+                "title": "Data processing scripts",
+                "description": "Loops over CSV rows or log lines to compute totals, averages and reports."
+              },
+              {
+                "title": "Business rules",
+                "description": "if/elif chains for pricing tiers, grading, discounts or tax slabs."
+              },
+              {
+                "title": "Automation",
+                "description": "while loops for retry logic and polling a service until a job finishes."
+              }
+            ],
+            "demonstration": {
+              "description": "Use a for loop with an else clause to search for the first number divisible by 7. The else runs only when no break happened.",
+              "code": {
+                "language": "python",
+                "source": "for nums in ([3, 5, 14, 21], [1, 2, 4]):\n    for n in nums:\n        if n % 7 == 0:\n            print('found', n)\n            break\n    else:\n        print('none divisible by 7')\n\nprint(7 / 2, 7 // 2, -7 // 2, 7 % 3)"
+              },
+              "output": "found 14\nnone divisible by 7\n3.5 3 -4 1"
+            },
+            "takeaways": [
+              "Variables are names bound to objects; the object has the type.",
+              "Python is dynamically but strongly typed.",
+              "Know which types are mutable; it affects copying, defaults and dict keys.",
+              "Use == for value equality and is only for identity checks like is None.",
+              "/ returns float, // floors toward negative infinity.",
+              "A loop's else block runs only when the loop was not exited with break."
+            ],
+            "interview": [
+              {
+                "question": "Is Python statically or dynamically typed? Strongly or weakly typed?",
+                "answer": "Dynamically typed, because types are checked at runtime and a name can be rebound to an object of any type. Strongly typed, because it does not implicitly convert between unrelated types; '3' + 4 raises TypeError.",
+                "explanation": "Many candidates confuse dynamic with weak. Giving the '3' + 4 example and contrasting it with JavaScript's '34' shows you understand both axes."
+              },
+              {
+                "question": "What is the difference between == and is?",
+                "answer": "== compares values using __eq__; is compares identity, meaning both names point to the same object. Use is for singletons such as None, True and False.",
+                "explanation": "Mention that small integers and some strings are cached by CPython, so is may appear to work for them, but relying on that is a bug."
+              },
+              {
+                "question": "Which built-in types are mutable and which are immutable? Why does it matter?",
+                "answer": "Mutable: list, dict, set, bytearray. Immutable: int, float, bool, str, tuple, frozenset, bytes. It matters because shared references to mutable objects see in-place changes, and only hashable objects can be dictionary keys or set members.",
+                "explanation": "A strong answer connects mutability to real consequences: aliasing bugs, the mutable default argument trap and hashability."
+              },
+              {
+                "question": "What does the else clause on a for or while loop do?",
+                "answer": "It runs after the loop finishes normally, that is, without hitting break. It is useful for search loops where you need to act when nothing was found.",
+                "explanation": "This is a classic Python-specific question; a short search example demonstrates you have actually used it."
+              },
+              {
+                "question": "Why does 0.1 + 0.2 == 0.3 return False, and how do you handle money in Python?",
+                "answer": "Floats are binary IEEE 754 doubles and cannot represent 0.1 exactly, so the sum is 0.30000000000000004. For money use decimal.Decimal (constructed from strings) or store integer paise/cents; for approximate comparisons use math.isclose.",
+                "explanation": "Interviewers for full-stack roles like this because payment and invoice code must avoid float rounding errors; Django's DecimalField exists for the same reason."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Student result summary",
+              "difficulty": "Basic",
+              "objective": "Combine input parsing, if/elif grading rules, loops and formatted output.",
+              "statement": "Read a list of students with their marks and print each student's grade, the class average and the topper. Grades: 90 and above is A, 75–89 is B, 60–74 is C, 40–59 is D and below 40 is F. If several students share the highest marks, the topper is the one who appears first. If there are no students, print only 'No students'.",
+              "language": "python",
+              "input_format": "First line: n, the number of students (0 or more). Next n lines: a name (no spaces) and integer marks, separated by a space.",
+              "output_format": "n lines 'name: grade' in input order, then 'Average: x.xx' (two decimals), then 'Topper: name (marks)'. For n = 0 print 'No students'.",
+              "example": {
+                "input": "3\nAsha 92\nRavi 74\nMeena 40\n",
+                "output": "Asha: A\nRavi: C\nMeena: D\nAverage: 68.67\nTopper: Asha (92)"
+              },
+              "constraints": [
+                "0 <= n <= 1000",
+                "Marks are integers from 0 to 100.",
+                "Names contain no spaces."
+              ],
+              "starter": "n = int(input())\nstudents = []\nfor _ in range(n):\n    name, marks = input().split()\n    students.append((name, int(marks)))\n\n# TODO: print grades, average and topper\n",
+              "solution": "def grade(m):\n    if m >= 90:\n        return 'A'\n    elif m >= 75:\n        return 'B'\n    elif m >= 60:\n        return 'C'\n    elif m >= 40:\n        return 'D'\n    return 'F'\n\nn = int(input())\nstudents = []\nfor _ in range(n):\n    name, marks = input().split()\n    students.append((name, int(marks)))\n\nif not students:\n    print('No students')\nelse:\n    for name, marks in students:\n        print(f'{name}: {grade(marks)}')\n    average = sum(m for _, m in students) / len(students)\n    print(f'Average: {average:.2f}')\n    top_name, top_marks = students[0]\n    for name, marks in students[1:]:\n        if marks > top_marks:\n            top_name, top_marks = name, marks\n    print(f'Topper: {top_name} ({top_marks})')\n",
+              "explanation": [
+                "Convert the marks to int, because input() always returns a string.",
+                "Check grade thresholds from highest to lowest so the first matching elif wins.",
+                "Use true division for the average and format it with :.2f.",
+                "Track the topper with a strict > comparison so the earliest student wins a tie.",
+                "Handle the empty case first to avoid dividing by zero."
+              ],
+              "tests": [
+                {
+                  "input": "3\nAsha 92\nRavi 74\nMeena 40\n",
+                  "output": "Asha: A\nRavi: C\nMeena: D\nAverage: 68.67\nTopper: Asha (92)"
+                },
+                {
+                  "input": "0\n",
+                  "output": "No students"
+                },
+                {
+                  "input": "2\nKiran 75\nArjun 75\n",
+                  "output": "Kiran: B\nArjun: B\nAverage: 75.00\nTopper: Kiran (75)"
+                },
+                {
+                  "input": "1\nZoya 39\n",
+                  "output": "Zoya: F\nAverage: 39.00\nTopper: Zoya (39)"
+                },
+                {
+                  "input": "4\nDev 100\nSam 0\nLia 60\nOm 89\n",
+                  "output": "Dev: A\nSam: F\nLia: C\nOm: B\nAverage: 62.25\nTopper: Dev (100)"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this floor-division code print?",
+                "code": "print(7 // 2, -7 // 2)",
+                "options": [
+                  "3 -4",
+                  "3.5 -3.5",
+                  "4 -4",
+                  "3 -3"
+                ],
+                "answer": 0,
+                "explanation": "// is floor division and rounds toward negative infinity, so -3.5 floors to -4."
+              },
+              {
+                "type": "concept",
+                "question": "Which of these built-in types is mutable?",
+                "options": [
+                  "list",
+                  "frozenset",
+                  "tuple",
+                  "str"
+                ],
+                "answer": 0,
+                "explanation": "Lists can be changed in place; tuples, strings and frozensets are immutable."
+              },
+              {
+                "type": "code",
+                "question": "What is the idiomatic way to check whether a variable is None?",
+                "options": [
+                  "if not value.exists():",
+                  "if value is None:",
+                  "if value == None:",
+                  "if type(value) == 'None':"
+                ],
+                "answer": 1,
+                "explanation": "None is a singleton, so an identity check with is is correct and cannot be fooled by a custom __eq__."
+              },
+              {
+                "type": "output",
+                "question": "What does this for...else loop print?",
+                "code": "for n in [2, 4, 6]:\n    if n % 2:\n        break\nelse:\n    print('done')",
+                "options": [
+                  "Nothing",
+                  "2",
+                  "An error",
+                  "done"
+                ],
+                "answer": 3,
+                "explanation": "No element is odd, so break never runs and the loop's else clause executes."
+              },
+              {
+                "type": "scenario",
+                "question": "An invoice total computed with floats shows 0.30000000000000004. What is the best fix?",
+                "options": [
+                  "Convert values to strings before adding",
+                  "Use decimal.Decimal or integer paise for currency",
+                  "Switch to Python 2",
+                  "Round every value to one decimal place"
+                ],
+                "answer": 1,
+                "explanation": "Binary floats cannot represent most decimal fractions exactly; Decimal or integer minor units give exact currency arithmetic."
+              }
+            ]
+          }
+        },
+        {
+          "id": "python-full-stack:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "Functions, Arguments, Scope and Closures",
+            "module": "Core Python",
+            "level": "Beginner",
+            "objectives": [
+              "Define functions with positional, keyword, default, *args and **kwargs parameters.",
+              "Explain the LEGB scope rule and when global and nonlocal are needed.",
+              "Avoid the mutable default argument trap and explain why it happens.",
+              "Use functions as first-class objects: pass them, return them and store them in dicts.",
+              "Build closures and lambdas and know their limits."
+            ],
+            "definition": "A function is a named, reusable block of code defined with def that takes parameters and returns a value (None if no return runs). In Python functions are first-class objects, so they can be assigned to variables, passed as arguments and returned from other functions; a closure is a nested function that remembers variables from the scope in which it was created.",
+            "theory": [
+              {
+                "heading": "Parameters and arguments",
+                "body": "Parameters are the names in the def line; arguments are the values passed in a call. Python matches arguments in a fixed order: positional, then keyword. *args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dict. A bare * in the signature makes the following parameters keyword-only, and / (Python 3.8+) makes the preceding ones positional-only. Clear signatures make APIs harder to misuse.",
+                "points": [
+                  "def f(a, b=2, *args, flag=False, **kwargs) is a valid full signature.",
+                  "f(*items) unpacks a list into positional arguments; f(**opts) unpacks a dict into keywords.",
+                  "Keyword-only parameters (after *) force callers to write send(to=..., cc=...).",
+                  "A function without a return statement returns None."
+                ]
+              },
+              {
+                "heading": "The mutable default argument trap",
+                "body": "Default values are evaluated once, when the def statement runs, not on every call. If the default is a mutable object such as a list, every call that relies on the default shares the same list, so data leaks between calls. The fix is to use None as a sentinel and create a new object inside the function.",
+                "points": [
+                  "Wrong: def add(item, bucket=[]).",
+                  "Right: def add(item, bucket=None): bucket = [] if bucket is None else bucket.",
+                  "The shared default is visible in add.__defaults__."
+                ]
+              },
+              {
+                "heading": "Scope: the LEGB rule",
+                "body": "When Python looks up a name it searches Local, then Enclosing function scopes, then Global (module), then Built-in. Assigning to a name anywhere in a function makes it local to that function for the whole body, which is why reading a global and then assigning to it raises UnboundLocalError. global rebinds a module-level name; nonlocal rebinds a name in the nearest enclosing function. Prefer returning values over mutating globals.",
+                "points": [
+                  "Local: names assigned inside the current function.",
+                  "Enclosing: names in outer functions, used by closures.",
+                  "Global: names at module top level.",
+                  "Built-in: len, print, range and friends; shadowing them (list = [...]) is a common bug."
+                ]
+              },
+              {
+                "heading": "First-class functions, closures and lambdas",
+                "body": "Because functions are objects you can store them in a dictionary to build a dispatch table instead of a long if/elif chain, pass them as the key argument to sorted, or return them from a factory. A closure is created when an inner function references a variable of the outer function; the variable survives after the outer function returns. Closures are the foundation of decorators (Day 7). lambda creates a small anonymous function limited to a single expression.",
+                "points": [
+                  "sorted(users, key=lambda u: u['age']) passes a function as data.",
+                  "Closures capture variables, not values: loop variables captured in lambdas all see the final value unless bound with a default (lambda i=i: i).",
+                  "functools.partial pre-fills some arguments of a function."
+                ]
+              },
+              {
+                "heading": "Pass by object reference",
+                "body": "Python passes references to objects ('call by sharing'). The function receives a new name bound to the same object. Mutating a mutable argument (list.append) is visible to the caller, but rebinding the parameter (lst = [...]) is not. This explains both why functions can change a caller's list and why they cannot change a caller's int.",
+                "points": [
+                  "Mutation is visible outside; rebinding is not.",
+                  "Copy defensively (list(arg), dict(arg)) if a function must not change its input."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A closure-based counter and the default-argument trap",
+              "body": "make_counter returns an inner function that keeps its own count using nonlocal. The second part shows how a mutable default leaks state between calls and how the None sentinel fixes it.",
+              "code": {
+                "language": "python",
+                "source": "def make_counter(start=0):\n    count = start\n    def increment(step=1):\n        nonlocal count\n        count += step\n        return count\n    return increment\n\nclicks = make_counter()\nprint(clicks(), clicks(), clicks(5))  # 1 2 7\n\ndef add_bad(item, bucket=[]):\n    bucket.append(item)\n    return bucket\n\ndef add_good(item, bucket=None):\n    bucket = [] if bucket is None else bucket\n    bucket.append(item)\n    return bucket\n\nprint(add_bad('a'), add_bad('b'))    # ['a', 'b'] ['a', 'b']\nprint(add_good('a'), add_good('b'))  # ['a'] ['b']"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Dispatch tables",
+                "description": "Map command or action names to handler functions, the same idea a URL router uses to map paths to views."
+              },
+              {
+                "title": "Callbacks and sorting keys",
+                "description": "Pass functions to sorted, map, filter or event systems to customise behaviour."
+              },
+              {
+                "title": "Configuration factories",
+                "description": "Closures that build pre-configured functions, such as a logger bound to a module name."
+              },
+              {
+                "title": "Flexible APIs",
+                "description": "**kwargs lets a function forward options, as Django's Model.objects.filter(**filters) does."
+              }
+            ],
+            "demonstration": {
+              "description": "Unpack arguments into a function with * and **, and see how keyword-only parameters protect a call site.",
+              "code": {
+                "language": "python",
+                "source": "def send(subject, *recipients, urgent=False, **headers):\n    print(subject, recipients, urgent, headers)\n\nto = ['a@x.com', 'b@x.com']\nsend('Hello', *to, urgent=True, **{'X-Id': '42'})\nsend('Hi')"
+              },
+              "output": "Hello ('a@x.com', 'b@x.com') True {'X-Id': '42'}\nHi () False {}"
+            },
+            "takeaways": [
+              "*args is a tuple of extra positional arguments; **kwargs is a dict of extra keyword arguments.",
+              "Default values are evaluated once; never use a mutable default.",
+              "Name lookup follows LEGB; assignment makes a name local for the whole function.",
+              "Functions are objects: store them in dicts, pass them, return them.",
+              "A closure remembers variables from its enclosing scope; nonlocal lets it rebind them.",
+              "Python passes object references: mutation is visible to the caller, rebinding is not."
+            ],
+            "interview": [
+              {
+                "question": "What are *args and **kwargs?",
+                "answer": "*args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dict. The same symbols in a call unpack a sequence or mapping into arguments.",
+                "explanation": "Show both directions (packing in the definition, unpacking in the call) and mention a real use such as wrapper functions in decorators."
+              },
+              {
+                "question": "Why is def f(x, items=[]) dangerous?",
+                "answer": "The default list is created once when the function is defined and shared by every call that uses the default, so items appended in one call appear in the next. Use None as the default and create a new list inside.",
+                "explanation": "This is one of the most common Python interview questions. Explaining that defaults are evaluated at definition time is the key insight."
+              },
+              {
+                "question": "Explain the LEGB rule. What do global and nonlocal do?",
+                "answer": "Python resolves names in Local, Enclosing, Global and Built-in scopes, in that order. global lets a function rebind a module-level name; nonlocal lets a nested function rebind a name in its enclosing function's scope.",
+                "explanation": "Mention UnboundLocalError: assigning to a name anywhere in a function makes it local everywhere in that function."
+              },
+              {
+                "question": "Does Python pass arguments by value or by reference?",
+                "answer": "Neither exactly: it passes object references (call by sharing). The parameter is a new name for the same object, so in-place mutation of a mutable object is visible to the caller, while rebinding the parameter is not.",
+                "explanation": "A good answer gives a two-line example contrasting lst.append(1) with lst = [1]."
+              },
+              {
+                "question": "What is a closure and where is it used in practice?",
+                "answer": "A closure is an inner function that references variables from an enclosing function and keeps them alive after the outer function returns. Closures power decorators, callback factories, memoisation and configuration of handlers.",
+                "explanation": "Strong candidates mention the late-binding gotcha with lambdas in loops and that decorators are just closures applied with @ syntax."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Command calculator with a dispatch table",
+              "difficulty": "Basic",
+              "objective": "Use first-class functions in a dict, *args for variable arguments and argument-count errors raised by Python itself.",
+              "statement": "Read commands until the end of input. Each command is an operation name followed by zero or more integers. Supported operations: add (sum of all numbers), mul (product of all numbers), avg (average with two decimals; needs at least one number) and pow (exactly two numbers: base and exponent, exponent >= 0). Print one line per command. Unknown operations print 'Unknown command: <name>'. If avg has no numbers print 'Error: avg needs at least one number'. If pow does not receive exactly two numbers print 'Error: wrong number of arguments for pow'. Skip blank lines.",
+              "language": "python",
+              "input_format": "One command per line: name followed by space-separated integers.",
+              "output_format": "One result or error line per non-blank command.",
+              "example": {
+                "input": "add 1 2 3\nmul 2 5\navg 1 2\npow 2 10\n",
+                "output": "6\n10\n1.50\n1024"
+              },
+              "constraints": [
+                "All arguments are valid integers.",
+                "pow exponents are non-negative.",
+                "Use a dictionary that maps names to functions rather than an if/elif chain."
+              ],
+              "starter": "import sys\n\ndef add(*nums):\n    pass  # TODO\n\nOPS = {'add': add}\n\nfor line in sys.stdin:\n    parts = line.split()\n    if not parts:\n        continue\n    name, *args = parts\n    # TODO: look up the function and call it with the integer arguments\n",
+              "solution": "import sys\n\ndef add(*nums):\n    return sum(nums)\n\ndef mul(*nums):\n    result = 1\n    for n in nums:\n        result *= n\n    return result\n\ndef avg(*nums):\n    if not nums:\n        raise ValueError('avg needs at least one number')\n    return f'{sum(nums) / len(nums):.2f}'\n\ndef power(base, exp):\n    return base ** exp\n\nOPS = {'add': add, 'mul': mul, 'avg': avg, 'pow': power}\n\nfor line in sys.stdin:\n    parts = line.split()\n    if not parts:\n        continue\n    name, *args = parts\n    func = OPS.get(name)\n    if func is None:\n        print(f'Unknown command: {name}')\n        continue\n    try:\n        print(func(*map(int, args)))\n    except TypeError:\n        print(f'Error: wrong number of arguments for {name}')\n    except ValueError as exc:\n        print(f'Error: {exc}')\n",
+              "explanation": [
+                "Store each operation function in OPS so adding a command means adding one dict entry.",
+                "Split each line with name, *args = parts to separate the command from its arguments.",
+                "Unpack the converted integers into the call with func(*map(int, args)); variadic functions accept any count.",
+                "power has exactly two parameters, so Python itself raises TypeError for the wrong count, which is caught and reported.",
+                "avg raises ValueError for no input; the empty sum is 0 and the empty product is 1, the identity values."
+              ],
+              "tests": [
+                {
+                  "input": "add 1 2 3\nmul 2 5\navg 1 2\npow 2 10\n",
+                  "output": "6\n10\n1.50\n1024"
+                },
+                {
+                  "input": "add\nmul\n",
+                  "output": "0\n1"
+                },
+                {
+                  "input": "avg\npow 2\npow 2 3 4\n",
+                  "output": "Error: avg needs at least one number\nError: wrong number of arguments for pow\nError: wrong number of arguments for pow"
+                },
+                {
+                  "input": "div 4 2\n\nadd -5 5\n",
+                  "output": "Unknown command: div\n0"
+                },
+                {
+                  "input": "pow 5 0\navg 7\n",
+                  "output": "1\n7.00"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does calling the function below twice print?",
+                "code": "def f(x, acc=[]):\n    acc.append(x)\n    return acc\nf(1)\nprint(f(2))",
+                "options": [
+                  "An error",
+                  "[1, 2]",
+                  "[2]",
+                  "[1]"
+                ],
+                "answer": 1,
+                "explanation": "The default list is created once and shared, so the second call appends to the list that already contains 1."
+              },
+              {
+                "type": "concept",
+                "question": "Inside def f(*args, **kwargs), what are the types of args and kwargs?",
+                "options": [
+                  "dict and tuple",
+                  "tuple and dict",
+                  "list and dict",
+                  "tuple and list"
+                ],
+                "answer": 1,
+                "explanation": "Extra positional arguments are packed into a tuple and extra keyword arguments into a dict."
+              },
+              {
+                "type": "scenario",
+                "question": "A nested function needs to update a counter variable defined in its enclosing function. Which keyword should it use?",
+                "options": [
+                  "global",
+                  "static",
+                  "nonlocal",
+                  "local"
+                ],
+                "answer": 2,
+                "explanation": "nonlocal rebinds a name in the nearest enclosing function scope; global would target the module scope."
+              },
+              {
+                "type": "output",
+                "question": "What does this code that modifies and rebinds a parameter print?",
+                "code": "def change(lst):\n    lst.append(3)\n    lst = [0]\nnums = [1, 2]\nchange(nums)\nprint(nums)",
+                "options": [
+                  "[1, 2, 3]",
+                  "[1, 2]",
+                  "[0, 3]",
+                  "[0]"
+                ],
+                "answer": 0,
+                "explanation": "append mutates the shared list; rebinding lst afterwards only changes the local name."
+              },
+              {
+                "type": "code",
+                "question": "In def send(to, *, cc=None), how must cc be passed?",
+                "options": [
+                  "Either way",
+                  "It cannot be passed at all",
+                  "Only as a keyword argument, e.g. send('a', cc='b')",
+                  "Only positionally, e.g. send('a', 'b')"
+                ],
+                "answer": 2,
+                "explanation": "Parameters after a bare * are keyword-only, which prevents callers from mixing up positional arguments."
+              }
+            ]
+          }
+        },
+        {
+          "id": "python-full-stack:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Built-in Data Structures and Comprehensions",
+            "module": "Core Python",
+            "level": "Beginner",
+            "objectives": [
+              "Choose between list, tuple, dict and set based on behaviour and time complexity.",
+              "Write list, dict and set comprehensions and generator expressions.",
+              "Use collections helpers such as Counter, defaultdict and deque.",
+              "Explain shallow versus deep copies of nested structures.",
+              "Sort complex data with key functions and multiple sort criteria."
+            ],
+            "definition": "Python's built-in data structures are list (ordered, mutable sequence), tuple (ordered, immutable sequence), dict (insertion-ordered mapping of hashable keys to values, backed by a hash table) and set (unordered collection of unique hashable items). Comprehensions are concise expressions that build these collections from an iterable with optional filtering.",
+            "theory": [
+              {
+                "heading": "Lists and tuples",
+                "body": "A list is a dynamic array: indexing and append are O(1) (append is amortised), but inserting or deleting at the front is O(n) because elements must shift, and x in list is an O(n) scan. A tuple is an immutable sequence; because it cannot change it is hashable when its items are, so it can be a dict key, and it signals 'fixed record' to readers, for example a (lat, lng) pair or a database row.",
+                "points": [
+                  "list.append, list.pop() and indexing: O(1).",
+                  "list.insert(0, x), list.pop(0) and x in list: O(n).",
+                  "Tuple unpacking: name, age = row.",
+                  "Use collections.deque for O(1) appends and pops at both ends (queues)."
+                ]
+              },
+              {
+                "heading": "Dictionaries and sets",
+                "body": "dict and set are hash tables. Lookup, insertion and membership tests are O(1) on average, which is why converting a list to a set before many membership checks can turn an O(n*m) algorithm into O(n+m). Keys must be hashable. Since Python 3.7 dicts preserve insertion order as a language guarantee. Sets support mathematical operations: union |, intersection &, difference - and symmetric difference ^.",
+                "points": [
+                  "d.get(key, default) avoids KeyError for missing keys.",
+                  "d.setdefault(key, []).append(v) groups values in one line.",
+                  "d1 | d2 merges dictionaries (Python 3.9+); {**d1, **d2} works on older versions.",
+                  "A set removes duplicates but does not keep order; dict.fromkeys(items) dedupes while keeping order."
+                ]
+              },
+              {
+                "heading": "Comprehensions and generator expressions",
+                "body": "A comprehension builds a collection in a single readable expression: [f(x) for x in items if cond(x)]. Dict comprehensions use {k: v for ...} and set comprehensions use {x for ...}. Using parentheses instead creates a generator expression, which produces items lazily without building a list in memory, ideal for sum(x * x for x in big_range). Keep comprehensions simple; nested logic belongs in a regular loop.",
+                "points": [
+                  "squares = [n * n for n in range(5)]",
+                  "by_id = {u['id']: u for u in users}",
+                  "Comprehension variables do not leak into the surrounding scope in Python 3."
+                ]
+              },
+              {
+                "heading": "The collections module",
+                "body": "Counter counts hashable items and has most_common(n). defaultdict creates a default value for missing keys, removing if-key-not-in-dict boilerplate. deque is a double-ended queue for BFS and sliding windows. namedtuple and dataclasses give lightweight records with named fields. Knowing these saves time in coding interviews and shows idiomatic Python.",
+                "points": [
+                  "Counter('banana') gives Counter({'a': 3, 'n': 2, 'b': 1}).",
+                  "defaultdict(list) groups items; defaultdict(int) counts.",
+                  "deque(maxlen=3) keeps only the last three items."
+                ]
+              },
+              {
+                "heading": "Copying and sorting",
+                "body": "Assignment never copies. list(x), x.copy() and x[:] make shallow copies: a new outer container whose items are the same objects, so nested lists are still shared. copy.deepcopy recursively copies nested objects. sorted() returns a new list and list.sort() sorts in place; both are stable and accept key= and reverse=. For multiple criteria return a tuple from the key, for example key=lambda p: (-p.score, p.name) for score descending then name ascending.",
+                "points": [
+                  "Shallow copy: new container, shared items.",
+                  "Deep copy: everything duplicated recursively.",
+                  "Sorting is O(n log n) with Timsort and is stable."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Grouping orders with defaultdict and a comprehension",
+              "body": "Group order amounts by city, then build a summary dict with a comprehension. This is the same shape of work a Django view does after fetching rows, before passing a context to a template.",
+              "code": {
+                "language": "python",
+                "source": "from collections import defaultdict\n\norders = [('Delhi', 450), ('Pune', 300), ('Delhi', 120), ('Pune', 80), ('Goa', 999)]\n\nby_city = defaultdict(list)\nfor city, amount in orders:\n    by_city[city].append(amount)\n\nsummary = {city: sum(vals) for city, vals in by_city.items()}\nprint(summary)  # {'Delhi': 570, 'Pune': 380, 'Goa': 999}\n\ntop = sorted(summary.items(), key=lambda kv: -kv[1])[0]\nprint(top)      # ('Goa', 999)"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Fast lookups",
+                "description": "Index records by id in a dict so a view or API handler can find them in O(1)."
+              },
+              {
+                "title": "Deduplication",
+                "description": "Sets remove duplicate emails or tags before saving to the database."
+              },
+              {
+                "title": "Counting and analytics",
+                "description": "Counter for page views, error codes or most common search terms."
+              },
+              {
+                "title": "Queues",
+                "description": "deque for breadth-first search, job queues and recent-history buffers."
+              }
+            ],
+            "demonstration": {
+              "description": "Compare a shallow and a deep copy of a nested list to see which changes are shared.",
+              "code": {
+                "language": "python",
+                "source": "import copy\n\ngrid = [[1, 2], [3, 4]]\nshallow = grid.copy()\ndeep = copy.deepcopy(grid)\n\ngrid[0].append(99)\nprint(shallow[0])  # shares inner lists\nprint(deep[0])     # independent\nprint({1, 2, 3} & {2, 3, 4}, {1, 2} | {5})"
+              },
+              "output": "[1, 2, 99]\n[1, 2]\n{2, 3} {1, 2, 5}"
+            },
+            "takeaways": [
+              "Lists are dynamic arrays; front insertions and membership tests are O(n).",
+              "Dicts and sets are hash tables with average O(1) lookup; keys must be hashable.",
+              "Dicts keep insertion order since Python 3.7.",
+              "Comprehensions build collections; generator expressions produce items lazily.",
+              "Counter, defaultdict and deque remove a lot of boilerplate.",
+              "Shallow copies share nested objects; use deepcopy when you need full independence."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between a list and a tuple?",
+                "answer": "A list is mutable and a tuple is immutable. Because of that a tuple of hashable items is hashable (usable as a dict key), slightly smaller and faster to create, and communicates a fixed-size record. Lists are for homogeneous collections that grow or change.",
+                "explanation": "Go beyond 'one is mutable': mention hashability and intent (records versus collections)."
+              },
+              {
+                "question": "Why is checking membership in a set faster than in a list?",
+                "answer": "A set is a hash table: Python hashes the value and jumps to its bucket, giving average O(1). A list must compare items one by one, which is O(n).",
+                "explanation": "Mention the practical trick of converting a list to a set before repeated membership tests, and that worst-case hash collisions degrade to O(n)."
+              },
+              {
+                "question": "Are Python dictionaries ordered?",
+                "answer": "Yes. Since Python 3.7 insertion order is guaranteed by the language specification (it was an implementation detail of CPython 3.6). Iteration returns keys in the order they were first inserted.",
+                "explanation": "Interviewers check whether your knowledge is current; mention OrderedDict still exists for move_to_end and order-sensitive equality."
+              },
+              {
+                "question": "What is the difference between a shallow copy and a deep copy?",
+                "answer": "A shallow copy creates a new outer container but references the same inner objects. A deep copy recursively copies all nested objects, so changes to inner lists or dicts are not shared.",
+                "explanation": "Give the nested list example; this ties into bugs when copying configuration dicts or default data."
+              },
+              {
+                "question": "How would you find the k most frequent words in a text, breaking ties alphabetically?",
+                "answer": "Normalise the words, count them with collections.Counter (O(n)), then sort the items with key=lambda kv: (-kv[1], kv[0]) and take the first k. For very large vocabularies heapq.nsmallest(k, items, key=...) avoids sorting everything.",
+                "explanation": "This combines dicts, sorting with tuple keys and complexity analysis, a common screening question."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Top-k word frequency",
+              "difficulty": "Basic",
+              "objective": "Use Counter, string normalisation and multi-key sorting to rank words.",
+              "statement": "Read k on the first line and then any number of lines of text. Split the text on whitespace, strip the punctuation characters . , ! ? ; : ( ) from both ends of each word, convert to lowercase and ignore empty results. Print the number of distinct words, then the k most frequent words with their counts. Sort by count descending, then alphabetically. If there are fewer than k distinct words, print them all. If there are no words, print only 'No words'.",
+              "language": "python",
+              "input_format": "First line: integer k (k >= 1). Remaining lines: free text (may be empty).",
+              "output_format": "'Unique: N' followed by up to k lines 'word count', or 'No words'.",
+              "example": {
+                "input": "3\nthe cat and the hat. The cat sat!\n",
+                "output": "Unique: 5\nthe 3\ncat 2\nand 1"
+              },
+              "constraints": [
+                "1 <= k <= 1000",
+                "Text is ASCII and may span several lines.",
+                "Words that become empty after stripping punctuation are ignored."
+              ],
+              "starter": "import sys\nfrom collections import Counter\n\nlines = sys.stdin.read().splitlines()\nk = int(lines[0])\ntext = ' '.join(lines[1:])\n\n# TODO: normalise words, count them and print the result\n",
+              "solution": "import sys\nfrom collections import Counter\n\nlines = sys.stdin.read().splitlines()\nk = int(lines[0])\ntext = ' '.join(lines[1:])\n\nwords = [w.strip('.,!?;:()').lower() for w in text.split()]\ncounts = Counter(w for w in words if w)\n\nif not counts:\n    print('No words')\nelse:\n    print(f'Unique: {len(counts)}')\n    ranked = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))\n    for word, count in ranked[:k]:\n        print(word, count)\n",
+              "explanation": [
+                "Join all text lines so words on different lines are counted together.",
+                "Normalise each word with strip and lower in a list comprehension.",
+                "Counter counts the non-empty words in one pass.",
+                "Sort with a tuple key (-count, word): negative count gives descending frequency, the word breaks ties alphabetically.",
+                "Slicing ranked[:k] safely returns fewer items when there are fewer than k words."
+              ],
+              "tests": [
+                {
+                  "input": "3\nthe cat and the hat. The cat sat!\n",
+                  "output": "Unique: 5\nthe 3\ncat 2\nand 1"
+                },
+                {
+                  "input": "5\n",
+                  "output": "No words"
+                },
+                {
+                  "input": "10\nB b a A, c\n",
+                  "output": "Unique: 3\na 2\nb 2\nc 1"
+                },
+                {
+                  "input": "1\n!!! ... ,,,\n",
+                  "output": "No words"
+                },
+                {
+                  "input": "2\nDjango is great\ndjango, flask; FastAPI\nis it?\n",
+                  "output": "Unique: 6\ndjango 2\nis 2"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "What is the average time complexity of checking x in a set?",
+                "options": [
+                  "O(n log n)",
+                  "O(n)",
+                  "O(log n)",
+                  "O(1)"
+                ],
+                "answer": 3,
+                "explanation": "Sets are hash tables, so membership is an average O(1) hash lookup."
+              },
+              {
+                "type": "output",
+                "question": "What does this comprehension with a condition print?",
+                "code": "print([n * n for n in range(6) if n % 2 == 0])",
+                "options": [
+                  "[1, 9, 25]",
+                  "[0, 4, 16]",
+                  "[0, 2, 4]",
+                  "[0, 4, 16, 36]"
+                ],
+                "answer": 1,
+                "explanation": "range(6) gives 0 to 5; the even numbers 0, 2, 4 are squared."
+              },
+              {
+                "type": "scenario",
+                "question": "You need to group a list of (city, user) pairs into a dict of city to list of users with the least code. Which tool fits best?",
+                "options": [
+                  "A tuple of tuples",
+                  "A frozenset",
+                  "collections.defaultdict(list)",
+                  "collections.deque"
+                ],
+                "answer": 2,
+                "explanation": "defaultdict(list) creates an empty list for each new key, so you can append directly."
+              },
+              {
+                "type": "code",
+                "question": "Which key sorts players by score descending and then by name ascending?",
+                "options": [
+                  "key=lambda p: p['score'] + p['name']",
+                  "key=lambda p: max(p['score'], p['name'])",
+                  "key=lambda p: (-p['score'], p['name'])",
+                  "key=lambda p: (p['score'], p['name']), reverse=True"
+                ],
+                "answer": 2,
+                "explanation": "Negating the numeric score reverses its order while leaving the name ascending; reverse=True would reverse both."
+              },
+              {
+                "type": "concept",
+                "question": "Which of these can be used as a dictionary key?",
+                "options": [
+                  "{1, 2}",
+                  "[1, 2]",
+                  "{'a': 1}",
+                  "(1, 2)"
+                ],
+                "answer": 3,
+                "explanation": "Keys must be hashable; a tuple of immutable items is hashable, while lists, dicts and sets are not."
+              }
+            ]
+          }
+        },
+        {
+          "id": "python-full-stack:article:4",
+          "slug": "day-4",
+          "lesson": {
+            "day": 4,
+            "title": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+            "module": "Core Python",
+            "level": "Beginner",
+            "objectives": [
+              "Define classes with instance attributes, class attributes, methods and properties.",
+              "Use inheritance, method overriding and super() and explain the MRO.",
+              "Implement dunder methods such as __init__, __str__, __repr__, __eq__ and __lt__.",
+              "Distinguish instance methods, @classmethod and @staticmethod.",
+              "Apply polymorphism to remove type-checking if/elif chains."
+            ],
+            "definition": "Object-oriented programming (OOP) organises code around objects that bundle data (attributes) with behaviour (methods). In Python a class is a blueprint created with the class keyword, an object is an instance of that class, and special 'dunder' (double underscore) methods let your objects plug into built-in syntax such as printing, comparison, len() and +.",
+            "theory": [
+              {
+                "heading": "Classes, instances and attributes",
+                "body": "__init__ initialises a new instance; self is the instance itself, passed automatically. Attributes assigned on self are per instance, while attributes defined in the class body are shared by all instances. A common bug is a mutable class attribute (items = []) that every instance accidentally shares. Python has no private keyword: a single underscore (_balance) means 'internal by convention' and a double underscore triggers name mangling to avoid clashes in subclasses.",
+                "points": [
+                  "Instance attribute: self.balance = 0 inside __init__.",
+                  "Class attribute: interest_rate = 0.04 in the class body.",
+                  "@property exposes a computed or validated attribute with attribute syntax.",
+                  "__slots__ can restrict attributes and save memory for many small objects."
+                ]
+              },
+              {
+                "heading": "The four pillars in Python terms",
+                "body": "Encapsulation keeps state and the rules that change it together (a withdraw method that enforces a minimum balance). Abstraction exposes a simple interface and hides details; abc.ABC with @abstractmethod formalises it. Inheritance lets a subclass reuse and specialise a parent class. Polymorphism means different classes respond to the same method call in their own way, so calling code does not need if type == ... branches. Python also embraces duck typing: if an object has the right methods, its class does not matter.",
+                "points": [
+                  "Encapsulation: methods guard invariants.",
+                  "Abstraction: abstract base classes define required methods.",
+                  "Inheritance: class Savings(Account).",
+                  "Polymorphism: account.available() behaves differently per subclass."
+                ]
+              },
+              {
+                "heading": "Inheritance, super() and the MRO",
+                "body": "A subclass overrides a method by defining one with the same name, and super().method() calls the next implementation in the Method Resolution Order. Python supports multiple inheritance and resolves lookups with the C3 linearisation, visible through ClassName.__mro__. Django uses this heavily: class-based views combine mixins such as LoginRequiredMixin with ListView, and the order of base classes matters.",
+                "points": [
+                  "super().__init__(...) lets the parent initialise its part of the object.",
+                  "Put mixins to the left of the main base class.",
+                  "Favour composition over deep inheritance trees."
+                ]
+              },
+              {
+                "heading": "Dunder (magic) methods",
+                "body": "Dunder methods connect your class to Python's syntax and built-ins. __str__ gives a readable string for users (print), while __repr__ gives an unambiguous developer representation (the REPL, logs, containers). __eq__ defines ==; if you define __eq__ you must also define __hash__ (or the object becomes unhashable). __lt__ enables sorting; functools.total_ordering fills in the rest of the comparisons. __len__, __getitem__, __iter__, __contains__, __add__, __enter__/__exit__ and __call__ let objects behave like containers, numbers, context managers or functions.",
+                "points": [
+                  "print(obj) uses __str__, falling back to __repr__.",
+                  "sorted(objs) needs __lt__.",
+                  "Defining __eq__ sets __hash__ to None unless you define it.",
+                  "@dataclass generates __init__, __repr__ and __eq__ for you."
+                ]
+              },
+              {
+                "heading": "Instance, class and static methods",
+                "body": "Instance methods receive self and work with one object. @classmethod receives the class (cls) and is used for alternative constructors such as User.from_dict(data), which also work correctly for subclasses. @staticmethod receives neither and is a plain function placed in the class namespace for organisation. Django model managers and form classes use all three patterns.",
+                "points": [
+                  "Alternative constructor: datetime.fromtimestamp is a classmethod.",
+                  "Static method: a helper that does not need instance or class state."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A Money value object with dunder methods",
+              "body": "Money stores amounts as integer paise, supports + and comparisons, has a readable __str__ and a debuggable __repr__, and stays hashable because equality and hash use the same fields.",
+              "code": {
+                "language": "python",
+                "source": "from functools import total_ordering\n\n@total_ordering\nclass Money:\n    def __init__(self, paise, currency='INR'):\n        self.paise = paise\n        self.currency = currency\n\n    @classmethod\n    def from_rupees(cls, rupees):\n        return cls(round(rupees * 100))\n\n    def __add__(self, other):\n        if self.currency != other.currency:\n            raise ValueError('currency mismatch')\n        return Money(self.paise + other.paise, self.currency)\n\n    def __eq__(self, other):\n        return (self.paise, self.currency) == (other.paise, other.currency)\n\n    def __lt__(self, other):\n        return self.paise < other.paise\n\n    def __hash__(self):\n        return hash((self.paise, self.currency))\n\n    def __repr__(self):\n        return f'Money({self.paise}, {self.currency!r})'\n\n    def __str__(self):\n        return f'Rs {self.paise / 100:.2f}'\n\nprice = Money.from_rupees(199.5) + Money(50)\nprint(price, repr(price), price > Money(100))\n# Rs 200.00 Money(20000, 'INR') True"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Django models",
+                "description": "Every model is a class inheriting from models.Model; __str__ controls how rows appear in the admin."
+              },
+              {
+                "title": "Class-based views",
+                "description": "Views inherit from View or generic views and override methods such as get_queryset."
+              },
+              {
+                "title": "Domain objects",
+                "description": "Value objects like Money or Address enforce business rules in one place."
+              },
+              {
+                "title": "Plug-in systems",
+                "description": "Polymorphic payment gateways or notification channels share one interface."
+              }
+            ],
+            "demonstration": {
+              "description": "Inspect the MRO of a class built from a mixin and a base class, and see super() follow it.",
+              "code": {
+                "language": "python",
+                "source": "class Base:\n    def hello(self):\n        return 'Base'\n\nclass LoggingMixin:\n    def hello(self):\n        return 'Logged ' + super().hello()\n\nclass Service(LoggingMixin, Base):\n    pass\n\nprint([c.__name__ for c in Service.__mro__])\nprint(Service().hello())"
+              },
+              "output": "['Service', 'LoggingMixin', 'Base', 'object']\nLogged Base"
+            },
+            "takeaways": [
+              "self is the instance; class attributes are shared by all instances.",
+              "Use super() so cooperative inheritance follows the MRO.",
+              "__str__ is for users, __repr__ is for developers.",
+              "Defining __eq__ requires defining __hash__ if objects must be hashable.",
+              "@classmethod is ideal for alternative constructors; @staticmethod for related helpers.",
+              "Polymorphism replaces type-checking branches with overridden methods."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between __str__ and __repr__?",
+                "answer": "__str__ returns a readable, user-facing string used by print() and str(). __repr__ returns an unambiguous developer-facing string, ideally one that could recreate the object, used by the REPL, logs and containers. If __str__ is missing Python falls back to __repr__.",
+                "explanation": "Mention that a list of objects prints each item's __repr__, which is why defining __repr__ helps debugging."
+              },
+              {
+                "question": "What is the difference between @classmethod and @staticmethod?",
+                "answer": "A classmethod receives the class as cls and can create or inspect instances of that class or its subclasses, making it ideal for alternative constructors. A staticmethod receives neither self nor cls and is just a function grouped inside the class.",
+                "explanation": "An example like User.from_json(data) returning cls(...) shows why cls matters with inheritance."
+              },
+              {
+                "question": "What does super() do, and what is the MRO?",
+                "answer": "super() returns a proxy that delegates method calls to the next class in the Method Resolution Order, the linearised list of base classes Python computes with C3. It makes cooperative multiple inheritance and mixins work.",
+                "explanation": "Relate it to Django mixins: class MyView(LoginRequiredMixin, ListView) works because LoginRequiredMixin.dispatch calls super().dispatch()."
+              },
+              {
+                "question": "If you override __eq__ in a class, what happens to hashing?",
+                "answer": "Python sets __hash__ to None, so instances become unhashable and cannot be used in sets or as dict keys. If the object should be hashable, define __hash__ using the same immutable fields used for equality.",
+                "explanation": "This catches many candidates. Objects that are equal must have equal hashes; mutable objects usually should not be hashable."
+              },
+              {
+                "question": "Explain polymorphism with an example from a web application.",
+                "answer": "Different classes implement the same interface, and the caller uses them interchangeably. For example, EmailNotifier, SmsNotifier and PushNotifier each implement send(user, message); the order service loops over configured notifiers and calls send without checking types.",
+                "explanation": "Concrete, domain-relevant examples score better than 'Dog and Cat both speak'. Mention duck typing as Python's flavour of polymorphism."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Bank accounts with inheritance",
+              "difficulty": "Basic",
+              "objective": "Model accounts with a base class, two subclasses that override one method, and dunder methods for printing and sorting.",
+              "statement": "Simulate a small bank. A Savings account must keep at least 500 after a withdrawal. A Current account may go into overdraft down to -1000. Both start at 0. Commands: 'OPEN savings|current <owner>', 'DEPOSIT <owner> <amount>', 'WITHDRAW <owner> <amount>' and 'REPORT'. After a successful DEPOSIT or WITHDRAW print '<owner> balance: <balance>'. OPEN prints 'Opened <Kind> account for <owner>' where Kind is Savings or Current. REPORT prints every account as '<Kind> <owner>: <balance>' sorted by balance descending, keeping opening order for equal balances, or 'No accounts' if none exist. Errors print 'Error: <message>' with message 'account exists for <owner>', 'no account for <owner>', 'amount must be positive' or 'insufficient funds'.",
+              "language": "python",
+              "input_format": "One command per line until end of input.",
+              "output_format": "One or more lines per command as described.",
+              "example": {
+                "input": "OPEN savings asha\nDEPOSIT asha 2000\nWITHDRAW asha 1600\nWITHDRAW asha 1500\nOPEN current ravi\nWITHDRAW ravi 800\nREPORT\n",
+                "output": "Opened Savings account for asha\nasha balance: 2000\nError: insufficient funds\nasha balance: 500\nOpened Current account for ravi\nravi balance: -800\nSavings asha: 500\nCurrent ravi: -800"
+              },
+              "constraints": [
+                "Amounts are integers; zero or negative amounts are errors.",
+                "Owner names are unique single words.",
+                "Implement the withdrawal limit by overriding one method in each subclass, not with type checks."
+              ],
+              "starter": "import sys\n\nclass Account:\n    kind = 'Basic'\n\n    def __init__(self, owner):\n        self.owner = owner\n        self.balance = 0\n\n    def available(self):\n        return self.balance\n\n    # TODO: deposit, withdraw, __str__, __lt__\n\nclass SavingsAccount(Account):\n    kind = 'Savings'\n    # TODO: override available()\n\nclass CurrentAccount(Account):\n    kind = 'Current'\n    # TODO: override available()\n",
+              "solution": "import sys\n\nclass Account:\n    kind = 'Basic'\n\n    def __init__(self, owner):\n        self.owner = owner\n        self.balance = 0\n\n    def available(self):\n        return self.balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError('amount must be positive')\n        self.balance += amount\n\n    def withdraw(self, amount):\n        if amount <= 0:\n            raise ValueError('amount must be positive')\n        if amount > self.available():\n            raise ValueError('insufficient funds')\n        self.balance -= amount\n\n    def __str__(self):\n        return f'{self.kind} {self.owner}: {self.balance}'\n\n    def __lt__(self, other):\n        return self.balance < other.balance\n\nclass SavingsAccount(Account):\n    kind = 'Savings'\n    MIN_BALANCE = 500\n\n    def available(self):\n        return self.balance - self.MIN_BALANCE\n\nclass CurrentAccount(Account):\n    kind = 'Current'\n    OVERDRAFT = 1000\n\n    def available(self):\n        return self.balance + self.OVERDRAFT\n\nTYPES = {'savings': SavingsAccount, 'current': CurrentAccount}\naccounts = {}\n\nfor line in sys.stdin:\n    parts = line.split()\n    if not parts:\n        continue\n    cmd = parts[0].upper()\n    try:\n        if cmd == 'OPEN':\n            kind, owner = parts[1].lower(), parts[2]\n            if owner in accounts:\n                raise ValueError(f'account exists for {owner}')\n            accounts[owner] = TYPES[kind](owner)\n            print(f'Opened {accounts[owner].kind} account for {owner}')\n        elif cmd in ('DEPOSIT', 'WITHDRAW'):\n            owner, amount = parts[1], int(parts[2])\n            acc = accounts.get(owner)\n            if acc is None:\n                raise ValueError(f'no account for {owner}')\n            if cmd == 'DEPOSIT':\n                acc.deposit(amount)\n            else:\n                acc.withdraw(amount)\n            print(f'{owner} balance: {acc.balance}')\n        elif cmd == 'REPORT':\n            if not accounts:\n                print('No accounts')\n            for acc in sorted(accounts.values(), reverse=True):\n                print(acc)\n    except ValueError as exc:\n        print(f'Error: {exc}')\n",
+              "explanation": [
+                "The base class holds shared state and the deposit/withdraw rules; withdraw asks self.available() how much may be taken.",
+                "Each subclass overrides only available(): Savings subtracts the minimum balance, Current adds the overdraft. That is polymorphism, with no type checks.",
+                "__str__ formats an account for REPORT, and __lt__ lets sorted() order accounts by balance.",
+                "sorted(..., reverse=True) is stable, so accounts with equal balances keep their opening order (dicts preserve insertion order).",
+                "Business-rule violations raise ValueError, and one except block turns them into error lines."
+              ],
+              "tests": [
+                {
+                  "input": "OPEN savings asha\nDEPOSIT asha 2000\nWITHDRAW asha 1600\nWITHDRAW asha 1500\nOPEN current ravi\nWITHDRAW ravi 800\nREPORT\n",
+                  "output": "Opened Savings account for asha\nasha balance: 2000\nError: insufficient funds\nasha balance: 500\nOpened Current account for ravi\nravi balance: -800\nSavings asha: 500\nCurrent ravi: -800"
+                },
+                {
+                  "input": "DEPOSIT ghost 100\nOPEN current meena\nOPEN savings meena\nDEPOSIT meena 0\nWITHDRAW meena 1000\nWITHDRAW meena 1\n",
+                  "output": "Error: no account for ghost\nOpened Current account for meena\nError: account exists for meena\nError: amount must be positive\nmeena balance: -1000\nError: insufficient funds"
+                },
+                {
+                  "input": "REPORT\n",
+                  "output": "No accounts"
+                },
+                {
+                  "input": "OPEN savings a\nOPEN current b\nDEPOSIT a 700\nDEPOSIT b 700\nOPEN current c\nDEPOSIT c 900\nREPORT\n",
+                  "output": "Opened Savings account for a\nOpened Current account for b\na balance: 700\nb balance: 700\nOpened Current account for c\nc balance: 900\nCurrent c: 900\nSavings a: 700\nCurrent b: 700"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which method does print(obj) call first?",
+                "options": [
+                  "__repr__",
+                  "__str__",
+                  "__format__ only",
+                  "__print__"
+                ],
+                "answer": 1,
+                "explanation": "print uses str(obj), which calls __str__ and falls back to __repr__ if __str__ is not defined."
+              },
+              {
+                "type": "scenario",
+                "question": "You need User.from_dict(data) to build instances, and subclasses such as AdminUser should get AdminUser objects from it. How should it be defined?",
+                "options": [
+                  "As a @staticmethod returning User(...)",
+                  "As a module-level function",
+                  "As a @classmethod returning cls(...)",
+                  "As an instance method"
+                ],
+                "answer": 2,
+                "explanation": "A classmethod receives the class it was called on, so cls(...) creates the right subclass."
+              },
+              {
+                "type": "output",
+                "question": "What does this code with a shared class attribute print?",
+                "code": "class Cart:\n    items = []\na, b = Cart(), Cart()\na.items.append('pen')\nprint(len(b.items))",
+                "options": [
+                  "AttributeError",
+                  "None",
+                  "1",
+                  "0"
+                ],
+                "answer": 2,
+                "explanation": "items is a class attribute shared by every instance, so appending through a is visible through b."
+              },
+              {
+                "type": "concept",
+                "question": "A class defines __eq__ but not __hash__. What happens when you put an instance in a set?",
+                "options": [
+                  "The set silently ignores it",
+                  "It works using id()",
+                  "It works using __eq__ only",
+                  "TypeError: unhashable type"
+                ],
+                "answer": 3,
+                "explanation": "Defining __eq__ sets __hash__ to None, which makes instances unhashable."
+              },
+              {
+                "type": "code",
+                "question": "class Admin(LoginRequiredMixin, ListView) calls dispatch(). Which class's dispatch runs first?",
+                "options": [
+                  "ListView",
+                  "View",
+                  "object",
+                  "LoginRequiredMixin"
+                ],
+                "answer": 3,
+                "explanation": "The MRO lists LoginRequiredMixin before ListView, so its dispatch runs first and calls super().dispatch()."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "python-full-stack:question:1:1",
+          "day": 1,
+          "topic": "Python Fundamentals: Types, Variables and Control Flow",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Is Python statically or dynamically typed? Strongly or weakly typed?",
+          "answer": "Dynamically typed, because types are checked at runtime and a name can be rebound to an object of any type. Strongly typed, because it does not implicitly convert between unrelated types; '3' + 4 raises TypeError.",
+          "explanation": "Many candidates confuse dynamic with weak. Giving the '3' + 4 example and contrasting it with JavaScript's '34' shows you understand both axes.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:1:2",
+          "day": 1,
+          "topic": "Python Fundamentals: Types, Variables and Control Flow",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between == and is?",
+          "answer": "== compares values using __eq__; is compares identity, meaning both names point to the same object. Use is for singletons such as None, True and False.",
+          "explanation": "Mention that small integers and some strings are cached by CPython, so is may appear to work for them, but relying on that is a bug.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:1:3",
+          "day": 1,
+          "topic": "Python Fundamentals: Types, Variables and Control Flow",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Which built-in types are mutable and which are immutable? Why does it matter?",
+          "answer": "Mutable: list, dict, set, bytearray. Immutable: int, float, bool, str, tuple, frozenset, bytes. It matters because shared references to mutable objects see in-place changes, and only hashable objects can be dictionary keys or set members.",
+          "explanation": "A strong answer connects mutability to real consequences: aliasing bugs, the mutable default argument trap and hashability.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:1:4",
+          "day": 1,
+          "topic": "Python Fundamentals: Types, Variables and Control Flow",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does the else clause on a for or while loop do?",
+          "answer": "It runs after the loop finishes normally, that is, without hitting break. It is useful for search loops where you need to act when nothing was found.",
+          "explanation": "This is a classic Python-specific question; a short search example demonstrates you have actually used it.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:1:5",
+          "day": 1,
+          "topic": "Python Fundamentals: Types, Variables and Control Flow",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why does 0.1 + 0.2 == 0.3 return False, and how do you handle money in Python?",
+          "answer": "Floats are binary IEEE 754 doubles and cannot represent 0.1 exactly, so the sum is 0.30000000000000004. For money use decimal.Decimal (constructed from strings) or store integer paise/cents; for approximate comparisons use math.isclose.",
+          "explanation": "Interviewers for full-stack roles like this because payment and invoice code must avoid float rounding errors; Django's DecimalField exists for the same reason.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:2:1",
+          "day": 2,
+          "topic": "Functions, Arguments, Scope and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What are *args and **kwargs?",
+          "answer": "*args collects extra positional arguments into a tuple and **kwargs collects extra keyword arguments into a dict. The same symbols in a call unpack a sequence or mapping into arguments.",
+          "explanation": "Show both directions (packing in the definition, unpacking in the call) and mention a real use such as wrapper functions in decorators.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:2:2",
+          "day": 2,
+          "topic": "Functions, Arguments, Scope and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why is def f(x, items=[]) dangerous?",
+          "answer": "The default list is created once when the function is defined and shared by every call that uses the default, so items appended in one call appear in the next. Use None as the default and create a new list inside.",
+          "explanation": "This is one of the most common Python interview questions. Explaining that defaults are evaluated at definition time is the key insight.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:2:3",
+          "day": 2,
+          "topic": "Functions, Arguments, Scope and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain the LEGB rule. What do global and nonlocal do?",
+          "answer": "Python resolves names in Local, Enclosing, Global and Built-in scopes, in that order. global lets a function rebind a module-level name; nonlocal lets a nested function rebind a name in its enclosing function's scope.",
+          "explanation": "Mention UnboundLocalError: assigning to a name anywhere in a function makes it local everywhere in that function.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:2:4",
+          "day": 2,
+          "topic": "Functions, Arguments, Scope and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Does Python pass arguments by value or by reference?",
+          "answer": "Neither exactly: it passes object references (call by sharing). The parameter is a new name for the same object, so in-place mutation of a mutable object is visible to the caller, while rebinding the parameter is not.",
+          "explanation": "A good answer gives a two-line example contrasting lst.append(1) with lst = [1].",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:2:5",
+          "day": 2,
+          "topic": "Functions, Arguments, Scope and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a closure and where is it used in practice?",
+          "answer": "A closure is an inner function that references variables from an enclosing function and keeps them alive after the outer function returns. Closures power decorators, callback factories, memoisation and configuration of handlers.",
+          "explanation": "Strong candidates mention the late-binding gotcha with lambdas in loops and that decorators are just closures applied with @ syntax.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:3:1",
+          "day": 3,
+          "topic": "Built-in Data Structures and Comprehensions",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between a list and a tuple?",
+          "answer": "A list is mutable and a tuple is immutable. Because of that a tuple of hashable items is hashable (usable as a dict key), slightly smaller and faster to create, and communicates a fixed-size record. Lists are for homogeneous collections that grow or change.",
+          "explanation": "Go beyond 'one is mutable': mention hashability and intent (records versus collections).",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:3:2",
+          "day": 3,
+          "topic": "Built-in Data Structures and Comprehensions",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why is checking membership in a set faster than in a list?",
+          "answer": "A set is a hash table: Python hashes the value and jumps to its bucket, giving average O(1). A list must compare items one by one, which is O(n).",
+          "explanation": "Mention the practical trick of converting a list to a set before repeated membership tests, and that worst-case hash collisions degrade to O(n).",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:3:3",
+          "day": 3,
+          "topic": "Built-in Data Structures and Comprehensions",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Are Python dictionaries ordered?",
+          "answer": "Yes. Since Python 3.7 insertion order is guaranteed by the language specification (it was an implementation detail of CPython 3.6). Iteration returns keys in the order they were first inserted.",
+          "explanation": "Interviewers check whether your knowledge is current; mention OrderedDict still exists for move_to_end and order-sensitive equality.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:3:4",
+          "day": 3,
+          "topic": "Built-in Data Structures and Comprehensions",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between a shallow copy and a deep copy?",
+          "answer": "A shallow copy creates a new outer container but references the same inner objects. A deep copy recursively copies all nested objects, so changes to inner lists or dicts are not shared.",
+          "explanation": "Give the nested list example; this ties into bugs when copying configuration dicts or default data.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:3:5",
+          "day": 3,
+          "topic": "Built-in Data Structures and Comprehensions",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How would you find the k most frequent words in a text, breaking ties alphabetically?",
+          "answer": "Normalise the words, count them with collections.Counter (O(n)), then sort the items with key=lambda kv: (-kv[1], kv[0]) and take the first k. For very large vocabularies heapq.nsmallest(k, items, key=...) avoids sorting everything.",
+          "explanation": "This combines dicts, sorting with tuple keys and complexity analysis, a common screening question.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:4:1",
+          "day": 4,
+          "topic": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between __str__ and __repr__?",
+          "answer": "__str__ returns a readable, user-facing string used by print() and str(). __repr__ returns an unambiguous developer-facing string, ideally one that could recreate the object, used by the REPL, logs and containers. If __str__ is missing Python falls back to __repr__.",
+          "explanation": "Mention that a list of objects prints each item's __repr__, which is why defining __repr__ helps debugging.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:4:2",
+          "day": 4,
+          "topic": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between @classmethod and @staticmethod?",
+          "answer": "A classmethod receives the class as cls and can create or inspect instances of that class or its subclasses, making it ideal for alternative constructors. A staticmethod receives neither self nor cls and is just a function grouped inside the class.",
+          "explanation": "An example like User.from_json(data) returning cls(...) shows why cls matters with inheritance.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:4:3",
+          "day": 4,
+          "topic": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does super() do, and what is the MRO?",
+          "answer": "super() returns a proxy that delegates method calls to the next class in the Method Resolution Order, the linearised list of base classes Python computes with C3. It makes cooperative multiple inheritance and mixins work.",
+          "explanation": "Relate it to Django mixins: class MyView(LoginRequiredMixin, ListView) works because LoginRequiredMixin.dispatch calls super().dispatch().",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:4:4",
+          "day": 4,
+          "topic": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "If you override __eq__ in a class, what happens to hashing?",
+          "answer": "Python sets __hash__ to None, so instances become unhashable and cannot be used in sets or as dict keys. If the object should be hashable, define __hash__ using the same immutable fields used for equality.",
+          "explanation": "This catches many candidates. Objects that are equal must have equal hashes; mutable objects usually should not be hashable.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "python-full-stack:question:4:5",
+          "day": 4,
+          "topic": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain polymorphism with an example from a web application.",
+          "answer": "Different classes implement the same interface, and the caller uses them interchangeably. For example, EmailNotifier, SmsNotifier and PushNotifier each implement send(user, message); the order service loops over configured notifiers and calls send without checking types.",
+          "explanation": "Concrete, domain-relevant examples score better than 'Dog and Cat both speak'. Mention duck typing as Python's flavour of polymorphism.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "python-full-stack:assignment:1",
+          "title": "Python Fundamentals: Types, Variables and Control Flow",
+          "available": true,
+          "focus": "Python is a dynamically typed, strongly typed, interpreted language. A variable is a name that refers to an object; the object, not the name, carries the type. Control flow statements (if, for, while) decide which code runs and how many times, using indentation to mark blocks.",
+          "objectives": [
+            "Explain how Python variables work as names bound to objects.",
+            "Distinguish mutable and immutable built-in types and why it matters.",
+            "Use if/elif/else, for, while, break, continue and the loop else clause correctly.",
+            "Explain truthiness, the difference between == and is, and integer vs float division.",
+            "Write a small stdin/stdout program that combines input parsing, branching and loops."
+          ],
+          "assignment": "Read a list of students with their marks and print each student's grade, the class average and the topper. Grades: 90 and above is A, 75–89 is B, 60–74 is C, 40–59 is D and below 40 is F. If several students share the highest marks, the topper is the one who appears first. If there are no students, print only 'No students'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Variables are names bound to objects; the object has the type.",
+            "Python is dynamically but strongly typed.",
+            "Know which types are mutable; it affects copying, defaults and dict keys.",
+            "Use == for value equality and is only for identity checks like is None.",
+            "/ returns float, // floors toward negative infinity.",
+            "A loop's else block runs only when the loop was not exited with break."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "python-full-stack:assignment:2",
+          "title": "Functions, Arguments, Scope and Closures",
+          "available": true,
+          "focus": "A function is a named, reusable block of code defined with def that takes parameters and returns a value (None if no return runs). In Python functions are first-class objects, so they can be assigned to variables, passed as arguments and returned from other functions; a closure is a nested function that remembers variables from the scope in which it was created.",
+          "objectives": [
+            "Define functions with positional, keyword, default, *args and **kwargs parameters.",
+            "Explain the LEGB scope rule and when global and nonlocal are needed.",
+            "Avoid the mutable default argument trap and explain why it happens.",
+            "Use functions as first-class objects: pass them, return them and store them in dicts.",
+            "Build closures and lambdas and know their limits."
+          ],
+          "assignment": "Read commands until the end of input. Each command is an operation name followed by zero or more integers. Supported operations: add (sum of all numbers), mul (product of all numbers), avg (average with two decimals; needs at least one number) and pow (exactly two numbers: base and exponent, exponent >= 0). Print one line per command. Unknown operations print 'Unknown command: <name>'. If avg has no numbers print 'Error: avg needs at least one number'. If pow does not receive exactly two numbers print 'Error: wrong number of arguments for pow'. Skip blank lines.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "*args is a tuple of extra positional arguments; **kwargs is a dict of extra keyword arguments.",
+            "Default values are evaluated once; never use a mutable default.",
+            "Name lookup follows LEGB; assignment makes a name local for the whole function.",
+            "Functions are objects: store them in dicts, pass them, return them.",
+            "A closure remembers variables from its enclosing scope; nonlocal lets it rebind them.",
+            "Python passes object references: mutation is visible to the caller, rebinding is not."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "python-full-stack:assignment:3",
+          "title": "Built-in Data Structures and Comprehensions",
+          "available": true,
+          "focus": "Python's built-in data structures are list (ordered, mutable sequence), tuple (ordered, immutable sequence), dict (insertion-ordered mapping of hashable keys to values, backed by a hash table) and set (unordered collection of unique hashable items). Comprehensions are concise expressions that build these collections from an iterable with optional filtering.",
+          "objectives": [
+            "Choose between list, tuple, dict and set based on behaviour and time complexity.",
+            "Write list, dict and set comprehensions and generator expressions.",
+            "Use collections helpers such as Counter, defaultdict and deque.",
+            "Explain shallow versus deep copies of nested structures.",
+            "Sort complex data with key functions and multiple sort criteria."
+          ],
+          "assignment": "Read k on the first line and then any number of lines of text. Split the text on whitespace, strip the punctuation characters . , ! ? ; : ( ) from both ends of each word, convert to lowercase and ignore empty results. Print the number of distinct words, then the k most frequent words with their counts. Sort by count descending, then alphabetically. If there are fewer than k distinct words, print them all. If there are no words, print only 'No words'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Lists are dynamic arrays; front insertions and membership tests are O(n).",
+            "Dicts and sets are hash tables with average O(1) lookup; keys must be hashable.",
+            "Dicts keep insertion order since Python 3.7.",
+            "Comprehensions build collections; generator expressions produce items lazily.",
+            "Counter, defaultdict and deque remove a lot of boilerplate.",
+            "Shallow copies share nested objects; use deepcopy when you need full independence."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "python-full-stack:assignment:4",
+          "title": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
+          "available": true,
+          "focus": "Object-oriented programming (OOP) organises code around objects that bundle data (attributes) with behaviour (methods). In Python a class is a blueprint created with the class keyword, an object is an instance of that class, and special 'dunder' (double underscore) methods let your objects plug into built-in syntax such as printing, comparison, len() and +.",
+          "objectives": [
+            "Define classes with instance attributes, class attributes, methods and properties.",
+            "Use inheritance, method overriding and super() and explain the MRO.",
+            "Implement dunder methods such as __init__, __str__, __repr__, __eq__ and __lt__.",
+            "Distinguish instance methods, @classmethod and @staticmethod.",
+            "Apply polymorphism to remove type-checking if/elif chains."
+          ],
+          "assignment": "Simulate a small bank. A Savings account must keep at least 500 after a withdrawal. A Current account may go into overdraft down to -1000. Both start at 0. Commands: 'OPEN savings|current <owner>', 'DEPOSIT <owner> <amount>', 'WITHDRAW <owner> <amount>' and 'REPORT'. After a successful DEPOSIT or WITHDRAW print '<owner> balance: <balance>'. OPEN prints 'Opened <Kind> account for <owner>' where Kind is Savings or Current. REPORT prints every account as '<Kind> <owner>: <balance>' sorted by balance descending, keeping opening order for equal balances, or 'No accounts' if none exist. Errors print 'Error: <message>' with message 'account exists for <owner>', 'no account for <owner>', 'amount must be positive' or 'insufficient funds'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "self is the instance; class attributes are shared by all instances.",
+            "Use super() so cooperative inheritance follows the MRO.",
+            "__str__ is for users, __repr__ is for developers.",
+            "Defining __eq__ requires defining __hash__ if objects must be hashable.",
+            "@classmethod is ideal for alternative constructors; @staticmethod for related helpers.",
+            "Polymorphism replaces type-checking branches with overridden methods."
+          ]
+        },
+        {
+          "day": 5,
+          "id": "python-full-stack:assignment:5",
+          "title": "Collections and iteration for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain collections and iteration for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on collections and iteration for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete collections and iteration for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "python-full-stack:assignment:6",
+          "title": "Error handling for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain error handling for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on error handling for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete error handling for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "python-full-stack:assignment:7",
+          "title": "Module boundaries for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain module boundaries for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on module boundaries for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete module boundaries for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "python-full-stack:article:1",
+          "python-full-stack:article:2",
+          "python-full-stack:article:3",
+          "python-full-stack:article:4"
+        ],
+        "questions": [
+          "python-full-stack:question:1:1",
+          "python-full-stack:question:1:2",
+          "python-full-stack:question:1:3",
+          "python-full-stack:question:1:4",
+          "python-full-stack:question:1:5",
+          "python-full-stack:question:2:1",
+          "python-full-stack:question:2:2",
+          "python-full-stack:question:2:3",
+          "python-full-stack:question:2:4",
+          "python-full-stack:question:2:5",
+          "python-full-stack:question:3:1",
+          "python-full-stack:question:3:2",
+          "python-full-stack:question:3:3",
+          "python-full-stack:question:3:4",
+          "python-full-stack:question:3:5",
+          "python-full-stack:question:4:1",
+          "python-full-stack:question:4:2",
+          "python-full-stack:question:4:3",
+          "python-full-stack:question:4:4",
+          "python-full-stack:question:4:5"
+        ],
+        "coding": [
+          "python-full-stack:coding:1",
+          "python-full-stack:coding:2",
+          "python-full-stack:coding:3",
+          "python-full-stack:coding:4"
+        ],
+        "assignments": [
+          "python-full-stack:assignment:1",
+          "python-full-stack:assignment:2",
+          "python-full-stack:assignment:3",
+          "python-full-stack:assignment:4",
+          "python-full-stack:assignment:5",
+          "python-full-stack:assignment:6",
+          "python-full-stack:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Data, APIs and application workflows",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "python-full-stack:assignment:8",
+          "title": "Dependency management for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain dependency management for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on dependency management for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete dependency management for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "python-full-stack:assignment:9",
+          "title": "HTTP request lifecycle for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain http request lifecycle for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on http request lifecycle for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete http request lifecycle for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "python-full-stack:assignment:10",
+          "title": "API contract design for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain api contract design for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on api contract design for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete api contract design for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "python-full-stack:assignment:11",
+          "title": "Database modeling for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain database modeling for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on database modeling for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete database modeling for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "python-full-stack:assignment:12",
+          "title": "CRUD behavior for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain crud behavior for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on crud behavior for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete crud behavior for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "python-full-stack:assignment:13",
+          "title": "Authentication flow for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain authentication flow for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on authentication flow for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authentication flow for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "python-full-stack:assignment:14",
+          "title": "Authorization checks for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain authorization checks for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on authorization checks for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authorization checks for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "python-full-stack:assignment:8",
+          "python-full-stack:assignment:9",
+          "python-full-stack:assignment:10",
+          "python-full-stack:assignment:11",
+          "python-full-stack:assignment:12",
+          "python-full-stack:assignment:13",
+          "python-full-stack:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Quality, security and architecture",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "python-full-stack:assignment:15",
+          "title": "Input sanitization for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain input sanitization for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on input sanitization for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete input sanitization for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "python-full-stack:assignment:16",
+          "title": "State management for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain state management for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on state management for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete state management for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "python-full-stack:assignment:17",
+          "title": "Component design for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain component design for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on component design for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete component design for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "python-full-stack:assignment:18",
+          "title": "Form handling for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain form handling for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on form handling for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete form handling for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "python-full-stack:assignment:19",
+          "title": "Loading and error states for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain loading and error states for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on loading and error states for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete loading and error states for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "python-full-stack:assignment:20",
+          "title": "Unit testing for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain unit testing for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on unit testing for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete unit testing for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "python-full-stack:assignment:21",
+          "title": "Integration testing for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain integration testing for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on integration testing for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete integration testing for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "python-full-stack:assignment:22",
+          "title": "Debugging strategy for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain debugging strategy for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on debugging strategy for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete debugging strategy for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "python-full-stack:assignment:15",
+          "python-full-stack:assignment:16",
+          "python-full-stack:assignment:17",
+          "python-full-stack:assignment:18",
+          "python-full-stack:assignment:19",
+          "python-full-stack:assignment:20",
+          "python-full-stack:assignment:21",
+          "python-full-stack:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, portfolio and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "python-full-stack:assignment:23",
+          "title": "Logging and observability for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain logging and observability for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on logging and observability for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and observability for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "python-full-stack:assignment:24",
+          "title": "Performance profiling for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain performance profiling for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on performance profiling for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete performance profiling for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "python-full-stack:assignment:25",
+          "title": "Accessibility checks for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain accessibility checks for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on accessibility checks for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete accessibility checks for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "python-full-stack:assignment:26",
+          "title": "Configuration management for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain configuration management for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on configuration management for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration management for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "python-full-stack:assignment:27",
+          "title": "Secure secrets handling for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain secure secrets handling for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on secure secrets handling for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secure secrets handling for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "python-full-stack:assignment:28",
+          "title": "Deployment workflow for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain deployment workflow for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on deployment workflow for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment workflow for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "python-full-stack:assignment:29",
+          "title": "Code review for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain code review for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on code review for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete code review for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "python-full-stack:assignment:30",
+          "title": "Portfolio walkthrough for Python full-stack applications",
+          "available": false,
+          "focus": "Python full-stack applications",
+          "objectives": [
+            "Explain portfolio walkthrough for python full-stack applications in the context of Python full-stack applications",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small Python full-stack applications case study focused on portfolio walkthrough for python full-stack applications. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for python full-stack applications problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "python-full-stack:assignment:23",
+          "python-full-stack:assignment:24",
+          "python-full-stack:assignment:25",
+          "python-full-stack:assignment:26",
+          "python-full-stack:assignment:27",
+          "python-full-stack:assignment:28",
+          "python-full-stack:assignment:29",
+          "python-full-stack:assignment:30"
+        ]
+      }
+    }
+  ]
+}

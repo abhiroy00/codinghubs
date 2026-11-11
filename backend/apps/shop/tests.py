@@ -1371,6 +1371,20 @@ class SeoTests(ShopBase):
         self.api.post(f'/api/admin/products/{pub.id}/unpublish/')
         self.assertNotIn(pub.slug, self.anon.get('/sitemap-shop.xml').content.decode())
 
+    def test_sitemap_excludes_products_projects_and_guides_canonicalized_elsewhere(self):
+        product = self.product('Syndicated notes')
+        own_url = f'https://codinghubs.in/store/{product.slug}'
+        product.canonical_url = own_url
+        product.save()
+        self.assertIn(own_url, self.anon.get('/sitemap-shop.xml').content.decode())
+        product.canonical_url = 'https://example.org/original-notes'
+        product.save()
+        project = Project.objects.create(title='Syndicated project', slug='syndicated-project', status='published', published_at=timezone.now(), canonical_url='https://codinghubs.in/projects/primary-project')
+        guide = ProjectGuide.objects.create(title='Syndicated guide', slug='syndicated-guide', status='published', published_at=timezone.now(), canonical_url='https://example.org/original-guide')
+        xml = self.anon.get('/sitemap-shop.xml').content.decode()
+        for url in (own_url, '/projects/' + project.slug, '/project-guides/' + guide.slug):
+            self.assertNotIn(url, xml)
+
     def test_project_pages_have_article_data_and_no_hidden_breadcrumb_markup(self):
         pr = self.api.post('/api/admin/projects/', {'title': 'Chat app', 'summary': 'Realtime chat.'}, format='json').json()
         self.api.post(f'/api/admin/projects/{pr["id"]}/publish/')

@@ -1,0 +1,2229 @@
+{
+  "slug": "mean-stack",
+  "name": "MEAN Stack",
+  "focus": "MongoDB, Express, Angular and Node.js",
+  "track": "development",
+  "tools": [
+    "Git",
+    "REST APIs",
+    "SQL",
+    "VS Code",
+    "Docker",
+    "automated tests"
+  ],
+  "projects": [
+    {
+      "name": "MongoDB, Express, Angular and Node.js: Foundations case study",
+      "description": "Investigate a focused MongoDB, Express, Angular and Node.js scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated MongoDB, Express, Angular and Node.js use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable MongoDB, Express, Angular and Node.js artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    },
+    {
+      "name": "MongoDB, Express, Angular and Node.js: Applied workflow",
+      "description": "Build a small, end-to-end MongoDB, Express, Angular and Node.js workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated MongoDB, Express, Angular and Node.js use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable MongoDB, Express, Angular and Node.js artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    },
+    {
+      "name": "MongoDB, Express, Angular and Node.js: Portfolio capstone",
+      "description": "Deliver and explain a complete MongoDB, Express, Angular and Node.js capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated MongoDB, Express, Angular and Node.js use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable MongoDB, Express, Angular and Node.js artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "mean-stack",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Programming and application foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "mean-stack:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
+            "module": "Web and JavaScript foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Explain what happens between typing a URL and seeing a rendered page.",
+              "Describe the structure of an HTTP request and response, including methods, headers and status codes.",
+              "Map each MEAN layer (MongoDB, Express, Angular, Node.js) to its role in a request.",
+              "Distinguish client-side rendering, server-side rendering and APIs.",
+              "Parse a raw HTTP request and reason about its parts."
+            ],
+            "definition": "The web is a client-server system in which a browser (the client) sends HTTP requests to a server and receives HTTP responses containing HTML, JSON, images or other resources. The MEAN stack is a JavaScript-everywhere architecture for such systems: Angular runs in the browser, Node.js with Express handles HTTP on the server, and MongoDB stores data as JSON-like documents.",
+            "theory": [
+              {
+                "heading": "From URL to rendered page",
+                "body": "When a user opens https://codinghub.in/courses, the browser first resolves the domain to an IP address with DNS, opens a TCP connection (or QUIC for HTTP/3), performs a TLS handshake for HTTPS, and then sends an HTTP request. The server replies with a response; the browser parses the HTML, builds the DOM, downloads CSS and JavaScript, builds the CSSOM, runs scripts and paints pixels. Interviewers ask this question to see whether you understand every layer rather than only the framework you use.",
+                "points": [
+                  "DNS lookup: domain name to IP address (with browser, OS and resolver caches).",
+                  "Connection: TCP plus TLS handshake, or QUIC for HTTP/3.",
+                  "HTTP request and response exchange.",
+                  "Parsing and rendering: DOM, CSSOM, render tree, layout, paint.",
+                  "JavaScript execution, which in a single-page app then fetches data from APIs."
+                ]
+              },
+              {
+                "heading": "Anatomy of HTTP",
+                "body": "HTTP is a stateless, text-oriented request-response protocol (HTTP/2 and HTTP/3 frame it in binary, but the semantics are the same). A request has a method, a target path with optional query string, a protocol version, headers and an optional body. A response has a status code, headers and an optional body. Statelessness is why sessions, cookies and tokens exist: each request must carry whatever the server needs to identify the user.",
+                "points": [
+                  "Methods: GET (read), POST (create), PUT (replace), PATCH (partial update), DELETE (remove), OPTIONS (CORS preflight).",
+                  "Status classes: 2xx success, 3xx redirect, 4xx client error, 5xx server error.",
+                  "Important headers: Host, Content-Type, Authorization, Cookie, Cache-Control, Accept.",
+                  "Safe methods do not change state; idempotent methods give the same result when repeated (GET, PUT, DELETE)."
+                ]
+              },
+              {
+                "heading": "The MEAN architecture",
+                "body": "In a MEAN application the Angular single-page app is downloaded once and then talks to a REST or GraphQL API over HTTP, usually exchanging JSON. Express is a minimal framework on top of Node.js's http module that maps routes to handler functions. Node.js runs JavaScript on the server with a non-blocking event loop, which suits I/O-heavy APIs. MongoDB stores documents in BSON, so data can flow from database to browser with little transformation.",
+                "points": [
+                  "Angular: UI, routing in the browser, forms, calling the API with HttpClient.",
+                  "Express: routing, middleware (auth, validation, logging), error handling.",
+                  "Node.js: the runtime, event loop, file and network I/O.",
+                  "MongoDB: document storage, indexes, aggregation; accessed through Mongoose or the native driver."
+                ]
+              },
+              {
+                "heading": "Rendering strategies",
+                "body": "A classic Angular app uses client-side rendering (CSR): the server sends an almost empty index.html plus JavaScript bundles, and the browser builds the page. This gives app-like navigation but a slower first paint and weaker SEO. Angular SSR renders the first view on a Node.js server and then hydrates it in the browser, improving first contentful paint and crawlability. Static pre-rendering (SSG) generates HTML at build time for pages that rarely change.",
+                "points": [
+                  "CSR: fast navigation after load, heavier first load.",
+                  "SSR with hydration: better first paint and SEO, needs a Node server.",
+                  "SSG/prerendering: cheapest to serve, only for mostly static content."
+                ]
+              },
+              {
+                "heading": "Why full-stack JavaScript matters, and its limits",
+                "body": "Using one language across the stack lets teams share types (with TypeScript), validation logic and developers. JSON is native to every layer. The trade-offs are real: Node.js is not ideal for CPU-heavy work without worker threads, MongoDB's flexible schema needs discipline (Mongoose schemas, validation) and Angular has a steeper learning curve than lighter libraries. Good candidates mention these trade-offs instead of claiming MEAN is best for everything.",
+                "points": [
+                  "Advantages: one language, shared models, JSON end to end, large ecosystem.",
+                  "Limitations: CPU-bound work, schema discipline, framework complexity."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A request travelling through the MEAN layers",
+              "body": "An Angular component asks a service for courses. The service calls HttpClient, which sends GET /api/courses?page=2. Express matches the route, a handler queries MongoDB through Mongoose, and the JSON response flows back to the component, which renders it. Each layer has a single responsibility.",
+              "code": {
+                "language": "typescript",
+                "source": "// Angular service (browser)\n@Injectable({ providedIn: 'root' })\nexport class CourseService {\n  private http = inject(HttpClient);\n  list(page: number) {\n    return this.http.get<Course[]>('/api/courses', { params: { page } });\n  }\n}\n\n// Express route (Node.js server)\napp.get('/api/courses', async (req, res) => {\n  const page = Number(req.query.page ?? 1);\n  const courses = await Course.find().skip((page - 1) * 10).limit(10).lean();\n  res.status(200).json(courses);\n});"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Learning platforms",
+                "description": "An Angular dashboard for students, an Express API for enrolments and MongoDB for flexible course documents."
+              },
+              {
+                "title": "E-commerce admin panels",
+                "description": "Data-heavy forms and tables in Angular with a JSON API and product catalogues whose attributes vary by category."
+              },
+              {
+                "title": "Real-time dashboards",
+                "description": "Node.js handles many concurrent WebSocket connections cheaply; Angular updates charts as events arrive."
+              },
+              {
+                "title": "Internal enterprise tools",
+                "description": "Angular's opinionated structure and TypeScript suit large teams building long-lived business applications."
+              }
+            ],
+            "demonstration": {
+              "description": "Inspect a real exchange with curl -v. The lines starting with > are the request the client sends, and < lines are the server's response. Notice the request line, the Host header, the status line and the Content-Type of the JSON body.",
+              "code": {
+                "language": "text",
+                "source": "$ curl -v https://api.example.com/api/courses?page=2\n> GET /api/courses?page=2 HTTP/1.1\n> Host: api.example.com\n> Accept: */*\n>\n< HTTP/1.1 200 OK\n< Content-Type: application/json; charset=utf-8\n< Cache-Control: no-store\n<\n[{\"_id\":\"66a1\",\"title\":\"MEAN Stack\"}]"
+              },
+              "output": "Request line: method GET, target /api/courses?page=2, version HTTP/1.1.\nResponse: status 200 with a JSON array body that Angular's HttpClient parses automatically."
+            },
+            "takeaways": [
+              "A page load involves DNS, connection and TLS setup, HTTP exchange, then parsing and rendering.",
+              "HTTP is stateless; cookies or tokens carry identity between requests.",
+              "Know the main methods, status code classes and which methods are safe or idempotent.",
+              "MEAN = Angular in the browser, Express on Node.js for the API, MongoDB for documents.",
+              "CSR, SSR with hydration and prerendering trade first-load speed, SEO and server cost.",
+              "Mention the limits of MEAN (CPU-heavy work, schema discipline) to show balanced judgement."
+            ],
+            "interview": [
+              {
+                "question": "What happens when you type a URL into the browser and press Enter?",
+                "answer": "The browser checks caches and resolves the domain with DNS, opens a TCP (or QUIC) connection, completes a TLS handshake for HTTPS, sends an HTTP request, receives the response, parses HTML into the DOM and CSS into the CSSOM, runs JavaScript, then performs layout and paint.",
+                "explanation": "A strong answer is ordered and mentions caching, TLS and the rendering pipeline. For a MEAN role, add that an Angular SPA then makes API calls for data."
+              },
+              {
+                "question": "What is the difference between PUT and PATCH?",
+                "answer": "PUT replaces the whole resource with the representation sent and is idempotent. PATCH applies a partial update; it is not guaranteed to be idempotent (for example an 'increment' patch).",
+                "explanation": "Interviewers look for the replace-versus-partial distinction and correct use of the word idempotent."
+              },
+              {
+                "question": "Explain 401 versus 403.",
+                "answer": "401 Unauthorized means the request lacks valid authentication (no token or an expired one). 403 Forbidden means the user is authenticated but not allowed to perform the action.",
+                "explanation": "Linking it to practice helps: an Angular interceptor redirects to login on 401 but shows an 'access denied' message on 403."
+              },
+              {
+                "question": "Why is HTTP called stateless, and how do web apps keep users logged in?",
+                "answer": "Each request is independent; the server keeps no memory of earlier requests at the protocol level. Apps add state with session cookies (server-side session store) or tokens such as JWTs sent in a header or cookie on every request.",
+                "explanation": "Mentioning both server sessions and tokens, and that the choice affects scaling, sets up the authentication discussion later."
+              },
+              {
+                "question": "When would you add server-side rendering to an Angular application?",
+                "answer": "When first-load performance or SEO matters, such as public marketing or catalogue pages. Angular SSR renders HTML on the server and hydrates it in the browser. For logged-in dashboards, CSR is often enough.",
+                "explanation": "Good answers weigh the cost (a Node server, browser-only APIs must be guarded) against the benefit, rather than recommending SSR everywhere."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Parse a raw HTTP request",
+              "difficulty": "Basic",
+              "objective": "Understand the parts of an HTTP request (request line, query string, headers, body) by parsing one the way a server such as Node's http module does.",
+              "statement": "The global string stdin holds a raw HTTP request: a request line, header lines, an empty line, then an optional body. Print the method, the path without the query string, the query parameters, the Host header, the Content-Type header and the body length. Header names are case-insensitive. Query values must be URL-decoded ('+' means a space). If the request line does not have exactly three parts or the third part is not an HTTP version (HTTP/ followed by a digit), print only '400 Bad Request'.",
+              "language": "javascript",
+              "input_format": "Request line, then 'Name: value' header lines, then an empty line, then optional body text. The empty line may be missing when there are no headers or body.",
+              "output_format": "Six lines:\nMETHOD <method>\nPATH <path>\nQUERY <k=v pairs joined by '; '> or QUERY none\nHOST <host> or HOST missing\nCONTENT-TYPE <value> or CONTENT-TYPE none\nBODY <number of characters in the body>",
+              "example": {
+                "input": "GET /api/courses?page=2&sort=title HTTP/1.1\nHost: codinghub.in\nAccept: application/json\n\n",
+                "output": "METHOD GET\nPATH /api/courses\nQUERY page=2; sort=title\nHOST codinghub.in\nCONTENT-TYPE none\nBODY 0"
+              },
+              "constraints": [
+                "Treat CRLF and LF line endings the same.",
+                "Trailing newlines at the end of the body are not counted.",
+                "A query parameter without '=' has an empty value.",
+                "Do not use require or process; read the global stdin string."
+              ],
+              "starter": "const text = stdin.replace(/\\r\\n/g, '\\n');\n// TODO: split head and body at the first empty line\n// TODO: validate the request line, then print the six lines\n",
+              "solution": "const text = stdin.replace(/\\r\\n/g, '\\n');\nconst blank = text.indexOf('\\n\\n');\nconst head = blank === -1 ? text.replace(/\\n+$/, '') : text.slice(0, blank);\nconst body = blank === -1 ? '' : text.slice(blank + 2).replace(/\\n+$/, '');\nconst lines = head.split('\\n');\nconst parts = lines[0].trim().split(/\\s+/);\nif (parts.length !== 3 || !/^HTTP\\/[0-9]/.test(parts[2])) {\n  console.log('400 Bad Request');\n} else {\n  const method = parts[0];\n  const target = parts[1];\n  const q = target.indexOf('?');\n  const path = q === -1 ? target : target.slice(0, q);\n  const query = q === -1 ? '' : target.slice(q + 1);\n  const pairs = query.split('&').filter(Boolean).map(p => {\n    const i = p.indexOf('=');\n    if (i === -1) return p + '=';\n    return p.slice(0, i) + '=' + decodeURIComponent(p.slice(i + 1).replace(/\\+/g, ' '));\n  });\n  const headers = {};\n  for (const line of lines.slice(1)) {\n    const i = line.indexOf(':');\n    if (i > 0) headers[line.slice(0, i).trim().toLowerCase()] = line.slice(i + 1).trim();\n  }\n  console.log('METHOD ' + method);\n  console.log('PATH ' + path);\n  console.log('QUERY ' + (pairs.length ? pairs.join('; ') : 'none'));\n  console.log('HOST ' + (headers['host'] || 'missing'));\n  console.log('CONTENT-TYPE ' + (headers['content-type'] || 'none'));\n  console.log('BODY ' + body.length);\n}\n",
+              "explanation": [
+                "Normalise line endings, then split the text at the first empty line: everything before is the head, everything after is the body.",
+                "Split the request line on whitespace; it must have three parts and the third must start with HTTP/ and a digit, otherwise answer 400.",
+                "Separate path and query at the first '?', and decode each value (turning '+' into a space first).",
+                "Store headers in an object keyed by the lower-cased name, because HTTP header names are case-insensitive.",
+                "Print the six labelled lines, using defaults when a header or the query is absent."
+              ],
+              "tests": [
+                {
+                  "input": "GET /api/courses?page=2&sort=title HTTP/1.1\nHost: codinghub.in\nAccept: application/json\n\n",
+                  "output": "METHOD GET\nPATH /api/courses\nQUERY page=2; sort=title\nHOST codinghub.in\nCONTENT-TYPE none\nBODY 0"
+                },
+                {
+                  "input": "POST /api/students HTTP/1.1\nhost: api.codinghub.in\ncontent-type: application/json\n\n{\"name\":\"Asha\"}\n",
+                  "output": "METHOD POST\nPATH /api/students\nQUERY none\nHOST api.codinghub.in\nCONTENT-TYPE application/json\nBODY 15"
+                },
+                {
+                  "input": "GET /\n",
+                  "output": "400 Bad Request"
+                },
+                {
+                  "input": "GET /search?q=angular+signals&lang=en%2Dus&debug HTTP/2\n\n",
+                  "output": "METHOD GET\nPATH /search\nQUERY q=angular signals; lang=en-us; debug=\nHOST missing\nCONTENT-TYPE none\nBODY 0"
+                },
+                {
+                  "input": "DELETE /api/courses/42 FTP/1.0\nHost: x\n\n",
+                  "output": "400 Bad Request"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "Which HTTP status code best fits a request with a valid token from a user who lacks permission for the resource?",
+                "options": [
+                  "403 Forbidden",
+                  "404 Not Found",
+                  "500 Internal Server Error",
+                  "401 Unauthorized"
+                ],
+                "answer": 0,
+                "explanation": "403 means the identity is known but not allowed. 401 is for missing or invalid authentication."
+              },
+              {
+                "type": "concept",
+                "question": "In the MEAN stack, which layer is responsible for matching URL paths to handler functions on the server?",
+                "options": [
+                  "Express",
+                  "The browser's DNS cache",
+                  "MongoDB",
+                  "Angular"
+                ],
+                "answer": 0,
+                "explanation": "Express provides server-side routing and middleware on top of Node.js. Angular's router works in the browser."
+              },
+              {
+                "type": "concept",
+                "question": "Which of these HTTP methods is idempotent?",
+                "options": [
+                  "None of them",
+                  "PUT",
+                  "POST",
+                  "PATCH (an increment operation)"
+                ],
+                "answer": 1,
+                "explanation": "Repeating the same PUT leaves the resource in the same state. POST creates a new resource each time, and an increment PATCH changes the result on repeat."
+              },
+              {
+                "type": "scenario",
+                "question": "A public Angular product catalogue ranks poorly in search engines and shows a blank page for a second on slow phones. What change helps most?",
+                "options": [
+                  "Switch MongoDB to a relational database",
+                  "Add more Express middleware",
+                  "Increase the HTTP cache time of the API",
+                  "Enable Angular SSR with hydration for those pages"
+                ],
+                "answer": 3,
+                "explanation": "SSR sends rendered HTML, improving first paint and crawlability; hydration then makes it interactive."
+              },
+              {
+                "type": "output",
+                "question": "Given the request line 'GET /api/users?role=admin HTTP/1.1', what does Express put in req.path and req.query.role?",
+                "options": [
+                  "'/api/users' and 'admin'",
+                  "'/api' and 'users'",
+                  "'/api/users' and ['admin']",
+                  "'/api/users?role=admin' and undefined"
+                ],
+                "answer": 0,
+                "explanation": "req.path excludes the query string, and Express's query parser maps role=admin to the string 'admin'."
+              }
+            ]
+          }
+        },
+        {
+          "id": "mean-stack:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "JavaScript Core: Types, Scope, Hoisting and Closures",
+            "module": "Web and JavaScript foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Distinguish primitive and reference types and predict copying and comparison behaviour.",
+              "Explain var, let and const in terms of scope, hoisting and the temporal dead zone.",
+              "Describe how closures capture variables and use them for private state.",
+              "Explain how the value of 'this' is decided and how arrow functions differ.",
+              "Answer classic output-prediction questions on coercion and equality."
+            ],
+            "definition": "JavaScript is a dynamically typed language with seven primitive types (string, number, bigint, boolean, undefined, null, symbol) and objects, which are passed around by reference. Scope decides where a variable is visible; a closure is a function together with the variables from its surrounding scope that it keeps alive after that scope has finished executing.",
+            "theory": [
+              {
+                "heading": "Primitive versus reference values",
+                "body": "Primitives are immutable and compared by value: copying a number copies the value. Objects, arrays and functions are reference values: a variable holds a reference, so assigning it to another variable makes both point to the same object. This explains why mutating an array inside a function is visible to the caller, and why Angular's OnPush change detection (Day 20) relies on replacing objects rather than mutating them.",
+                "points": [
+                  "typeof null is 'object' (a historical bug); use value === null to test for null.",
+                  "=== compares without type coercion; == coerces (for example '5' == 5 is true).",
+                  "Two different objects are never ===, even with identical contents.",
+                  "const prevents reassignment of the variable, not mutation of the object it points to."
+                ]
+              },
+              {
+                "heading": "Scope, hoisting and the temporal dead zone",
+                "body": "JavaScript has global, function and block scope. During the creation phase of an execution context, declarations are registered before code runs (hoisting). var declarations are hoisted and initialised to undefined, and are function-scoped. let and const are block-scoped and hoisted but not initialised, so accessing them before the declaration line throws a ReferenceError: that window is the temporal dead zone. Function declarations are hoisted with their body; function expressions follow the rules of the variable they are assigned to.",
+                "points": [
+                  "Prefer const by default, let when reassignment is needed, avoid var.",
+                  "Block scope makes let safe in loops: each iteration gets a fresh binding.",
+                  "Lexical scope: a function sees variables where it is defined, not where it is called."
+                ]
+              },
+              {
+                "heading": "Closures",
+                "body": "When a function is created, it keeps a reference to its lexical environment. If an inner function outlives its outer function (it is returned, stored or used as a callback), the variables it uses stay alive. Closures give private state without classes, power factories, memoisation, debouncing and partial application, and are everywhere in callback-based Node.js code and RxJS operators.",
+                "points": [
+                  "Data privacy: variables in the outer function cannot be reached from outside.",
+                  "Function factories: makeMultiplier(3) returns a function that remembers 3.",
+                  "Common bug: var in a loop with setTimeout prints the final value for every callback.",
+                  "Memory: closures keep captured variables alive, so avoid capturing large objects unnecessarily."
+                ]
+              },
+              {
+                "heading": "How 'this' is determined",
+                "body": "For normal functions, 'this' is decided by how the function is called, not where it is written. A method call obj.fn() sets this to obj; a plain call fn() gives undefined in strict mode (modules and classes are strict); new sets this to the new object; call, apply and bind set it explicitly. Arrow functions do not have their own 'this' and use the one from the enclosing scope, which is why they are used for callbacks inside class methods in Angular components.",
+                "points": [
+                  "Losing 'this': passing obj.method as a callback detaches it from obj.",
+                  "Fix with an arrow function, bind, or a class field arrow function.",
+                  "Arrow functions cannot be used as constructors and have no arguments object."
+                ]
+              },
+              {
+                "heading": "Type coercion pitfalls",
+                "body": "Operators coerce operands: + concatenates if either side is a string, while -, * and / convert to numbers. Falsy values are false, 0, -0, 0n, '', null, undefined and NaN; everything else, including '0', [] and {}, is truthy. NaN is the only value not equal to itself, so use Number.isNaN. The nullish coalescing operator ?? only falls back on null or undefined, unlike || which also replaces 0 and ''.",
+                "points": [
+                  "'1' + 2 is '12' but '3' - 1 is 2.",
+                  "0 || 10 is 10, but 0 ?? 10 is 0.",
+                  "Optional chaining user?.address?.city avoids errors on missing objects."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A closure that keeps state private",
+              "body": "createCounter returns two functions that share the same count variable. Nothing outside can modify count directly, and each call to createCounter creates a separate, independent count. This is the module pattern that predates classes and ES modules.",
+              "code": {
+                "language": "javascript",
+                "source": "function createCounter(start = 0) {\n  let count = start;          // captured by the closures below\n  return {\n    increment: () => ++count,\n    current: () => count,\n  };\n}\n\nconst a = createCounter();\nconst b = createCounter(10);\na.increment();\na.increment();\nconsole.log(a.current()); // 2\nconsole.log(b.current()); // 10\nconsole.log(a.count);     // undefined: count is private"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Encapsulated modules",
+                "description": "Factories and module patterns expose a small API while keeping helper state private."
+              },
+              {
+                "title": "Event handlers and callbacks",
+                "description": "Handlers remember the item or ID they were created for, for example a click handler per list row."
+              },
+              {
+                "title": "Memoisation and caching",
+                "description": "A wrapper function keeps a private cache Map so repeated calls with the same input are fast."
+              },
+              {
+                "title": "Middleware configuration",
+                "description": "Express middleware factories such as rateLimit({ max: 100 }) return a function that closes over the options."
+              }
+            ],
+            "demonstration": {
+              "description": "Predict the output of the classic loop question. With var there is one shared i, and the callbacks run after the loop finishes. With let each iteration has its own binding, so each closure captures a different value.",
+              "code": {
+                "language": "javascript",
+                "source": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log('var', i), 0);\n}\nfor (let j = 0; j < 3; j++) {\n  setTimeout(() => console.log('let', j), 0);\n}"
+              },
+              "output": "var 3\nvar 3\nvar 3\nlet 0\nlet 1\nlet 2"
+            },
+            "takeaways": [
+              "Primitives are copied by value; objects are shared by reference and compared by identity.",
+              "var is function-scoped and initialised to undefined; let and const are block-scoped with a temporal dead zone.",
+              "A closure keeps its outer variables alive and is the basis of private state and factories.",
+              "'this' depends on the call site, except in arrow functions, which inherit it lexically.",
+              "Use === and ?? to avoid surprising coercion."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between var, let and const?",
+                "answer": "var is function-scoped, can be redeclared and is hoisted as undefined. let and const are block-scoped, cannot be redeclared in the same scope and are in the temporal dead zone until declared. const cannot be reassigned, though an object it refers to can still be mutated.",
+                "explanation": "Mention scope, hoisting, the TDZ and the const-mutation nuance; those four points separate a complete answer from a partial one."
+              },
+              {
+                "question": "What is a closure? Give a practical use.",
+                "answer": "A closure is a function bundled with references to the variables in the scope where it was created, which it can still use after that scope has returned. Uses include private state (a counter or bank account), function factories, memoisation and configured middleware.",
+                "explanation": "Interviewers want a definition plus a real use. Writing a small factory on the whiteboard is the strongest proof."
+              },
+              {
+                "question": "What does this code print: console.log(typeof null, typeof [], typeof NaN)?",
+                "answer": "'object object number'. typeof null is a long-standing quirk, arrays are objects (use Array.isArray), and NaN is of type number.",
+                "explanation": "These quirks are favourite screening questions; follow up by naming the correct checks (=== null, Array.isArray, Number.isNaN)."
+              },
+              {
+                "question": "Why might 'this' be undefined inside a method used as a callback, and how do you fix it?",
+                "answer": "Passing obj.method as a callback calls it as a plain function, so 'this' is undefined in strict mode. Fix it by wrapping in an arrow function (() => obj.method()), using obj.method.bind(obj), or defining the method as an arrow-function class field.",
+                "explanation": "This shows you understand that 'this' is set at call time; in Angular it appears with setTimeout or third-party callbacks inside components."
+              },
+              {
+                "question": "Can closures cause memory leaks? How?",
+                "answer": "Yes. A long-lived closure, such as an event listener or an interval callback that is never removed, keeps every captured variable reachable, including large objects or DOM nodes, so they cannot be garbage-collected. Remove listeners, clear intervals and unsubscribe when the owner is destroyed.",
+                "explanation": "Linking this to Angular (unsubscribing in ngOnDestroy or using takeUntilDestroyed) shows senior-level awareness."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Private bank accounts with closures",
+              "difficulty": "Basic",
+              "objective": "Use closures to hold private state that can only be changed through a controlled API.",
+              "statement": "Implement createAccount(initial) that returns an object with deposit, withdraw, getBalance and getHistory functions. The balance and history must live in closure variables, not object properties. Then process commands, one per line: 'open <name> <amount>', 'deposit <name> <amount>', 'withdraw <name> <amount>', 'balance <name>' and 'history <name>'. Print output only for balance, history and errors.",
+              "language": "javascript",
+              "input_format": "One command per line. Names are single words; amounts are numbers. Blank lines are ignored.",
+              "output_format": "balance prints '<name>: <balance>'. history prints '<name>: ' followed by entries such as +50 and -30 separated by spaces, or '<name>: no transactions'. Errors print '<name>: unknown account', '<name>: already exists', '<name>: invalid amount' (amount not greater than 0) or '<name>: insufficient funds'.",
+              "example": {
+                "input": "open alice 100\ndeposit alice 50\nwithdraw alice 500\nwithdraw alice 30\nbalance alice\nhistory alice\n",
+                "output": "alice: insufficient funds\nalice: 120\nalice: +50 -30"
+              },
+              "constraints": [
+                "Opening balance is a number of at least 0 and is not recorded in history.",
+                "A failed deposit or withdrawal does not change the balance or history.",
+                "Accounts are independent: each open creates a new closure."
+              ],
+              "starter": "function createAccount(initial) {\n  let balance = initial;\n  const history = [];\n  // TODO: return { deposit, withdraw, getBalance, getHistory }\n}\n\nconst accounts = new Map();\nfor (const line of stdin.split('\\n')) {\n  // TODO: parse and run each command\n}\n",
+              "solution": "function createAccount(initial) {\n  let balance = initial;\n  const history = [];\n  return {\n    deposit(amount) {\n      if (!(amount > 0)) return 'invalid amount';\n      balance += amount;\n      history.push('+' + amount);\n      return null;\n    },\n    withdraw(amount) {\n      if (!(amount > 0)) return 'invalid amount';\n      if (amount > balance) return 'insufficient funds';\n      balance -= amount;\n      history.push('-' + amount);\n      return null;\n    },\n    getBalance: () => balance,\n    getHistory: () => history.slice(),\n  };\n}\n\nconst accounts = new Map();\nfor (const raw of stdin.split('\\n')) {\n  const line = raw.trim();\n  if (!line) continue;\n  const [cmd, name, value] = line.split(/\\s+/);\n  const amount = Number(value);\n  if (cmd === 'open') {\n    if (accounts.has(name)) console.log(name + ': already exists');\n    else accounts.set(name, createAccount(amount));\n    continue;\n  }\n  const acct = accounts.get(name);\n  if (!acct) { console.log(name + ': unknown account'); continue; }\n  let error = null;\n  if (cmd === 'deposit') error = acct.deposit(amount);\n  else if (cmd === 'withdraw') error = acct.withdraw(amount);\n  else if (cmd === 'balance') console.log(name + ': ' + acct.getBalance());\n  else if (cmd === 'history') {\n    const h = acct.getHistory();\n    console.log(name + ': ' + (h.length ? h.join(' ') : 'no transactions'));\n  }\n  if (error) console.log(name + ': ' + error);\n}\n",
+              "explanation": [
+                "createAccount declares balance and history inside the function; the returned methods close over them, so no outside code can touch them directly.",
+                "deposit and withdraw validate the amount first (!(amount > 0) also rejects NaN) and return an error string instead of changing state.",
+                "getHistory returns a copy so callers cannot mutate the private array.",
+                "A Map stores one account object per name; each open call creates a fresh closure with its own state.",
+                "The command loop prints balances, history and any error string returned by the account."
+              ],
+              "tests": [
+                {
+                  "input": "open alice 100\ndeposit alice 50\nwithdraw alice 500\nwithdraw alice 30\nbalance alice\nhistory alice\n",
+                  "output": "alice: insufficient funds\nalice: 120\nalice: +50 -30"
+                },
+                {
+                  "input": "open a 10\nopen b 10\ndeposit a 5\nbalance a\nbalance b\nopen a 99\n",
+                  "output": "a: 15\nb: 10\na: already exists"
+                },
+                {
+                  "input": "deposit ravi 10\nopen ravi 0\nwithdraw ravi 0\ndeposit ravi -5\nhistory ravi\nbalance ravi\n",
+                  "output": "ravi: unknown account\nravi: invalid amount\nravi: invalid amount\nravi: no transactions\nravi: 0"
+                },
+                {
+                  "input": "open x 5\n\nwithdraw x 5\nbalance x\nhistory x\n",
+                  "output": "x: 0\nx: -5"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this hoisting example print?",
+                "code": "console.log(a);\nvar a = 5;\nconsole.log(b);\nlet b = 6;",
+                "options": [
+                  "undefined, then a ReferenceError",
+                  "A ReferenceError on the first line",
+                  "5, then 6",
+                  "undefined, then undefined"
+                ],
+                "answer": 0,
+                "explanation": "var a is hoisted and initialised to undefined. let b is in the temporal dead zone until its declaration, so reading it throws a ReferenceError."
+              },
+              {
+                "type": "concept",
+                "question": "Which statement about closures is correct?",
+                "options": [
+                  "Closures are created only by calling bind()",
+                  "An inner function keeps access to variables of its outer scope even after the outer function returns",
+                  "A closure copies the outer variables' values at creation time and never sees later changes",
+                  "Closures only exist when a function is declared with the 'function' keyword"
+                ],
+                "answer": 1,
+                "explanation": "Closures keep a live reference to the outer environment, so they see the current value of captured variables, and arrow functions form closures too."
+              },
+              {
+                "type": "output",
+                "question": "What do these || and ?? expressions print?",
+                "code": "const settings = { retries: 0 };\nconsole.log(settings.retries || 3, settings.retries ?? 3);",
+                "options": [
+                  "0 0",
+                  "3 3",
+                  "0 3",
+                  "3 0"
+                ],
+                "answer": 3,
+                "explanation": "|| falls back on any falsy value, including 0. ?? only falls back on null or undefined, so it keeps 0."
+              },
+              {
+                "type": "scenario",
+                "question": "Inside a class method you call setTimeout(this.save, 1000), and save() throws 'Cannot read properties of undefined'. What is the best fix?",
+                "options": [
+                  "Pass an arrow function: setTimeout(() => this.save(), 1000)",
+                  "Use == instead of ===",
+                  "Declare save with var",
+                  "Change const to let in the class"
+                ],
+                "answer": 0,
+                "explanation": "Passing this.save detaches the method from the instance. An arrow function keeps the lexical 'this' and calls save as a method."
+              },
+              {
+                "type": "output",
+                "question": "What does this array reference example print?",
+                "code": "const list = [1, 2];\nconst copy = list;\ncopy.push(3);\nconsole.log(list.length, list === copy);",
+                "options": [
+                  "3 true",
+                  "2 true",
+                  "2 false",
+                  "3 false"
+                ],
+                "answer": 0,
+                "explanation": "Arrays are reference values: copy points to the same array, so the push is visible through list and both variables are identical."
+              }
+            ]
+          }
+        },
+        {
+          "id": "mean-stack:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
+            "module": "Web and JavaScript foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Use destructuring with defaults and renaming for objects, arrays and function parameters.",
+              "Apply spread and rest syntax to copy, merge and collect values immutably.",
+              "Choose between map, filter, reduce, find, some and every for data transformations.",
+              "Explain ES modules (import/export) and how they differ from CommonJS.",
+              "Use classes, template literals, optional chaining and Map/Set where they fit."
+            ],
+            "definition": "ES6 (ECMAScript 2015) and the yearly releases after it added the syntax modern JavaScript and TypeScript code relies on: let/const, arrow functions, classes, template literals, destructuring, spread/rest, modules, Map/Set, promises and later async/await, optional chaining and nullish coalescing. Angular, Express and Mongoose code is written almost entirely in this style.",
+            "theory": [
+              {
+                "heading": "Destructuring and default values",
+                "body": "Destructuring unpacks values from objects or arrays into variables in one statement. It can rename (const { id: courseId } = course), provide defaults used when a value is undefined (const { page = 1 } = query), and work in function parameters, which makes an options object self-documenting. Array destructuring is positional and is used for swaps and for tuple-like returns.",
+                "points": [
+                  "Object: const { title, price = 0 } = course;",
+                  "Array: const [first, , third] = list;",
+                  "Parameters: function list({ page = 1, limit = 10 } = {}) { ... }",
+                  "Defaults apply only for undefined, not for null."
+                ]
+              },
+              {
+                "heading": "Spread and rest",
+                "body": "The same three dots mean two different things. Spread expands an iterable or object into individual elements or properties; rest collects the remaining ones into an array or object. Spread creates a shallow copy, which is the basis of immutable updates in Angular state management: { ...state, loading: true } produces a new object, so reference checks notice the change. Nested objects are still shared, so deep changes need nested spreads or structuredClone.",
+                "points": [
+                  "Merge: const config = { ...defaults, ...overrides }; later keys win.",
+                  "Copy and append: const next = [...items, newItem];",
+                  "Rest parameters: function sum(...nums) { ... }",
+                  "Omit a key: const { password, ...safeUser } = user;"
+                ]
+              },
+              {
+                "heading": "Array methods for data transformation",
+                "body": "Declarative array methods replace most for loops in application code. map transforms each element, filter keeps elements matching a condition, reduce folds the array into a single value (sum, grouping, lookup table), find returns the first match, and some/every answer yes-or-no questions. They do not mutate the source array (sort, reverse and splice do, which is why toSorted and toReversed were added in ES2023). Chaining them keeps code readable, but each step allocates a new array, so for very large datasets a single reduce or a loop can be faster.",
+                "points": [
+                  "map: same length, transformed values.",
+                  "filter: subset; find: first match or undefined.",
+                  "reduce: accumulate anything; always pass an initial value.",
+                  "Object.entries, Object.fromEntries and Object.groupBy help with keyed data."
+                ]
+              },
+              {
+                "heading": "ES modules versus CommonJS",
+                "body": "ES modules use import and export, are statically analysable (enabling tree shaking in Angular builds), are always in strict mode and load asynchronously. CommonJS uses require and module.exports, loads synchronously and was Node.js's original system. Modern Node.js supports both: files ending in .mjs, or a package.json with \"type\": \"module\", are treated as ES modules. Angular and TypeScript code always uses ES module syntax.",
+                "points": [
+                  "Named exports: export function x() {}, imported with { x }.",
+                  "Default export: one per module; import any name.",
+                  "Dynamic import(): loads a module on demand, used for lazy-loaded Angular routes."
+                ]
+              },
+              {
+                "heading": "Other everyday features",
+                "body": "Classes provide constructor, methods, getters, static members and true private fields (#secret). Template literals interpolate expressions and span lines. Map keeps insertion order and allows any key type; Set stores unique values, making de-duplication a one-liner. Optional chaining (a?.b?.c) and nullish coalescing (x ?? fallback) make safe access to API responses concise.",
+                "points": [
+                  "Unique values: [...new Set(tags)].",
+                  "Map vs object: any key type, size property, predictable iteration order.",
+                  "Private class fields (#count) are enforced by the language, unlike TypeScript's private keyword."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Preparing API data for a view",
+              "body": "An API returns enrolments. The code removes a sensitive field with rest destructuring, applies defaults, keeps only active records, computes totals with reduce and groups by course, all without mutating the original array.",
+              "code": {
+                "language": "javascript",
+                "source": "const enrolments = [\n  { student: 'Asha', course: 'MEAN', fee: 25000, active: true, aadhaar: 'XXXX' },\n  { student: 'Ravi', course: 'MEAN', active: true, aadhaar: 'YYYY' },\n  { student: 'Meera', course: 'Java', fee: 18000, active: false, aadhaar: 'ZZZZ' },\n];\n\nconst safe = enrolments\n  .filter(e => e.active)\n  .map(({ aadhaar, fee = 0, ...rest }) => ({ ...rest, fee }));\n\nconst total = safe.reduce((sum, { fee }) => sum + fee, 0);\nconst byCourse = Object.groupBy(safe, e => e.course);\n\nconsole.log(safe.length, total, Object.keys(byCourse)); // 2 25000 [ 'MEAN' ]"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Shaping API responses",
+                "description": "Express handlers strip private fields with rest destructuring before sending JSON."
+              },
+              {
+                "title": "Immutable state updates",
+                "description": "Angular stores and signals are updated with spread copies so change detection sees a new reference."
+              },
+              {
+                "title": "Configuration merging",
+                "description": "Libraries combine defaults with user options using object spread."
+              },
+              {
+                "title": "Lazy loading",
+                "description": "Angular routes use dynamic import() so feature code is downloaded only when visited."
+              }
+            ],
+            "demonstration": {
+              "description": "Spread makes shallow copies. Changing a top-level property of the copy leaves the original alone, but a nested object is still shared. structuredClone performs a deep copy.",
+              "code": {
+                "language": "javascript",
+                "source": "const original = { name: 'Asha', address: { city: 'Pune' } };\nconst shallow = { ...original, name: 'Ravi' };\nshallow.address.city = 'Delhi';\nconsole.log(original.name, original.address.city);\n\nconst deep = structuredClone(original);\ndeep.address.city = 'Chennai';\nconsole.log(original.address.city);"
+              },
+              "output": "Asha Delhi\nDelhi"
+            },
+            "takeaways": [
+              "Destructuring defaults apply only when a value is undefined.",
+              "Spread copies are shallow; nested objects remain shared.",
+              "map, filter and reduce return new values; sort, reverse and splice mutate.",
+              "ES modules are static and tree-shakeable; dynamic import() enables lazy loading.",
+              "Use Set for uniqueness and Map when keys are not simple strings or order matters."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between the spread and rest operators?",
+                "answer": "Both use three dots. Spread expands an iterable or object into elements or properties (copying, merging, passing arguments). Rest collects the remaining elements or properties into an array or object (function parameters, destructuring).",
+                "explanation": "A good answer gives one example of each, such as Math.max(...nums) and const { password, ...safe } = user."
+              },
+              {
+                "question": "Is { ...obj } a deep copy?",
+                "answer": "No. It is a shallow copy: top-level properties are copied, but nested objects and arrays are shared by reference. Use structuredClone, or nested spreads for targeted updates, when a deep copy is needed.",
+                "explanation": "This matters for immutable state: mutating a nested object after a shallow copy defeats OnPush and NgRx change detection."
+              },
+              {
+                "question": "When would you use reduce instead of map or filter?",
+                "answer": "When the result is not an array of the same shape, for example a sum, an object keyed by ID, or groups. map is for one-to-one transformation and filter for selection; reduce accumulates any result type, and you should always pass an initial value.",
+                "explanation": "Interviewers check that you pick the most expressive method rather than using reduce for everything."
+              },
+              {
+                "question": "How do ES modules differ from CommonJS?",
+                "answer": "ES modules use static import/export, are analysed before execution (allowing tree shaking), run in strict mode and support top-level await. CommonJS uses require/module.exports, resolved at runtime synchronously. Node.js supports both, chosen by file extension or the package.json type field.",
+                "explanation": "Mentioning tree shaking and lazy loading with dynamic import() ties the answer to Angular build performance."
+              },
+              {
+                "question": "Why were toSorted and toReversed added to arrays?",
+                "answer": "sort and reverse mutate the array in place, which causes bugs when the array is shared state. toSorted, toReversed, toSpliced and with return new arrays and leave the original untouched.",
+                "explanation": "Knowing recent additions signals that you keep up with the language; tie it to immutable updates in front-end state."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Course report with map, filter and reduce",
+              "difficulty": "Basic",
+              "objective": "Transform a list of records with destructuring defaults and array methods instead of manual bookkeeping.",
+              "statement": "stdin holds a JSON array of records shaped like { name, course, score }. A missing score counts as 0 and a missing course counts as 'Unassigned' (use destructuring defaults). Group records by course and, for each course in ascending order of name (plain string comparison), print the number of records, the average score with one decimal place and the top scorer. If two students tie for the top score, choose the name that comes first in string order. If the array is empty, print 'no records'.",
+              "language": "javascript",
+              "input_format": "A single JSON array.",
+              "output_format": "One line per course: '<course>: count=<n> avg=<average to 1 decimal> top=<name>', or 'no records'.",
+              "example": {
+                "input": "[{\"name\":\"Asha\",\"course\":\"MEAN\",\"score\":82},{\"name\":\"Ravi\",\"course\":\"MEAN\",\"score\":91},{\"name\":\"Meera\",\"course\":\"Java\",\"score\":75},{\"name\":\"Kiran\",\"course\":\"MEAN\"}]",
+                "output": "Java: count=1 avg=75.0 top=Meera\nMEAN: count=3 avg=57.7 top=Ravi"
+              },
+              "constraints": [
+                "Use toFixed(1) for the average.",
+                "Do not mutate the parsed array while processing it.",
+                "Course names are compared with < and >, so uppercase letters sort before lowercase."
+              ],
+              "starter": "const records = JSON.parse(stdin);\n// TODO: normalise with destructuring defaults, group with reduce, then print\n",
+              "solution": "const records = JSON.parse(stdin);\nif (records.length === 0) {\n  console.log('no records');\n} else {\n  const normalised = records.map(({ name, course = 'Unassigned', score = 0 }) => ({ name, course, score }));\n  const groups = normalised.reduce((acc, r) => {\n    (acc[r.course] ||= []).push(r);\n    return acc;\n  }, {});\n  const courses = Object.keys(groups).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));\n  for (const course of courses) {\n    const list = groups[course];\n    const total = list.reduce((sum, { score }) => sum + score, 0);\n    const top = list.reduce((best, r) =>\n      r.score > best.score || (r.score === best.score && r.name < best.name) ? r : best\n    );\n    console.log(course + ': count=' + list.length + ' avg=' + (total / list.length).toFixed(1) + ' top=' + top.name);\n  }\n}\n",
+              "explanation": [
+                "Parse the JSON, then map every record through a destructuring pattern with defaults so missing fields become 'Unassigned' and 0.",
+                "reduce builds an object of arrays keyed by course; ||= creates the array the first time a course is seen.",
+                "Sort the course names with a plain comparison so the order is deterministic.",
+                "For each course, one reduce sums the scores and another picks the top record, breaking ties by name.",
+                "Print the count, the average with toFixed(1) and the top name."
+              ],
+              "tests": [
+                {
+                  "input": "[{\"name\":\"Asha\",\"course\":\"MEAN\",\"score\":82},{\"name\":\"Ravi\",\"course\":\"MEAN\",\"score\":91},{\"name\":\"Meera\",\"course\":\"Java\",\"score\":75},{\"name\":\"Kiran\",\"course\":\"MEAN\"}]",
+                  "output": "Java: count=1 avg=75.0 top=Meera\nMEAN: count=3 avg=57.7 top=Ravi"
+                },
+                {
+                  "input": "[]",
+                  "output": "no records"
+                },
+                {
+                  "input": "[{\"name\":\"Zoya\",\"course\":\"AI\",\"score\":90},{\"name\":\"Arjun\",\"course\":\"AI\",\"score\":90},{\"name\":\"Neel\",\"score\":40}]",
+                  "output": "AI: count=2 avg=90.0 top=Arjun\nUnassigned: count=1 avg=40.0 top=Neel"
+                },
+                {
+                  "input": "[{\"name\":\"A\",\"course\":\"Python\",\"score\":70},{\"name\":\"B\",\"course\":\"Python\",\"score\":80},{\"name\":\"C\",\"course\":\"Python\",\"score\":85},{\"name\":\"D\",\"course\":\"Go\",\"score\":1},{\"name\":\"E\",\"course\":\"Go\",\"score\":2}]",
+                  "output": "Go: count=2 avg=1.5 top=E\nPython: count=3 avg=78.3 top=C"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this destructuring default print?",
+                "code": "const { page = 1, limit = 10 } = { page: null, limit: undefined };\nconsole.log(page, limit);",
+                "options": [
+                  "1 undefined",
+                  "null 10",
+                  "1 10",
+                  "null undefined"
+                ],
+                "answer": 1,
+                "explanation": "Destructuring defaults apply only when the value is undefined. null is a real value, so page stays null while limit becomes 10."
+              },
+              {
+                "type": "concept",
+                "question": "Which array method mutates the original array?",
+                "options": [
+                  "map",
+                  "filter",
+                  "toSorted",
+                  "sort"
+                ],
+                "answer": 3,
+                "explanation": "sort reorders the array in place. map, filter and toSorted return new arrays."
+              },
+              {
+                "type": "output",
+                "question": "What object does this spread merge print?",
+                "code": "const defaults = { theme: 'light', lang: 'en' };\nconst user = { lang: 'hi' };\nconsole.log({ ...defaults, ...user });",
+                "options": [
+                  "{ theme: 'light', lang: 'hi' }",
+                  "{ lang: 'hi' }",
+                  "{ lang: 'en', theme: 'light', lang: 'hi' }",
+                  "{ theme: 'light', lang: 'en' }"
+                ],
+                "answer": 0,
+                "explanation": "Later spreads overwrite earlier keys, so user's lang replaces the default while theme is kept."
+              },
+              {
+                "type": "concept",
+                "question": "Why does using ES module import/export help Angular production builds?",
+                "options": [
+                  "Static imports let the bundler tree-shake unused exports",
+                  "It converts TypeScript to Java bytecode",
+                  "It makes code run on the server",
+                  "It disables strict mode"
+                ],
+                "answer": 0,
+                "explanation": "Because imports are statically analysable, the bundler can drop exports that are never used, shrinking the bundle."
+              },
+              {
+                "type": "code",
+                "question": "Which line removes the password from a user object without mutating it?",
+                "options": [
+                  "const safeUser = [...user].filter(k => k !== 'password');",
+                  "const { password, ...safeUser } = user;",
+                  "delete user.password; const safeUser = user;",
+                  "const safeUser = user; safeUser.password = undefined;"
+                ],
+                "answer": 1,
+                "explanation": "Rest destructuring collects every other property into a new object and leaves user unchanged. The other options mutate or are invalid for objects."
+              }
+            ]
+          }
+        },
+        {
+          "id": "mean-stack:article:4",
+          "slug": "day-4",
+          "lesson": {
+            "day": 4,
+            "title": "Asynchronous JavaScript and the Event Loop",
+            "module": "Web and JavaScript foundations",
+            "level": "Beginner",
+            "objectives": [
+              "Explain why JavaScript needs an event loop despite running on a single thread.",
+              "Describe the call stack, the task (macrotask) queue and the microtask queue.",
+              "Predict the output order of code mixing synchronous logs, timers and promises.",
+              "Identify callback hell and the inversion-of-control problem of callbacks.",
+              "Explain how a long synchronous task blocks rendering in the browser and requests in Node.js."
+            ],
+            "definition": "The event loop is the mechanism that lets single-threaded JavaScript perform non-blocking work. Synchronous code runs on the call stack; slow operations (timers, network, file I/O) are handed to the host environment, and their callbacks are queued. Whenever the stack is empty, the loop first drains the microtask queue (promise reactions, queueMicrotask) and then takes the next task (macrotask) such as a timer callback or an I/O event.",
+            "theory": [
+              {
+                "heading": "Single thread, non-blocking I/O",
+                "body": "A JavaScript engine executes one piece of code at a time on one call stack. If a network request blocked that thread, a browser tab would freeze and a Node.js server could serve only one client at a time. Instead, the host (the browser's Web APIs or Node's libuv) performs the waiting outside the JavaScript thread and later queues a callback. This model is why Node.js can handle thousands of concurrent connections with little memory, and also why one CPU-heavy loop stalls everything.",
+                "points": [
+                  "Call stack: frames of currently executing functions.",
+                  "Host APIs: timers, fetch/XHR, DOM events, file system, sockets.",
+                  "Queues: callbacks wait until the stack is empty.",
+                  "Run-to-completion: a function is never interrupted by another callback."
+                ]
+              },
+              {
+                "heading": "Tasks versus microtasks",
+                "body": "There are two kinds of queues. Tasks (often called macrotasks) include setTimeout, setInterval, I/O callbacks and UI events; the loop takes one task per iteration. Microtasks include promise .then/.catch/.finally reactions, await continuations, queueMicrotask and MutationObserver. After every task, and after the initial script, the microtask queue is drained completely, including microtasks added while draining, before the next task or a render happens.",
+                "points": [
+                  "Order: synchronous code, then all microtasks, then one task, then all microtasks again.",
+                  "setTimeout(fn, 0) means 'run as a task after at least 0 ms', never immediately.",
+                  "An endless chain of microtasks starves timers and rendering."
+                ]
+              },
+              {
+                "heading": "Node.js event-loop phases",
+                "body": "Node.js's loop (libuv) cycles through phases: timers (expired setTimeout/setInterval), pending callbacks, poll (waiting for and running I/O callbacks), check (setImmediate) and close callbacks. Between callbacks Node drains process.nextTick callbacks first and then promise microtasks. Inside an I/O callback, setImmediate always runs before a setTimeout(fn, 0); from the main module their order is not guaranteed.",
+                "points": [
+                  "process.nextTick runs before promise microtasks; overusing it can starve I/O.",
+                  "setImmediate is for 'run after the current poll phase'.",
+                  "CPU-heavy work belongs in worker_threads or a separate service."
+                ]
+              },
+              {
+                "heading": "Callbacks and their problems",
+                "body": "The original asynchronous pattern was passing a callback, and Node.js standardised error-first callbacks: callback(err, result). Nested sequential operations produce deeply indented 'callback hell', error handling must be repeated at every level, and you hand control to the called code, which might call your callback twice or never (inversion of control). Promises (Day 5) fix these by representing a future value as an object that settles exactly once.",
+                "points": [
+                  "Error-first convention: if (err) return handle(err);",
+                  "Callback hell hurts readability and error propagation.",
+                  "Promises and async/await flatten the code and centralise errors."
+                ]
+              },
+              {
+                "heading": "Why this matters in Angular",
+                "body": "Angular has traditionally used Zone.js to patch asynchronous APIs (timers, events, XHR) so it knows when a task finishes and can run change detection. Understanding tasks and microtasks explains why a value set in a setTimeout appears after the next check, why ExpressionChangedAfterItHasBeenChecked errors happen, and why newer zoneless Angular relies on signals and explicit notifications instead of patching every async API.",
+                "points": [
+                  "Zone.js tracks async tasks and triggers change detection when they complete.",
+                  "Zoneless apps schedule change detection from signal updates, events and markForCheck."
+                ]
+              }
+            ],
+            "example": {
+              "title": "The classic ordering question",
+              "body": "Synchronous logs run first. The promise reaction is a microtask, so it runs as soon as the script finishes, before the timer, which is a task, even with a 0 ms delay.",
+              "code": {
+                "language": "javascript",
+                "source": "console.log('1: script start');\n\nsetTimeout(() => console.log('4: timeout'), 0);\n\nPromise.resolve()\n  .then(() => console.log('3: promise'));\n\nconsole.log('2: script end');"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Responsive UIs",
+                "description": "Splitting long work into chunks scheduled as tasks lets the browser render between them, keeping an Angular page responsive."
+              },
+              {
+                "title": "High-concurrency APIs",
+                "description": "An Express server handles many requests while each waits on MongoDB, because waiting does not block the thread."
+              },
+              {
+                "title": "Debugging race conditions",
+                "description": "Knowing the queue order explains why a value is undefined when read too early or why a UI update appears one tick late."
+              },
+              {
+                "title": "Batching updates",
+                "description": "Frameworks queue microtasks to batch many state changes into a single render."
+              }
+            ],
+            "demonstration": {
+              "description": "A microtask scheduled by a timer callback runs before the next timer, and a timer scheduled by a microtask goes to the back of the task queue.",
+              "code": {
+                "language": "javascript",
+                "source": "setTimeout(() => {\n  console.log('T1');\n  Promise.resolve().then(() => console.log('M inside T1'));\n}, 0);\nsetTimeout(() => console.log('T2'), 0);\nPromise.resolve().then(() => {\n  console.log('M1');\n  setTimeout(() => console.log('T3 from M1'), 0);\n});"
+              },
+              "output": "M1\nT1\nM inside T1\nT2\nT3 from M1"
+            },
+            "takeaways": [
+              "JavaScript runs one call stack; the host does the waiting and queues callbacks.",
+              "After the script and after each task, all microtasks run before the next task.",
+              "Promise reactions and await continuations are microtasks; timers and I/O callbacks are tasks.",
+              "setTimeout(fn, 0) is deferred, not immediate.",
+              "Long synchronous work blocks rendering and every other request; move it to workers.",
+              "In Node.js, process.nextTick runs before promise microtasks."
+            ],
+            "interview": [
+              {
+                "question": "What is the event loop?",
+                "answer": "It is the loop that coordinates the call stack and the callback queues. When the stack is empty it drains all microtasks, then takes the next task (timer, I/O, UI event) and runs it, repeating forever. This lets single-threaded JavaScript perform non-blocking I/O.",
+                "explanation": "Name the call stack, host APIs and both queues; a diagram on the whiteboard helps."
+              },
+              {
+                "question": "What is the difference between microtasks and macrotasks?",
+                "answer": "Macrotasks (setTimeout, setInterval, I/O, events) are taken one per loop iteration. Microtasks (promise reactions, queueMicrotask, await continuations) run in full after the current script or task, before the next macrotask and before rendering.",
+                "explanation": "Strong candidates add the starvation risk: recursively queued microtasks can block timers and painting."
+              },
+              {
+                "question": "Does setTimeout(fn, 0) run immediately?",
+                "answer": "No. It queues fn as a task to run after at least 0 ms, once the current script and all pending microtasks have finished, and browsers may clamp nested timers to 4 ms.",
+                "explanation": "This is the standard trick question; explaining queue position, not delay, is the key."
+              },
+              {
+                "question": "In Node.js, what is the order of process.nextTick, Promise.then, setTimeout 0 and setImmediate called from the main module?",
+                "answer": "nextTick callbacks run first, then promise microtasks, then the timers phase and check phase. setTimeout 0 versus setImmediate from the main module is not guaranteed; inside an I/O callback setImmediate always runs first.",
+                "explanation": "Mentioning the non-determinism from the main module shows real Node.js knowledge rather than a memorised list."
+              },
+              {
+                "question": "Your Express API becomes slow for all users while one endpoint generates a large PDF. Why, and what would you do?",
+                "answer": "PDF generation is CPU-bound and runs on the single JavaScript thread, so the event loop cannot handle other requests until it finishes. Move the work to worker_threads, a job queue with separate workers, or a separate service, and respond asynchronously.",
+                "explanation": "This scenario checks that you understand non-blocking applies to I/O, not to CPU work."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Simulate the event loop",
+              "difficulty": "Basic",
+              "objective": "Predict execution order by implementing the rules of the call stack, microtask queue and timer queue.",
+              "statement": "Each input line is a statement of a script. 'sync L' logs L immediately. 'micro L' queues a microtask that logs L. 'macro D L' schedules a timer task with delay D milliseconds that logs L. A statement may contain ' then ' followed by a second statement, which is executed inside the first one's callback after it logs (for example 'macro 0 B then micro C' logs B and then queues microtask C). Use virtual time: the script runs at time 0, a timer scheduled at time t with delay D fires at t + D, and timers with the same firing time run in the order they were scheduled. After the script and after every timer task, drain the whole microtask queue. Print the logged labels in order.",
+              "language": "javascript",
+              "input_format": "One statement per line, optionally with one ' then ' clause. Labels contain no spaces.",
+              "output_format": "Each logged label on its own line, in execution order.",
+              "example": {
+                "input": "sync A\nmacro 0 B\nmicro C\nsync D\nmicro E then macro 0 F\nmacro 0 G then micro H\n",
+                "output": "A\nD\nC\nE\nB\nG\nH\nF"
+              },
+              "constraints": [
+                "Delays are integers from 0 to 1000.",
+                "At most 50 statements.",
+                "Ignore blank lines."
+              ],
+              "starter": "const out = [];\nconst microtasks = [];\nconst timers = [];\nlet now = 0;\nlet seq = 0;\n// TODO: parse each line, run sync code, then drain microtasks and run timers in order\n",
+              "solution": "const out = [];\nconst microtasks = [];\nconst timers = [];\nlet now = 0;\nlet seq = 0;\n\nfunction parse(piece) {\n  const t = piece.trim().split(/\\s+/);\n  if (t[0] === 'macro') return { kind: 'macro', delay: Number(t[1]), label: t[2] };\n  return { kind: t[0], label: t[1] };\n}\n\nfunction run(step, next) {\n  out.push(step.label);\n  if (next) schedule(next, null);\n}\n\nfunction schedule(step, next) {\n  if (step.kind === 'sync') run(step, next);\n  else if (step.kind === 'micro') microtasks.push({ step, next });\n  else timers.push({ time: now + step.delay, seq: seq++, step, next });\n}\n\nfunction drain() {\n  while (microtasks.length) {\n    const m = microtasks.shift();\n    run(m.step, m.next);\n  }\n}\n\nfor (const line of stdin.split('\\n')) {\n  if (!line.trim()) continue;\n  const pieces = line.split(' then ').map(parse);\n  schedule(pieces[0], pieces[1] || null);\n}\ndrain();\nwhile (timers.length) {\n  timers.sort((a, b) => a.time - b.time || a.seq - b.seq);\n  const t = timers.shift();\n  now = t.time;\n  run(t.step, t.next);\n  drain();\n}\nconsole.log(out.join('\\n'));\n",
+              "explanation": [
+                "Parse each statement into a kind, an optional delay and a label; a ' then ' clause becomes the 'next' step run inside the callback.",
+                "sync steps run immediately; micro steps go to a FIFO queue; macro steps go to a timer list with firing time now + delay and a sequence number.",
+                "After the whole script runs, drain the microtask queue completely, including microtasks queued while draining.",
+                "Repeatedly pick the timer with the earliest time (then lowest sequence), advance virtual time, run it, and drain microtasks again.",
+                "Print the collected labels in order."
+              ],
+              "tests": [
+                {
+                  "input": "sync A\nmacro 0 B\nmicro C\nsync D\nmicro E then macro 0 F\nmacro 0 G then micro H\n",
+                  "output": "A\nD\nC\nE\nB\nG\nH\nF"
+                },
+                {
+                  "input": "macro 10 X\nmacro 5 Y then macro 0 Z\nsync S\n",
+                  "output": "S\nY\nZ\nX"
+                },
+                {
+                  "input": "micro A then micro B\nmicro C\n",
+                  "output": "A\nC\nB"
+                },
+                {
+                  "input": "sync one\nsync two\n",
+                  "output": "one\ntwo"
+                },
+                {
+                  "input": "micro P then macro 0 Q\nmacro 0 R\n",
+                  "output": "P\nR\nQ"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What is the output order?",
+                "code": "setTimeout(() => console.log('a'), 0);\nPromise.resolve().then(() => console.log('b'));\nconsole.log('c');",
+                "options": [
+                  "a b c",
+                  "c a b",
+                  "b c a",
+                  "c b a"
+                ],
+                "answer": 3,
+                "explanation": "Synchronous 'c' runs first, then the promise microtask 'b', then the timer task 'a'."
+              },
+              {
+                "type": "concept",
+                "question": "Which of these callbacks is queued as a microtask?",
+                "options": [
+                  "A Promise.then callback",
+                  "A click event handler",
+                  "A setInterval callback",
+                  "A setTimeout callback"
+                ],
+                "answer": 0,
+                "explanation": "Promise reactions are microtasks. Timers and UI events are tasks (macrotasks)."
+              },
+              {
+                "type": "scenario",
+                "question": "A page freezes while a loop processes 5 million rows in the browser. What is the underlying cause?",
+                "options": [
+                  "The microtask queue is full of timers",
+                  "setTimeout has a maximum of 4 ms",
+                  "The loop blocks the single call stack, so the event loop cannot render or handle events",
+                  "Promises are too slow for large data"
+                ],
+                "answer": 2,
+                "explanation": "Synchronous work occupies the only thread; rendering and events wait. Chunk the work, or move it to a Web Worker."
+              },
+              {
+                "type": "output",
+                "question": "In what order does this async code print?",
+                "code": "async function f() {\n  console.log('1');\n  await null;\n  console.log('2');\n}\nf();\nconsole.log('3');",
+                "options": [
+                  "2 1 3",
+                  "1 2 3",
+                  "3 1 2",
+                  "1 3 2"
+                ],
+                "answer": 3,
+                "explanation": "An async function runs synchronously until the first await. The rest of it continues as a microtask after the current script, so '3' prints before '2'."
+              },
+              {
+                "type": "concept",
+                "question": "In Node.js, which callback runs first after the current synchronous code finishes?",
+                "options": [
+                  "setImmediate",
+                  "setTimeout(fn, 0)",
+                  "Promise.then",
+                  "process.nextTick"
+                ],
+                "answer": 3,
+                "explanation": "Node drains the nextTick queue before the promise microtask queue, and both run before the timers and check phases."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "mean-stack:question:1:1",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What happens when you type a URL into the browser and press Enter?",
+          "answer": "The browser checks caches and resolves the domain with DNS, opens a TCP (or QUIC) connection, completes a TLS handshake for HTTPS, sends an HTTP request, receives the response, parses HTML into the DOM and CSS into the CSSOM, runs JavaScript, then performs layout and paint.",
+          "explanation": "A strong answer is ordered and mentions caching, TLS and the rendering pipeline. For a MEAN role, add that an Angular SPA then makes API calls for data.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:1:2",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between PUT and PATCH?",
+          "answer": "PUT replaces the whole resource with the representation sent and is idempotent. PATCH applies a partial update; it is not guaranteed to be idempotent (for example an 'increment' patch).",
+          "explanation": "Interviewers look for the replace-versus-partial distinction and correct use of the word idempotent.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:1:3",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain 401 versus 403.",
+          "answer": "401 Unauthorized means the request lacks valid authentication (no token or an expired one). 403 Forbidden means the user is authenticated but not allowed to perform the action.",
+          "explanation": "Linking it to practice helps: an Angular interceptor redirects to login on 401 but shows an 'access denied' message on 403.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:1:4",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why is HTTP called stateless, and how do web apps keep users logged in?",
+          "answer": "Each request is independent; the server keeps no memory of earlier requests at the protocol level. Apps add state with session cookies (server-side session store) or tokens such as JWTs sent in a header or cookie on every request.",
+          "explanation": "Mentioning both server sessions and tokens, and that the choice affects scaling, sets up the authentication discussion later.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:1:5",
+          "day": 1,
+          "topic": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When would you add server-side rendering to an Angular application?",
+          "answer": "When first-load performance or SEO matters, such as public marketing or catalogue pages. Angular SSR renders HTML on the server and hydrates it in the browser. For logged-in dashboards, CSR is often enough.",
+          "explanation": "Good answers weigh the cost (a Node server, browser-only APIs must be guarded) against the benefit, rather than recommending SSR everywhere.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:2:1",
+          "day": 2,
+          "topic": "JavaScript Core: Types, Scope, Hoisting and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between var, let and const?",
+          "answer": "var is function-scoped, can be redeclared and is hoisted as undefined. let and const are block-scoped, cannot be redeclared in the same scope and are in the temporal dead zone until declared. const cannot be reassigned, though an object it refers to can still be mutated.",
+          "explanation": "Mention scope, hoisting, the TDZ and the const-mutation nuance; those four points separate a complete answer from a partial one.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:2:2",
+          "day": 2,
+          "topic": "JavaScript Core: Types, Scope, Hoisting and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a closure? Give a practical use.",
+          "answer": "A closure is a function bundled with references to the variables in the scope where it was created, which it can still use after that scope has returned. Uses include private state (a counter or bank account), function factories, memoisation and configured middleware.",
+          "explanation": "Interviewers want a definition plus a real use. Writing a small factory on the whiteboard is the strongest proof.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:2:3",
+          "day": 2,
+          "topic": "JavaScript Core: Types, Scope, Hoisting and Closures",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "What does this code print: console.log(typeof null, typeof [], typeof NaN)?",
+          "answer": "'object object number'. typeof null is a long-standing quirk, arrays are objects (use Array.isArray), and NaN is of type number.",
+          "explanation": "These quirks are favourite screening questions; follow up by naming the correct checks (=== null, Array.isArray, Number.isNaN).",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:2:4",
+          "day": 2,
+          "topic": "JavaScript Core: Types, Scope, Hoisting and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why might 'this' be undefined inside a method used as a callback, and how do you fix it?",
+          "answer": "Passing obj.method as a callback calls it as a plain function, so 'this' is undefined in strict mode. Fix it by wrapping in an arrow function (() => obj.method()), using obj.method.bind(obj), or defining the method as an arrow-function class field.",
+          "explanation": "This shows you understand that 'this' is set at call time; in Angular it appears with setTimeout or third-party callbacks inside components.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:2:5",
+          "day": 2,
+          "topic": "JavaScript Core: Types, Scope, Hoisting and Closures",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Can closures cause memory leaks? How?",
+          "answer": "Yes. A long-lived closure, such as an event listener or an interval callback that is never removed, keeps every captured variable reachable, including large objects or DOM nodes, so they cannot be garbage-collected. Remove listeners, clear intervals and unsubscribe when the owner is destroyed.",
+          "explanation": "Linking this to Angular (unsubscribing in ngOnDestroy or using takeUntilDestroyed) shows senior-level awareness.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:3:1",
+          "day": 3,
+          "topic": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between the spread and rest operators?",
+          "answer": "Both use three dots. Spread expands an iterable or object into elements or properties (copying, merging, passing arguments). Rest collects the remaining elements or properties into an array or object (function parameters, destructuring).",
+          "explanation": "A good answer gives one example of each, such as Math.max(...nums) and const { password, ...safe } = user.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:3:2",
+          "day": 3,
+          "topic": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Is { ...obj } a deep copy?",
+          "answer": "No. It is a shallow copy: top-level properties are copied, but nested objects and arrays are shared by reference. Use structuredClone, or nested spreads for targeted updates, when a deep copy is needed.",
+          "explanation": "This matters for immutable state: mutating a nested object after a shallow copy defeats OnPush and NgRx change detection.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:3:3",
+          "day": 3,
+          "topic": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "When would you use reduce instead of map or filter?",
+          "answer": "When the result is not an array of the same shape, for example a sum, an object keyed by ID, or groups. map is for one-to-one transformation and filter for selection; reduce accumulates any result type, and you should always pass an initial value.",
+          "explanation": "Interviewers check that you pick the most expressive method rather than using reduce for everything.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:3:4",
+          "day": 3,
+          "topic": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How do ES modules differ from CommonJS?",
+          "answer": "ES modules use static import/export, are analysed before execution (allowing tree shaking), run in strict mode and support top-level await. CommonJS uses require/module.exports, resolved at runtime synchronously. Node.js supports both, chosen by file extension or the package.json type field.",
+          "explanation": "Mentioning tree shaking and lazy loading with dynamic import() ties the answer to Angular build performance.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:3:5",
+          "day": 3,
+          "topic": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why were toSorted and toReversed added to arrays?",
+          "answer": "sort and reverse mutate the array in place, which causes bugs when the array is shared state. toSorted, toReversed, toSpliced and with return new arrays and leave the original untouched.",
+          "explanation": "Knowing recent additions signals that you keep up with the language; tie it to immutable updates in front-end state.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:4:1",
+          "day": 4,
+          "topic": "Asynchronous JavaScript and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the event loop?",
+          "answer": "It is the loop that coordinates the call stack and the callback queues. When the stack is empty it drains all microtasks, then takes the next task (timer, I/O, UI event) and runs it, repeating forever. This lets single-threaded JavaScript perform non-blocking I/O.",
+          "explanation": "Name the call stack, host APIs and both queues; a diagram on the whiteboard helps.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:4:2",
+          "day": 4,
+          "topic": "Asynchronous JavaScript and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between microtasks and macrotasks?",
+          "answer": "Macrotasks (setTimeout, setInterval, I/O, events) are taken one per loop iteration. Microtasks (promise reactions, queueMicrotask, await continuations) run in full after the current script or task, before the next macrotask and before rendering.",
+          "explanation": "Strong candidates add the starvation risk: recursively queued microtasks can block timers and painting.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:4:3",
+          "day": 4,
+          "topic": "Asynchronous JavaScript and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Does setTimeout(fn, 0) run immediately?",
+          "answer": "No. It queues fn as a task to run after at least 0 ms, once the current script and all pending microtasks have finished, and browsers may clamp nested timers to 4 ms.",
+          "explanation": "This is the standard trick question; explaining queue position, not delay, is the key.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:4:4",
+          "day": 4,
+          "topic": "Asynchronous JavaScript and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "In Node.js, what is the order of process.nextTick, Promise.then, setTimeout 0 and setImmediate called from the main module?",
+          "answer": "nextTick callbacks run first, then promise microtasks, then the timers phase and check phase. setTimeout 0 versus setImmediate from the main module is not guaranteed; inside an I/O callback setImmediate always runs first.",
+          "explanation": "Mentioning the non-determinism from the main module shows real Node.js knowledge rather than a memorised list.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "mean-stack:question:4:5",
+          "day": 4,
+          "topic": "Asynchronous JavaScript and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Your Express API becomes slow for all users while one endpoint generates a large PDF. Why, and what would you do?",
+          "answer": "PDF generation is CPU-bound and runs on the single JavaScript thread, so the event loop cannot handle other requests until it finishes. Move the work to worker_threads, a job queue with separate workers, or a separate service, and respond asynchronously.",
+          "explanation": "This scenario checks that you understand non-blocking applies to I/O, not to CPU work.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "mean-stack:assignment:1",
+          "title": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
+          "available": true,
+          "focus": "The web is a client-server system in which a browser (the client) sends HTTP requests to a server and receives HTTP responses containing HTML, JSON, images or other resources. The MEAN stack is a JavaScript-everywhere architecture for such systems: Angular runs in the browser, Node.js with Express handles HTTP on the server, and MongoDB stores data as JSON-like documents.",
+          "objectives": [
+            "Explain what happens between typing a URL and seeing a rendered page.",
+            "Describe the structure of an HTTP request and response, including methods, headers and status codes.",
+            "Map each MEAN layer (MongoDB, Express, Angular, Node.js) to its role in a request.",
+            "Distinguish client-side rendering, server-side rendering and APIs.",
+            "Parse a raw HTTP request and reason about its parts."
+          ],
+          "assignment": "The global string stdin holds a raw HTTP request: a request line, header lines, an empty line, then an optional body. Print the method, the path without the query string, the query parameters, the Host header, the Content-Type header and the body length. Header names are case-insensitive. Query values must be URL-decoded ('+' means a space). If the request line does not have exactly three parts or the third part is not an HTTP version (HTTP/ followed by a digit), print only '400 Bad Request'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "A page load involves DNS, connection and TLS setup, HTTP exchange, then parsing and rendering.",
+            "HTTP is stateless; cookies or tokens carry identity between requests.",
+            "Know the main methods, status code classes and which methods are safe or idempotent.",
+            "MEAN = Angular in the browser, Express on Node.js for the API, MongoDB for documents.",
+            "CSR, SSR with hydration and prerendering trade first-load speed, SEO and server cost.",
+            "Mention the limits of MEAN (CPU-heavy work, schema discipline) to show balanced judgement."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "mean-stack:assignment:2",
+          "title": "JavaScript Core: Types, Scope, Hoisting and Closures",
+          "available": true,
+          "focus": "JavaScript is a dynamically typed language with seven primitive types (string, number, bigint, boolean, undefined, null, symbol) and objects, which are passed around by reference. Scope decides where a variable is visible; a closure is a function together with the variables from its surrounding scope that it keeps alive after that scope has finished executing.",
+          "objectives": [
+            "Distinguish primitive and reference types and predict copying and comparison behaviour.",
+            "Explain var, let and const in terms of scope, hoisting and the temporal dead zone.",
+            "Describe how closures capture variables and use them for private state.",
+            "Explain how the value of 'this' is decided and how arrow functions differ.",
+            "Answer classic output-prediction questions on coercion and equality."
+          ],
+          "assignment": "Implement createAccount(initial) that returns an object with deposit, withdraw, getBalance and getHistory functions. The balance and history must live in closure variables, not object properties. Then process commands, one per line: 'open <name> <amount>', 'deposit <name> <amount>', 'withdraw <name> <amount>', 'balance <name>' and 'history <name>'. Print output only for balance, history and errors.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Primitives are copied by value; objects are shared by reference and compared by identity.",
+            "var is function-scoped and initialised to undefined; let and const are block-scoped with a temporal dead zone.",
+            "A closure keeps its outer variables alive and is the basis of private state and factories.",
+            "'this' depends on the call site, except in arrow functions, which inherit it lexically.",
+            "Use === and ?? to avoid surprising coercion."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "mean-stack:assignment:3",
+          "title": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
+          "available": true,
+          "focus": "ES6 (ECMAScript 2015) and the yearly releases after it added the syntax modern JavaScript and TypeScript code relies on: let/const, arrow functions, classes, template literals, destructuring, spread/rest, modules, Map/Set, promises and later async/await, optional chaining and nullish coalescing. Angular, Express and Mongoose code is written almost entirely in this style.",
+          "objectives": [
+            "Use destructuring with defaults and renaming for objects, arrays and function parameters.",
+            "Apply spread and rest syntax to copy, merge and collect values immutably.",
+            "Choose between map, filter, reduce, find, some and every for data transformations.",
+            "Explain ES modules (import/export) and how they differ from CommonJS.",
+            "Use classes, template literals, optional chaining and Map/Set where they fit."
+          ],
+          "assignment": "stdin holds a JSON array of records shaped like { name, course, score }. A missing score counts as 0 and a missing course counts as 'Unassigned' (use destructuring defaults). Group records by course and, for each course in ascending order of name (plain string comparison), print the number of records, the average score with one decimal place and the top scorer. If two students tie for the top score, choose the name that comes first in string order. If the array is empty, print 'no records'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Destructuring defaults apply only when a value is undefined.",
+            "Spread copies are shallow; nested objects remain shared.",
+            "map, filter and reduce return new values; sort, reverse and splice mutate.",
+            "ES modules are static and tree-shakeable; dynamic import() enables lazy loading.",
+            "Use Set for uniqueness and Map when keys are not simple strings or order matters."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "mean-stack:assignment:4",
+          "title": "Asynchronous JavaScript and the Event Loop",
+          "available": true,
+          "focus": "The event loop is the mechanism that lets single-threaded JavaScript perform non-blocking work. Synchronous code runs on the call stack; slow operations (timers, network, file I/O) are handed to the host environment, and their callbacks are queued. Whenever the stack is empty, the loop first drains the microtask queue (promise reactions, queueMicrotask) and then takes the next task (macrotask) such as a timer callback or an I/O event.",
+          "objectives": [
+            "Explain why JavaScript needs an event loop despite running on a single thread.",
+            "Describe the call stack, the task (macrotask) queue and the microtask queue.",
+            "Predict the output order of code mixing synchronous logs, timers and promises.",
+            "Identify callback hell and the inversion-of-control problem of callbacks.",
+            "Explain how a long synchronous task blocks rendering in the browser and requests in Node.js."
+          ],
+          "assignment": "Each input line is a statement of a script. 'sync L' logs L immediately. 'micro L' queues a microtask that logs L. 'macro D L' schedules a timer task with delay D milliseconds that logs L. A statement may contain ' then ' followed by a second statement, which is executed inside the first one's callback after it logs (for example 'macro 0 B then micro C' logs B and then queues microtask C). Use virtual time: the script runs at time 0, a timer scheduled at time t with delay D fires at t + D, and timers with the same firing time run in the order they were scheduled. After the script and after every timer task, drain the whole microtask queue. Print the logged labels in order.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "JavaScript runs one call stack; the host does the waiting and queues callbacks.",
+            "After the script and after each task, all microtasks run before the next task.",
+            "Promise reactions and await continuations are microtasks; timers and I/O callbacks are tasks.",
+            "setTimeout(fn, 0) is deferred, not immediate.",
+            "Long synchronous work blocks rendering and every other request; move it to workers.",
+            "In Node.js, process.nextTick runs before promise microtasks."
+          ]
+        },
+        {
+          "day": 5,
+          "id": "mean-stack:assignment:5",
+          "title": "Collections and iteration for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain collections and iteration for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on collections and iteration for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete collections and iteration for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "mean-stack:assignment:6",
+          "title": "Error handling for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain error handling for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on error handling for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete error handling for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "mean-stack:assignment:7",
+          "title": "Module boundaries for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain module boundaries for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on module boundaries for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete module boundaries for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "mean-stack:article:1",
+          "mean-stack:article:2",
+          "mean-stack:article:3",
+          "mean-stack:article:4"
+        ],
+        "questions": [
+          "mean-stack:question:1:1",
+          "mean-stack:question:1:2",
+          "mean-stack:question:1:3",
+          "mean-stack:question:1:4",
+          "mean-stack:question:1:5",
+          "mean-stack:question:2:1",
+          "mean-stack:question:2:2",
+          "mean-stack:question:2:3",
+          "mean-stack:question:2:4",
+          "mean-stack:question:2:5",
+          "mean-stack:question:3:1",
+          "mean-stack:question:3:2",
+          "mean-stack:question:3:3",
+          "mean-stack:question:3:4",
+          "mean-stack:question:3:5",
+          "mean-stack:question:4:1",
+          "mean-stack:question:4:2",
+          "mean-stack:question:4:3",
+          "mean-stack:question:4:4",
+          "mean-stack:question:4:5"
+        ],
+        "coding": [
+          "mean-stack:coding:1",
+          "mean-stack:coding:2",
+          "mean-stack:coding:3",
+          "mean-stack:coding:4"
+        ],
+        "assignments": [
+          "mean-stack:assignment:1",
+          "mean-stack:assignment:2",
+          "mean-stack:assignment:3",
+          "mean-stack:assignment:4",
+          "mean-stack:assignment:5",
+          "mean-stack:assignment:6",
+          "mean-stack:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Data, APIs and application workflows",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "mean-stack:assignment:8",
+          "title": "Dependency management for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain dependency management for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on dependency management for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete dependency management for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "mean-stack:assignment:9",
+          "title": "HTTP request lifecycle for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain http request lifecycle for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on http request lifecycle for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete http request lifecycle for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "mean-stack:assignment:10",
+          "title": "API contract design for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain api contract design for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on api contract design for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete api contract design for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "mean-stack:assignment:11",
+          "title": "Database modeling for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain database modeling for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on database modeling for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete database modeling for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "mean-stack:assignment:12",
+          "title": "CRUD behavior for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain crud behavior for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on crud behavior for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete crud behavior for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "mean-stack:assignment:13",
+          "title": "Authentication flow for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain authentication flow for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on authentication flow for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authentication flow for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "mean-stack:assignment:14",
+          "title": "Authorization checks for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain authorization checks for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on authorization checks for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authorization checks for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "mean-stack:assignment:8",
+          "mean-stack:assignment:9",
+          "mean-stack:assignment:10",
+          "mean-stack:assignment:11",
+          "mean-stack:assignment:12",
+          "mean-stack:assignment:13",
+          "mean-stack:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Quality, security and architecture",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "mean-stack:assignment:15",
+          "title": "Input sanitization for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain input sanitization for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on input sanitization for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete input sanitization for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "mean-stack:assignment:16",
+          "title": "State management for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain state management for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on state management for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete state management for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "mean-stack:assignment:17",
+          "title": "Component design for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain component design for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on component design for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete component design for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "mean-stack:assignment:18",
+          "title": "Form handling for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain form handling for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on form handling for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete form handling for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "mean-stack:assignment:19",
+          "title": "Loading and error states for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain loading and error states for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on loading and error states for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete loading and error states for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "mean-stack:assignment:20",
+          "title": "Unit testing for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain unit testing for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on unit testing for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete unit testing for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "mean-stack:assignment:21",
+          "title": "Integration testing for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain integration testing for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on integration testing for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete integration testing for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "mean-stack:assignment:22",
+          "title": "Debugging strategy for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain debugging strategy for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on debugging strategy for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete debugging strategy for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "mean-stack:assignment:15",
+          "mean-stack:assignment:16",
+          "mean-stack:assignment:17",
+          "mean-stack:assignment:18",
+          "mean-stack:assignment:19",
+          "mean-stack:assignment:20",
+          "mean-stack:assignment:21",
+          "mean-stack:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, portfolio and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "mean-stack:assignment:23",
+          "title": "Logging and observability for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain logging and observability for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on logging and observability for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and observability for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "mean-stack:assignment:24",
+          "title": "Performance profiling for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain performance profiling for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on performance profiling for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete performance profiling for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "mean-stack:assignment:25",
+          "title": "Accessibility checks for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain accessibility checks for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on accessibility checks for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete accessibility checks for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "mean-stack:assignment:26",
+          "title": "Configuration management for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain configuration management for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on configuration management for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration management for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "mean-stack:assignment:27",
+          "title": "Secure secrets handling for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain secure secrets handling for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on secure secrets handling for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secure secrets handling for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "mean-stack:assignment:28",
+          "title": "Deployment workflow for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain deployment workflow for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on deployment workflow for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment workflow for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "mean-stack:assignment:29",
+          "title": "Code review for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain code review for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on code review for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete code review for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "mean-stack:assignment:30",
+          "title": "Portfolio walkthrough for MongoDB, Express, Angular and Node.js",
+          "available": false,
+          "focus": "MongoDB, Express, Angular and Node.js",
+          "objectives": [
+            "Explain portfolio walkthrough for mongodb, express, angular and node.js in the context of MongoDB, Express, Angular and Node.js",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small MongoDB, Express, Angular and Node.js case study focused on portfolio walkthrough for mongodb, express, angular and node.js. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for mongodb, express, angular and node.js problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "mean-stack:assignment:23",
+          "mean-stack:assignment:24",
+          "mean-stack:assignment:25",
+          "mean-stack:assignment:26",
+          "mean-stack:assignment:27",
+          "mean-stack:assignment:28",
+          "mean-stack:assignment:29",
+          "mean-stack:assignment:30"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,551 @@
+{
+  "curriculum": "react-full-stack",
+  "summary": "Available lessons cover Scope, Closures and Functions: The JavaScript Behind React; Immutability, Spread and Destructuring; Array Methods: map, filter, reduce and Friends; ES Modules, Promises, async/await and the Event Loop.",
+  "complete": false,
+  "missingDays": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "roadmap": [
+    {
+      "day": 1,
+      "title": "Scope, Closures and Functions: The JavaScript Behind React",
+      "module": "JavaScript essentials for React",
+      "level": "Beginner"
+    },
+    {
+      "day": 2,
+      "title": "Immutability, Spread and Destructuring",
+      "module": "JavaScript essentials for React",
+      "level": "Beginner"
+    },
+    {
+      "day": 3,
+      "title": "Array Methods: map, filter, reduce and Friends",
+      "module": "JavaScript essentials for React",
+      "level": "Beginner"
+    },
+    {
+      "day": 4,
+      "title": "ES Modules, Promises, async/await and the Event Loop",
+      "module": "JavaScript essentials for React",
+      "level": "Beginner"
+    }
+  ],
+  "samples": [
+    {
+      "day": 1,
+      "title": "Scope, Closures and Functions: The JavaScript Behind React",
+      "level": "Beginner",
+      "definition": "Scope decides where a variable can be read. JavaScript uses lexical scope: a function can see the variables that existed where it was written, not where it is called. A closure is a function together with the variables from its surrounding scope that it keeps alive, so it can still read and update them after the outer function has finished running.",
+      "objectives": [
+        "Explain lexical scope and the difference between var, let and const.",
+        "Define a closure and describe what a function 'remembers' after its outer function returns.",
+        "Use closures to create private state, the same idea React hooks rely on.",
+        "Recognise the stale-closure bug and explain why it appears in React event handlers and effects.",
+        "Answer common closure interview questions, including the classic loop-with-setTimeout puzzle."
+      ],
+      "interview": [
+        {
+          "question": "What is a closure in JavaScript?",
+          "answer": "A closure is a function bundled with references to the variables in the scope where it was defined. It can read and update those variables even after the outer function has returned.",
+          "explanation": "A strong answer adds a small example (a counter factory) and stresses that the closure holds a live reference, not a snapshot copy."
+        },
+        {
+          "question": "What is the difference between var, let and const?",
+          "answer": "var is function-scoped and hoisted as undefined; let and const are block-scoped and in the temporal dead zone until declared. const prevents reassignment of the binding but does not make objects immutable.",
+          "explanation": "Interviewers often follow up with 'can you push to a const array?' (yes), so mention that const is about the binding, not the value."
+        },
+        {
+          "question": "Why does a for loop with var and setTimeout print the same number three times?",
+          "answer": "var creates a single function-scoped variable shared by all iterations. The callbacks run after the loop ends, when the shared variable already holds its final value. let creates a new binding per iteration, so each callback sees its own value.",
+          "explanation": "Mention the event loop: timers run only after the synchronous loop completes. Offering the let fix and the older IIFE fix shows depth."
+        },
+        {
+          "question": "What is a stale closure in React and how do you fix it?",
+          "answer": "It is a callback that captured state or props from an earlier render and therefore reads an outdated value, for example setInterval(() => setCount(count + 1)) inside an effect with an empty dependency array. Fix it with a functional update (setCount(c => c + 1)), by listing the value in the dependency array, or by reading the latest value from a ref.",
+          "explanation": "This connects a JavaScript fundamental to real React bugs, which is exactly what front-end interviewers want to see."
+        },
+        {
+          "question": "Can closures cause memory leaks? Give an example.",
+          "answer": "Yes. If a closure that references a large object is stored somewhere long-lived, such as a window event listener or an interval that is never cleared, the object cannot be garbage-collected. Removing listeners and clearing timers in cleanup functions prevents it.",
+          "explanation": "Link the answer to useEffect cleanup, which you will study on Day 11."
+        }
+      ],
+      "example": {
+        "title": "A counter with private state",
+        "body": "makeCounter returns three functions that share one private variable. Nothing outside can change count except through these functions, and two counters made by separate calls are independent because each call creates a new scope.",
+        "code": {
+          "language": "javascript",
+          "source": "function makeCounter(start = 0) {\n  let count = start;            // private, kept alive by the closures below\n  return {\n    increment: () => ++count,\n    decrement: () => --count,\n    value: () => count\n  };\n}\n\nconst a = makeCounter();\nconst b = makeCounter(10);\na.increment();\na.increment();\nb.decrement();\nconsole.log(a.value(), b.value()); // 2 9"
+        }
+      },
+      "practice": {
+        "title": "Counter factory with private state",
+        "statement": "Implement makeCounter(start, step) that returns inc, dec, reset and get functions sharing a private value. Then process commands. 'create <name> <start> <step>' creates a counter (print 'error: <name> exists' if the name is taken). 'inc <name>' adds step, 'dec <name>' subtracts step, 'reset <name>' returns to start, and 'get <name>' prints '<name>=<value>'. Any command on an unknown counter prints 'error: <name> not found'.",
+        "objective": "Use closures to give each counter its own private value, start and step, exactly like independent component instances keep independent state."
+      },
+      "takeaways": [
+        "JavaScript scope is lexical: decided by where code is written, not where it runs.",
+        "Prefer const, use let when reassigning, and avoid var in modern code.",
+        "A closure keeps a live reference to outer variables, not a copy of their values.",
+        "Every React render creates new closures that see that render's props and state.",
+        "Stale closures are fixed with functional state updates, correct dependencies or refs.",
+        "Long-lived closures can leak memory, so always clean up listeners and timers."
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Immutability, Spread and Destructuring",
+      "level": "Beginner",
+      "definition": "Immutability means that once a value is created it is never changed in place; to 'update' it you create a new value that contains the change. In JavaScript, primitives are already immutable, but objects and arrays are mutable, so React code treats them as immutable by convention, building new copies with spread syntax, array methods that return new arrays, or helpers such as Immer.",
+      "objectives": [
+        "Explain the difference between primitive values and object references.",
+        "Use object/array spread and destructuring to create updated copies instead of mutating.",
+        "Explain why React compares state by reference and why mutation breaks re-rendering.",
+        "Perform immutable updates on nested objects and arrays with structural sharing.",
+        "Distinguish a shallow copy from a deep copy and choose the right one."
+      ],
+      "interview": [
+        {
+          "question": "Why should you not mutate state directly in React?",
+          "answer": "React detects changes by comparing references with Object.is. Mutating keeps the same reference, so React may skip the re-render, memoised children may show stale data, and features like concurrent rendering and Strict Mode double rendering can expose inconsistent results.",
+          "explanation": "Mention reference comparison explicitly; it is the real reason, not just 'it is a rule'."
+        },
+        {
+          "question": "What is the difference between a shallow copy and a deep copy?",
+          "answer": "A shallow copy creates a new top-level object but shares nested objects with the original. A deep copy recursively copies every nested object. Spread and Object.assign are shallow; structuredClone is deep.",
+          "explanation": "Strong candidates add that deep copying all state is wasteful and breaks memoisation, so React apps copy only the changed path."
+        },
+        {
+          "question": "How do you update one item in an array held in state?",
+          "answer": "Map over the array and return a new object for the matching item while returning the others unchanged: setItems(items => items.map(i => i.id === id ? { ...i, qty: i.qty + 1 } : i)).",
+          "explanation": "Using the functional updater avoids stale state and returning untouched items keeps their references stable."
+        },
+        {
+          "question": "What does the rest pattern do in const { password, ...safeUser } = user?",
+          "answer": "It extracts password into its own variable and collects all the remaining own properties into a new object named safeUser, which is useful for removing fields before sending or rendering data.",
+          "explanation": "This also demonstrates immutable removal of a key, a common follow-up question."
+        },
+        {
+          "question": "What is structural sharing and why does it help performance?",
+          "answer": "Structural sharing means an updated state reuses every unchanged sub-object from the previous state and creates new objects only along the path to the change. Components and selectors that depend on unchanged branches see identical references and can skip work.",
+          "explanation": "Mention that Immer and Redux Toolkit produce structurally shared results automatically."
+        }
+      ],
+      "example": {
+        "title": "Updating nested state without mutation",
+        "body": "Changing the city of a user inside a profile requires new objects for the profile and the address, while the preferences object is reused as is.",
+        "code": {
+          "language": "javascript",
+          "source": "const state = {\n  user: { name: 'Ravi', address: { city: 'Pune', pin: '411001' } },\n  prefs: { theme: 'dark' }\n};\n\nconst next = {\n  ...state,\n  user: {\n    ...state.user,\n    address: { ...state.user.address, city: 'Delhi' }\n  }\n};\n\nconsole.log(state.user.address.city);   // 'Pune'  (original untouched)\nconsole.log(next.user.address.city);    // 'Delhi'\nconsole.log(next.prefs === state.prefs); // true   (shared)\nconsole.log(next.user === state.user);   // false  (copied on the path)"
+        }
+      },
+      "practice": {
+        "title": "Immutable setIn with structural sharing",
+        "statement": "Write setIn(obj, path, value) that returns a new object with the value at the dot-separated path replaced, without mutating obj. Copy arrays as arrays (numeric segments are indices) and objects as objects; create missing objects along the path. If the new value is identical (Object.is) to the existing one, return the original object unchanged. Apply all updates in order, then print which top-level keys now have a different reference from the original state, the final state as JSON, and the original state as JSON (to prove it was not mutated).",
+        "objective": "Implement an immutable nested update that copies only the path to the change and reuses everything else."
+      },
+      "takeaways": [
+        "Objects and arrays are compared by reference; mutation keeps the same reference.",
+        "React uses Object.is to decide whether state changed, so always create new objects for updates.",
+        "Use spread, map, filter and concat to build updated copies; avoid push, splice and direct assignment on state.",
+        "Spread is shallow: copy every level on the path to a nested change.",
+        "Structural sharing keeps untouched branches identical, which makes memoisation work.",
+        "Destructuring powers hook APIs and clean prop handling."
+      ]
+    },
+    {
+      "day": 3,
+      "title": "Array Methods: map, filter, reduce and Friends",
+      "level": "Beginner",
+      "definition": "Array methods are built-in functions on Array.prototype that process each element through a callback. Methods such as map, filter and reduce return new values instead of changing the original array, which lets you describe what result you want (declarative style) and fits React's rule of never mutating state.",
+      "objectives": [
+        "Use map, filter, reduce, find, some and every to transform data declaratively.",
+        "Distinguish methods that return new arrays from methods that mutate the original.",
+        "Group and aggregate data with reduce and Object.groupBy-style logic.",
+        "Use non-mutating alternatives such as toSorted, toReversed and with in React state.",
+        "Explain why rendering lists in JSX is built on map."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between map and forEach?",
+          "answer": "map returns a new array built from the callback's return values; forEach returns undefined and is used only for side effects. In JSX you must use map because you need the returned array of elements.",
+          "explanation": "Mentioning why forEach cannot render a list in JSX shows you connect the JavaScript to React."
+        },
+        {
+          "question": "How does reduce work? Write a sum and a group-by.",
+          "answer": "reduce calls the callback with (accumulator, current) for each element and passes the returned value as the next accumulator, starting from the initial value. Sum: arr.reduce((s, x) => s + x, 0). Group-by: arr.reduce((acc, x) => { (acc[x.type] ||= []).push(x); return acc; }, {}).",
+          "explanation": "Interviewers like to see the initial value and an explanation of what happens on an empty array without one (TypeError)."
+        },
+        {
+          "question": "Which array methods mutate the original array, and why does that matter in React?",
+          "answer": "push, pop, shift, unshift, splice, sort, reverse, fill and copyWithin mutate. Mutating state keeps the same reference, so React may not re-render and memoised components may show stale data. Use map, filter, slice, concat, spread or the ES2023 toSorted/toReversed/toSpliced/with methods.",
+          "explanation": "Listing the ES2023 copying methods signals up-to-date knowledge."
+        },
+        {
+          "question": "Why does [10, 9, 1].sort() return [1, 10, 9]?",
+          "answer": "Without a comparator, sort converts elements to strings and compares them by UTF-16 code units, so '10' comes before '9'. Pass (a, b) => a - b for ascending numeric order.",
+          "explanation": "A classic trick question; also note that sort mutates the array."
+        },
+        {
+          "question": "Should a filtered list be stored in state?",
+          "answer": "Usually not. Store the source list and the filter criteria, and compute the filtered list during render. Storing both duplicates data and risks them getting out of sync. If filtering is expensive, memoise it with useMemo.",
+          "explanation": "This 'derive, don't sync' principle is a common senior-level signal."
+        }
+      ],
+      "example": {
+        "title": "Cart summary with chained array methods",
+        "body": "A cart component derives everything from the items array: the visible lines, the total and whether checkout is allowed. Nothing is stored twice, so nothing can go out of sync.",
+        "code": {
+          "language": "javascript",
+          "source": "const cart = [\n  { id: 1, name: 'Keyboard', price: 1500, qty: 1, inStock: true },\n  { id: 2, name: 'Mouse', price: 600, qty: 2, inStock: true },\n  { id: 3, name: 'Monitor', price: 9000, qty: 1, inStock: false }\n];\n\nconst available = cart.filter(item => item.inStock);\nconst lines = available.map(item => `${item.name} x${item.qty}`);\nconst total = available.reduce((sum, item) => sum + item.price * item.qty, 0);\nconst canCheckout = available.length > 0 && cart.every(item => item.qty > 0);\n\nconsole.log(lines);       // ['Keyboard x1', 'Mouse x2']\nconsole.log(total);       // 2700\nconsole.log(canCheckout); // true"
+        }
+      },
+      "practice": {
+        "title": "Order analytics with map, filter and reduce",
+        "statement": "Each order has an id, customer, category, integer amount and status (delivered, pending or cancelled). Print: the number of delivered orders; the revenue of delivered orders; delivered revenue per category sorted by revenue descending (ties by name ascending); the customer with the highest delivered revenue (ties by name ascending) with their amount; and whether any order is cancelled.",
+        "objective": "Compute dashboard numbers from raw records using only declarative array methods."
+      },
+      "takeaways": [
+        "map transforms, filter selects, reduce aggregates into any shape.",
+        "Give reduce an initial value; it also defines the result type.",
+        "sort, reverse and splice mutate; prefer toSorted, toReversed, toSpliced or a spread copy for state.",
+        "Default sort compares strings; always pass a comparator for numbers.",
+        "Derive filtered lists and totals during render instead of storing them in extra state.",
+        "find returns one element, filter returns an array; some and every short-circuit."
+      ]
+    },
+    {
+      "day": 4,
+      "title": "ES Modules, Promises, async/await and the Event Loop",
+      "level": "Beginner",
+      "definition": "ES modules (import/export) are JavaScript's standard way to split code into files with explicit dependencies. Asynchronous JavaScript lets a single-threaded program start slow work, such as a network request, and continue running; the result arrives later through a promise, and the event loop schedules the callback when the call stack is empty. async/await is syntax on top of promises that makes asynchronous code read like synchronous code.",
+      "objectives": [
+        "Use named and default ES module exports and explain how bundlers use them for tree shaking.",
+        "Explain the event loop, the call stack, the microtask queue and the task (macrotask) queue.",
+        "Write asynchronous code with promises and async/await, including error handling.",
+        "Choose between Promise.all, allSettled, race and any for parallel requests.",
+        "Predict the output order of mixed synchronous, promise and timer code."
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between named and default exports?",
+          "answer": "A module can have many named exports, imported with braces and matching names, and at most one default export, imported with any name. Named exports make refactoring and auto-imports more reliable; default exports are common for a file's main component or for React.lazy targets.",
+          "explanation": "Mention that React.lazy expects a module with a default export, or a .then that maps a named export to default."
+        },
+        {
+          "question": "Explain the JavaScript event loop.",
+          "answer": "JavaScript executes on a single call stack. Asynchronous APIs hand their callbacks to queues when ready. When the stack is empty, the event loop runs all queued microtasks (promise callbacks), then takes one macrotask (such as a timer or event), and repeats, with the browser rendering between tasks.",
+          "explanation": "Strong answers state the microtask-before-macrotask rule and its practical consequence: long synchronous work blocks rendering."
+        },
+        {
+          "question": "What is the difference between Promise.all and Promise.allSettled?",
+          "answer": "Promise.all fulfils with an array of results when every promise fulfils and rejects immediately when any rejects. Promise.allSettled never rejects; it waits for all promises and returns objects with status 'fulfilled' or 'rejected' plus the value or reason.",
+          "explanation": "Give a use case for each and add that Promise.all does not cancel the other requests when it rejects; they keep running."
+        },
+        {
+          "question": "Why can't you pass an async function directly to useEffect?",
+          "answer": "useEffect expects its callback to return either nothing or a cleanup function. An async function always returns a promise, which React would treat as an invalid cleanup. Declare an async function inside the effect and call it, and use the cleanup to abort or ignore the request.",
+          "explanation": "Mentioning race conditions and AbortController shows production experience."
+        },
+        {
+          "question": "How would you add a timeout to a fetch request?",
+          "answer": "Pass an AbortSignal: fetch(url, { signal: AbortSignal.timeout(5000) }), or create an AbortController and call abort() from a setTimeout. Promise.race against a rejecting timer also works but does not cancel the underlying request.",
+          "explanation": "The distinction between cancelling the request and merely ignoring it is what interviewers look for."
+        }
+      ],
+      "example": {
+        "title": "Loading two resources in parallel with error handling",
+        "body": "The profile and orders requests do not depend on each other, so they start together. Promise.all waits for both, and a single try/catch handles network errors and non-OK HTTP responses.",
+        "code": {
+          "language": "javascript",
+          "source": "// api.js\nexport async function getJSON(url, signal) {\n  const res = await fetch(url, { signal });\n  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);\n  return res.json();\n}\n\n// dashboard.js\nimport { getJSON } from './api.js';\n\nexport default async function loadDashboard(userId, signal) {\n  try {\n    const [profile, orders] = await Promise.all([\n      getJSON(`/api/users/${userId}`, signal),\n      getJSON(`/api/users/${userId}/orders`, signal)\n    ]);\n    return { profile, orders };\n  } catch (err) {\n    if (err.name === 'AbortError') return null; // component unmounted\n    throw err;\n  }\n}"
+        }
+      },
+      "practice": {
+        "title": "Simulate the promise combinators",
+        "statement": "You are given tasks, each with a name, a duration in milliseconds and whether it succeeds (ok) or fails (fail). All tasks start at time 0. For each query (all, allSettled, race or any) print what the combinator would settle with and when. Tasks finishing at the same time settle in input order. Formats: all -> 'fulfilled at <max>: [n1, n2, ...]' (input order) or 'rejected at <t>: <first failing name>'; allSettled -> 'settled at <max>: n1=fulfilled, n2=rejected, ...'; race -> '<fulfilled|rejected> at <t>: <name>' for the first to settle; any -> 'fulfilled at <t>: <name>' for the first success or 'rejected at <max>: AggregateError'. Prefix each line with the query name and ': '.",
+        "objective": "Reason precisely about how Promise.all, allSettled, race and any settle, including timing and failure behaviour."
+      },
+      "takeaways": [
+        "Named exports are explicit and tree-shakeable; default exports allow any import name.",
+        "Dynamic import() returns a promise and powers lazy loading.",
+        "Order: synchronous code, then all microtasks, then the next macrotask.",
+        "async functions always return promises; await rejections throw and can be caught.",
+        "fetch does not reject on HTTP errors; check response.ok.",
+        "Use all for fail-fast, allSettled for every outcome, race for timeouts and any for the first success."
+      ]
+    }
+  ],
+  "firstLesson": {
+    "day": 1,
+    "title": "Scope, Closures and Functions: The JavaScript Behind React",
+    "module": "JavaScript essentials for React",
+    "level": "Beginner",
+    "objectives": [
+      "Explain lexical scope and the difference between var, let and const.",
+      "Define a closure and describe what a function 'remembers' after its outer function returns.",
+      "Use closures to create private state, the same idea React hooks rely on.",
+      "Recognise the stale-closure bug and explain why it appears in React event handlers and effects.",
+      "Answer common closure interview questions, including the classic loop-with-setTimeout puzzle."
+    ],
+    "definition": "Scope decides where a variable can be read. JavaScript uses lexical scope: a function can see the variables that existed where it was written, not where it is called. A closure is a function together with the variables from its surrounding scope that it keeps alive, so it can still read and update them after the outer function has finished running.",
+    "theory": [
+      {
+        "heading": "Lexical scope and block scope",
+        "body": "Every function creates a new scope, and with let and const every block ({ ... }) does too. When JavaScript looks up a name it searches the current scope, then the enclosing one, and so on up to the global scope; this chain is fixed by where the code is written. var is function-scoped and hoisted with the value undefined, which caused many bugs; let and const are block-scoped and sit in a 'temporal dead zone' until their declaration runs. Modern React code uses const by default and let only when a variable must be reassigned.",
+        "points": [
+          "var: function scope, hoisted as undefined, can be redeclared.",
+          "let: block scope, can be reassigned, cannot be read before its declaration.",
+          "const: block scope, cannot be reassigned (the object it points to can still be mutated).",
+          "Lookup goes outward through enclosing scopes, never inward."
+        ]
+      },
+      {
+        "heading": "What a closure is",
+        "body": "When an inner function refers to a variable of an outer function, the engine keeps that variable alive as long as the inner function exists. The inner function 'closes over' the variable. This is not a copy of the value: it is a live reference to the binding, so updates made by one closure are visible to every other closure that shares the same scope.",
+        "points": [
+          "Closures are created every time a function is created, not only when it is returned.",
+          "Each call to the outer function creates a fresh set of variables, so two counters do not share state.",
+          "Closures enable data privacy: the variable cannot be reached except through the returned functions."
+        ]
+      },
+      {
+        "heading": "Why closures matter in React",
+        "body": "A function component is just a function that runs on every render. Event handlers, effect callbacks and callbacks passed to children are closures created during that render, so they see the props and state of that specific render. This is why React feels predictable, and also why a handler created in an old render can read an old value: the 'stale closure' problem. useState itself is built on the same idea: React stores state outside your function and hands each render a snapshot.",
+        "points": [
+          "Each render has its own props, state and handlers (a snapshot).",
+          "A stale closure reads values from an earlier render, often inside setInterval or an effect with missing dependencies.",
+          "Fixes: functional updates (setCount(c => c + 1)), correct dependency arrays, or a ref for the latest value."
+        ]
+      },
+      {
+        "heading": "Arrow functions and this",
+        "body": "Arrow functions do not have their own this, arguments or prototype; they use this from the enclosing scope. In class components developers bound methods or used arrow class fields to keep this pointing at the component. Function components avoid this entirely, which is one reason closures replaced this-based patterns in modern React.",
+        "points": [
+          "Arrow functions are concise and ideal for callbacks such as items.map(item => ...).",
+          "Regular functions get this from how they are called; arrows take it from where they are defined."
+        ]
+      },
+      {
+        "heading": "Costs and pitfalls",
+        "body": "Closures keep their captured variables in memory, so a long-lived closure (for example a listener that is never removed) can keep large objects alive and cause leaks. In React, creating new closures on every render is normally cheap; it only matters when a new function identity breaks memoisation of a child, which is what useCallback addresses later in the course.",
+        "points": [
+          "Remove event listeners and clear timers in cleanup functions.",
+          "New function identity each render is fine unless a memoised child or a dependency array depends on it."
+        ]
+      }
+    ],
+    "example": {
+      "title": "A counter with private state",
+      "body": "makeCounter returns three functions that share one private variable. Nothing outside can change count except through these functions, and two counters made by separate calls are independent because each call creates a new scope.",
+      "code": {
+        "language": "javascript",
+        "source": "function makeCounter(start = 0) {\n  let count = start;            // private, kept alive by the closures below\n  return {\n    increment: () => ++count,\n    decrement: () => --count,\n    value: () => count\n  };\n}\n\nconst a = makeCounter();\nconst b = makeCounter(10);\na.increment();\na.increment();\nb.decrement();\nconsole.log(a.value(), b.value()); // 2 9"
+      }
+    },
+    "use_cases": [
+      {
+        "title": "React hooks",
+        "description": "useState, useEffect and custom hooks rely on functions that capture the props and state of the render in which they were created."
+      },
+      {
+        "title": "Event handlers",
+        "description": "onClick={() => removeItem(item.id)} closes over item, so each button knows which item it belongs to."
+      },
+      {
+        "title": "Debounce and throttle",
+        "description": "Utility functions keep the timer id in a closure so repeated calls can cancel the previous timer."
+      },
+      {
+        "title": "Module privacy",
+        "description": "Factory functions and modules hide internal variables and expose only a small public API."
+      },
+      {
+        "title": "Memoisation",
+        "description": "A memoize helper stores its cache in a closure so that results persist between calls without a global variable."
+      }
+    ],
+    "demonstration": {
+      "description": "The classic interview puzzle: the same loop prints different results with var and let. With var there is one shared binding that has reached 3 when the timers fire; with let each iteration gets a fresh binding that each callback closes over.",
+      "code": {
+        "language": "javascript",
+        "source": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log('var', i), 0);\n}\nfor (let j = 0; j < 3; j++) {\n  setTimeout(() => console.log('let', j), 0);\n}"
+      },
+      "output": "var 3\nvar 3\nvar 3\nlet 0\nlet 1\nlet 2"
+    },
+    "takeaways": [
+      "JavaScript scope is lexical: decided by where code is written, not where it runs.",
+      "Prefer const, use let when reassigning, and avoid var in modern code.",
+      "A closure keeps a live reference to outer variables, not a copy of their values.",
+      "Every React render creates new closures that see that render's props and state.",
+      "Stale closures are fixed with functional state updates, correct dependencies or refs.",
+      "Long-lived closures can leak memory, so always clean up listeners and timers."
+    ],
+    "interview": [
+      {
+        "question": "What is a closure in JavaScript?",
+        "answer": "A closure is a function bundled with references to the variables in the scope where it was defined. It can read and update those variables even after the outer function has returned.",
+        "explanation": "A strong answer adds a small example (a counter factory) and stresses that the closure holds a live reference, not a snapshot copy."
+      },
+      {
+        "question": "What is the difference between var, let and const?",
+        "answer": "var is function-scoped and hoisted as undefined; let and const are block-scoped and in the temporal dead zone until declared. const prevents reassignment of the binding but does not make objects immutable.",
+        "explanation": "Interviewers often follow up with 'can you push to a const array?' (yes), so mention that const is about the binding, not the value."
+      },
+      {
+        "question": "Why does a for loop with var and setTimeout print the same number three times?",
+        "answer": "var creates a single function-scoped variable shared by all iterations. The callbacks run after the loop ends, when the shared variable already holds its final value. let creates a new binding per iteration, so each callback sees its own value.",
+        "explanation": "Mention the event loop: timers run only after the synchronous loop completes. Offering the let fix and the older IIFE fix shows depth."
+      },
+      {
+        "question": "What is a stale closure in React and how do you fix it?",
+        "answer": "It is a callback that captured state or props from an earlier render and therefore reads an outdated value, for example setInterval(() => setCount(count + 1)) inside an effect with an empty dependency array. Fix it with a functional update (setCount(c => c + 1)), by listing the value in the dependency array, or by reading the latest value from a ref.",
+        "explanation": "This connects a JavaScript fundamental to real React bugs, which is exactly what front-end interviewers want to see."
+      },
+      {
+        "question": "Can closures cause memory leaks? Give an example.",
+        "answer": "Yes. If a closure that references a large object is stored somewhere long-lived, such as a window event listener or an interval that is never cleared, the object cannot be garbage-collected. Removing listeners and clearing timers in cleanup functions prevents it.",
+        "explanation": "Link the answer to useEffect cleanup, which you will study on Day 11."
+      }
+    ],
+    "practice": {
+      "kind": "coding",
+      "title": "Counter factory with private state",
+      "difficulty": "Basic",
+      "objective": "Use closures to give each counter its own private value, start and step, exactly like independent component instances keep independent state.",
+      "statement": "Implement makeCounter(start, step) that returns inc, dec, reset and get functions sharing a private value. Then process commands. 'create <name> <start> <step>' creates a counter (print 'error: <name> exists' if the name is taken). 'inc <name>' adds step, 'dec <name>' subtracts step, 'reset <name>' returns to start, and 'get <name>' prints '<name>=<value>'. Any command on an unknown counter prints 'error: <name> not found'.",
+      "language": "javascript",
+      "input_format": "First line: N, the number of commands. Next N lines: one command each.",
+      "output_format": "One line for every get command and every error, in order.",
+      "example": {
+        "input": "6\ncreate a 0 1\ncreate b 10 5\ninc a\ninc a\ndec b\nget a\n",
+        "output": "a=2"
+      },
+      "constraints": [
+        "1 <= N <= 1000.",
+        "start and step are integers (step may be negative).",
+        "Names are single words without spaces."
+      ],
+      "starter": "function makeCounter(start, step) {\n  // TODO: keep a private value and return { inc, dec, reset, get }\n}\n\nconst lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst counters = new Map();\nconst out = [];\n// TODO: process each command\nconsole.log(out.join('\\n'));\n",
+      "solution": "function makeCounter(start, step) {\n  let value = start;\n  return {\n    inc: () => { value += step; },\n    dec: () => { value -= step; },\n    reset: () => { value = start; },\n    get: () => value\n  };\n}\n\nconst lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst counters = new Map();\nconst out = [];\nfor (let i = 1; i <= n; i++) {\n  const [cmd, name, a, b] = lines[i].trim().split(/\\s+/);\n  if (cmd === 'create') {\n    if (counters.has(name)) { out.push('error: ' + name + ' exists'); continue; }\n    counters.set(name, makeCounter(Number(a), Number(b)));\n    continue;\n  }\n  const counter = counters.get(name);\n  if (!counter) { out.push('error: ' + name + ' not found'); continue; }\n  if (cmd === 'get') out.push(name + '=' + counter.get());\n  else counter[cmd]();\n}\nconsole.log(out.join('\\n'));\n",
+      "explanation": [
+        "makeCounter declares value with let; the four returned arrow functions close over it, so it stays private and alive.",
+        "Each create call runs makeCounter again, producing a fresh scope, so counters never share values.",
+        "reset works because start is also captured by the closure.",
+        "The command loop looks up the counter by name and calls the matching method, printing only for get and errors."
+      ],
+      "tests": [
+        {
+          "input": "6\ncreate a 0 1\ncreate b 10 5\ninc a\ninc a\ndec b\nget a\n",
+          "output": "a=2"
+        },
+        {
+          "input": "7\ncreate a 0 1\ncreate b 10 5\ninc a\ndec b\ndec b\nget a\nget b\n",
+          "output": "a=1\nb=0"
+        },
+        {
+          "input": "6\ncreate x 3 2\ninc x\ninc x\nreset x\ninc x\nget x\n",
+          "output": "x=5"
+        },
+        {
+          "input": "4\nget ghost\ncreate a 1 1\ncreate a 5 5\nget a\n",
+          "output": "error: ghost not found\nerror: a exists\na=1"
+        },
+        {
+          "input": "4\ncreate neg 0 -3\ninc neg\ninc neg\nget neg\n",
+          "output": "neg=-6"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "type": "concept",
+        "question": "What does a JavaScript closure capture from its outer scope?",
+        "options": [
+          "Live references to the outer variables",
+          "Only the global variables",
+          "Nothing; closures only work in classes",
+          "A frozen copy of each variable's value"
+        ],
+        "answer": 0,
+        "explanation": "A closure keeps live bindings. If the outer variable changes, the closure sees the new value."
+      },
+      {
+        "type": "output",
+        "question": "What does this code print?",
+        "code": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
+        "options": [
+          "3 3 3",
+          "undefined three times",
+          "0 1 2",
+          "0 0 0"
+        ],
+        "answer": 0,
+        "explanation": "var gives one shared binding. The timers run after the loop finishes, when i is 3."
+      },
+      {
+        "type": "scenario",
+        "question": "Inside useEffect(() => { const id = setInterval(() => setCount(count + 1), 1000); return () => clearInterval(id); }, []), the count goes to 1 and stops. Why?",
+        "options": [
+          "The cleanup function runs every second",
+          "The interval callback closes over count from the first render, which is always 0",
+          "setInterval does not work inside React",
+          "setCount is asynchronous and drops updates"
+        ],
+        "answer": 1,
+        "explanation": "The empty dependency array means the effect, and its closure over count = 0, is created once. Use setCount(c => c + 1) instead."
+      },
+      {
+        "type": "code",
+        "question": "Which statement about const is correct?",
+        "code": "const list = [1, 2];\nlist.push(3);",
+        "options": [
+          "It throws a TypeError because list is const",
+          "It silently ignores the push",
+          "It creates a new array",
+          "It works: const prevents reassignment, not mutation"
+        ],
+        "answer": 3,
+        "explanation": "const fixes the binding. The array object can still be mutated, which is why React relies on immutability by convention, not on const."
+      },
+      {
+        "type": "concept",
+        "question": "Why are two counters created by separate calls to makeCounter() independent?",
+        "options": [
+          "Because closures only store numbers",
+          "Because each call creates a new scope with its own variables",
+          "Because the counters are stored in different files",
+          "Because JavaScript copies functions when they are returned"
+        ],
+        "answer": 1,
+        "explanation": "Every invocation of the outer function creates fresh local variables, so each returned closure set has its own state."
+      }
+    ]
+  }
+}

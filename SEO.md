@@ -1,3 +1,13 @@
+# Current SEO setup ? 11 November 2026
+
+The Search Console entry point is **https://codinghubs.in/sitemap-index.xml**, after the local changes are deployed. This master index references the existing static sitemap, the CMS sitemap and the shop sitemap. robots.txt now advertises the master index. Existing child sitemap URLs remain supported.
+
+Current local validation: 87 canonical static URLs, 15 preferred source-backed prep guides, no private/alias/thin-guide URLs in that static sitemap. Published CMS/shop pages canonicalized to another URL are excluded from their dynamic sitemaps. Do not infer production deployment from a local build.
+
+See [Search Console setup](docs/seo/search-console-setup.md), [implementation report](docs/seo/implementation-report.md), [course inventory](docs/seo/course-page-inventory.csv) and [content gaps](docs/seo/content-specifications.md). The earlier audit below is historical; its page counts, robots rules and Lighthouse results are not current measurements. Sitemap submission helps discovery and does not guarantee indexing or rankings.
+
+---
+
 # SEO notes — Coding Hubs School of AI
 
 Last audited: 2026-10-26. Scope: what can be verified from the repository, the production site over plain HTTP,
@@ -104,7 +114,7 @@ need a human editorial review for repetition and factual accuracy.
 ## After deploy: Search Console steps (need account access)
 
 1. Verify `https://codinghubs.in/` as a **Domain** property (DNS TXT) so `www` and `admin` are covered.
-2. Submit `https://codinghubs.in/sitemap.xml`.
+2. Submit `https://codinghubs.in/sitemap-index.xml` after deployment; it lists the static, content and shop child sitemaps.
 3. Use URL Inspection on `/`, `/program/ai-for-all`, `/locations/` and two location pages: confirm "URL is on Google"
    eligibility, the user-declared canonical, and that the rendered HTML contains the article.
 4. Watch Pages → "Why pages aren't indexed" for: *Duplicate, Google chose different canonical* (location pages),
@@ -119,3 +129,9 @@ need a human editorial review for repetition and factual accuracy.
   no clicks (title/description test).
 * Monthly: enquiry volume by `source_page` in the admin panel (`/admin-panel`) — location pages store their path as the lead source.
 * After every content or template change: `npm run build && npm run validate`.
+
+## Ongoing SEO, AEO and GEO updates
+
+Update search readiness alongside each new public page: useful direct answers, accurate source attribution, internal links, unique metadata, canonical/indexability and structured data matching visible content. Include public learning routes in prerendering so the sitemap regenerates with the build. Preserve private/account routes as noindex.
+
+All 43 course options now have four-level roadmaps. The build writes 1,702 pages with 318 indexable canonical URLs; incomplete study briefs and shared-curriculum aliases stay out of the sitemap. See the [all-course rollout report](docs/learning/all-course-roadmaps.md) and [GenAI search-readiness report](docs/seo/genai-roadmap-search-readiness.md) for implementation details and content limits. Build regenerates roadmap data; validation checks source counts, question discoverability, metadata and sitemap gates. These are local changes pending deployment. Neither sitemap submission nor AEO/GEO work guarantees indexing, rankings or AI citations.

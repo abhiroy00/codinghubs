@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'apps.shop',
     'apps.jobs',
     'apps.aicoach',
+    'apps.gigs',
 ]
 
 MIDDLEWARE = [
@@ -123,6 +124,8 @@ REST_FRAMEWORK = {
         'quiz_attempt': '60/hour',
         'ai_burst': '10/min',
         'resume_upload': '10/hour',
+        'gigs_write': '20/hour',
+        'gigs_report': '5/hour',
     },
 }
 
@@ -197,3 +200,6 @@ import sys  # noqa: E402
 
 if 'test' in sys.argv:  # fast password hashing for the test suite only
     PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
+
+# Staged marketplace pilot. Keep disabled until moderation and launch policies are ready.
+GIGS_ENABLED = config('GIGS_ENABLED', default=False, cast=bool)

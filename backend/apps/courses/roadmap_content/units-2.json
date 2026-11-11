@@ -1,0 +1,634 @@
+[
+  {
+    "slug": "transformer-blocks",
+    "title": "Transformer blocks and residual streams",
+    "concept": "A transformer combines attention, position information, feed-forward transformations and normalization. Residual connections carry representations between sublayers. A decoder used for autoregressive generation applies causal constraints so a position cannot use future tokens during next-token prediction.",
+    "mechanism": "Trace tensor shapes through embeddings, attention projections, residual additions and the feed-forward network. Residual additions require compatible shapes. Normalization placement and implementation details vary by architecture, so inspect the actual model instead of treating one schematic as universal.",
+    "boundary": "Removing recurrence does not remove sequential dependencies at generation time. Training can process many positions in parallel while ordinary autoregressive decoding still depends on previously emitted tokens.",
+    "example": "A toy residual block adds a transformed feature vector to its input and checks dimensions before addition.",
+    "application": "Use block-level reasoning to inspect model configurations and distinguish training parallelism from inference behavior.",
+    "angles": [
+      {
+        "question": "What does a residual connection carry through a transformer block?",
+        "answer": "It adds a compatible sublayer transformation to an existing representation. It preserves an update path rather than replacing the representation with an unrelated feature vector."
+      },
+      {
+        "question": "Why is attention followed by a position-wise feed-forward transformation?",
+        "answer": "Attention mixes information across positions, while the feed-forward component transforms features within each position. They perform complementary operations rather than redundant copies of one mechanism."
+      },
+      {
+        "question": "Does parallel training mean all output tokens can be decoded independently?",
+        "answer": "No: ordinary autoregressive decoding conditions later outputs on earlier generated tokens. Teacher-forced training and sequential inference have different dependency structures."
+      },
+      {
+        "question": "How would you trace shapes through a small transformer block?",
+        "answer": "Write batch, sequence and hidden dimensions at each operation. Check projection dimensions, attention axes and residual compatibility before debugging numerical values."
+      },
+      {
+        "question": "Implement a residual-vector addition with a shape check.",
+        "answer": "Require equal feature lengths and add corresponding values. Reject incompatible dimensions explicitly so an implementation cannot silently truncate a residual stream."
+      },
+      {
+        "question": "How would you separate model and serving concerns in an architecture diagram?",
+        "answer": "Keep transformer computation distinct from tokenization, scheduling, caching and output validation. Explain how serving controls manage the model without implying they alter its learned architecture."
+      },
+      {
+        "question": "A long prompt makes prefill expensive while generation length is unchanged. Why?",
+        "answer": "More prompt positions increase work before the first output token. Inspect attention implementation and sequence lengths instead of assuming output-token count alone determines latency."
+      },
+      {
+        "question": "A residual addition fails after changing hidden size. What should be inspected?",
+        "answer": "Trace the projection and sublayer output dimensions and verify configuration compatibility. Shape errors should be resolved before considering optimizer or generation settings."
+      },
+      {
+        "question": "How would you explain a transformer block in a technical screen?",
+        "answer": "Describe data flow, dimensions and causal constraints with a small example. Avoid reciting component names without showing their distinct roles."
+      },
+      {
+        "question": "Which evidence supports a transformer-architecture project walkthrough?",
+        "answer": "Provide a block diagram, shape assertions and a reproducible forward pass. State where the toy implementation omits optimized kernels or real checkpoint behavior."
+      }
+    ],
+    "code": "def residual(x,update):\n    if len(x)!=len(update):raise ValueError('shape mismatch')\n    return [a+b for a,b in zip(x,update)]\nassert residual([],[])==[]\nprint(residual([1,2,3],[0.5,-1,2]))\n",
+    "expected": "[1.5, 1, 5]",
+    "sources": [
+      "attention",
+      "llama"
+    ],
+    "tags": [
+      "transformers",
+      "residuals",
+      "feed-forward",
+      "normalization"
+    ]
+  },
+  {
+    "slug": "qkv-attention",
+    "title": "Query, key, value and scaled attention",
+    "concept": "Queries represent what a position seeks; keys support matching; values provide content to combine. Scaled dot-product attention turns query-key compatibility into normalized weights and uses them to aggregate values. Attention weights are contextual computation, not a universal explanation of model decisions.",
+    "mechanism": "Compute query-key dot products, scale by the square root of key dimension, apply masks before softmax and multiply the resulting weights by values. Track the axes explicitly: score matrices relate query positions to key positions, while value width determines the resulting feature width.",
+    "boundary": "Masking after normalization can leave invalid probability mass or require renormalization. Entirely masked rows need an explicit implementation policy.",
+    "example": "A two-key example computes a scalar weighted value and verifies that weights sum to one before aggregation.",
+    "application": "Use an explicit attention calculation to diagnose masking, shape and numerical bugs before comparing optimized implementations.",
+    "angles": [
+      {
+        "question": "What different roles do queries, keys and values play?",
+        "answer": "Queries and keys compute compatibility; values supply the information aggregated by the resulting weights. A matching score is not itself the output representation."
+      },
+      {
+        "question": "Why divide dot-product scores by the square root of key width?",
+        "answer": "The scaling moderates score magnitudes under the usual analysis and helps avoid overly saturated softmax behavior. It does not replace stable numerical normalization."
+      },
+      {
+        "question": "Why are attention weights not automatically a faithful explanation?",
+        "answer": "They describe one intermediate mixing operation in a larger nonlinear computation. Test explanation claims rather than equating a high attention weight with causal importance."
+      },
+      {
+        "question": "How would you implement attention over two evidence vectors?",
+        "answer": "Validate dimensions, compute scaled scores, normalize safely and form a weighted value sum. Include a case where a mask removes one candidate entirely."
+      },
+      {
+        "question": "Calculate a one-query, two-key attention-weighted scalar value.",
+        "answer": "Apply stable softmax to the scaled dot products and combine the scalar values. Check normalization and compare the result with the expected weighted range."
+      },
+      {
+        "question": "Where do permission filters belong relative to retrieved attention context?",
+        "answer": "Enforce document authorization before evidence enters the prompt or model context. Attention masking inside a model is not a substitute for user-specific access control."
+      },
+      {
+        "question": "A query attends to padding tokens. What is the consequence?",
+        "answer": "Padding can consume weight and contaminate aggregation. Inspect the attention mask and its broadcasting shape rather than only checking that token IDs are padded."
+      },
+      {
+        "question": "Every score in a row becomes negative infinity. What must the implementation handle?",
+        "answer": "An entirely masked row can produce undefined normalization. Define the behavior and test it explicitly instead of letting NaNs propagate through the model."
+      },
+      {
+        "question": "How would you derive scaled attention on a whiteboard?",
+        "answer": "Start with dimensions, compute compatibility and normalization, then aggregate values. Explain the causal or padding mask before showing the final output."
+      },
+      {
+        "question": "How would you demonstrate attention implementation correctness?",
+        "answer": "Use tiny deterministic cases, masks and extreme scores, then compare with a trusted implementation. Do not claim a toy calculation matches a complete production transformer."
+      }
+    ],
+    "code": "import math\nq=[1,0];keys=[[1,0],[0,1]];values=[10,20]\nscores=[sum(a*b for a,b in zip(q,k))/math.sqrt(len(q)) for k in keys]\nweights=[math.exp(s-max(scores)) for s in scores]\nweights=[x/sum(weights) for x in weights]\nassert abs(sum(weights)-1)<1e-12\nprint(round(sum(w*v for w,v in zip(weights,values)),3))\n",
+    "expected": "13.302",
+    "sources": [
+      "attention"
+    ],
+    "tags": [
+      "attention",
+      "QKV",
+      "softmax",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "heads-masks-kv",
+    "title": "Attention heads, causal masks and KV sharing",
+    "concept": "Multi-head attention uses several learned projections to represent different interaction patterns. Causal masks prevent a decoder position from reading future positions. Multi-query and grouped-query variants share key/value representations across query heads in different ways to reduce cache and bandwidth requirements.",
+    "mechanism": "Distinguish query-head count from key/value-head count when estimating inference state. Build masks from the actual query/key position convention, especially when cached prefixes change offsets. Verify that shared representations satisfy the architecture configuration rather than copying assumptions from a standard multi-head diagram.",
+    "boundary": "More heads do not guarantee better task quality. A valid-looking triangular mask can still be wrong when its coordinates ignore cached-prefix positions.",
+    "example": "A toy causal mask for three positions allows only the current and earlier keys. A separate accounting exercise compares key/value head counts.",
+    "application": "Reason about cache size and causal correctness when serving decoder models with different attention architectures.",
+    "angles": [
+      {
+        "question": "How do attention heads differ from independent full models?",
+        "answer": "Heads are projections within a shared model block, not separately trained end-to-end models. Their outputs are combined and transformed by later operations."
+      },
+      {
+        "question": "What does a causal mask prohibit in teacher-forced training?",
+        "answer": "It prevents a position from using future input tokens when predicting the next token. This preserves the autoregressive dependency despite parallel position computation."
+      },
+      {
+        "question": "How does grouped-query attention change KV-cache accounting?",
+        "answer": "Several query heads share a smaller set of key/value heads. Cache estimates must use the KV-head count rather than assuming one pair for every query head."
+      },
+      {
+        "question": "How would you test causal attention with a cached prefix?",
+        "answer": "Construct cases with known absolute position offsets and verify every permitted key. A mask correct for an uncached square matrix may be wrong during incremental decoding."
+      },
+      {
+        "question": "Build a lower-triangular causal visibility matrix.",
+        "answer": "Allow a key only when its position is no later than the query position. Include empty input and inspect boundary rows for off-by-one mistakes."
+      },
+      {
+        "question": "Which model metadata belongs in a cache-capacity planner?",
+        "answer": "Record layers, KV heads, head dimension, element width and active token counts. Query-head count alone cannot estimate all model cache variants accurately."
+      },
+      {
+        "question": "A cached decoder sees future tokens in a batch. What is at risk?",
+        "answer": "Evaluation becomes contaminated and generation semantics change. Verify position offsets and mask broadcasting before interpreting unusually good model scores."
+      },
+      {
+        "question": "Why can using query-head count overestimate KV memory?",
+        "answer": "Grouped or multi-query attention may store fewer KV heads. Read the actual model configuration and distinguish stored states from query projections."
+      },
+      {
+        "question": "How would you discuss GQA trade-offs without claiming free optimization?",
+        "answer": "Describe reduced state and bandwidth requirements, then note architecture and quality dependencies. Benchmark the actual model and workload instead of promising a universal gain."
+      },
+      {
+        "question": "What should a causal-mask mini-project include?",
+        "answer": "Show position conventions, cached and uncached cases and visibility assertions. State that mask correctness is separate from model quality or optimized kernel performance."
+      }
+    ],
+    "code": "def causal(n):\n    if n<0:raise ValueError('length')\n    return [[int(key<=query) for key in range(n)] for query in range(n)]\nassert causal(0)==[]\nprint(causal(3))\n",
+    "expected": "[[1, 0, 0], [1, 1, 0], [1, 1, 1]]",
+    "sources": [
+      "attention",
+      "llama",
+      "nim"
+    ],
+    "tags": [
+      "multi-head",
+      "GQA",
+      "causal masks",
+      "KV cache"
+    ]
+  },
+  {
+    "slug": "positions-rope",
+    "title": "Position information and RoPE",
+    "concept": "Attention without position information does not inherently encode the order of input tokens. Transformers add or otherwise incorporate position signals. Rotary position embeddings apply position-dependent rotations to query/key components, making relative position differences influence their dot products.",
+    "mechanism": "Track position indices through prompt formatting, padding and cache reuse. In a two-dimensional rotary pair, a shared rotation preserves a vector norm; differing rotations change relative alignment. Real implementations distribute frequencies over pairs and may use architecture-specific scaling choices.",
+    "boundary": "Increasing a configuration limit does not prove reliable long-context behavior. Position extrapolation, model training distribution and the serving implementation must be evaluated together.",
+    "example": "A two-dimensional toy rotation checks norm preservation and a right-angle rotation of a unit vector.",
+    "application": "Inspect rotary position handling when incremental decoding or long-context behavior differs from a trusted baseline.",
+    "angles": [
+      {
+        "question": "Why does token order need an explicit signal in a transformer?",
+        "answer": "The attention interaction alone lacks a built-in sequence-order convention. Position information lets otherwise similar token sets produce order-sensitive representations."
+      },
+      {
+        "question": "What does a rotary position transformation change in queries and keys?",
+        "answer": "It rotates paired features according to position. Their relative rotations influence compatibility while preserving the norm within each rotary pair."
+      },
+      {
+        "question": "Does enlarging max position configuration guarantee long-context quality?",
+        "answer": "No: trained behavior and numerical implementation still matter. Evaluate long-distance retrieval and task quality rather than inferring capability from a larger number."
+      },
+      {
+        "question": "How would you test position handling during incremental generation?",
+        "answer": "Compare cached and uncached outputs with identical tokens and absolute positions. Include padding and prefix offsets that expose indexing errors."
+      },
+      {
+        "question": "Implement a two-dimensional rotation and check its norm.",
+        "answer": "Apply the sine-cosine rotation matrix and verify length preservation within floating-point tolerance. Use zero and right-angle cases to make the result interpretable."
+      },
+      {
+        "question": "Where should position-scaling configuration be versioned?",
+        "answer": "Keep it with model and tokenizer configuration and serving code. Changes can alter outputs even when checkpoint weights remain unchanged."
+      },
+      {
+        "question": "A model works on short prompts but fails with long prefills. What should be examined?",
+        "answer": "Inspect supported context behavior, position indices and scaling settings alongside retrieval placement. Separate numerical or indexing defects from trained length limitations."
+      },
+      {
+        "question": "Cached and uncached generation diverge after a prefix. What bug is plausible?",
+        "answer": "The cached path may restart or misadvance positions. Verify that cached tokens and new queries use the same absolute position convention."
+      },
+      {
+        "question": "How would you explain RoPE without overclaiming extrapolation?",
+        "answer": "Use a small rotation example and distinguish relative alignment from guaranteed length generalization. State which behavior requires empirical model evaluation."
+      },
+      {
+        "question": "What should a position-encoding exploration report include?",
+        "answer": "Provide deterministic rotations, position-offset checks and observed limits. Label toy examples clearly instead of implying they reproduce full model behavior."
+      }
+    ],
+    "code": "import math\ndef rotate(x,y,angle):\n    return x*math.cos(angle)-y*math.sin(angle),x*math.sin(angle)+y*math.cos(angle)\nx,y=rotate(1,0,math.pi/2)\nassert abs(x*x+y*y-1)<1e-12\nprint(round(x,5),round(y,5))\n",
+    "expected": "0.0 1.0",
+    "sources": [
+      "attention",
+      "llama"
+    ],
+    "tags": [
+      "positional encoding",
+      "RoPE",
+      "relative positions"
+    ]
+  },
+  {
+    "slug": "encoder-decoder-families",
+    "title": "Encoder, decoder, BERT, GPT and T5",
+    "concept": "Encoder-only, decoder-only and encoder-decoder families organize attention and training objectives differently. BERT-style encoders are commonly associated with masked-token representation learning; GPT-style decoders use autoregressive prediction; T5-style systems frame tasks as text-to-text sequence transformation.",
+    "mechanism": "Match architecture to the required input/output contract. Bidirectional encoding can use both sides of a visible input, while autoregressive output positions need causal constraints. Encoder-decoder models separate source representations from a generated target through cross-attention. Actual model variants may depart from the simplified family description.",
+    "boundary": "Architecture names do not by themselves determine deployment quality, licensing or whether an instruction-following checkpoint exists.",
+    "example": "A tiny task router selects encoding for semantic representation, decoding for continuation and sequence transformation for source-to-target tasks.",
+    "application": "Compare model families for embeddings, classification, translation and interactive generation using the same task-level acceptance criteria.",
+    "angles": [
+      {
+        "question": "How do encoder-only and decoder-only attention conventions differ?",
+        "answer": "An encoder can use the visible input bidirectionally; an autoregressive decoder restricts future-token access. Explain the objective and mask rather than only naming a family."
+      },
+      {
+        "question": "What information flows through encoder-decoder cross-attention?",
+        "answer": "Decoder queries can attend to representations of the source input. This is distinct from the decoder's causal self-attention over target positions."
+      },
+      {
+        "question": "Why is BERT not simply an interchangeable GPT text generator?",
+        "answer": "Its common masked-token objective and attention pattern differ from autoregressive continuation. Check the actual checkpoint and supported task rather than assuming a shared interface implies equivalent behavior."
+      },
+      {
+        "question": "How would you choose between family types for a new text task?",
+        "answer": "Specify the input, output, evidence needs and serving constraints, then benchmark suitable checkpoints. Compare task quality and lifecycle requirements instead of selecting by popularity."
+      },
+      {
+        "question": "Write a task-to-architecture study router with explicit unsupported cases.",
+        "answer": "Map the defined toy tasks deterministically and reject unknown tasks. Explain that this exercise teaches architecture distinctions rather than choosing production models automatically."
+      },
+      {
+        "question": "How should architecture and checkpoint suitability be evaluated separately?",
+        "answer": "First confirm the computational family can express the task, then assess training, instruction tuning, license and measured quality. A family label is only an initial constraint."
+      },
+      {
+        "question": "A representation model is forced into open-ended chat. What may fail?",
+        "answer": "The checkpoint may not support the required generation contract. Verify its objective and decoding path before adding prompts or blaming user phrasing."
+      },
+      {
+        "question": "An encoder-decoder implementation ignores the source. What would you inspect?",
+        "answer": "Check source masks, encoder states and cross-attention connections. A decoder can generate plausible text even when its conditioning path is broken."
+      },
+      {
+        "question": "How would you compare BERT, GPT and T5 in a screening answer?",
+        "answer": "Connect each simplified family to an objective and data flow, then acknowledge variants. Avoid implying every release shares identical architecture or capabilities."
+      },
+      {
+        "question": "What evidence belongs in a model-family comparison project?",
+        "answer": "Use explicit tasks, compatible checkpoints and a reproducible evaluation. Report task failures and practical restrictions instead of assigning one universal winner."
+      }
+    ],
+    "code": "def family(task):\n    choices={'embedding':'encoder','continuation':'decoder','translation':'encoder-decoder'}\n    if task not in choices:raise ValueError('unsupported task')\n    return choices[task]\nprint([family(x) for x in ['embedding','continuation','translation']])\n",
+    "expected": "['encoder', 'decoder', 'encoder-decoder']",
+    "sources": [
+      "attention",
+      "generation",
+      "llama"
+    ],
+    "tags": [
+      "BERT",
+      "GPT",
+      "T5",
+      "encoder",
+      "decoder"
+    ]
+  },
+  {
+    "slug": "context-prefill-decode",
+    "title": "Context windows, prefill and decoding",
+    "concept": "A context window limits the tokens a model can attend to in a request, subject to model and service constraints. Prefill processes the supplied prefix; decoding extends it. KV caching avoids recomputing some prior representations but does not make long prompts or long outputs costless.",
+    "mechanism": "Measure time to first token and subsequent token latency separately. Budget prompt components and output reservation before accepting a request. Cache state grows with active sequences and context length, so concurrency limits must account for real workload shapes rather than average request counts.",
+    "boundary": "A nominal context maximum is not a guarantee of uniform evidence use across positions. Evaluate task quality with relevant passages placed at different distances.",
+    "example": "A token-budget function checks instructions, user input, evidence and reserved output against a declared toy limit.",
+    "application": "Plan document assistants with measured evidence budgets, explicit truncation policy and serving limits based on long-prompt traffic.",
+    "angles": [
+      {
+        "question": "What does prefill do before the first generated token?",
+        "answer": "It processes the input context and prepares representations used for generation. Its cost depends on prompt size and implementation rather than only output length."
+      },
+      {
+        "question": "Why separate first-token and inter-token latency?",
+        "answer": "They reveal different bottlenecks: prompt processing, queueing and downstream streaming can behave differently. A single total duration can hide the source of poor responsiveness."
+      },
+      {
+        "question": "Can a long context window guarantee use of every relevant passage?",
+        "answer": "No. Evaluate positional evidence use and distractors on the task. Capacity to accept tokens is not proof of reliable reasoning over all of them."
+      },
+      {
+        "question": "How would you implement a context-budget contract?",
+        "answer": "Count serialized inputs with the model tokenizer, reserve generation space and apply a documented reject or reduction policy. Preserve essential instructions and permissions."
+      },
+      {
+        "question": "Validate a toy request's prompt-plus-output budget.",
+        "answer": "Sum named token allocations, reject negative counts and compare with the limit. Keep token estimates separate from actual tokenizer-derived counts in real services."
+      },
+      {
+        "question": "How would context length affect admission control?",
+        "answer": "Estimate active token-state demand and compute limits using model configuration and measured workloads. Bound queued work instead of admitting every long request."
+      },
+      {
+        "question": "A short answer follows an unusually long first-token delay. What do you inspect?",
+        "answer": "Separate queue wait and prefill from decoding time. Inspect prompt size, cache reuse and scheduling before shortening the output alone."
+      },
+      {
+        "question": "A truncation bug removes the system policy. What must change?",
+        "answer": "Budget structured prompt parts before serialization and protect mandatory constraints. Test overflow handling rather than blindly slicing a final string."
+      },
+      {
+        "question": "How would you justify a token-budget policy in system design?",
+        "answer": "Explain evidence priority, output reservation and failure behavior using measured quality and latency. Avoid describing truncation as a universally harmless cost optimization."
+      },
+      {
+        "question": "What should a context-window experiment disclose?",
+        "answer": "Record model/tokenizer versions, token positions, distractors and workload measurements. Distinguish acceptance limits from observed task success at those limits."
+      }
+    ],
+    "code": "def fits(parts,reserve,limit):\n    values=list(parts.values())+[reserve]\n    if any(x<0 for x in values):raise ValueError('negative budget')\n    return sum(values)<=limit\nassert fits({},0,0)\nprint(fits({'instructions':100,'user':50,'evidence':700},200,1000))\n",
+    "expected": "False",
+    "sources": [
+      "generation",
+      "nim"
+    ],
+    "tags": [
+      "context windows",
+      "prefill",
+      "decode",
+      "token budgets"
+    ]
+  },
+  {
+    "slug": "sampling-temperature",
+    "title": "Temperature, top-k and top-p sampling",
+    "concept": "Decoding transforms a model distribution into output choices. Temperature rescales logits, top-k limits a fixed number of candidates and top-p retains a probability-mass nucleus. These are sampling controls, not mechanisms that supply missing factual knowledge or guarantee valid output.",
+    "mechanism": "Apply a documented sequence of transformations and renormalize the retained mass before sampling. Tie handling, seeds and implementation details affect reproducibility. Compare decoding settings on diversity, correctness and task constraints rather than assuming more randomness is always more creative or useful.",
+    "boundary": "Temperature zero behavior is implementation-specific; a reproducibility claim should specify the service, model and settings rather than promise identical results everywhere.",
+    "example": "A nucleus selector retains the smallest descending-probability prefix reaching a target mass, with deterministic tie-breaking.",
+    "application": "Tune generation policies on a fixed evaluation set and keep critical schema or authorization checks independent from sampling choices.",
+    "angles": [
+      {
+        "question": "How does temperature alter the sampling distribution?",
+        "answer": "It rescales logits before normalization, typically making the distribution sharper or flatter. It does not add factual knowledge or evaluate the resulting statement."
+      },
+      {
+        "question": "How do top-k and top-p retain different candidate sets?",
+        "answer": "Top-k fixes a candidate count, while top-p depends on cumulative probability mass. Both need normalization and a defined application order."
+      },
+      {
+        "question": "Why does a random seed not guarantee cross-service reproducibility?",
+        "answer": "Model revisions, kernels, scheduling and decoding implementations may differ. Record the full environment and qualify determinism claims appropriately."
+      },
+      {
+        "question": "How would you tune decoding for a constrained extraction task?",
+        "answer": "Keep schema validation fixed, compare settings on held-out extraction cases and measure invalid outputs and correctness. Do not use perceived fluency as the only criterion."
+      },
+      {
+        "question": "Implement nucleus selection with deterministic ties.",
+        "answer": "Sort candidates by probability and a stable identifier, accumulate until the target mass and reject invalid totals. Include a threshold smaller than the top probability."
+      },
+      {
+        "question": "Where should decoding configuration be stored for reproducible evaluation?",
+        "answer": "Version it with the model, prompt and dataset. Keep service defaults explicit so a provider-side change cannot silently alter an experiment."
+      },
+      {
+        "question": "Creative responses become inconsistent with supplied evidence. What should change?",
+        "answer": "Inspect grounding and evaluation separately from diversity settings. Reduce stochasticity if supported by results, but keep evidence checks because randomness is not the sole cause."
+      },
+      {
+        "question": "Top-p sampling returns an empty candidate set. What bug is plausible?",
+        "answer": "The implementation may discard before including the crossing token or mishandle zero thresholds. Define boundaries and validate probability mass."
+      },
+      {
+        "question": "How would you explain decoding controls in an MNC-style discussion?",
+        "answer": "Distinguish distribution reshaping from task validation and show a controlled comparison. State implementation limits rather than promising universal parameter effects."
+      },
+      {
+        "question": "What belongs in a decoding ablation report?",
+        "answer": "Freeze inputs, record settings and seeds, collect multiple samples and compare relevant failure metrics. Report variability rather than selecting only a favorable output."
+      }
+    ],
+    "code": "def nucleus(items,p):\n    if not 0<p<=1 or abs(sum(v for _,v in items)-1)>1e-9:raise ValueError('distribution')\n    out=[];mass=0\n    for name,prob in sorted(items,key=lambda x:(-x[1],x[0])):\n        if prob<0:raise ValueError('negative probability')\n        out.append(name);mass+=prob\n        if mass>=p:break\n    return out\nprint(nucleus([('a',0.6),('b',0.25),('c',0.15)],0.8))\n",
+    "expected": "['a', 'b']",
+    "sources": [
+      "generation"
+    ],
+    "tags": [
+      "temperature",
+      "top-k",
+      "top-p",
+      "sampling"
+    ]
+  },
+  {
+    "slug": "prompting-reasoning",
+    "title": "Prompt engineering, examples and reasoning",
+    "concept": "Prompts specify a task, context and output contract, but they do not replace system permissions or evaluation. Zero-shot instructions and few-shot examples differ in the demonstrations supplied. A useful explanation can show a concise rationale or verifiable calculation without requiring disclosure of private internal chain-of-thought.",
+    "mechanism": "Separate trusted application instructions from untrusted source text. Choose examples representative of the task, test them on held-out cases and version changes. Ask for evidence, intermediate checkable artifacts or a concise explanation appropriate to the task rather than assuming a longer reasoning transcript is more reliable.",
+    "boundary": "Few-shot examples can introduce formatting shortcuts or leakage. Strong wording alone cannot enforce a security boundary or guarantee factuality.",
+    "example": "A toy prompt builder keeps policy, task and source material in separate fields and refuses an oversized source rather than silently erasing instructions.",
+    "application": "Develop extraction or support prompts with regression tests, evidence references and independently enforced tool permissions.",
+    "angles": [
+      {
+        "question": "What distinguishes zero-shot from few-shot prompting?",
+        "answer": "Few-shot prompting supplies demonstrations of the intended task behavior; zero-shot relies on instructions without those examples. Evaluate both on unseen cases rather than assuming examples always help."
+      },
+      {
+        "question": "How should trusted rules and retrieved source text be separated?",
+        "answer": "Represent their roles explicitly in the application and treat source instructions as data. Separation supports clarity but does not remove the need for external permission checks."
+      },
+      {
+        "question": "Why should a product not depend on exposing private chain-of-thought?",
+        "answer": "Use concise explanations, evidence and checkable outputs instead. Long internal-reasoning transcripts are not a dependable proof of correctness or a necessary product contract."
+      },
+      {
+        "question": "How would you select few-shot examples without leaking evaluation answers?",
+        "answer": "Choose training examples that cover relevant formats and edge cases, then freeze a held-out set. Record selection rationale and avoid adaptive tuning on final labels."
+      },
+      {
+        "question": "Build a prompt payload that preserves mandatory instructions under a size limit.",
+        "answer": "Validate source size before assembling distinct fields and reject overflow explicitly. Do not truncate a serialized string in a way that removes trusted policy."
+      },
+      {
+        "question": "What belongs in a prompt-version rollout process?",
+        "answer": "Store task instructions, examples, model settings and evaluation results together. Compare regressions and maintain rollback instead of editing a live prompt without traceability."
+      },
+      {
+        "question": "An example teaches the model to copy the wrong ID. What is the response?",
+        "answer": "Inspect whether demonstrations create a shortcut, then revise or remove them and rerun held-out ID cases. Separate schema correctness from semantic field accuracy."
+      },
+      {
+        "question": "A source document says to ignore the application rules. How should it be handled?",
+        "answer": "Treat it as untrusted data, restrict tool execution outside the model and test injection scenarios. A stronger system sentence alone is insufficient."
+      },
+      {
+        "question": "How would you present prompt iteration in an engineering interview?",
+        "answer": "Show a concrete failure, a targeted change and measured regression results. Avoid treating a personally preferred phrasing as evidence of general improvement."
+      },
+      {
+        "question": "What makes a prompt-engineering project more than a collection of examples?",
+        "answer": "Provide a versioned evaluation set, failure taxonomy, constrained outputs and reproducible comparisons. State privacy and permission boundaries alongside successful demonstrations."
+      }
+    ],
+    "code": "def build_prompt(policy,task,source,source_limit=100):\n    if len(source)>source_limit:raise ValueError('source too long')\n    return {'policy':policy,'task':task,'untrusted_source':source}\np=build_prompt('Use only supplied evidence','Extract an ID','ID: A-7')\nassert p['policy']=='Use only supplied evidence'\nprint(p['untrusted_source'])\n",
+    "expected": "ID: A-7",
+    "sources": [
+      "generation",
+      "agents",
+      "owasp"
+    ],
+    "tags": [
+      "prompt engineering",
+      "few-shot",
+      "reasoning",
+      "prompt injection"
+    ]
+  },
+  {
+    "slug": "structured-tools",
+    "title": "Structured outputs and function calling",
+    "concept": "Structured outputs target a declared response shape; tool calling proposes an application operation with arguments. Neither valid JSON nor a tool name grants authorization. The host must validate types, business rules, user permissions and side effects before executing a model-proposed action.",
+    "mechanism": "Parse the response, validate its schema, then perform semantic checks against trusted application state. Derive identity from authentication rather than model arguments. Use allowlisted operations, explicit confirmation for consequential actions and idempotency for retries. Fail safely when output is malformed or requests an unsupported operation.",
+    "boundary": "A schema-valid amount or object ID can still be unauthorized or nonsensical. Do not confuse syntax constraints with business correctness.",
+    "example": "A synthetic lookup tool rejects unknown fields and operation names and derives its caller identity outside the generated payload.",
+    "application": "Use model proposals for bounded retrieval or workflow assistance while enforcing ownership and actions in server-side code.",
+    "angles": [
+      {
+        "question": "How does structured output differ from tool execution?",
+        "answer": "Structured output constrains a response representation; a tool call requests an operation. The application decides whether and how to execute it."
+      },
+      {
+        "question": "Which validations must follow successful JSON parsing?",
+        "answer": "Check required fields, types, allowed operations, domain constraints and authorization against trusted state. Valid syntax alone says little about whether an action is permissible."
+      },
+      {
+        "question": "Can a model-provided user ID authorize a lookup?",
+        "answer": "No: caller identity must come from authentication. Treat any proposed resource identifier as an untrusted input and enforce object-level access."
+      },
+      {
+        "question": "How would you handle a malformed tool argument response?",
+        "answer": "Reject or safely retry under a bounded policy, surface a useful failure and avoid side effects. Do not coerce arbitrary fields into an apparently valid action."
+      },
+      {
+        "question": "Implement an allowlisted lookup-argument validator.",
+        "answer": "Require the exact expected fields and a nonempty string query, reject unknown operation names and avoid accepting an actor identity from the payload."
+      },
+      {
+        "question": "Where should idempotency be enforced for retryable tool actions?",
+        "answer": "Enforce it at the application or service boundary using a trusted request key and persisted outcome. Prompt instructions cannot prevent duplicate side effects."
+      },
+      {
+        "question": "A schema-valid request targets another user's document. What happens?",
+        "answer": "The server must deny access using the authenticated caller and object ownership. Do not execute first and rely on output filtering afterward."
+      },
+      {
+        "question": "A tool call repeats after a timeout. What should be investigated?",
+        "answer": "Determine whether the prior side effect completed, inspect idempotency state and avoid blind retries. A timeout does not prove an operation failed."
+      },
+      {
+        "question": "How would you defend tool permission boundaries in system design?",
+        "answer": "Show which component owns identity, policy and execution. Explain how model output is validated as a proposal rather than treated as an authenticated instruction."
+      },
+      {
+        "question": "What should a tool-calling demo test beyond the happy path?",
+        "answer": "Cover malformed JSON, unknown tools, cross-user IDs, duplicate requests and unavailable dependencies. Label simulated side effects clearly instead of claiming live integrations."
+      }
+    ],
+    "code": "def validate_call(payload):\n    if set(payload)!={'tool','query'}:raise ValueError('fields')\n    if payload['tool']!='lookup' or not isinstance(payload['query'],str) or not payload['query'].strip():\n        raise ValueError('arguments')\n    return payload['query'].strip()\nprint(validate_call({'tool':'lookup','query':'  handbook  '}))\n",
+    "expected": "handbook",
+    "sources": [
+      "agents",
+      "mcp",
+      "owasp"
+    ],
+    "tags": [
+      "structured outputs",
+      "function calling",
+      "authorization"
+    ]
+  },
+  {
+    "slug": "model-comparison",
+    "title": "Model comparison, LLaMA and deployment choices",
+    "concept": "Model selection balances measured task capability, license terms, data handling, hardware, latency and operating cost. Open-weight availability is not identical to unrestricted open-source licensing. A hosted proprietary API and a self-hosted checkpoint expose different operational responsibilities and control surfaces.",
+    "mechanism": "Freeze a representative evaluation set, prompt format and success criteria before comparing candidates. Record model revisions, tokenizer settings, refusal behavior and workload shape. Assess privacy and licensing from actual terms and deployment design, and separate benchmark capability from product suitability.",
+    "boundary": "A ranking on an unrelated public benchmark cannot establish the best choice for a particular assistant. Verify licenses and current service terms rather than assuming a model-family name settles them.",
+    "example": "A toy decision table filters models by required constraints before comparing measured quality and latency, making the trade-off explicit.",
+    "application": "Choose a model using reproducible workload evaluation and a deployment review that includes maintenance and data boundaries.",
+    "angles": [
+      {
+        "question": "Why are open weights and unrestricted open source not equivalent?",
+        "answer": "Access to parameters does not determine every license permission or obligation. Review the actual model license and intended use instead of inferring rights from download availability."
+      },
+      {
+        "question": "How would you compare two models without prompt-selection bias?",
+        "answer": "Freeze representative cases and a documented prompt policy before final scoring. Record revisions and evaluate enough outputs to expose variability."
+      },
+      {
+        "question": "Why can the best public benchmark model be the wrong product choice?",
+        "answer": "The benchmark may not reflect the task, language, privacy constraints or workload. Measure product failure modes and operating requirements directly."
+      },
+      {
+        "question": "How would you build a model-selection scorecard?",
+        "answer": "Start with mandatory constraints, then compare quality, refusals, latency, capacity and cost under the same workload. Preserve failure examples and reproducible settings."
+      },
+      {
+        "question": "Filter toy model candidates by quality and latency constraints.",
+        "answer": "Apply explicit thresholds before ranking eligible options and return no winner when none qualify. Do not hide an unmet hard constraint inside a weighted average."
+      },
+      {
+        "question": "What responsibilities move to the team with self-hosting?",
+        "answer": "The team owns capacity, security updates, model serving, monitoring and relevant data controls. More infrastructure control does not automatically reduce total cost or risk."
+      },
+      {
+        "question": "A cheaper model fails a narrow high-risk task. What options exist?",
+        "answer": "Investigate task-specific routing, escalation or a different model while maintaining the critical quality gate. Avoid letting average savings conceal the risky failure segment."
+      },
+      {
+        "question": "A comparison changes results after a provider update. What is missing?",
+        "answer": "Model revision and service configuration may not have been pinned or recorded. Reproduce the request and distinguish upstream changes from prompt or dataset drift."
+      },
+      {
+        "question": "How would you answer a request for the universally best LLM?",
+        "answer": "Ask about task and constraints, then propose measurable acceptance criteria. Explain why architecture, license and deployment requirements prevent a single defensible universal answer."
+      },
+      {
+        "question": "What should a model-comparison portfolio artifact include?",
+        "answer": "Provide task definitions, data permission, configuration, failure analysis and operating assumptions. Distinguish measured prototype results from unverified production projections."
+      }
+    ],
+    "code": "def eligible(rows,min_quality,max_latency):\n    return [r['name'] for r in rows if r['quality']>=min_quality and r['latency']<=max_latency]\nrows=[{'name':'small','quality':0.75,'latency':100},{'name':'large','quality':0.9,'latency':400}]\nassert eligible(rows,0.95,500)==[]\nprint(eligible(rows,0.8,500))\n",
+    "expected": "['large']",
+    "sources": [
+      "llama",
+      "generation",
+      "nim"
+    ],
+    "tags": [
+      "model selection",
+      "open weights",
+      "licensing",
+      "benchmarks"
+    ]
+  }
+]

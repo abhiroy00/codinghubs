@@ -1,10 +1,10 @@
-import { useEffect, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
 import { StoreHeader } from '../shop-pages/StoreHeader'
-import { fmtDate, type Card, type Seo } from './api'
+import { fmtDate, type Card } from './api'
 
 export function SearchIcon() {
   return (
@@ -83,56 +83,4 @@ export function Pager({ page, count, size, onPage }: { page: number; count: numb
   )
 }
 
-/** Keeps <head> right on client-side navigation (a direct visit already has it from the server). Restores on leave. */
-export function useSeo(seo: Seo | null) {
-  useEffect(() => {
-    if (!seo) return
-    const prevTitle = document.title
-    const restore: (() => void)[] = []
-    document.title = seo.title
-    const set = (selector: string, make: () => HTMLElement, attr: string, value: string) => {
-      let el = document.head.querySelector<HTMLElement>(selector)
-      const created = !el
-      if (!el) {
-        el = make()
-        document.head.appendChild(el)
-      }
-      const old = el.getAttribute(attr)
-      el.setAttribute(attr, value)
-      restore.push(() => (created ? el!.remove() : old === null ? el!.removeAttribute(attr) : el!.setAttribute(attr, old)))
-    }
-    const metaTag = (key: 'name' | 'property', name: string, value: string) => {
-      set(
-        `meta[${key}="${name}"]`,
-        () => {
-          const m = document.createElement('meta')
-          m.setAttribute(key, name)
-          return m
-        },
-        'content',
-        value,
-      )
-    }
-    metaTag('name', 'description', seo.description)
-    metaTag('name', 'robots', seo.robots)
-    metaTag('property', 'og:title', seo.og.title)
-    metaTag('property', 'og:description', seo.og.description)
-    metaTag('property', 'og:image', seo.og.image)
-    metaTag('property', 'og:url', seo.og.url)
-    metaTag('property', 'og:type', seo.og.type)
-    if (seo.robots.startsWith('index')) {
-      set('link[rel="canonical"]', () => Object.assign(document.createElement('link'), { rel: 'canonical' }), 'href', seo.canonical)
-    }
-    const ld = document.createElement('script')
-    ld.type = 'application/ld+json'
-    ld.dataset.managed = '1'
-    ld.textContent = JSON.stringify(seo.json_ld).replace(/</g, '\\u003c')
-    document.head.querySelectorAll('script[type="application/ld+json"]').forEach((s) => s.remove())
-    document.head.appendChild(ld)
-    return () => {
-      document.title = prevTitle
-      restore.forEach((r) => r())
-      ld.remove()
-    }
-  }, [seo])
-}
+export { useSeo } from '../seo/useSeo'

@@ -1,0 +1,620 @@
+[
+  {
+    "slug": "rag-pipeline",
+    "title": "RAG pipeline and evidence contracts",
+    "concept": "Retrieval-augmented generation conditions a language model on retrieved evidence. Retrieval supplies information; it does not train the generator or prove that an answer is true.",
+    "mechanism": "Ingest documents with stable identifiers, preserve ownership and revision metadata, embed searchable passages, retrieve authorized candidates, then build a bounded prompt. Require citations to passage identifiers. Evaluate retrieval and answer quality separately so that an empty candidate set is not confused with a generator failure.",
+    "boundary": "Retrieval cannot recover missing or inaccessible evidence. Treat document instructions as untrusted data and abstain when support is insufficient.",
+    "example": "A support assistant retrieves the current refund policy and cites its section rather than guessing a deadline.",
+    "application": "Enterprise knowledge search with access-controlled evidence and auditable answers.",
+    "angles": [
+      {
+        "question": "What does retrieval add to a language model?",
+        "answer": "Retrieval supplies external evidence at request time, allowing updated knowledge without parameter updates. The answer must still be checked against that evidence."
+      },
+      {
+        "question": "Which identifiers must survive ingestion to answer generation?",
+        "answer": "Preserve document ID, revision, passage ID, ownership, and source location. These allow citation resolution, access checks, and removal of obsolete passages."
+      },
+      {
+        "question": "How can retrieval improve recall but reduce answer quality?",
+        "answer": "Extra passages can introduce contradictions or distract the generator. Measure evidence relevance and answer support separately while controlling the context budget."
+      },
+      {
+        "question": "Implement an evidence contract between retriever and generator.",
+        "answer": "Return typed passages with text, document revision, and citation IDs. Reject missing metadata and build prompts only from authorized passages that fit the budget."
+      },
+      {
+        "question": "Write a function rejecting citations outside retrieved evidence.",
+        "answer": "Build a set of retrieved passage IDs and compare each cited ID with that set. Reject unknown IDs; membership alone still does not prove semantic support."
+      },
+      {
+        "question": "Design a RAG request path for confidential employee policies.",
+        "answer": "Authenticate first, propagate tenant and role filters into retrieval, recheck document authorization, and keep evidence out of shared response caches."
+      },
+      {
+        "question": "A new policy was uploaded but answers cite the old version. What next?",
+        "answer": "Inspect ingestion completion, index revision, cache keys, and citation revisions. Ensure updates invalidate stale passages and test the complete path with a known new clause."
+      },
+      {
+        "question": "How do you distinguish retrieval failure from answer synthesis failure?",
+        "answer": "Save a permission-safe trace of candidate IDs and scores. Compare candidates against annotated evidence, then test the generator using a known-correct evidence set."
+      },
+      {
+        "question": "Explain to an interviewer why RAG is not a guarantee against hallucination.",
+        "answer": "A retriever may miss evidence and a generator may ignore it. Show abstention tests, claim-level support checks, and failure examples rather than claiming that citations guarantee truth."
+      },
+      {
+        "question": "What artifacts demonstrate a reproducible RAG project?",
+        "answer": "Deliver an ingestion manifest, versioned corpus, retrieval evaluation set, prompt version, latency measurements, and examples where the system correctly declines unsupported questions."
+      }
+    ],
+    "code": "known={'p1','p2'}\ncited=['p1','bad']\nprint([x for x in cited if x not in known])\n",
+    "expected": "['bad']",
+    "sources": [
+      "rag",
+      "bedrock",
+      "owasp"
+    ],
+    "tags": [
+      "rag",
+      "pipeline"
+    ]
+  },
+  {
+    "slug": "chunking-metadata",
+    "title": "Document loading, chunking and metadata",
+    "concept": "Chunking turns documents into retrievable units while preserving enough context to answer questions. Chunk size is a tradeoff between semantic completeness and retrieval specificity.",
+    "mechanism": "Parse document structure before splitting. Prefer headings, paragraphs, and table boundaries, then enforce a token budget. Store offsets, parent document IDs, revision, and access metadata with every chunk. Evaluate representative questions across candidate sizes instead of assuming that one overlap percentage is universal.",
+    "boundary": "Character counts are not token counts. Repeated overlap can inflate apparent recall if duplicate passages are counted independently.",
+    "example": "A troubleshooting manual keeps each error code and its resolution together with the section heading.",
+    "application": "Searchable manuals, contracts, and technical documentation that retain provenance.",
+    "angles": [
+      {
+        "question": "Why can a fixed character splitter damage retrieval?",
+        "answer": "It may separate a question from its answer, split a table row, or drop the heading that defines a term. Structural parsing should precede budget enforcement."
+      },
+      {
+        "question": "What metadata should a chunk inherit from its parent?",
+        "answer": "Inherit tenant, authorization policy, source URL, revision, language, and document ID. Store offsets so displayed evidence can be verified against the source."
+      },
+      {
+        "question": "How does overlap affect evaluation leakage?",
+        "answer": "Nearly identical neighboring chunks can appear in both train and evaluation material. Split datasets by source document or time before generating overlapping chunks."
+      },
+      {
+        "question": "Implement a revision-aware chunk ingestion job.",
+        "answer": "Compute stable document revision keys, parse into deterministic chunks, write a complete new revision, then switch the active revision and remove old entries safely."
+      },
+      {
+        "question": "Write a bounded sliding-window splitter and handle the final segment.",
+        "answer": "Advance by size minus overlap, reject overlap greater than or equal to size, and stop once the remaining suffix is emitted. Test empty and short inputs explicitly."
+      },
+      {
+        "question": "Design ingestion for scanned PDFs with tables.",
+        "answer": "Extract text and layout with OCR confidence, preserve page coordinates, handle tables structurally, and flag low-confidence documents for review before indexing."
+      },
+      {
+        "question": "A legal answer omits an exception in the next paragraph. How do you repair retrieval?",
+        "answer": "Inspect chunk boundaries and parent context. Add section-aware chunking or neighboring passage expansion, then evaluate exception-sensitive questions."
+      },
+      {
+        "question": "Why do duplicate chunks appear after a retry?",
+        "answer": "Random identifiers or non-idempotent upserts can create duplicates. Derive keys from document revision and chunk location, and make the ingestion transaction retry-safe."
+      },
+      {
+        "question": "How would you justify a chunk size in a technical interview?",
+        "answer": "Present measured retrieval recall, answer quality, context cost, and latency across a representative workload. Explain the document structures and cases where your choice fails."
+      },
+      {
+        "question": "Build a chunk-quality audit for a document project.",
+        "answer": "Sample boundaries, broken tables, missing metadata, duplicate text, and unrecoverable source offsets. Include checks against actual source pages and track regressions."
+      }
+    ],
+    "code": "text='abcdefghij'\nsize,step=4,3\nprint([text[i:i+size] for i in range(0,len(text),step)])\n",
+    "expected": "['abcd', 'defg', 'ghij', 'j']",
+    "sources": [
+      "rag",
+      "bedrock"
+    ],
+    "tags": [
+      "chunking",
+      "metadata"
+    ]
+  },
+  {
+    "slug": "vector-indexes",
+    "title": "Vector databases and similarity search",
+    "concept": "A vector index finds nearby embeddings under a chosen similarity metric. Approximate nearest-neighbor search trades some exact recall for speed and memory efficiency.",
+    "mechanism": "Normalize vectors when the embedding model and metric require it, version the encoder, and store dimensions explicitly. Tune approximate-search parameters against an exact-search baseline. Apply authorization and metadata filters without silently reducing relevant candidates below the required recall, and measure results on real query distributions.",
+    "boundary": "Embeddings from different model versions are generally incompatible. Similarity scores are not calibrated probabilities of correctness.",
+    "example": "An index migration builds a second collection and compares retrieval before switching traffic.",
+    "application": "Large semantic search services with predictable retrieval quality.",
+    "angles": [
+      {
+        "question": "What is approximate nearest-neighbor search optimizing?",
+        "answer": "It seeks useful neighbors with lower search cost than scanning every vector. The approximation must be measured against exact results on representative queries."
+      },
+      {
+        "question": "When do cosine similarity and dot product rank results identically?",
+        "answer": "They rank identically when document and query vectors are normalized to unit length. Otherwise vector magnitude can change dot-product ordering."
+      },
+      {
+        "question": "Why can metadata filtering reduce ANN recall?",
+        "answer": "Post-filtering may discard most initial candidates. Increase candidate search appropriately or use supported filtered search, then evaluate recall under restrictive filters."
+      },
+      {
+        "question": "Implement a safe embedding-model migration.",
+        "answer": "Create a separate versioned index, re-embed documents, route matching query embeddings, compare retrieval quality, and retain rollback capability before retiring the old collection."
+      },
+      {
+        "question": "Code exact top-k retrieval with deterministic ties.",
+        "answer": "Compute a score for each document, sort by descending score and stable document ID, and return the first k. Validate dimensions before scoring."
+      },
+      {
+        "question": "Design a vector service across tenants.",
+        "answer": "Partition or filter by tenant, authorize every request, separate revision namespaces, and test that approximate-search settings cannot bypass isolation."
+      },
+      {
+        "question": "A multilingual query retrieves unrelated English passages. What do you inspect?",
+        "answer": "Check language coverage of the encoder, query preprocessing, normalization, and evaluation examples. Compare with keyword retrieval and a multilingual baseline."
+      },
+      {
+        "question": "An index suddenly rejects requests after a model upgrade. Why?",
+        "answer": "The new encoder may emit a different dimension or incompatible representation. Verify encoder and index versions instead of padding or truncating vectors."
+      },
+      {
+        "question": "Explain ANN tuning with a latency budget.",
+        "answer": "Benchmark exact recall at several search settings, report p95 retrieval latency and memory use, and choose a setting that meets an explicit quality constraint."
+      },
+      {
+        "question": "What should a vector-search benchmark publish?",
+        "answer": "Publish corpus version, encoder version, metric, filter distribution, exact baseline, recall at k, latency percentiles, and reproducible configuration."
+      }
+    ],
+    "code": "docs={'b':[1,0],'a':[1,0],'c':[0,1]}\nq=[1,0]\nprint(sorted(docs,key=lambda k:(-sum(a*b for a,b in zip(q,docs[k])),k))[:2])\n",
+    "expected": "['a', 'b']",
+    "sources": [
+      "rag",
+      "bedrock"
+    ],
+    "tags": [
+      "vector",
+      "indexes"
+    ]
+  },
+  {
+    "slug": "hybrid-reranking",
+    "title": "Hybrid retrieval and reranking",
+    "concept": "Hybrid search combines lexical and semantic retrieval. A reranker then scores a smaller candidate set with more expensive query-document interaction.",
+    "mechanism": "Run keyword and vector retrieval under the same authorization constraints. Deduplicate by stable passage ID, fuse rankings using a documented rule, and rerank a bounded candidate pool. Evaluate candidate recall before reranking and final evidence precision afterward so improvements are attributable to the correct stage.",
+    "boundary": "Raw scores from different retrievers are not necessarily comparable. Reranking cannot recover a relevant passage absent from the candidate pool.",
+    "example": "A product support search uses lexical matching for exact error codes and embeddings for paraphrased symptoms.",
+    "application": "Technical support and enterprise search containing identifiers and natural language.",
+    "angles": [
+      {
+        "question": "Why combine lexical and dense retrieval?",
+        "answer": "Lexical search captures exact tokens such as product codes, while embeddings capture paraphrases. Their error patterns can complement each other."
+      },
+      {
+        "question": "How does reciprocal rank fusion avoid score calibration?",
+        "answer": "It combines reciprocal ranks instead of raw scores. Each ranked list contributes a decreasing value determined by position and a shared smoothing constant."
+      },
+      {
+        "question": "When does a reranker become the latency bottleneck?",
+        "answer": "Large candidate pools and long passages increase query-document scoring cost. Measure batching and length limits while checking evidence quality."
+      },
+      {
+        "question": "Implement deduplication before reranking.",
+        "answer": "Use stable passage identifiers, preserve provenance from both retrievers, merge ranking features, and send one candidate per passage to the reranker."
+      },
+      {
+        "question": "Write reciprocal rank fusion for two result lists.",
+        "answer": "Accumulate one divided by a constant plus rank for every item in each list, then sort by fused score with deterministic ties."
+      },
+      {
+        "question": "Design fallback behavior when the reranker times out.",
+        "answer": "Return the fused ranking within the request deadline, record the fallback, and test that answer quality remains acceptable without the reranking stage."
+      },
+      {
+        "question": "An exact invoice ID is missing from semantic search. What changes?",
+        "answer": "Add a lexical retrieval path and protect identifier tokenization. Check authorization and indexing before assuming the embedding model needs replacement."
+      },
+      {
+        "question": "Fusion improves offline metrics but hurts users. What do you debug?",
+        "answer": "Inspect duplicate evidence, stale candidates, query mix, and metric relevance. Segment exact-ID and semantic queries and compare final answer outcomes."
+      },
+      {
+        "question": "Explain reranking value without claiming universal improvement.",
+        "answer": "Show measured gains on the intended workload and report extra latency, cost, and regressions. Compare with simply retrieving more candidates."
+      },
+      {
+        "question": "What deliverables make a hybrid-search project convincing?",
+        "answer": "Include query segments, candidate recall, final relevance labels, ablations for each retriever, fusion parameters, and timeout behavior."
+      }
+    ],
+    "code": "scores={}\nfor result in [['a','b'],['b','c']]:\n for rank,key in enumerate(result,1): scores[key]=scores.get(key,0)+1/(60+rank)\nprint(sorted(scores,key=lambda k:(-scores[k],k)))\n",
+    "expected": "['b', 'a', 'c']",
+    "sources": [
+      "rag",
+      "bedrock"
+    ],
+    "tags": [
+      "hybrid",
+      "reranking"
+    ]
+  },
+  {
+    "slug": "advanced-rag-evaluation",
+    "title": "Advanced RAG and retrieval evaluation",
+    "concept": "Advanced RAG adds selective query rewriting, decomposition, or iterative retrieval when a single lookup cannot supply sufficient evidence. Extra steps must justify their complexity.",
+    "mechanism": "Define answerable tasks and annotate the evidence needed for each. Measure recall over required evidence units, not merely whether any relevant passage appeared. Compare fixed pipelines with bounded iterative retrieval using the same corpus and budgets. Trace each retrieval decision and stop when the evidence is sufficient or the budget is exhausted.",
+    "boundary": "An agent that retrieves repeatedly can amplify an incorrect premise. More searches are not inherently better or more trustworthy.",
+    "example": "A comparison question retrieves specifications for both products before generating a supported contrast.",
+    "application": "Multi-document analysis where evidence coverage can be audited.",
+    "angles": [
+      {
+        "question": "When is query decomposition useful?",
+        "answer": "It helps when a question contains separate evidence needs, such as comparing two policies. The decomposition should preserve the original intent and constraints."
+      },
+      {
+        "question": "What does evidence recall measure for a multi-hop question?",
+        "answer": "It measures coverage of required supporting evidence units. Finding one relevant passage may still be insufficient to establish the full answer."
+      },
+      {
+        "question": "How can query rewriting introduce bias?",
+        "answer": "A rewrite can assume an unproven entity or discard a condition. Preserve the original query, inspect rewrites, and evaluate on ambiguous questions."
+      },
+      {
+        "question": "Implement a bounded retrieval loop.",
+        "answer": "Track retrieved evidence and missing requirements, allow a fixed number of searches, enforce a token budget, and abstain when required support remains missing."
+      },
+      {
+        "question": "Compute recall for a required evidence set.",
+        "answer": "Intersect retrieved evidence IDs with required IDs and divide by the number required. Define empty-reference behavior explicitly rather than dividing by zero."
+      },
+      {
+        "question": "Design an evaluation dataset for evolving policies.",
+        "answer": "Include document revisions, time-scoped questions, supporting passage labels, unanswerable cases, and temporal holdouts to expose stale retrieval."
+      },
+      {
+        "question": "Two sources contradict each other. What should the application do?",
+        "answer": "Compare authority, revision, and applicability. Surface the conflict with citations or escalate instead of selecting whichever passage ranks highest."
+      },
+      {
+        "question": "Why does the agent repeat the same retrieval indefinitely?",
+        "answer": "The state may not record previous queries or termination criteria. Deduplicate actions, bound steps, and fail safely with a trace."
+      },
+      {
+        "question": "How do you defend an agentic RAG design in an interview?",
+        "answer": "Compare it against a simpler fixed baseline under equal budgets. Show which tasks require iteration and disclose quality, latency, and failure tradeoffs."
+      },
+      {
+        "question": "Build an advanced RAG capstone evaluation.",
+        "answer": "Deliver evidence annotations, pipeline ablations, contradiction cases, unanswerable queries, retrieval traces, and quality-cost curves."
+      }
+    ],
+    "code": "required={'a','b','c'}\nretrieved={'a','c','x'}\nprint(round(len(required & retrieved)/len(required),3))\n",
+    "expected": "0.667",
+    "sources": [
+      "rag",
+      "ragas",
+      "agents"
+    ],
+    "tags": [
+      "advanced",
+      "rag",
+      "evaluation"
+    ]
+  },
+  {
+    "slug": "lora-qlora-peft",
+    "title": "Fine-tuning, LoRA, QLoRA and PEFT",
+    "concept": "Parameter-efficient fine-tuning adapts selected trainable parameters while keeping most pretrained weights frozen. LoRA expresses weight updates through two low-rank matrices.",
+    "mechanism": "For a weight matrix with output and input dimensions, LoRA trains rank-sized factors whose product approximates the update. QLoRA combines quantized frozen base weights with trainable adapters; computation and optimizer precision remain separate choices. Version the tokenizer, training data, adapter configuration, and base model, and evaluate on held-out tasks and safety cases.",
+    "boundary": "Fine-tuning changes behavior but is not a reliable database update mechanism. Low parameter counts do not remove data quality or evaluation requirements.",
+    "example": "A support model is adapted to produce a consistent answer format using reviewed examples.",
+    "application": "Task adaptation where full fine-tuning is too expensive and behavior needs to change.",
+    "angles": [
+      {
+        "question": "What does LoRA train instead of a complete weight matrix?",
+        "answer": "It trains two low-rank factors that represent a weight update while the original matrix remains frozen. Rank controls update capacity and parameter count."
+      },
+      {
+        "question": "How many parameters does a LoRA update require?",
+        "answer": "For an m by n matrix and rank r, the two factors contain r times m plus n parameters, excluding optional biases and other trainable modules."
+      },
+      {
+        "question": "Why can QLoRA save memory without making all training arithmetic four-bit?",
+        "answer": "Quantized frozen weights reduce storage, while adapter gradients, optimizer state, and compute can use higher precision. Distinguish storage from arithmetic precision."
+      },
+      {
+        "question": "Implement a reproducible adapter training configuration.",
+        "answer": "Record base revision, tokenizer, target modules, rank, scaling, optimizer settings, dataset split, seed, and dependency versions. Keep held-out evaluation separate."
+      },
+      {
+        "question": "Write a parameter-count comparison for dense and LoRA updates.",
+        "answer": "Calculate m times n for dense weights and r times the sum of m and n for adapters. State which additional modules are excluded."
+      },
+      {
+        "question": "Design deployment for multiple task adapters.",
+        "answer": "Keep compatible base weights resident where supported, version adapters independently, route requests explicitly, and validate isolation and memory limits."
+      },
+      {
+        "question": "Training loss falls while factual answers worsen. What next?",
+        "answer": "Check overfitting, dataset quality, distribution shift, and task imbalance. Compare held-out behavior with the base model before training longer."
+      },
+      {
+        "question": "An adapter fails after swapping the base checkpoint. Why?",
+        "answer": "Adapter shapes and learned updates depend on a compatible base revision and target modules. Restore the correct base and verify tokenizer compatibility."
+      },
+      {
+        "question": "Explain when you would choose RAG rather than LoRA.",
+        "answer": "Use retrieval for frequently updated attributable knowledge. Use adaptation for behavior or task patterns, supported by evaluation; a combined system may be appropriate."
+      },
+      {
+        "question": "What evidence belongs in a fine-tuning project report?",
+        "answer": "Include dataset lineage, consent constraints, baseline results, held-out metrics, adapter size, serving cost, and examples of regressions."
+      }
+    ],
+    "code": "m,n,r=1024,1024,8\nprint((m*n,r*(m+n)))\n",
+    "expected": "(1048576, 16384)",
+    "sources": [
+      "lora",
+      "generation"
+    ],
+    "tags": [
+      "lora",
+      "qlora",
+      "peft"
+    ]
+  },
+  {
+    "slug": "quantization",
+    "title": "Quantization and precision tradeoffs",
+    "concept": "Quantization represents numbers with a smaller set of discrete values. Scale and zero point map values between integer storage and an approximate floating-point representation.",
+    "mechanism": "Choose a calibration strategy and quantization granularity appropriate to the model. Quantize values within a supported range and measure reconstruction error, then evaluate end-task quality and serving performance. Distinguish weight-only methods from activation quantization and verify that the runtime actually supports the selected format efficiently.",
+    "boundary": "Lower bit width does not guarantee lower latency on every device. Outliers, kernels, and conversion overhead can dominate.",
+    "example": "A local model uses a smaller weight representation to fit memory, then compares answer quality against its baseline.",
+    "application": "Resource-constrained inference and memory-efficient model deployment.",
+    "angles": [
+      {
+        "question": "What information is lost during quantization?",
+        "answer": "Many original values map to the same discrete value. Rounding and clipping introduce error whose impact depends on the model and workload."
+      },
+      {
+        "question": "Why use per-channel rather than one global scale?",
+        "answer": "Different channels may have different ranges. Separate scales can reduce error at the cost of metadata and more complex kernels."
+      },
+      {
+        "question": "How do outlier activations complicate low-bit inference?",
+        "answer": "A few large values can force a broad scale that loses resolution for typical values. Calibration and supported outlier handling require validation."
+      },
+      {
+        "question": "Implement a quantize-dequantize quality check.",
+        "answer": "Estimate scale, round and clamp values to the integer range, reconstruct floating values, and report error alongside end-task metrics."
+      },
+      {
+        "question": "Code symmetric signed quantization for a scalar list.",
+        "answer": "Derive a nonzero scale from the maximum absolute value, clamp rounded values to the supported range, and define all-zero input behavior."
+      },
+      {
+        "question": "Design a precision selection benchmark.",
+        "answer": "Compare supported formats on the target hardware using realistic sequence lengths, concurrency, quality checks, memory use, and tail latency."
+      },
+      {
+        "question": "A smaller model checkpoint serves slower. Why?",
+        "answer": "The runtime may dequantize inefficiently or lack optimized kernels. Inspect kernel support and compare end-to-end latency rather than storage size."
+      },
+      {
+        "question": "Quantized outputs collapse on rare inputs. What do you inspect?",
+        "answer": "Inspect calibration coverage, clipping, activation outliers, and task segments. Recalibrate or increase precision where measured errors are concentrated."
+      },
+      {
+        "question": "Explain quantization tradeoffs to an engineering interviewer.",
+        "answer": "Separate memory savings, hardware throughput, numerical error, and operational compatibility. Present measurements rather than a universal speedup claim."
+      },
+      {
+        "question": "What should a quantization experiment retain?",
+        "answer": "Save calibration data lineage, format and scale settings, runtime version, hardware, quality deltas, and workload-specific latency distributions."
+      }
+    ],
+    "code": "values=[-1.0,0.0,1.0]\nscale=max(map(abs,values))/127\nprint([max(-127,min(127,round(v/scale))) for v in values])\n",
+    "expected": "[-127, 0, 127]",
+    "sources": [
+      "lora",
+      "nim",
+      "generation"
+    ],
+    "tags": [
+      "quantization"
+    ]
+  },
+  {
+    "slug": "langchain-langgraph",
+    "title": "LangChain, LangGraph and durable state",
+    "concept": "Workflow orchestration connects model calls, retrieval, and tools. A state graph makes transitions explicit and can support checkpoints and controlled resumptions.",
+    "mechanism": "Define a typed state containing only information needed across steps. Nodes return explicit updates, edges encode routing, and checkpoints persist progress. Treat external side effects separately from state transitions: replaying a node must not duplicate purchases or messages. Bound retries and route ambiguous or high-impact actions to review.",
+    "boundary": "A checkpoint is not a guarantee that external side effects happened exactly once. Framework abstractions do not replace authorization and idempotency.",
+    "example": "A research workflow pauses after collecting evidence and resumes after a human approves the draft.",
+    "application": "Long-running assistant workflows requiring inspection, recovery, and review.",
+    "angles": [
+      {
+        "question": "What is the difference between a chain and a state graph?",
+        "answer": "A chain is a sequence of operations, while a graph can express branches, loops, and state transitions. Choose the simplest structure that fits the task."
+      },
+      {
+        "question": "Which state should be checkpointed?",
+        "answer": "Persist minimal durable inputs, results, and transition identifiers. Avoid unnecessary sensitive data and separate transient runtime handles from serializable state."
+      },
+      {
+        "question": "How can replay duplicate an external action?",
+        "answer": "A process can crash after sending a request but before recording success. Replaying the node can resend it unless the external action uses an idempotency key."
+      },
+      {
+        "question": "Implement a recoverable tool node.",
+        "answer": "Validate arguments, derive a stable action ID, call an idempotent service, persist the outcome, and classify errors as retryable or terminal."
+      },
+      {
+        "question": "Write a graph router that stops after a fixed step budget.",
+        "answer": "Read the step count from state and route to a terminal node when the limit is reached. Also stop on completion and unrecoverable failure."
+      },
+      {
+        "question": "Design human review for an agent workflow.",
+        "answer": "Pause before the protected action, store the proposed arguments, authenticate the reviewer, and bind approval to the exact version of those arguments."
+      },
+      {
+        "question": "A resumed agent forgets retrieved evidence. Why?",
+        "answer": "Evidence may have existed only in local variables or a nonpersistent store. Check checkpoint scope, serialization, and references to durable artifacts."
+      },
+      {
+        "question": "A graph loops between retrieval and planning. What do you fix?",
+        "answer": "Track attempted actions and evidence changes, impose a step limit, and add a no-progress termination rule with a clear failure result."
+      },
+      {
+        "question": "Explain why a framework does not make an agent reliable automatically.",
+        "answer": "Reliability depends on state design, tool contracts, authorization, retry behavior, evaluation, and observability. Demonstrate explicit failure handling."
+      },
+      {
+        "question": "What does a workflow project need beyond a diagram?",
+        "answer": "Include executable transitions, state schema, checkpoint strategy, side-effect tests, recovery examples, and traces for success and failure paths."
+      }
+    ],
+    "code": "def route(state):\n return 'stop' if state['steps']>=3 or state['done'] else 'work'\nprint(route({'steps':3,'done':False}))\n",
+    "expected": "stop",
+    "sources": [
+      "langgraph",
+      "agents"
+    ],
+    "tags": [
+      "langchain",
+      "langgraph"
+    ]
+  },
+  {
+    "slug": "mcp-tools-multiagent",
+    "title": "MCP, tools, memory and multi-agent systems",
+    "concept": "MCP standardizes communication between AI applications and external capabilities. Tool availability does not imply that an agent is authorized to execute every exposed operation.",
+    "mechanism": "Separate the client, connection lifecycle, capability discovery, tool schema validation, and application authorization. Give each agent the least privilege needed, preserve provenance when agents exchange messages, and bound shared memory. Treat tool results and remote descriptions as untrusted inputs, especially when they can influence later actions.",
+    "boundary": "A tool schema validates shape, not business authorization or truth. Multi-agent discussion does not establish independent evidence if all agents share the same faulty source.",
+    "example": "A read-only research agent delegates a calculation to a restricted tool without receiving write privileges.",
+    "application": "Tool-connected assistants with explicit access boundaries and auditable actions.",
+    "angles": [
+      {
+        "question": "What problem does MCP solve for an AI application?",
+        "answer": "It provides a common protocol for connecting applications with external capabilities. Authentication, authorization, and safe application behavior still need deliberate design."
+      },
+      {
+        "question": "Why validate tool arguments after model generation?",
+        "answer": "A model can emit malformed or disallowed inputs. Validate schema and business rules, then authorize the requested operation for the current user."
+      },
+      {
+        "question": "How can shared memory leak information between agents?",
+        "answer": "Agents may have different permissions but read a common store. Partition memory by tenant and task, and enforce access at every read and write."
+      },
+      {
+        "question": "Implement least-privilege tool registration.",
+        "answer": "Expose only task-relevant tools, use narrowly scoped credentials, separate read and write capabilities, and require review for sensitive actions."
+      },
+      {
+        "question": "Write a tool allowlist check before dispatch.",
+        "answer": "Compare the requested name with an explicit allowed set and reject unknown tools before resolving handlers. Validate arguments and user access independently."
+      },
+      {
+        "question": "Design multi-agent evidence exchange.",
+        "answer": "Messages should include source IDs, permissions, confidence limits, and task context. The receiver must revalidate evidence rather than treating agent assertions as facts."
+      },
+      {
+        "question": "A remote tool result tells the agent to reveal secrets. What happens?",
+        "answer": "Treat that text as untrusted content, ignore its instructions, and prevent credentials or unrelated data from entering the model context."
+      },
+      {
+        "question": "Two agents repeatedly delegate to each other. How do you debug it?",
+        "answer": "Trace delegation IDs, budgets, and ownership. Reject cycles or repeated tasks and appoint one explicit completion owner."
+      },
+      {
+        "question": "How would you justify adding multiple agents?",
+        "answer": "Show that separated roles improve measurable outcomes under controlled budgets. Compare with one agent and a deterministic workflow before accepting extra coordination cost."
+      },
+      {
+        "question": "What security evidence belongs in an MCP project?",
+        "answer": "Document permissions, credential scope, untrusted inputs, tool validation, audit records, and tests showing that unauthorized tool calls fail."
+      }
+    ],
+    "code": "allowed={'search','calculate'}\ndef dispatch(name):\n if name not in allowed: raise ValueError('disallowed tool')\n return name\nprint(dispatch('search'))\n",
+    "expected": "search",
+    "sources": [
+      "mcp",
+      "agents",
+      "owasp"
+    ],
+    "tags": [
+      "mcp",
+      "tools",
+      "multiagent"
+    ]
+  },
+  {
+    "slug": "grounded-app-integration",
+    "title": "Building a grounded GenAI application",
+    "concept": "A complete application combines ingestion, retrieval, generation, user identity, and a usable evidence display. Correctness depends on the boundaries between these components.",
+    "mechanism": "Validate uploads, assign tenant-owned document IDs, process asynchronously, and expose ingestion status. Retrieve only active authorized revisions. Render citations through validated identifiers, escape generated text, and keep request traces free of unnecessary sensitive content. Evaluate complete user journeys, including deletion and permission changes, rather than only model responses.",
+    "boundary": "A successful model response does not prove that uploads, deletion, authorization, and citations work correctly across the application.",
+    "example": "A team knowledge assistant displays source passages and removes deleted documents from future answers.",
+    "application": "End-to-end document assistants with trustworthy provenance and lifecycle behavior.",
+    "angles": [
+      {
+        "question": "What makes a document assistant more than a prompt wrapper?",
+        "answer": "It manages document lifecycle, authorization, evidence retrieval, failure states, and source display. These surrounding systems determine whether answers are usable and safe."
+      },
+      {
+        "question": "How should upload status be modeled?",
+        "answer": "Use explicit states such as queued, parsing, indexing, ready, and failed, with retry information. Do not advertise a document as searchable before indexing succeeds."
+      },
+      {
+        "question": "Why can document deletion leave private evidence accessible?",
+        "answer": "Copies may remain in vector indexes, caches, object storage, or traces. A deletion workflow must cover derived artifacts and verify completion."
+      },
+      {
+        "question": "Implement citation rendering safely.",
+        "answer": "Resolve citation IDs against the server-provided authorized evidence map, escape text, and avoid rendering model-provided HTML or arbitrary links."
+      },
+      {
+        "question": "Write a tenant-owned document filter.",
+        "answer": "Match both tenant and active status before returning records. Enforce the same policy in storage queries rather than relying on a browser filter."
+      },
+      {
+        "question": "Design a chat service with asynchronous ingestion.",
+        "answer": "Separate upload workers from interactive requests, expose versioned readiness, enforce backpressure, and prevent chat from reading partially built revisions."
+      },
+      {
+        "question": "A user changes roles during an active conversation. What next?",
+        "answer": "Recheck access for each retrieval and citation display. Previously cached context must not continue granting access after authorization changes."
+      },
+      {
+        "question": "The answer cites a passage that the UI cannot open. How do you investigate?",
+        "answer": "Compare citation IDs, document revisions, access decisions, and source map generation. Reject unresolved citations and add an end-to-end regression case."
+      },
+      {
+        "question": "Describe a production-quality project in an interview without exaggerating usage.",
+        "answer": "Explain implemented capabilities, test workload, measured limits, and unresolved risks. Distinguish a local prototype from verified production deployment."
+      },
+      {
+        "question": "What acceptance tests belong in a grounded application project?",
+        "answer": "Cover upload failure, retriable ingestion, tenant isolation, revision changes, deletion, unsupported questions, valid citations, and user-visible error recovery."
+      }
+    ],
+    "code": "docs=[{'id':'a','tenant':1,'active':True},{'id':'b','tenant':2,'active':True}]\nprint([d['id'] for d in docs if d['tenant']==1 and d['active']])\n",
+    "expected": "['a']",
+    "sources": [
+      "rag",
+      "bedrock",
+      "owasp"
+    ],
+    "tags": [
+      "grounded",
+      "app",
+      "integration"
+    ]
+  }
+]

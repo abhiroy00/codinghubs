@@ -1,0 +1,976 @@
+{
+  "slug": "cloud-devops-automation",
+  "name": "Cloud DevOps & Automation",
+  "focus": "cloud DevOps and automation",
+  "track": "cloud",
+  "tools": [
+    "cloud CLI",
+    "IAM",
+    "VPC networking",
+    "Docker",
+    "Terraform",
+    "monitoring dashboards"
+  ],
+  "projects": [
+    {
+      "name": "cloud DevOps and automation: Foundations case study",
+      "description": "Investigate a focused cloud DevOps and automation scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated cloud DevOps and automation use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable cloud DevOps and automation artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    },
+    {
+      "name": "cloud DevOps and automation: Applied workflow",
+      "description": "Build a small, end-to-end cloud DevOps and automation workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated cloud DevOps and automation use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable cloud DevOps and automation artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    },
+    {
+      "name": "cloud DevOps and automation: Portfolio capstone",
+      "description": "Deliver and explain a complete cloud DevOps and automation capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated cloud DevOps and automation use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable cloud DevOps and automation artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "cloud architecture",
+        "identity and access",
+        "networking"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "cloud-devops-automation",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Cloud foundations and identity",
+      "start": 1,
+      "end": 7,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 1,
+          "id": "cloud-devops-automation:assignment:1",
+          "title": "Shared responsibility for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain shared responsibility for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on shared responsibility for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete shared responsibility for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 2,
+          "id": "cloud-devops-automation:assignment:2",
+          "title": "Regions and availability zones for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain regions and availability zones for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on regions and availability zones for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete regions and availability zones for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 3,
+          "id": "cloud-devops-automation:assignment:3",
+          "title": "Identity boundaries for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain identity boundaries for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on identity boundaries for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete identity boundaries for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 4,
+          "id": "cloud-devops-automation:assignment:4",
+          "title": "Least-privilege policies for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain least-privilege policies for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on least-privilege policies for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete least-privilege policies for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 5,
+          "id": "cloud-devops-automation:assignment:5",
+          "title": "Network segmentation for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain network segmentation for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on network segmentation for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete network segmentation for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "cloud-devops-automation:assignment:6",
+          "title": "Subnets and routes for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain subnets and routes for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on subnets and routes for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete subnets and routes for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "cloud-devops-automation:assignment:7",
+          "title": "Compute selection for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain compute selection for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on compute selection for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete compute selection for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "cloud-devops-automation:assignment:1",
+          "cloud-devops-automation:assignment:2",
+          "cloud-devops-automation:assignment:3",
+          "cloud-devops-automation:assignment:4",
+          "cloud-devops-automation:assignment:5",
+          "cloud-devops-automation:assignment:6",
+          "cloud-devops-automation:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Networking, compute and architecture",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "cloud-devops-automation:assignment:8",
+          "title": "Storage classes for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain storage classes for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on storage classes for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete storage classes for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "cloud-devops-automation:assignment:9",
+          "title": "Managed databases for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain managed databases for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on managed databases for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete managed databases for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "cloud-devops-automation:assignment:10",
+          "title": "Load balancing for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain load balancing for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on load balancing for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete load balancing for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "cloud-devops-automation:assignment:11",
+          "title": "Autoscaling behavior for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain autoscaling behavior for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on autoscaling behavior for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete autoscaling behavior for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "cloud-devops-automation:assignment:12",
+          "title": "Infrastructure as code for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain infrastructure as code for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on infrastructure as code for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete infrastructure as code for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "cloud-devops-automation:assignment:13",
+          "title": "Configuration separation for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain configuration separation for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on configuration separation for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration separation for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "cloud-devops-automation:assignment:14",
+          "title": "Secret management for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain secret management for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on secret management for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secret management for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "cloud-devops-automation:assignment:8",
+          "cloud-devops-automation:assignment:9",
+          "cloud-devops-automation:assignment:10",
+          "cloud-devops-automation:assignment:11",
+          "cloud-devops-automation:assignment:12",
+          "cloud-devops-automation:assignment:13",
+          "cloud-devops-automation:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Reliability, security and operations",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "cloud-devops-automation:assignment:15",
+          "title": "Encryption boundaries for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain encryption boundaries for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on encryption boundaries for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete encryption boundaries for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "cloud-devops-automation:assignment:16",
+          "title": "Logging and audit trails for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain logging and audit trails for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on logging and audit trails for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and audit trails for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "cloud-devops-automation:assignment:17",
+          "title": "Health checks for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain health checks for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on health checks for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete health checks for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "cloud-devops-automation:assignment:18",
+          "title": "Backup and recovery for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain backup and recovery for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on backup and recovery for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete backup and recovery for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "cloud-devops-automation:assignment:19",
+          "title": "High availability for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain high availability for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on high availability for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete high availability for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "cloud-devops-automation:assignment:20",
+          "title": "Disaster recovery objectives for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain disaster recovery objectives for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on disaster recovery objectives for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete disaster recovery objectives for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "cloud-devops-automation:assignment:21",
+          "title": "Container basics for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain container basics for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on container basics for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete container basics for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "cloud-devops-automation:assignment:22",
+          "title": "Deployment pipelines for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain deployment pipelines for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on deployment pipelines for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment pipelines for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "cloud-devops-automation:assignment:15",
+          "cloud-devops-automation:assignment:16",
+          "cloud-devops-automation:assignment:17",
+          "cloud-devops-automation:assignment:18",
+          "cloud-devops-automation:assignment:19",
+          "cloud-devops-automation:assignment:20",
+          "cloud-devops-automation:assignment:21",
+          "cloud-devops-automation:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, architecture review and interviews",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "cloud-devops-automation:assignment:23",
+          "title": "Monitoring signals for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain monitoring signals for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on monitoring signals for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete monitoring signals for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "cloud-devops-automation:assignment:24",
+          "title": "Incident response for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain incident response for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on incident response for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete incident response for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "cloud-devops-automation:assignment:25",
+          "title": "Cost allocation for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain cost allocation for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on cost allocation for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete cost allocation for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "cloud-devops-automation:assignment:26",
+          "title": "Capacity planning for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain capacity planning for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on capacity planning for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete capacity planning for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "cloud-devops-automation:assignment:27",
+          "title": "Service limits for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain service limits for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on service limits for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete service limits for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "cloud-devops-automation:assignment:28",
+          "title": "Architecture trade-offs for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain architecture trade-offs for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on architecture trade-offs for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete architecture trade-offs for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "cloud-devops-automation:assignment:29",
+          "title": "Operational runbooks for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain operational runbooks for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on operational runbooks for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete operational runbooks for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "cloud-devops-automation:assignment:30",
+          "title": "Portfolio walkthrough for cloud DevOps and automation",
+          "available": false,
+          "focus": "cloud DevOps and automation",
+          "objectives": [
+            "Explain portfolio walkthrough for cloud devops and automation in the context of cloud DevOps and automation",
+            "Create a reviewable example using the relevant cloud CLI, IAM, VPC networking tools"
+          ],
+          "assignment": "Create a small cloud DevOps and automation case study focused on portfolio walkthrough for cloud devops and automation. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for cloud devops and automation problem and its acceptance criteria",
+            "Select a suitable tool from cloud CLI, IAM, VPC networking, Docker, Terraform, monitoring dashboards and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "cloud-devops-automation:assignment:23",
+          "cloud-devops-automation:assignment:24",
+          "cloud-devops-automation:assignment:25",
+          "cloud-devops-automation:assignment:26",
+          "cloud-devops-automation:assignment:27",
+          "cloud-devops-automation:assignment:28",
+          "cloud-devops-automation:assignment:29",
+          "cloud-devops-automation:assignment:30"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,692 @@
+{
+  "curriculum": "agentic-ai",
+  "summary": "Available lessons cover LLM Recap for Agent Builders: Tokens, Context Windows and Sampling; What Makes a System Agentic: Autonomy, Goals and the Agency Spectrum; The Agent Loop: Perceive, Reason, Act; ReAct: Interleaving Reasoning and Acting; Tool and Function Calling: Giving the Model Hands; Planning and Task Decomposition; Agent Memory: Short-Term Context and Long-Term Stores; Reflection and Self-Critique: Learning From the Last Attempt.",
+  "complete": false,
+  "missingDays": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "roadmap": [
+    {
+      "day": 1,
+      "title": "LLM Recap for Agent Builders: Tokens, Context Windows and Sampling",
+      "module": "Foundations of agentic systems",
+      "level": "Beginner"
+    },
+    {
+      "day": 2,
+      "title": "What Makes a System Agentic: Autonomy, Goals and the Agency Spectrum",
+      "module": "Foundations of agentic systems",
+      "level": "Beginner"
+    },
+    {
+      "day": 3,
+      "title": "The Agent Loop: Perceive, Reason, Act",
+      "module": "Foundations of agentic systems",
+      "level": "Beginner"
+    },
+    {
+      "day": 4,
+      "title": "ReAct: Interleaving Reasoning and Acting",
+      "module": "Core agent patterns",
+      "level": "Intermediate"
+    },
+    {
+      "day": 5,
+      "title": "Tool and Function Calling: Giving the Model Hands",
+      "module": "Core agent patterns",
+      "level": "Intermediate"
+    },
+    {
+      "day": 6,
+      "title": "Planning and Task Decomposition",
+      "module": "Planning and reasoning",
+      "level": "Intermediate"
+    },
+    {
+      "day": 7,
+      "title": "Agent Memory: Short-Term Context and Long-Term Stores",
+      "module": "Memory and reflection",
+      "level": "Intermediate"
+    },
+    {
+      "day": 8,
+      "title": "Reflection and Self-Critique: Learning From the Last Attempt",
+      "module": "Memory and reflection",
+      "level": "Intermediate"
+    }
+  ],
+  "samples": [
+    {
+      "day": 1,
+      "title": "LLM Recap for Agent Builders: Tokens, Context Windows and Sampling",
+      "level": "Beginner",
+      "definition": "A large language model (LLM) is a neural network, usually a transformer, trained to predict the next token in a sequence. At inference time it repeatedly turns the text so far into a probability distribution over its vocabulary, picks a token, appends it and repeats. Every agent in this course uses an LLM as its reasoning engine, so its limits (context size, cost per token, randomness and lack of memory) shape every design decision.",
+      "objectives": [
+        "Explain how a large language model generates text one token at a time.",
+        "Describe tokens, the context window and why both limit what an agent can do.",
+        "Explain temperature and greedy decoding and choose sensible settings for agents.",
+        "Explain why an LLM is stateless and what that means for building agents.",
+        "Compute a temperature-scaled softmax over next-token scores."
+      ],
+      "interview": [
+        {
+          "question": "How does an LLM generate a response?",
+          "answer": "It tokenizes the input, computes a score for every token in its vocabulary, converts the scores to probabilities with softmax, selects a token (greedily or by sampling), appends it and repeats until a stop token or length limit is reached.",
+          "explanation": "Use the words autoregressive, logits and softmax. Linking token-by-token generation to latency and cost shows you understand the practical consequences."
+        },
+        {
+          "question": "What is a context window, and why does it matter more for agents than for a single chat reply?",
+          "answer": "It is the maximum number of tokens a model can process in one call, including the prompt, history, tool definitions, tool results and output. Agents append every action and observation, so their context grows each loop and hits the limit far sooner than a simple chat.",
+          "explanation": "Strong answers mention reserving space for output and strategies such as trimming, summarising or retrieving only relevant memory."
+        },
+        {
+          "question": "What temperature would you use for an agent that selects tools, and why?",
+          "answer": "A low value, often 0 to 0.3, so the model consistently chooses the most likely tool and produces valid arguments. Higher temperature adds variety, which is a risk when the output must match a schema.",
+          "explanation": "Add that low temperature does not guarantee correctness, so outputs still need schema validation and retries."
+        },
+        {
+          "question": "LLM APIs are stateless. How then does a chatbot remember the conversation?",
+          "answer": "The application stores the history and sends the relevant messages with every request. The model only sees what is in the current call's context.",
+          "explanation": "This is the foundation of agent memory. Mention that resending history increases token cost, which motivates summarisation and retrieval."
+        },
+        {
+          "question": "Why is a raw LLM not an agent?",
+          "answer": "A raw LLM maps one input to one output. It cannot observe the world, call tools, remember across calls or decide to keep working until a goal is met. An agent wraps the model in a loop with tools, memory and stopping logic so it can pursue a goal over several steps.",
+          "explanation": "This bridges to Day 2. Interviewers like the framing that the LLM is the reasoning engine while the surrounding system supplies perception, action and control."
+        }
+      ],
+      "example": {
+        "title": "How one agent step consumes the context window",
+        "body": "A support agent has a 1,200-token system prompt, 800 tokens of tool schemas and a 3,000-token conversation. It calls an order-lookup tool that returns 1,500 tokens of JSON. The next model call must include all 6,500 tokens plus room for the answer. If the agent loops five times, it resends a growing history each time, so the total input tokens for the task can be several times the size of any single call. The code estimates this with a rough four-characters-per-token rule.",
+        "code": {
+          "language": "python",
+          "source": "def estimate_tokens(text):\n    # Rough rule of thumb for English; use the provider's tokenizer for exact counts.\n    return max(1, len(text) // 4)\n\nhistory = ['system prompt ' * 300, 'tool schemas ' * 250]\ntotal_input = 0\nfor step in range(1, 6):\n    history.append('tool result ' * 120)          # each step adds an observation\n    call_tokens = sum(estimate_tokens(m) for m in history)\n    total_input += call_tokens\n    print(f'step {step}: {call_tokens} input tokens')\nprint('total input tokens for the task:', total_input)"
+        }
+      },
+      "practice": {
+        "title": "Temperature-scaled next-token probabilities",
+        "statement": "Read a temperature and a list of candidate tokens with their logits. Convert the logits to probabilities with softmax(z / T) and print each token with its probability, most likely first. When the temperature is 0, use greedy decoding: the highest-logit token gets probability 1 and every other token gets 0 (if several tokens share the highest logit, the first one in the input wins). Tokens with equal probability keep their input order.",
+        "objective": "Implement the softmax-with-temperature step every LLM uses to choose the next token, including the greedy special case used for reliable tool calls."
+      },
+      "takeaways": [
+        "LLMs generate text one token at a time from a probability distribution over the vocabulary.",
+        "Tokens determine cost, latency and how much fits in the context window.",
+        "The context window holds everything: instructions, tools, history, observations and the answer.",
+        "Low temperature suits tool calls and structured output; higher temperature suits ideation.",
+        "LLM calls are stateless, so agents must manage memory explicitly.",
+        "Agents exist to give models memory, tools, feedback and verification they lack on their own."
+      ]
+    },
+    {
+      "day": 2,
+      "title": "What Makes a System Agentic: Autonomy, Goals and the Agency Spectrum",
+      "level": "Beginner",
+      "definition": "An agentic system is software in which a language model decides, at run time, what to do next in order to reach a goal: which tool to call, which path to take and when the task is finished. The more of the control flow the model owns, the more agentic the system is. A workflow follows steps written by a developer; an agent chooses its own steps inside the boundaries the developer sets.",
+      "objectives": [
+        "Define an AI agent and distinguish it from a chatbot, a workflow and a plain program.",
+        "Describe the core properties of agentic systems: goal, autonomy, tools, memory and feedback.",
+        "Place a system on the agency spectrum based on who controls the flow.",
+        "Explain when an agent is the wrong choice and a fixed workflow is better.",
+        "Classify example systems by their level of autonomy in code."
+      ],
+      "interview": [
+        {
+          "question": "What is an AI agent?",
+          "answer": "A system in which an LLM pursues a goal by repeatedly deciding which action to take, executing it through tools, observing the result and deciding again until it judges the goal complete or hits a limit.",
+          "explanation": "Mention goal, autonomy, tools and the feedback loop. Avoid defining an agent as 'a chatbot with a persona'."
+        },
+        {
+          "question": "What is the difference between an agentic workflow and an autonomous agent?",
+          "answer": "In a workflow the developer fixes the sequence of steps and the model fills in each step. In an autonomous agent the model chooses the sequence itself at run time, including how many steps to take.",
+          "explanation": "Strong answers say workflows are often the better production choice and give an example of each."
+        },
+        {
+          "question": "When would you not use an agent?",
+          "answer": "When the steps are known and stable, when strict latency or cost limits apply, when actions are high-risk and must be fully predictable, or when a single well-prompted call already meets the quality bar.",
+          "explanation": "Interviewers value judgement. Saying 'start with the simplest solution and add autonomy only when evaluation shows it helps' is a strong signal."
+        },
+        {
+          "question": "Why do errors compound in agents, and what do you do about it?",
+          "answer": "Each step has some failure probability and later steps depend on earlier ones, so end-to-end success is roughly the product of step reliabilities. Mitigations are fewer and simpler steps, validating outputs at each step, retries, checkpoints, step limits and human review for risky actions.",
+          "explanation": "A quick calculation (0.95 to the power 10 is about 0.6) makes the point memorable."
+        },
+        {
+          "question": "Describe the levels of autonomy you might give an LLM in a product.",
+          "answer": "Level 0 fixed code; level 1 the model only generates content; level 2 the model makes a single routing or tool decision; level 3 the model runs an action loop and decides when to stop; beyond that, several agents coordinate. Each level adds flexibility and risk.",
+          "explanation": "Tying levels to controls (approval, permissions, tracing) shows production thinking."
+        }
+      ],
+      "example": {
+        "title": "Three ways to handle a refund request",
+        "body": "Level 1: an LLM drafts a reply and a human sends it. Level 2: an LLM classifies the email as refund, complaint or query, and fixed code routes it. Level 3: an agent reads the email, looks up the order, checks the refund policy tool, asks the customer for a missing invoice number if needed, issues the refund within a limit and writes the reply. The third system handles more cases without new code, but it needs permission limits and logging because it can move money.",
+        "code": {
+          "language": "python",
+          "source": "def level2_router(llm, email):\n    label = llm(f'Classify as refund, complaint or query: {email}')\n    return {'refund': 'refund_queue', 'complaint': 'escalations'}.get(label, 'faq_bot')\n\ndef level3_agent(llm, tools, goal, max_steps=8):\n    history = [goal]\n    for _ in range(max_steps):\n        decision = llm(history)                      # model chooses the next action\n        if decision['action'] == 'finish':\n            return decision['answer']\n        result = tools[decision['action']](**decision['args'])\n        history.append(result)                       # feedback shapes the next choice\n    return 'stopped: step limit reached'"
+        }
+      },
+      "practice": {
+        "title": "Classify systems on the agency spectrum",
+        "statement": "Each system is described by a name and optional flags: llm (uses a language model), tools (the LLM chooses tool calls), route (the LLM chooses a branch) and loop (the LLM repeats actions and decides when to stop). Missing flags mean no. Assign a level: 0 'fixed code' if llm is not yes; otherwise 3 'agent' if loop is yes; otherwise 2 'LLM router' if tools or route is yes; otherwise 1 'LLM call'. Print each classification, then the number of agents.",
+        "objective": "Apply the 'who controls the flow' test to describe how agentic a system is."
+      },
+      "takeaways": [
+        "A system is agentic to the degree that the model decides the next step.",
+        "Agency is a spectrum: fixed code, single LLM call, router, autonomous loop, multi-agent.",
+        "Workflows are predictable and cheap; agents handle open-ended paths.",
+        "Agents combine a model, instructions, tools, memory, a control loop and guardrails.",
+        "Errors compound across steps, so autonomy must be paired with limits and evaluation.",
+        "Use the least autonomy that solves the problem."
+      ]
+    },
+    {
+      "day": 3,
+      "title": "The Agent Loop: Perceive, Reason, Act",
+      "level": "Beginner",
+      "definition": "The agent loop is the repeating cycle at the heart of every agent: perceive the current state of the environment, reason about what to do next given the goal, act by calling a tool or producing output, then observe the result and repeat. The loop ends when the goal is met or a safety condition such as a step limit, budget or error stops it.",
+      "objectives": [
+        "Describe the perceive–reason–act cycle and map it to LLM agent code.",
+        "Explain the role of observations, state and feedback in each iteration.",
+        "Design stopping conditions: goal reached, step limit, budget and error exits.",
+        "Explain why agents can loop forever and how to prevent it.",
+        "Implement a bounded control loop that reacts to a changing environment."
+      ],
+      "interview": [
+        {
+          "question": "Explain the agent loop.",
+          "answer": "The agent repeatedly perceives the current state (goal, history, latest observation), asks the model to reason about the next action, executes that action through a tool, and feeds the result back as a new observation, until the goal is reached or a stop condition fires.",
+          "explanation": "Name each phase and the stop conditions. Sketching the loop as code is a strong signal."
+        },
+        {
+          "question": "How do you stop an agent from looping forever?",
+          "answer": "Set a maximum step count and a timeout, cap tokens or cost per task, detect repeated identical tool calls, and stop on unrecoverable errors. When a limit triggers, return a partial result and the reason.",
+          "explanation": "Interviewers listen for several independent safety exits, not just 'the model will say it is done'."
+        },
+        {
+          "question": "Should a tool error crash the agent?",
+          "answer": "Usually no. Return a structured error as the observation so the model can retry with different arguments or choose another tool. Only crash or escalate for errors the agent cannot recover from, such as missing credentials.",
+          "explanation": "Mention that errors should be informative but not leak secrets or stack traces to the model or user."
+        },
+        {
+          "question": "How does the agent loop relate to classic AI agent definitions?",
+          "answer": "Classic agents perceive through sensors and act through actuators using a policy. In LLM agents the sensors are messages and tool results, the actuators are tool calls and the policy is the prompted model.",
+          "explanation": "This shows you understand agents as a general concept, not just a framework feature."
+        },
+        {
+          "question": "Why might you verify the goal outside the model rather than trust the model saying it is done?",
+          "answer": "Models can claim success prematurely or hallucinate completion. An external check such as running tests, validating output against a schema or re-querying a system confirms the goal is actually met.",
+          "explanation": "Programmatic verification is one of the biggest reliability wins in production agents."
+        }
+      ],
+      "example": {
+        "title": "A minimal LLM agent loop",
+        "body": "The loop below is model-agnostic. `call_model` returns either a tool request or a final answer. The runtime executes tools, appends observations, and enforces a step limit. Notice that tool errors are returned to the model as observations rather than crashing the loop, so the model can try something else.",
+        "code": {
+          "language": "python",
+          "source": "def run_agent(goal, call_model, tools, max_steps=10):\n    messages = [{'role': 'user', 'content': goal}]          # perceive: initial state\n    for step in range(max_steps):\n        decision = call_model(messages)                    # reason\n        if decision['type'] == 'final':\n            return decision['content']\n        name, args = decision['tool'], decision['args']\n        try:\n            result = tools[name](**args)                   # act\n        except Exception as exc:\n            result = f'error: {exc}'\n        messages.append({'role': 'assistant', 'content': f'call {name} {args}'})\n        messages.append({'role': 'tool', 'content': str(result)})  # observe\n    return 'Stopped: step limit reached without a final answer.'"
+        }
+      },
+      "practice": {
+        "title": "A bounded goal-seeking loop",
+        "statement": "An agent controls a value. Each iteration: perceive the current value; if it equals the target, stop with success; if the agent has already taken max_steps actions, stop with failure. Otherwise reason: move towards the target by min(max_change, distance) in the right direction. Act: apply the move, then apply the environment disturbance for that action (the i-th number on the second line, or 0 if there is none). Print a line per action and a final status line.",
+        "objective": "Implement perceive–reason–act with a goal check and a step limit, in an environment that changes between steps."
+      },
+      "takeaways": [
+        "Every agent runs a perceive–reason–act–observe cycle.",
+        "The LLM is the policy that turns context into the next action.",
+        "Feedback from observations is what lets agents correct course.",
+        "Always define explicit stopping conditions: goal check, step limit, budget, timeout.",
+        "Return tool errors to the model as observations instead of crashing.",
+        "Long loops cost more, so keep observations concise and steps purposeful."
+      ]
+    },
+    {
+      "day": 4,
+      "title": "ReAct: Interleaving Reasoning and Acting",
+      "level": "Intermediate",
+      "definition": "ReAct (Reason + Act) is a prompting and control pattern in which the model alternates between a short natural-language reasoning trace, called a thought, and an action such as a tool call. After each action the environment returns an observation, which becomes the next input, and the cycle repeats until the model emits a final answer. The thought helps the model plan and track state, while the action grounds the next thought in real feedback so the agent corrects course instead of hallucinating a result.",
+      "objectives": [
+        "Explain how the ReAct pattern interleaves thoughts, actions and observations.",
+        "Describe why an explicit reasoning trace improves tool selection and error recovery.",
+        "Compare ReAct with act-only and reason-only prompting.",
+        "Recognise when ReAct's extra tokens are worth the reliability gain.",
+        "Parse and summarise a ReAct trajectory in code."
+      ],
+      "interview": [
+        {
+          "question": "What is the ReAct pattern?",
+          "answer": "ReAct alternates a natural-language reasoning trace with an action and its observation, repeating until the model reaches a final answer. The thought conditions the next decision and the observation grounds it in the environment.",
+          "explanation": "Name the three parts, thought, action and observation, and connect the pattern to the agent loop from Day 3."
+        },
+        {
+          "question": "Why does writing a thought before acting improve agent reliability?",
+          "answer": "It forces the model to commit to a plan and justify its tool choice, which reduces irrelevant tool calls, and it leaves a trace the model can read after an error so it can change approach instead of repeating a failing action.",
+          "explanation": "Mention both better tool selection and better error recovery, and note that the thought is just conditioning text."
+        },
+        {
+          "question": "How does ReAct differ from chain-of-thought prompting?",
+          "answer": "Chain-of-thought produces reasoning with no interaction with the world. ReAct adds actions and observations, so each reasoning step can be checked against real tool output rather than relying on the model's memory.",
+          "explanation": "The key difference is grounding. Reason-only methods cannot detect a wrong assumption until the final answer is wrong."
+        },
+        {
+          "question": "What are the main costs of ReAct?",
+          "answer": "Extra tokens on every iteration for the thoughts and observations, higher latency, faster context growth, and the risk that a confident but wrong thought steers the agent off course.",
+          "explanation": "Trade-off answers are strong. Add mitigations such as concise thoughts, context trimming and validation of actions."
+        },
+        {
+          "question": "Would you use free-text ReAct actions or structured tool calls in production, and why?",
+          "answer": "Structured tool calls, because the runtime validates the tool name and arguments against a schema, which prevents malformed actions and injection through free text. The reasoning trace can still be kept as a private thought field.",
+          "explanation": "This bridges to Day 5 and shows you understand the safety and reliability advantages of schema-bound actions."
+        }
+      ],
+      "example": {
+        "title": "A ReAct transcript for a two-step question",
+        "body": "The agent must answer 'what is half the population of France?'. It writes a thought, searches, reads the observation, writes a second thought, computes, and finally answers. Each line is appended to the transcript, so by the last call the model sees the whole reasoning trail plus the two grounded observations.",
+        "code": {
+          "language": "text",
+          "source": "Thought: I need the population of France before I can halve it.\nAction: search[population of France]\nObservation: about 68 million\nThought: I have 68 million, so half is 34 million. Let me confirm with the calculator.\nAction: calculator[68 / 2]\nObservation: 34\nThought: Both facts are grounded, so I can answer.\nFinal Answer: about 34 million"
+        }
+      },
+      "practice": {
+        "title": "Parse and summarise a ReAct trajectory",
+        "statement": "A ReAct transcript contains lines that begin with 'Thought:', 'Action:', 'Observation:' or 'Final Answer:'. For each Action, in order, print 'step k: <tool>(<arg>) -> <observation>' where the observation is the text of the next line if that line starts with 'Observation:', otherwise '(none)'. An Action is written as 'Action: <tool>[<arg>]'. After all action lines, print the counts of Thought, Action and Observation lines. Blank lines are ignored.",
+        "objective": "Read a ReAct transcript, pair each action with the observation that follows it, and count the lines of each type."
+      },
+      "takeaways": [
+        "ReAct interleaves a reasoning trace with tool actions and their observations.",
+        "The explicit thought improves tool selection and makes the plan auditable.",
+        "Observations ground the reasoning, which reduces hallucination.",
+        "Every thought and observation is extra context, so ReAct costs more tokens.",
+        "ReAct is a pattern; structured tool calling is how production systems implement the action step.",
+        "Always pair a reasoning trace with validation and stopping conditions."
+      ]
+    },
+    {
+      "day": 5,
+      "title": "Tool and Function Calling: Giving the Model Hands",
+      "level": "Intermediate",
+      "definition": "Tool calling, also called function calling, is a mechanism in which the model is given a list of tools described by schemas and can respond not with prose but with a structured request to invoke one of them. The application executes the tool, returns the result as a message, and the model continues. It is the bridge between reasoning and action: the model decides what to call and with which arguments, while ordinary code performs the call and enforces the rules.",
+      "objectives": [
+        "Explain how function calling turns model output into structured tool invocations.",
+        "Describe a tool schema and the role of names, parameters and descriptions.",
+        "Design tools that are easy for a model to select and use correctly.",
+        "Validate tool arguments against a schema and return errors the model can fix.",
+        "Validate a tool call against its schema in code."
+      ],
+      "interview": [
+        {
+          "question": "What is function calling?",
+          "answer": "A mechanism where the model is given tool schemas and can respond with a structured request to call one, including typed arguments. The application validates and executes the call, then returns the result so the model can continue.",
+          "explanation": "Emphasise the split of responsibilities: the model decides, the code executes and enforces rules."
+        },
+        {
+          "question": "What makes a good tool description?",
+          "answer": "It states what the tool does, when to use it, what each parameter means and what the result looks like. It is specific enough to distinguish the tool from similar ones, because the model chooses between tools by reading these descriptions.",
+          "explanation": "Mention that overlapping descriptions are a common cause of wrong tool selection, and that enums reduce invalid values."
+        },
+        {
+          "question": "How should an agent handle a tool that returns an error?",
+          "answer": "Catch the error and return it as a structured observation with enough detail for the model to fix the arguments or choose another tool, rather than crashing the loop. Do not leak secrets or stack traces.",
+          "explanation": "This connects to the error-handling point from the agent loop and keeps the agent self-correcting."
+        },
+        {
+          "question": "Why is it dangerous to rely on the prompt for permissions?",
+          "answer": "A prompt is just text the model may be talked out of following, especially by injected content in a tool result. Authorisation, rate limits and destructive-action gating must be enforced in code at execution time.",
+          "explanation": "This previews prompt-injection defence and shows you treat the model as untrusted for security decisions."
+        },
+        {
+          "question": "Would you give an agent one general tool or several specific tools?",
+          "answer": "Several specific tools, because a single tool with a mode flag forces the model to encode intent in a parameter it may get wrong, and it makes validation and permissions coarser. Specific tools have clear names, typed arguments and narrow effects.",
+          "explanation": "Connect tool granularity to validation, safety and selection accuracy."
+        }
+      ],
+      "example": {
+        "title": "A tool schema and the call it produces",
+        "body": "The application advertises a weather tool with a city string and an optional unit enum. When the user asks about Paris in Celsius, the model does not write prose; it returns a structured call naming the tool and filling the arguments. The runtime validates the arguments, runs the tool and appends the result for the model to summarise.",
+        "code": {
+          "language": "json",
+          "source": "{\n  \"name\": \"get_weather\",\n  \"description\": \"Return the current weather for a city.\",\n  \"parameters\": {\n    \"city\": {\"type\": \"string\", \"required\": true},\n    \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"], \"required\": false}\n  }\n}\n// model output for 'weather in Paris in celsius'\n{\"tool\": \"get_weather\", \"arguments\": {\"city\": \"Paris\", \"unit\": \"celsius\"}}"
+        }
+      },
+      "practice": {
+        "title": "Validate a tool call against its schema",
+        "statement": "Read a set of tool schemas and one requested call. A schema line is '<tool> <param>:<type> ...' where type is int, float or string. A call line is '<tool> <param>=<value> ...'. Print 'VALID <tool>' when the tool exists, every required parameter is supplied and every value matches its type. Otherwise print 'INVALID <reason>' with reason 'unknown tool', 'missing <param>' for the first missing parameter in schema order, or 'bad type <param>' for the first parameter whose value has the wrong type.",
+        "objective": "Check that a requested tool exists and that every required argument is present and has the declared type."
+      },
+      "takeaways": [
+        "Function calling replaces fragile text parsing with a schema-bound contract.",
+        "The model selects and fills the call; the application validates and executes it.",
+        "Clear tool names and descriptions are the biggest lever on tool-selection accuracy.",
+        "Return tool errors as observations so the model can correct its arguments.",
+        "Enforce permissions and limits in code, never in the prompt alone.",
+        "Keep tools few, distinct and specific, and keep their results small."
+      ]
+    },
+    {
+      "day": 6,
+      "title": "Planning and Task Decomposition",
+      "level": "Intermediate",
+      "definition": "Planning is the agent skill of breaking a goal into smaller sub-tasks and deciding the order in which to do them before or while acting. Task decomposition produces the sub-tasks; a plan records their sequence and dependencies. A good plan makes progress visible, exposes parallelism and gives the agent checkpoints, but it must stay revisable because real environments return surprises that invalidate the original plan.",
+      "objectives": [
+        "Explain how planning turns a high-level goal into an ordered set of sub-tasks.",
+        "Describe plan-and-execute and why plans are often revised mid-task.",
+        "Recognise dependencies between sub-tasks and order them correctly.",
+        "Compare upfront planning with step-by-step ReAct reasoning.",
+        "Produce a valid execution order from a set of task dependencies in code."
+      ],
+      "interview": [
+        {
+          "question": "Why do agents need planning at all?",
+          "answer": "Step-by-step reasoning can wander or repeat on long tasks. A plan decomposes the goal into concrete sub-tasks with an order and dependencies, which keeps progress visible, enables checkpoints and makes the task easier to evaluate.",
+          "explanation": "Contrast planning with pure ReAct and mention that plans must stay revisable."
+        },
+        {
+          "question": "Compare plan-and-execute with ReAct.",
+          "answer": "Plan-and-execute writes the whole plan first and then runs it, which is cheaper for long structured tasks. ReAct decides one action at a time, which adapts faster to surprises but can lose the thread. Many systems combine a coarse plan with ReAct-style reasoning inside each step.",
+          "explanation": "The trade-off is commitment and efficiency versus adaptivity. Naming the hybrid shows practical experience."
+        },
+        {
+          "question": "How do you handle dependencies between sub-tasks?",
+          "answer": "Model them as a directed graph and execute in a topological order so each task runs after the tasks it depends on. Independent tasks can run in parallel, and a cycle means the plan is invalid and must be rewritten.",
+          "explanation": "Mention that a cycle is a design error, not something to retry, and that parallel branches cut wall-clock time."
+        },
+        {
+          "question": "When should an agent replan?",
+          "answer": "When a step fails, returns unexpected data, or makes a later step unnecessary. The agent marks the affected steps, keeps completed work, and regenerates only the remaining plan, with a bound on how many times it may replan.",
+          "explanation": "Interviewers look for bounded replanning that preserves progress rather than restarting the whole task."
+        },
+        {
+          "question": "What are the risks of a very detailed upfront plan?",
+          "answer": "It is brittle: a wrong assumption early on invalidates many later steps, it costs tokens and latency to generate, and the agent may follow it without checking reality. Coarse plans with per-step verification are usually more robust.",
+          "explanation": "This shows judgement about planning depth and the value of verification over blind plan-following."
+        }
+      ],
+      "example": {
+        "title": "Decomposing a report task into a dependency graph",
+        "body": "The goal 'write a competitor comparison' becomes five sub-tasks. Gathering sources and listing competitors can start immediately. Extracting pricing needs the sources. Comparing features needs both the competitor list and the pricing. Drafting the report needs the comparison. A valid order must run the two independent tasks first, then respect each arrow.",
+        "code": {
+          "language": "text",
+          "source": "goal: write a competitor comparison\n\ngather_sources        (no deps)\nlist_competitors      (no deps)\nextract_pricing       -> gather_sources\ncompare_features      -> list_competitors, extract_pricing\ndraft_report          -> compare_features"
+        }
+      },
+      "practice": {
+        "title": "Order sub-tasks by their dependencies",
+        "statement": "Each sub-task is given as a line '<name> <dependency> ...'. Produce an execution order in which every task appears after all of its dependencies. Whenever several tasks are ready, choose the alphabetically smallest. Print one task name per line. If the dependencies contain a cycle so that no valid order exists, print 'cycle' instead.",
+        "objective": "Compute a deterministic topological order of sub-tasks and detect an impossible plan that contains a dependency cycle."
+      },
+      "takeaways": [
+        "Planning decomposes a goal into ordered, checkable sub-tasks.",
+        "Plan-and-execute commits to a plan; ReAct adapts one step at a time.",
+        "Dependencies form a graph and a valid order respects every arrow.",
+        "Independent tasks can run in parallel; cycles make a plan impossible.",
+        "Replan when a step fails or invalidates later work, without discarding finished work.",
+        "Plan coarsely, verify each step and keep the goal fixed while the path changes."
+      ]
+    }
+  ],
+  "firstLesson": {
+    "day": 1,
+    "title": "LLM Recap for Agent Builders: Tokens, Context Windows and Sampling",
+    "module": "Foundations of agentic systems",
+    "level": "Beginner",
+    "objectives": [
+      "Explain how a large language model generates text one token at a time.",
+      "Describe tokens, the context window and why both limit what an agent can do.",
+      "Explain temperature and greedy decoding and choose sensible settings for agents.",
+      "Explain why an LLM is stateless and what that means for building agents.",
+      "Compute a temperature-scaled softmax over next-token scores."
+    ],
+    "definition": "A large language model (LLM) is a neural network, usually a transformer, trained to predict the next token in a sequence. At inference time it repeatedly turns the text so far into a probability distribution over its vocabulary, picks a token, appends it and repeats. Every agent in this course uses an LLM as its reasoning engine, so its limits (context size, cost per token, randomness and lack of memory) shape every design decision.",
+    "theory": [
+      {
+        "heading": "Tokens and next-token prediction",
+        "body": "Models do not read characters or whole words; they read tokens, which are sub-word pieces produced by a tokenizer. In English one token is roughly four characters, while Hindi or code can use more tokens per word. Generation is autoregressive: the model scores every token in its vocabulary, converts the scores (logits) into probabilities with softmax, chooses one token and feeds the longer sequence back in. This is why output is produced left to right and why long answers take longer and cost more.",
+        "points": [
+          "Pricing, rate limits and context sizes are all measured in tokens.",
+          "Input tokens (the prompt) and output tokens (the answer) are usually priced differently; output is more expensive.",
+          "Latency grows with the number of output tokens because they are generated one after another."
+        ]
+      },
+      {
+        "heading": "The context window",
+        "body": "The context window is the maximum number of tokens the model can attend to in one call, counting the system prompt, conversation history, tool definitions, tool results and the answer being generated. An agent fills its context quickly because every tool call and observation is appended to the history. When the limit is reached, something must be dropped or summarised, and models also attend less reliably to facts buried in the middle of very long contexts.",
+        "points": [
+          "Budget = system prompt + tool schemas + history + retrieved data + space reserved for output.",
+          "Large windows help but cost more per call and do not guarantee the model uses everything well.",
+          "Context management (Days 11–13) is a core agent-engineering skill."
+        ]
+      },
+      {
+        "heading": "Sampling: temperature, greedy decoding and top-p",
+        "body": "Softmax with temperature T computes p_i = exp(z_i / T) / sum_j exp(z_j / T). A low temperature sharpens the distribution so the most likely token dominates; a high temperature flattens it and increases variety. Temperature 0 is treated as greedy decoding: always pick the highest-scoring token. Top-p (nucleus) sampling keeps only the smallest set of tokens whose probabilities add up to p. Agents that must emit valid tool calls or JSON usually run at low temperature for consistency, while brainstorming steps can use higher values.",
+        "points": [
+          "Low temperature: more deterministic, better for tool calls, extraction and classification.",
+          "High temperature: more diverse, useful for ideation or generating several candidate plans.",
+          "Even at temperature 0, hosted models are not guaranteed to be bit-for-bit identical across runs."
+        ]
+      },
+      {
+        "heading": "Statelessness and what an LLM cannot do alone",
+        "body": "An LLM API call is stateless: the model remembers nothing between calls, so the application must resend the relevant history every time. A bare model also has a training cut-off, cannot browse, run code, query a database or take actions, and can hallucinate confident but wrong facts. Agentic systems exist to close exactly these gaps: they wrap the model in a loop that supplies memory, calls tools, observes results and checks progress.",
+        "points": [
+          "Memory is an application feature, not a model feature.",
+          "Tools give access to fresh data and the ability to act.",
+          "Verification steps and grounding reduce the impact of hallucinations."
+        ]
+      },
+      {
+        "heading": "Why this matters in agent interviews",
+        "body": "Interviewers often start an agent discussion by checking these basics, because poor answers here lead to poor designs: an engineer who forgets that every loop iteration resends the whole history will underestimate cost and latency, and one who runs tool selection at high temperature will see flaky behaviour. Connect each LLM property to an agent design consequence when you answer.",
+        "points": [
+          "Tokens drive cost and latency of every step in an agent loop.",
+          "Context limits drive memory and summarisation strategies.",
+          "Randomness drives the need for validation, retries and evaluation."
+        ]
+      }
+    ],
+    "example": {
+      "title": "How one agent step consumes the context window",
+      "body": "A support agent has a 1,200-token system prompt, 800 tokens of tool schemas and a 3,000-token conversation. It calls an order-lookup tool that returns 1,500 tokens of JSON. The next model call must include all 6,500 tokens plus room for the answer. If the agent loops five times, it resends a growing history each time, so the total input tokens for the task can be several times the size of any single call. The code estimates this with a rough four-characters-per-token rule.",
+      "code": {
+        "language": "python",
+        "source": "def estimate_tokens(text):\n    # Rough rule of thumb for English; use the provider's tokenizer for exact counts.\n    return max(1, len(text) // 4)\n\nhistory = ['system prompt ' * 300, 'tool schemas ' * 250]\ntotal_input = 0\nfor step in range(1, 6):\n    history.append('tool result ' * 120)          # each step adds an observation\n    call_tokens = sum(estimate_tokens(m) for m in history)\n    total_input += call_tokens\n    print(f'step {step}: {call_tokens} input tokens')\nprint('total input tokens for the task:', total_input)"
+      }
+    },
+    "use_cases": [
+      {
+        "title": "Choosing a model for an agent",
+        "description": "Comparing context size, price per million tokens and tool-calling quality before committing to a model for a production agent."
+      },
+      {
+        "title": "Tuning tool-calling reliability",
+        "description": "Lowering temperature for steps that must produce valid function calls or JSON, and raising it only for creative sub-tasks."
+      },
+      {
+        "title": "Cost forecasting",
+        "description": "Estimating how many tokens a multi-step task consumes so that product teams can price a feature or set per-user limits."
+      },
+      {
+        "title": "Debugging forgotten instructions",
+        "description": "Recognising that a long tool result pushed early instructions out of the window or into the poorly attended middle of the context."
+      }
+    ],
+    "demonstration": {
+      "description": "Apply temperature-scaled softmax to three candidate next tokens with logits Paris = 2.0, Lyon = 1.0 and Delhi = 0.0. Lower temperature concentrates probability on the top token; higher temperature spreads it out; temperature 0 becomes greedy decoding.",
+      "code": {
+        "language": "python",
+        "source": "import math\n\ndef softmax(logits, t):\n    scaled = [z / t for z in logits]\n    m = max(scaled)\n    exps = [math.exp(s - m) for s in scaled]   # subtract max for numerical stability\n    total = sum(exps)\n    return [e / total for e in exps]\n\nfor t in (0.5, 1.0, 2.0):\n    print(t, [round(p, 3) for p in softmax([2.0, 1.0, 0.0], t)])"
+      },
+      "output": "0.5 [0.867, 0.117, 0.016]\n1.0 [0.665, 0.245, 0.09]\n2.0 [0.506, 0.307, 0.186]"
+    },
+    "takeaways": [
+      "LLMs generate text one token at a time from a probability distribution over the vocabulary.",
+      "Tokens determine cost, latency and how much fits in the context window.",
+      "The context window holds everything: instructions, tools, history, observations and the answer.",
+      "Low temperature suits tool calls and structured output; higher temperature suits ideation.",
+      "LLM calls are stateless, so agents must manage memory explicitly.",
+      "Agents exist to give models memory, tools, feedback and verification they lack on their own."
+    ],
+    "interview": [
+      {
+        "question": "How does an LLM generate a response?",
+        "answer": "It tokenizes the input, computes a score for every token in its vocabulary, converts the scores to probabilities with softmax, selects a token (greedily or by sampling), appends it and repeats until a stop token or length limit is reached.",
+        "explanation": "Use the words autoregressive, logits and softmax. Linking token-by-token generation to latency and cost shows you understand the practical consequences."
+      },
+      {
+        "question": "What is a context window, and why does it matter more for agents than for a single chat reply?",
+        "answer": "It is the maximum number of tokens a model can process in one call, including the prompt, history, tool definitions, tool results and output. Agents append every action and observation, so their context grows each loop and hits the limit far sooner than a simple chat.",
+        "explanation": "Strong answers mention reserving space for output and strategies such as trimming, summarising or retrieving only relevant memory."
+      },
+      {
+        "question": "What temperature would you use for an agent that selects tools, and why?",
+        "answer": "A low value, often 0 to 0.3, so the model consistently chooses the most likely tool and produces valid arguments. Higher temperature adds variety, which is a risk when the output must match a schema.",
+        "explanation": "Add that low temperature does not guarantee correctness, so outputs still need schema validation and retries."
+      },
+      {
+        "question": "LLM APIs are stateless. How then does a chatbot remember the conversation?",
+        "answer": "The application stores the history and sends the relevant messages with every request. The model only sees what is in the current call's context.",
+        "explanation": "This is the foundation of agent memory. Mention that resending history increases token cost, which motivates summarisation and retrieval."
+      },
+      {
+        "question": "Why is a raw LLM not an agent?",
+        "answer": "A raw LLM maps one input to one output. It cannot observe the world, call tools, remember across calls or decide to keep working until a goal is met. An agent wraps the model in a loop with tools, memory and stopping logic so it can pursue a goal over several steps.",
+        "explanation": "This bridges to Day 2. Interviewers like the framing that the LLM is the reasoning engine while the surrounding system supplies perception, action and control."
+      }
+    ],
+    "practice": {
+      "kind": "coding",
+      "title": "Temperature-scaled next-token probabilities",
+      "difficulty": "Basic",
+      "objective": "Implement the softmax-with-temperature step every LLM uses to choose the next token, including the greedy special case used for reliable tool calls.",
+      "statement": "Read a temperature and a list of candidate tokens with their logits. Convert the logits to probabilities with softmax(z / T) and print each token with its probability, most likely first. When the temperature is 0, use greedy decoding: the highest-logit token gets probability 1 and every other token gets 0 (if several tokens share the highest logit, the first one in the input wins). Tokens with equal probability keep their input order.",
+      "language": "python",
+      "input_format": "First line: temperature T (a non-negative number). Each following line: a token and its logit separated by a space.",
+      "output_format": "One line per token: '<token> <probability>' with the probability to 3 decimal places, sorted by probability descending, ties in input order.",
+      "example": {
+        "input": "1\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+        "output": "Paris 0.665\nLyon 0.245\nDelhi 0.090"
+      },
+      "constraints": [
+        "1 to 50 tokens; tokens contain no spaces.",
+        "Logits are between -50 and 50.",
+        "0 <= T <= 10. Subtract the maximum scaled logit before exponentiating for numerical stability."
+      ],
+      "starter": "import math\nimport sys\n\nlines = sys.stdin.read().splitlines()\nt = float(lines[0])\npairs = [line.split() for line in lines[1:] if line.strip()]\n\n# TODO: compute probabilities (greedy when t == 0), sort and print\n",
+      "solution": "import math\nimport sys\n\nlines = sys.stdin.read().splitlines()\nt = float(lines[0])\npairs = [line.split() for line in lines[1:] if line.strip()]\ntokens = [p[0] for p in pairs]\nlogits = [float(p[1]) for p in pairs]\n\nif t == 0:\n    best = logits.index(max(logits))\n    probs = [1.0 if i == best else 0.0 for i in range(len(tokens))]\nelse:\n    scaled = [z / t for z in logits]\n    m = max(scaled)\n    exps = [math.exp(s - m) for s in scaled]\n    total = sum(exps)\n    probs = [e / total for e in exps]\n\norder = sorted(range(len(tokens)), key=lambda i: (-probs[i], i))\nfor i in order:\n    print(f'{tokens[i]} {probs[i]:.3f}')\n",
+      "explanation": [
+        "Parse the temperature and the token/logit pairs.",
+        "For T = 0, give probability 1 to the first token with the maximum logit (greedy decoding).",
+        "Otherwise divide each logit by T, subtract the maximum to avoid overflow, exponentiate and normalise.",
+        "Sort by probability descending, using the input index as a tie-breaker, and print with three decimals."
+      ],
+      "tests": [
+        {
+          "input": "1\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+          "output": "Paris 0.665\nLyon 0.245\nDelhi 0.090"
+        },
+        {
+          "input": "0\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+          "output": "Paris 1.000\nLyon 0.000\nDelhi 0.000"
+        },
+        {
+          "input": "0.5\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+          "output": "Paris 0.867\nLyon 0.117\nDelhi 0.016"
+        },
+        {
+          "input": "2\nParis 2.0\nLyon 1.0\nDelhi 0.0\n",
+          "output": "Paris 0.506\nLyon 0.307\nDelhi 0.186"
+        },
+        {
+          "input": "1\nx 0.5\ny 3.0\nz 0.5\n",
+          "output": "y 0.859\nx 0.071\nz 0.071"
+        },
+        {
+          "input": "0\nsearch 4\ncalculator 4\nfinish 1\n",
+          "output": "search 1.000\ncalculator 0.000\nfinish 0.000"
+        }
+      ]
+    },
+    "quiz": [
+      {
+        "type": "concept",
+        "question": "Which items count against an LLM's context window during an agent step?",
+        "options": [
+          "The system prompt, tool definitions, history, tool results and the generated output",
+          "Only the tool definitions",
+          "Only the user's latest message",
+          "Only the generated answer"
+        ],
+        "answer": 0,
+        "explanation": "Everything the model reads in the call and everything it writes shares the same token limit."
+      },
+      {
+        "type": "concept",
+        "question": "What happens to a softmax distribution as temperature is lowered towards 0?",
+        "options": [
+          "It becomes sharper and the top token dominates",
+          "It becomes uniform across all tokens",
+          "It reverses the token ranking",
+          "It has no effect on probabilities"
+        ],
+        "answer": 0,
+        "explanation": "Dividing logits by a small T magnifies differences between them, so the highest-scoring token takes almost all the probability."
+      },
+      {
+        "type": "scenario",
+        "question": "A chatbot forgets what the user said two turns ago after a code change. What is the most likely cause?",
+        "options": [
+          "The tokenizer was changed",
+          "The application stopped sending earlier messages with each request",
+          "The model's weights were reset",
+          "The temperature was set too low"
+        ],
+        "answer": 1,
+        "explanation": "LLM calls are stateless; the model only knows the history the application includes in each call."
+      },
+      {
+        "type": "output",
+        "question": "Logits are A = 1.0 and B = 1.0 at temperature 1. What probability does softmax give token A?",
+        "options": [
+          "1.0",
+          "0.5",
+          "0.0",
+          "0.73"
+        ],
+        "answer": 1,
+        "explanation": "Equal logits produce equal exponentials, so each of the two tokens gets half the probability."
+      },
+      {
+        "type": "scenario",
+        "question": "An agent frequently emits malformed tool-call arguments. Which change should you try first?",
+        "options": [
+          "Lower the temperature and validate arguments against the tool schema",
+          "Switch to a model with a smaller context window",
+          "Raise the temperature to 1.5",
+          "Remove the tool descriptions to save tokens"
+        ],
+        "answer": 0,
+        "explanation": "Lower temperature reduces random deviations, and schema validation catches the errors that remain so they can be retried."
+      }
+    ]
+  }
+}

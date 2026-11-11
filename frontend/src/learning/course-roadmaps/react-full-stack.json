@@ -1,0 +1,2239 @@
+{
+  "slug": "react-full-stack",
+  "name": "React Full Stack",
+  "focus": "React application development",
+  "track": "development",
+  "tools": [
+    "Git",
+    "REST APIs",
+    "SQL",
+    "VS Code",
+    "Docker",
+    "automated tests"
+  ],
+  "projects": [
+    {
+      "name": "React application development: Foundations case study",
+      "description": "Investigate a focused React application development scenario and document a sound baseline.",
+      "objectives": [
+        "Frame the problem",
+        "Record assumptions",
+        "Present evidence"
+      ],
+      "requirements": [
+        "A clearly stated React application development use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable React application development artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    },
+    {
+      "name": "React application development: Applied workflow",
+      "description": "Build a small, end-to-end React application development workflow that addresses a realistic user or operational need.",
+      "objectives": [
+        "Translate requirements into steps",
+        "Validate important edge cases",
+        "Document trade-offs"
+      ],
+      "requirements": [
+        "A clearly stated React application development use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable React application development artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    },
+    {
+      "name": "React application development: Portfolio capstone",
+      "description": "Deliver and explain a complete React application development capstone with evidence of quality, safety and iteration.",
+      "objectives": [
+        "Plan a scoped milestone",
+        "Review the result against criteria",
+        "Prepare a concise walkthrough"
+      ],
+      "requirements": [
+        "A clearly stated React application development use case",
+        "A short plan with measurable acceptance criteria",
+        "A final result with evidence and limitations"
+      ],
+      "steps": [
+        "Define the audience, goal and constraints.",
+        "Create a small baseline and test it.",
+        "Improve the result using feedback and evidence.",
+        "Document decisions, limitations and next steps."
+      ],
+      "outcome": "A reviewable React application development artifact with a short explanation of its design and evidence.",
+      "skills": [
+        "programming fundamentals",
+        "application architecture",
+        "API and database design"
+      ]
+    }
+  ],
+  "hasCoding": true,
+  "primary": "react-full-stack",
+  "levels": [
+    {
+      "level": 1,
+      "title": "Programming and application foundations",
+      "start": 1,
+      "end": 7,
+      "articles": [
+        {
+          "id": "react-full-stack:article:1",
+          "slug": "day-1",
+          "lesson": {
+            "day": 1,
+            "title": "Scope, Closures and Functions: The JavaScript Behind React",
+            "module": "JavaScript essentials for React",
+            "level": "Beginner",
+            "objectives": [
+              "Explain lexical scope and the difference between var, let and const.",
+              "Define a closure and describe what a function 'remembers' after its outer function returns.",
+              "Use closures to create private state, the same idea React hooks rely on.",
+              "Recognise the stale-closure bug and explain why it appears in React event handlers and effects.",
+              "Answer common closure interview questions, including the classic loop-with-setTimeout puzzle."
+            ],
+            "definition": "Scope decides where a variable can be read. JavaScript uses lexical scope: a function can see the variables that existed where it was written, not where it is called. A closure is a function together with the variables from its surrounding scope that it keeps alive, so it can still read and update them after the outer function has finished running.",
+            "theory": [
+              {
+                "heading": "Lexical scope and block scope",
+                "body": "Every function creates a new scope, and with let and const every block ({ ... }) does too. When JavaScript looks up a name it searches the current scope, then the enclosing one, and so on up to the global scope; this chain is fixed by where the code is written. var is function-scoped and hoisted with the value undefined, which caused many bugs; let and const are block-scoped and sit in a 'temporal dead zone' until their declaration runs. Modern React code uses const by default and let only when a variable must be reassigned.",
+                "points": [
+                  "var: function scope, hoisted as undefined, can be redeclared.",
+                  "let: block scope, can be reassigned, cannot be read before its declaration.",
+                  "const: block scope, cannot be reassigned (the object it points to can still be mutated).",
+                  "Lookup goes outward through enclosing scopes, never inward."
+                ]
+              },
+              {
+                "heading": "What a closure is",
+                "body": "When an inner function refers to a variable of an outer function, the engine keeps that variable alive as long as the inner function exists. The inner function 'closes over' the variable. This is not a copy of the value: it is a live reference to the binding, so updates made by one closure are visible to every other closure that shares the same scope.",
+                "points": [
+                  "Closures are created every time a function is created, not only when it is returned.",
+                  "Each call to the outer function creates a fresh set of variables, so two counters do not share state.",
+                  "Closures enable data privacy: the variable cannot be reached except through the returned functions."
+                ]
+              },
+              {
+                "heading": "Why closures matter in React",
+                "body": "A function component is just a function that runs on every render. Event handlers, effect callbacks and callbacks passed to children are closures created during that render, so they see the props and state of that specific render. This is why React feels predictable, and also why a handler created in an old render can read an old value: the 'stale closure' problem. useState itself is built on the same idea: React stores state outside your function and hands each render a snapshot.",
+                "points": [
+                  "Each render has its own props, state and handlers (a snapshot).",
+                  "A stale closure reads values from an earlier render, often inside setInterval or an effect with missing dependencies.",
+                  "Fixes: functional updates (setCount(c => c + 1)), correct dependency arrays, or a ref for the latest value."
+                ]
+              },
+              {
+                "heading": "Arrow functions and this",
+                "body": "Arrow functions do not have their own this, arguments or prototype; they use this from the enclosing scope. In class components developers bound methods or used arrow class fields to keep this pointing at the component. Function components avoid this entirely, which is one reason closures replaced this-based patterns in modern React.",
+                "points": [
+                  "Arrow functions are concise and ideal for callbacks such as items.map(item => ...).",
+                  "Regular functions get this from how they are called; arrows take it from where they are defined."
+                ]
+              },
+              {
+                "heading": "Costs and pitfalls",
+                "body": "Closures keep their captured variables in memory, so a long-lived closure (for example a listener that is never removed) can keep large objects alive and cause leaks. In React, creating new closures on every render is normally cheap; it only matters when a new function identity breaks memoisation of a child, which is what useCallback addresses later in the course.",
+                "points": [
+                  "Remove event listeners and clear timers in cleanup functions.",
+                  "New function identity each render is fine unless a memoised child or a dependency array depends on it."
+                ]
+              }
+            ],
+            "example": {
+              "title": "A counter with private state",
+              "body": "makeCounter returns three functions that share one private variable. Nothing outside can change count except through these functions, and two counters made by separate calls are independent because each call creates a new scope.",
+              "code": {
+                "language": "javascript",
+                "source": "function makeCounter(start = 0) {\n  let count = start;            // private, kept alive by the closures below\n  return {\n    increment: () => ++count,\n    decrement: () => --count,\n    value: () => count\n  };\n}\n\nconst a = makeCounter();\nconst b = makeCounter(10);\na.increment();\na.increment();\nb.decrement();\nconsole.log(a.value(), b.value()); // 2 9"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "React hooks",
+                "description": "useState, useEffect and custom hooks rely on functions that capture the props and state of the render in which they were created."
+              },
+              {
+                "title": "Event handlers",
+                "description": "onClick={() => removeItem(item.id)} closes over item, so each button knows which item it belongs to."
+              },
+              {
+                "title": "Debounce and throttle",
+                "description": "Utility functions keep the timer id in a closure so repeated calls can cancel the previous timer."
+              },
+              {
+                "title": "Module privacy",
+                "description": "Factory functions and modules hide internal variables and expose only a small public API."
+              },
+              {
+                "title": "Memoisation",
+                "description": "A memoize helper stores its cache in a closure so that results persist between calls without a global variable."
+              }
+            ],
+            "demonstration": {
+              "description": "The classic interview puzzle: the same loop prints different results with var and let. With var there is one shared binding that has reached 3 when the timers fire; with let each iteration gets a fresh binding that each callback closes over.",
+              "code": {
+                "language": "javascript",
+                "source": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log('var', i), 0);\n}\nfor (let j = 0; j < 3; j++) {\n  setTimeout(() => console.log('let', j), 0);\n}"
+              },
+              "output": "var 3\nvar 3\nvar 3\nlet 0\nlet 1\nlet 2"
+            },
+            "takeaways": [
+              "JavaScript scope is lexical: decided by where code is written, not where it runs.",
+              "Prefer const, use let when reassigning, and avoid var in modern code.",
+              "A closure keeps a live reference to outer variables, not a copy of their values.",
+              "Every React render creates new closures that see that render's props and state.",
+              "Stale closures are fixed with functional state updates, correct dependencies or refs.",
+              "Long-lived closures can leak memory, so always clean up listeners and timers."
+            ],
+            "interview": [
+              {
+                "question": "What is a closure in JavaScript?",
+                "answer": "A closure is a function bundled with references to the variables in the scope where it was defined. It can read and update those variables even after the outer function has returned.",
+                "explanation": "A strong answer adds a small example (a counter factory) and stresses that the closure holds a live reference, not a snapshot copy."
+              },
+              {
+                "question": "What is the difference between var, let and const?",
+                "answer": "var is function-scoped and hoisted as undefined; let and const are block-scoped and in the temporal dead zone until declared. const prevents reassignment of the binding but does not make objects immutable.",
+                "explanation": "Interviewers often follow up with 'can you push to a const array?' (yes), so mention that const is about the binding, not the value."
+              },
+              {
+                "question": "Why does a for loop with var and setTimeout print the same number three times?",
+                "answer": "var creates a single function-scoped variable shared by all iterations. The callbacks run after the loop ends, when the shared variable already holds its final value. let creates a new binding per iteration, so each callback sees its own value.",
+                "explanation": "Mention the event loop: timers run only after the synchronous loop completes. Offering the let fix and the older IIFE fix shows depth."
+              },
+              {
+                "question": "What is a stale closure in React and how do you fix it?",
+                "answer": "It is a callback that captured state or props from an earlier render and therefore reads an outdated value, for example setInterval(() => setCount(count + 1)) inside an effect with an empty dependency array. Fix it with a functional update (setCount(c => c + 1)), by listing the value in the dependency array, or by reading the latest value from a ref.",
+                "explanation": "This connects a JavaScript fundamental to real React bugs, which is exactly what front-end interviewers want to see."
+              },
+              {
+                "question": "Can closures cause memory leaks? Give an example.",
+                "answer": "Yes. If a closure that references a large object is stored somewhere long-lived, such as a window event listener or an interval that is never cleared, the object cannot be garbage-collected. Removing listeners and clearing timers in cleanup functions prevents it.",
+                "explanation": "Link the answer to useEffect cleanup, which you will study on Day 11."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Counter factory with private state",
+              "difficulty": "Basic",
+              "objective": "Use closures to give each counter its own private value, start and step, exactly like independent component instances keep independent state.",
+              "statement": "Implement makeCounter(start, step) that returns inc, dec, reset and get functions sharing a private value. Then process commands. 'create <name> <start> <step>' creates a counter (print 'error: <name> exists' if the name is taken). 'inc <name>' adds step, 'dec <name>' subtracts step, 'reset <name>' returns to start, and 'get <name>' prints '<name>=<value>'. Any command on an unknown counter prints 'error: <name> not found'.",
+              "language": "javascript",
+              "input_format": "First line: N, the number of commands. Next N lines: one command each.",
+              "output_format": "One line for every get command and every error, in order.",
+              "example": {
+                "input": "6\ncreate a 0 1\ncreate b 10 5\ninc a\ninc a\ndec b\nget a\n",
+                "output": "a=2"
+              },
+              "constraints": [
+                "1 <= N <= 1000.",
+                "start and step are integers (step may be negative).",
+                "Names are single words without spaces."
+              ],
+              "starter": "function makeCounter(start, step) {\n  // TODO: keep a private value and return { inc, dec, reset, get }\n}\n\nconst lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst counters = new Map();\nconst out = [];\n// TODO: process each command\nconsole.log(out.join('\\n'));\n",
+              "solution": "function makeCounter(start, step) {\n  let value = start;\n  return {\n    inc: () => { value += step; },\n    dec: () => { value -= step; },\n    reset: () => { value = start; },\n    get: () => value\n  };\n}\n\nconst lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst counters = new Map();\nconst out = [];\nfor (let i = 1; i <= n; i++) {\n  const [cmd, name, a, b] = lines[i].trim().split(/\\s+/);\n  if (cmd === 'create') {\n    if (counters.has(name)) { out.push('error: ' + name + ' exists'); continue; }\n    counters.set(name, makeCounter(Number(a), Number(b)));\n    continue;\n  }\n  const counter = counters.get(name);\n  if (!counter) { out.push('error: ' + name + ' not found'); continue; }\n  if (cmd === 'get') out.push(name + '=' + counter.get());\n  else counter[cmd]();\n}\nconsole.log(out.join('\\n'));\n",
+              "explanation": [
+                "makeCounter declares value with let; the four returned arrow functions close over it, so it stays private and alive.",
+                "Each create call runs makeCounter again, producing a fresh scope, so counters never share values.",
+                "reset works because start is also captured by the closure.",
+                "The command loop looks up the counter by name and calls the matching method, printing only for get and errors."
+              ],
+              "tests": [
+                {
+                  "input": "6\ncreate a 0 1\ncreate b 10 5\ninc a\ninc a\ndec b\nget a\n",
+                  "output": "a=2"
+                },
+                {
+                  "input": "7\ncreate a 0 1\ncreate b 10 5\ninc a\ndec b\ndec b\nget a\nget b\n",
+                  "output": "a=1\nb=0"
+                },
+                {
+                  "input": "6\ncreate x 3 2\ninc x\ninc x\nreset x\ninc x\nget x\n",
+                  "output": "x=5"
+                },
+                {
+                  "input": "4\nget ghost\ncreate a 1 1\ncreate a 5 5\nget a\n",
+                  "output": "error: ghost not found\nerror: a exists\na=1"
+                },
+                {
+                  "input": "4\ncreate neg 0 -3\ninc neg\ninc neg\nget neg\n",
+                  "output": "neg=-6"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "concept",
+                "question": "What does a JavaScript closure capture from its outer scope?",
+                "options": [
+                  "Live references to the outer variables",
+                  "Only the global variables",
+                  "Nothing; closures only work in classes",
+                  "A frozen copy of each variable's value"
+                ],
+                "answer": 0,
+                "explanation": "A closure keeps live bindings. If the outer variable changes, the closure sees the new value."
+              },
+              {
+                "type": "output",
+                "question": "What does this code print?",
+                "code": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
+                "options": [
+                  "3 3 3",
+                  "undefined three times",
+                  "0 1 2",
+                  "0 0 0"
+                ],
+                "answer": 0,
+                "explanation": "var gives one shared binding. The timers run after the loop finishes, when i is 3."
+              },
+              {
+                "type": "scenario",
+                "question": "Inside useEffect(() => { const id = setInterval(() => setCount(count + 1), 1000); return () => clearInterval(id); }, []), the count goes to 1 and stops. Why?",
+                "options": [
+                  "The cleanup function runs every second",
+                  "The interval callback closes over count from the first render, which is always 0",
+                  "setInterval does not work inside React",
+                  "setCount is asynchronous and drops updates"
+                ],
+                "answer": 1,
+                "explanation": "The empty dependency array means the effect, and its closure over count = 0, is created once. Use setCount(c => c + 1) instead."
+              },
+              {
+                "type": "code",
+                "question": "Which statement about const is correct?",
+                "code": "const list = [1, 2];\nlist.push(3);",
+                "options": [
+                  "It throws a TypeError because list is const",
+                  "It silently ignores the push",
+                  "It creates a new array",
+                  "It works: const prevents reassignment, not mutation"
+                ],
+                "answer": 3,
+                "explanation": "const fixes the binding. The array object can still be mutated, which is why React relies on immutability by convention, not on const."
+              },
+              {
+                "type": "concept",
+                "question": "Why are two counters created by separate calls to makeCounter() independent?",
+                "options": [
+                  "Because closures only store numbers",
+                  "Because each call creates a new scope with its own variables",
+                  "Because the counters are stored in different files",
+                  "Because JavaScript copies functions when they are returned"
+                ],
+                "answer": 1,
+                "explanation": "Every invocation of the outer function creates fresh local variables, so each returned closure set has its own state."
+              }
+            ]
+          }
+        },
+        {
+          "id": "react-full-stack:article:2",
+          "slug": "day-2",
+          "lesson": {
+            "day": 2,
+            "title": "Immutability, Spread and Destructuring",
+            "module": "JavaScript essentials for React",
+            "level": "Beginner",
+            "objectives": [
+              "Explain the difference between primitive values and object references.",
+              "Use object/array spread and destructuring to create updated copies instead of mutating.",
+              "Explain why React compares state by reference and why mutation breaks re-rendering.",
+              "Perform immutable updates on nested objects and arrays with structural sharing.",
+              "Distinguish a shallow copy from a deep copy and choose the right one."
+            ],
+            "definition": "Immutability means that once a value is created it is never changed in place; to 'update' it you create a new value that contains the change. In JavaScript, primitives are already immutable, but objects and arrays are mutable, so React code treats them as immutable by convention, building new copies with spread syntax, array methods that return new arrays, or helpers such as Immer.",
+            "theory": [
+              {
+                "heading": "Values versus references",
+                "body": "Primitives (numbers, strings, booleans, null, undefined, bigint, symbol) are compared by value. Objects, arrays and functions are compared by reference: two variables are equal only if they point to the same object in memory. If you mutate an object, every variable that references it sees the change, and the reference itself stays the same, so nothing that compares references can notice the change.",
+                "points": [
+                  "{} === {} is false: two different objects.",
+                  "const b = a; b.x = 1; also changes a.x because both point to one object.",
+                  "Object.is is the comparison React uses for state and dependencies."
+                ]
+              },
+              {
+                "heading": "Why React needs immutable updates",
+                "body": "When you call a state setter, React compares the new value with the old one using Object.is. If they are the same reference it can skip the re-render. If you push into the existing array and call setItems(items), the reference has not changed, so React may skip the update. Immutable updates also make memoisation (React.memo, useMemo, selectors) cheap, because 'did anything change?' becomes a reference check instead of a deep comparison, and they enable features such as undo and time-travel debugging.",
+                "points": [
+                  "Mutation + same reference = missed or unreliable re-render.",
+                  "New reference for changed data = cheap change detection.",
+                  "Old snapshots stay intact, which makes undo/redo and debugging easier."
+                ]
+              },
+              {
+                "heading": "Spread and rest syntax",
+                "body": "Spread (...) copies the own enumerable properties of an object, or the elements of an iterable, into a new object or array. Later properties override earlier ones, which makes { ...user, name: 'Asha' } the standard way to update one field. Rest uses the same three dots on the receiving side to collect 'everything else', for example const { password, ...publicUser } = user.",
+                "points": [
+                  "Add to array: [...items, newItem]; remove: items.filter(i => i.id !== id).",
+                  "Update one item: items.map(i => i.id === id ? { ...i, done: true } : i).",
+                  "Spread is shallow: nested objects are still shared."
+                ]
+              },
+              {
+                "heading": "Destructuring",
+                "body": "Destructuring unpacks values from arrays or objects into variables. React uses it everywhere: const [count, setCount] = useState(0) is array destructuring, and function Card({ title, children }) destructures props. Defaults (const { size = 'md' } = props) and renaming (const { id: userId } = user) keep component signatures readable.",
+                "points": [
+                  "Array destructuring is positional, which is why hooks return arrays.",
+                  "Object destructuring is by name and supports defaults and renaming."
+                ]
+              },
+              {
+                "heading": "Nested updates and structural sharing",
+                "body": "To change a deeply nested field immutably you copy every object on the path from the root to the field and reuse (share) everything else. Only the objects along the path get new references; untouched branches keep their old references, so components that depend on them can skip rendering. Deep copying everything (structuredClone or JSON round-trip) is wasteful and defeats memoisation because every reference changes. For deeply nested state, flatten the shape or use Immer, which lets you write 'mutating' code on a draft and produces a structurally shared result.",
+                "points": [
+                  "Copy the path, share the rest.",
+                  "structuredClone is a true deep copy; use it for snapshots, not for routine state updates.",
+                  "Redux Toolkit uses Immer internally (Day 15)."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Updating nested state without mutation",
+              "body": "Changing the city of a user inside a profile requires new objects for the profile and the address, while the preferences object is reused as is.",
+              "code": {
+                "language": "javascript",
+                "source": "const state = {\n  user: { name: 'Ravi', address: { city: 'Pune', pin: '411001' } },\n  prefs: { theme: 'dark' }\n};\n\nconst next = {\n  ...state,\n  user: {\n    ...state.user,\n    address: { ...state.user.address, city: 'Delhi' }\n  }\n};\n\nconsole.log(state.user.address.city);   // 'Pune'  (original untouched)\nconsole.log(next.user.address.city);    // 'Delhi'\nconsole.log(next.prefs === state.prefs); // true   (shared)\nconsole.log(next.user === state.user);   // false  (copied on the path)"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "useState updates",
+                "description": "setTodos(todos => [...todos, newTodo]) produces a new array so React detects the change."
+              },
+              {
+                "title": "Reducers",
+                "description": "Redux and useReducer reducers must return new state objects rather than modifying the old ones."
+              },
+              {
+                "title": "Undo/redo",
+                "description": "Because old states are never mutated, an editor can keep an array of past snapshots and step back through them."
+              },
+              {
+                "title": "Memoised selectors",
+                "description": "Reselect and React.memo compare inputs by reference, which is only reliable when data is updated immutably."
+              },
+              {
+                "title": "Safe props",
+                "description": "Child components never modify props; they ask the parent to produce new values through callbacks."
+              }
+            ],
+            "demonstration": {
+              "description": "Compare a mutating update with an immutable one. The mutating version keeps the same reference, so a reference check (what React does) reports 'no change' even though the data changed.",
+              "code": {
+                "language": "javascript",
+                "source": "const todos = [{ id: 1, done: false }];\n\nconst mutated = todos;\nmutated[0].done = true;\nconsole.log('mutated changed?', !Object.is(mutated, todos));\n\nconst fresh = [{ id: 1, done: false }];\nconst updated = fresh.map(t => t.id === 1 ? { ...t, done: true } : t);\nconsole.log('updated changed?', !Object.is(updated, fresh));\nconsole.log('original kept?', fresh[0].done === false);"
+              },
+              "output": "mutated changed? false\nupdated changed? true\noriginal kept? true"
+            },
+            "takeaways": [
+              "Objects and arrays are compared by reference; mutation keeps the same reference.",
+              "React uses Object.is to decide whether state changed, so always create new objects for updates.",
+              "Use spread, map, filter and concat to build updated copies; avoid push, splice and direct assignment on state.",
+              "Spread is shallow: copy every level on the path to a nested change.",
+              "Structural sharing keeps untouched branches identical, which makes memoisation work.",
+              "Destructuring powers hook APIs and clean prop handling."
+            ],
+            "interview": [
+              {
+                "question": "Why should you not mutate state directly in React?",
+                "answer": "React detects changes by comparing references with Object.is. Mutating keeps the same reference, so React may skip the re-render, memoised children may show stale data, and features like concurrent rendering and Strict Mode double rendering can expose inconsistent results.",
+                "explanation": "Mention reference comparison explicitly; it is the real reason, not just 'it is a rule'."
+              },
+              {
+                "question": "What is the difference between a shallow copy and a deep copy?",
+                "answer": "A shallow copy creates a new top-level object but shares nested objects with the original. A deep copy recursively copies every nested object. Spread and Object.assign are shallow; structuredClone is deep.",
+                "explanation": "Strong candidates add that deep copying all state is wasteful and breaks memoisation, so React apps copy only the changed path."
+              },
+              {
+                "question": "How do you update one item in an array held in state?",
+                "answer": "Map over the array and return a new object for the matching item while returning the others unchanged: setItems(items => items.map(i => i.id === id ? { ...i, qty: i.qty + 1 } : i)).",
+                "explanation": "Using the functional updater avoids stale state and returning untouched items keeps their references stable."
+              },
+              {
+                "question": "What does the rest pattern do in const { password, ...safeUser } = user?",
+                "answer": "It extracts password into its own variable and collects all the remaining own properties into a new object named safeUser, which is useful for removing fields before sending or rendering data.",
+                "explanation": "This also demonstrates immutable removal of a key, a common follow-up question."
+              },
+              {
+                "question": "What is structural sharing and why does it help performance?",
+                "answer": "Structural sharing means an updated state reuses every unchanged sub-object from the previous state and creates new objects only along the path to the change. Components and selectors that depend on unchanged branches see identical references and can skip work.",
+                "explanation": "Mention that Immer and Redux Toolkit produce structurally shared results automatically."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Immutable setIn with structural sharing",
+              "difficulty": "Basic",
+              "objective": "Implement an immutable nested update that copies only the path to the change and reuses everything else.",
+              "statement": "Write setIn(obj, path, value) that returns a new object with the value at the dot-separated path replaced, without mutating obj. Copy arrays as arrays (numeric segments are indices) and objects as objects; create missing objects along the path. If the new value is identical (Object.is) to the existing one, return the original object unchanged. Apply all updates in order, then print which top-level keys now have a different reference from the original state, the final state as JSON, and the original state as JSON (to prove it was not mutated).",
+              "language": "javascript",
+              "input_format": "Line 1: the initial state as JSON. Line 2: N. Next N lines: '<path> <value as JSON>'.",
+              "output_format": "Line 1: 'changed: ' followed by the changed top-level keys in the final object's key order, comma-separated, or 'none'. Line 2: final state JSON. Line 3: original state JSON.",
+              "example": {
+                "input": "{\"user\":{\"name\":\"Ravi\",\"city\":\"Pune\"},\"todos\":[{\"id\":1,\"done\":false}],\"theme\":\"dark\"}\n2\nuser.city \"Delhi\"\ntodos.0.done true\n",
+                "output": "changed: user,todos\n{\"user\":{\"name\":\"Ravi\",\"city\":\"Delhi\"},\"todos\":[{\"id\":1,\"done\":true}],\"theme\":\"dark\"}\n{\"user\":{\"name\":\"Ravi\",\"city\":\"Pune\"},\"todos\":[{\"id\":1,\"done\":false}],\"theme\":\"dark\"}"
+              },
+              "constraints": [
+                "1 <= N <= 100; paths have 1 to 10 segments.",
+                "The JSON value is everything after the first space on the line.",
+                "Do not use structuredClone or JSON round-trips to copy state."
+              ],
+              "starter": "function setIn(obj, path, value) {\n  // TODO: recursive immutable update; return obj itself when nothing changed\n}\n\nconst lines = stdin.trim().split('\\n');\nconst original = JSON.parse(lines[0]);\nlet state = original;\n// TODO: apply updates, then print the three lines\n",
+              "solution": "function setIn(obj, path, value) {\n  if (path.length === 0) return value;\n  const [head, ...rest] = path;\n  const current = obj == null ? undefined : obj[head];\n  const next = setIn(current, rest, value);\n  if (obj != null && Object.is(current, next)) return obj;\n  if (Array.isArray(obj)) {\n    const copy = obj.slice();\n    copy[Number(head)] = next;\n    return copy;\n  }\n  return { ...(obj || {}), [head]: next };\n}\n\nconst lines = stdin.trim().split('\\n');\nconst original = JSON.parse(lines[0]);\nconst n = parseInt(lines[1], 10);\nlet state = original;\nfor (let i = 2; i < 2 + n; i++) {\n  const line = lines[i];\n  const space = line.indexOf(' ');\n  const path = line.slice(0, space).split('.');\n  const value = JSON.parse(line.slice(space + 1));\n  state = setIn(state, path, value);\n}\nconst changed = Object.keys(state).filter(k => !Object.is(state[k], original[k]));\nconsole.log('changed: ' + (changed.length ? changed.join(',') : 'none'));\nconsole.log(JSON.stringify(state));\nconsole.log(JSON.stringify(original));\n",
+              "explanation": [
+                "Recurse down the path: the base case returns the new value itself.",
+                "On the way back up, if the child did not change (Object.is), return the existing parent so its reference is preserved.",
+                "Otherwise copy only this level: slice() for arrays, spread for objects, and put the new child in.",
+                "Compare each top-level key of the result with the original by reference to see which branches were copied.",
+                "Printing the original proves no mutation occurred."
+              ],
+              "tests": [
+                {
+                  "input": "{\"user\":{\"name\":\"Ravi\",\"city\":\"Pune\"},\"todos\":[{\"id\":1,\"done\":false}],\"theme\":\"dark\"}\n2\nuser.city \"Delhi\"\ntodos.0.done true\n",
+                  "output": "changed: user,todos\n{\"user\":{\"name\":\"Ravi\",\"city\":\"Delhi\"},\"todos\":[{\"id\":1,\"done\":true}],\"theme\":\"dark\"}\n{\"user\":{\"name\":\"Ravi\",\"city\":\"Pune\"},\"todos\":[{\"id\":1,\"done\":false}],\"theme\":\"dark\"}"
+                },
+                {
+                  "input": "{\"a\":{\"b\":1},\"c\":2}\n1\na.b 1\n",
+                  "output": "changed: none\n{\"a\":{\"b\":1},\"c\":2}\n{\"a\":{\"b\":1},\"c\":2}"
+                },
+                {
+                  "input": "{\"count\":1}\n2\nsettings.lang \"hi\"\ncount 5\n",
+                  "output": "changed: count,settings\n{\"count\":5,\"settings\":{\"lang\":\"hi\"}}\n{\"count\":1}"
+                },
+                {
+                  "input": "{\"list\":[1,2,3],\"meta\":{\"v\":1}}\n2\nlist.1 20\nlist.1 20\n",
+                  "output": "changed: list\n{\"list\":[1,20,3],\"meta\":{\"v\":1}}\n{\"list\":[1,2,3],\"meta\":{\"v\":1}}"
+                },
+                {
+                  "input": "{\"x\":{\"y\":{\"z\":0}},\"w\":true}\n1\nx.y {\"z\":1,\"k\":[1]}\n",
+                  "output": "changed: x\n{\"x\":{\"y\":{\"z\":1,\"k\":[1]}},\"w\":true}\n{\"x\":{\"y\":{\"z\":0}},\"w\":true}"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this object reference example print?",
+                "code": "const a = { n: 1 };\nconst b = a;\nb.n = 2;\nconsole.log(a.n, a === b);",
+                "options": [
+                  "2 true",
+                  "1 true",
+                  "1 false",
+                  "2 false"
+                ],
+                "answer": 0,
+                "explanation": "b and a reference the same object, so the change is visible through a and the references are equal."
+              },
+              {
+                "type": "scenario",
+                "question": "A developer writes items.push(newItem); setItems(items); and the list does not update. What is the best fix?",
+                "options": [
+                  "Use var instead of const for items",
+                  "setItems([...items, newItem])",
+                  "Call setItems twice",
+                  "Wrap the push in useEffect"
+                ],
+                "answer": 1,
+                "explanation": "React compares references; pushing keeps the same array. A new array with spread gives React a changed reference."
+              },
+              {
+                "type": "concept",
+                "question": "Which statement about { ...state } is true?",
+                "options": [
+                  "It recursively copies every nested object",
+                  "It freezes the object",
+                  "It only works on arrays",
+                  "It creates a shallow copy; nested objects are still shared"
+                ],
+                "answer": 3,
+                "explanation": "Spread copies only the top level; nested objects remain the same references."
+              },
+              {
+                "type": "code",
+                "question": "Which expression removes the todo with id 3 from todos without mutation?",
+                "options": [
+                  "todos.filter(t => t.id !== 3)",
+                  "delete todos[3]",
+                  "todos.pop(3)",
+                  "todos.splice(todos.findIndex(t => t.id === 3), 1)"
+                ],
+                "answer": 0,
+                "explanation": "filter returns a new array. splice, delete and pop all modify the original array."
+              },
+              {
+                "type": "concept",
+                "question": "Why is deep-cloning the entire state on every update a poor choice in React?",
+                "options": [
+                  "React throws an error for cloned objects",
+                  "It makes state impossible to serialise",
+                  "It changes every reference, so memoised components and selectors can no longer skip work",
+                  "Deep cloning is not possible in JavaScript"
+                ],
+                "answer": 2,
+                "explanation": "Structural sharing keeps unchanged branches identical; a full deep clone breaks reference-based change detection and wastes memory."
+              }
+            ]
+          }
+        },
+        {
+          "id": "react-full-stack:article:3",
+          "slug": "day-3",
+          "lesson": {
+            "day": 3,
+            "title": "Array Methods: map, filter, reduce and Friends",
+            "module": "JavaScript essentials for React",
+            "level": "Beginner",
+            "objectives": [
+              "Use map, filter, reduce, find, some and every to transform data declaratively.",
+              "Distinguish methods that return new arrays from methods that mutate the original.",
+              "Group and aggregate data with reduce and Object.groupBy-style logic.",
+              "Use non-mutating alternatives such as toSorted, toReversed and with in React state.",
+              "Explain why rendering lists in JSX is built on map."
+            ],
+            "definition": "Array methods are built-in functions on Array.prototype that process each element through a callback. Methods such as map, filter and reduce return new values instead of changing the original array, which lets you describe what result you want (declarative style) and fits React's rule of never mutating state.",
+            "theory": [
+              {
+                "heading": "The core trio: map, filter, reduce",
+                "body": "map transforms every element and returns a new array of the same length. filter keeps the elements whose callback returns a truthy value. reduce walks the array carrying an accumulator and returns a single result, which can be a number, an object, or even another array. Almost any data transformation for a UI (formatting, searching, totals, grouping) is a combination of these three.",
+                "points": [
+                  "map: same length, transformed items — used to turn data into JSX elements.",
+                  "filter: same items, possibly fewer — used for search boxes and tabs.",
+                  "reduce: any shape — totals, counts, lookup objects keyed by id.",
+                  "Always give reduce an initial value to avoid errors on empty arrays."
+                ]
+              },
+              {
+                "heading": "Searching and testing",
+                "body": "find returns the first matching element (or undefined) and findIndex its position. some answers 'does at least one match?' and every answers 'do all match?'; both stop early as soon as the answer is known. includes checks for a primitive value using SameValueZero, so it works with NaN but not with objects that merely look equal.",
+                "points": [
+                  "find vs filter: find stops at the first match and returns an element, not an array.",
+                  "every on an empty array returns true; some returns false."
+                ]
+              },
+              {
+                "heading": "Mutating versus non-mutating methods",
+                "body": "push, pop, shift, unshift, splice, sort, reverse and fill change the array in place, which is dangerous on React state. ES2023 added copying versions: toSorted, toReversed, toSpliced and with(index, value), which return a new array and leave the original alone. Before these existed, developers wrote [...arr].sort(), which is still common in codebases.",
+                "points": [
+                  "Unsafe on state: sort, reverse, splice, push.",
+                  "Safe on state: map, filter, slice, concat, toSorted, toReversed, with.",
+                  "sort compares as strings by default: [10, 9, 1].sort() gives [1, 10, 9]; pass (a, b) => a - b for numbers."
+                ]
+              },
+              {
+                "heading": "Chaining and derived data in React",
+                "body": "Because each method returns a new array, they chain naturally: products.filter(p => p.inStock).map(p => p.price). In React, values that can be computed from props or state, such as a filtered list or a cart total, should be derived during render with these methods rather than stored in separate state that must be kept in sync. Only when the computation is genuinely expensive do you wrap it in useMemo.",
+                "points": [
+                  "Derive, do not duplicate: store the source list and the filter text, compute the visible list.",
+                  "Chaining creates intermediate arrays; for huge lists a single reduce or a loop may be faster."
+                ]
+              },
+              {
+                "heading": "flat, flatMap and grouping",
+                "body": "flat removes nesting levels and flatMap maps then flattens one level, handy when one item produces zero or many outputs. Grouping (category -> items) is classically written with reduce; modern runtimes also provide Object.groupBy(items, item => item.category), which returns a null-prototype object of arrays.",
+                "points": [
+                  "flatMap can filter and map in one pass by returning [] for skipped items.",
+                  "Object.groupBy is widely supported in current browsers and Node 21+."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Cart summary with chained array methods",
+              "body": "A cart component derives everything from the items array: the visible lines, the total and whether checkout is allowed. Nothing is stored twice, so nothing can go out of sync.",
+              "code": {
+                "language": "javascript",
+                "source": "const cart = [\n  { id: 1, name: 'Keyboard', price: 1500, qty: 1, inStock: true },\n  { id: 2, name: 'Mouse', price: 600, qty: 2, inStock: true },\n  { id: 3, name: 'Monitor', price: 9000, qty: 1, inStock: false }\n];\n\nconst available = cart.filter(item => item.inStock);\nconst lines = available.map(item => `${item.name} x${item.qty}`);\nconst total = available.reduce((sum, item) => sum + item.price * item.qty, 0);\nconst canCheckout = available.length > 0 && cart.every(item => item.qty > 0);\n\nconsole.log(lines);       // ['Keyboard x1', 'Mouse x2']\nconsole.log(total);       // 2700\nconsole.log(canCheckout); // true"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Rendering lists",
+                "description": "{products.map(p => <ProductCard key={p.id} product={p} />)} turns data into elements."
+              },
+              {
+                "title": "Search and filters",
+                "description": "A search input filters a product list by name and category on every keystroke."
+              },
+              {
+                "title": "Dashboards",
+                "description": "reduce computes totals, averages and per-category breakdowns for charts."
+              },
+              {
+                "title": "Normalising API data",
+                "description": "reduce turns an array into an object keyed by id for O(1) lookups in a store."
+              },
+              {
+                "title": "Validation",
+                "description": "every checks that all form fields are valid before enabling a submit button."
+              }
+            ],
+            "demonstration": {
+              "description": "Show the default sort trap and the non-mutating alternative. The original array is preserved when toSorted is used with a numeric comparator.",
+              "code": {
+                "language": "javascript",
+                "source": "const scores = [10, 9, 100, 1];\nconst sorted = scores.toSorted((a, b) => a - b);\nconsole.log([...scores].sort());\nconsole.log(sorted);\nconsole.log(scores);"
+              },
+              "output": "[ 1, 10, 100, 9 ]\n[ 1, 9, 10, 100 ]\n[ 10, 9, 100, 1 ]"
+            },
+            "takeaways": [
+              "map transforms, filter selects, reduce aggregates into any shape.",
+              "Give reduce an initial value; it also defines the result type.",
+              "sort, reverse and splice mutate; prefer toSorted, toReversed, toSpliced or a spread copy for state.",
+              "Default sort compares strings; always pass a comparator for numbers.",
+              "Derive filtered lists and totals during render instead of storing them in extra state.",
+              "find returns one element, filter returns an array; some and every short-circuit."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between map and forEach?",
+                "answer": "map returns a new array built from the callback's return values; forEach returns undefined and is used only for side effects. In JSX you must use map because you need the returned array of elements.",
+                "explanation": "Mentioning why forEach cannot render a list in JSX shows you connect the JavaScript to React."
+              },
+              {
+                "question": "How does reduce work? Write a sum and a group-by.",
+                "answer": "reduce calls the callback with (accumulator, current) for each element and passes the returned value as the next accumulator, starting from the initial value. Sum: arr.reduce((s, x) => s + x, 0). Group-by: arr.reduce((acc, x) => { (acc[x.type] ||= []).push(x); return acc; }, {}).",
+                "explanation": "Interviewers like to see the initial value and an explanation of what happens on an empty array without one (TypeError)."
+              },
+              {
+                "question": "Which array methods mutate the original array, and why does that matter in React?",
+                "answer": "push, pop, shift, unshift, splice, sort, reverse, fill and copyWithin mutate. Mutating state keeps the same reference, so React may not re-render and memoised components may show stale data. Use map, filter, slice, concat, spread or the ES2023 toSorted/toReversed/toSpliced/with methods.",
+                "explanation": "Listing the ES2023 copying methods signals up-to-date knowledge."
+              },
+              {
+                "question": "Why does [10, 9, 1].sort() return [1, 10, 9]?",
+                "answer": "Without a comparator, sort converts elements to strings and compares them by UTF-16 code units, so '10' comes before '9'. Pass (a, b) => a - b for ascending numeric order.",
+                "explanation": "A classic trick question; also note that sort mutates the array."
+              },
+              {
+                "question": "Should a filtered list be stored in state?",
+                "answer": "Usually not. Store the source list and the filter criteria, and compute the filtered list during render. Storing both duplicates data and risks them getting out of sync. If filtering is expensive, memoise it with useMemo.",
+                "explanation": "This 'derive, don't sync' principle is a common senior-level signal."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Order analytics with map, filter and reduce",
+              "difficulty": "Basic",
+              "objective": "Compute dashboard numbers from raw records using only declarative array methods.",
+              "statement": "Each order has an id, customer, category, integer amount and status (delivered, pending or cancelled). Print: the number of delivered orders; the revenue of delivered orders; delivered revenue per category sorted by revenue descending (ties by name ascending); the customer with the highest delivered revenue (ties by name ascending) with their amount; and whether any order is cancelled.",
+              "language": "javascript",
+              "input_format": "First line: N. Next N lines: 'id customer category amount status' separated by spaces.",
+              "output_format": "delivered: <count>\nrevenue: <sum>\nby category: <cat>=<sum>, <cat>=<sum> ... (or 'none')\ntop customer: <name> (<sum>) (or 'none')\nany cancelled: yes|no",
+              "example": {
+                "input": "5\n101 asha books 300 delivered\n102 ravi electronics 1500 delivered\n103 asha electronics 700 cancelled\n104 meera books 450 delivered\n105 ravi toys 200 pending\n",
+                "output": "delivered: 3\nrevenue: 2250\nby category: electronics=1500, books=750\ntop customer: ravi (1500)\nany cancelled: yes"
+              },
+              "constraints": [
+                "1 <= N <= 10000; amounts are non-negative integers.",
+                "Use filter, map, reduce and some rather than manual index loops for the calculations.",
+                "Do not mutate the parsed orders array."
+              ],
+              "starter": "const lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst orders = lines.slice(1, n + 1).map(line => {\n  const [id, customer, category, amount, status] = line.trim().split(/\\s+/);\n  return { id, customer, category, amount: Number(amount), status };\n});\n// TODO: filter delivered, reduce totals, rank groups, print five lines\n",
+              "solution": "const lines = stdin.trim().split('\\n');\nconst n = parseInt(lines[0], 10);\nconst orders = lines.slice(1, n + 1).map(line => {\n  const [id, customer, category, amount, status] = line.trim().split(/\\s+/);\n  return { id, customer, category, amount: Number(amount), status };\n});\n\nconst delivered = orders.filter(o => o.status === 'delivered');\nconst revenue = delivered.reduce((sum, o) => sum + o.amount, 0);\nconst sumBy = key => delivered.reduce((acc, o) => {\n  acc[o[key]] = (acc[o[key]] || 0) + o.amount;\n  return acc;\n}, {});\nconst rank = totals => Object.entries(totals).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));\nconst categories = rank(sumBy('category'));\nconst customers = rank(sumBy('customer'));\n\nconsole.log('delivered: ' + delivered.length);\nconsole.log('revenue: ' + revenue);\nconsole.log('by category: ' + (categories.length ? categories.map(([k, v]) => k + '=' + v).join(', ') : 'none'));\nconsole.log('top customer: ' + (customers.length ? customers[0][0] + ' (' + customers[0][1] + ')' : 'none'));\nconsole.log('any cancelled: ' + (orders.some(o => o.status === 'cancelled') ? 'yes' : 'no'));\n",
+              "explanation": [
+                "map parses each line into an order object.",
+                "filter keeps delivered orders; reduce with initial value 0 sums their amounts.",
+                "A reusable sumBy(key) reduce builds a { key: total } object for categories and customers.",
+                "Object.entries plus a comparator (revenue desc, name asc) ranks the groups; Object.entries creates a new array, so sorting it is safe.",
+                "some answers the cancelled question and stops at the first match."
+              ],
+              "tests": [
+                {
+                  "input": "5\n101 asha books 300 delivered\n102 ravi electronics 1500 delivered\n103 asha electronics 700 cancelled\n104 meera books 450 delivered\n105 ravi toys 200 pending\n",
+                  "output": "delivered: 3\nrevenue: 2250\nby category: electronics=1500, books=750\ntop customer: ravi (1500)\nany cancelled: yes"
+                },
+                {
+                  "input": "2\n1 a books 100 pending\n2 b toys 50 pending\n",
+                  "output": "delivered: 0\nrevenue: 0\nby category: none\ntop customer: none\nany cancelled: no"
+                },
+                {
+                  "input": "4\n1 zoya toys 200 delivered\n2 arjun books 200 delivered\n3 zoya books 0 delivered\n4 kiran toys 10 cancelled\n",
+                  "output": "delivered: 3\nrevenue: 400\nby category: books=200, toys=200\ntop customer: arjun (200)\nany cancelled: yes"
+                },
+                {
+                  "input": "3\n7 dev music 999 delivered\n8 dev music 1 delivered\n9 dev games 1000 delivered\n",
+                  "output": "delivered: 3\nrevenue: 2000\nby category: games=1000, music=1000\ntop customer: dev (2000)\nany cancelled: no"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What does this filter/map chain print?",
+                "code": "const r = [1, 2, 3, 4].filter(n => n % 2 === 0).map(n => n * 10);\nconsole.log(r);",
+                "options": [
+                  "[20, 40]",
+                  "[10, 30]",
+                  "[10, 20, 30, 40]",
+                  "[2, 4]"
+                ],
+                "answer": 0,
+                "explanation": "filter keeps 2 and 4, then map multiplies each by 10."
+              },
+              {
+                "type": "concept",
+                "question": "Which method returns undefined and is therefore unsuitable for rendering a list inside JSX?",
+                "options": [
+                  "map",
+                  "forEach",
+                  "filter",
+                  "flatMap"
+                ],
+                "answer": 1,
+                "explanation": "forEach is for side effects and returns undefined; JSX needs the array that map returns."
+              },
+              {
+                "type": "scenario",
+                "question": "You need to sort a products array stored in React state by price for display. Which is safest?",
+                "options": [
+                  "products.sort((a, b) => a.price - b.price)",
+                  "products.reverse()",
+                  "products.sort()",
+                  "products.toSorted((a, b) => a.price - b.price)"
+                ],
+                "answer": 3,
+                "explanation": "toSorted returns a new array and leaves state untouched; sort mutates, and sort() without a comparator compares strings."
+              },
+              {
+                "type": "output",
+                "question": "What does [].reduce((a, b) => a + b) do?",
+                "options": [
+                  "Throws a TypeError",
+                  "Returns an empty array",
+                  "Returns 0",
+                  "Returns undefined"
+                ],
+                "answer": 0,
+                "explanation": "reduce on an empty array with no initial value throws 'Reduce of empty array with no initial value'."
+              },
+              {
+                "type": "concept",
+                "question": "What does [3, 5, 8].some(n => n > 4) return, and how many elements does it check?",
+                "options": [
+                  "[5, 8]",
+                  "false, after checking all three",
+                  "true, stopping after the second element",
+                  "true, after checking all three"
+                ],
+                "answer": 2,
+                "explanation": "some short-circuits as soon as a callback returns true, which happens at 5."
+              }
+            ]
+          }
+        },
+        {
+          "id": "react-full-stack:article:4",
+          "slug": "day-4",
+          "lesson": {
+            "day": 4,
+            "title": "ES Modules, Promises, async/await and the Event Loop",
+            "module": "JavaScript essentials for React",
+            "level": "Beginner",
+            "objectives": [
+              "Use named and default ES module exports and explain how bundlers use them for tree shaking.",
+              "Explain the event loop, the call stack, the microtask queue and the task (macrotask) queue.",
+              "Write asynchronous code with promises and async/await, including error handling.",
+              "Choose between Promise.all, allSettled, race and any for parallel requests.",
+              "Predict the output order of mixed synchronous, promise and timer code."
+            ],
+            "definition": "ES modules (import/export) are JavaScript's standard way to split code into files with explicit dependencies. Asynchronous JavaScript lets a single-threaded program start slow work, such as a network request, and continue running; the result arrives later through a promise, and the event loop schedules the callback when the call stack is empty. async/await is syntax on top of promises that makes asynchronous code read like synchronous code.",
+            "theory": [
+              {
+                "heading": "ES modules",
+                "body": "A module has its own scope and exposes values with export. Named exports (export function Button) are imported with braces and the exact name; a default export (export default App) can be imported under any name. Imports are static and resolved before code runs, which lets bundlers such as Vite, webpack and Rollup analyse the dependency graph and drop unused exports (tree shaking). Dynamic import('./Chart.js') returns a promise and is the basis of code splitting and React.lazy.",
+                "points": [
+                  "Named exports: many per file, imported as import { a, b } from './x.js'.",
+                  "Default export: one per file, imported as import Anything from './x.js'.",
+                  "Modules run once and are cached; every importer shares the same instance.",
+                  "Static imports enable tree shaking; dynamic import() enables lazy loading."
+                ]
+              },
+              {
+                "heading": "The event loop",
+                "body": "JavaScript runs one piece of code at a time on the call stack. Browser or Node APIs (timers, network, I/O) do the slow work elsewhere and queue callbacks when done. When the stack is empty, the event loop first drains the entire microtask queue (promise reactions, queueMicrotask, await continuations) and only then takes the next task such as a setTimeout callback or a UI event. Rendering in the browser happens between tasks, so a long synchronous loop freezes the page.",
+                "points": [
+                  "Synchronous code always finishes first.",
+                  "Microtasks (then, await) run before the next macrotask (setTimeout, events).",
+                  "setTimeout(fn, 0) means 'as soon as possible after at least 0 ms', not immediately.",
+                  "Long tasks block input and painting; split them up or move them to a Web Worker."
+                ]
+              },
+              {
+                "heading": "Promises and async/await",
+                "body": "A promise is an object representing a value that is pending, then fulfilled or rejected exactly once. then returns a new promise, which allows chaining, and catch handles rejections anywhere earlier in the chain. An async function always returns a promise; await pauses that function (not the whole program) until the awaited promise settles, and a rejected await throws, so try/catch works naturally.",
+                "points": [
+                  "Unhandled rejections are bugs: always catch or let a caller handle them.",
+                  "fetch only rejects on network failure; check response.ok for HTTP errors such as 404 or 500.",
+                  "Sequential awaits in a loop are slow when requests are independent; start them together."
+                ]
+              },
+              {
+                "heading": "Running work in parallel",
+                "body": "Promise combinators coordinate several promises. Promise.all fulfils with all results in input order or rejects as soon as any input rejects (fail fast). Promise.allSettled waits for everything and reports each outcome. Promise.race settles like whichever input settles first, which is handy for timeouts. Promise.any fulfils with the first success and rejects with an AggregateError only if all fail.",
+                "points": [
+                  "all: dashboard widgets that all must load.",
+                  "allSettled: batch uploads where partial success is acceptable.",
+                  "race: a request versus a timeout promise.",
+                  "any: the fastest of several mirrors or CDNs."
+                ]
+              },
+              {
+                "heading": "Async in React components",
+                "body": "Component functions must be synchronous in client React, so data loading happens in effects, event handlers or a data library. Because results arrive later, code must handle loading and error states and ignore responses that arrive after the component has moved on (race conditions), typically with AbortController or an 'ignore' flag in the effect cleanup. React 19 and Server Components add use() and async server components, but the same promise rules apply.",
+                "points": [
+                  "Effects cannot be async functions directly; define an async function inside and call it.",
+                  "Abort or ignore stale requests in the cleanup to prevent out-of-order updates."
+                ]
+              }
+            ],
+            "example": {
+              "title": "Loading two resources in parallel with error handling",
+              "body": "The profile and orders requests do not depend on each other, so they start together. Promise.all waits for both, and a single try/catch handles network errors and non-OK HTTP responses.",
+              "code": {
+                "language": "javascript",
+                "source": "// api.js\nexport async function getJSON(url, signal) {\n  const res = await fetch(url, { signal });\n  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);\n  return res.json();\n}\n\n// dashboard.js\nimport { getJSON } from './api.js';\n\nexport default async function loadDashboard(userId, signal) {\n  try {\n    const [profile, orders] = await Promise.all([\n      getJSON(`/api/users/${userId}`, signal),\n      getJSON(`/api/users/${userId}/orders`, signal)\n    ]);\n    return { profile, orders };\n  } catch (err) {\n    if (err.name === 'AbortError') return null; // component unmounted\n    throw err;\n  }\n}"
+              }
+            },
+            "use_cases": [
+              {
+                "title": "Code splitting",
+                "description": "Dynamic import() loads a heavy chart library only when the user opens the analytics page."
+              },
+              {
+                "title": "Parallel data loading",
+                "description": "Promise.all loads independent widgets of a dashboard at the same time."
+              },
+              {
+                "title": "Request timeouts",
+                "description": "Promise.race or AbortSignal.timeout(5000) cancels a slow API call."
+              },
+              {
+                "title": "Batch operations",
+                "description": "Promise.allSettled uploads many files and reports which ones failed."
+              },
+              {
+                "title": "Shared utilities",
+                "description": "Named exports from a utils module let bundlers include only the functions a page uses."
+              }
+            ],
+            "demonstration": {
+              "description": "Predict the order of synchronous code, a timer and promise callbacks. Synchronous logs run first, then all microtasks, then the timer task.",
+              "code": {
+                "language": "javascript",
+                "source": "console.log('1 sync start');\nsetTimeout(() => console.log('5 timeout'), 0);\nPromise.resolve()\n  .then(() => console.log('3 microtask A'))\n  .then(() => console.log('4 microtask B'));\n(async () => {\n  await null;\n  console.log('3b after await');\n})();\nconsole.log('2 sync end');"
+              },
+              "output": "1 sync start\n2 sync end\n3 microtask A\n3b after await\n4 microtask B\n5 timeout"
+            },
+            "takeaways": [
+              "Named exports are explicit and tree-shakeable; default exports allow any import name.",
+              "Dynamic import() returns a promise and powers lazy loading.",
+              "Order: synchronous code, then all microtasks, then the next macrotask.",
+              "async functions always return promises; await rejections throw and can be caught.",
+              "fetch does not reject on HTTP errors; check response.ok.",
+              "Use all for fail-fast, allSettled for every outcome, race for timeouts and any for the first success."
+            ],
+            "interview": [
+              {
+                "question": "What is the difference between named and default exports?",
+                "answer": "A module can have many named exports, imported with braces and matching names, and at most one default export, imported with any name. Named exports make refactoring and auto-imports more reliable; default exports are common for a file's main component or for React.lazy targets.",
+                "explanation": "Mention that React.lazy expects a module with a default export, or a .then that maps a named export to default."
+              },
+              {
+                "question": "Explain the JavaScript event loop.",
+                "answer": "JavaScript executes on a single call stack. Asynchronous APIs hand their callbacks to queues when ready. When the stack is empty, the event loop runs all queued microtasks (promise callbacks), then takes one macrotask (such as a timer or event), and repeats, with the browser rendering between tasks.",
+                "explanation": "Strong answers state the microtask-before-macrotask rule and its practical consequence: long synchronous work blocks rendering."
+              },
+              {
+                "question": "What is the difference between Promise.all and Promise.allSettled?",
+                "answer": "Promise.all fulfils with an array of results when every promise fulfils and rejects immediately when any rejects. Promise.allSettled never rejects; it waits for all promises and returns objects with status 'fulfilled' or 'rejected' plus the value or reason.",
+                "explanation": "Give a use case for each and add that Promise.all does not cancel the other requests when it rejects; they keep running."
+              },
+              {
+                "question": "Why can't you pass an async function directly to useEffect?",
+                "answer": "useEffect expects its callback to return either nothing or a cleanup function. An async function always returns a promise, which React would treat as an invalid cleanup. Declare an async function inside the effect and call it, and use the cleanup to abort or ignore the request.",
+                "explanation": "Mentioning race conditions and AbortController shows production experience."
+              },
+              {
+                "question": "How would you add a timeout to a fetch request?",
+                "answer": "Pass an AbortSignal: fetch(url, { signal: AbortSignal.timeout(5000) }), or create an AbortController and call abort() from a setTimeout. Promise.race against a rejecting timer also works but does not cancel the underlying request.",
+                "explanation": "The distinction between cancelling the request and merely ignoring it is what interviewers look for."
+              }
+            ],
+            "practice": {
+              "kind": "coding",
+              "title": "Simulate the promise combinators",
+              "difficulty": "Basic",
+              "objective": "Reason precisely about how Promise.all, allSettled, race and any settle, including timing and failure behaviour.",
+              "statement": "You are given tasks, each with a name, a duration in milliseconds and whether it succeeds (ok) or fails (fail). All tasks start at time 0. For each query (all, allSettled, race or any) print what the combinator would settle with and when. Tasks finishing at the same time settle in input order. Formats: all -> 'fulfilled at <max>: [n1, n2, ...]' (input order) or 'rejected at <t>: <first failing name>'; allSettled -> 'settled at <max>: n1=fulfilled, n2=rejected, ...'; race -> '<fulfilled|rejected> at <t>: <name>' for the first to settle; any -> 'fulfilled at <t>: <name>' for the first success or 'rejected at <max>: AggregateError'. Prefix each line with the query name and ': '.",
+              "language": "javascript",
+              "input_format": "Line 1: N. Next N lines: 'name duration ok|fail'. Then Q, followed by Q lines each containing a combinator name.",
+              "output_format": "Q lines, one per query, as described.",
+              "example": {
+                "input": "3\napi 300 ok\ncache 100 fail\ncdn 200 ok\n4\nall\nallSettled\nrace\nany\n",
+                "output": "all: rejected at 100: cache\nallSettled: settled at 300: api=fulfilled, cache=rejected, cdn=fulfilled\nrace: rejected at 100: cache\nany: fulfilled at 200: cdn"
+              },
+              "constraints": [
+                "1 <= N <= 1000; 0 <= duration <= 100000.",
+                "Queries are exactly all, allSettled, race or any.",
+                "Do not use real timers; compute the result."
+              ],
+              "starter": "const lines = stdin.trim().split('\\n');\nlet i = 0;\nconst n = parseInt(lines[i++], 10);\nconst tasks = [];\n// TODO: parse tasks, sort a copy by (time, input order), answer each query\n",
+              "solution": "const lines = stdin.trim().split('\\n');\nlet i = 0;\nconst n = parseInt(lines[i++], 10);\nconst tasks = [];\nfor (let k = 0; k < n; k++) {\n  const [name, d, s] = lines[i++].trim().split(/\\s+/);\n  tasks.push({ name, t: Number(d), ok: s === 'ok', order: k });\n}\nconst byTime = tasks.slice().sort((a, b) => a.t - b.t || a.order - b.order);\nconst maxT = Math.max(...tasks.map(t => t.t));\nconst q = parseInt(lines[i++], 10);\nconst out = [];\nfor (let k = 0; k < q; k++) {\n  const c = lines[i++].trim();\n  let r;\n  if (c === 'all') {\n    const f = byTime.find(t => !t.ok);\n    r = f ? `rejected at ${f.t}: ${f.name}` : `fulfilled at ${maxT}: [${tasks.map(t => t.name).join(', ')}]`;\n  } else if (c === 'allSettled') {\n    r = `settled at ${maxT}: ` + tasks.map(t => t.name + '=' + (t.ok ? 'fulfilled' : 'rejected')).join(', ');\n  } else if (c === 'race') {\n    const f = byTime[0];\n    r = `${f.ok ? 'fulfilled' : 'rejected'} at ${f.t}: ${f.name}`;\n  } else {\n    const f = byTime.find(t => t.ok);\n    r = f ? `fulfilled at ${f.t}: ${f.name}` : `rejected at ${maxT}: AggregateError`;\n  }\n  out.push(c + ': ' + r);\n}\nconsole.log(out.join('\\n'));\n",
+              "explanation": [
+                "Sort a copy of the tasks by finish time, breaking ties by input order, to model the order in which they settle.",
+                "all rejects at the first failure in time order; otherwise it fulfils when the slowest task finishes, with results in input order (not finish order).",
+                "allSettled always waits for the slowest task and reports every status in input order.",
+                "race takes whichever task settles first, success or failure.",
+                "any ignores failures until a success appears; if none succeed it rejects with an AggregateError after all have settled."
+              ],
+              "tests": [
+                {
+                  "input": "3\napi 300 ok\ncache 100 fail\ncdn 200 ok\n4\nall\nallSettled\nrace\nany\n",
+                  "output": "all: rejected at 100: cache\nallSettled: settled at 300: api=fulfilled, cache=rejected, cdn=fulfilled\nrace: rejected at 100: cache\nany: fulfilled at 200: cdn"
+                },
+                {
+                  "input": "3\nslow 500 ok\nfast 50 ok\nmid 120 ok\n2\nall\nrace\n",
+                  "output": "all: fulfilled at 500: [slow, fast, mid]\nrace: fulfilled at 50: fast"
+                },
+                {
+                  "input": "2\na 10 fail\nb 30 fail\n2\nany\nallSettled\n",
+                  "output": "any: rejected at 30: AggregateError\nallSettled: settled at 30: a=rejected, b=rejected"
+                },
+                {
+                  "input": "3\nx 100 ok\ny 100 fail\nz 100 ok\n3\nrace\nall\nany\n",
+                  "output": "race: fulfilled at 100: x\nall: rejected at 100: y\nany: fulfilled at 100: x"
+                },
+                {
+                  "input": "1\nonly 0 ok\n4\nany\nall\nrace\nallSettled\n",
+                  "output": "any: fulfilled at 0: only\nall: fulfilled at 0: [only]\nrace: fulfilled at 0: only\nallSettled: settled at 0: only=fulfilled"
+                }
+              ]
+            },
+            "quiz": [
+              {
+                "type": "output",
+                "question": "What is the output order?",
+                "code": "console.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
+                "options": [
+                  "A D C B",
+                  "A B C D",
+                  "A C D B",
+                  "A D B C"
+                ],
+                "answer": 0,
+                "explanation": "Synchronous logs A and D run first, then the microtask C, then the timer task B."
+              },
+              {
+                "type": "scenario",
+                "question": "A page uploads 20 files and must show which succeeded and which failed. Which combinator fits best?",
+                "options": [
+                  "Promise.any",
+                  "Promise.all",
+                  "Promise.allSettled",
+                  "Promise.race"
+                ],
+                "answer": 2,
+                "explanation": "allSettled waits for every upload and reports each outcome without failing fast."
+              },
+              {
+                "type": "concept",
+                "question": "fetch('/api/missing') receives a 404 response. What happens to the returned promise?",
+                "options": [
+                  "It fulfils; you must check response.ok",
+                  "It throws synchronously",
+                  "It rejects with a 404 error",
+                  "It never settles"
+                ],
+                "answer": 0,
+                "explanation": "fetch rejects only on network failures or aborts. HTTP error statuses still fulfil, so check response.ok or status."
+              },
+              {
+                "type": "code",
+                "question": "Which import correctly loads a module lazily for code splitting?",
+                "options": [
+                  "export lazy from './Chart.js'",
+                  "import Chart from './Chart.js' inside an if block",
+                  "const mod = await import('./Chart.js')",
+                  "require.lazy('./Chart.js')"
+                ],
+                "answer": 2,
+                "explanation": "Dynamic import() returns a promise and lets bundlers emit a separate chunk. Static import statements cannot appear inside blocks."
+              },
+              {
+                "type": "concept",
+                "question": "What does an async function always return?",
+                "options": [
+                  "The value of its return statement directly",
+                  "undefined",
+                  "A callback",
+                  "A promise"
+                ],
+                "answer": 3,
+                "explanation": "An async function wraps its return value in a promise, and a thrown error becomes a rejected promise."
+              }
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "react-full-stack:question:1:1",
+          "day": 1,
+          "topic": "Scope, Closures and Functions: The JavaScript Behind React",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a closure in JavaScript?",
+          "answer": "A closure is a function bundled with references to the variables in the scope where it was defined. It can read and update those variables even after the outer function has returned.",
+          "explanation": "A strong answer adds a small example (a counter factory) and stresses that the closure holds a live reference, not a snapshot copy.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:1:2",
+          "day": 1,
+          "topic": "Scope, Closures and Functions: The JavaScript Behind React",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between var, let and const?",
+          "answer": "var is function-scoped and hoisted as undefined; let and const are block-scoped and in the temporal dead zone until declared. const prevents reassignment of the binding but does not make objects immutable.",
+          "explanation": "Interviewers often follow up with 'can you push to a const array?' (yes), so mention that const is about the binding, not the value.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:1:3",
+          "day": 1,
+          "topic": "Scope, Closures and Functions: The JavaScript Behind React",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why does a for loop with var and setTimeout print the same number three times?",
+          "answer": "var creates a single function-scoped variable shared by all iterations. The callbacks run after the loop ends, when the shared variable already holds its final value. let creates a new binding per iteration, so each callback sees its own value.",
+          "explanation": "Mention the event loop: timers run only after the synchronous loop completes. Offering the let fix and the older IIFE fix shows depth.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:1:4",
+          "day": 1,
+          "topic": "Scope, Closures and Functions: The JavaScript Behind React",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is a stale closure in React and how do you fix it?",
+          "answer": "It is a callback that captured state or props from an earlier render and therefore reads an outdated value, for example setInterval(() => setCount(count + 1)) inside an effect with an empty dependency array. Fix it with a functional update (setCount(c => c + 1)), by listing the value in the dependency array, or by reading the latest value from a ref.",
+          "explanation": "This connects a JavaScript fundamental to real React bugs, which is exactly what front-end interviewers want to see.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:1:5",
+          "day": 1,
+          "topic": "Scope, Closures and Functions: The JavaScript Behind React",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Can closures cause memory leaks? Give an example.",
+          "answer": "Yes. If a closure that references a large object is stored somewhere long-lived, such as a window event listener or an interval that is never cleared, the object cannot be garbage-collected. Removing listeners and clearing timers in cleanup functions prevents it.",
+          "explanation": "Link the answer to useEffect cleanup, which you will study on Day 11.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:2:1",
+          "day": 2,
+          "topic": "Immutability, Spread and Destructuring",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why should you not mutate state directly in React?",
+          "answer": "React detects changes by comparing references with Object.is. Mutating keeps the same reference, so React may skip the re-render, memoised children may show stale data, and features like concurrent rendering and Strict Mode double rendering can expose inconsistent results.",
+          "explanation": "Mention reference comparison explicitly; it is the real reason, not just 'it is a rule'.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:2:2",
+          "day": 2,
+          "topic": "Immutability, Spread and Destructuring",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between a shallow copy and a deep copy?",
+          "answer": "A shallow copy creates a new top-level object but shares nested objects with the original. A deep copy recursively copies every nested object. Spread and Object.assign are shallow; structuredClone is deep.",
+          "explanation": "Strong candidates add that deep copying all state is wasteful and breaks memoisation, so React apps copy only the changed path.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:2:3",
+          "day": 2,
+          "topic": "Immutability, Spread and Destructuring",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How do you update one item in an array held in state?",
+          "answer": "Map over the array and return a new object for the matching item while returning the others unchanged: setItems(items => items.map(i => i.id === id ? { ...i, qty: i.qty + 1 } : i)).",
+          "explanation": "Using the functional updater avoids stale state and returning untouched items keeps their references stable.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:2:4",
+          "day": 2,
+          "topic": "Immutability, Spread and Destructuring",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What does the rest pattern do in const { password, ...safeUser } = user?",
+          "answer": "It extracts password into its own variable and collects all the remaining own properties into a new object named safeUser, which is useful for removing fields before sending or rendering data.",
+          "explanation": "This also demonstrates immutable removal of a key, a common follow-up question.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:2:5",
+          "day": 2,
+          "topic": "Immutability, Spread and Destructuring",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is structural sharing and why does it help performance?",
+          "answer": "Structural sharing means an updated state reuses every unchanged sub-object from the previous state and creates new objects only along the path to the change. Components and selectors that depend on unchanged branches see identical references and can skip work.",
+          "explanation": "Mention that Immer and Redux Toolkit produce structurally shared results automatically.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:3:1",
+          "day": 3,
+          "topic": "Array Methods: map, filter, reduce and Friends",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between map and forEach?",
+          "answer": "map returns a new array built from the callback's return values; forEach returns undefined and is used only for side effects. In JSX you must use map because you need the returned array of elements.",
+          "explanation": "Mentioning why forEach cannot render a list in JSX shows you connect the JavaScript to React.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:3:2",
+          "day": 3,
+          "topic": "Array Methods: map, filter, reduce and Friends",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How does reduce work? Write a sum and a group-by.",
+          "answer": "reduce calls the callback with (accumulator, current) for each element and passes the returned value as the next accumulator, starting from the initial value. Sum: arr.reduce((s, x) => s + x, 0). Group-by: arr.reduce((acc, x) => { (acc[x.type] ||= []).push(x); return acc; }, {}).",
+          "explanation": "Interviewers like to see the initial value and an explanation of what happens on an empty array without one (TypeError).",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:3:3",
+          "day": 3,
+          "topic": "Array Methods: map, filter, reduce and Friends",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Which array methods mutate the original array, and why does that matter in React?",
+          "answer": "push, pop, shift, unshift, splice, sort, reverse, fill and copyWithin mutate. Mutating state keeps the same reference, so React may not re-render and memoised components may show stale data. Use map, filter, slice, concat, spread or the ES2023 toSorted/toReversed/toSpliced/with methods.",
+          "explanation": "Listing the ES2023 copying methods signals up-to-date knowledge.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:3:4",
+          "day": 3,
+          "topic": "Array Methods: map, filter, reduce and Friends",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Why does [10, 9, 1].sort() return [1, 10, 9]?",
+          "answer": "Without a comparator, sort converts elements to strings and compares them by UTF-16 code units, so '10' comes before '9'. Pass (a, b) => a - b for ascending numeric order.",
+          "explanation": "A classic trick question; also note that sort mutates the array.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:3:5",
+          "day": 3,
+          "topic": "Array Methods: map, filter, reduce and Friends",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Should a filtered list be stored in state?",
+          "answer": "Usually not. Store the source list and the filter criteria, and compute the filtered list during render. Storing both duplicates data and risks them getting out of sync. If filtering is expensive, memoise it with useMemo.",
+          "explanation": "This 'derive, don't sync' principle is a common senior-level signal.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:4:1",
+          "day": 4,
+          "topic": "ES Modules, Promises, async/await and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between named and default exports?",
+          "answer": "A module can have many named exports, imported with braces and matching names, and at most one default export, imported with any name. Named exports make refactoring and auto-imports more reliable; default exports are common for a file's main component or for React.lazy targets.",
+          "explanation": "Mention that React.lazy expects a module with a default export, or a .then that maps a named export to default.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:4:2",
+          "day": 4,
+          "topic": "ES Modules, Promises, async/await and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "Explain the JavaScript event loop.",
+          "answer": "JavaScript executes on a single call stack. Asynchronous APIs hand their callbacks to queues when ready. When the stack is empty, the event loop runs all queued microtasks (promise callbacks), then takes one macrotask (such as a timer or event), and repeats, with the browser rendering between tasks.",
+          "explanation": "Strong answers state the microtask-before-macrotask rule and its practical consequence: long synchronous work blocks rendering.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:4:3",
+          "day": 4,
+          "topic": "ES Modules, Promises, async/await and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "What is the difference between Promise.all and Promise.allSettled?",
+          "answer": "Promise.all fulfils with an array of results when every promise fulfils and rejects immediately when any rejects. Promise.allSettled never rejects; it waits for all promises and returns objects with status 'fulfilled' or 'rejected' plus the value or reason.",
+          "explanation": "Give a use case for each and add that Promise.all does not cancel the other requests when it rejects; they keep running.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:4:4",
+          "day": 4,
+          "topic": "ES Modules, Promises, async/await and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Coding and implementation",
+          "question": "Why can't you pass an async function directly to useEffect?",
+          "answer": "useEffect expects its callback to return either nothing or a cleanup function. An async function always returns a promise, which React would treat as an invalid cleanup. Declare an async function inside the effect and call it, and use the cleanup to abort or ignore the request.",
+          "explanation": "Mentioning race conditions and AbortController shows production experience.",
+          "provenance": "Original curriculum practice"
+        },
+        {
+          "id": "react-full-stack:question:4:5",
+          "day": 4,
+          "topic": "ES Modules, Promises, async/await and the Event Loop",
+          "difficulty": "Beginner",
+          "category": "Concepts and technical discussion",
+          "question": "How would you add a timeout to a fetch request?",
+          "answer": "Pass an AbortSignal: fetch(url, { signal: AbortSignal.timeout(5000) }), or create an AbortController and call abort() from a setTimeout. Promise.race against a rejecting timer also works but does not cancel the underlying request.",
+          "explanation": "The distinction between cancelling the request and merely ignoring it is what interviewers look for.",
+          "provenance": "Original curriculum practice"
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "id": "react-full-stack:assignment:1",
+          "title": "Scope, Closures and Functions: The JavaScript Behind React",
+          "available": true,
+          "focus": "Scope decides where a variable can be read. JavaScript uses lexical scope: a function can see the variables that existed where it was written, not where it is called. A closure is a function together with the variables from its surrounding scope that it keeps alive, so it can still read and update them after the outer function has finished running.",
+          "objectives": [
+            "Explain lexical scope and the difference between var, let and const.",
+            "Define a closure and describe what a function 'remembers' after its outer function returns.",
+            "Use closures to create private state, the same idea React hooks rely on.",
+            "Recognise the stale-closure bug and explain why it appears in React event handlers and effects.",
+            "Answer common closure interview questions, including the classic loop-with-setTimeout puzzle."
+          ],
+          "assignment": "Implement makeCounter(start, step) that returns inc, dec, reset and get functions sharing a private value. Then process commands. 'create <name> <start> <step>' creates a counter (print 'error: <name> exists' if the name is taken). 'inc <name>' adds step, 'dec <name>' subtracts step, 'reset <name>' returns to start, and 'get <name>' prints '<name>=<value>'. Any command on an unknown counter prints 'error: <name> not found'.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "JavaScript scope is lexical: decided by where code is written, not where it runs.",
+            "Prefer const, use let when reassigning, and avoid var in modern code.",
+            "A closure keeps a live reference to outer variables, not a copy of their values.",
+            "Every React render creates new closures that see that render's props and state.",
+            "Stale closures are fixed with functional state updates, correct dependencies or refs.",
+            "Long-lived closures can leak memory, so always clean up listeners and timers."
+          ]
+        },
+        {
+          "day": 2,
+          "id": "react-full-stack:assignment:2",
+          "title": "Immutability, Spread and Destructuring",
+          "available": true,
+          "focus": "Immutability means that once a value is created it is never changed in place; to 'update' it you create a new value that contains the change. In JavaScript, primitives are already immutable, but objects and arrays are mutable, so React code treats them as immutable by convention, building new copies with spread syntax, array methods that return new arrays, or helpers such as Immer.",
+          "objectives": [
+            "Explain the difference between primitive values and object references.",
+            "Use object/array spread and destructuring to create updated copies instead of mutating.",
+            "Explain why React compares state by reference and why mutation breaks re-rendering.",
+            "Perform immutable updates on nested objects and arrays with structural sharing.",
+            "Distinguish a shallow copy from a deep copy and choose the right one."
+          ],
+          "assignment": "Write setIn(obj, path, value) that returns a new object with the value at the dot-separated path replaced, without mutating obj. Copy arrays as arrays (numeric segments are indices) and objects as objects; create missing objects along the path. If the new value is identical (Object.is) to the existing one, return the original object unchanged. Apply all updates in order, then print which top-level keys now have a different reference from the original state, the final state as JSON, and the original state as JSON (to prove it was not mutated).",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Objects and arrays are compared by reference; mutation keeps the same reference.",
+            "React uses Object.is to decide whether state changed, so always create new objects for updates.",
+            "Use spread, map, filter and concat to build updated copies; avoid push, splice and direct assignment on state.",
+            "Spread is shallow: copy every level on the path to a nested change.",
+            "Structural sharing keeps untouched branches identical, which makes memoisation work.",
+            "Destructuring powers hook APIs and clean prop handling."
+          ]
+        },
+        {
+          "day": 3,
+          "id": "react-full-stack:assignment:3",
+          "title": "Array Methods: map, filter, reduce and Friends",
+          "available": true,
+          "focus": "Array methods are built-in functions on Array.prototype that process each element through a callback. Methods such as map, filter and reduce return new values instead of changing the original array, which lets you describe what result you want (declarative style) and fits React's rule of never mutating state.",
+          "objectives": [
+            "Use map, filter, reduce, find, some and every to transform data declaratively.",
+            "Distinguish methods that return new arrays from methods that mutate the original.",
+            "Group and aggregate data with reduce and Object.groupBy-style logic.",
+            "Use non-mutating alternatives such as toSorted, toReversed and with in React state.",
+            "Explain why rendering lists in JSX is built on map."
+          ],
+          "assignment": "Each order has an id, customer, category, integer amount and status (delivered, pending or cancelled). Print: the number of delivered orders; the revenue of delivered orders; delivered revenue per category sorted by revenue descending (ties by name ascending); the customer with the highest delivered revenue (ties by name ascending) with their amount; and whether any order is cancelled.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "map transforms, filter selects, reduce aggregates into any shape.",
+            "Give reduce an initial value; it also defines the result type.",
+            "sort, reverse and splice mutate; prefer toSorted, toReversed, toSpliced or a spread copy for state.",
+            "Default sort compares strings; always pass a comparator for numbers.",
+            "Derive filtered lists and totals during render instead of storing them in extra state.",
+            "find returns one element, filter returns an array; some and every short-circuit."
+          ]
+        },
+        {
+          "day": 4,
+          "id": "react-full-stack:assignment:4",
+          "title": "ES Modules, Promises, async/await and the Event Loop",
+          "available": true,
+          "focus": "ES modules (import/export) are JavaScript's standard way to split code into files with explicit dependencies. Asynchronous JavaScript lets a single-threaded program start slow work, such as a network request, and continue running; the result arrives later through a promise, and the event loop schedules the callback when the call stack is empty. async/await is syntax on top of promises that makes asynchronous code read like synchronous code.",
+          "objectives": [
+            "Use named and default ES module exports and explain how bundlers use them for tree shaking.",
+            "Explain the event loop, the call stack, the microtask queue and the task (macrotask) queue.",
+            "Write asynchronous code with promises and async/await, including error handling.",
+            "Choose between Promise.all, allSettled, race and any for parallel requests.",
+            "Predict the output order of mixed synchronous, promise and timer code."
+          ],
+          "assignment": "You are given tasks, each with a name, a duration in milliseconds and whether it succeeds (ok) or fails (fail). All tasks start at time 0. For each query (all, allSettled, race or any) print what the combinator would settle with and when. Tasks finishing at the same time settle in input order. Formats: all -> 'fulfilled at <max>: [n1, n2, ...]' (input order) or 'rejected at <t>: <first failing name>'; allSettled -> 'settled at <max>: n1=fulfilled, n2=rejected, ...'; race -> '<fulfilled|rejected> at <t>: <name>' for the first to settle; any -> 'fulfilled at <t>: <name>' for the first success or 'rejected at <max>: AggregateError'. Prefix each line with the query name and ': '.",
+          "steps": [
+            "Read the concept and work through the example",
+            "Implement the practice task without opening the solution",
+            "Run the provided cases and add an edge case",
+            "Explain your result and complete the revision checklist"
+          ],
+          "revision": [
+            "Named exports are explicit and tree-shakeable; default exports allow any import name.",
+            "Dynamic import() returns a promise and powers lazy loading.",
+            "Order: synchronous code, then all microtasks, then the next macrotask.",
+            "async functions always return promises; await rejections throw and can be caught.",
+            "fetch does not reject on HTTP errors; check response.ok.",
+            "Use all for fail-fast, allSettled for every outcome, race for timeouts and any for the first success."
+          ]
+        },
+        {
+          "day": 5,
+          "id": "react-full-stack:assignment:5",
+          "title": "Collections and iteration for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain collections and iteration for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on collections and iteration for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete collections and iteration for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 6,
+          "id": "react-full-stack:assignment:6",
+          "title": "Error handling for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain error handling for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on error handling for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete error handling for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 7,
+          "id": "react-full-stack:assignment:7",
+          "title": "Module boundaries for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain module boundaries for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on module boundaries for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete module boundaries for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [
+          "react-full-stack:article:1",
+          "react-full-stack:article:2",
+          "react-full-stack:article:3",
+          "react-full-stack:article:4"
+        ],
+        "questions": [
+          "react-full-stack:question:1:1",
+          "react-full-stack:question:1:2",
+          "react-full-stack:question:1:3",
+          "react-full-stack:question:1:4",
+          "react-full-stack:question:1:5",
+          "react-full-stack:question:2:1",
+          "react-full-stack:question:2:2",
+          "react-full-stack:question:2:3",
+          "react-full-stack:question:2:4",
+          "react-full-stack:question:2:5",
+          "react-full-stack:question:3:1",
+          "react-full-stack:question:3:2",
+          "react-full-stack:question:3:3",
+          "react-full-stack:question:3:4",
+          "react-full-stack:question:3:5",
+          "react-full-stack:question:4:1",
+          "react-full-stack:question:4:2",
+          "react-full-stack:question:4:3",
+          "react-full-stack:question:4:4",
+          "react-full-stack:question:4:5"
+        ],
+        "coding": [
+          "react-full-stack:coding:1",
+          "react-full-stack:coding:2",
+          "react-full-stack:coding:3",
+          "react-full-stack:coding:4"
+        ],
+        "assignments": [
+          "react-full-stack:assignment:1",
+          "react-full-stack:assignment:2",
+          "react-full-stack:assignment:3",
+          "react-full-stack:assignment:4",
+          "react-full-stack:assignment:5",
+          "react-full-stack:assignment:6",
+          "react-full-stack:assignment:7"
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "title": "Data, APIs and application workflows",
+      "start": 8,
+      "end": 14,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 8,
+          "id": "react-full-stack:assignment:8",
+          "title": "Dependency management for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain dependency management for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on dependency management for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete dependency management for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 9,
+          "id": "react-full-stack:assignment:9",
+          "title": "HTTP request lifecycle for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain http request lifecycle for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on http request lifecycle for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete http request lifecycle for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 10,
+          "id": "react-full-stack:assignment:10",
+          "title": "API contract design for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain api contract design for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on api contract design for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete api contract design for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 11,
+          "id": "react-full-stack:assignment:11",
+          "title": "Database modeling for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain database modeling for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on database modeling for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete database modeling for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 12,
+          "id": "react-full-stack:assignment:12",
+          "title": "CRUD behavior for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain crud behavior for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on crud behavior for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete crud behavior for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 13,
+          "id": "react-full-stack:assignment:13",
+          "title": "Authentication flow for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain authentication flow for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on authentication flow for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authentication flow for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 14,
+          "id": "react-full-stack:assignment:14",
+          "title": "Authorization checks for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain authorization checks for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on authorization checks for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete authorization checks for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "react-full-stack:assignment:8",
+          "react-full-stack:assignment:9",
+          "react-full-stack:assignment:10",
+          "react-full-stack:assignment:11",
+          "react-full-stack:assignment:12",
+          "react-full-stack:assignment:13",
+          "react-full-stack:assignment:14"
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "title": "Quality, security and architecture",
+      "start": 15,
+      "end": 22,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 15,
+          "id": "react-full-stack:assignment:15",
+          "title": "Input sanitization for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain input sanitization for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on input sanitization for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete input sanitization for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 16,
+          "id": "react-full-stack:assignment:16",
+          "title": "State management for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain state management for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on state management for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete state management for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 17,
+          "id": "react-full-stack:assignment:17",
+          "title": "Component design for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain component design for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on component design for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete component design for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 18,
+          "id": "react-full-stack:assignment:18",
+          "title": "Form handling for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain form handling for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on form handling for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete form handling for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 19,
+          "id": "react-full-stack:assignment:19",
+          "title": "Loading and error states for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain loading and error states for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on loading and error states for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete loading and error states for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 20,
+          "id": "react-full-stack:assignment:20",
+          "title": "Unit testing for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain unit testing for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on unit testing for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete unit testing for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 21,
+          "id": "react-full-stack:assignment:21",
+          "title": "Integration testing for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain integration testing for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on integration testing for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete integration testing for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 22,
+          "id": "react-full-stack:assignment:22",
+          "title": "Debugging strategy for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain debugging strategy for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on debugging strategy for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete debugging strategy for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "react-full-stack:assignment:15",
+          "react-full-stack:assignment:16",
+          "react-full-stack:assignment:17",
+          "react-full-stack:assignment:18",
+          "react-full-stack:assignment:19",
+          "react-full-stack:assignment:20",
+          "react-full-stack:assignment:21",
+          "react-full-stack:assignment:22"
+        ]
+      }
+    },
+    {
+      "level": 4,
+      "title": "Delivery, portfolio and interview practice",
+      "start": 23,
+      "end": 30,
+      "articles": [],
+      "questions": [],
+      "days": [
+        {
+          "day": 23,
+          "id": "react-full-stack:assignment:23",
+          "title": "Logging and observability for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain logging and observability for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on logging and observability for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete logging and observability for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 24,
+          "id": "react-full-stack:assignment:24",
+          "title": "Performance profiling for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain performance profiling for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on performance profiling for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete performance profiling for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 25,
+          "id": "react-full-stack:assignment:25",
+          "title": "Accessibility checks for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain accessibility checks for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on accessibility checks for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete accessibility checks for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 26,
+          "id": "react-full-stack:assignment:26",
+          "title": "Configuration management for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain configuration management for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on configuration management for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete configuration management for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 27,
+          "id": "react-full-stack:assignment:27",
+          "title": "Secure secrets handling for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain secure secrets handling for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on secure secrets handling for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete secure secrets handling for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 28,
+          "id": "react-full-stack:assignment:28",
+          "title": "Deployment workflow for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain deployment workflow for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on deployment workflow for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete deployment workflow for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 29,
+          "id": "react-full-stack:assignment:29",
+          "title": "Code review for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain code review for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on code review for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete code review for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        },
+        {
+          "day": 30,
+          "id": "react-full-stack:assignment:30",
+          "title": "Portfolio walkthrough for React application development",
+          "available": false,
+          "focus": "React application development",
+          "objectives": [
+            "Explain portfolio walkthrough for react application development in the context of React application development",
+            "Create a reviewable example using the relevant Git, REST APIs, SQL tools"
+          ],
+          "assignment": "Create a small React application development case study focused on portfolio walkthrough for react application development. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.",
+          "steps": [
+            "Define a concrete portfolio walkthrough for react application development problem and its acceptance criteria",
+            "Select a suitable tool from Git, REST APIs, SQL, VS Code, Docker, automated tests and record why it fits",
+            "Build the smallest reproducible example; use synthetic data and a local sandbox",
+            "Compare expected and observed behavior on your three cases",
+            "Save the artifact and explain limitations; this study brief has no verified reference solution"
+          ],
+          "revision": [
+            "State the problem and assumptions clearly",
+            "Show evidence for the expected behavior",
+            "Explain one tradeoff and one failure case",
+            "Cite the documentation you actually used",
+            "Distinguish what you built from what remains untested"
+          ]
+        }
+      ],
+      "progressIds": {
+        "articles": [],
+        "questions": [],
+        "coding": [],
+        "assignments": [
+          "react-full-stack:assignment:23",
+          "react-full-stack:assignment:24",
+          "react-full-stack:assignment:25",
+          "react-full-stack:assignment:26",
+          "react-full-stack:assignment:27",
+          "react-full-stack:assignment:28",
+          "react-full-stack:assignment:29",
+          "react-full-stack:assignment:30"
+        ]
+      }
+    }
+  ]
+}

@@ -121,7 +121,7 @@ const ROWS: CourseRow[] = [
   ['ethical-hacker-ceh', 'Ethical Hacker (C|EH)', 'Cyber Security', 'security', 'ethical hacking foundations'],
   ['cyber-security-gen-ai', 'Cyber Security + Gen AI', 'Cyber Security', 'security', 'cybersecurity with generative AI'],
   ['ui-ux-designing', 'UI/UX Designing', 'Design & Digital', 'design', 'user experience and interface design'],
-  ['advanced-digital-marketing', 'Advanced Digital Marketing', 'Design & Digital', 'design', 'digital marketing strategy and measurement'],
+  ['advanced-digital-marketing', 'Advanced Digital Marketing', 'Design & Digital', 'marketing', 'digital marketing strategy and measurement'],
 ]
 
 const MODULE_OUTCOMES = ['recognize the core concepts', 'apply a repeatable workflow', 'compare approaches and trade-offs', 'verify quality and handle edge cases', 'communicate decisions with evidence', 'ship a reviewable project outcome']
