@@ -51,12 +51,21 @@ aws ecr get-login-password --region "$REGION" | docker login --username AWS --pa
 
 $COMPOSE pull
 $COMPOSE up -d --remove-orphans
-# the container applies migrations itself on start; wait until it is really up before running commands in it
+# The entrypoint migrates before starting Gunicorn. A Django `check` can finish
+# while those migrations are still running, so wait for the HTTP health check.
+BACKEND_READY=false
 for i in $(seq 1 60); do
-  if $COMPOSE exec -T backend python manage.py check >/dev/null 2>&1; then break; fi
+  BACKEND_ID=$($COMPOSE ps -q backend)
+  if [ -n "$BACKEND_ID" ] && [ "$(docker inspect --format '{{.State.Health.Status}}' "$BACKEND_ID" 2>/dev/null || true)" = healthy ]; then
+    BACKEND_READY=true
+    break
+  fi
   echo "waiting for the backend container ($i)"; sleep 3
 done
-$COMPOSE exec -T backend python manage.py migrate --noinput
+if [ "$BACKEND_READY" != true ]; then
+  echo 'Backend did not become healthy after startup migrations.'
+  exit 1
+fi
 # Creates/updates the admin-panel login from ADMIN_EMAIL / ADMIN_PASSWORD (SSM params); no-op when they are unset.
 $COMPOSE exec -T backend python manage.py ensure_admin
 $COMPOSE exec -T backend python manage.py seed_interview_questions
