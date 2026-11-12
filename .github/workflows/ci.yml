@@ -21,7 +21,7 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - run: pip install -r requirements.txt
         working-directory: backend
-      - run: python manage.py test apps
+      - run: python manage.py collectstatic --noinput && python manage.py test apps
         working-directory: backend
         env:
           SECRET_KEY: ci-test-key-not-for-prod-use-only

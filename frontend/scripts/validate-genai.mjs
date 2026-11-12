@@ -4,7 +4,8 @@ import {spawnSync} from 'node:child_process'
 import {fileURLToPath} from 'node:url'
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..')
 const dir=path.join(root,'frontend/src/learning/genai-generated')
-const python=process.env.PYTHON||path.join(root,process.platform==='win32'?'backend/.venv/Scripts/python.exe':'backend/.venv/bin/python')
+const localPython=path.join(root,process.platform==='win32'?'backend/.venv/Scripts/python.exe':'backend/.venv/bin/python')
+const python=process.env.PYTHON||(fs.existsSync(localPython)?localPython:process.platform==='win32'?'python':'python3')
 const manifest=JSON.parse(fs.readFileSync(path.join(dir,'manifest.json'),'utf8'))
 const ids=new Set(),titles=new Set(),days=[]
 const assert=(ok,message)=>{if(!ok)throw new Error(message)}
@@ -29,6 +30,7 @@ for(const level of manifest){
  for(const article of data.articles){
   assert(data.questions.filter(q=>q.article===article.slug).length===10,'Article linkage broken')
   const run=spawnSync(python,['-I','-c',article.code],{encoding:'utf8',timeout:5000})
+  assert(!run.error,`Python execution failed: ${run.error?.message}`)
   assert(run.status===0&&run.stdout.trim()===article.expected,`Python output mismatch: ${article.slug}: ${run.stdout} ${run.stderr}; expected ${article.expected}`)
  }
  for(const day of data.days){
