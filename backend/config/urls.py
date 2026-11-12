@@ -2,8 +2,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from apps.learning.ssr import academy_page, learning_page, sitemap as learning_sitemap
 
 urlpatterns = [
+    path('learn/', academy_page),
+    path('learn/<slug:course>/', learning_page),
+    path('learn/<slug:course>/<slug:slug>/', learning_page),
+    path('sitemap-learning.xml', learning_sitemap),
+    path('api/learning/', include('apps.learning.urls')),
+    path('api/admin/', include('apps.learning.admin_urls')),
     path('admin/', admin.site.urls),
     path('api/auth/', include('apps.accounts.urls')),
     path('api/leads/', include('apps.leads.urls')),

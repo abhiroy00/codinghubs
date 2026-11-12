@@ -1,0 +1,13 @@
+{
+  "slug": "01-introduction-to-artificial-intelligence",
+  "difficulty": "beginner",
+  "outcomes": ["Define an AI task using observations, actions, goals and measurable outcomes.", "Explain why search, rules and learning are different tools within AI.", "Implement and test a bounded shortest-path planner on a finite unweighted graph.", "Design a human-reviewed support workflow with explicit permissions and failure states."],
+  "prerequisites": [],
+  "seo_description": "Understand AI through agents, representations, search and evaluation. Build a bounded Python planner and apply it to a realistic support workflow.",
+  "references": [
+    {"title": "John McCarthy: Basic questions about AI", "url": "https://www-formal.stanford.edu/jmc/whatisai/node1.html"},
+    {"title": "Python 3.12 collections.deque", "url": "https://docs.python.org/3.12/library/collections.html#collections.deque"}
+  ],
+  "examples": [{"file": "planner.py", "expected_output": "route: received -> verified -> resolved\nmissing route: None\nrejected: Unknown start or goal"}],
+  "diagrams": [{"part": "concept", "title": "A task-centered AI system", "body": "Observation -> validate and represent -> propose action\n                        ^                     |\n                        |                     v\n                outcome feedback <- policy check and human review\n\nThe planner proposes a route. Authorized application code controls execution."}]
+}

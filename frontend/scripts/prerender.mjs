@@ -18,6 +18,7 @@ const { renderAll } = await import(pathToFileURL(path.join(root, 'dist-ssr', 'en
 const template = await readFile(path.join(dist, 'index.html'), 'utf8')
 const cssVersion = createHash('md5').update(await readFile(path.join(dist, 'free-session.css'))).digest('hex').slice(0, 8)
 const learningStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(genai-roadmap|learning)-.*\.css$/.test(name))
+const visualStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(Academy|DiagramPlayer|VisualLab)-.*\.css$/.test(name))
 
 function buildHead(page) {
   const canonical = page.canonical ?? `${SITE}${page.path}`
@@ -55,6 +56,9 @@ function buildHead(page) {
   if (page.jsonLd) tags.push(`<script type="application/ld+json">${JSON.stringify(page.jsonLd).replace(/</g, '\\u003c')}</script>`)
   if (page.path?.startsWith('/interview-prep/')) {
     for (const file of learningStyles) tags.push(`<link rel="stylesheet" href="/assets/${file}" />`)
+  }
+  if (page.path === '/visual-lab/') {
+    for (const file of visualStyles) tags.push(`<link rel="stylesheet" href="/assets/${file}" />`)
   }
   return tags.join('\n    ')
 }

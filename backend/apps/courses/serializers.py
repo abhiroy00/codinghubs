@@ -102,7 +102,7 @@ class LearningProgressSerializer(serializers.ModelSerializer):
 class CourseQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseQuestion
-        fields = ('id', 'course_slug', 'course_name', 'level', 'topic', 'question', 'answer', 'explanation', 'coding_prompt', 'coding_solution', 'example')
+        fields = ('id', 'course_slug', 'course_name', 'level', 'topic', 'question', 'answer', 'explanation', 'coding_prompt', 'coding_solution', 'example', 'provenance', 'source_url', 'company_tags', 'role')
 
 
 class CourseCertificateSerializer(serializers.ModelSerializer):

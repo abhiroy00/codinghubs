@@ -34,6 +34,32 @@ services:
     expose:
       - '8000'
 
+  learning-worker:
+    profiles: ['learning']
+    image: ${BACKEND_IMAGE:-codinghubs-backend}
+    build: ./backend
+    restart: unless-stopped
+    entrypoint: ['python', 'manage.py', 'process_learning_documents']
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-codinghubs}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-codinghubs}
+      PRIVATE_MEDIA_ROOT: /app/private_media
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+      - private_media:/app/private_media:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m
+    mem_limit: 512m
+    cpus: 0.5
+    pids_limit: 64
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    depends_on:
+      db:
+        condition: service_healthy
+
   frontend:
     image: ${FRONTEND_IMAGE:-codinghubs-frontend}
     build:

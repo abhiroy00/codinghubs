@@ -22,6 +22,9 @@ async function start() {
   // Program, courses, interview prep and the locations index are lazy chunks as well.
   const path = window.location.pathname
   const lazyPage = /^\/program\//.test(path) ? import('./pages/Curriculum')
+    : /^\/visual-lab\/?$/.test(path) ? import('./learning/VisualLab')
+    : /^\/learn\/?$/.test(path) ? import('./learning/Academy')
+    : /^\/learn\//.test(path) ? import('./learning/Learning')
     : /^\/(courses|interview-prep)(\/|$)/.test(path) ? import('./learning/CourseLearning')
     : /^\/locations\/?$/.test(path) ? import('./locations/LocationsIndex')
     : null

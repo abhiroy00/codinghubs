@@ -11,6 +11,10 @@ import { FreeSession } from './pages/FreeSession'
 import { NotFound } from './pages/NotFound'
 import { LocationRoute } from './locations/LocationRoute'
 const LearnFrame = lazy(() => import('./learning/LearnFrame').then(m => ({ default: m.LearnFrame })))
+const Academy = lazy(() => import('./learning/Academy').then(m => ({ default: m.Academy })))
+const Learning = lazy(() => import('./learning/Learning').then(m => ({ default: m.Learning })))
+const VisualLab = lazy(() => import('./learning/VisualLab').then(m => ({ default: m.VisualLab })))
+const Faq = lazy(() => import('./pages/Faq').then(m => ({ default: m.Faq })))
 
 const GigsPage = lazy(() => import('./gigs/GigsPage').then(m => ({ default: m.GigsPage })))
 const Curriculum = lazy(() => import('./pages/Curriculum').then((m) => ({ default: m.Curriculum })))
@@ -68,6 +72,10 @@ export function App() {
             <RegisterPopupProvider>
             <Suspense fallback={null}>
 <Routes>
+              <Route path="learn" element={<Academy />} />
+              <Route path="learn/:course" element={<Learning />} />
+              <Route path="learn/:course/:slug" element={<Learning />} />
+              <Route path="visual-lab" element={<VisualLab />} />
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
               <Route path="program/:slug" element={<Curriculum />} />
@@ -117,6 +125,7 @@ export function App() {
                 <Route path="certificates/:slug" element={<CertificateRedirect />} />
               <Route element={<Layout />}>
                 <Route path="policies" element={<Policies />} />
+                <Route path="faq" element={<Faq />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 <Route path="enroll/:slug" element={<CourseCheckout />} />

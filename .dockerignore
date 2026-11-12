@@ -4,5 +4,12 @@
 **/.env
 **/.env.local
 .git
-backend
+backend/**
+!backend/apps/
+!backend/apps/courses/
+!backend/apps/courses/prep_schema.py
+!backend/apps/courses/prep_content/
+!backend/apps/courses/prep_content/**
+!backend/apps/courses/roadmap_content/
+!backend/apps/courses/roadmap_content/**
 infra

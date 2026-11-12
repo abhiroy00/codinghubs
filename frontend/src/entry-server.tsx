@@ -1,4 +1,6 @@
 import { renderToString } from 'react-dom/server'
+import { VisualLab } from './learning/VisualLab'
+import { Faq } from './pages/Faq'
 import type { ReactNode } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
@@ -29,7 +31,7 @@ import { courseRoadmapMeta } from './learning/course-roadmap-seo'
 import { genaiMeta } from './learning/genai-seo'
 import { GENAI_LEVELS,genaiPath,type GenAILevel } from './learning/genai-content'
 import type { LocationContent } from './locations/types'
-import { HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META } from './seo/site'
+import { HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -63,6 +65,8 @@ export interface PrerenderedPage {
 
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
   const pages: PrerenderedPage[] = []
+  pages.push({file:'faq.html',path:'/faq',title:'Frequently asked questions | Coding Hubs',description:'Answers about Coding Hubs programs, learning options, enrollment and support.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderToString(<AuthProvider><StaticRouter location="/faq"><LenisProvider><ModalProvider><Routes><Route element={<Layout/>}><Route path="faq" element={<Faq/>}/></Route></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
+  pages.push({file:'visual-lab/index.html',path:'/visual-lab/',title:'Interactive engineering visual lab | Coding Hubs',description:'Explore attention, vector similarity, gradient descent and engineering workflows with step-by-step controls.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderToString(<AuthProvider><StaticRouter location="/visual-lab/"><VisualLab /></StaticRouter></AuthProvider>),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:'Coding Hubs engineering visual lab',url:`${SITE_URL}/visual-lab/`,learningResourceType:'Interactive simulation'}]}})
   for(const course of Object.values(COURSE_ROADMAPS)) {
     const data=courseRoadmapModules[`./learning/course-roadmaps/${course.slug}.json`].default
     for(const level of course.levels) {

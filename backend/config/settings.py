@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'apps.jobs',
     'apps.aicoach',
     'apps.gigs',
+    'apps.learning',
 ]
 
 MIDDLEWARE = [

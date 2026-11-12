@@ -7,6 +7,9 @@ let gigsStatus: Promise<boolean> | undefined
 const pilotEnabled = () => gigsStatus ??= api.get('/gigs/status/').then(r => r.data.enabled === true).catch(() => false)
 
 const LINKS = [
+  ['/learn/', 'Learning Library'],
+  ['/visual-lab/', 'Interactive Visual Lab'],
+  ['/faq', 'Frequently Asked Questions'],
   ['/blog', 'Blog'],
   ['/case-studies', 'Case Studies'],
   ['/projects', 'Projects'],

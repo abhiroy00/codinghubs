@@ -27,7 +27,7 @@ const trackTitles={
 const manifest={}
 function write(file,value){
  const text=JSON.stringify(value,null,2)+'\n'
- if(process.argv.includes('--check')){if(!fs.existsSync(file)||fs.readFileSync(file,'utf8')!==text)throw new Error('Outdated roadmap: '+file)}
+ if(process.argv.includes('--check')){if(!fs.existsSync(file)||fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')!==text)throw new Error('Outdated roadmap: '+file)}
  else{fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,text)}
 }
 for(const course of COURSE_CATALOG.filter(c=>c.slug!=='generative-ai')){

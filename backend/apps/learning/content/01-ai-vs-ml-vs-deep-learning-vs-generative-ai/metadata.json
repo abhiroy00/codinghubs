@@ -1,0 +1,14 @@
+{
+  "slug": "01-ai-vs-ml-vs-deep-learning-vs-generative-ai",
+  "difficulty": "beginner",
+  "outcomes": ["Distinguish a field, a learning method, an architecture family and a generative objective.", "Separate learned parameters from manually specified rules and inference-time inputs.", "Fit a small numerical predictor and a count-based text model with independently checked outputs.", "Choose and evaluate different AI components within one production workflow."],
+  "prerequisites": ["01-introduction-to-artificial-intelligence"],
+  "seo_description": "Compare AI, machine learning, deep learning and generative models through explicit rules, a fitted predictor, a count-based text generator and production trade-offs.",
+  "references": [
+    {"title": "Tom Mitchell: Machine Learning textbook and learning framework", "url": "https://www.cs.cmu.edu/~tom/mlbook.html"},
+    {"title": "Goodfellow, Bengio and Courville: Deep Learning introduction", "url": "https://www.deeplearningbook.org/contents/intro.html"},
+    {"title": "Python 3.12 collections.Counter", "url": "https://docs.python.org/3.12/library/collections.html#collections.Counter"}
+  ],
+  "examples": [{"file": "family_demo.py", "expected_output": "rule: priority\nlearned prediction: 9.000\ngenerated: ai learns patterns"}],
+  "diagrams": [{"part": "concept", "title": "Classify components along multiple axes", "body": "AI: broad task and system field\n  |\n  +-- Explicit rules, search and planning\n  |\n  +-- Machine learning: fit behavior from experience\n        |\n        +-- Deep learning: multilayer learned representations\n\nGenerative objective: model data or sequences so outputs can be produced.\nIt can be implemented with a simple count model or a deep neural model.\nA product may combine several of these components."}]
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { adminApi, adminTokens } from './api'
 import { BlogEditor } from './content/BlogEditor'
@@ -15,9 +15,21 @@ import { QuestionManager } from './content/QuestionManager'
 import { TutorBookingsPage } from './TutorBookingsPage'
 import { TutorsPage } from './TutorsPage'
 import { JobsPage } from './JobsPage'
+import { LearningList } from './learning/LearningList'
+const ResearchDesk = lazy(() => import('./learning/ResearchDesk').then(m => ({default:m.ResearchDesk})))
+const LearningEditor = lazy(() => import('./learning/LearningEditor').then(m => ({default:m.LearningEditor})))
+import { AssignmentReviewEditor, AssignmentReviewQueue } from './learning/AssignmentReviews'
 import './admin.css'
 
 const NAV: { heading: string; items: { to: string; label: string; icon: string; end?: boolean; count?: 'blogs' | 'cases' }[] }[] = [
+  {
+    heading: 'Learning platform',
+    items: [
+      { to: '/learning-research', label: 'Research & PDF registry', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Z' },
+      { to: '/learning', label: 'Generative AI curriculum', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Zm0 4v2h6v-2H7Z' },
+      { to: '/learning-reviews', label: 'Assignment reviews', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Zm0 4v2h6v-2H7Z' },
+    ],
+  },
   {
     heading: 'Main',
     items: [
@@ -223,7 +235,12 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
       </aside>
       <div className="ad-main">
         <main className="ad-content">
-          <Routes>
+          <Suspense fallback={<p role="status">Loading admin workspace…</p>}><Routes>
+            <Route path="learning" element={<LearningList />} />
+            <Route path="learning-research" element={<ResearchDesk />} />
+            <Route path="learning-reviews" element={<AssignmentReviewQueue />} />
+            <Route path="learning-reviews/:id" element={<AssignmentReviewEditor key={location.pathname} />} />
+            <Route path="learning/:id" element={<LearningEditor key={location.pathname} />} />
             <Route index element={<><Overview /><StoreOverview /></>} />
             <Route path="leads" element={<LeadsPage />} />
             <Route
@@ -304,7 +321,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="tutors" element={<TutorsPage />} />
             <Route path="change-password" element={<ChangePassword onDone={onLogout} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          </Routes></Suspense>
         </main>
       </div>
     </div>

@@ -333,9 +333,20 @@ class CourseQuestionSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'course_slug', 'course_name', 'level', 'topic', 'question', 'answer',
             'explanation', 'example', 'coding_prompt', 'coding_solution', 'is_published',
+            'provenance', 'source_url', 'company_tags', 'role',
             'created_at', 'updated_at',
         )
         read_only_fields = ('id', 'question_key', 'created_at', 'updated_at')
+
+    def validate(self, attrs):
+        provenance = attrs.get('provenance', self.instance.provenance if self.instance else 'unreviewed')
+        source = attrs.get('source_url', self.instance.source_url if self.instance else '')
+        if provenance == 'public_report' and not source.startswith('https://'):
+            raise serializers.ValidationError({'source_url': 'A public interview report requires a traceable HTTPS source. Company-style questions must not be labeled as actual reports.'})
+        tags = attrs.get('company_tags', [])
+        if not isinstance(tags, list) or len(tags) > 20 or any(not isinstance(t, str) or len(t) > 100 for t in tags):
+            raise serializers.ValidationError({'company_tags': 'Use up to 20 company names, each at most 100 characters.'})
+        return attrs
 
 
 class QuestionListView(generics.ListCreateAPIView):

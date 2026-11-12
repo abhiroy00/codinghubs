@@ -24,7 +24,7 @@ async function output(name, value) {
   const content = JSON.stringify(value, null, 2) + '\n'
   const file = path.join(target, name)
   if (check) {
-    if (await readFile(file, 'utf8').catch(() => '') !== content) throw new Error('Stale generated prep content: ' + name)
+    if ((await readFile(file, 'utf8').catch(() => '')).replace(/\r\n/g, '\n') !== content) throw new Error('Stale generated prep content: ' + name)
   } else { await mkdir(target, { recursive: true }); await writeFile(file, content) }
 }
 for (const dir of (await readdir(source, { withFileTypes: true })).filter(d => d.isDirectory()).sort((a,b) => a.name.localeCompare(b.name))) {
@@ -34,10 +34,10 @@ for (const dir of (await readdir(source, { withFileTypes: true })).filter(d => d
   const meta = JSON.parse(metaText)
   if (!meta.courses?.length || meta.courses.some(s => !slugs.has(s))) throw new Error('Unknown catalog course in ' + dir.name)
   const lessons = []
-  const hash = createHash('sha256').update(metaText)
+  const hash = createHash('sha256').update(metaText.replace(/\r\n/g, '\n'))
   for (let day=1; day<=30; day++) {
     const text = await readFile(path.join(base, 'day-' + String(day).padStart(2, '0') + '.json'), 'utf8')
-    hash.update(text)
+    hash.update(text.replace(/\r\n/g, '\n'))
     const lesson = JSON.parse(text)
     if (lesson.day !== day || !lesson.definition || !lesson.interview?.length || !lesson.practice?.statement || !lesson.objectives?.length) throw new Error('Incomplete source: ' + dir.name + ' day ' + day)
     lessons.push(lesson)

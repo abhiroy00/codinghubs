@@ -18,6 +18,7 @@ const read = (f) => readFile(path.join(dist, f), 'utf8')
 
 /** Mirrors nginx.conf: where a clean URL is served from. */
 function resolveUrl(urlPath) {
+  if (/^\/learn(?:\/|$)/.test(urlPath)) return {file: 'content-shell.html', dynamic: true}
   // blog / case studies come from the database: nginx hands these URLs to the backend (server-rendered)
   if (/^\/(blog|case-studies|store|projects|project-guides)(\/[^/]+)?$/.test(urlPath)) return { file: 'content-shell.html', dynamic: true }
   // account / checkout screens are app-only (noindex SPA shell)
@@ -131,7 +132,7 @@ for (const pg of pages) {
     const r = resolveUrl(clean)
     if (!r) { fail(`${where} broken internal link ${href}`); continue }
     if (r.needsSlash) warn(`${where} link ${href} redirects to a trailing-slash URL`)
-    if (!r.static && clean !== '/' && clean.endsWith('/') && r.file.endsWith('.html') && !r.file.endsWith('index.html')) warn(`${where} link ${href} has a trailing slash but the page is served without one`)
+    if (!r.static && !r.dynamic && clean !== '/' && clean.endsWith('/') && r.file.endsWith('.html') && !r.file.endsWith('index.html')) warn(`${where} link ${href} has a trailing slash but the page is served without one`)
   }
   links.set(urlPath, out)
 

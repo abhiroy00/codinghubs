@@ -1,0 +1,2401 @@
+[
+  {
+    "number": 1,
+    "title": "AI, ML and Mathematics Foundations",
+    "slug": "ai-ml-and-mathematics-foundations",
+    "objectives": [
+      "Frame AI tasks using observations, outputs and measurable outcomes.",
+      "Use Python arrays, vectors, matrices and derivatives to express simple learning computations.",
+      "Connect probability, loss functions and optimization to a tested numerical example."
+    ],
+    "chapters": [
+      {
+        "title": "AI concepts and Python foundations",
+        "concepts": [
+          {
+            "title": "Introduction to Artificial Intelligence",
+            "slug": "01-introduction-to-artificial-intelligence",
+            "prerequisites": []
+          },
+          {
+            "title": "AI vs ML vs Deep Learning vs Generative AI",
+            "slug": "01-ai-vs-ml-vs-deep-learning-vs-generative-ai",
+            "prerequisites": [
+              "01-introduction-to-artificial-intelligence"
+            ]
+          },
+          {
+            "title": "Supervised, Unsupervised and Reinforcement Learning",
+            "slug": "01-supervised-unsupervised-and-reinforcement-learning",
+            "prerequisites": [
+              "01-ai-vs-ml-vs-deep-learning-vs-generative-ai"
+            ]
+          },
+          {
+            "title": "Python for AI Engineering",
+            "slug": "01-python-for-ai-engineering",
+            "prerequisites": [
+              "01-supervised-unsupervised-and-reinforcement-learning"
+            ]
+          },
+          {
+            "title": "NumPy and Pandas",
+            "slug": "01-numpy-and-pandas",
+            "prerequisites": [
+              "01-python-for-ai-engineering"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Linear algebra and calculus",
+        "concepts": [
+          {
+            "title": "Vectors and Matrices",
+            "slug": "01-vectors-and-matrices",
+            "prerequisites": [
+              "01-numpy-and-pandas"
+            ]
+          },
+          {
+            "title": "Matrix Multiplication",
+            "slug": "01-matrix-multiplication",
+            "prerequisites": [
+              "01-vectors-and-matrices"
+            ]
+          },
+          {
+            "title": "Linear Algebra",
+            "slug": "01-linear-algebra",
+            "prerequisites": [
+              "01-matrix-multiplication"
+            ]
+          },
+          {
+            "title": "Derivatives and Partial Derivatives",
+            "slug": "01-derivatives-and-partial-derivatives",
+            "prerequisites": [
+              "01-linear-algebra"
+            ]
+          },
+          {
+            "title": "Chain Rule",
+            "slug": "01-chain-rule",
+            "prerequisites": [
+              "01-derivatives-and-partial-derivatives"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Optimization, probability and learning objectives",
+        "concepts": [
+          {
+            "title": "Gradients and Gradient Descent",
+            "slug": "01-gradients-and-gradient-descent",
+            "prerequisites": [
+              "01-chain-rule"
+            ]
+          },
+          {
+            "title": "Probability and Statistics",
+            "slug": "01-probability-and-statistics",
+            "prerequisites": [
+              "01-gradients-and-gradient-descent"
+            ]
+          },
+          {
+            "title": "Loss Functions",
+            "slug": "01-loss-functions",
+            "prerequisites": [
+              "01-probability-and-statistics"
+            ]
+          },
+          {
+            "title": "Optimization Fundamentals",
+            "slug": "01-optimization-fundamentals",
+            "prerequisites": [
+              "01-loss-functions"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "title": "Deep Learning and Neural Networks",
+    "slug": "deep-learning-and-neural-networks",
+    "objectives": [
+      "Trace a neural network through forward computation and gradient-based parameter updates.",
+      "Compare activation functions, regularization and optimizer choices using controlled experiments.",
+      "Select and explain basic convolutional and recurrent architectures for their intended data structures."
+    ],
+    "chapters": [
+      {
+        "title": "Neural units and model structure",
+        "concepts": [
+          {
+            "title": "Biological vs Artificial Neurons",
+            "slug": "02-biological-vs-artificial-neurons",
+            "prerequisites": [
+              "01-optimization-fundamentals"
+            ]
+          },
+          {
+            "title": "Perceptron",
+            "slug": "02-perceptron",
+            "prerequisites": [
+              "02-biological-vs-artificial-neurons"
+            ]
+          },
+          {
+            "title": "Single Layer Neural Networks",
+            "slug": "02-single-layer-neural-networks",
+            "prerequisites": [
+              "02-perceptron"
+            ]
+          },
+          {
+            "title": "Multi-Layer Perceptrons",
+            "slug": "02-multi-layer-perceptrons",
+            "prerequisites": [
+              "02-single-layer-neural-networks"
+            ]
+          },
+          {
+            "title": "Activation Functions",
+            "slug": "02-activation-functions",
+            "prerequisites": [
+              "02-multi-layer-perceptrons"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Training and optimization",
+        "concepts": [
+          {
+            "title": "Forward Propagation",
+            "slug": "02-forward-propagation",
+            "prerequisites": [
+              "02-activation-functions"
+            ]
+          },
+          {
+            "title": "Backpropagation",
+            "slug": "02-backpropagation",
+            "prerequisites": [
+              "02-forward-propagation"
+            ]
+          },
+          {
+            "title": "Computational Graphs",
+            "slug": "02-computational-graphs",
+            "prerequisites": [
+              "02-backpropagation"
+            ]
+          },
+          {
+            "title": "Gradient Descent Variants",
+            "slug": "02-gradient-descent-variants",
+            "prerequisites": [
+              "02-computational-graphs"
+            ]
+          },
+          {
+            "title": "SGD, Adam and AdamW",
+            "slug": "02-sgd-adam-and-adamw",
+            "prerequisites": [
+              "02-gradient-descent-variants"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Generalization and sequence architectures",
+        "concepts": [
+          {
+            "title": "Overfitting and Underfitting",
+            "slug": "02-overfitting-and-underfitting",
+            "prerequisites": [
+              "02-sgd-adam-and-adamw"
+            ]
+          },
+          {
+            "title": "Regularization",
+            "slug": "02-regularization",
+            "prerequisites": [
+              "02-overfitting-and-underfitting"
+            ]
+          },
+          {
+            "title": "CNN",
+            "slug": "02-cnn",
+            "prerequisites": [
+              "02-regularization"
+            ]
+          },
+          {
+            "title": "RNN",
+            "slug": "02-rnn",
+            "prerequisites": [
+              "02-cnn"
+            ]
+          },
+          {
+            "title": "LSTM and GRU",
+            "slug": "02-lstm-and-gru",
+            "prerequisites": [
+              "02-rnn"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "title": "NLP and Language Processing",
+    "slug": "nlp-and-language-processing",
+    "objectives": [
+      "Build lexical text representations and explain information lost during preprocessing.",
+      "Compare word, sentence and sequence representations through explicit tasks and evaluations.",
+      "Inspect subword tokenization and connect token choices to language-model inputs."
+    ],
+    "chapters": [
+      {
+        "title": "Text preprocessing and lexical representations",
+        "concepts": [
+          {
+            "title": "Introduction to NLP",
+            "slug": "03-introduction-to-nlp",
+            "prerequisites": [
+              "02-lstm-and-gru"
+            ]
+          },
+          {
+            "title": "Text Preprocessing",
+            "slug": "03-text-preprocessing",
+            "prerequisites": [
+              "03-introduction-to-nlp"
+            ]
+          },
+          {
+            "title": "Stemming and Lemmatization",
+            "slug": "03-stemming-and-lemmatization",
+            "prerequisites": [
+              "03-text-preprocessing"
+            ]
+          },
+          {
+            "title": "Bag of Words",
+            "slug": "03-bag-of-words",
+            "prerequisites": [
+              "03-stemming-and-lemmatization"
+            ]
+          },
+          {
+            "title": "TF-IDF",
+            "slug": "03-tf-idf",
+            "prerequisites": [
+              "03-bag-of-words"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Distributed representations and language modeling",
+        "concepts": [
+          {
+            "title": "Word2Vec",
+            "slug": "03-word2vec",
+            "prerequisites": [
+              "03-tf-idf"
+            ]
+          },
+          {
+            "title": "GloVe",
+            "slug": "03-glove",
+            "prerequisites": [
+              "03-word2vec"
+            ]
+          },
+          {
+            "title": "Semantic Embeddings",
+            "slug": "03-semantic-embeddings",
+            "prerequisites": [
+              "03-glove"
+            ]
+          },
+          {
+            "title": "Language Modeling",
+            "slug": "03-language-modeling",
+            "prerequisites": [
+              "03-semantic-embeddings"
+            ]
+          },
+          {
+            "title": "Sequence Modeling",
+            "slug": "03-sequence-modeling",
+            "prerequisites": [
+              "03-language-modeling"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Tokenization and sentence representations",
+        "concepts": [
+          {
+            "title": "Subword Tokenization",
+            "slug": "03-subword-tokenization",
+            "prerequisites": [
+              "03-sequence-modeling"
+            ]
+          },
+          {
+            "title": "BPE and WordPiece",
+            "slug": "03-bpe-and-wordpiece",
+            "prerequisites": [
+              "03-subword-tokenization"
+            ]
+          },
+          {
+            "title": "Sentence Embeddings",
+            "slug": "03-sentence-embeddings",
+            "prerequisites": [
+              "03-bpe-and-wordpiece"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "title": "Transformers Architecture",
+    "slug": "transformers-architecture",
+    "objectives": [
+      "Derive scaled dot-product attention and track query, key and value dimensions.",
+      "Explain transformer components, positional information and encoder/decoder responsibilities.",
+      "Compare BERT, GPT and T5 objectives without conflating training with inference."
+    ],
+    "chapters": [
+      {
+        "title": "Attention foundations",
+        "concepts": [
+          {
+            "title": "Sequence-to-Sequence Models",
+            "slug": "04-sequence-to-sequence-models",
+            "prerequisites": [
+              "03-sentence-embeddings"
+            ]
+          },
+          {
+            "title": "Attention Mechanism",
+            "slug": "04-attention-mechanism",
+            "prerequisites": [
+              "04-sequence-to-sequence-models"
+            ]
+          },
+          {
+            "title": "Self-Attention",
+            "slug": "04-self-attention",
+            "prerequisites": [
+              "04-attention-mechanism"
+            ]
+          },
+          {
+            "title": "Query, Key and Value",
+            "slug": "04-query-key-and-value",
+            "prerequisites": [
+              "04-self-attention"
+            ]
+          },
+          {
+            "title": "Scaled Dot-Product Attention",
+            "slug": "04-scaled-dot-product-attention",
+            "prerequisites": [
+              "04-query-key-and-value"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Transformer structure and encoders",
+        "concepts": [
+          {
+            "title": "Multi-Head Attention",
+            "slug": "04-multi-head-attention",
+            "prerequisites": [
+              "04-scaled-dot-product-attention"
+            ]
+          },
+          {
+            "title": "Positional Encoding",
+            "slug": "04-positional-encoding",
+            "prerequisites": [
+              "04-multi-head-attention"
+            ]
+          },
+          {
+            "title": "Encoder and Decoder",
+            "slug": "04-encoder-and-decoder",
+            "prerequisites": [
+              "04-positional-encoding"
+            ]
+          },
+          {
+            "title": "Transformer Architecture",
+            "slug": "04-transformer-architecture",
+            "prerequisites": [
+              "04-encoder-and-decoder"
+            ]
+          },
+          {
+            "title": "BERT",
+            "slug": "04-bert",
+            "prerequisites": [
+              "04-transformer-architecture"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Model families and execution",
+        "concepts": [
+          {
+            "title": "GPT",
+            "slug": "04-gpt",
+            "prerequisites": [
+              "04-bert"
+            ]
+          },
+          {
+            "title": "T5",
+            "slug": "04-t5",
+            "prerequisites": [
+              "04-gpt"
+            ]
+          },
+          {
+            "title": "Transformer Training and Inference",
+            "slug": "04-transformer-training-and-inference",
+            "prerequisites": [
+              "04-t5"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "title": "Large Language Models",
+    "slug": "large-language-models",
+    "objectives": [
+      "Distinguish model parameters, tokens, context and training stages.",
+      "Experiment with decoding settings and explain their limits and failure modes.",
+      "Evaluate model selection, context use and caching against a defined application task."
+    ],
+    "chapters": [
+      {
+        "title": "Model structure and representations",
+        "concepts": [
+          {
+            "title": "What are LLMs?",
+            "slug": "05-what-are-llms",
+            "prerequisites": [
+              "04-transformer-training-and-inference"
+            ]
+          },
+          {
+            "title": "LLM Architecture",
+            "slug": "05-llm-architecture",
+            "prerequisites": [
+              "05-what-are-llms"
+            ]
+          },
+          {
+            "title": "Parameters and Weights",
+            "slug": "05-parameters-and-weights",
+            "prerequisites": [
+              "05-llm-architecture"
+            ]
+          },
+          {
+            "title": "Tokens and Tokenization",
+            "slug": "05-tokens-and-tokenization",
+            "prerequisites": [
+              "05-parameters-and-weights"
+            ]
+          },
+          {
+            "title": "Context Windows",
+            "slug": "05-context-windows",
+            "prerequisites": [
+              "05-tokens-and-tokenization"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Training stages and decoding",
+        "concepts": [
+          {
+            "title": "Next Token Prediction",
+            "slug": "05-next-token-prediction",
+            "prerequisites": [
+              "05-context-windows"
+            ]
+          },
+          {
+            "title": "Pretraining",
+            "slug": "05-pretraining",
+            "prerequisites": [
+              "05-next-token-prediction"
+            ]
+          },
+          {
+            "title": "Instruction Tuning",
+            "slug": "05-instruction-tuning",
+            "prerequisites": [
+              "05-pretraining"
+            ]
+          },
+          {
+            "title": "Inference",
+            "slug": "05-inference",
+            "prerequisites": [
+              "05-instruction-tuning"
+            ]
+          },
+          {
+            "title": "Temperature",
+            "slug": "05-temperature",
+            "prerequisites": [
+              "05-inference"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Inference trade-offs and model selection",
+        "concepts": [
+          {
+            "title": "Top-K and Top-P",
+            "slug": "05-top-k-and-top-p",
+            "prerequisites": [
+              "05-temperature"
+            ]
+          },
+          {
+            "title": "KV Cache",
+            "slug": "05-kv-cache",
+            "prerequisites": [
+              "05-top-k-and-top-p"
+            ]
+          },
+          {
+            "title": "Hallucinations",
+            "slug": "05-hallucinations",
+            "prerequisites": [
+              "05-kv-cache"
+            ]
+          },
+          {
+            "title": "Open-Source vs Closed-Source Models",
+            "slug": "05-open-source-vs-closed-source-models",
+            "prerequisites": [
+              "05-hallucinations"
+            ]
+          },
+          {
+            "title": "Model Selection",
+            "slug": "05-model-selection",
+            "prerequisites": [
+              "05-open-source-vs-closed-source-models"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "title": "Prompt Engineering",
+    "slug": "prompt-engineering",
+    "objectives": [
+      "Design explicit instructions and demonstrations with measurable acceptance criteria.",
+      "Version prompts and validate structured outputs against an application contract.",
+      "Evaluate context choices, prompt regressions and adversarial input handling."
+    ],
+    "chapters": [
+      {
+        "title": "Instruction and example design",
+        "concepts": [
+          {
+            "title": "Introduction to Prompt Engineering",
+            "slug": "06-introduction-to-prompt-engineering",
+            "prerequisites": [
+              "05-model-selection"
+            ]
+          },
+          {
+            "title": "System and User Instructions",
+            "slug": "06-system-and-user-instructions",
+            "prerequisites": [
+              "06-introduction-to-prompt-engineering"
+            ]
+          },
+          {
+            "title": "Zero-Shot Prompting",
+            "slug": "06-zero-shot-prompting",
+            "prerequisites": [
+              "06-system-and-user-instructions"
+            ]
+          },
+          {
+            "title": "One-Shot and Few-Shot Prompting",
+            "slug": "06-one-shot-and-few-shot-prompting",
+            "prerequisites": [
+              "06-zero-shot-prompting"
+            ]
+          },
+          {
+            "title": "Role-Based Prompting",
+            "slug": "06-role-based-prompting",
+            "prerequisites": [
+              "06-one-shot-and-few-shot-prompting"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Structured prompts and context",
+        "concepts": [
+          {
+            "title": "Structured Output",
+            "slug": "06-structured-output",
+            "prerequisites": [
+              "06-role-based-prompting"
+            ]
+          },
+          {
+            "title": "JSON Mode",
+            "slug": "06-json-mode",
+            "prerequisites": [
+              "06-structured-output"
+            ]
+          },
+          {
+            "title": "Prompt Templates",
+            "slug": "06-prompt-templates",
+            "prerequisites": [
+              "06-json-mode"
+            ]
+          },
+          {
+            "title": "Context Engineering",
+            "slug": "06-context-engineering",
+            "prerequisites": [
+              "06-prompt-templates"
+            ]
+          },
+          {
+            "title": "Prompt Versioning",
+            "slug": "06-prompt-versioning",
+            "prerequisites": [
+              "06-context-engineering"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Evaluation and prompt robustness",
+        "concepts": [
+          {
+            "title": "Prompt Evaluation",
+            "slug": "06-prompt-evaluation",
+            "prerequisites": [
+              "06-prompt-versioning"
+            ]
+          },
+          {
+            "title": "Prompt Injection Awareness",
+            "slug": "06-prompt-injection-awareness",
+            "prerequisites": [
+              "06-prompt-evaluation"
+            ]
+          },
+          {
+            "title": "Advanced Prompt Optimization",
+            "slug": "06-advanced-prompt-optimization",
+            "prerequisites": [
+              "06-prompt-injection-awareness"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "title": "LLM APIs and Model Ecosystem",
+    "slug": "llm-apis-and-model-ecosystem",
+    "objectives": [
+      "Integrate documented remote and local model interfaces with server-held credentials.",
+      "Handle streaming, structured responses and tool proposals with explicit validation.",
+      "Measure and limit token usage, retries, request rates and serving costs."
+    ],
+    "chapters": [
+      {
+        "title": "Providers and local runtimes",
+        "concepts": [
+          {
+            "title": "OpenAI API",
+            "slug": "07-openai-api",
+            "prerequisites": [
+              "06-advanced-prompt-optimization"
+            ]
+          },
+          {
+            "title": "Gemini API",
+            "slug": "07-gemini-api",
+            "prerequisites": [
+              "07-openai-api"
+            ]
+          },
+          {
+            "title": "Claude API",
+            "slug": "07-claude-api",
+            "prerequisites": [
+              "07-gemini-api"
+            ]
+          },
+          {
+            "title": "Hugging Face",
+            "slug": "07-hugging-face",
+            "prerequisites": [
+              "07-claude-api"
+            ]
+          },
+          {
+            "title": "Ollama",
+            "slug": "07-ollama",
+            "prerequisites": [
+              "07-hugging-face"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Model integration and authentication",
+        "concepts": [
+          {
+            "title": "Local LLMs",
+            "slug": "07-local-llms",
+            "prerequisites": [
+              "07-ollama"
+            ]
+          },
+          {
+            "title": "Open-Source Model Ecosystem",
+            "slug": "07-open-source-model-ecosystem",
+            "prerequisites": [
+              "07-local-llms"
+            ]
+          },
+          {
+            "title": "API Authentication",
+            "slug": "07-api-authentication",
+            "prerequisites": [
+              "07-open-source-model-ecosystem"
+            ]
+          },
+          {
+            "title": "Streaming Responses",
+            "slug": "07-streaming-responses",
+            "prerequisites": [
+              "07-api-authentication"
+            ]
+          },
+          {
+            "title": "Function Calling",
+            "slug": "07-function-calling",
+            "prerequisites": [
+              "07-streaming-responses"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Reliable tool and API integration",
+        "concepts": [
+          {
+            "title": "Tool Calling",
+            "slug": "07-tool-calling",
+            "prerequisites": [
+              "07-function-calling"
+            ]
+          },
+          {
+            "title": "Structured Responses",
+            "slug": "07-structured-responses",
+            "prerequisites": [
+              "07-tool-calling"
+            ]
+          },
+          {
+            "title": "Error Handling",
+            "slug": "07-error-handling",
+            "prerequisites": [
+              "07-structured-responses"
+            ]
+          },
+          {
+            "title": "Rate Limits",
+            "slug": "07-rate-limits",
+            "prerequisites": [
+              "07-error-handling"
+            ]
+          },
+          {
+            "title": "Token and Cost Management",
+            "slug": "07-token-and-cost-management",
+            "prerequisites": [
+              "07-rate-limits"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "title": "Embeddings and Vector Databases",
+    "slug": "embeddings-and-vector-databases",
+    "objectives": [
+      "Derive and test vector similarity functions with explicit numerical contracts.",
+      "Compare exact search with approximate indexes using recall and resource measurements.",
+      "Design versioned vector collections with metadata filters and authorization boundaries."
+    ],
+    "chapters": [
+      {
+        "title": "Embedding geometry",
+        "concepts": [
+          {
+            "title": "What are Embeddings?",
+            "slug": "08-what-are-embeddings",
+            "prerequisites": [
+              "07-token-and-cost-management"
+            ]
+          },
+          {
+            "title": "Embedding Dimensions",
+            "slug": "08-embedding-dimensions",
+            "prerequisites": [
+              "08-what-are-embeddings"
+            ]
+          },
+          {
+            "title": "Semantic Similarity",
+            "slug": "08-semantic-similarity",
+            "prerequisites": [
+              "08-embedding-dimensions"
+            ]
+          },
+          {
+            "title": "Cosine Similarity",
+            "slug": "08-cosine-similarity",
+            "prerequisites": [
+              "08-semantic-similarity"
+            ]
+          },
+          {
+            "title": "Euclidean Distance",
+            "slug": "08-euclidean-distance",
+            "prerequisites": [
+              "08-cosine-similarity"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Vector search and indexes",
+        "concepts": [
+          {
+            "title": "Vector Search",
+            "slug": "08-vector-search",
+            "prerequisites": [
+              "08-euclidean-distance"
+            ]
+          },
+          {
+            "title": "Approximate Nearest Neighbors",
+            "slug": "08-approximate-nearest-neighbors",
+            "prerequisites": [
+              "08-vector-search"
+            ]
+          },
+          {
+            "title": "FAISS",
+            "slug": "08-faiss",
+            "prerequisites": [
+              "08-approximate-nearest-neighbors"
+            ]
+          },
+          {
+            "title": "ChromaDB",
+            "slug": "08-chromadb",
+            "prerequisites": [
+              "08-faiss"
+            ]
+          },
+          {
+            "title": "Pinecone",
+            "slug": "08-pinecone",
+            "prerequisites": [
+              "08-chromadb"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Index operations and hybrid retrieval",
+        "concepts": [
+          {
+            "title": "Qdrant",
+            "slug": "08-qdrant",
+            "prerequisites": [
+              "08-pinecone"
+            ]
+          },
+          {
+            "title": "Weaviate",
+            "slug": "08-weaviate",
+            "prerequisites": [
+              "08-qdrant"
+            ]
+          },
+          {
+            "title": "Indexing",
+            "slug": "08-indexing",
+            "prerequisites": [
+              "08-weaviate"
+            ]
+          },
+          {
+            "title": "Metadata Filtering",
+            "slug": "08-metadata-filtering",
+            "prerequisites": [
+              "08-indexing"
+            ]
+          },
+          {
+            "title": "Hybrid Search",
+            "slug": "08-hybrid-search",
+            "prerequisites": [
+              "08-metadata-filtering"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "title": "Retrieval Augmented Generation",
+    "slug": "retrieval-augmented-generation",
+    "objectives": [
+      "Build a document-to-answer pipeline with traceable source versions and citations.",
+      "Evaluate parsing, chunking, retrieval, reranking and context construction separately.",
+      "Compare advanced retrieval approaches against an exact, authorized baseline."
+    ],
+    "chapters": [
+      {
+        "title": "RAG foundations and document ingestion",
+        "concepts": [
+          {
+            "title": "Introduction to RAG",
+            "slug": "09-introduction-to-rag",
+            "prerequisites": [
+              "08-hybrid-search"
+            ]
+          },
+          {
+            "title": "Why RAG?",
+            "slug": "09-why-rag",
+            "prerequisites": [
+              "09-introduction-to-rag"
+            ]
+          },
+          {
+            "title": "RAG Architecture",
+            "slug": "09-rag-architecture",
+            "prerequisites": [
+              "09-why-rag"
+            ]
+          },
+          {
+            "title": "Document Loaders",
+            "slug": "09-document-loaders",
+            "prerequisites": [
+              "09-rag-architecture"
+            ]
+          },
+          {
+            "title": "PDF Processing",
+            "slug": "09-pdf-processing",
+            "prerequisites": [
+              "09-document-loaders"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Parsing, chunking and representation",
+        "concepts": [
+          {
+            "title": "Document Parsing",
+            "slug": "09-document-parsing",
+            "prerequisites": [
+              "09-pdf-processing"
+            ]
+          },
+          {
+            "title": "Text Splitting",
+            "slug": "09-text-splitting",
+            "prerequisites": [
+              "09-document-parsing"
+            ]
+          },
+          {
+            "title": "Chunking Strategies",
+            "slug": "09-chunking-strategies",
+            "prerequisites": [
+              "09-text-splitting"
+            ]
+          },
+          {
+            "title": "Overlapping Chunks",
+            "slug": "09-overlapping-chunks",
+            "prerequisites": [
+              "09-chunking-strategies"
+            ]
+          },
+          {
+            "title": "Embedding Generation",
+            "slug": "09-embedding-generation",
+            "prerequisites": [
+              "09-overlapping-chunks"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Retrieval and grounded generation",
+        "concepts": [
+          {
+            "title": "Vector Storage",
+            "slug": "09-vector-storage",
+            "prerequisites": [
+              "09-embedding-generation"
+            ]
+          },
+          {
+            "title": "Retrieval",
+            "slug": "09-retrieval",
+            "prerequisites": [
+              "09-vector-storage"
+            ]
+          },
+          {
+            "title": "Reranking",
+            "slug": "09-reranking",
+            "prerequisites": [
+              "09-retrieval"
+            ]
+          },
+          {
+            "title": "Context Construction",
+            "slug": "09-context-construction",
+            "prerequisites": [
+              "09-reranking"
+            ]
+          },
+          {
+            "title": "Grounded Generation",
+            "slug": "09-grounded-generation",
+            "prerequisites": [
+              "09-context-construction"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Citations, advanced retrieval and evaluation",
+        "concepts": [
+          {
+            "title": "Citation Generation",
+            "slug": "09-citation-generation",
+            "prerequisites": [
+              "09-grounded-generation"
+            ]
+          },
+          {
+            "title": "Advanced RAG",
+            "slug": "09-advanced-rag",
+            "prerequisites": [
+              "09-citation-generation"
+            ]
+          },
+          {
+            "title": "Agentic RAG",
+            "slug": "09-agentic-rag",
+            "prerequisites": [
+              "09-advanced-rag"
+            ]
+          },
+          {
+            "title": "Graph RAG",
+            "slug": "09-graph-rag",
+            "prerequisites": [
+              "09-agentic-rag"
+            ]
+          },
+          {
+            "title": "RAG Evaluation",
+            "slug": "09-rag-evaluation",
+            "prerequisites": [
+              "09-graph-rag"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "title": "Fine-Tuning and Model Training",
+    "slug": "fine-tuning-and-model-training",
+    "objectives": [
+      "Prepare and validate instruction datasets with leakage and quality checks.",
+      "Explain full fine-tuning, LoRA, QLoRA and quantization through their parameter and resource trade-offs.",
+      "Evaluate, version and deploy trained artifacts with reproducible configuration."
+    ],
+    "chapters": [
+      {
+        "title": "Training objectives and dataset preparation",
+        "concepts": [
+          {
+            "title": "Pretraining vs Fine-Tuning",
+            "slug": "10-pretraining-vs-fine-tuning",
+            "prerequisites": [
+              "09-rag-evaluation"
+            ]
+          },
+          {
+            "title": "Supervised Fine-Tuning",
+            "slug": "10-supervised-fine-tuning",
+            "prerequisites": [
+              "10-pretraining-vs-fine-tuning"
+            ]
+          },
+          {
+            "title": "Instruction Datasets",
+            "slug": "10-instruction-datasets",
+            "prerequisites": [
+              "10-supervised-fine-tuning"
+            ]
+          },
+          {
+            "title": "Dataset Preparation",
+            "slug": "10-dataset-preparation",
+            "prerequisites": [
+              "10-instruction-datasets"
+            ]
+          },
+          {
+            "title": "Data Cleaning",
+            "slug": "10-data-cleaning",
+            "prerequisites": [
+              "10-dataset-preparation"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Parameter-efficient adaptation",
+        "concepts": [
+          {
+            "title": "LoRA",
+            "slug": "10-lora",
+            "prerequisites": [
+              "10-data-cleaning"
+            ]
+          },
+          {
+            "title": "QLoRA",
+            "slug": "10-qlora",
+            "prerequisites": [
+              "10-lora"
+            ]
+          },
+          {
+            "title": "PEFT",
+            "slug": "10-peft",
+            "prerequisites": [
+              "10-qlora"
+            ]
+          },
+          {
+            "title": "Quantization",
+            "slug": "10-quantization",
+            "prerequisites": [
+              "10-peft"
+            ]
+          },
+          {
+            "title": "Hugging Face Transformers",
+            "slug": "10-hugging-face-transformers",
+            "prerequisites": [
+              "10-quantization"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Training pipelines and deployment",
+        "concepts": [
+          {
+            "title": "Training Pipelines",
+            "slug": "10-training-pipelines",
+            "prerequisites": [
+              "10-hugging-face-transformers"
+            ]
+          },
+          {
+            "title": "Model Evaluation",
+            "slug": "10-model-evaluation",
+            "prerequisites": [
+              "10-training-pipelines"
+            ]
+          },
+          {
+            "title": "Model Deployment",
+            "slug": "10-model-deployment",
+            "prerequisites": [
+              "10-model-evaluation"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "title": "LangChain and LangGraph",
+    "slug": "langchain-and-langgraph",
+    "objectives": [
+      "Compose documented model, prompt, retrieval and output-validation interfaces.",
+      "Implement explicit graph state, conditional routing and checkpoint recovery.",
+      "Trace failures and enforce human-review boundaries in tool-using workflows."
+    ],
+    "chapters": [
+      {
+        "title": "Composable application primitives",
+        "concepts": [
+          {
+            "title": "Introduction to LangChain",
+            "slug": "11-introduction-to-langchain",
+            "prerequisites": [
+              "10-model-deployment"
+            ]
+          },
+          {
+            "title": "Models",
+            "slug": "11-models",
+            "prerequisites": [
+              "11-introduction-to-langchain"
+            ]
+          },
+          {
+            "title": "Prompts",
+            "slug": "11-prompts",
+            "prerequisites": [
+              "11-models"
+            ]
+          },
+          {
+            "title": "Chains",
+            "slug": "11-chains",
+            "prerequisites": [
+              "11-prompts"
+            ]
+          },
+          {
+            "title": "LCEL",
+            "slug": "11-lcel",
+            "prerequisites": [
+              "11-chains"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Retrieval, tools and conversation state",
+        "concepts": [
+          {
+            "title": "Output Parsers",
+            "slug": "11-output-parsers",
+            "prerequisites": [
+              "11-lcel"
+            ]
+          },
+          {
+            "title": "Document Loaders",
+            "slug": "11-document-loaders",
+            "prerequisites": [
+              "11-output-parsers"
+            ]
+          },
+          {
+            "title": "Retrievers",
+            "slug": "11-retrievers",
+            "prerequisites": [
+              "11-document-loaders"
+            ]
+          },
+          {
+            "title": "Tools",
+            "slug": "11-tools",
+            "prerequisites": [
+              "11-retrievers"
+            ]
+          },
+          {
+            "title": "Memory and Conversation State",
+            "slug": "11-memory-and-conversation-state",
+            "prerequisites": [
+              "11-tools"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Graph workflows and persistence",
+        "concepts": [
+          {
+            "title": "LangGraph Fundamentals",
+            "slug": "11-langgraph-fundamentals",
+            "prerequisites": [
+              "11-memory-and-conversation-state"
+            ]
+          },
+          {
+            "title": "Nodes and Edges",
+            "slug": "11-nodes-and-edges",
+            "prerequisites": [
+              "11-langgraph-fundamentals"
+            ]
+          },
+          {
+            "title": "State Management",
+            "slug": "11-state-management",
+            "prerequisites": [
+              "11-nodes-and-edges"
+            ]
+          },
+          {
+            "title": "Conditional Routing",
+            "slug": "11-conditional-routing",
+            "prerequisites": [
+              "11-state-management"
+            ]
+          },
+          {
+            "title": "Checkpointing",
+            "slug": "11-checkpointing",
+            "prerequisites": [
+              "11-conditional-routing"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Human review and observability",
+        "concepts": [
+          {
+            "title": "Human-in-the-Loop",
+            "slug": "11-human-in-the-loop",
+            "prerequisites": [
+              "11-checkpointing"
+            ]
+          },
+          {
+            "title": "LangSmith",
+            "slug": "11-langsmith",
+            "prerequisites": [
+              "11-human-in-the-loop"
+            ]
+          },
+          {
+            "title": "Debugging and Tracing",
+            "slug": "11-debugging-and-tracing",
+            "prerequisites": [
+              "11-langsmith"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "title": "AI Agents and Agentic AI",
+    "slug": "ai-agents-and-agentic-ai",
+    "objectives": [
+      "Separate agent observations, state, planning, tool proposals and execution authority.",
+      "Implement bounded workflows with validated tools, persistence and human escalation.",
+      "Evaluate single-agent and multi-agent systems against task, safety and resource criteria."
+    ],
+    "chapters": [
+      {
+        "title": "Agent responsibilities and planning",
+        "concepts": [
+          {
+            "title": "What is an AI Agent?",
+            "slug": "12-what-is-an-ai-agent",
+            "prerequisites": [
+              "11-debugging-and-tracing"
+            ]
+          },
+          {
+            "title": "AI Assistant vs AI Agent",
+            "slug": "12-ai-assistant-vs-ai-agent",
+            "prerequisites": [
+              "12-what-is-an-ai-agent"
+            ]
+          },
+          {
+            "title": "Agent Architecture",
+            "slug": "12-agent-architecture",
+            "prerequisites": [
+              "12-ai-assistant-vs-ai-agent"
+            ]
+          },
+          {
+            "title": "Planning and Execution",
+            "slug": "12-planning-and-execution",
+            "prerequisites": [
+              "12-agent-architecture"
+            ]
+          },
+          {
+            "title": "Tool Selection",
+            "slug": "12-tool-selection",
+            "prerequisites": [
+              "12-planning-and-execution"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Tool use and agent state",
+        "concepts": [
+          {
+            "title": "Function Calling",
+            "slug": "12-function-calling",
+            "prerequisites": [
+              "12-tool-selection"
+            ]
+          },
+          {
+            "title": "ReAct Pattern",
+            "slug": "12-react-pattern",
+            "prerequisites": [
+              "12-function-calling"
+            ]
+          },
+          {
+            "title": "Agent Memory",
+            "slug": "12-agent-memory",
+            "prerequisites": [
+              "12-react-pattern"
+            ]
+          },
+          {
+            "title": "Agent State",
+            "slug": "12-agent-state",
+            "prerequisites": [
+              "12-agent-memory"
+            ]
+          },
+          {
+            "title": "Multi-Agent Systems",
+            "slug": "12-multi-agent-systems",
+            "prerequisites": [
+              "12-agent-state"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Orchestration and controlled integration",
+        "concepts": [
+          {
+            "title": "Agent Orchestration",
+            "slug": "12-agent-orchestration",
+            "prerequisites": [
+              "12-multi-agent-systems"
+            ]
+          },
+          {
+            "title": "Workflow Automation",
+            "slug": "12-workflow-automation",
+            "prerequisites": [
+              "12-agent-orchestration"
+            ]
+          },
+          {
+            "title": "MCP Fundamentals",
+            "slug": "12-mcp-fundamentals",
+            "prerequisites": [
+              "12-workflow-automation"
+            ]
+          },
+          {
+            "title": "Agent Communication",
+            "slug": "12-agent-communication",
+            "prerequisites": [
+              "12-mcp-fundamentals"
+            ]
+          },
+          {
+            "title": "Guardrails",
+            "slug": "12-guardrails",
+            "prerequisites": [
+              "12-agent-communication"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Agent evaluation and production design",
+        "concepts": [
+          {
+            "title": "Agent Evaluation",
+            "slug": "12-agent-evaluation",
+            "prerequisites": [
+              "12-guardrails"
+            ]
+          },
+          {
+            "title": "Production Agent Architecture",
+            "slug": "12-production-agent-architecture",
+            "prerequisites": [
+              "12-agent-evaluation"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "title": "Multimodal Generative AI",
+    "slug": "multimodal-generative-ai",
+    "objectives": [
+      "Compare representations and tasks across image, audio, text and video inputs.",
+      "Explain diffusion and speech pipelines with modality-specific evaluation requirements.",
+      "Design bounded voice and multimodal applications with latency and data-handling controls."
+    ],
+    "chapters": [
+      {
+        "title": "Vision and image generation",
+        "concepts": [
+          {
+            "title": "Multimodal Models",
+            "slug": "13-multimodal-models",
+            "prerequisites": [
+              "12-production-agent-architecture"
+            ]
+          },
+          {
+            "title": "Computer Vision Fundamentals",
+            "slug": "13-computer-vision-fundamentals",
+            "prerequisites": [
+              "13-multimodal-models"
+            ]
+          },
+          {
+            "title": "Vision Language Models",
+            "slug": "13-vision-language-models",
+            "prerequisites": [
+              "13-computer-vision-fundamentals"
+            ]
+          },
+          {
+            "title": "Image Understanding",
+            "slug": "13-image-understanding",
+            "prerequisites": [
+              "13-vision-language-models"
+            ]
+          },
+          {
+            "title": "Image Generation",
+            "slug": "13-image-generation",
+            "prerequisites": [
+              "13-image-understanding"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Diffusion and audio models",
+        "concepts": [
+          {
+            "title": "Diffusion Models",
+            "slug": "13-diffusion-models",
+            "prerequisites": [
+              "13-image-generation"
+            ]
+          },
+          {
+            "title": "Text-to-Image",
+            "slug": "13-text-to-image",
+            "prerequisites": [
+              "13-diffusion-models"
+            ]
+          },
+          {
+            "title": "Speech-to-Text",
+            "slug": "13-speech-to-text",
+            "prerequisites": [
+              "13-text-to-image"
+            ]
+          },
+          {
+            "title": "Text-to-Speech",
+            "slug": "13-text-to-speech",
+            "prerequisites": [
+              "13-speech-to-text"
+            ]
+          },
+          {
+            "title": "Audio Generation",
+            "slug": "13-audio-generation",
+            "prerequisites": [
+              "13-text-to-speech"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Voice interaction and video",
+        "concepts": [
+          {
+            "title": "Voice Agents",
+            "slug": "13-voice-agents",
+            "prerequisites": [
+              "13-audio-generation"
+            ]
+          },
+          {
+            "title": "Real-Time Voice AI",
+            "slug": "13-real-time-voice-ai",
+            "prerequisites": [
+              "13-voice-agents"
+            ]
+          },
+          {
+            "title": "Video Understanding",
+            "slug": "13-video-understanding",
+            "prerequisites": [
+              "13-real-time-voice-ai"
+            ]
+          },
+          {
+            "title": "Video Generation",
+            "slug": "13-video-generation",
+            "prerequisites": [
+              "13-video-understanding"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "title": "LLM Evaluation and Optimization",
+    "slug": "llm-evaluation-and-optimization",
+    "objectives": [
+      "Construct held-out evaluation sets and distinguish retrieval, generation and system metrics.",
+      "Validate judge-based assessments against explicit rubrics and human review.",
+      "Measure caching, batching, latency and token-cost changes without hiding quality regressions."
+    ],
+    "chapters": [
+      {
+        "title": "Evaluation design and reliability",
+        "concepts": [
+          {
+            "title": "Model Evaluation",
+            "slug": "14-model-evaluation",
+            "prerequisites": [
+              "13-video-generation"
+            ]
+          },
+          {
+            "title": "Benchmarking",
+            "slug": "14-benchmarking",
+            "prerequisites": [
+              "14-model-evaluation"
+            ]
+          },
+          {
+            "title": "Accuracy and Reliability",
+            "slug": "14-accuracy-and-reliability",
+            "prerequisites": [
+              "14-benchmarking"
+            ]
+          },
+          {
+            "title": "Hallucination Evaluation",
+            "slug": "14-hallucination-evaluation",
+            "prerequisites": [
+              "14-accuracy-and-reliability"
+            ]
+          },
+          {
+            "title": "RAGAS",
+            "slug": "14-ragas",
+            "prerequisites": [
+              "14-hallucination-evaluation"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Retrieval and answer assessment",
+        "concepts": [
+          {
+            "title": "Retrieval Metrics",
+            "slug": "14-retrieval-metrics",
+            "prerequisites": [
+              "14-ragas"
+            ]
+          },
+          {
+            "title": "Precision and Recall",
+            "slug": "14-precision-and-recall",
+            "prerequisites": [
+              "14-retrieval-metrics"
+            ]
+          },
+          {
+            "title": "Context Relevance",
+            "slug": "14-context-relevance",
+            "prerequisites": [
+              "14-precision-and-recall"
+            ]
+          },
+          {
+            "title": "Faithfulness",
+            "slug": "14-faithfulness",
+            "prerequisites": [
+              "14-context-relevance"
+            ]
+          },
+          {
+            "title": "LLM-as-a-Judge",
+            "slug": "14-llm-as-a-judge",
+            "prerequisites": [
+              "14-faithfulness"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Regression checks and serving performance",
+        "concepts": [
+          {
+            "title": "Test Dataset Creation",
+            "slug": "14-test-dataset-creation",
+            "prerequisites": [
+              "14-llm-as-a-judge"
+            ]
+          },
+          {
+            "title": "Regression Testing",
+            "slug": "14-regression-testing",
+            "prerequisites": [
+              "14-test-dataset-creation"
+            ]
+          },
+          {
+            "title": "Caching",
+            "slug": "14-caching",
+            "prerequisites": [
+              "14-regression-testing"
+            ]
+          },
+          {
+            "title": "Batching",
+            "slug": "14-batching",
+            "prerequisites": [
+              "14-caching"
+            ]
+          },
+          {
+            "title": "Latency Optimization",
+            "slug": "14-latency-optimization",
+            "prerequisites": [
+              "14-batching"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Token budgets and cost",
+        "concepts": [
+          {
+            "title": "Token Optimization",
+            "slug": "14-token-optimization",
+            "prerequisites": [
+              "14-latency-optimization"
+            ]
+          },
+          {
+            "title": "Cost Optimization",
+            "slug": "14-cost-optimization",
+            "prerequisites": [
+              "14-token-optimization"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "title": "AI Security and Responsible AI",
+    "slug": "ai-security-and-responsible-ai",
+    "objectives": [
+      "Identify direct and indirect prompt-injection paths through an application threat model.",
+      "Enforce permissions, sensitive-data controls and validated tool execution outside model instructions.",
+      "Evaluate safety and fairness using explicit cases, limitations and response policies."
+    ],
+    "chapters": [
+      {
+        "title": "Threat models and adversarial inputs",
+        "concepts": [
+          {
+            "title": "AI Security Fundamentals",
+            "slug": "15-ai-security-fundamentals",
+            "prerequisites": [
+              "14-cost-optimization"
+            ]
+          },
+          {
+            "title": "Prompt Injection",
+            "slug": "15-prompt-injection",
+            "prerequisites": [
+              "15-ai-security-fundamentals"
+            ]
+          },
+          {
+            "title": "Indirect Prompt Injection",
+            "slug": "15-indirect-prompt-injection",
+            "prerequisites": [
+              "15-prompt-injection"
+            ]
+          },
+          {
+            "title": "Jailbreak Attacks",
+            "slug": "15-jailbreak-attacks",
+            "prerequisites": [
+              "15-indirect-prompt-injection"
+            ]
+          },
+          {
+            "title": "Data Leakage",
+            "slug": "15-data-leakage",
+            "prerequisites": [
+              "15-jailbreak-attacks"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Data and tool boundaries",
+        "concepts": [
+          {
+            "title": "PII Protection",
+            "slug": "15-pii-protection",
+            "prerequisites": [
+              "15-data-leakage"
+            ]
+          },
+          {
+            "title": "Secure Tool Calling",
+            "slug": "15-secure-tool-calling",
+            "prerequisites": [
+              "15-pii-protection"
+            ]
+          },
+          {
+            "title": "Access Control",
+            "slug": "15-access-control",
+            "prerequisites": [
+              "15-secure-tool-calling"
+            ]
+          },
+          {
+            "title": "API Key Security",
+            "slug": "15-api-key-security",
+            "prerequisites": [
+              "15-access-control"
+            ]
+          },
+          {
+            "title": "Input Validation",
+            "slug": "15-input-validation",
+            "prerequisites": [
+              "15-api-key-security"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Output controls and responsible evaluation",
+        "concepts": [
+          {
+            "title": "Output Validation",
+            "slug": "15-output-validation",
+            "prerequisites": [
+              "15-input-validation"
+            ]
+          },
+          {
+            "title": "Responsible AI",
+            "slug": "15-responsible-ai",
+            "prerequisites": [
+              "15-output-validation"
+            ]
+          },
+          {
+            "title": "Bias and Fairness",
+            "slug": "15-bias-and-fairness",
+            "prerequisites": [
+              "15-responsible-ai"
+            ]
+          },
+          {
+            "title": "Safety Evaluation",
+            "slug": "15-safety-evaluation",
+            "prerequisites": [
+              "15-bias-and-fairness"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "title": "Production AI and MLOps",
+    "slug": "production-ai-and-mlops",
+    "objectives": [
+      "Build authenticated asynchronous AI services with transactional storage and bounded work.",
+      "Package and deploy reproducible services with configuration and credential separation.",
+      "Trace failures, monitor application outcomes and validate scaling and rollback behavior."
+    ],
+    "chapters": [
+      {
+        "title": "Application services and storage",
+        "concepts": [
+          {
+            "title": "FastAPI",
+            "slug": "16-fastapi",
+            "prerequisites": [
+              "15-safety-evaluation"
+            ]
+          },
+          {
+            "title": "REST APIs",
+            "slug": "16-rest-apis",
+            "prerequisites": [
+              "16-fastapi"
+            ]
+          },
+          {
+            "title": "Authentication",
+            "slug": "16-authentication",
+            "prerequisites": [
+              "16-rest-apis"
+            ]
+          },
+          {
+            "title": "PostgreSQL",
+            "slug": "16-postgresql",
+            "prerequisites": [
+              "16-authentication"
+            ]
+          },
+          {
+            "title": "Redis",
+            "slug": "16-redis",
+            "prerequisites": [
+              "16-postgresql"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Packaging and deployment",
+        "concepts": [
+          {
+            "title": "Async Processing",
+            "slug": "16-async-processing",
+            "prerequisites": [
+              "16-redis"
+            ]
+          },
+          {
+            "title": "Docker",
+            "slug": "16-docker",
+            "prerequisites": [
+              "16-async-processing"
+            ]
+          },
+          {
+            "title": "Docker Compose",
+            "slug": "16-docker-compose",
+            "prerequisites": [
+              "16-docker"
+            ]
+          },
+          {
+            "title": "Nginx",
+            "slug": "16-nginx",
+            "prerequisites": [
+              "16-docker-compose"
+            ]
+          },
+          {
+            "title": "AWS Deployment",
+            "slug": "16-aws-deployment",
+            "prerequisites": [
+              "16-nginx"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Infrastructure and observability",
+        "concepts": [
+          {
+            "title": "Cloud Infrastructure",
+            "slug": "16-cloud-infrastructure",
+            "prerequisites": [
+              "16-aws-deployment"
+            ]
+          },
+          {
+            "title": "CI/CD",
+            "slug": "16-ci-cd",
+            "prerequisites": [
+              "16-cloud-infrastructure"
+            ]
+          },
+          {
+            "title": "Logging",
+            "slug": "16-logging",
+            "prerequisites": [
+              "16-ci-cd"
+            ]
+          },
+          {
+            "title": "Monitoring",
+            "slug": "16-monitoring",
+            "prerequisites": [
+              "16-logging"
+            ]
+          },
+          {
+            "title": "Observability",
+            "slug": "16-observability",
+            "prerequisites": [
+              "16-monitoring"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Tracing, failure handling and scaling",
+        "concepts": [
+          {
+            "title": "LangSmith",
+            "slug": "16-langsmith",
+            "prerequisites": [
+              "16-observability"
+            ]
+          },
+          {
+            "title": "Production Error Handling",
+            "slug": "16-production-error-handling",
+            "prerequisites": [
+              "16-langsmith"
+            ]
+          },
+          {
+            "title": "Scaling AI Applications",
+            "slug": "16-scaling-ai-applications",
+            "prerequisites": [
+              "16-production-error-handling"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "title": "Advanced AI Research",
+    "slug": "advanced-ai-research",
+    "objectives": [
+      "Read research claims in terms of assumptions, baselines, methods and reproducible evidence.",
+      "Compare compression, efficient inference and distributed-compute trade-offs using measurements.",
+      "Train and evaluate a small language-model experiment without overstating its capabilities."
+    ],
+    "chapters": [
+      {
+        "title": "Reasoning research and compression",
+        "concepts": [
+          {
+            "title": "Reasoning Models",
+            "slug": "17-reasoning-models",
+            "prerequisites": [
+              "16-scaling-ai-applications"
+            ]
+          },
+          {
+            "title": "Chain-of-Thought Research",
+            "slug": "17-chain-of-thought-research",
+            "prerequisites": [
+              "17-reasoning-models"
+            ]
+          },
+          {
+            "title": "Knowledge Distillation",
+            "slug": "17-knowledge-distillation",
+            "prerequisites": [
+              "17-chain-of-thought-research"
+            ]
+          },
+          {
+            "title": "Quantization Techniques",
+            "slug": "17-quantization-techniques",
+            "prerequisites": [
+              "17-knowledge-distillation"
+            ]
+          },
+          {
+            "title": "Model Compression",
+            "slug": "17-model-compression",
+            "prerequisites": [
+              "17-quantization-techniques"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Compute and architecture research",
+        "concepts": [
+          {
+            "title": "Efficient Inference",
+            "slug": "17-efficient-inference",
+            "prerequisites": [
+              "17-model-compression"
+            ]
+          },
+          {
+            "title": "Distributed Training",
+            "slug": "17-distributed-training",
+            "prerequisites": [
+              "17-efficient-inference"
+            ]
+          },
+          {
+            "title": "GPU Fundamentals",
+            "slug": "17-gpu-fundamentals",
+            "prerequisites": [
+              "17-distributed-training"
+            ]
+          },
+          {
+            "title": "Transformer Optimization",
+            "slug": "17-transformer-optimization",
+            "prerequisites": [
+              "17-gpu-fundamentals"
+            ]
+          },
+          {
+            "title": "Model Architecture Research",
+            "slug": "17-model-architecture-research",
+            "prerequisites": [
+              "17-transformer-optimization"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Research practice and language-model experiments",
+        "concepts": [
+          {
+            "title": "Reading Research Papers",
+            "slug": "17-reading-research-papers",
+            "prerequisites": [
+              "17-model-architecture-research"
+            ]
+          },
+          {
+            "title": "Reproducing Experiments",
+            "slug": "17-reproducing-experiments",
+            "prerequisites": [
+              "17-reading-research-papers"
+            ]
+          },
+          {
+            "title": "Building Small Language Models",
+            "slug": "17-building-small-language-models",
+            "prerequisites": [
+              "17-reproducing-experiments"
+            ]
+          },
+          {
+            "title": "Training a Mini GPT",
+            "slug": "17-training-a-mini-gpt",
+            "prerequisites": [
+              "17-building-small-language-models"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "title": "Industry Projects and Portfolio",
+    "slug": "industry-projects-and-portfolio",
+    "objectives": [
+      "Deliver project artifacts with explicit user problems, testable requirements and source documentation.",
+      "Evaluate retrieval, tool use, multilingual and voice features under realistic failure conditions.",
+      "Defend capstone architecture, security boundaries, operational cost and measured outcomes."
+    ],
+    "chapters": [
+      {
+        "title": "Assistants and document intelligence",
+        "concepts": [
+          {
+            "title": "AI Chatbot",
+            "slug": "18-ai-chatbot",
+            "prerequisites": [
+              "17-training-a-mini-gpt"
+            ]
+          },
+          {
+            "title": "PDF Question Answering System",
+            "slug": "18-pdf-question-answering-system",
+            "prerequisites": [
+              "18-ai-chatbot"
+            ]
+          },
+          {
+            "title": "Enterprise RAG Assistant",
+            "slug": "18-enterprise-rag-assistant",
+            "prerequisites": [
+              "18-pdf-question-answering-system"
+            ]
+          },
+          {
+            "title": "AI Customer Support Agent",
+            "slug": "18-ai-customer-support-agent",
+            "prerequisites": [
+              "18-enterprise-rag-assistant"
+            ]
+          },
+          {
+            "title": "AI Research Assistant",
+            "slug": "18-ai-research-assistant",
+            "prerequisites": [
+              "18-ai-customer-support-agent"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Agent, voice and workflow projects",
+        "concepts": [
+          {
+            "title": "Multi-Agent Research System",
+            "slug": "18-multi-agent-research-system",
+            "prerequisites": [
+              "18-ai-research-assistant"
+            ]
+          },
+          {
+            "title": "AI Coding Assistant",
+            "slug": "18-ai-coding-assistant",
+            "prerequisites": [
+              "18-multi-agent-research-system"
+            ]
+          },
+          {
+            "title": "Voice Calling Agent",
+            "slug": "18-voice-calling-agent",
+            "prerequisites": [
+              "18-ai-coding-assistant"
+            ]
+          },
+          {
+            "title": "Multilingual AI Assistant",
+            "slug": "18-multilingual-ai-assistant",
+            "prerequisites": [
+              "18-voice-calling-agent"
+            ]
+          },
+          {
+            "title": "AI Sales Automation",
+            "slug": "18-ai-sales-automation",
+            "prerequisites": [
+              "18-multilingual-ai-assistant"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Production product and capstone",
+        "concepts": [
+          {
+            "title": "Production AI SaaS Application",
+            "slug": "18-production-ai-saas-application",
+            "prerequisites": [
+              "18-ai-sales-automation"
+            ]
+          },
+          {
+            "title": "End-to-End Capstone Project",
+            "slug": "18-end-to-end-capstone-project",
+            "prerequisites": [
+              "18-production-ai-saas-application"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
