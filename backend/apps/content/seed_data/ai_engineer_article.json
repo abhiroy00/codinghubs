@@ -1,0 +1,81 @@
+{
+  "title": "What Is an AI Engineer? Role, Skills, Career Path, and Real-World Workflow",
+  "slug": "what-is-an-ai-engineer",
+  "excerpt": "A practical guide to what AI engineers build, the skills they use, how retrieval and evaluation fit into real products, and a roadmap for getting started.",
+  "content": "<p>AI engineering is the discipline of turning machine-learning and generative-AI capabilities into software people can rely on. A useful AI feature is more than a clever prompt: it has a clear user problem, dependable data, measurable behavior, sensible safeguards, and an operating plan for when reality differs from a demo.</p>\n<p>That is why the AI engineer role has become important across product teams. The work joins software engineering with applied machine learning. You may connect a language model to a search index, build a document assistant, add classification to an existing application, or make an AI workflow observable and safe enough to operate. The goal is not to use the newest model everywhere. The goal is to deliver a useful outcome with evidence that the system works.</p>\n<h2>What does an AI engineer do?</h2>\n<p>An AI engineer designs and builds applications whose behavior depends on models. The exact work varies by company, but commonly includes understanding user workflows, preparing or retrieving data, selecting a model, implementing the application layer, evaluating quality, integrating with existing services, and monitoring the result after release.</p>\n<p>For a support assistant, for example, the engineer may first learn which questions customers ask and which answers are approved. They then decide whether a normal search or a generative answer is appropriate, organize the source material, create a retrieval flow, and present citations in the interface. They build tests for common and difficult questions, add permission checks, log useful operational events without collecting unnecessary personal information, and create a way to report a bad answer.</p>\n<p>The role is therefore not limited to prompting. Prompt design matters, but it is one component in a broader system that also includes data, APIs, user experience, evaluation, security, and maintenance.</p>\n<h2>AI engineer, ML engineer, data scientist: how are they different?</h2>\n<p>These roles overlap, especially in smaller teams, but their center of gravity differs. A data scientist often investigates data and experiments to explain patterns or inform decisions. A machine-learning engineer typically focuses on training, deploying, and maintaining predictive models and their pipelines. An AI engineer often focuses on integrating existing models and AI capabilities into end-user software, while still needing enough ML knowledge to make sound choices.</p>\n<p>In practice, job titles are not standardized. Read the responsibilities rather than relying on the label. One AI engineer position may involve fine-tuning models; another may focus on retrieval, APIs, and product delivery. Strong software fundamentals and the ability to learn the relevant model stack are valuable in both cases.</p>\n<h2>The end-to-end AI engineering workflow</h2>\n<h3>1. Start with the problem</h3>\n<p>Write down the user, the task, and the expected benefit. Identify how the task is handled today and what a successful result looks like. Decide whether AI is needed at all: a deterministic rule, database query, or search page may be more accurate, cheaper, and easier to explain. A narrow, well-defined first version is easier to evaluate than a general-purpose assistant.</p>\n<h3>2. Understand the data and constraints</h3>\n<p>Find the authoritative sources and confirm who is allowed to see them. Check for outdated, duplicated, contradictory, or poorly structured information. Establish how updates reach the system and how permissions are enforced. For a retrieval application, access control must apply to the retrieved passages, not merely to the screen that displays the final answer.</p>\n<h3>3. Choose the simplest suitable model and architecture</h3>\n<p>Compare approaches against the task. A small classifier may solve a routing problem; a search index may be enough for discovery; a language model can help when people need flexible language interaction. Consider response quality, latency, cost, data handling, availability, and the ability to change providers. Keep model-specific code behind a small application interface so the product is not unnecessarily tied to one vendor.</p>\n<h3>4. Build a thin, useful prototype</h3>\n<p>Connect the user interface to a focused API. Keep secrets on the server, validate inputs, set timeouts, handle provider errors, and return a clear message when the service is unavailable. Use structured outputs when the next software step needs predictable fields. Avoid granting a model tools or data access that the feature does not need.</p>\n<h3>5. Evaluate before calling it done</h3>\n<p>Create a representative test set from real tasks, with sensitive data removed or handled under an approved process. Define what counts as a good answer and include difficult examples: missing information, ambiguous requests, stale sources, and attempts to get the system to leave its intended scope. Review both task success and failure modes. A demo that works on three hand-picked prompts is not a reliable evaluation.</p>\n<h3>6. Release gradually and monitor</h3>\n<p>Launch to a limited audience when possible. Monitor reliability, latency, cost, user feedback, and quality signals. Keep a safe fallback, document how to disable the feature, and make model or prompt changes traceable. Production examples can reveal gaps in the test set; add representative cases and rerun evaluations before shipping fixes.</p>\n<h2>Core skills to develop</h2>\n<p><strong>Programming and APIs:</strong> Become comfortable with Python or TypeScript, HTTP, JSON, databases, asynchronous work, testing, and version control. AI features still need ordinary software qualities: readable code, clear interfaces, error handling, and maintainable deployments.</p>\n<p><strong>Data and retrieval:</strong> Learn how to clean and transform data, design schemas, write SQL, and build search. For retrieval-augmented generation, understand chunking, embeddings, ranking, metadata filters, and how to measure whether the right source was found. Retrieval quality is often the limiting factor in a document assistant.</p>\n<p><strong>Model literacy:</strong> Understand the strengths and limits of language models, classification models, embeddings, and traditional machine learning. Know that generated text can be plausible and still be wrong. Learn when to use a hosted API, an open model, retrieval, fine-tuning, or a non-AI method; the answer depends on the task and constraints.</p>\n<p><strong>Evaluation and safety:</strong> Write tests for expected behavior and misuse cases. Check grounding, accuracy, consistency, privacy, and latency. Treat model output as untrusted input: validate structured data, encode it for its destination, and require explicit authorization before consequential actions. Keep a human review path where errors could materially affect people.</p>\n<p><strong>Product thinking:</strong> Communicate limitations in the interface, make uncertainty understandable, and learn from user feedback. A useful feature should help someone finish a task, not merely display an impressive response.</p>\n<h2>Where retrieval-augmented generation fits</h2>\n<p>Retrieval-augmented generation, or RAG, is a common pattern for answering questions from a changing collection of documents. A typical flow prepares approved content, splits it into searchable passages, creates embeddings, retrieves relevant passages for a question, and asks a model to answer using that context. The application can include source links so users can inspect the evidence.</p>\n<p>RAG does not guarantee correctness. A retriever can miss the right passage, find irrelevant material, or return content the user is not permitted to access. A model can misread correct context or answer beyond it. Measure retrieval and answer quality separately, test permission boundaries, and provide a graceful response when evidence is weak. Keep source freshness and deletion behavior in mind as well.</p>\n<h2>Building AI agents responsibly</h2>\n<p>An agent is an application that lets a model choose among steps or tools to pursue a task. This can be useful when the next action depends on intermediate results, but it adds complexity and risk. Start with a fixed, understandable workflow when it meets the need. If tools are necessary, define a narrow allowlist, validate every argument, enforce authorization outside the model, and limit time, retries, and side effects.</p>\n<p>For consequential actions, use explicit confirmation or human review. Keep an audit trail that supports debugging without retaining more personal data than necessary. Never treat a model's statement that an action is allowed as authorization. The application should enforce permissions and business rules independently.</p>\n<h2>A practical learning roadmap</h2>\n<p><strong>First, strengthen software foundations.</strong> Build a small web API, connect it to a database, write tests, and deploy it. Practice handling invalid input and service failures. These skills transfer directly to AI applications.</p>\n<p><strong>Next, learn model and data basics.</strong> Use a model API in a small project, compare its output with a non-AI baseline, and keep a set of test examples. Then add retrieval over a small, clearly licensed or self-authored document collection. Inspect what is retrieved instead of judging only the final answer.</p>\n<p><strong>Then, make a complete project.</strong> Add authentication, source attribution, evaluation, logging, a feedback mechanism, and a deployment guide. Describe what the system does not do and how you tested it. A modest application with clear engineering decisions is a stronger portfolio piece than a collection of unmeasured demos.</p>\n<p><strong>Finally, iterate.</strong> Ask someone to use the project, record where they struggle, and improve the workflow. Track changes to prompts, models, and data. Learn the deployment and monitoring tools used by the teams you want to join, but focus first on concepts that transfer between providers.</p>\n<h2>Portfolio ideas that show real skills</h2>\n<ul><li>A document question-answering tool with citations, source freshness checks, access controls, and a small evaluation set.</li><li>A support-ticket classifier that routes uncertain cases to a person and reports precision and recall for each category.</li><li>A meeting-notes assistant that extracts structured action items, lets a user edit them, and never creates tasks without confirmation.</li><li>A code or data assistant constrained to a small, documented task, with tests for incorrect or unsafe suggestions.</li></ul>\n<p>For each project, show the architecture, representative tests, known limitations, and a short demonstration. Explain what you measured and what you changed after seeing failures. Do not publish private data, API keys, or content you do not have permission to share.</p>\n<h2>How to know an AI feature is ready</h2>\n<p>Before release, confirm that the feature solves a defined user problem, uses approved data, handles authorization correctly, and has test examples that reflect real use. Check behavior when the model is slow, unavailable, or returns malformed output. Decide what to log, how users report problems, who owns monitoring, and how to turn the feature off. Establish a review plan for changes to models, prompts, and source data.</p>\n<p>AI engineering is ultimately a practice of disciplined iteration. Models will change, but the fundamentals remain: understand the task, build the smallest useful system, measure outcomes, protect users, and keep the software operable. Engineers who combine those habits with curiosity about machine learning can help teams turn promising capabilities into dependable products.</p>",
+  "author_name": "Coding Hubs Team",
+  "author_title": "AI Engineering",
+  "featured_image": {
+    "file": "cover.png",
+    "alt": "A diagram showing data, models, products, and evaluation as connected parts of AI engineering."
+  },
+  "gallery": [
+    {
+      "file": "lifecycle.png",
+      "alt": "The AI engineering delivery loop from discovery through production monitoring."
+    },
+    {
+      "file": "rag.png",
+      "alt": "A retrieval augmented generation pipeline from source documents to grounded answers."
+    },
+    {
+      "file": "evaluation.png",
+      "alt": "Four dimensions to evaluate in an AI system: answer quality, safety, latency, and cost."
+    },
+    {
+      "file": "production.png",
+      "alt": "A production feedback loop for observing, diagnosing, improving, and verifying AI systems."
+    }
+  ],
+  "category": {
+    "name": "Artificial Intelligence",
+    "slug": "artificial-intelligence"
+  },
+  "tags": [
+    {
+      "name": "AI Engineering",
+      "slug": "ai-engineering"
+    },
+    {
+      "name": "Career Roadmap",
+      "slug": "career-roadmap"
+    },
+    {
+      "name": "Generative AI",
+      "slug": "generative-ai"
+    },
+    {
+      "name": "Machine Learning",
+      "slug": "machine-learning"
+    },
+    {
+      "name": "RAG",
+      "slug": "rag"
+    }
+  ],
+  "reading_time": 8,
+  "seo_title": "What Is an AI Engineer? Skills, Role & Career Roadmap",
+  "meta_description": "Learn what AI engineers do, the skills and tools they use, how to build reliable AI products, and a practical roadmap to start your career.",
+  "focus_keyword": "AI Engineer",
+  "og_title": "What Is an AI Engineer? A Practical Career Guide",
+  "og_description": "Explore the AI engineer role, real product workflows, essential skills, RAG, evaluation, and a practical learning roadmap.",
+  "search_intent": "Learn about the AI engineer role and how to become one.",
+  "faq": [
+    {
+      "q": "What does an AI engineer do?",
+      "a": "<p>An AI engineer builds software products that use machine-learning or generative-AI models, including data flows, APIs, evaluation, safety, and production monitoring.</p>"
+    },
+    {
+      "q": "Do I need a machine-learning degree to become an AI engineer?",
+      "a": "<p>A degree can help, but practical software skills, model literacy, measured projects, and a strong understanding of data and evaluation are also important.</p>"
+    },
+    {
+      "q": "Is prompt engineering enough for an AI engineer role?",
+      "a": "<p>No. Prompt design is one skill; production AI work also involves software engineering, data, testing, security, user experience, and monitoring.</p>"
+    },
+    {
+      "q": "What is a good first AI engineering project?",
+      "a": "<p>Build a small document assistant with citations, an evaluation set, access controls, and clear behavior when the source material does not answer a question.</p>"
+    }
+  ]
+}

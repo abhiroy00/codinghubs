@@ -11,7 +11,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.test import TestCase
-from .content_library import ROOT, library_slugs, load_lesson, local_file
+from .content_library import ROOT, load_lesson, local_file
 from .models import Concept, DraftRevision, Progress
 
 

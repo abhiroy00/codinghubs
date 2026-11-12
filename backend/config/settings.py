@@ -1,7 +1,6 @@
 import sys
 from datetime import timedelta
 from pathlib import Path
-import os
 import dj_database_url
 from decouple import Csv, config
 from django.core.exceptions import ImproperlyConfigured

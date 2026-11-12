@@ -35,7 +35,6 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - run: pip install -r requirements.txt ruff
         working-directory: backend
-<<<<<<< HEAD
       - name: Lint (ruff)
         run: ruff check .
         working-directory: backend
@@ -47,11 +46,8 @@ jobs:
           DEBUG: 'False'
           ALLOWED_HOSTS: codinghubs.in
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/codinghubs
-      - name: Tests (Postgres)
-        run: python manage.py test apps
-=======
-      - run: python manage.py collectstatic --noinput && python manage.py test apps
->>>>>>> b27cf7d95cbc1e4b9bb30bc45e5c6977a6fa638d
+      - name: Collect static files and run tests (Postgres)
+        run: python manage.py collectstatic --noinput && python manage.py test apps
         working-directory: backend
         env:
           SECRET_KEY: ci-test-key-not-for-prod-use-only
