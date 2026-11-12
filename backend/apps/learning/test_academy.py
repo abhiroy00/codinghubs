@@ -167,7 +167,10 @@ class ReferenceWorkflowTests(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('no-store', response['Cache-Control'])
-        response.close()
+        # Consume the stream so the test client's wrapper closes it safely.
+        self.assertTrue(b''.join(response.streaming_content).startswith(b'%PDF-'))
+        self.assertTrue(response.closed)
+        self.assertEqual(ReferenceDocument.objects.count(), 1)
 
     def test_low_text_pages_are_not_claimed_complete_and_extraction_is_idempotent(self):
         self.upload()

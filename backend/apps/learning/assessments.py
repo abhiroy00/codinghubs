@@ -178,7 +178,8 @@ class ReviewDetailView(PrivateAssessmentView):
 
     @transaction.atomic
     def post(self, request, pk):
-        s = get_object_or_404(AssignmentSubmission.objects.select_for_update().select_related('concept', 'reviewer'), pk=pk)
+        # Lock the submission only; reviewer is nullable and joined with LEFT OUTER JOIN.
+        s = get_object_or_404(AssignmentSubmission.objects.select_for_update(of=('self',)).select_related('concept', 'reviewer'), pk=pk)
         if s.user_id == request.user.pk:
             raise PermissionDenied('You cannot grade your own submission.')
         data = GradeInput(data=request.data)

@@ -50,7 +50,6 @@ export interface Article extends Card {
   metrics?: { label: string; value: string; note: string }[]
   duration?: string
   related_services?: { label: string; url: string }[]
-  gallery?: { src: string; alt: string }[]
 }
 
 interface Initial {
