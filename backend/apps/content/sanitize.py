@@ -30,6 +30,7 @@ _LANG = re.compile(r'^language-[a-z0-9+#-]{1,20}$')
 _HEADING = re.compile(r'<(h[23])(\s[^>]*)?>(.*?)</\1>', re.I | re.S)
 _TAGS = re.compile(r'<[^>]+>')
 WORDS = re.compile(r"[\w'’-]+", re.UNICODE)
+MAX_BLOG_WORDS = 10_000
 
 
 def sanitize_html(value: str) -> str:

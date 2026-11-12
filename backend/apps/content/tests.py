@@ -196,12 +196,36 @@ class BlogWorkflowTests(ContentBase):
     def test_blog_gallery_is_saved_and_public(self):
         gallery = [
             {'src': '/media/uploads/one.png', 'alt': 'Python roadmap'},
-            {'src': 'https://example.com/two.png', 'alt': 'Workflow'}
+            {'src': 'https://example.com/two.png', 'alt': 'Workflow'},
+            {'src': 'https://example.com/three.png', 'alt': 'AI system architecture'},
+            {'src': 'https://example.com/four.png', 'alt': 'Model evaluation'},
+            {'src': 'https://example.com/five.png', 'alt': 'Production monitoring'},
         ]
         b = self.make_blog('Gallery post', gallery=gallery)
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
         data = self.as_user(None).get(f'/api/blogs/{b["slug"]}/').json()
-        self.assertEqual([item['alt'] for item in data['gallery']], ['Python roadmap', 'Workflow'])
+        self.assertEqual(len(data['gallery']), 5)
+        self.assertEqual([item['alt'] for item in data['gallery']], [
+            'Python roadmap', 'Workflow', 'AI system architecture', 'Model evaluation', 'Production monitoring'
+        ])
+
+    def test_blog_gallery_rejects_more_than_five_images(self):
+        gallery = [{'src': f'https://example.com/{i}.png', 'alt': f'Image {i}'} for i in range(6)]
+        response = self.api.post('/api/admin/blogs/', {'title': 'Too many images', 'gallery': gallery}, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('up to 5 images', response.json()['gallery'][0])
+
+    def test_blog_content_accepts_10000_words_and_rejects_more(self):
+        at_limit = self.make_blog('Maximum length', content=f'<p>{"word " * 10_000}</p>')
+        self.assertEqual(word_count(at_limit['content']), 10_000)
+
+        response = self.api.post(
+            '/api/admin/blogs/',
+            {'title': 'Over maximum', 'content': f'<p>{"word " * 10_001}</p>'},
+            format='json',
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('10,000 words or fewer', response.json()['content'][0])
 
     def test_admin_list_filters_and_stats(self):
         a = self.make_blog('A')

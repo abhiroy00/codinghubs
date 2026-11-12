@@ -1,5 +1,6 @@
 export type Kind = 'blogs' | 'case-studies' | 'projects' | 'project-guides' | 'products'
 export type Status = 'draft' | 'scheduled' | 'published' | 'archived'
+export const MAX_BLOG_WORDS = 10_000
 
 export interface Row {
   id: number

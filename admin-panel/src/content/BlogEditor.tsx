@@ -3,7 +3,7 @@ import { adminApi } from '../api'
 import { EditorShell } from './EditorShell'
 import { Chips, Field, Text, ThumbnailField } from './fields'
 import { RichEditor } from './RichEditor'
-import { blankBlog, readingMinutes, wordCount, type Taxon } from './types'
+import { blankBlog, MAX_BLOG_WORDS, readingMinutes, wordCount, type Taxon } from './types'
 import { useContentForm } from './useContentForm'
 
 export function BlogEditor() {
@@ -14,6 +14,7 @@ export function BlogEditor() {
     adminApi.get<Taxon[]>('/blog-categories/').then((r) => setCats(r.data)).catch(() => undefined)
   }, [])
   const words = wordCount(form.content)
+  const uploadedImages = form.gallery.filter((g) => g.src.trim()).length
   const upd = <K extends 'gallery'>(k: K, i: number, patch: Partial<(typeof form)[K][number]>) =>
     set(k, form[k].map((x, n) => (n === i ? { ...x, ...patch } : x)) as (typeof form)[K])
 
@@ -43,6 +44,7 @@ export function BlogEditor() {
       <div className="ad-row-card">
         <div className="ad-section-header">
           <h3 className="ad-sub">Article gallery (up to 5 images)</h3>
+          <span className="ad-muted">{uploadedImages} / 5 uploaded</span>
         </div>
         {form.gallery.map((g, i) => (
           <div key={i} className="ad-row-card">
@@ -51,11 +53,16 @@ export function BlogEditor() {
           </div>
         ))}
         {form.gallery.length < 5 && <button type="button" className="ad-btn" onClick={() => set('gallery', [...form.gallery, { src: '', alt: '' }])}>Add an image</button>}
+        {errors.gallery && <p className="ad-field-error" role="alert">{errors.gallery}</p>}
       </div>
       <Text id="excerpt" label="Excerpt (short description)" required textarea rows={4} value={form.excerpt} onChange={(v) => set('excerpt', v)} max={400} error={errors.excerpt} placeholder="A short summary — shown on blog cards and in search results." />
       <RichEditor id="content" label="Article" value={form.content} onChange={(v) => set('content', v)} />
-      {errors.content && <p className="ad-field-error" role="alert">{errors.content}</p>}
-      <p className="ad-note-line">🛡 <strong>Note:</strong> unsafe HTML (scripts, iframes, inline event handlers) is removed when you save. {words} words · about {readingMinutes(form.content)} min read. Use headings H2 and H3; the title is the only H1.</p>
+      {(errors.content || words > MAX_BLOG_WORDS) && (
+        <p className="ad-field-error" role="alert">
+          {errors.content || `Article content is over the ${MAX_BLOG_WORDS.toLocaleString()}-word limit.`}
+        </p>
+      )}
+      <p className="ad-note-line">🛡 <strong>Note:</strong> unsafe HTML (scripts, iframes, inline event handlers) is removed when you save. {words.toLocaleString()} / {MAX_BLOG_WORDS.toLocaleString()} words · about {readingMinutes(form.content)} min read. Use headings H2 and H3; the title is the only H1.</p>
     </EditorShell>
   )
 }

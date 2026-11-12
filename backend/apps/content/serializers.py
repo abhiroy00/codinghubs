@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
@@ -11,7 +12,7 @@ from .models import (
     CaseStudy,
     unique_slug,
 )
-from .sanitize import sanitize_html
+from .sanitize import MAX_BLOG_WORDS, sanitize_html, word_count
 from .validators import validate_https_or_site_url, validate_media_or_https_url
 
 
@@ -131,11 +132,17 @@ class BlogAdminSerializer(ContentWriteMixin, serializers.ModelSerializer):
         return [{'id': r.id, 'title': r.title} for r in obj.related.all()]
 
     def validate_gallery(self, v):
+        if not isinstance(v, list):
+            raise serializers.ValidationError('Gallery must be a list.')
+        if len(v) > 5:
+            raise serializers.ValidationError('Gallery supports up to 5 images.')
         items = _validate_list_of_dicts(v, ('src', 'alt'), 5, 'Gallery')
         for i in items:
+            if not i['src']:
+                raise serializers.ValidationError('Every gallery image needs an uploaded file or URL.')
             try:
                 validate_media_or_https_url(i['src'])
-            except Exception:
+            except DjangoValidationError:
                 raise serializers.ValidationError('Gallery images must be uploaded images or https:// URLs.')
         return items
 
@@ -145,7 +152,13 @@ class BlogAdminSerializer(ContentWriteMixin, serializers.ModelSerializer):
         return v.strip()
 
     def validate_content(self, v):
-        return sanitize_html(v)
+        cleaned = sanitize_html(v)
+        count = word_count(cleaned)
+        if count > MAX_BLOG_WORDS:
+            raise serializers.ValidationError(
+                f'Article content must be {MAX_BLOG_WORDS:,} words or fewer (currently {count:,}).'
+            )
+        return cleaned
 
     def validate_faq(self, v):
         if not isinstance(v, list):
