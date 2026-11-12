@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'apps.aicoach',
     'apps.gigs',
     'apps.learning',
+    'apps.studio',
 ]
 
 MIDDLEWARE = [
@@ -205,3 +206,16 @@ if 'test' in sys.argv:  # fast password hashing for the test suite only
 
 # Staged marketplace pilot. Keep disabled until moderation and launch policies are ready.
 GIGS_ENABLED = config('GIGS_ENABLED', default=False, cast=bool)
+
+# Interview Studio: server-only credentials; disabled until configured.
+STUDIO_AI_KEY = config('STUDIO_AI_KEY', default='')
+STUDIO_AI_MODEL = config('STUDIO_AI_MODEL', default='')
+STUDIO_AI_URL = config('STUDIO_AI_URL', default='https://api.openai.com/v1/responses')
+STUDIO_EXECUTION_ENABLED = config('STUDIO_EXECUTION_ENABLED', default=False, cast=bool)
+STUDIO_PYTHON_IMAGE = config('STUDIO_PYTHON_IMAGE', default='python:3.12-alpine')
+STUDIO_NODE_IMAGE = config('STUDIO_NODE_IMAGE', default='node:22-alpine')
+STUDIO_EMBEDDING_MODEL = config('STUDIO_EMBEDDING_MODEL', default='')
+STUDIO_EMBEDDING_URL = config('STUDIO_EMBEDDING_URL', default='https://api.openai.com/v1/embeddings')
+STUDIO_DAILY_AI_CALLS = config('STUDIO_DAILY_AI_CALLS', default=100, cast=int)
+STUDIO_RETENTION_DAYS = config('STUDIO_RETENTION_DAYS', default=180, cast=int)
+REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'].update({'studio_ai': '12/min', 'studio_run': '10/min'})

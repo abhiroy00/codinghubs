@@ -1,11 +1,16 @@
 import Lenis from 'lenis'
 import { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 
 /** Global smooth-scroll + in-page anchor handling, ported from main.js. */
 export function useLenis() {
   const lenisRef = useRef<Lenis | null>(null)
+  const { pathname } = useLocation()
+  const nativeScrolling = pathname.startsWith('/interview-studio')
 
   useEffect(() => {
+    // Editor, chat and diagram panels need native nested scrolling.
+    if (nativeScrolling) return
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) return
 
@@ -37,7 +42,7 @@ export function useLenis() {
       lenis.destroy()
       lenisRef.current = null
     }
-  }, [])
+  }, [nativeScrolling])
 
   return lenisRef
 }

@@ -8,6 +8,7 @@ import { defineConfig } from 'vite'
 const cssVersion = createHash('md5').update(readFileSync('public/free-session.css')).digest('hex').slice(0, 8)
 
 export default defineConfig({
+  build: { manifest: true },
   plugins: [
     react(),
     {

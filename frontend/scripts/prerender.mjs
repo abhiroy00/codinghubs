@@ -19,6 +19,8 @@ const template = await readFile(path.join(dist, 'index.html'), 'utf8')
 const cssVersion = createHash('md5').update(await readFile(path.join(dist, 'free-session.css'))).digest('hex').slice(0, 8)
 const learningStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(genai-roadmap|learning)-.*\.css$/.test(name))
 const visualStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(Academy|DiagramPlayer|VisualLab)-.*\.css$/.test(name))
+const manifest = JSON.parse(await readFile(path.join(dist, '.vite/manifest.json'), 'utf8'))
+const studioCss = manifest['src/studio/Studio.tsx']?.css ?? []
 
 function buildHead(page) {
   const canonical = page.canonical ?? `${SITE}${page.path}`
@@ -28,6 +30,9 @@ function buildHead(page) {
     `<meta name="description" content="${esc(page.description)}" />`,
     `<meta name="robots" content="${page.robots ?? (page.indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow')}" />`,
   ]
+  if (page.path === '/interview-studio') {
+    for (const asset of studioCss) tags.push(`<link rel="stylesheet" href="/${esc(asset)}" />`)
+  }
   if (page.indexable || page.canonical) tags.push(`<link rel="canonical" href="${canonical}" />`)
   tags.push(
     `<meta property="og:type" content="website" />`,

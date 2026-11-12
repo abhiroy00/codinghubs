@@ -54,6 +54,7 @@ const Policies = lazy(() => import('./pages/Policies').then((m) => ({ default: m
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
 const BookTutor = lazy(() => import('./pages/BookTutor').then((m) => ({ default: m.BookTutor })))
 const LatestJobs = lazy(() => import('./pages/LatestJobs').then((m) => ({ default: m.LatestJobs })))
+const StudioApp = lazy(() => import('./studio/Studio').then((m) => ({ default: m.StudioApp })))
 
 function CertificateRedirect() {
   const { slug = '' } = useParams()
@@ -78,6 +79,7 @@ export function App() {
               <Route path="visual-lab" element={<VisualLab />} />
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
+              <Route path="interview-studio/*" element={<StudioApp />} />
               <Route path="program/:slug" element={<Curriculum />} />
               <Route path="gigs" element={<GigsPage />} />
               <Route element={<ProtectedRoute />}><Route path="gigs/workspace" element={<GigsPage workspace />} /></Route>

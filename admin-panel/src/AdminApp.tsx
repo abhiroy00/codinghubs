@@ -19,6 +19,7 @@ import { LearningList } from './learning/LearningList'
 const ResearchDesk = lazy(() => import('./learning/ResearchDesk').then(m => ({default:m.ResearchDesk})))
 const LearningEditor = lazy(() => import('./learning/LearningEditor').then(m => ({default:m.LearningEditor})))
 import { AssignmentReviewEditor, AssignmentReviewQueue } from './learning/AssignmentReviews'
+import { StudioAdmin } from './StudioAdmin'
 import './admin.css'
 
 const NAV: { heading: string; items: { to: string; label: string; icon: string; end?: boolean; count?: 'blogs' | 'cases' }[] }[] = [
@@ -33,6 +34,7 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
   {
     heading: 'Main',
     items: [
+      { to: '/interview-studio', label: 'Interview Studio', icon: 'M4 5h16v14H4V5Zm3 4 3 3-3 3m6 0h4' },
       { to: '/', label: 'Dashboard', icon: 'M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z', end: true },
     ],
   },
@@ -296,6 +298,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="courses" element={<CoursesPage />} />
             <Route path="questions" element={<QuestionManager />} />
             <Route path="jobs" element={<JobsPage />} />
+            <Route path="interview-studio" element={<StudioAdmin />} />
             <Route path="content" element={<ContentDashboard />} />
             <Route path="blogs" element={<ContentList kind="blogs" />} />
             <Route path="blogs/create" element={<BlogEditor key="new-blog" />} />

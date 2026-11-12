@@ -13,6 +13,7 @@ import { Curriculum } from './pages/Curriculum'
 import { BookTutor } from './pages/BookTutor'
 import { LatestJobs } from './pages/LatestJobs'
 import { FreeSession } from './pages/FreeSession'
+import { StudioLanding } from './studio/Landing'
 import { NotFound } from './pages/NotFound'
 import { LocationsIndex } from './locations/LocationsIndex'
 import { LocationView } from './locations/LocationView'
@@ -31,7 +32,7 @@ import { courseRoadmapMeta } from './learning/course-roadmap-seo'
 import { genaiMeta } from './learning/genai-seo'
 import { GENAI_LEVELS,genaiPath,type GenAILevel } from './learning/genai-content'
 import type { LocationContent } from './locations/types'
-import { HOME_META, LOGO_URL, NOT_FOUND_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
+import { HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -91,6 +92,22 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
         html:renderToString(<AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<GenAILearning initialData={data}/>}/></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
     }
   }
+
+  pages.push({
+    file: 'interview-studio/index.html', path: '/interview-studio',
+    title: 'Interview Studio | Coding Hubs',
+    description: 'Think clearly. Code confidently. Interview better. Original coding practice, AI mock interviews and design workspaces from Coding Hubs.',
+    image: LOGO_URL, indexable: true, fsDesign: false,
+    html: renderToString(<AuthProvider><StaticRouter location="/interview-studio"><StudioLanding /></StaticRouter></AuthProvider>),
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        organizationNode(),
+        { '@type': 'WebPage', '@id': `${SITE_URL}/interview-studio#webpage`, url: `${SITE_URL}/interview-studio`, name: 'Interview Studio | Coding Hubs', description: 'Original coding practice, AI mock interviews and design workspaces.', inLanguage: 'en-IN', about: { '@id': ORG_ID } },
+        { '@type': 'LearningResource', name: 'Coding Hubs Interview Studio', url: `${SITE_URL}/interview-studio`, description: 'Original coding practice, AI mock interviews and design workspaces.', inLanguage: 'en-IN', provider: { '@id': ORG_ID } },
+      ],
+    },
+  })
 
   pages.push({
     file: 'home.html',

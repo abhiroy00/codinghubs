@@ -10,6 +10,7 @@ const LINKS = [
   ['/learn/', 'Learning Library'],
   ['/visual-lab/', 'Interactive Visual Lab'],
   ['/faq', 'Frequently Asked Questions'],
+  ['/interview-studio', 'Interview Studio'],
   ['/blog', 'Blog'],
   ['/case-studies', 'Case Studies'],
   ['/projects', 'Projects'],

@@ -1,0 +1,12 @@
+# Interview Studio security plan
+
+- Use existing JWT; require authenticated access to private APIs, staff permission for content/configuration. Always filter by owner before lookup; UUIDs alone are not authorization.
+- Keep private problem snapshots, hidden input/output, answer keys, prompts and credentials out of student serializers, provider context and errors. API errors use controlled messages. Render model content as text.
+- Validate request shapes, choices, source/message sizes, revision numbers, JSON depth and bounded diagrams. Rate-limit AI and execution routes; impose per-user queued job limits. Conditional version updates protect competing writes.
+- Deterministic lifecycle and server deadlines; no-run mode forbids in-session runs. Immutable question snapshot survives edits/archive. Idempotent chat keys and finish handling prevent duplicate provider charges on retries.
+- Web application never executes code. Dedicated runner containers: non-root, no network, cap-drop ALL, no-new-privileges, read-only root, bounded tmpfs, CPU/memory/pids/file/output/time, automatic removal. Hidden stdout/stderr are discarded from student responses. Docker daemon access belongs only to a separate trusted runner host.
+- AI has no tools and bounded context/token budget; approved question content and candidate code are data, not instructions. Hint progression is controlled by server persona policy. Full-solution level only in coaching/learning mode. Do not pass editorial/answer keys into ordinary interview turns.
+- Browser voice is opt-in, can transmit speech to browser/vendor recognition services; explain this before activation. No raw audio is stored. Text remains available. Production-grade streaming/latency audits require a dedicated provider implementation.
+- Persist usage metadata without recording credentials. Owner deletion cascades private sessions, submissions, notes and learning records. Define retention and vendor agreements before launch; support account deletion through existing administrative user controls.
+- Additive migrations only. No changes to existing payments, enrollments or auth tables. Do not push to main or apply production migrations from development. Back up production before normal release.
+- Verify cross-user access, archived snapshots, hidden-test leakage, malformed model output, expired sessions, stale drafts, hint limits, queue claims, worker cleanup and provider failures. Container security needs real Docker tests before acceptance.
