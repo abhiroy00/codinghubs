@@ -1,6 +1,6 @@
 import { renderToString } from 'react-dom/server'
 import { VisualLab } from './learning/VisualLab'
-import { Faq } from './pages/Faq'
+import { FAQS, Faq } from './pages/Faq'
 import type { ReactNode } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
@@ -36,11 +36,11 @@ import { HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_MET
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
-function renderLearningPage(path: string, element: ReactNode) {
+function renderLearningPage(path: string, element: ReactNode, trail?: { label: string; to?: string }[]) {
   // /courses/<slug>/ and /interview-prep/<slug>/ need a :slug param for useParams()
   const pattern = path.replace(/^(\/[^/]+)\/[^/]+\/?$/, '$1/:slug')
   return renderToString(
-    <AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<LearnFrame>{element}</LearnFrame>} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
+    <AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<LearnFrame trail={trail}>{element}</LearnFrame>} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
   )
 }
 
@@ -66,8 +66,8 @@ export interface PrerenderedPage {
 
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
   const pages: PrerenderedPage[] = []
-  pages.push({file:'faq.html',path:'/faq',title:'Frequently asked questions | Coding Hubs',description:'Answers about Coding Hubs programs, learning options, enrollment and support.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderToString(<AuthProvider><StaticRouter location="/faq"><LenisProvider><ModalProvider><Routes><Route element={<Layout/>}><Route path="faq" element={<Faq/>}/></Route></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
-  pages.push({file:'visual-lab/index.html',path:'/visual-lab/',title:'Interactive engineering visual lab | Coding Hubs',description:'Explore attention, vector similarity, gradient descent and engineering workflows with step-by-step controls.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderToString(<AuthProvider><StaticRouter location="/visual-lab/"><VisualLab /></StaticRouter></AuthProvider>),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:'Coding Hubs engineering visual lab',url:`${SITE_URL}/visual-lab/`,learningResourceType:'Interactive simulation'}]}})
+  pages.push({file:'faq.html',path:'/faq',title:'Frequently asked questions | Coding Hubs',description:'Answers about Coding Hubs programs, learning options, enrollment and support.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderLearningPage('/faq', <Faq/>, [{label:'FAQ'}]),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'FAQPage',name:'Coding Hubs frequently asked questions',url:`${SITE_URL}/faq`,mainEntity:FAQS.map((f)=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))}]}})
+  pages.push({file:'visual-lab/index.html',path:'/visual-lab/',title:'Interactive engineering visual lab | Coding Hubs',description:'Explore attention, vector similarity, gradient descent and engineering workflows with step-by-step controls.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderLearningPage('/visual-lab/', <VisualLab />, [{label:'Visual lab'}]),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:'Coding Hubs engineering visual lab',url:`${SITE_URL}/visual-lab/`,learningResourceType:'Interactive simulation'}]}})
   for(const course of Object.values(COURSE_ROADMAPS)) {
     const data=courseRoadmapModules[`./learning/course-roadmaps/${course.slug}.json`].default
     for(const level of course.levels) {
@@ -98,7 +98,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     title: 'Interview Studio | Coding Hubs',
     description: 'Think clearly. Code confidently. Interview better. Original coding practice, AI mock interviews and design workspaces from Coding Hubs.',
     image: LOGO_URL, indexable: true, fsDesign: false,
-    html: renderToString(<AuthProvider><StaticRouter location="/interview-studio"><StudioLanding /></StaticRouter></AuthProvider>),
+    html: renderLearningPage('/interview-studio', <StudioLanding />, [{label: 'Interview Studio'}]),
     jsonLd: {
       '@context': 'https://schema.org',
       '@graph': [

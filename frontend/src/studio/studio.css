@@ -443,6 +443,11 @@ html.studio-route body {
   align-items: center;
   gap: 75px;
 }
+/* shop-pages/shopui.css also declares .st-hero (store page gradient);
+   the landing keeps the flat public-site hero. */
+.st-landing .st-hero {
+  background: transparent;
+}
 .st-hero-copy > .st-eyebrow {
   display: flex;
   gap: 9px;

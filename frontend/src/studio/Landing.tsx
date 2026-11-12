@@ -1,23 +1,10 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../lib/auth-context";
 import { ROOT } from "./api";
-import { Brand, ButtonLink, Icon } from "./ui";
+import { ButtonLink, Icon } from "./ui";
 
 export function StudioLanding() {
-  const { user } = useAuth();
   return (
     <div className="studio st-landing">
-      <header className="st-public-nav">
-        <Brand />
-        <nav aria-label="Product">
-          <a href="#how-it-works">The experience</a>
-          <a href="#practice">Practice paths</a>
-          <Link to="/">Coding Hubs ↗</Link>
-        </nav>
-        <ButtonLink to={`${ROOT}/dashboard`}>
-          {user ? "Open workspace" : "Enter the studio"}
-        </ButtonLink>
-      </header>
       <main>
         <section className="st-hero">
           <div className="st-hero-copy">
@@ -238,12 +225,6 @@ export function StudioLanding() {
           <p>Use your existing Coding Hubs account.</p>
         </section>
       </main>
-      <footer className="st-public-footer">
-        <Brand />
-        <p>Thoughtful practice for ambitious engineers.</p>
-        <Link to="/policies">Privacy & policies</Link>
-        <span>© {new Date().getFullYear()} Coding Hubs</span>
-      </footer>
     </div>
   );
 }

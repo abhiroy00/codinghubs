@@ -1,0 +1,87 @@
+/* Pages rendered inside the shared learning shell (LearnFrame) keep their content,
+   but the shell owns the page chrome, width and page background. */
+
+.bl-main .academy,
+.bl-main .studio,
+.bl-main .st-shell {
+  min-height: 0;
+  background: transparent;
+}
+
+/* Academy (/learn/): the shell already provides the header, footer and max width. */
+.bl-main .academy-hero,
+.bl-main .academy-courses,
+.bl-main .academy-value-strip,
+.bl-main .academy-lab-banner {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+.bl-main .academy-hero {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+.bl-main .academy-courses {
+  padding-bottom: 1.5rem;
+}
+.bl-main .academy-value-strip {
+  margin-bottom: 2.5rem;
+}
+.bl-main .academy-lab-banner {
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.bl-main .academy-header,
+.bl-main .academy-footer {
+  display: none;
+}
+
+/* Visual lab */
+.bl-main .vl-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.bl-main .vl-breadcrumb {
+  display: none;
+}
+
+/* Interview Studio landing: hero, sections and closing band sit inside the shell. */
+.bl-main .st-hero,
+.bl-main .st-public-section,
+.bl-main .st-path-section,
+.bl-main .st-closing {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+.bl-main .st-hero {
+  padding-block: 1rem 2rem;
+}
+.bl-main .st-principle-strip {
+  padding-inline: 1.25rem;
+  border-radius: 12px;
+}
+.bl-main .st-closing {
+  padding-block: 2.5rem;
+}
+
+/* Studio workspace: the app sidebar scrolls under the sticky site header. */
+.bl-main .st-shell {
+  gap: 1rem;
+}
+.bl-main .st-sidebar {
+  top: calc(var(--hdr-h, 68px) + 0.75rem);
+  height: auto;
+  max-height: calc(100dvh - var(--hdr-h, 68px) - 1.5rem);
+  border: 1px solid var(--st-border, #e7ddc2);
+  border-radius: 16px;
+}
+
+@media (max-width: 900px) {
+  .bl-main .st-sidebar {
+    position: static;
+    height: auto;
+    max-height: none;
+  }
+}

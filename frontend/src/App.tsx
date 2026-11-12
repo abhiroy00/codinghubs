@@ -73,13 +73,13 @@ export function App() {
             <RegisterPopupProvider>
             <Suspense fallback={null}>
 <Routes>
-              <Route path="learn" element={<Academy />} />
+              <Route path="learn" element={<LearnFrame trail={[{ label: 'Learning library' }]}><Academy /></LearnFrame>} />
               <Route path="learn/:course" element={<Learning />} />
               <Route path="learn/:course/:slug" element={<Learning />} />
-              <Route path="visual-lab" element={<VisualLab />} />
+              <Route path="visual-lab" element={<LearnFrame trail={[{ label: 'Visual lab' }]}><VisualLab /></LearnFrame>} />
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
-              <Route path="interview-studio/*" element={<StudioApp />} />
+              <Route path="interview-studio/*" element={<LearnFrame trail={[{ label: 'Interview Studio' }]}><StudioApp /></LearnFrame>} />
               <Route path="program/:slug" element={<Curriculum />} />
               <Route path="gigs" element={<GigsPage />} />
               <Route element={<ProtectedRoute />}><Route path="gigs/workspace" element={<GigsPage workspace />} /></Route>
@@ -105,6 +105,7 @@ export function App() {
               <Route path="my-account" element={<MyAccount />} />
               <Route path="my-account/orders" element={<MyOrders />} />
               <Route path="my-account/downloads" element={<MyDownloads />} />
+              <Route path="faq" element={<LearnFrame trail={[{ label: 'FAQ' }]} title="Frequently asked questions | Coding Hubs" description="Answers about Coding Hubs programs, learning options, enrollment and support."><Faq /></LearnFrame>} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
 
@@ -127,7 +128,6 @@ export function App() {
                 <Route path="certificates/:slug" element={<CertificateRedirect />} />
               <Route element={<Layout />}>
                 <Route path="policies" element={<Policies />} />
-                <Route path="faq" element={<Faq />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 <Route path="enroll/:slug" element={<CourseCheckout />} />
