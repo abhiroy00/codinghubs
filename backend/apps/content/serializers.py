@@ -12,7 +12,7 @@ from .models import (
     unique_slug,
 )
 from .sanitize import sanitize_html
-from .validators import validate_https_or_site_url
+from .validators import validate_https_or_site_url, validate_media_or_https_url
 
 
 def _strings(value, label, max_items, max_len):
@@ -120,7 +120,7 @@ class BlogAdminSerializer(ContentWriteMixin, serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = (
-            'id', 'title', 'slug', 'excerpt', 'content', 'featured_image', 'featured_image_alt', 'author_name', 'author_title',
+            'id', 'title', 'slug', 'excerpt', 'content', 'featured_image', 'featured_image_alt', 'gallery', 'author_name', 'author_title',
             'category', 'category_name', 'tags', 'tag_names', 'related', 'related_ids', 'is_featured', 'status', 'published_at',
             'reading_time', 'seo_title', 'meta_description', 'focus_keyword', 'secondary_keywords', 'canonical_url', 'og_title',
             'og_description', 'og_image', 'search_intent', 'faq', 'created_at', 'updated_at',
@@ -129,6 +129,15 @@ class BlogAdminSerializer(ContentWriteMixin, serializers.ModelSerializer):
 
     def get_related(self, obj):
         return [{'id': r.id, 'title': r.title} for r in obj.related.all()]
+
+    def validate_gallery(self, v):
+        items = _validate_list_of_dicts(v, ('src', 'alt'), 5, 'Gallery')
+        for i in items:
+            try:
+                validate_media_or_https_url(i['src'])
+            except Exception:
+                raise serializers.ValidationError('Gallery images must be uploaded images or https:// URLs.')
+        return items
 
     def validate_title(self, v):
         if not v.strip():

@@ -18,6 +18,7 @@ from rest_framework.views import APIView
 
 from . import services
 from .models import Blog, BlogCategory, BlogTag, CaseStudy, ContentRevision, Testimonial
+from .sanitize import word_count
 from .serializers import (
     BlogAdminSerializer,
     BlogCardSerializer,
@@ -87,7 +88,12 @@ class PublicBlogList(generics.ListAPIView):
         qs = public_blog_qs()
         p = self.request.query_params
         if q := p.get('q', '').strip()[:100]:
-            qs = qs.filter(Q(title__icontains=q) | Q(excerpt__icontains=q) | Q(tags__name__icontains=q)).distinct()
+            qs = qs.filter(
+                Q(title__icontains=q)
+                | Q(excerpt__icontains=q)
+                | Q(category__name__icontains=q)
+                | Q(tags__name__icontains=q)
+            ).distinct()
         if c := p.get('category'):
             qs = qs.filter(category__slug=c)
         if t := p.get('tag'):
@@ -143,6 +149,8 @@ def blog_detail_payload(obj, preview=False):
         'toc': toc if len(toc) >= 3 else [],
         'author_title': obj.author_title,
         'updated_at': obj.updated_at,
+        'gallery': obj.gallery or [],
+        'word_count': word_count(obj.content),
         'faq': [{'q': f['q'], 'a': services.sanitize_html(f['a'])} for f in obj.faq if f.get('q') and f.get('a')],
         'related': BlogCardSerializer(related, many=True).data,
         'seo': services.seo_for(obj, 'blog', preview),
@@ -231,6 +239,7 @@ def case_detail_payload(obj, preview=False):
         'author_name': obj.author_name,
         'author_title': obj.author_title,
         'reading_time': obj.reading_time,
+        'word_count': sum(word_count(getattr(obj, field) or '') for field in ('overview', 'background', 'challenge', 'objectives', 'solution', 'implementation', 'results', 'lessons')),
         'updated_at': obj.updated_at,
         'related': CaseCardSerializer(related, many=True).data,
         'seo': services.seo_for(obj, 'case', preview),

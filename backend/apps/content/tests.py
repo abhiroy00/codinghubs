@@ -14,7 +14,7 @@ from rest_framework.test import APIClient
 
 from . import ssr
 from .models import Blog, BlogCategory, CaseStudy, SlugRedirect
-from .sanitize import add_heading_ids, sanitize_html
+from .sanitize import add_heading_ids, sanitize_html, word_count
 
 User = get_user_model()
 NO_THROTTLE = {
@@ -178,6 +178,30 @@ class BlogWorkflowTests(ContentBase):
         self.assertEqual(pub.get('/api/blogs/?category=ai').json()['count'], 11)
         self.assertEqual(pub.get('/api/blogs/?category=nope').json()['count'], 0)
         self.assertEqual(pub.get('/api/blog-categories/').json()[0]['blog_count'], 11)
+
+    def test_search_matches_category_names(self):
+        cat = BlogCategory.objects.create(name='Python')
+        b = self.make_blog('Category search', category=cat.id, excerpt='A short tutorial.')
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        data = self.as_user(None).get('/api/blogs/?q=python').json()
+        self.assertEqual(data['count'], 1)
+        self.assertEqual(data['results'][0]['slug'], b['slug'])
+
+    def test_blog_detail_includes_word_count(self):
+        b = self.make_blog('Roadmap', content='<h2>Overview</h2><p>Learn Python and build full stack apps.</p>')
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        data = self.as_user(None).get(f'/api/blogs/{b["slug"]}/').json()
+        self.assertEqual(data['word_count'], word_count(Blog.objects.get(pk=b['id']).content))
+
+    def test_blog_gallery_is_saved_and_public(self):
+        gallery = [
+            {'src': '/media/uploads/one.png', 'alt': 'Python roadmap'},
+            {'src': 'https://example.com/two.png', 'alt': 'Workflow'}
+        ]
+        b = self.make_blog('Gallery post', gallery=gallery)
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        data = self.as_user(None).get(f'/api/blogs/{b["slug"]}/').json()
+        self.assertEqual([item['alt'] for item in data['gallery']], ['Python roadmap', 'Workflow'])
 
     def test_admin_list_filters_and_stats(self):
         a = self.make_blog('A')

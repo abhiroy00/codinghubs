@@ -40,6 +40,8 @@ export interface Article extends Card {
   toc: { id: string; text: string; level: number }[]
   author_title?: string
   updated_at?: string
+  gallery?: { src: string; alt: string }[]
+  word_count?: number
   faq?: { q: string; a: string }[]
   related: Card[]
   seo: Seo

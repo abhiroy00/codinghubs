@@ -14,6 +14,8 @@ export function BlogEditor() {
     adminApi.get<Taxon[]>('/blog-categories/').then((r) => setCats(r.data)).catch(() => undefined)
   }, [])
   const words = wordCount(form.content)
+  const upd = <K extends 'gallery'>(k: K, i: number, patch: Partial<(typeof form)[K][number]>) =>
+    set(k, form[k].map((x, n) => (n === i ? { ...x, ...patch } : x)) as (typeof form)[K])
 
   return (
     <EditorShell kind="blogs" api={api} noun="blog post" layout="single">
@@ -38,6 +40,18 @@ export function BlogEditor() {
       <Chips id="tags" label="Tags (comma separated)" value={form.tag_names} onChange={(v) => set('tag_names', v)} hint="e.g. AI, RAG, automation, LLM" />
       <hr className="ad-hr" />
       <ThumbnailField id="featured_image" src={form.featured_image} alt={form.featured_image_alt} onSrc={(v) => set('featured_image', v)} onAlt={(v) => set('featured_image_alt', v)} error={errors.featured_image} altError={errors.featured_image_alt} />
+      <div className="ad-row-card">
+        <div className="ad-section-header">
+          <h3 className="ad-sub">Article gallery (up to 5 images)</h3>
+        </div>
+        {form.gallery.map((g, i) => (
+          <div key={i} className="ad-row-card">
+            <ThumbnailField id={`g-${i}`} label={`Image ${i + 1}`} src={g.src} alt={g.alt} onSrc={(v) => upd('gallery', i, { src: v })} onAlt={(v) => upd('gallery', i, { alt: v })} />
+            <button type="button" className="ad-link ad-danger" onClick={() => set('gallery', form.gallery.filter((_, n) => n !== i))}>Remove image</button>
+          </div>
+        ))}
+        {form.gallery.length < 5 && <button type="button" className="ad-btn" onClick={() => set('gallery', [...form.gallery, { src: '', alt: '' }])}>Add an image</button>}
+      </div>
       <Text id="excerpt" label="Excerpt (short description)" required textarea rows={4} value={form.excerpt} onChange={(v) => set('excerpt', v)} max={400} error={errors.excerpt} placeholder="A short summary — shown on blog cards and in search results." />
       <RichEditor id="content" label="Article" value={form.content} onChange={(v) => set('content', v)} />
       {errors.content && <p className="ad-field-error" role="alert">{errors.content}</p>}

@@ -137,6 +137,7 @@ class Blog(SeoMixin, PublishMixin):
     content = models.TextField(blank=True)
     featured_image = models.CharField(max_length=300, blank=True, validators=[validate_media_or_https_url])
     featured_image_alt = models.CharField(max_length=200, blank=True)
+    gallery = models.JSONField(default=list, blank=True)  # [{"src": "...", "alt": "..."}] up to five images for article visuals
     author_name = models.CharField(max_length=100, blank=True)
     author_title = models.CharField(max_length=120, blank=True)
     category = models.ForeignKey(BlogCategory, null=True, blank=True, on_delete=models.SET_NULL, related_name='blogs')

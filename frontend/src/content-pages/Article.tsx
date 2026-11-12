@@ -100,6 +100,7 @@ export function BlogDetail() {
           <p className="bl-meta">
             {a.author_name ? `By ${a.author_name}${a.author_title ? `, ${a.author_title}` : ''} · ` : ''}
             {fmtDate(a.published_at)} · {a.reading_time} min read
+            {typeof a.word_count === 'number' ? ` · ${a.word_count.toLocaleString()} words` : ''}
             {a.updated_at && new Date(a.updated_at).getTime() - new Date(a.published_at).getTime() > 86400000 ? ` · Updated ${fmtDate(a.updated_at)}` : ''}
           </p>
         </header>
@@ -118,6 +119,16 @@ export function BlogDetail() {
         )}
         {/* content_html is sanitised on the server (allowlist) when saved and again when served */}
         <div className="bl-body" dangerouslySetInnerHTML={{ __html: a.content_html ?? '' }} />
+        {a.gallery && a.gallery.length > 0 && (
+          <section className="bl-gallery" aria-label="Article gallery">
+            {a.gallery.map((g, idx) => (
+              <figure key={`${g.src}-${idx}`}>
+                <img src={g.src} alt={g.alt || a.title} loading="lazy" decoding="async" />
+                {g.alt && <figcaption>{g.alt}</figcaption>}
+              </figure>
+            ))}
+          </section>
+        )}
         {a.faq && a.faq.length > 0 && (
           <section className="bl-faq">
             <h2>Frequently asked questions</h2>

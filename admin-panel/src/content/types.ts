@@ -72,6 +72,7 @@ export interface BlogForm extends Common {
   content: string
   category: number | ''
   tag_names: string[]
+  gallery: { src: string; alt: string }[]
   search_intent: string
   faq: { q: string; a: string }[]
 }
@@ -105,7 +106,7 @@ const commonBlank: Common = {
   title: '', slug: '', featured_image: '', featured_image_alt: '', author_name: '', author_title: '', is_featured: false, status: 'draft',
   published_at: '', related_ids: [], related_titles: [], ...seoBlank,
 }
-export const blankBlog: BlogForm = { ...commonBlank, excerpt: '', content: '', category: '', tag_names: [], search_intent: '', faq: [] }
+export const blankBlog: BlogForm = { ...commonBlank, excerpt: '', content: '', category: '', tag_names: [], gallery: [], search_intent: '', faq: [] }
 export const blankCase: CaseForm = {
   ...commonBlank, summary: '', client_name: '', client_permission: false, client_descriptor: '', industry: '', duration: '', overview: '', background: '',
   challenge: '', objectives: '', solution: '', implementation: '', results: '', lessons: '', hidden_sections: [], technologies: [], metrics: [],
