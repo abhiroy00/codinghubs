@@ -23,6 +23,7 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER:-codinghubs}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-codinghubs}
       SITE_URL: https://${DOMAIN:-codinghubs.in}
       FRONTEND_SHELL_URL: http://frontend:8081/__shell.html
+      RELEASE_SHA: ${RELEASE_SHA:-development}
       MEDIA_ROOT: /app/media
       PRIVATE_MEDIA_ROOT: /app/private_media
     volumes:
@@ -33,6 +34,34 @@ services:
         condition: service_healthy
     expose:
       - '8000'
+
+  learning-worker:
+    profiles: ['learning']
+    image: ${BACKEND_IMAGE:-codinghubs-backend}
+    build: ./backend
+    restart: unless-stopped
+    entrypoint: ['python', 'manage.py', 'process_learning_documents']
+    healthcheck:
+      disable: true  # This worker has no HTTP server; do not inherit the backend web probe.
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-codinghubs}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-codinghubs}
+      PRIVATE_MEDIA_ROOT: /app/private_media
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+      - private_media:/app/private_media:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m
+    mem_limit: 512m
+    cpus: 0.5
+    pids_limit: 64
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     image: ${FRONTEND_IMAGE:-codinghubs-frontend}

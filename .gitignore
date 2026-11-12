@@ -1,2 +1,13 @@
 .env
 .env.prod.local
+/.local-learning/
+**/.venv/
+**/__pycache__/
+**/db.sqlite3
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/*.tsbuildinfo
+.studio-runner/
+/artifacts/
+**/test-results/

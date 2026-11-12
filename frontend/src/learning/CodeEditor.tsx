@@ -1,3 +1,4 @@
+import { runBrowserJavaScript } from './browser-runner'
 import { useEffect, useRef, useState } from 'react'
 
 type Lang = { id: number; name: string; starter: string }
@@ -59,47 +60,7 @@ const dec = (s: string | null) => {
 
 export type Result = { status: string; stdout: string; stderr: string; time?: string; ok: boolean }
 
-function runJavaScript(code: string, stdin: string): Promise<Result> {
-  return new Promise((resolve) => {
-    const frame = document.createElement('iframe')
-    frame.setAttribute('sandbox', 'allow-scripts')
-    frame.style.display = 'none'
-    const out: string[] = []
-    const err: string[] = []
-    let failed = false
-    const start = performance.now()
-    const finish = (status: string, ok: boolean) => {
-      clearTimeout(timer)
-      window.removeEventListener('message', onMessage)
-      frame.remove()
-      resolve({ status, stdout: out.join(''), stderr: err.join(''), time: ((performance.now() - start) / 1000).toFixed(2), ok })
-    }
-    const timer = setTimeout(() => finish('Time limit exceeded (5 s)', false), 5000)
-    const onMessage = (e: MessageEvent) => {
-      if (e.source !== frame.contentWindow) return
-      const d = e.data as { t: string; s?: string }
-      if (d.t === 'log') out.push(`${d.s}\n`)
-      else if (d.t === 'err') err.push(`${d.s}\n`)
-      else if (d.t === 'fail') {
-        failed = true
-        err.push(`${d.s}\n`)
-      } else if (d.t === 'done') finish(failed ? 'Runtime error' : 'Accepted', !failed)
-    }
-    window.addEventListener('message', onMessage)
-    // the program text travels as a JSON string and is evaluated, so a syntax error is reported instead of silencing the page
-    const payload = JSON.stringify(code).replace(/<\//g, '<\\/')
-    frame.srcdoc = `<script>
-const send=(t,s)=>parent.postMessage({t,s},'*');
-const show=(a)=>a.map(x=>typeof x==='string'?x:(()=>{try{return JSON.stringify(x)}catch(e){return String(x)}})()).join(' ');
-console.log=console.info=(...a)=>send('log',show(a));console.error=console.warn=(...a)=>send('err',show(a));
-window.onerror=(m)=>{send('fail',String(m));return true};window.onunhandledrejection=(e)=>send('fail',String(e.reason));
-const stdin=${JSON.stringify(stdin).replace(/<\//g, '<\\/')};
-try{(0,eval)(${payload})}catch(e){send('fail',String(e))}
-setTimeout(()=>parent.postMessage({t:'done'},'*'),400);
-</script>`
-    document.body.appendChild(frame)
-  })
-}
+const runJavaScript = runBrowserJavaScript
 
 async function runRemote(lang: Lang, code: string, stdin: string): Promise<Result> {
   const ctl = new AbortController()

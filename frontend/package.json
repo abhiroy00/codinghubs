@@ -20,22 +20,35 @@
     "validate:genai": "node scripts/validate-genai.mjs",
     "seo:smoke": "node scripts/seo-smoke.mjs",
     "prep:sync": "node scripts/sync-prep-content.mjs",
-    "prep:check": "node scripts/sync-prep-content.mjs --check"
+    "prep:check": "node scripts/sync-prep-content.mjs --check",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "@xyflow/react": "^12.12.1",
     "axios": "^1.20.0",
     "lenis": "^1.3.27",
+    "monaco-editor": "^0.56.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.10",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^29.1.1",
     "oxlint": "^1.81.0",
+    "prettier": "^3.10.0",
     "typescript": "~6.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "dompurify": "^3.4.17"
   }
 }

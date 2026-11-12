@@ -14,12 +14,15 @@ RUN npm run build
 
 # --- site build stage ---
 FROM node:22-slim AS build
-WORKDIR /app
+WORKDIR /workspace/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 
 COPY frontend/ .
+COPY backend/apps/courses/prep_schema.py /workspace/backend/apps/courses/prep_schema.py
+COPY backend/apps/courses/prep_content/ /workspace/backend/apps/courses/prep_content/
+COPY backend/apps/courses/roadmap_content/ /workspace/backend/apps/courses/roadmap_content/
 ARG VITE_API_BASE_URL=/api
 ARG VITE_RAZORPAY_KEY_ID
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
@@ -31,7 +34,7 @@ RUN npm run build
 # /etc/nginx/templates/ into /etc/nginx/conf.d/ before starting (built into
 # the image's own entrypoint) — no custom CMD needed.
 FROM nginx:1.27-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /workspace/frontend/dist /usr/share/nginx/html
 COPY --from=admin-build /admin-panel/dist /usr/share/nginx/html/admin-panel
 COPY frontend/nginx.conf /etc/nginx/templates/default.conf.template
 ENV BACKEND_HOST=backend:8000 \

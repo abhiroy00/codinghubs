@@ -7,6 +7,7 @@ from decouple import Csv, config
 from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+RELEASE_SHA = config('RELEASE_SHA', default='development')
 
 DELIBERATELY_INSECURE_KEY = 'django-insecure-dev-key-change-me'
 TESTING = 'test' in sys.argv
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
     'apps.jobs',
     'apps.aicoach',
     'apps.gigs',
+    'apps.learning',
+    'apps.studio',
 ]
 
 MIDDLEWARE = [
@@ -233,3 +236,16 @@ if TESTING:  # fast, isolated settings for the test suite only
 
 # Staged marketplace pilot. Keep disabled until moderation and launch policies are ready.
 GIGS_ENABLED = config('GIGS_ENABLED', default=False, cast=bool)
+
+# Interview Studio: server-only credentials; disabled until configured.
+STUDIO_AI_KEY = config('STUDIO_AI_KEY', default='')
+STUDIO_AI_MODEL = config('STUDIO_AI_MODEL', default='')
+STUDIO_AI_URL = config('STUDIO_AI_URL', default='https://api.openai.com/v1/responses')
+STUDIO_EXECUTION_ENABLED = config('STUDIO_EXECUTION_ENABLED', default=False, cast=bool)
+STUDIO_PYTHON_IMAGE = config('STUDIO_PYTHON_IMAGE', default='python:3.12-alpine')
+STUDIO_NODE_IMAGE = config('STUDIO_NODE_IMAGE', default='node:22-alpine')
+STUDIO_EMBEDDING_MODEL = config('STUDIO_EMBEDDING_MODEL', default='')
+STUDIO_EMBEDDING_URL = config('STUDIO_EMBEDDING_URL', default='https://api.openai.com/v1/embeddings')
+STUDIO_DAILY_AI_CALLS = config('STUDIO_DAILY_AI_CALLS', default=100, cast=int)
+STUDIO_RETENTION_DAYS = config('STUDIO_RETENTION_DAYS', default=180, cast=int)
+REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'].update({'studio_ai': '12/min', 'studio_run': '10/min'})

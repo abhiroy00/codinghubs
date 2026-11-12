@@ -2,16 +2,25 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from apps.learning.ssr import academy_page, learning_page, sitemap as learning_sitemap
 
 urlpatterns = [
+    path('learn/', academy_page),
+    path('learn/<slug:course>/', learning_page),
+    path('learn/<slug:course>/<slug:slug>/', learning_page),
+    path('sitemap-learning.xml', learning_sitemap),
+    path('api/learning/', include('apps.learning.urls')),
+    path('api/admin/', include('apps.learning.admin_urls')),
     path('admin/', admin.site.urls),
     path('api/auth/', include('apps.accounts.urls')),
+    path('api/studio/v1/', include('apps.studio.urls')),
     path('api/leads/', include('apps.leads.urls')),
     path('api/courses/', include('apps.courses.urls')),
     path('api/ai/', include('apps.aicoach.urls')),
     path('api/payments/', include('apps.payments.urls')),
     path('api/enrollments/', include('apps.enrollments.urls')),
     path('api/admin/', include('apps.adminpanel.urls')),
+    path('api/admin/', include('apps.studio.admin_urls')),
     path('api/tutors/', include('apps.tutors.urls')),
     path('api/gigs/', include('apps.gigs.urls')),
     path('api/jobs/', include('apps.jobs.urls')),

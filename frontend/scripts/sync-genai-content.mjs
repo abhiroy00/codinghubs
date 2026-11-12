@@ -15,7 +15,7 @@ function write(name, value) {
   const target = path.join(output, name)
   const body = JSON.stringify(value, null, 2) + '\n'
   if (process.argv.includes('--check')) {
-    if (!fs.existsSync(target) || fs.readFileSync(target,'utf8') !== body) throw new Error('Outdated generated content: '+name)
+    if (!fs.existsSync(target) || fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n') !== body) throw new Error('Outdated generated content: '+name)
   } else fs.writeFileSync(target, body)
 }
 for (let n=1;n<=4;n++) {

@@ -19,6 +19,10 @@ interface Question {
   example: string
   coding_prompt: string
   coding_solution: string
+  provenance: string
+  source_url: string
+  company_tags: string[]
+  role: string
   is_published: boolean
   created_at: string
   updated_at: string
@@ -258,6 +262,7 @@ function QuestionForm({ question, onSave, onCancel }: { question?: Question; onS
         <p className="ad-muted">{question ? `Course: ${question.course_name} · Level: ${question.level}` : 'Add a new interview question for a course.'}</p>
         {error && <p className="ad-error" role="alert">{error}</p>}
         <form onSubmit={submit} noValidate>
+            <div className="ad-grid2"><Field label="Question provenance" htmlFor="qs-provenance"><select id="qs-provenance" className="ad-input" value={form.provenance || 'unreviewed'} onChange={e=>setForm({...form,provenance:e.target.value})}>{[['unreviewed','Provenance needs review'],['public_report','Verified public interview report'],['company_style','Company-style practice'],['research_based','Research-based technical question'],['original','Original Coding Hubs question']].map(([value,label])=><option value={value} key={value}>{label}</option>)}</select></Field><Field label="Source URL (required for actual interview reports)" htmlFor="qs-source"><input id="qs-source" className="ad-input" type="url" value={form.source_url || ''} onChange={e=>setForm({...form,source_url:e.target.value})}/></Field><Field label="Company-style tags (comma separated)" htmlFor="qs-companies"><input id="qs-companies" className="ad-input" value={(form.company_tags || []).join(', ')} onChange={e=>setForm({...form,company_tags:e.target.value.split(',').map(t=>t.trim()).filter(Boolean)})}/></Field><Field label="Target role" htmlFor="qs-role"><input id="qs-role" className="ad-input" value={form.role || ''} onChange={e=>setForm({...form,role:e.target.value})}/></Field></div><p className="ad-hint">Company-style tags describe practice context; they do not claim a question was asked by that company. Actual reports require traceable public evidence.</p>
           <div className="ad-grid2">
             <Field label="Course slug" htmlFor="qs-slug" required>
               <input id="qs-slug" className="ad-input" value={form.course_slug ?? ''} onChange={(e) => setForm({ ...form, course_slug: e.target.value })} placeholder="e.g. generative-ai" />

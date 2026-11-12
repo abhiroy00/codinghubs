@@ -15,6 +15,8 @@ details and what's left before going live with real payments.
 
 ## Running it locally
 
+The engineering academy adds `/learn/`, course-scoped lesson workspaces and `/visual-lab/` while preserving existing interview-preparation and commerce pages. Research/PDF tools are available under the custom admin's Learning platform section. See [academy implementation and setup](docs/academy-implementation.md) for migrations, non-publishing seeds, worker configuration, validation and remaining release requirements. Roadmap entries are not claims that every lesson is already authored or reviewed.
+
 **Backend** (Django, port 8000):
 
 ```bash

@@ -3,6 +3,10 @@ import { Logo } from '../lib/icons'
 import { useModal } from '../lib/modal-context'
 
 const RESOURCE_LINKS = [
+  ['/faq', 'Frequently Asked Questions'],
+  ['/learn/', 'Learning Library'],
+  ['/visual-lab/', 'Interactive Visual Lab'],
+  ['/interview-studio', 'Interview Studio'],
   ['/blog', 'Blog'],
   ['/case-studies', 'Case Studies'],
   ['/projects', 'Projects'],

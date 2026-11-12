@@ -13,6 +13,10 @@ export type BankQuestion = {
   coding_prompt: string
   coding_solution: string
   example: string
+  provenance?: string
+  source_url?: string
+  company_tags?: string[]
+  role?: string
 }
 
 const LEVEL = {
@@ -23,6 +27,7 @@ const LEVEL = {
 type Level = BankQuestion['level']
 const LEVELS: Level[] = ['basic', 'intermediate', 'advanced']
 const short = (t: string, n = 110) => (t.length > n ? `${t.slice(0, n).trim()}…` : t)
+const PROVENANCE: Record<string,string> = {unreviewed:'Provenance needs review',public_report:'Verified public interview report',company_style:'Company-style practice · not an actual interview claim',research_based:'Research-based technical question',original:'Original Coding Hubs question'}
 
 /** HackerRank-style practice list for a course: filters on the right, challenges in rows, and a solve view with an editor and the model answer. */
 export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug: string; bank: BankQuestion[]; loading: boolean; solved: number[]; onToggle: (id: number) => void }) {
@@ -30,6 +35,9 @@ export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug:
   const [levels, setLevels] = useState<Level[]>([])
   const [topics, setTopics] = useState<string[]>([])
   const [q, setQ] = useState('')
+  const [company, setCompany] = useState('')
+  const [role, setRole] = useState('')
+  const [provenance, setProvenance] = useState('')
   const [openId, setOpenId] = useState<number | null>(null)
 
   const topicCounts = useMemo(() => {
@@ -41,12 +49,15 @@ export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug:
   const score = bank.filter((b) => isSolved(b.id)).reduce((n, b) => n + LEVEL[b.level].score, 0)
   const total = bank.reduce((n, b) => n + LEVEL[b.level].score, 0)
   const rows = bank.filter((b) => {
+    if (company && !b.company_tags?.includes(company)) return false
+    if (role && b.role !== role) return false
+    if (provenance && (b.provenance || 'unreviewed') !== provenance) return false
     if (status === 'solved' && !isSolved(b.id)) return false
     if (status === 'unsolved' && isSolved(b.id)) return false
     if (levels.length && !levels.includes(b.level)) return false
     if (topics.length && !topics.includes(b.topic)) return false
     const t = q.trim().toLowerCase()
-    return !t || `${b.question} ${b.topic}`.toLowerCase().includes(t)
+    return !t || `${b.question} ${b.topic} ${b.role || ''} ${(b.company_tags || []).join(' ')}`.toLowerCase().includes(t)
   })
   const toggle = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v])
 
@@ -61,7 +72,7 @@ export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug:
       <div className="pb-top">
         <div>
           <h2 id="pb-title">Practice challenges</h2>
-          <p className="learn-muted">Solve interview questions and coding prompts for this course. Mark a challenge solved to earn its score.</p>
+          <p className="learn-muted">Solve interview questions and coding prompts for this course. Points reflect self-reported practice, not assessed mastery. Company-style tags do not claim a question appeared in an actual interview.</p>
         </div>
         <div className="pb-score" aria-label="Your progress">
           <strong>{solved.filter((id) => bank.some((b) => b.id === id)).length}/{bank.length}</strong><span>solved</span>
@@ -82,6 +93,7 @@ export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug:
                 <li key={b.id} className={`pb-row${isSolved(b.id) ? ' solved' : ''}`}>
                   <div className="pb-main">
                     <button type="button" className="pb-title" onClick={() => setOpenId(b.id)}>{short(b.question)}</button>
+                    <p className="pb-sub">{PROVENANCE[b.provenance || 'unreviewed']}{b.role ? ` · ${b.role}` : ''}{b.company_tags?.length ? ` · ${b.company_tags.join(', ')}` : ''}{b.source_url?.startsWith('https://') && <a href={b.source_url} target="_blank" rel="noreferrer"> · Source ↗</a>}</p>
                     <p className="pb-sub"><span className={`pb-lvl ${b.level}`}>{LEVEL[b.level].label}</span> <span>Max score: {LEVEL[b.level].score}</span> <span>{b.topic}</span>{b.coding_prompt && <span>Coding</span>}</p>
                   </div>
                   <button type="button" className={`pb-solve${isSolved(b.id) ? ' done' : ''}`} onClick={() => setOpenId(b.id)}>{isSolved(b.id) ? 'Solved ✓' : 'Solve challenge'}</button>
@@ -91,6 +103,9 @@ export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug:
           </div>
 
           <aside className="pb-filters" aria-label="Filters">
+            <label>Company-style context<select value={company} onChange={e=>setCompany(e.target.value)}><option value="">All companies</option>{[...new Set(bank.flatMap(b=>b.company_tags || []))].sort().map(c=><option key={c}>{c}</option>)}</select></label>
+            <label>Target role<select value={role} onChange={e=>setRole(e.target.value)}><option value="">All roles</option>{[...new Set(bank.map(b=>b.role).filter((r):r is string=>!!r))].sort().map(r=><option key={r}>{r}</option>)}</select></label>
+            <label>Question provenance<select value={provenance} onChange={e=>setProvenance(e.target.value)}><option value="">All provenance</option>{Object.entries(PROVENANCE).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
             <h3>Status</h3>
             {(['all', 'solved', 'unsolved'] as const).map((s) => (
               <label key={s}><input type="radio" name="pb-status" checked={status === s} onChange={() => setStatus(s)} /> {s[0].toUpperCase() + s.slice(1)}</label>
@@ -103,8 +118,8 @@ export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug:
             {topicCounts.map(([t, n]) => (
               <label key={t}><input type="checkbox" checked={topics.includes(t)} onChange={() => setTopics(toggle(topics, t))} /> {t} <span>({n})</span></label>
             ))}
-            {(status !== 'all' || levels.length > 0 || topics.length > 0 || q) && (
-              <button type="button" className="pb-clear" onClick={() => { setStatus('all'); setLevels([]); setTopics([]); setQ('') }}>Clear filters</button>
+            {(status !== 'all' || levels.length > 0 || topics.length > 0 || q || company || role || provenance) && (
+              <button type="button" className="pb-clear" onClick={() => { setStatus('all'); setLevels([]); setTopics([]); setQ(''); setCompany(''); setRole(''); setProvenance('') }}>Clear filters</button>
             )}
           </aside>
         </div>
@@ -129,6 +144,7 @@ function SolveView({ slug, item, solved, onToggle, onBack, onPrev, onNext, posit
         <article className="pbs-problem">
           <p className="pb-sub"><span className={`pb-lvl ${item.level}`}>{LEVEL[item.level].label}</span> <span>Max score: {LEVEL[item.level].score}</span> <span>{item.topic}</span></p>
           <h2 id="pbs-title">{item.question}</h2>
+          <p className="learn-muted">{PROVENANCE[item.provenance || 'unreviewed']}{item.company_tags?.length ? ` · ${item.company_tags.join(', ')}` : ''}{item.source_url?.startsWith('https://') && <> · <a href={item.source_url} target="_blank" rel="noreferrer">Public source</a></>}</p>
           {item.coding_prompt ? (<><h3>Problem statement</h3><p>{item.coding_prompt}</p></>) : (<p className="learn-muted">Write your answer in your own words in the editor, then compare it with the model answer.</p>)}
           {show && (
             <div className="pbs-answer">

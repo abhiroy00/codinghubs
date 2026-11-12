@@ -18,6 +18,9 @@ const { renderAll } = await import(pathToFileURL(path.join(root, 'dist-ssr', 'en
 const template = await readFile(path.join(dist, 'index.html'), 'utf8')
 const cssVersion = createHash('md5').update(await readFile(path.join(dist, 'free-session.css'))).digest('hex').slice(0, 8)
 const learningStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(genai-roadmap|learning)-.*\.css$/.test(name))
+const visualStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(Academy|DiagramPlayer|VisualLab)-.*\.css$/.test(name))
+const manifest = JSON.parse(await readFile(path.join(dist, '.vite/manifest.json'), 'utf8'))
+const studioCss = manifest['src/studio/Studio.tsx']?.css ?? []
 
 function buildHead(page) {
   const canonical = page.canonical ?? `${SITE}${page.path}`
@@ -27,6 +30,12 @@ function buildHead(page) {
     `<meta name="description" content="${esc(page.description)}" />`,
     `<meta name="robots" content="${page.robots ?? (page.indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow')}" />`,
   ]
+  if (page.path === '/interview-studio') {
+    for (const asset of studioCss) tags.push(`<link rel="stylesheet" href="/${esc(asset)}" />`)
+    // The studio uses the same Poppins pairing as the public site.
+    tags.push(`<link rel="preload" as="style" href="${FONTS}" onload="this.onload=null;this.rel='stylesheet'" />`)
+    tags.push(`<noscript><link rel="stylesheet" href="${FONTS}" /></noscript>`)
+  }
   if (page.indexable || page.canonical) tags.push(`<link rel="canonical" href="${canonical}" />`)
   tags.push(
     `<meta property="og:type" content="website" />`,
@@ -56,6 +65,9 @@ function buildHead(page) {
   if (page.path?.startsWith('/interview-prep/')) {
     for (const file of learningStyles) tags.push(`<link rel="stylesheet" href="/assets/${file}" />`)
   }
+  if (page.path === '/visual-lab/') {
+    for (const file of visualStyles) tags.push(`<link rel="stylesheet" href="/assets/${file}" />`)
+  }
   return tags.join('\n    ')
 }
 
@@ -67,7 +79,7 @@ function render(page) {
   html = html.replace(/\s*<meta name="description"[^>]*>/, '')
   html = html.replace(/\s*<meta property="og:[^>]*>/g, '')
   html = html.replace(/\s*<!-- Home and program pages[\s\S]*?<\/script>/, '') // dynamic CSS loader, replaced by the static <link>
-  if (page.fsDesign) {
+  if (page.fsDesign || page.path === '/interview-studio') {
     // The generic font request (4 families, 3 unused on these pages) is render-blocking: swap it for the two families
     // these pages use, loaded without blocking first paint (font-display: swap).
     html = html.replace(/\s*<link href="https:\/\/fonts\.googleapis\.com\/css2[^"]*" rel="stylesheet" \/>/, '')
