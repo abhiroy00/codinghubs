@@ -32,6 +32,9 @@ function buildHead(page) {
   ]
   if (page.path === '/interview-studio') {
     for (const asset of studioCss) tags.push(`<link rel="stylesheet" href="/${esc(asset)}" />`)
+    // The studio uses the same Poppins pairing as the public site.
+    tags.push(`<link rel="preload" as="style" href="${FONTS}" onload="this.onload=null;this.rel='stylesheet'" />`)
+    tags.push(`<noscript><link rel="stylesheet" href="${FONTS}" /></noscript>`)
   }
   if (page.indexable || page.canonical) tags.push(`<link rel="canonical" href="${canonical}" />`)
   tags.push(
@@ -76,7 +79,7 @@ function render(page) {
   html = html.replace(/\s*<meta name="description"[^>]*>/, '')
   html = html.replace(/\s*<meta property="og:[^>]*>/g, '')
   html = html.replace(/\s*<!-- Home and program pages[\s\S]*?<\/script>/, '') // dynamic CSS loader, replaced by the static <link>
-  if (page.fsDesign) {
+  if (page.fsDesign || page.path === '/interview-studio') {
     // The generic font request (4 families, 3 unused on these pages) is render-blocking: swap it for the two families
     // these pages use, loaded without blocking first paint (font-display: swap).
     html = html.replace(/\s*<link href="https:\/\/fonts\.googleapis\.com\/css2[^"]*" rel="stylesheet" \/>/, '')

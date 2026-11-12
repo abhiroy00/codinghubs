@@ -81,15 +81,18 @@ export function Icon({ name, size = 20 }: { name: string; size?: number }) {
 }
 export function Brand() {
   return (
-    <Link to={ROOT} className="st-brand">
-      <span className="st-brand-mark">
-        <Icon name="code" size={23} />
-      </span>
-      <span>
-        <strong>
-          coding hubs<span className="st-brand-dot">.</span>
-        </strong>
-        <small>INTERVIEW STUDIO</small>
+    <Link to={ROOT} className="st-brand" aria-label="Coding Hubs School of AI — Interview Studio">
+      <span className="st-brand-pill">
+        <picture>
+          <source srcSet="/assets/coding-hubs-school-of-ai-logo-wide.webp" type="image/webp" />
+          <img
+            className="st-brand-logo"
+            src="/assets/coding-hubs-school-of-ai-logo-wide.png"
+            alt="Coding Hubs School of AI"
+            width={720}
+            height={208}
+          />
+        </picture>
       </span>
     </Link>
   );
