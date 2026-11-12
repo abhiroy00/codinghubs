@@ -3,7 +3,7 @@ import hmac
 import json
 import shutil
 import tempfile
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone as datetime_timezone
 from decimal import Decimal
 from io import BytesIO
 from unittest import mock
@@ -867,7 +867,9 @@ class OrderAdminTests(ShopBase):
         self.assertIn('order.status', actions)
         self.assertIn('order.paid', actions)
 
-    def test_order_list_filters(self):
+    @override_settings(TIME_ZONE='Asia/Kolkata')
+    @mock.patch('django.utils.timezone.now', return_value=datetime(2026, 11, 12, 19, 0, tzinfo=datetime_timezone.utc))
+    def test_order_list_filters(self, _now):
         a = self.paid_order(user=self.alice, items=[(self.product('A', price='10.00'), 1)])
         self.paid_order(user=self.bob, items=[(self.product('Book', 'physical', '20.00', stock=3), 1)])
         self.assertEqual(self.api.get('/api/admin/store-orders/').json()['count'], 2)
@@ -875,10 +877,34 @@ class OrderAdminTests(ShopBase):
         self.assertEqual(self.api.get(f'/api/admin/store-orders/?q={a.number}').json()['count'], 1)
         self.assertEqual(self.api.get(f'/api/admin/store-orders/?customer={self.bob.id}').json()['count'], 1)
         self.assertEqual(self.api.get('/api/admin/store-orders/?payment_status=paid&status=delivered').json()['count'], 1)
-        today = timezone.now().date().isoformat()
+        today = timezone.localdate().isoformat()
         self.assertEqual(self.api.get(f'/api/admin/store-orders/?date_from={today}&date_to={today}').json()['count'], 2)
         self.assertEqual(self.api.get('/api/admin/store-orders/?date_from=2000-01-01&date_to=2000-01-02').json()['count'], 0)
         self.assertEqual(self.api.get('/api/admin/store-orders/?date_from=garbage').status_code, 200)
+
+    @override_settings(TIME_ZONE='Asia/Kolkata')
+    def test_order_date_filters_include_the_entire_local_day(self):
+        product = self.product()
+        start = datetime(2026, 11, 12, 18, 30, tzinfo=datetime_timezone.utc)  # Nov 13, 00:00 IST.
+        end = start + timedelta(days=1)
+        instants = (start - timedelta(microseconds=1), start, end - timedelta(microseconds=1), end)
+        numbers = []
+        for instant in instants:
+            order = self.paid_order(user=self.alice, items=[(product, 1)])
+            Order.objects.filter(pk=order.pk).update(created_at=instant)
+            numbers.append(order.number)
+
+        for query, expected in (
+            ('date_from=2026-11-13&date_to=2026-11-13', numbers[1:3]),
+            ('date_from=2026-11-13', numbers[1:]),
+            ('date_to=2026-11-13', numbers[:3]),
+        ):
+            with self.subTest(query=query):
+                response = self.api.get(f'/api/admin/store-orders/?{query}')
+                self.assertEqual(response.status_code, 200)
+                data = response.json()
+                self.assertEqual(data['count'], len(expected))
+                self.assertEqual({row['number'] for row in data['results']}, set(expected))
 
 
 # ====================== downloads & ownership ======================
