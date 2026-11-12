@@ -5,6 +5,7 @@ import dj_database_url
 from decouple import Csv, config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+RELEASE_SHA = config('RELEASE_SHA', default='development')
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-me')
 DEBUG = config('DEBUG', default=True, cast=bool)

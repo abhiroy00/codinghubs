@@ -146,7 +146,10 @@ jobs:
           echo "=== latest deployment logs on the server (before this deploy) ==="
           remote "$LOGS_CMD"
 
-          DEPLOY_COMMAND="mkdir -p /opt/codinghubs/deploy-logs && systemd-run --unit=codinghubs-deploy-${SHA} --collect --no-block /bin/bash -lc 'exec > /opt/codinghubs/deploy-logs/${SHA}.log 2>&1; set -euo pipefail; curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/${SHA}/infra/deploy-remote.sh -o /tmp/codinghubs-deploy-${SHA}.sh; bash /tmp/codinghubs-deploy-${SHA}.sh ${SHA}'"
+          # Transfer only these source files through SSM; this also works for private repositories.
+          BUNDLE=$(tar -czf - docker-compose.prod.yml infra/deploy-remote.sh infra/fetch-env.sh | base64 -w0)
+          RELEASE_DIR="/opt/codinghubs/releases/${SHA}"
+          DEPLOY_COMMAND="mkdir -p /opt/codinghubs/deploy-logs ${RELEASE_DIR} && printf '%s' '${BUNDLE}' | base64 -d | tar -xzf - -C ${RELEASE_DIR} && systemd-run --unit=codinghubs-deploy-${SHA} --collect --no-block /bin/bash -lc 'exec > /opt/codinghubs/deploy-logs/${SHA}.log 2>&1; set -euo pipefail; bash ${RELEASE_DIR}/infra/deploy-remote.sh ${SHA}'"
           PARAMETERS=$(jq -nc --arg command "$DEPLOY_COMMAND" '{commands:[$command],executionTimeout:["120"]}')
           CMD_ID=$(aws ssm send-command \
             --instance-ids "${{ vars.EC2_INSTANCE_ID }}" \
@@ -187,11 +190,11 @@ jobs:
           fi
           CSS_URL="https://codinghubs.in/assets/$CSS_FILE"
           for i in $(seq 1 90); do
-            if curl --connect-timeout 3 --max-time 5 -fsSL "$CSS_URL" -o deployed-tutor.css && grep -q 'max-height:calc(100dvh - 1.5rem)' deployed-tutor.css; then
-              echo "Verified deployed tutor stylesheet: $CSS_URL"
+            if curl --connect-timeout 3 --max-time 5 -fsSL "https://codinghubs.in/api/learning/release/?expected=${SHA}" -o deployed-release.json && jq -e --arg sha "$SHA" '.release == $sha and .catalog_ready == true' deployed-release.json >/dev/null && curl --connect-timeout 3 --max-time 5 -fsSL "$CSS_URL" -o deployed-tutor.css && grep -q 'max-height:calc(100dvh - 1.5rem)' deployed-tutor.css; then
+              echo "Verified deployed release $SHA and tutor stylesheet: $CSS_URL"
               exit 0
             fi
-            echo "Waiting for tutor page asset: $CSS_URL"
+            echo "Waiting for release $SHA and asset: $CSS_URL"
             sleep 10
           done
           echo "Tutor page stylesheet was not deployed within 15 minutes: $CSS_URL"

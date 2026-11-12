@@ -23,6 +23,7 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER:-codinghubs}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-codinghubs}
       SITE_URL: https://${DOMAIN:-codinghubs.in}
       FRONTEND_SHELL_URL: http://frontend:8081/__shell.html
+      RELEASE_SHA: ${RELEASE_SHA:-development}
       MEDIA_ROOT: /app/media
       PRIVATE_MEDIA_ROOT: /app/private_media
     volumes:

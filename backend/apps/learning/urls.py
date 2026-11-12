@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ConceptView, CourseCatalogView, CurriculumView, ProgressView, QuizView
+from .views import ConceptView, CourseCatalogView, CurriculumView, DeploymentStatusView, ProgressView, QuizView
 from .assessments import LearningSummaryView, QuizHistoryView, SubmissionsView
 from .documents import DocumentsView, DocumentDetailView, DocumentDownloadView
 from rest_framework.routers import SimpleRouter
@@ -10,6 +10,7 @@ router.register('research/sources', SourceViewSet)
 router.register('research/claims', ClaimViewSet)
 
 urlpatterns = [
+    path('release/', DeploymentStatusView.as_view()),
     path('documents/', DocumentsView.as_view()),
     path('documents/download/', DocumentDownloadView.as_view()),
     path('documents/<int:pk>/', DocumentDetailView.as_view()),

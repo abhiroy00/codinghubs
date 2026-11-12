@@ -1,4 +1,5 @@
 from copy import deepcopy
+from django.conf import settings
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, serializers
@@ -51,6 +52,15 @@ class CourseCatalogView(APIView):
                 'published_count': sum(bool(c.version) for c in concepts),
             })
         return Response(result)
+
+
+class DeploymentStatusView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        response = Response({'release': settings.RELEASE_SHA, 'catalog_ready': LearningCourse.objects.filter(is_active=True).exists()})
+        response['Cache-Control'] = 'no-store'
+        return response
 
 
 class ConceptView(APIView):
