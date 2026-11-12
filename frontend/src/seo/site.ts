@@ -1,6 +1,7 @@
 import { INSTITUTE } from '../pages/free-session/data'
 import { PROGRAMS, type Program } from '../pages/free-session/programs'
 import { HEAD_OFFICE, SITE_URL } from '../locations/registry'
+import type { Seo } from '../content-pages/api'
 
 export const LOGO_URL = `${SITE_URL}/assets/coding-hubs-school-of-ai-logo.jpeg`
 export const ORG_ID = `${SITE_URL}/#organization`
@@ -15,6 +16,17 @@ export interface PageMeta {
   image: string
   indexable: boolean
   jsonLd?: unknown
+}
+
+/** Use the same metadata for build-time HTML and browser navigation. */
+export function pageSeo(meta: PageMeta): Seo {
+  const canonical = meta.indexable ? `${SITE_URL}${meta.path}` : ''
+  return {
+    title: meta.title, description: meta.description, canonical,
+    robots: meta.indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow',
+    og: { type: 'website', title: meta.title, description: meta.description, image: meta.image, url: canonical },
+    json_ld: meta.jsonLd ?? null,
+  }
 }
 
 /** Organization node. Only verified facts: one head office, the contact details published on the site, real social profiles. */
@@ -123,6 +135,17 @@ export const JOBS_META: PageMeta = {
     '@context': 'https://schema.org',
     '@graph': [organizationNode()],
   },
+}
+
+export const STUDIO_META: PageMeta = {
+  path: '/interview-studio', title: 'Interview Studio | Coding Hubs',
+  description: 'Think clearly. Code confidently. Interview better. Original coding practice, AI mock interviews and design workspaces from Coding Hubs.',
+  image: LOGO_URL, indexable: true,
+  jsonLd: { '@context': 'https://schema.org', '@graph': [organizationNode(), {
+    '@type': 'LearningResource', name: 'Coding Hubs Interview Studio',
+    url: `${SITE_URL}/interview-studio`, description: 'Original coding practice, AI mock interviews and design workspaces.',
+    inLanguage: 'en-IN', provider: { '@id': ORG_ID },
+  }] },
 }
 
 export const NOT_FOUND_META: PageMeta = {

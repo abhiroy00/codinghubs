@@ -21,6 +21,8 @@ async function start() {
   if (sp) await Promise.all([import('./shop-pages/catalog'), sp[1] === 'projects' ? import('./shop-pages/projects') : sp[1] === 'store' ? import('./shop-pages/store') : import('./shop-pages/guides')]).catch(() => null)
   // Program, courses, interview prep and the locations index are lazy chunks as well.
   const path = window.location.pathname
+  if (/^\/book-a-tutor(?:\/|$)/.test(path)) await import('./pages/BookTutor').catch(() => null)
+  if (/^\/latest-jobs(?:\/|$)/.test(path)) await import('./pages/LatestJobs').catch(() => null)
   if (/^\/interview-studio(\/|$)/.test(path)) await import('./studio/Studio').catch(() => null)
   const lazyPage = /^\/program\//.test(path) ? import('./pages/Curriculum')
     : /^\/visual-lab\/?$/.test(path) ? import('./learning/VisualLab')

@@ -1,6 +1,6 @@
 import { renderToString } from 'react-dom/server'
 import { VisualLab } from './learning/VisualLab'
-import { FAQS, Faq } from './pages/Faq'
+import { FAQ_META, Faq } from './pages/Faq'
 import type { ReactNode } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
@@ -32,7 +32,7 @@ import { courseRoadmapMeta } from './learning/course-roadmap-seo'
 import { genaiMeta } from './learning/genai-seo'
 import { GENAI_LEVELS,genaiPath,type GenAILevel } from './learning/genai-content'
 import type { LocationContent } from './locations/types'
-import { HOME_META, LOGO_URL, NOT_FOUND_META, ORG_ID, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
+import { HOME_META, LOGO_URL, NOT_FOUND_META, STUDIO_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -66,7 +66,7 @@ export interface PrerenderedPage {
 
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
   const pages: PrerenderedPage[] = []
-  pages.push({file:'faq.html',path:'/faq',title:'Frequently asked questions | Coding Hubs',description:'Answers about Coding Hubs programs, learning options, enrollment and support.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderLearningPage('/faq', <Faq/>, [{label:'FAQ'}]),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'FAQPage',name:'Coding Hubs frequently asked questions',url:`${SITE_URL}/faq`,mainEntity:FAQS.map((f)=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))}]}})
+  pages.push({ ...FAQ_META, file: 'faq.html', fsDesign: false, html: renderLearningPage('/faq', <Faq />, [{ label: 'FAQ' }]) })
   pages.push({file:'visual-lab/index.html',path:'/visual-lab/',title:'Interactive engineering visual lab | Coding Hubs',description:'Explore attention, vector similarity, gradient descent and engineering workflows with step-by-step controls.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderLearningPage('/visual-lab/', <VisualLab />, [{label:'Visual lab'}]),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:'Coding Hubs engineering visual lab',url:`${SITE_URL}/visual-lab/`,learningResourceType:'Interactive simulation'}]}})
   for(const course of Object.values(COURSE_ROADMAPS)) {
     const data=courseRoadmapModules[`./learning/course-roadmaps/${course.slug}.json`].default
@@ -93,20 +93,8 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     }
   }
 
-  pages.push({
-    file: 'interview-studio/index.html', path: '/interview-studio',
-    title: 'Interview Studio | Coding Hubs',
-    description: 'Think clearly. Code confidently. Interview better. Original coding practice, AI mock interviews and design workspaces from Coding Hubs.',
-    image: LOGO_URL, indexable: true, fsDesign: false,
-    html: renderLearningPage('/interview-studio', <StudioLanding />, [{label: 'Interview Studio'}]),
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@graph': [
-        organizationNode(),
-        { '@type': 'WebPage', '@id': `${SITE_URL}/interview-studio#webpage`, url: `${SITE_URL}/interview-studio`, name: 'Interview Studio | Coding Hubs', description: 'Original coding practice, AI mock interviews and design workspaces.', inLanguage: 'en-IN', about: { '@id': ORG_ID } },
-        { '@type': 'LearningResource', name: 'Coding Hubs Interview Studio', url: `${SITE_URL}/interview-studio`, description: 'Original coding practice, AI mock interviews and design workspaces.', inLanguage: 'en-IN', provider: { '@id': ORG_ID } },
-      ],
-    },
+  pages.push({ ...STUDIO_META, file: 'interview-studio/index.html', fsDesign: false,
+    html: renderLearningPage('/interview-studio', <StudioLanding />, [{ label: 'Interview Studio' }]),
   })
 
   pages.push({

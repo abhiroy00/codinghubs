@@ -3,9 +3,15 @@ from urllib.parse import urlparse
 from rest_framework import serializers
 
 from .models import Job
+from apps.content.directory_seo import job_seo
 
 
 class JobSerializer(serializers.ModelSerializer):
+    seo = serializers.SerializerMethodField()
+
+    def get_seo(self, obj):
+        return job_seo(obj)
+
     is_open = serializers.BooleanField(read_only=True)
     work_mode_label = serializers.CharField(source='get_work_mode_display', read_only=True)
     job_type_label = serializers.CharField(source='get_job_type_display', read_only=True)
@@ -18,7 +24,7 @@ class JobSerializer(serializers.ModelSerializer):
             'work_mode', 'work_mode_label', 'job_type', 'job_type_label', 'experience_level',
             'experience_level_label', 'experience', 'salary', 'description', 'responsibilities',
             'skills', 'qualifications', 'benefits', 'how_to_apply', 'application_url',
-            'application_email', 'application_deadline', 'published_at', 'is_open',
+            'application_email', 'application_deadline', 'published_at', 'is_open', 'seo',
         )
 
 

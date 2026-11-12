@@ -1,7 +1,12 @@
 import { useRef } from 'react'
 import { useReveal } from '../hooks/useReveal'
+import { pageSeo, POLICIES_META } from '../seo/site'
+import { useSeo } from '../seo/useSeo'
+
+const POLICIES_SEO = pageSeo(POLICIES_META)
 
 export function Policies() {
+  useSeo(POLICIES_SEO)
   const ref = useRef<HTMLDivElement>(null)
   useReveal(ref)
 

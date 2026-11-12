@@ -5,8 +5,12 @@ import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
 import './book-tutor.css'
+import type { Seo } from '../content-pages/api'
+import { useSeo } from '../seo/useSeo'
+import { TUTOR_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
 
 interface Tutor {
+  seo?: Seo
   id: number
   full_name: string
   profile_image: string
@@ -49,8 +53,13 @@ export function BookTutor() {
     'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
   ])
 
-  const [tutors, setTutors] = useState<Tutor[]>([])
-  const [loading, setLoading] = useState(true)
+  const initial = useMemo(() => {
+    const listing = directoryInitial<{ results: Tutor[] }>('tutors')
+    const detail = directoryInitial<{ item: Tutor }>('tutor')
+    return listing?.results ?? (detail ? [detail.item] : null)
+  }, [])
+  const [tutors, setTutors] = useState<Tutor[]>(initial ?? [])
+  const [loading, setLoading] = useState(initial === null)
   const [loadError, setLoadError] = useState('')
   const [bookingTutor, setBookingTutor] = useState<Tutor | null | undefined>(undefined)
   const [booking, setBooking] = useState<BookingResponse | null>(null)
@@ -62,22 +71,17 @@ export function BookTutor() {
   const courseOptions = useMemo(() => [...new Set(tutors.flatMap((tutor) => tutor.courses))].sort(), [tutors])
 
   useEffect(() => {
-    document.title = 'Book a Tutor | Coding Hubs School of AI'
     api.get<Tutor[]>('/tutors/')
       .then(({ data }) => setTutors(data))
       .catch(() => setLoadError('Tutor profiles could not be loaded. Please try again later.'))
       .finally(() => setLoading(false))
-    return () => {
-      document.title = 'Coding Hubs School of AI'
-    }
   }, [])
 
-  useEffect(() => {
-    document.title = tutorId && selectedTutor
-      ? `${selectedTutor.full_name} | Book a Tutor | Coding Hubs School of AI`
-      : 'Book a Tutor | Coding Hubs School of AI'
-    window.scrollTo(0, 0)
-  }, [tutorId, selectedTutor])
+  const seo = useMemo(() => !tutorId ? TUTOR_SEO : selectedTutor
+    ? selectedTutor.seo ?? recordSeo(`/book-a-tutor/${selectedTutor.id}`, `${selectedTutor.full_name} | Book a Tutor | Coding Hubs School of AI`, selectedTutor.bio)
+    : { ...MISSING_SEO, title: loading || loadError ? 'Tutor profile | Coding Hubs School of AI' : MISSING_SEO.title }, [tutorId, selectedTutor, loading, loadError])
+  useSeo(seo)
+  useEffect(() => { window.scrollTo(0, 0) }, [tutorId])
 
   useEffect(() => {
     if (bookingTutor === undefined) return

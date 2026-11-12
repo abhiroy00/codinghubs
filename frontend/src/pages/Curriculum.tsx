@@ -1,13 +1,15 @@
-import { useEffect } from 'react'
+import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
-import { INSTITUTE, WHATSAPP } from './free-session/data'
+import { WHATSAPP } from './free-session/data'
 import { FsIcon } from './free-session/icons'
 import { NotFound } from './NotFound'
 import { useRegisterPopup } from '../lib/register-popup'
 import { getProgram } from './free-session/programs'
+import { pageSeo, programMeta } from '../seo/site'
+import { useSeo } from '../seo/useSeo'
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
 
@@ -21,12 +23,8 @@ export function Curriculum() {
   const { slug } = useParams<{ slug: string }>()
   const program = getProgram(slug)
 
-  useEffect(() => {
-    if (program) document.title = `${program.title} — Day-by-Day Plan | ${INSTITUTE.name}`
-    return () => {
-      document.title = 'Coding Hubs School of AI'
-    }
-  }, [program])
+  const seo = useMemo(() => program ? pageSeo(programMeta(program)) : null, [program])
+  useSeo(seo)
 
   if (!program) return <NotFound />
 
@@ -36,7 +34,7 @@ export function Curriculum() {
 
       <main id="main">
         <section className="curriculum-banner" aria-labelledby="curriculum-title">
-          <img src={program.image} alt="" aria-hidden="true" />
+          <img src={program.image} width={program.imageWidth} height={program.imageHeight} alt="" aria-hidden="true" />
           <div className="wrap curriculum-banner-in">
             <p className="eyebrow">15-Day Training Program</p>
             <h1 id="curriculum-title">{program.title}</h1>

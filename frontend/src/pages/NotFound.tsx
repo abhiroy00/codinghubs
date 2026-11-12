@@ -1,22 +1,16 @@
-import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
+import { NOT_FOUND_META, pageSeo } from '../seo/site'
+import { useSeo } from '../seo/useSeo'
+
+const NOT_FOUND_SEO = pageSeo(NOT_FOUND_META)
 
 /** Shown for unknown routes. The server also answers 404 for these URLs (see nginx.conf); this covers client-side navigation. */
 export function NotFound() {
+  useSeo(NOT_FOUND_SEO)
   useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'])
-  useEffect(() => {
-    document.title = 'Page not found | Coding Hubs School of AI'
-    const meta = document.createElement('meta')
-    meta.name = 'robots'
-    meta.content = 'noindex'
-    document.head.appendChild(meta)
-    return () => {
-      document.head.removeChild(meta)
-    }
-  }, [])
   return (
     <div className="fs-page">
       <FsHeader />

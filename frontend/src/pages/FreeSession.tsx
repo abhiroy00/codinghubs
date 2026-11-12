@@ -18,11 +18,15 @@ import { HeroCode } from './free-session/HeroCode'
 import { HomeExplore } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
+import { HOME_META, pageSeo } from '../seo/site'
+import { useSeo } from '../seo/useSeo'
 
+const HOME_SEO = pageSeo(HOME_META)
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
 
 export function FreeSession() {
+  useSeo(HOME_SEO)
   useScopedStylesheet([
     FS_CSS,
     'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
@@ -37,13 +41,6 @@ export function FreeSession() {
   const [navOpen, setNavOpen] = useState(false)
   const [formVisible, setFormVisible] = useState(false)
   const [pastHero, setPastHero] = useState(false)
-
-  useEffect(() => {
-    document.title = 'Free 2-Hour Live Online Demo Session | AI, Data, Development, Design & Marketing Courses'
-    return () => {
-      document.title = 'Coding Hubs School of AI'
-    }
-  }, [])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

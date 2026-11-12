@@ -1,4 +1,6 @@
 import { ExpertCTA } from '../components/ExpertCTA'
+import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../seo/site'
+import { useSeo } from '../seo/useSeo'
 
 export const FAQS = [
   { q: 'Do you provide placement support?', a: 'Yes. We provide 100% placement assistance, including resume building, mock interviews, portfolio preparation and job referrals.', open: true },
@@ -9,6 +11,17 @@ export const FAQS = [
   { q: 'Is the demo class really free?', a: 'Yes — the demo class is completely free, with no commitment. Book it from any “Free Demo Class” button and our counsellor will confirm your slot.' },
   { q: 'Where are your centres?', a: 'Our head office is at 904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi – 110034. We serve students across Pitampura, Rohini, Ashok Vihar, Shalimar Bagh, Model Town, Paschim Vihar and nearby areas.' },
 ]
+
+export const FAQ_META: PageMeta = {
+  path: '/faq', title: 'Frequently asked questions | Coding Hubs',
+  description: 'Answers about Coding Hubs programs, learning options, enrollment and support.',
+  image: LOGO_URL, indexable: true,
+  jsonLd: { '@context': 'https://schema.org', '@graph': [organizationNode(), {
+    '@type': 'FAQPage', name: 'Coding Hubs frequently asked questions', url: 'https://codinghubs.in/faq',
+    mainEntity: FAQS.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  }] },
+}
+const FAQ_SEO = pageSeo(FAQ_META)
 
 const TEAM = [
   {
@@ -24,6 +37,7 @@ const TEAM = [
 ]
 
 export function Faq() {
+  useSeo(FAQ_SEO)
   return (
     <div className="learn-shell">
       <section className="learn-hero" aria-labelledby="faq-heading">

@@ -21,6 +21,19 @@ const learningStyles = (await readdir(path.join(dist, 'assets'))).filter(name =>
 const visualStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(Academy|DiagramPlayer|VisualLab)-.*\.css$/.test(name))
 const manifest = JSON.parse(await readFile(path.join(dist, '.vite/manifest.json'), 'utf8'))
 const studioCss = manifest['src/studio/Studio.tsx']?.css ?? []
+// Directory SSR uses the existing page styles before the React chunks load.
+const directoryAssets = new Set()
+const directoryStyles = new Set()
+function collectDirectoryStyles(key) {
+  if (directoryAssets.has(key)) return
+  directoryAssets.add(key)
+  for (const file of manifest[key]?.css ?? []) directoryStyles.add(file)
+  for (const dependency of manifest[key]?.imports ?? []) collectDirectoryStyles(dependency)
+}
+for (const key of ['src/pages/BookTutor.tsx', 'src/pages/LatestJobs.tsx']) collectDirectoryStyles(key)
+const directoryCss = [...directoryStyles].filter(file => !manifest['index.html'].css?.includes(file))
+if (!directoryCss.length) throw new Error('Missing directory page styles in build manifest')
+await writeFile(path.join(dist, 'directory.css'), (await Promise.all(directoryCss.map(file => readFile(path.join(dist, file), 'utf8')))).join('\n'))
 
 function buildHead(page) {
   const canonical = page.canonical ?? `${SITE}${page.path}`

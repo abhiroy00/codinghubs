@@ -3,8 +3,18 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from apps.learning.ssr import academy_page, learning_page, sitemap as learning_sitemap
+from apps.content.directory_ssr import directory_page, directory_sitemap
 
 urlpatterns = [
+    path('book-a-tutor', directory_page, {'kind': 'tutors'}),
+    path('book-a-tutor/', directory_page, {'kind': 'tutors'}),
+    path('book-a-tutor/<str:key>', directory_page, {'kind': 'tutors'}),
+    path('book-a-tutor/<str:key>/', directory_page, {'kind': 'tutors'}),
+    path('latest-jobs', directory_page, {'kind': 'jobs'}),
+    path('latest-jobs/', directory_page, {'kind': 'jobs'}),
+    path('latest-jobs/<slug:key>', directory_page, {'kind': 'jobs'}),
+    path('latest-jobs/<slug:key>/', directory_page, {'kind': 'jobs'}),
+    path('sitemap-directory.xml', directory_sitemap),
     path('learn/', academy_page),
     path('learn/<slug:course>/', learning_page),
     path('learn/<slug:course>/<slug:slug>/', learning_page),

@@ -1,0 +1,49 @@
+<div class="fs-page tutors-page{% if not tutors %} jobs-page{% endif %}">
+  <header class="hdr"><nav class="wrap" aria-label="Primary"><a href="/">Coding Hubs School of AI</a> · <a href="/courses/">Courses</a> · <a href="/book-a-tutor/">Book a tutor</a> · <a href="/latest-jobs/">Latest jobs</a></nav></header>
+  <main id="main">
+    {% if not detail %}
+    <section class="tutors-hero"><div class="container-x tutors-hero-inner">
+      {% if tutors %}<h1 class="display-lg">Learn directly from a <span>tutor</span></h1><p class="lede">Get focused, one-to-one guidance in AI, data and software development. Choose a tutor and request a session that fits your schedule.</p>
+      {% else %}<h1 class="display-lg">Latest <span>Jobs</span></h1><p class="lede">Explore the latest job opportunities and take the next step in your career.</p>{% endif %}
+    </div></section>
+    {% endif %}
+    <section class="section tutors-section"><div class="container-x">
+      {% if not detail %}<h2>{% if tutors %}Practical help, from people who teach{% else %}Find a role that fits your skills{% endif %}</h2>{% endif %}
+      <div{% if not detail %} class="{% if tutors %}tutor-grid{% else %}job-grid{% endif %}"{% endif %}>
+      {% for item in items %}
+        <article class="{% if detail %}tutor-detail{% elif tutors %}tutor-card{% else %}job-card{% endif %}">
+        {% if detail %}<a href="{{ base }}">← {% if tutors %}All tutors{% else %}All jobs{% endif %}</a>{% endif %}
+        {% if tutors %}
+          {% if item.profile_image %}<img class="tutor-portrait{% if detail %} large{% endif %}" src="{{ item.profile_image }}" alt="{{ item.full_name }}" loading="lazy">{% endif %}
+          <div class="tutor-card-body"><p class="tutor-designation">{{ item.designation }}</p>
+          {% if detail %}<h1>{{ item.full_name }}</h1>{% else %}<h3><a href="/book-a-tutor/{{ item.id }}">{{ item.full_name }}</a></h3>{% endif %}
+          <p class="tutor-bio">{{ item.bio|linebreaksbr }}</p>
+          {% if detail %}
+            {% if item.experience %}<h2>Experience</h2><p>{{ item.experience }}</p>{% endif %}
+            {% if item.expertise %}<h2>Expertise &amp; skills</h2><ul>{% for value in item.expertise %}<li>{{ value }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.courses %}<h2>Courses taught</h2><ul>{% for value in item.courses %}<li>{{ value }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.teaching_approach %}<h2>Teaching approach</h2><p>{{ item.teaching_approach|linebreaksbr }}</p>{% endif %}
+            <h2>Session type</h2><p>Online</p>
+          {% else %}<a class="btn btn-ghost" href="/book-a-tutor/{{ item.id }}">View Details</a>{% endif %}</div>
+        {% else %}
+          <p class="tutor-designation">{{ item.company_name }}</p>
+          {% if detail %}<h1>{{ item.title }}</h1>{% else %}<h3><a href="/latest-jobs/{{ item.slug }}/">{{ item.title }}</a></h3>{% endif %}
+          <p>{{ item.location }} · {{ item.work_mode_label }} · {{ item.job_type_label }}</p>
+          {% if not item.is_open %}<p>Applications closed</p>{% endif %}
+          <p>{{ item.description|linebreaksbr }}</p>
+          {% if detail %}
+            {% if item.company_about %}<h2>About the company</h2><p>{{ item.company_about|linebreaksbr }}</p>{% endif %}
+            {% if item.responsibilities %}<h2>Responsibilities</h2><ul>{% for value in item.responsibilities %}<li>{{ value }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.skills %}<h2>Skills</h2><ul>{% for value in item.skills %}<li>{{ value }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.qualifications %}<h2>Qualifications</h2><ul>{% for value in item.qualifications %}<li>{{ value }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.benefits %}<h2>Benefits</h2><ul>{% for value in item.benefits %}<li>{{ value }}</li>{% endfor %}</ul>{% endif %}
+            <h2>How to apply</h2><p>{{ item.how_to_apply|linebreaksbr }}</p>
+          {% else %}<a class="btn btn-ghost" href="/latest-jobs/{{ item.slug }}/">View Details</a>{% endif %}
+        {% endif %}
+        </article>
+      {% empty %}<p>{% if tutors %}Tutor profiles are being added. Please check back soon.{% else %}No openings right now. Please check back soon.{% endif %}</p>{% endfor %}
+      </div>
+    </div></section>
+  </main>
+  <footer class="wrap"><a href="/faq">Frequently asked questions</a> · <a href="/policies">Policies</a></footer>
+</div>

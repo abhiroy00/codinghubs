@@ -7,7 +7,7 @@ export function PrivateRouteMeta() {
   const { pathname } = useLocation()
   const seo = useMemo(() => {
     const section = pathname.split('/')[1]
-    const names: Record<string, string> = { login:'Sign in', register:'Create an account', dashboard:'Your dashboard', enroll:'Course enrollment', cart:'Your cart', checkout:'Checkout', payment:'Payment status', 'my-account':'Your account', ai:'AI practice tools' }
+    const names: Record<string, string> = { login:'Sign in', register:'Create an account', 'forgot-password':'Reset your password', 'reset-password':'Choose a new password', dashboard:'Your dashboard', enroll:'Course enrollment', cart:'Your cart', checkout:'Checkout', payment:'Payment status', 'my-account':'Your account', ai:'AI practice tools' }
     if (!names[section]) return null
     const title = names[section] + ' | Coding Hubs'
     const description = 'Your Coding Hubs account and application workspace.'

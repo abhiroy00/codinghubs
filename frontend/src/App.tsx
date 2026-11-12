@@ -107,7 +107,7 @@ export function App() {
               <Route path="my-account" element={<MyAccount />} />
               <Route path="my-account/orders" element={<MyOrders />} />
               <Route path="my-account/downloads" element={<MyDownloads />} />
-              <Route path="faq" element={<LearnFrame trail={[{ label: 'FAQ' }]} title="Frequently asked questions | Coding Hubs" description="Answers about Coding Hubs programs, learning options, enrollment and support."><Faq /></LearnFrame>} />
+              <Route path="faq" element={<LearnFrame trail={[{ label: 'FAQ' }]}><Faq /></LearnFrame>} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
 

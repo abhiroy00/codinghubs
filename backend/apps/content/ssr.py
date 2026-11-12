@@ -53,6 +53,7 @@ def head_tags(seo: dict, with_og=True) -> str:
         f'<meta name="description" content="{escape(seo["description"])}">',
         f'<meta name="robots" content="{seo["robots"]}">',
     ]
+    tags.extend(f'<link rel="stylesheet" href="{escape(url)}">' for url in seo.get('styles', []))
     if seo['robots'].startswith('index'):
         tags.append(f'<link rel="canonical" href="{escape(seo["canonical"])}">')
     og = seo.get('og')

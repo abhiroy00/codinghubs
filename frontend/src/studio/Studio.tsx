@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import {
   Link,
   NavLink,
@@ -15,6 +15,8 @@ import { StudioLanding } from "./Landing";
 import { Dashboard, History, Library, Performance, Profile } from "./pages";
 import { Configure } from "./configure";
 import { Roadmaps, Tutor } from "./learning";
+import { STUDIO_META, pageSeo } from '../seo/site';
+import { useSeo } from '../seo/useSeo';
 import "./studio.css";
 const Workspace = lazy(() =>
   import("./Workspace").then((m) => ({ default: m.Workspace })),
@@ -121,21 +123,15 @@ function Shell() {
 }
 export function StudioApp() {
   const { pathname } = useLocation();
+  const seo = useMemo(() => ({
+    ...pageSeo(STUDIO_META),
+    ...(pathname.replace(/\/$/, '') === ROOT ? {} : { canonical: '', robots: 'noindex, nofollow', json_ld: null }),
+  }), [pathname]);
+  useSeo(seo);
   useEffect(() => {
-    const previous = document.title;
     document.documentElement.classList.add("studio-route");
-    document.title = "Interview Studio | Coding Hubs";
-    const meta = document.createElement("meta");
-    meta.name = "robots";
-    meta.content =
-      pathname.replace(/\/$/, "") === ROOT
-        ? "index, follow"
-        : "noindex, nofollow";
-    document.head.append(meta);
     return () => {
-      document.title = previous;
       document.documentElement.classList.remove("studio-route");
-      meta.remove();
     };
   }, [pathname]);
   return (

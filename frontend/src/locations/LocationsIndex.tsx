@@ -8,7 +8,11 @@ import { EnquiryForm } from './EnquiryForm'
 import { FsFooter, FsHeader } from './FsShell'
 import { Marquee } from './Marquee'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
-import { INDEX_TITLE } from './seo'
+import { INDEX_TITLE, INDEX_DESCRIPTION, indexJsonLd } from './seo'
+import { LOGO_URL, pageSeo } from '../seo/site'
+import { useSeo } from '../seo/useSeo'
+
+const INDEX_SEO = pageSeo({ path: '/locations/', title: INDEX_TITLE, description: INDEX_DESCRIPTION, image: LOGO_URL, indexable: true, jsonLd: indexJsonLd() })
 import type { LocationGroup } from './types'
 
 const PERKS = [
@@ -18,12 +22,12 @@ const PERKS = [
 ]
 
 export function LocationsIndex() {
+  useSeo(INDEX_SEO)
   useScopedStylesheet([
     FS_CSS,
     'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
   ])
   useEffect(() => {
-    document.title = INDEX_TITLE
     window.scrollTo(0, 0)
   }, [])
 

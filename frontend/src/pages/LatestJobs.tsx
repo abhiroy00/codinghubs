@@ -6,8 +6,12 @@ import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
 import './book-tutor.css'
 import './jobs.css'
+import type { Seo } from '../content-pages/api'
+import { useSeo } from '../seo/useSeo'
+import { JOBS_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
 
 interface Job {
+  seo?: Seo
   id: number
   slug: string
   title: string
@@ -88,14 +92,15 @@ export function LatestJobs() {
 }
 
 function JobListing() {
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [loading, setLoading] = useState(true)
+  useSeo(JOBS_SEO)
+  const initial = useMemo(() => directoryInitial<{ results: Job[] }>('jobs')?.results ?? null, [])
+  const [jobs, setJobs] = useState<Job[]>(initial ?? [])
+  const [loading, setLoading] = useState(initial === null)
   const [loadError, setLoadError] = useState('')
   const [filters, setFilters] = useState<Filters>(NO_FILTERS)
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   useEffect(() => {
-    document.title = 'Latest Jobs | Coding Hubs School of AI'
     api.get<Job[]>('/jobs/')
       .then(({ data }) => setJobs(data))
       .catch(() => setLoadError('Job openings could not be loaded. Please try again later.'))
@@ -236,18 +241,21 @@ function JobListing() {
 }
 
 function JobDetail({ slug }: { slug: string }) {
-  const [job, setJob] = useState<Job | null>(null)
-  const [state, setState] = useState<'loading' | 'ready' | 'missing' | 'error'>('loading')
+  const initial = useMemo(() => { const data = directoryInitial<{ item: Job }>('job'); return data?.item.slug === slug ? data.item : null }, [slug])
+  const [job, setJob] = useState<Job | null>(initial)
+  const [state, setState] = useState<'loading' | 'ready' | 'missing' | 'error'>(initial ? 'ready' : 'loading')
+  const seo = useMemo(() => state === 'ready' && job ? job.seo ?? recordSeo(`/latest-jobs/${job.slug}/`, `${job.title} at ${job.company_name} | Coding Hubs School of AI`, job.description, job.is_open) : MISSING_SEO, [job, state])
+  useSeo(seo)
 
   useEffect(() => {
     let active = true
-    setState('loading')
+    setState(initial ? 'ready' : 'loading')
     window.scrollTo(0, 0)
     api.get<Job>(`/jobs/${slug}/`)
-      .then(({ data }) => { if (active) { setJob(data); setState('ready'); document.title = `${data.title} at ${data.company_name} | Latest Jobs | Coding Hubs School of AI` } })
+      .then(({ data }) => { if (active) { setJob(data); setState('ready') } })
       .catch((error) => active && setState((error as { response?: { status?: number } }).response?.status === 404 ? 'missing' : 'error'))
-    return () => { active = false; document.title = 'Coding Hubs School of AI' }
-  }, [slug])
+    return () => { active = false }
+  }, [slug, initial])
 
   const list = (title: string, items: string[]) => items.length > 0 && <section><h2>{title}</h2><ul className="job-list">{items.map((item) => <li key={item}>{item}</li>)}</ul></section>
 

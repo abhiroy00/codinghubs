@@ -5,14 +5,20 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from .models import Tutor, TutorBooking
+from apps.content.directory_seo import tutor_seo
 
 
 class TutorSerializer(serializers.ModelSerializer):
+    seo = serializers.SerializerMethodField()
+
+    def get_seo(self, obj):
+        return tutor_seo(obj)
+
     class Meta:
         model = Tutor
         fields = (
             'id', 'full_name', 'profile_image', 'designation', 'bio', 'experience',
-            'expertise', 'courses', 'teaching_approach',
+            'expertise', 'courses', 'teaching_approach', 'seo',
         )
 
     def validate_profile_image(self, value):
