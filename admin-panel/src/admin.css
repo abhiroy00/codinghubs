@@ -272,3 +272,42 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 @media (max-width:700px){.ad-post-body{padding:1.1rem 1rem}.ad-post-head{padding:1rem}.ad-post-actions .ad-btn-soft,.ad-post-actions .ad-btn-blue{flex:1 1 100%}}
 .ad-two,.ad-three{align-items:start}
 .ad-post .ad-check-box,.ad-post .ad-check-box *{text-transform:none;letter-spacing:0;font-weight:500;font-size:.95rem}
+
+/* A focused writing flow for blog posts. */
+.ad-blog-post{max-width:880px}
+.ad-blog-heading{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.5rem}
+.ad-blog-heading h1{margin:.6rem 0 .3rem;font-size:1.8rem;letter-spacing:-.03em}
+.ad-blog-heading p{margin:0;color:var(--mut);font-size:.95rem}
+.ad-blog-back{color:var(--mut);font-size:.85rem;text-decoration:none}
+.ad-blog-post .ad-post-card{box-shadow:none;border-radius:12px}
+.ad-blog-post .ad-post-body{padding:1.75rem;gap:.5rem}
+.ad-blog-post .ad-field-head>label,.ad-blog-post .ad-rich-head label{font-size:.9rem!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important}
+.ad-blog-post .ad-input{min-height:44px;border-width:1px;border-radius:8px;padding:.7rem .8rem}
+.ad-blog-post textarea.ad-input{min-height:90px}
+.ad-blog-cover{margin:.25rem 0 1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
+.ad-blog-cover input[type=file]{display:block;max-width:100%;font:inherit;font-size:.85rem;color:var(--mut);margin-top:.75rem}
+.ad-blog-cover input::file-selector-button{padding:.6rem .85rem;margin-right:.75rem;border:1px solid var(--line);border-radius:6px;background:#f8fafc;cursor:pointer;font:inherit;color:var(--ink)}
+.ad-blog-cover-preview{display:block;width:100%;max-height:240px;object-fit:contain;background:#f1f5f9;border-radius:8px;margin:.75rem 0}
+.ad-blog-wordcount{font-size:.8rem;color:var(--mut);margin:.5rem 0 1rem}
+.ad-blog-options{margin-top:1rem;background:#fff}
+.ad-blog-manage{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.25rem}
+.ad-blog-actions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding:1.5rem 0}
+.ad-blog-actions>span{font-size:.8rem}
+.ad-blog-actions>div{display:flex;gap:.5rem;flex-wrap:wrap}
+.ad-blog-actions .ad-btn{border-radius:8px;min-height:42px}
+@media(max-width:600px){.ad-blog-post .ad-post-body{padding:1rem}.ad-blog-heading h1{font-size:1.5rem}.ad-blog-actions>div{width:100%}.ad-blog-actions .ad-btn{flex:1;padding-inline:.6rem}.ad-blog-heading{align-items:flex-start}}
+.ad-blog-body-editor{min-width:0}
+.ad-blog-toolbar{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;background:#f8fafc;padding:.5rem}
+.ad-blog-toolbar :is(button,select){min-height:34px;padding:.35rem .55rem;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--ink);font:inherit;font-size:.8rem;cursor:pointer}
+.ad-blog-toolbar :is(button,select):hover,.ad-blog-toolbar button[aria-pressed=true]{background:#e8edff;border-color:#cbd5f7}
+.ad-blog-toolbar button:disabled{opacity:.4;cursor:default}
+.ad-blog-visual{border:1px solid var(--line);border-radius:0 0 8px 8px}
+.ad-blog-visual .tiptap{min-height:320px;padding:1.25rem;outline:none;line-height:1.8;font-size:1rem;overflow-wrap:anywhere}
+.ad-blog-visual:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.ad-blog-visual p{margin:0 0 1rem}.ad-blog-visual :is(h2,h3,h4){line-height:1.4;margin:1.5rem 0 .75rem}
+.ad-blog-visual ul,.ad-blog-visual ol{padding-left:1.5rem}.ad-blog-visual blockquote{border-left:3px solid var(--accent);padding-left:1rem;margin:1rem 0;color:var(--mut)}
+.ad-blog-visual img{max-width:100%;height:auto}.ad-blog-visual a{color:var(--accent);text-decoration:underline}
+.ad-blog-visual pre{background:#132039;color:#fff;border-radius:6px;padding:1rem;overflow-x:auto}
+.ad-blog-visual .tableWrapper{overflow-x:auto}.ad-blog-visual table{border-collapse:collapse;max-width:100%}.ad-blog-visual :is(td,th){border:1px solid var(--line);padding:.5rem;min-width:60px}
+.ad-blog-link-box{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.75rem;border:1px solid var(--line)}
+.ad-blog-link-box label{font-size:.85rem}.ad-blog-link-box .ad-input{flex:1;min-width:140px}

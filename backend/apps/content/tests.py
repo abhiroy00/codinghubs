@@ -385,6 +385,16 @@ class SeoTests(ContentBase):
         self.assertNotIn('aggregateRating', html)
         self.assertNotIn('review', json.dumps(ld).lower())
 
+    def test_blog_reader_has_summary_and_linked_contents_before_javascript(self):
+        b = self.published_blog(content='<p>Start reading here.</p><h2>Build a model</h2><p>Check its results.</p><h2>Evaluate</h2><p>Measure quality.</p><h2>Deploy</h2><p>Monitor results.</p>')
+        html = self.as_user(None).get(f'/blog/{b["slug"]}').content.decode()
+        self.assertIn('class="bl-deck"', html)
+        self.assertIn('A short intro to Python for AI work.', html)
+        self.assertIn('On this page', html)
+        self.assertIn('href="#build-a-model"', html)
+        self.assertIn('id="build-a-model"', html)
+        self.assertIn('words</span>', html)
+
     def test_canonical_override_and_unique_titles(self):
         b = self.make_blog('Override', canonical_url='https://example.org/original', seo_title='Custom title', meta_description='Custom description.')
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')

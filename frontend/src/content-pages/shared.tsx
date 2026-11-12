@@ -15,12 +15,12 @@ export function SearchIcon() {
   )
 }
 
-export function PageFrame({ children, wide = false, store = false }: { children: ReactNode; wide?: boolean; store?: boolean }) {
+export function PageFrame({ children, wide = false, store = false, reading = false }: { children: ReactNode; wide?: boolean; store?: boolean; reading?: boolean }) {
   useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'])
   return (
-    <div className="fs-page">
+    <div className={`fs-page${reading ? ' bl-reading-page' : ''}`}>
       {store ? <StoreHeader /> : <FsHeader />}
-      <main id="main" className={`wrap bl-main${wide ? ' bl-wide-main' : ''}`}>
+      <main id="main" className={reading ? 'bl-main bl-reading-main' : `wrap bl-main${wide ? ' bl-wide-main' : ''}`}>
         {children}
       </main>
       <FsFooter />

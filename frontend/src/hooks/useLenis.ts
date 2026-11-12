@@ -6,10 +6,10 @@ import { useLocation } from 'react-router-dom'
 export function useLenis() {
   const lenisRef = useRef<Lenis | null>(null)
   const { pathname } = useLocation()
-  const nativeScrolling = pathname.startsWith('/interview-studio')
+  const nativeScrolling = pathname.startsWith('/interview-studio') || pathname.startsWith('/blog/')
 
   useEffect(() => {
-    // Editor, chat and diagram panels need native nested scrolling.
+    // Editors and long-form blog readers need native nested scrolling and anchors.
     if (nativeScrolling) return
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) return

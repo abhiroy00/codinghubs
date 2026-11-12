@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { fmtDate, getBlog, getCase, takeInitial, type Article } from './api'
 import { CardView, PageFrame, useSeo } from './shared'
+import { ArticleToc } from './ArticleToc'
 import './blog.css'
 
 const initial = typeof document === 'undefined' ? null : takeInitial()
@@ -86,72 +87,69 @@ export function BlogDetail() {
   if (missing) return <NotFound />
   if (!a) return <PageFrame><p className="bl-state" role="status">Loading…</p></PageFrame>
   return (
-    <PageFrame>
+    <PageFrame reading>
       <ReadProgress />
-      <article className="bl-article">
+      <article className="bl-reader">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <header className="bl-head">
-          {a.category && (
-            <p className="bl-cat">
-              <Link to={`/blog?category=${a.category.slug}`}>{a.category.name}</Link>
+        <header className="bl-reader-hero">
+          <div className="bl-reader-hero-in">
+            {a.category && (
+              <p className="bl-cat">
+                <Link to={`/blog?category=${a.category.slug}`}>{a.category.name}</Link>
+              </p>
+            )}
+            <h1>{a.title}</h1>
+            {a.excerpt && <p className="bl-deck">{a.excerpt}</p>}
+            <p className="bl-meta">
+              {a.author_name && <span>By {a.author_name}{a.author_title ? `, ${a.author_title}` : ''}</span>}
+              {a.published_at && <time dateTime={a.published_at}>{fmtDate(a.published_at)}</time>}
+              <span>{a.reading_time} min read</span>
+              {typeof a.word_count === 'number' && <span>{a.word_count.toLocaleString()} words</span>}
+              {a.updated_at && new Date(a.updated_at).getTime() - new Date(a.published_at).getTime() > 86400000 && <span>Updated {fmtDate(a.updated_at)}</span>}
             </p>
-          )}
-          <h1>{a.title}</h1>
-          <p className="bl-meta">
-            {a.author_name ? `By ${a.author_name}${a.author_title ? `, ${a.author_title}` : ''} · ` : ''}
-            {fmtDate(a.published_at)} · {a.reading_time} min read
-            {typeof a.word_count === 'number' ? ` · ${a.word_count.toLocaleString()} words` : ''}
-            {a.updated_at && new Date(a.updated_at).getTime() - new Date(a.published_at).getTime() > 86400000 ? ` · Updated ${fmtDate(a.updated_at)}` : ''}
-          </p>
+            {a.featured_image && <img className="bl-reader-cover" src={a.featured_image} alt={a.featured_image_alt} width={1200} height={630} decoding="async" fetchPriority="high" />}
+          </div>
         </header>
-        {a.featured_image && <img className="bl-cover" src={a.featured_image} alt={a.featured_image_alt} width={1200} height={630} decoding="async" />}
-        {a.toc.length > 0 && (
-          <nav className="bl-toc" aria-label="Table of contents">
-            <h2>Contents</h2>
-            <ol>
-              {a.toc.map((t) => (
-                <li key={t.id} className={`l${t.level}`}>
-                  <a href={`#${t.id}`}>{t.text}</a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )}
-        {/* content_html is sanitised on the server (allowlist) when saved and again when served */}
-        <div className="bl-body" dangerouslySetInnerHTML={{ __html: a.content_html ?? '' }} />
-        {a.gallery && a.gallery.length > 0 && (
-          <section className="bl-gallery" aria-label="Article gallery">
-            {a.gallery.map((g, idx) => (
-              <figure key={`${g.src}-${idx}`}>
-                <img src={g.src} alt={g.alt || a.title} loading="lazy" decoding="async" />
-                {g.alt && <figcaption>{g.alt}</figcaption>}
-              </figure>
-            ))}
-          </section>
-        )}
-        {a.faq && a.faq.length > 0 && (
-          <section className="bl-faq">
-            <h2>Frequently asked questions</h2>
-            {a.faq.map((f) => (
-              <div key={f.q}>
-                <h3>{f.q}</h3>
-                <div dangerouslySetInnerHTML={{ __html: f.a }} />
-              </div>
-            ))}
-          </section>
-        )}
-        <Share title={a.title} url={a.seo.canonical} />
-        <Cta kind="blog" />
-        {a.related.length > 0 && (
-          <section className="bl-related">
-            <h2>Related articles</h2>
-            <div className="bl-grid">
-              {a.related.map((r) => (
-                <CardView key={r.slug} c={r} base="/blog" />
-              ))}
-            </div>
-          </section>
-        )}
+        <div className={`bl-reader-layout${a.toc.length ? '' : ' bl-reader-no-toc'}`}>
+          <ArticleToc items={a.toc} />
+          <div className="bl-reader-content">
+            {/* content_html is sanitised on the server (allowlist) when saved and again when served */}
+            <div className="bl-body" dangerouslySetInnerHTML={{ __html: a.content_html ?? '' }} />
+            {a.gallery && a.gallery.length > 0 && (
+              <section className="bl-gallery" aria-label="Article gallery">
+                {a.gallery.map((g, idx) => (
+                  <figure key={`${g.src}-${idx}`}>
+                    <img src={g.src} alt={g.alt || a.title} loading="lazy" decoding="async" />
+                    {g.alt && <figcaption>{g.alt}</figcaption>}
+                  </figure>
+                ))}
+              </section>
+            )}
+            {a.faq && a.faq.length > 0 && (
+              <section className="bl-faq">
+                <h2>Frequently asked questions</h2>
+                {a.faq.map((f) => (
+                  <div key={f.q}>
+                    <h3>{f.q}</h3>
+                    <div dangerouslySetInnerHTML={{ __html: f.a }} />
+                  </div>
+                ))}
+              </section>
+            )}
+            <Share title={a.title} url={a.seo.canonical} />
+            <Cta kind="blog" />
+            {a.related.length > 0 && (
+              <section className="bl-related">
+                <h2>Related articles</h2>
+                <div className="bl-grid">
+                  {a.related.map((r) => (
+                    <CardView key={r.slug} c={r} base="/blog" />
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
       </article>
     </PageFrame>
   )
