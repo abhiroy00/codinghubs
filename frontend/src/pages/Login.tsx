@@ -60,6 +60,11 @@ export function Login() {
             Create an account
           </Link>
         </p>
+        <p style={{ marginTop: '.5rem', fontSize: '.875rem', color: 'var(--color-muted)' }}>
+          <Link to="/forgot-password" style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+            Forgot your password?
+          </Link>
+        </p>
       </div>
     </section>
   )

@@ -22,7 +22,7 @@ from apps.enrollments.models import Enrollment
 
 from . import downloads, orders
 from .models import (
-    Coupon, DigitalAsset, DownloadPermission, FreeDownloadLead, InventoryMovement, Order, PaymentEvent, Product, ProductCategory, Project, ProjectGuide, ProjectQuestion, StoreSettings,
+    Coupon, DigitalAsset, DownloadPermission, FreeDownloadLead, Order, PaymentEvent, Product, ProductCategory, Project, ProjectGuide, ProjectQuestion, StoreSettings,
 )
 
 User = get_user_model()
@@ -97,7 +97,6 @@ class ShopBase(TestCase):
     def cart_client(self, user=None):
         c = self.as_user(user)
         token = None
-        r = c.post('/api/cart/items/', {'product': 0}, format='json')  # create nothing; token comes from the first valid add
         return c, token
 
     def add(self, client, product, qty=1, token=None):
@@ -107,7 +106,6 @@ class ShopBase(TestCase):
         return r
 
     def checkout(self, client, items, token=None, **extra):
-        first = True
         for p, qty in items:
             r = self.add(client, p, qty, token)
             token = r.json().get('token') or token
@@ -547,6 +545,33 @@ class CheckoutTests(ShopBase):
 
 
 # ====================== payments ======================
+class CheckoutPaymentBypassTests(ShopBase):
+    """A priced order must never be marked paid from the checkout request, whatever the body says."""
+
+    def test_skip_payment_in_the_request_body_is_ignored(self):
+        p = self.product(price='499.00')
+        self.attach_pdf(p)
+        with self.gateway_ok():
+            r, _ = self.checkout(APIClient(), [(p, 1)], skip_payment=True)
+        self.assertEqual(r.status_code, 201, r.content)
+        self.assertNotIn('skip_payment', r.json())
+        self.assertIn('razorpay_order_id', r.json())
+        order = Order.objects.get(number=r.json()['order_number'])
+        self.assertEqual(order.payment_status, 'pending')
+        self.assertEqual(order.status, 'pending_payment')
+        self.assertEqual(DownloadPermission.objects.count(), 0)
+        self.assertEqual(order.permissions.count(), 0)
+
+    def test_a_free_order_still_completes_without_the_gateway(self):
+        p = self.product('Free notes', price='0.00')
+        with mock.patch('apps.shop.gateway.create_order', side_effect=AssertionError('gateway must not be called')):
+            r, _ = self.checkout(APIClient(), [(p, 1)])
+        # Free digital products are downloaded directly and cannot enter the cart at all.
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(r.json()['code'], 'empty_cart')
+        self.assertEqual(Order.objects.count(), 0)
+
+
 class PaymentTests(ShopBase):
     def make(self):
         p = self.product(price='300.00')
@@ -628,7 +653,10 @@ class PaymentTests(ShopBase):
     def webhook(self, payload, event_id='evt_1', secret=WH_SECRET, signature=None):
         body = json.dumps(payload).encode()
         sig = signature if signature is not None else hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
-        return self.anon.post('/api/store/payments/webhook/', data=body, content_type='application/json', HTTP_X_RAZORPAY_SIGNATURE=sig, HTTP_X_RAZORPAY_EVENT_ID=event_id)
+        headers = {'HTTP_X_RAZORPAY_SIGNATURE': sig}
+        if event_id is not None:
+            headers['HTTP_X_RAZORPAY_EVENT_ID'] = event_id
+        return self.anon.post('/api/store/payments/webhook/', data=body, content_type='application/json', **headers)
 
     def captured_event(self, order, payment_id='pay_w1'):
         pay = order.payments.first()
@@ -659,6 +687,33 @@ class PaymentTests(ShopBase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(order.permissions.count(), 1)
         self.assertEqual(PaymentEvent.objects.count(), 2)
+
+    def test_failed_webhook_is_processed_again_on_retry(self):
+        order, _ = self.make()
+        ev = self.captured_event(order, 'pay_retry')
+        with mock.patch('apps.shop.views_public.handle_event', side_effect=RuntimeError('temporary failure')):
+            self.assertEqual(self.webhook(ev, 'evt_retry').status_code, 500)
+        stored = PaymentEvent.objects.get(event_id='evt_retry')
+        self.assertFalse(stored.processed)
+        self.assertIn('temporary failure', stored.error)
+
+        with mock.patch('apps.shop.gateway.fetch_payment', return_value=ev['payload']['payment']['entity']):
+            self.assertEqual(self.webhook(ev, 'evt_retry').status_code, 200)
+        order.refresh_from_db()
+        self.assertEqual(order.payment_status, 'paid')
+        stored.refresh_from_db()
+        self.assertTrue(stored.processed)
+        self.assertEqual(stored.error, '')
+
+    def test_webhook_without_an_event_header_uses_the_signed_body_as_id(self):
+        order, _ = self.make()
+        ev = self.captured_event(order, 'pay_nohdr')
+        with mock.patch('apps.shop.gateway.fetch_payment', return_value=ev['payload']['payment']['entity']):
+            self.assertEqual(self.webhook(ev, event_id=None).status_code, 200)
+            self.assertEqual(self.webhook(ev, event_id=None).status_code, 200)
+        self.assertEqual(PaymentEvent.objects.count(), 1)
+        order.refresh_from_db()
+        self.assertEqual(order.payment_status, 'paid')
 
     def test_webhook_then_browser_verify_do_not_double_fulfil(self):
         order, _ = self.make()
@@ -693,6 +748,22 @@ class PaymentTests(ShopBase):
         self.assertEqual(order.payment_status, 'paid')  # money received is never ignored
         book.refresh_from_db()
         self.assertEqual(book.stock_quantity, 0)
+
+    def test_cancelling_after_a_late_payment_returns_the_reserved_stock(self):
+        book = self.product('Book', 'physical', '100.00', stock=1)
+        with self.gateway_ok():
+            r, _ = self.checkout(APIClient(), [(book, 1)], shipping_address=ADDRESS)
+        order = Order.objects.get(number=r.json()['order_number'])
+        orders.inventory.release_for_order(order)  # expired: stock returned
+        Order.objects.filter(pk=order.pk).update(status='expired')
+        order.refresh_from_db()
+        self.assertEqual(self.pay(order).status_code, 200)  # late payment reserves it again
+        book.refresh_from_db()
+        self.assertEqual(book.stock_quantity, 0)
+
+        orders.cancel_order(order, reason='paid late, refunded manually')
+        book.refresh_from_db()
+        self.assertEqual(book.stock_quantity, 1)
 
 
 # ====================== refunds, fulfilment ======================
@@ -798,7 +869,7 @@ class OrderAdminTests(ShopBase):
 
     def test_order_list_filters(self):
         a = self.paid_order(user=self.alice, items=[(self.product('A', price='10.00'), 1)])
-        b = self.paid_order(user=self.bob, items=[(self.product('Book', 'physical', '20.00', stock=3), 1)])
+        self.paid_order(user=self.bob, items=[(self.product('Book', 'physical', '20.00', stock=3), 1)])
         self.assertEqual(self.api.get('/api/admin/store-orders/').json()['count'], 2)
         self.assertEqual(self.api.get('/api/admin/store-orders/?product_type=physical').json()['count'], 1)
         self.assertEqual(self.api.get(f'/api/admin/store-orders/?q={a.number}').json()['count'], 1)
@@ -868,7 +939,7 @@ class DownloadTests(ShopBase):
         self.assertEqual(response.json()['results'][0]['email'], 'ada@example.com')
 
     def test_buyer_downloads_through_a_signed_link(self):
-        order = self.paid_order(user=self.alice, items=[(self.p, 1)])
+        self.paid_order(user=self.alice, items=[(self.p, 1)])
         alice = self.as_user(self.alice)
         perm = alice.get('/api/my-account/downloads/').json()[0]
         self.assertEqual((perm['label'], perm['available']), ('The PDF', True))

@@ -6,7 +6,6 @@
 The original files are kept (nothing is deleted), so the change can be undone by restoring the old paths.
 Only files below MEDIA_ROOT/uploads are touched; private files are never read.
 """
-import json
 from pathlib import Path
 
 from django.apps import apps

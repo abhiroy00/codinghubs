@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Sum
 from django.utils import timezone
 
 from .models import InventoryMovement, Order, Product
@@ -25,20 +26,26 @@ def reserve_for_order(order: Order, locked: dict):
 
 
 def release_for_order(order: Order, reason='release', note=''):
-    """Give reserved stock back (once). Safe to call twice: the movement log is checked."""
+    """Give back whatever is still reserved for this order, and only that.
+
+    The net of the reserve/release movements is the outstanding reservation. Using the net
+    (instead of "a release already happened") also covers a late payment that reserved the
+    stock again after an expiry: cancelling that order returns those units too.
+    """
     with transaction.atomic():
-        already = order.movements.filter(reason='release').exists()
-        if already:
+        rows = (
+            order.movements.filter(reason__in=('reserve', 'release'))
+            .values('product_id')
+            .annotate(net=Sum('delta'))
+        )
+        outstanding = {row['product_id']: -row['net'] for row in rows if row['net'] < 0}
+        if not outstanding:
             return
-        reserved = order.movements.filter(reason='reserve').exists()
-        if not reserved:
-            return
-        ids = [i.product_id for i in order.items.all() if i.product_id]
-        locked = {p.id: p for p in Product.objects.select_for_update().filter(pk__in=sorted(ids))}
-        for item in order.items.all():
-            p = locked.get(item.product_id)
-            if p and p.tracks_stock and item.is_physical:
-                move(p, item.quantity, reason, order=order, note=note)
+        locked = {p.id: p for p in Product.objects.select_for_update().filter(pk__in=sorted(outstanding))}
+        for product_id, quantity in outstanding.items():
+            product = locked.get(product_id)
+            if product and product.tracks_stock:
+                move(product, quantity, reason, order=order, note=note)
 
 
 def expire_stale_orders(product_ids=None) -> int:

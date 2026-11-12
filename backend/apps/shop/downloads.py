@@ -13,7 +13,7 @@ from django.http import FileResponse, Http404
 
 from . import access
 from .audit import client_prefix
-from .models import DigitalAsset, DownloadEvent, DownloadPermission, Order, Project, ProjectGuide
+from .models import DigitalAsset, DownloadEvent, DownloadPermission, Project, ProjectGuide
 
 MAX_ASSET_BYTES = 100 * 1024 * 1024
 SALT = 'shop-download'

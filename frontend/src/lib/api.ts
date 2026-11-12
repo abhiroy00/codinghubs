@@ -34,7 +34,9 @@ async function refreshAccessToken(): Promise<string | null> {
   if (!refresh) return null
   try {
     const { data } = await axios.post(`${api.defaults.baseURL}/auth/refresh/`, { refresh })
-    tokenStore.setAccess(data.access)
+    // The server rotates refresh tokens and blacklists the old one; keep the new pair.
+    if (data.refresh) tokenStore.set(data.access, data.refresh)
+    else tokenStore.setAccess(data.access)
     return data.access as string
   } catch {
     tokenStore.clear()

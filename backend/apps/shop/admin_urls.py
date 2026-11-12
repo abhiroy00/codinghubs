@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views_admin as a
-from .models import DigitalAsset, Product, Project, ProjectGuide
+from .models import Product, Project, ProjectGuide
 from .serializers import GuideAdminSerializer, ProductAdminSerializer, ProjectAdminSerializer
 
 urlpatterns = [

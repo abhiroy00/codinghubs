@@ -5,7 +5,7 @@ from html import escape
 from django.conf import settings
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count, Q
-from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
+from django.http import Http404, HttpResponse
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_GET
 

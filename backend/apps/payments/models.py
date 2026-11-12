@@ -12,7 +12,10 @@ class Order(models.Model):
         (STATUS_FAILED, 'Failed'),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
+    # Kept for accounting after the account is deleted, so the link is nullable.
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='orders'
+    )
     course = models.ForeignKey('courses.Course', on_delete=models.CASCADE, related_name='orders')
     razorpay_order_id = models.CharField(max_length=64, unique=True)
     razorpay_payment_id = models.CharField(max_length=64, blank=True)

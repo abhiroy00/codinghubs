@@ -148,7 +148,7 @@ class TutorBookingApiTests(TestCase):
 class TutorAdminApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.staff = User.objects.create_user(username='tutor-admin', password='StrongPass123', is_staff=True)
+        self.staff = User.objects.create_user(username='tutor-admin', password='StrongPass123', is_staff=True, is_superuser=True)
         self.client.force_authenticate(self.staff)
 
     def tutor_payload(self, **overrides):

@@ -208,3 +208,33 @@ Without keys the store still works for **free** items; paid checkouts answer "pa
 **Guest orders.** A guest order has a private token (in the confirmation e-mail link and this browser). It opens the order and its downloads; a logged-in customer can attach it with *My account → Bought as a guest?*.
 
 **Production checklist.** (1) Test-mode order → paid → download → refund works end to end. (2) Webhook secret and second webhook URL set. (3) SMTP works (a real e-mail arrives). (4) Policies, tax mode/rate, shipping and contact details filled and reviewed. (5) `private_media` and `media` volumes and the database are backed up. (6) TinyMCE key set (see above). (7) `ALLOWED_HOSTS` / HTTPS as before. (8) Live Razorpay keys only after 1–7.
+
+## Backups and restore
+
+`infra/backup.sh` dumps Postgres (`pg_dump --format=custom`) and archives the `media` and `private_media` volumes to
+`s3://$BACKUP_BUCKET/backups/<UTC timestamp>/`. Install it on the host and run it nightly as root (the EC2 instance role
+needs `s3:PutObject` on the bucket):
+
+```
+install -m 755 backup.sh /opt/codinghubs/backup.sh
+echo '15 2 * * * BACKUP_BUCKET=my-codinghubs-backups /opt/codinghubs/backup.sh >> /var/log/codinghubs-backup.log 2>&1' | crontab -
+```
+
+Keep 30 days by adding a lifecycle rule on the bucket (expire current versions under `backups/` after 30 days) and enable
+versioning so a bad backup cannot overwrite a good one. Check the log occasionally: the script fails loudly instead of
+uploading a partial archive.
+
+**Restore.** On a fresh host, deploy the same commit first so containers and volumes exist, stop the backend, then:
+
+```
+cd /opt/codinghubs
+aws s3 cp s3://$BACKUP_BUCKET/backups/<timestamp>/db.dump /tmp/db.dump
+docker compose -f docker-compose.prod.yml --env-file .env exec -T db \
+  sh -ec 'pg_restore --clean --if-exists -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < /tmp/db.dump
+docker run --rm -v codinghubs_media:/dst -v /tmp:/backup alpine:3.20 tar xzf /backup/media.tar.gz -C /dst
+docker run --rm -v codinghubs_private_media:/dst -v /tmp:/backup alpine:3.20 tar xzf /backup/private-media.tar.gz -C /dst
+docker compose -f docker-compose.prod.yml --env-file .env start backend
+```
+
+Then spot-check a paid order download and a blog post. Test a restore into a scratch host at least once before launch;
+an untested backup is not a backup.

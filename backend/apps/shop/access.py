@@ -1,7 +1,7 @@
 """Who may read a guide / project resource. Enforced on the server for every request (hiding a button is not access control)."""
 from apps.enrollments.models import Enrollment
 
-from .models import DownloadPermission, Order, Product, Project, ProjectGuide
+from .models import Order, Product, Project, ProjectGuide
 
 
 def has_purchased(user, product: Product | None) -> bool:

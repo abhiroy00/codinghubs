@@ -1,12 +1,11 @@
 """Public (and SSR) representations. Only published data; file URLs and gated content never appear here."""
 from django.conf import settings
-from django.db.models import Count, Q
 
 from apps.content import services as content_services
 from apps.content.sanitize import add_heading_ids, sanitize_html
 
 from . import access
-from .models import Product, ProductCategory, Project, ProjectGuide, StoreSettings
+from .models import Product, Project, ProjectGuide, StoreSettings
 
 
 def public_products():

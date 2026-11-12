@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 from decimal import Decimal, InvalidOperation
 
 from django.contrib.auth import get_user_model
@@ -8,7 +8,7 @@ from django.db.models import Count, F, Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.core.exceptions import ValidationError as DjangoValidationError
-from rest_framework import generics, permissions, serializers, status
+from rest_framework import generics, permissions, serializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response

@@ -176,6 +176,14 @@ export function useCartData() {
   return { cart, ready }
 }
 export const errorText = (err: unknown, fallback = 'Something went wrong. Please try again.') => {
-  const d = (err as { response?: { data?: { detail?: string; coupon_error?: string } } })?.response?.data
-  return d?.detail || d?.coupon_error || fallback
+  const d = (err as { response?: { data?: Record<string, unknown> } })?.response?.data
+  if (!d) return fallback
+  if (typeof d.detail === 'string') return d.detail
+  if (typeof d.coupon_error === 'string') return d.coupon_error
+  // DRF field errors look like {password: ['...']}; show the first message rather than a generic one.
+  for (const value of Object.values(d)) {
+    if (Array.isArray(value) && typeof value[0] === 'string') return value[0]
+    if (typeof value === 'string') return value
+  }
+  return fallback
 }

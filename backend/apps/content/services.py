@@ -13,7 +13,6 @@ from .models import (
     CaseStudy,
     ContentRevision,
     SlugRedirect,
-    unique_slug,
 )
 from .sanitize import add_heading_ids, plain_text, sanitize_html
 

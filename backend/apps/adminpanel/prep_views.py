@@ -48,6 +48,7 @@ def lesson_summary(lesson):
 
 class CurriculumListView(APIView):
     permission_classes = [IsStaff]
+    permission_model = PrepCurriculum
 
     def get(self, request):
         return Response(CurriculumSerializer(PrepCurriculum.objects.all(), many=True).data)
@@ -61,6 +62,7 @@ class CurriculumListView(APIView):
 
 class CurriculumDetailView(APIView):
     permission_classes = [IsStaff]
+    permission_model = PrepCurriculum
 
     def get(self, request, pk):
         curriculum = PrepCurriculum.objects.filter(pk=pk).first()
@@ -80,6 +82,7 @@ class CurriculumDetailView(APIView):
 
 class CurriculumPdfUploadView(APIView):
     permission_classes = [IsStaff]
+    permission_model = PrepCurriculum
     MAX_UPLOAD = 20 * 1024 * 1024
 
     def post(self, request, pk):
@@ -105,6 +108,7 @@ class CurriculumPdfUploadView(APIView):
 class LessonDetailView(APIView):
     """GET the full lesson; PUT replaces it (creating the day if missing); DELETE removes the day."""
     permission_classes = [IsStaff]
+    permission_model = PrepLesson
 
     def get(self, request, pk, day):
         lesson = PrepLesson.objects.filter(curriculum_id=pk, day=day).first()
@@ -140,6 +144,7 @@ class LessonDetailView(APIView):
 class LessonResetView(APIView):
     """Restore a lesson to the version shipped in prep_content/ and let future deploys update it again."""
     permission_classes = [IsStaff]
+    permission_model = PrepCurriculum
 
     def post(self, request, pk, day):
         curriculum = PrepCurriculum.objects.filter(pk=pk).first()
@@ -161,6 +166,7 @@ class LessonResetView(APIView):
 class LessonSwapView(APIView):
     """Reorder by swapping two days. Both lessons are marked as edited so a deploy does not undo the order."""
     permission_classes = [IsStaff]
+    permission_model = PrepCurriculum
 
     @transaction.atomic
     def post(self, request, pk):

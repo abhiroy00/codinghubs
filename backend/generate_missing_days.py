@@ -56,7 +56,7 @@ def build_lesson(course_name, day, topic, module, level, practice, quiz):
             f"Explain the key ideas behind {topic}.",
             f"Describe why {topic} matters in {course_name}.",
             f"Apply {topic} to a realistic scenario.",
-            f"Identify common pitfalls and how to avoid them.",
+            "Identify common pitfalls and how to avoid them.",
             f"Answer interview questions about {topic}.",
         ],
         "definition": f"{topic} is a core concept in {course_name}. It refers to the techniques, principles and practices that let a practitioner work effectively with this topic in real systems.",
@@ -69,17 +69,17 @@ def build_lesson(course_name, day, topic, module, level, practice, quiz):
             {
                 "heading": f"Why {topic} matters",
                 "body": f"Without {topic}, systems built with {course_name} are harder to debug, extend and operate. Teams that master this topic ship fewer defects and communicate more clearly about design decisions.",
-                "points": [f"Improves reliability and maintainability.", "Reduces debugging time.", "Supports team alignment."],
+                "points": ["Improves reliability and maintainability.", "Reduces debugging time.", "Supports team alignment."],
             },
             {
                 "heading": f"How {topic} works",
                 "body": f"The mechanism behind {topic} follows a repeatable sequence: understand the requirement, apply the principle, verify the result and refine based on feedback. Each step has checks that keep the work on track.",
-                "points": [f"Start from the requirement.", f"Apply the core principle of {topic}.", "Verify the outcome.", "Refine using feedback."],
+                "points": ["Start from the requirement.", f"Apply the core principle of {topic}.", "Verify the outcome.", "Refine using feedback."],
             },
             {
                 "heading": f"Advantages and limitations of {topic}",
                 "body": f"{topic} offers structure, clarity and consistency, but it also adds overhead and may be overkill for trivial tasks. Use it when the benefit in reliability outweighs the added effort.",
-                "points": [f"Advantages: structure, clarity, consistency.", f"Limitations: added overhead, not always needed.", "Apply judiciously."],
+                "points": ["Advantages: structure, clarity, consistency.", "Limitations: added overhead, not always needed.", "Apply judiciously."],
             },
         ],
         "example": {
@@ -99,9 +99,9 @@ def build_lesson(course_name, day, topic, module, level, practice, quiz):
         },
         "takeaways": [
             f"{topic} is a foundational concept in {course_name}.",
-            f"It follows a clear, repeatable mechanism.",
-            f"It improves reliability when applied appropriately.",
-            f"Know the advantages and limitations before using it.",
+            "It follows a clear, repeatable mechanism.",
+            "It improves reliability when applied appropriately.",
+            "Know the advantages and limitations before using it.",
         ],
         "interview": [
             {
@@ -116,12 +116,12 @@ def build_lesson(course_name, day, topic, module, level, practice, quiz):
             },
             {
                 "question": f"What are the limitations of {topic}?",
-                "answer": f"It adds overhead and may be unnecessary for simple cases; apply it judiciously.",
+                "answer": "It adds overhead and may be unnecessary for simple cases; apply it judiciously.",
                 "explanation": "Show balanced judgment.",
             },
             {
                 "question": f"How would you explain {topic} to a junior teammate?",
-                "answer": f"Start with the definition, show a small example, then walk through a realistic use case and its trade-offs.",
+                "answer": "Start with the definition, show a small example, then walk through a realistic use case and its trade-offs.",
                 "explanation": "Structure the explanation from simple to applied.",
             },
         ],
@@ -271,9 +271,9 @@ def make_practice(day, topic, level, course_name):
         [
             f"Restate the goal of {topic} in your own words.",
             f"List the inputs, steps and expected outputs for {topic}.",
-            f"Work through one concrete example by hand or with code.",
-            f"Note one edge case and how you handle it.",
-            f"Write a one-paragraph summary of what you learned.",
+            "Work through one concrete example by hand or with code.",
+            "Note one edge case and how you handle it.",
+            "Write a one-paragraph summary of what you learned.",
         ],
         [
             "The deliverable addresses the stated goal.",
@@ -290,7 +290,7 @@ def make_quiz(day, topic, course_name):
         quiz_q("concept", f"What is {topic}?", [f"The core idea of {topic}", "An unrelated concept", "A hardware device", "A programming language"], 0, f"{topic} is defined as the core idea above."),
         quiz_q("concept", f"Why is {topic} important?", ["It improves reliability", "It slows things down", "It is never used", "It is only theory"], 0, f"{topic} improves reliability and clarity."),
         quiz_q("scenario", f"A system ignores {topic}. What is the likely result?", ["More defects", "Faster performance", "No effect", "Lower cost"], 0, f"Ignoring {topic} leads to more defects."),
-        quiz_q("output", f"What does a correct {topic} implementation produce?", ["A reliable result", "Random output", "An error", "Nothing"], 0, f"A correct implementation produces a reliable result."),
+        quiz_q("output", f"What does a correct {topic} implementation produce?", ["A reliable result", "Random output", "An error", "Nothing"], 0, "A correct implementation produces a reliable result."),
         quiz_q("concept", f"Which is a limitation of {topic}?", ["Added overhead", "No benefit", "Always required", "No cost"], 0, f"{topic} adds overhead but brings reliability."),
     ])
 

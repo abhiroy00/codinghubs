@@ -65,6 +65,9 @@ class PaymentFlowTests(TestCase):
         )
         mock_client = MagicMock()
         mock_client.utility.verify_payment_signature.return_value = True
+        mock_client.payment.fetch.return_value = {
+            'order_id': 'order_ABC', 'amount': 499900, 'currency': 'INR', 'status': 'captured',
+        }
         mock_get_client.return_value = mock_client
 
         resp = self.client.post('/api/payments/verify/', {
@@ -77,6 +80,48 @@ class PaymentFlowTests(TestCase):
         order.refresh_from_db()
         self.assertEqual(order.status, Order.STATUS_PAID)
         self.assertTrue(Enrollment.objects.filter(user=self.user, course=self.course).exists())
+
+    @patch('apps.payments.views.get_client')
+    def test_verify_rejects_a_payment_for_a_different_amount(self, mock_get_client):
+        order = Order.objects.create(
+            user=self.user, course=self.course, razorpay_order_id='order_AMT', amount=499900,
+        )
+        mock_client = MagicMock()
+        mock_client.utility.verify_payment_signature.return_value = True
+        mock_client.payment.fetch.return_value = {
+            'order_id': 'order_AMT', 'amount': 100, 'currency': 'INR', 'status': 'captured',
+        }
+        mock_get_client.return_value = mock_client
+
+        resp = self.client.post('/api/payments/verify/', {
+            'razorpay_order_id': 'order_AMT', 'razorpay_payment_id': 'pay_AMT', 'razorpay_signature': 'sig',
+        }, format='json')
+
+        self.assertEqual(resp.status_code, 400)
+        order.refresh_from_db()
+        self.assertNotEqual(order.status, Order.STATUS_PAID)
+        self.assertFalse(Enrollment.objects.filter(user=self.user, course=self.course).exists())
+
+    @patch('apps.payments.views.get_client')
+    def test_verify_leaves_an_authorized_payment_pending(self, mock_get_client):
+        order = Order.objects.create(
+            user=self.user, course=self.course, razorpay_order_id='order_AUTH', amount=499900,
+        )
+        mock_client = MagicMock()
+        mock_client.utility.verify_payment_signature.return_value = True
+        mock_client.payment.fetch.return_value = {
+            'order_id': 'order_AUTH', 'amount': 499900, 'currency': 'INR', 'status': 'authorized',
+        }
+        mock_get_client.return_value = mock_client
+
+        resp = self.client.post('/api/payments/verify/', {
+            'razorpay_order_id': 'order_AUTH', 'razorpay_payment_id': 'pay_AUTH', 'razorpay_signature': 'sig',
+        }, format='json')
+
+        self.assertEqual(resp.status_code, 202)
+        order.refresh_from_db()
+        self.assertEqual(order.status, Order.STATUS_CREATED)
+        self.assertFalse(Enrollment.objects.filter(user=self.user, course=self.course).exists())
 
     @patch('apps.payments.views.get_client')
     def test_verify_payment_bad_signature_fails(self, mock_get_client):
@@ -128,6 +173,16 @@ class WebhookTests(TestCase):
         self.order.refresh_from_db()
         self.assertEqual(self.order.status, Order.STATUS_PAID)
         self.assertTrue(Enrollment.objects.filter(user=self.user, course=self.course).exists())
+
+    def test_webhook_records_a_failed_payment(self):
+        payload = {
+            'event': 'payment.failed',
+            'payload': {'payment': {'entity': {'order_id': 'order_WH1', 'id': 'pay_WH1', 'error_description': 'declined'}}},
+        }
+        self.assertEqual(self._signed_post(payload).status_code, 200)
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.status, Order.STATUS_FAILED)
+        self.assertFalse(Enrollment.objects.filter(user=self.user, course=self.course).exists())
 
     def test_webhook_rejects_bad_signature(self):
         body = json.dumps({'event': 'payment.captured', 'payload': {}}).encode()

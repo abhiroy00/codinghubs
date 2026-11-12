@@ -5,12 +5,11 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
-from apps.content import services as content_services
-from apps.content.sanitize import add_heading_ids, sanitize_html
+from apps.content.sanitize import sanitize_html
 from apps.content.validators import validate_https_or_site_url, validate_media_or_https_url
 
 from .models import (
-    DIFFICULTIES, GUIDE_SECTION_KEYS, Coupon, FreeDownloadLead, Order, OrderItem, Product, ProductCategory, ProductImage, Project, ProjectGuide,
+    GUIDE_SECTION_KEYS, Coupon, FreeDownloadLead, Order, OrderItem, Product, ProductCategory, ProductImage, Project, ProjectGuide,
     ProjectQuestion, StoreSettings, unique_slug_for,
 )
 

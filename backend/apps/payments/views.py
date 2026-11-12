@@ -94,11 +94,42 @@ class VerifyPaymentView(APIView):
             order.save(update_fields=['status'])
             return Response({'detail': 'Signature verification failed.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # The signature proves the callback came from Razorpay; it does not prove the payment
+        # matches this order. Ask the gateway, exactly as the store checkout does.
+        try:
+            info = client.payment.fetch(data['razorpay_payment_id'])
+        except Exception as exc:  # noqa: BLE001 - the SDK raises several types
+            logger.error('Could not fetch course payment %s: %s', data['razorpay_payment_id'], exc)
+            return Response(
+                {'detail': 'Could not confirm the payment with the gateway. Please try again.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        try:
+            paid_amount = int(info.get('amount', -1))
+        except (TypeError, ValueError):
+            paid_amount = -1
+        if (info.get('order_id') != order.razorpay_order_id or paid_amount != order.amount
+                or info.get('currency') != 'INR'):
+            logger.error(
+                'Course payment mismatch for order %s: %s', order.razorpay_order_id,
+                {k: info.get(k) for k in ('order_id', 'amount', 'currency')},
+            )
+            return Response({'detail': 'The payment does not match this order.'}, status=status.HTTP_400_BAD_REQUEST)
+        if info.get('status') == 'failed':
+            order.status = Order.STATUS_FAILED
+            order.save(update_fields=['status'])
+            return Response({'detail': 'The payment failed.', 'status': order.status}, status=status.HTTP_400_BAD_REQUEST)
+        if info.get('status') != 'captured':
+            return Response({'detail': 'The payment is not captured yet.', 'status': order.status}, status=status.HTTP_202_ACCEPTED)
+
         with transaction.atomic():
-            order.status = Order.STATUS_PAID
-            order.razorpay_payment_id = data['razorpay_payment_id']
-            order.save(update_fields=['status', 'razorpay_payment_id'])
-            Enrollment.objects.get_or_create(user=order.user, course=order.course, defaults={'order': order})
+            order = Order.objects.select_for_update().get(pk=order.pk)
+            if order.status != Order.STATUS_PAID:
+                order.status = Order.STATUS_PAID
+                order.razorpay_payment_id = data['razorpay_payment_id']
+                order.save(update_fields=['status', 'razorpay_payment_id'])
+            if order.user_id:
+                Enrollment.objects.get_or_create(user=order.user, course=order.course, defaults={'order': order})
 
         return Response({'detail': 'Payment verified.', 'status': order.status})
 
@@ -122,22 +153,33 @@ class RazorpayWebhookView(APIView):
         if not hmac.compare_digest(expected, signature):
             return Response({'detail': 'Invalid signature.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        payload = json.loads(body)
+        try:
+            payload = json.loads(body)
+        except ValueError:
+            return Response({'detail': 'Bad payload.'}, status=status.HTTP_400_BAD_REQUEST)
         event = payload.get('event', '')
         entity = payload.get('payload', {}).get('payment', {}).get('entity', {})
-        razorpay_order_id = entity.get('order_id')
+        order_entity = payload.get('payload', {}).get('order', {}).get('entity', {})
+        razorpay_order_id = entity.get('order_id') or order_entity.get('id')
         razorpay_payment_id = entity.get('id')
 
         if event in ('payment.captured', 'order.paid') and razorpay_order_id:
             order = Order.objects.filter(razorpay_order_id=razorpay_order_id).first()
             if order and order.status != Order.STATUS_PAID:
                 with transaction.atomic():
-                    order.status = Order.STATUS_PAID
-                    if razorpay_payment_id:
-                        order.razorpay_payment_id = razorpay_payment_id
-                    order.save(update_fields=['status', 'razorpay_payment_id'])
-                    Enrollment.objects.get_or_create(
-                        user=order.user, course=order.course, defaults={'order': order}
-                    )
+                    order = Order.objects.select_for_update().get(pk=order.pk)
+                    if order.status != Order.STATUS_PAID:
+                        order.status = Order.STATUS_PAID
+                        if razorpay_payment_id:
+                            order.razorpay_payment_id = razorpay_payment_id
+                        order.save(update_fields=['status', 'razorpay_payment_id'])
+                        if order.user_id:
+                            Enrollment.objects.get_or_create(
+                                user=order.user, course=order.course, defaults={'order': order}
+                            )
+        elif event == 'payment.failed' and razorpay_order_id:
+            Order.objects.filter(razorpay_order_id=razorpay_order_id).exclude(status=Order.STATUS_PAID).update(
+                status=Order.STATUS_FAILED
+            )
 
         return HttpResponse(status=200)

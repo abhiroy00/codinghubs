@@ -18,7 +18,7 @@ from django.views.decorators.http import require_GET
 
 from . import services
 from .models import Blog, CaseStudy
-from .views import SECTION_TITLES, blog_detail_payload, case_detail_payload, load_public_or_preview, public_blog_qs, public_case_qs
+from .views import blog_detail_payload, case_detail_payload, load_public_or_preview, public_blog_qs, public_case_qs
 
 logger = logging.getLogger(__name__)
 HEAD_MARK, ROOT_MARK = '<!--SEO_HEAD-->', '<!--SSR_ROOT-->'

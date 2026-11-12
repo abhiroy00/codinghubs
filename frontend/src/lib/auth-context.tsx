@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { api, tokenStore } from './api'
 import type { User } from './types'
@@ -14,7 +15,7 @@ interface AuthContextValue {
   loading: boolean
   login: (username: string, password: string) => Promise<void>
   register: (payload: RegisterPayload) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -54,7 +55,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(data.user)
   }
 
-  function logout() {
+  async function logout() {
+    const refresh = tokenStore.getRefresh()
+    // Use a bare axios call: the shared client would try to refresh an expired access token first.
+    if (refresh) {
+      await axios.post(`${api.defaults.baseURL}/auth/logout/`, { refresh }).catch(() => undefined)
+    }
     tokenStore.clear()
     setUser(null)
   }

@@ -12,6 +12,20 @@ permissions:
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: codinghubs
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,13 +33,26 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: backend/requirements.txt
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt ruff
         working-directory: backend
-      - run: python manage.py test apps
+      - name: Lint (ruff)
+        run: ruff check .
+        working-directory: backend
+      - name: Django system checks
+        run: python manage.py check --deploy --fail-level ERROR
+        working-directory: backend
+        env:
+          SECRET_KEY: ci-test-key-not-for-prod-use-only
+          DEBUG: 'False'
+          ALLOWED_HOSTS: codinghubs.in
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/codinghubs
+      - name: Tests (Postgres)
+        run: python manage.py test apps
         working-directory: backend
         env:
           SECRET_KEY: ci-test-key-not-for-prod-use-only
           DEBUG: 'True'
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/codinghubs
 
   frontend-build:
     runs-on: ubuntu-latest
@@ -39,6 +66,8 @@ jobs:
       - run: npm ci
         working-directory: frontend
       - run: npx tsc -b --noEmit
+        working-directory: frontend
+      - run: npm run lint
         working-directory: frontend
       - run: npm run build
         working-directory: frontend

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Link, Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { PageFrame, Pager } from '../content-pages/shared'
+import { useAuth } from '../lib/auth-context'
 import { DownloadList } from './cart'
 import { errorText, fmtSize, rupees, shop, useCartData } from './api'
 
@@ -37,9 +38,48 @@ export function MyAccount() {
   const [me, setMe] = useState<any>(null)
   const [claim, setClaim] = useState({ order_number: '', token: '' })
   const [msg, setMsg] = useState('')
+  const [accountMsg, setAccountMsg] = useState('')
+  const [password, setPassword] = useState('')
+  const [busy, setBusy] = useState(false)
+  const { logout } = useAuth()
+  const navigate = useNavigate()
   useEffect(() => {
     shop.get('/auth/me/').then((r) => setMe(r.data)).catch(() => undefined)
   }, [])
+
+  async function exportData() {
+    setAccountMsg('')
+    try {
+      const { data } = await shop.get('/auth/me/export/')
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'coding-hubs-my-data.json'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      setAccountMsg(errorText(err, 'Could not prepare your data download. Please try again.'))
+    }
+  }
+
+  async function deleteAccount(e: React.FormEvent) {
+    e.preventDefault()
+    if (!window.confirm('Delete your account permanently? This cannot be undone.')) return
+    setAccountMsg('')
+    setBusy(true)
+    try {
+      await shop.post('/auth/me/delete/', { password })
+      await logout()
+      navigate('/', { replace: true })
+    } catch (err) {
+      setAccountMsg(errorText(err, 'Could not delete your account. Please try again.'))
+    } finally {
+      setBusy(false)
+    }
+  }
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMsg('')
@@ -65,6 +105,23 @@ export function MyAccount() {
           <button className="btn btn-ghost-dark" disabled={!claim.order_number || !claim.token}>Add order</button>
         </form>
         {msg && <p role="status">{msg}</p>}
+      </section>
+      <section>
+        <h2>Your data</h2>
+        <p className="bl-meta">Download a copy of your profile, enrolments, learning progress, certificates and store orders as JSON.</p>
+        <button type="button" className="btn btn-ghost-dark" onClick={() => void exportData()}>Download my data</button>
+      </section>
+      <section>
+        <h2>Delete account</h2>
+        <p className="bl-meta">
+          This permanently removes your account, learning progress, AI history and uploaded resumes. Orders stay in our records
+          for accounting and tax purposes, as described in our <Link to="/policies#privacy">privacy policy</Link>.
+        </p>
+        <form className="shop-form shop-inline" onSubmit={(e) => void deleteAccount(e)}>
+          <label>Password<input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} /></label>
+          <button type="submit" className="btn btn-ghost-dark" disabled={busy || !password}>{busy ? 'Deleting…' : 'Delete my account'}</button>
+        </form>
+        {accountMsg && <p role="alert">{accountMsg}</p>}
       </section>
       <p className="bl-meta">Need help? <a href="/#contact">Contact us</a>. Our <Link to="/policies#rescheduling">refund policy</Link> applies to every order.</p>
     </AccountFrame>

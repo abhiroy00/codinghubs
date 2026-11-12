@@ -67,7 +67,7 @@ class AdminJobApiTests(TestCase):
     def setUp(self):
         cache.clear()
         self.client = APIClient()
-        self.staff = User.objects.create_user(username='staff', password='pw', is_staff=True)
+        self.staff = User.objects.create_user(username='staff', password='pw', is_staff=True, is_superuser=True)
         self.payload = {
             'title': 'Data Analyst Intern',
             'company_name': 'Acme Labs',
@@ -84,6 +84,12 @@ class AdminJobApiTests(TestCase):
     def test_non_staff_cannot_manage_jobs(self):
         self.assertEqual(self.client.post('/api/admin/jobs/', self.payload, format='json').status_code, 401)
         self.client.force_authenticate(User.objects.create_user(username='learner', password='pw'))
+        self.assertEqual(self.client.post('/api/admin/jobs/', self.payload, format='json').status_code, 403)
+
+    def test_staff_without_model_permissions_cannot_manage_jobs(self):
+        editor = User.objects.create_user(username='content-editor', password='pw', is_staff=True)
+        self.client.force_authenticate(editor)
+        self.assertEqual(self.client.get('/api/admin/jobs/').status_code, 403)
         self.assertEqual(self.client.post('/api/admin/jobs/', self.payload, format='json').status_code, 403)
 
     def test_staff_can_create_edit_unpublish_expire_and_delete(self):

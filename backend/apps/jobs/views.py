@@ -33,6 +33,7 @@ class JobAdminPage(PageNumberPagination):
 
 class JobAdminListView(generics.ListCreateAPIView):
     permission_classes = [IsActiveStaff]
+    model_class = Job
     serializer_class = JobAdminSerializer
     pagination_class = JobAdminPage
 
@@ -52,9 +53,11 @@ class JobAdminListView(generics.ListCreateAPIView):
 
 class JobAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsActiveStaff]
+    model_class = Job
     serializer_class = JobAdminSerializer
     queryset = Job.objects.all()
 
 
 class JobLogoUploadView(TutorImageUploadView):
+    model_class = Job
     UPLOAD_DIR = 'jobs'

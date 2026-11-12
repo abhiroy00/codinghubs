@@ -46,6 +46,8 @@ const ProtectedRoute = lazy(() => import('./components/ProtectedRoute').then((m)
 const CourseCheckout = lazy(() => import('./pages/CourseCheckout').then((m) => ({ default: m.CourseCheckout })))
 const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })))
 const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })))
+const ForgotPassword = lazy(() => import('./pages/PasswordReset').then((m) => ({ default: m.ForgotPassword })))
+const ResetPassword = lazy(() => import('./pages/PasswordReset').then((m) => ({ default: m.ResetPassword })))
 const Policies = lazy(() => import('./pages/Policies').then((m) => ({ default: m.Policies })))
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
 const BookTutor = lazy(() => import('./pages/BookTutor').then((m) => ({ default: m.BookTutor })))
@@ -119,6 +121,8 @@ export function App() {
                 <Route path="policies" element={<Policies />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
+                <Route path="forgot-password" element={<ForgotPassword />} />
+                <Route path="reset-password" element={<ResetPassword />} />
                 <Route path="enroll/:slug" element={<CourseCheckout />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="dashboard" element={<Dashboard />} />

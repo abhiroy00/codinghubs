@@ -15,6 +15,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.accounts.tokens import revoke_all_tokens
 from apps.courses.models import Course, CourseQuestion
 from apps.enrollments.models import Enrollment
 from apps.leads.models import Lead
@@ -36,8 +37,23 @@ class Page(PageNumberPagination):
 
 
 class IsStaff(permissions.BasePermission):
+    """Staff only; views that declare `permission_model` also need the matching model permission.
+
+    Superusers pass every check. Views without a permission model keep the staff-only rule
+    (leads, users, bookings, course rows), which matches how the panel already worked.
+    """
+
+    ACTION_FOR = {'GET': 'view', 'HEAD': 'view', 'OPTIONS': 'view', 'POST': 'add', 'PUT': 'change', 'PATCH': 'change', 'DELETE': 'delete'}
+
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_authenticated and request.user.is_staff)
+        user = request.user
+        if not (user and user.is_authenticated and user.is_staff):
+            return False
+        model = getattr(view, 'permission_model', None)
+        if model is None:
+            return True
+        action = self.ACTION_FOR.get(request.method, 'change')
+        return user.has_perm(f'{model._meta.app_label}.{action}_{model._meta.model_name}')
 
 
 class AdminLoginView(APIView):
@@ -87,6 +103,7 @@ class ChangePasswordView(APIView):
             return Response({'new_password': ['Choose a password you have not used just now.']}, status=status.HTTP_400_BAD_REQUEST)
         request.user.set_password(new)
         request.user.save(update_fields=['password'])
+        revoke_all_tokens(request.user)  # any other browser/device must sign in again
         return Response({'detail': 'Password changed. Please sign in again with the new password.'})
 
 

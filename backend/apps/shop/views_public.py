@@ -1,11 +1,13 @@
+import hashlib
 import json
 import logging
 from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
-from django.db import IntegrityError, transaction
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import transaction
 from django.db.models import Count, Q
-from django.http import FileResponse, Http404, HttpResponse, HttpResponsePermanentRedirect
+from django.http import FileResponse, Http404, HttpResponse
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -75,9 +77,7 @@ class ProjectQuestionUserThrottle(UserRateThrottle):
 class ProductList(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     pagination_class = PublicPage
-
-    def get_serializer_class(self):  # not used: payload dicts below
-        raise NotImplementedError
+    serializer_class = serializers.Serializer  # not used: payload dicts below, but keeps OPTIONS/schema working
 
     def filter_queryset(self, qs=None):
         qs = payloads.public_products()
@@ -303,7 +303,7 @@ def get_cart(request, create=False):
     if token:
         try:
             guest = Cart.objects.filter(token=token, user__isnull=True).first()
-        except (ValueError, Exception):  # malformed uuid
+        except (ValueError, DjangoValidationError):  # malformed uuid, not a database error
             guest = None
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)
@@ -442,7 +442,7 @@ class Checkout(APIView):
         except CartError as exc:
             return cart_error(exc, 401 if exc.code == 'login_required' else 400)
         try:
-            result = orders.start_payment(order, skip_payment=bool(d.get('skip_payment')))
+            result = orders.start_payment(order)
         except CartError as exc:
             orders.cancel_order(order, reason='payment could not be started')
             return cart_error(exc, 503)
@@ -452,9 +452,6 @@ class Checkout(APIView):
         cart.items.all().delete()
         cart.coupon_code = ''
         cart.save(update_fields=['coupon_code'])
-        if result.get('skip_payment'):
-            order.refresh_from_db()
-            result['downloads'] = download_rows(order)
         return no_cache(Response(result, status=201))
 
 
@@ -509,6 +506,15 @@ class RetryPayment(APIView):
             return Response({'detail': str(exc)}, status=503)
 
 
+def webhook_event_id(request, payload, body: bytes) -> str:
+    """A stable id per delivery. The provider header is preferred; otherwise the signed body
+    itself is the identity, so two events that happen in the same second can never collide."""
+    provided = request.headers.get('X-Razorpay-Event-Id', '').strip()
+    if provided:
+        return provided[:100]
+    return f'sha256:{hashlib.sha256(body).hexdigest()}'[:100]
+
+
 class Webhook(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -521,21 +527,29 @@ class Webhook(APIView):
             payload = json.loads(body)
         except ValueError:
             return Response({'detail': 'Bad payload.'}, status=400)
-        event_id = request.headers.get('X-Razorpay-Event-Id', '') or f"{payload.get('event')}:{payload.get('payload', {}).get('payment', {}).get('entity', {}).get('id', '')}:{payload.get('created_at', '')}"
-        try:
-            with transaction.atomic():
-                ev = PaymentEvent.objects.create(event_id=event_id[:100], event_type=str(payload.get('event', ''))[:60], payload=payload)
-        except IntegrityError:  # this delivery was already received: processing is idempotent
-            return HttpResponse(status=200)
+        event_id = webhook_event_id(request, payload, body)
+        ev, created = PaymentEvent.objects.get_or_create(
+            event_id=event_id,
+            defaults={'event_type': str(payload.get('event', ''))[:60], 'payload': payload},
+        )
+        if not created and ev.processed:
+            return HttpResponse(status=200)  # already handled: idempotent delivery
+        if not created:
+            # A previous delivery with this id failed. Keep the newest signed payload and retry it.
+            ev.payload = payload
+            ev.event_type = str(payload.get('event', ''))[:60]
+            ev.save(update_fields=['payload', 'event_type'])
         try:
             handle_event(payload)
-            ev.processed = True
-            ev.save(update_fields=['processed'])
-        except Exception as exc:  # noqa: BLE001 - never 5xx forever: the provider retries; we keep the error for support
+        except Exception as exc:  # noqa: BLE001 - the provider retries; keep the error for support
             logger.exception('Webhook handling failed')
             ev.error = str(exc)[:300]
-            ev.save(update_fields=['error'])
+            ev.processed = False
+            ev.save(update_fields=['error', 'processed'])
             return Response({'detail': 'Could not process.'}, status=500)
+        ev.processed = True
+        ev.error = ''
+        ev.save(update_fields=['processed', 'error'])
         return HttpResponse(status=200)
 
 

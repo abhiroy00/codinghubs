@@ -1,5 +1,4 @@
 import logging
-import os
 import uuid
 from io import BytesIO
 
@@ -7,14 +6,14 @@ from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.db.models import Count, Q
-from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
+from django.http import Http404, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from PIL import Image, UnidentifiedImageError
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.throttling import ScopedRateThrottle, UserRateThrottle
+from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 
 from . import services
@@ -26,7 +25,6 @@ from .serializers import (
     CaseStudyAdminSerializer,
     CategorySerializer,
     TagSerializer,
-    public_client,
 )
 
 logger = logging.getLogger(__name__)

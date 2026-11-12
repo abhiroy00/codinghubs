@@ -1,13 +1,27 @@
+import sys
 from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
 from decouple import Csv, config
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-me')
-DEBUG = config('DEBUG', default=True, cast=bool)
+DELIBERATELY_INSECURE_KEY = 'django-insecure-dev-key-change-me'
+TESTING = 'test' in sys.argv
+# Fail closed: production must set DEBUG=False explicitly (or leave it out entirely).
+# Tests and local runserver (with DEBUG=True in backend/.env) still work without extra setup.
+DEBUG = config('DEBUG', default=TESTING, cast=bool)
+SECRET_KEY = config('SECRET_KEY', default='')
+if not SECRET_KEY:
+    if DEBUG or TESTING:
+        SECRET_KEY = DELIBERATELY_INSECURE_KEY
+    else:
+        raise ImproperlyConfigured(
+            'SECRET_KEY must be set when DEBUG is False. Generate one with '
+            '`python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`.'
+        )
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 INSTALLED_APPS = [
@@ -18,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'apps.accounts',
     'apps.courses',
@@ -93,6 +108,18 @@ STORAGES = {
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# DRF throttles are only as strong as the cache behind them. The default LocMemCache is
+# per-process, so with several Gunicorn workers the real limit is multiplied and resets on
+# deploy. A file cache is shared by every worker on this single host; set CACHE_BACKEND to
+# a Redis backend (with CACHE_LOCATION) if the app is ever scaled across machines.
+CACHES = {
+    'default': {
+        'BACKEND': config('CACHE_BACKEND', default='django.core.cache.backends.filebased.FileBasedCache'),
+        'LOCATION': config('CACHE_LOCATION', default=str(BASE_DIR / '.cache')),
+        'TIMEOUT': 300,
+    }
+}
+
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
     default='http://localhost:5173,http://127.0.0.1:5173',
@@ -101,10 +128,12 @@ CORS_ALLOWED_ORIGINS = config(
 
 # Behind the nginx reverse proxy in production, which sets this header.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Off until the domain + Let's Encrypt cert are wired up (see DEPLOY.md), then flip to True.
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
-SESSION_COOKIE_SECURE = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
-CSRF_COOKIE_SECURE = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
+# On by default whenever DEBUG is off; an explicit env value still wins.
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=not DEBUG, cast=bool)
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False  # the Django admin reads this cookie client-side
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -133,7 +162,9 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': False,
+    # A rotated or explicitly logged-out refresh token must stop working. This requires the
+    # token_blacklist app above (its tables are created by the normal migrate on deploy).
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 # All 30 interview-prep days are open: learners can open and complete any day. Set to True to make days unlock
@@ -196,10 +227,9 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Coding Hubs <no-reply@codinghubs.in>')
 
-import sys  # noqa: E402
-
-if 'test' in sys.argv:  # fast password hashing for the test suite only
+if TESTING:  # fast, isolated settings for the test suite only
     PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
+    CACHES = {'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}}
 
 # Staged marketplace pilot. Keep disabled until moderation and launch policies are ready.
 GIGS_ENABLED = config('GIGS_ENABLED', default=False, cast=bool)

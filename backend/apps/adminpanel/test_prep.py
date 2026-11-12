@@ -15,7 +15,9 @@ class AdminPrepApiTests(TestCase):
         cache.clear()
         call_command('seed_prep_content', verbosity=0)
         self.client = APIClient()
-        self.client.force_authenticate(get_user_model().objects.create_user(username='staff', password='pw', is_staff=True))
+        self.client.force_authenticate(
+            get_user_model().objects.create_user(username='staff', password='pw', is_staff=True, is_superuser=True)
+        )
         self.curriculum = PrepCurriculum.objects.get(slug='generative-ai')
         self.lesson = json.loads((CONTENT_DIR / 'generative-ai' / 'day-01.json').read_text(encoding='utf-8'))
 

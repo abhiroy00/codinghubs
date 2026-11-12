@@ -1,6 +1,5 @@
 from urllib.parse import urlparse
 
-from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from rest_framework import serializers
