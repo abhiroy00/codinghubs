@@ -243,28 +243,6 @@ html:root {
   transform-origin: left;
   pointer-events: none;
 }
-.store-section-nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-  padding: 14px 20px;
-  border-bottom: 1px solid #d5dce7;
-  background: #f5f7fb;
-  font:
-    500 13px/1.4 "DM Sans",
-    system-ui,
-    sans-serif;
-}
-.store-section-nav a {
-  color: #2457cf;
-  padding: 6px;
-}
-.store-section-nav a[aria-current="page"] {
-  color: #152039;
-  text-decoration: underline;
-  text-underline-offset: 5px;
-}
 .learning .rw-tools {
   height: auto;
   min-height: 64px;

@@ -56,7 +56,6 @@ test("photo replaces Login and account disclosure navigates and closes with keyb
   await expect(panel.getByRole("link")).toHaveText([
     "Profile↗",
     "User Dashboard↗",
-    "My Orders↗",
     "Support↗",
   ]);
   await page.keyboard.press("Escape");
@@ -209,4 +208,43 @@ test("offline logout stays signed out after reload and revokes on reconnect", as
     .poll(() => page.evaluate(() => localStorage.getItem("ch_pending_logout")))
     .toBeNull();
   await expect(page.locator(".sh-account-trigger")).toHaveCount(0);
+});
+
+test("Store and My Orders are removed from the menu, profile and old routes", async ({
+  page,
+}) => {
+  await page.goto("/my-account");
+  await expect(page.getByRole("heading", { name: "My account" })).toBeVisible();
+  await page.locator(".sh-account-trigger").click();
+  await expect(page.locator(".sh-account-panel").getByRole("link")).toHaveText([
+    "Profile↗",
+    "User Dashboard↗",
+    "Support↗",
+  ]);
+  await expect(
+    page.getByRole("navigation", { name: "Store", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("link", {
+      name: /My orders|My downloads|View my orders|Cart|All products/i,
+    }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Bought as a guest?" }),
+  ).toHaveCount(0);
+  for (const path of [
+    "/store",
+    "/store/old-product",
+    "/cart",
+    "/checkout",
+    "/payment/success",
+    "/my-account/orders",
+    "/my-account/downloads",
+  ]) {
+    await page.goto(path);
+    await expect(
+      page.getByRole("heading", { name: "We could not find that page" }),
+    ).toBeVisible();
+    await expect(page.locator(".sh-account-trigger")).toBeVisible();
+  }
 });

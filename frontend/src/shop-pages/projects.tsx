@@ -328,7 +328,7 @@ export function ProjectPage() {
               {p.guides?.length > 0 && <Link className="btn btn-yellow" to={`/project-guides/${p.guides[0].slug}`}>Read the project guide <Arrow /></Link>}
               {p.demo_url && <a className="btn btn-yellow" href={p.demo_url} target="_blank" rel="noopener noreferrer">Live demo <Arrow /></a>}
               {p.repo_url && <a className="btn pj-btn-ghost" href={p.repo_url} target="_blank" rel="noopener noreferrer">Source code</a>}
-              {p.product && !p.unlocked && <Link className="btn btn-yellow" to={`/store/${p.product.slug}`}>Get the project · {rupees(p.product.price)}</Link>}
+              {p.product && !p.unlocked && <Link className="btn btn-yellow" to="/#contact">Request project access</Link>}
               {!p.demo_url && !p.repo_url && !p.product && <a className="btn btn-yellow" href="/#register">Build it with us — free demo</a>}
             </div>
           </div>
@@ -405,8 +405,8 @@ export function ProjectPage() {
                 </form>
               </section>
             )}
-            {!p.unlocked && p.product && (
-              <aside className="pj-lock"><div><strong>{p.locked_files} project file{p.locked_files === 1 ? '' : 's'} included</strong><p>Source code and files come with {p.product.title}.</p></div><Link className="btn btn-yellow" to={`/store/${p.product.slug}`}>Get it · {rupees(p.product.price)}</Link></aside>
+            {!p.unlocked && p.locked_files > 0 && (
+              <aside className="pj-lock"><div><strong>{p.locked_files} project file{p.locked_files === 1 ? '' : 's'} included</strong><p>Contact Coding Hubs for access to these restricted files.</p></div><Link className="btn btn-yellow" to="/#contact">Contact us</Link></aside>
             )}
             {p.guides?.length > 0 && (
               <section id="guides" className="pj-sec"><h2>Guides for this project</h2>
@@ -434,7 +434,7 @@ export function ProjectPage() {
               </dl>
               {stack.length > 0 && <ul className="pj-tags">{stack.slice(0, 8).map((t) => (<li key={t}>{t}</li>))}</ul>}
               {p.demo_url && <a className="btn btn-yellow btn-block" href={p.demo_url} target="_blank" rel="noopener noreferrer">Live demo</a>}
-              {p.product && !p.unlocked && <Link className="btn btn-yellow btn-block" to={`/store/${p.product.slug}`}>Get the project</Link>}
+              {p.product && !p.unlocked && <Link className="btn btn-yellow btn-block" to="/#contact">Request project access</Link>}
               <a className="pj-ask" href="/#contact">Need help? Talk to us</a>
             </div>
             {sections.length > 1 && (

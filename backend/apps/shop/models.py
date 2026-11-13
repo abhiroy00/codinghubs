@@ -166,6 +166,7 @@ class ProductImage(models.Model):
 
 class Project(SeoMixin, PublishMixin):
     KIND = 'project'
+    files_restricted = models.BooleanField(default=False, help_text='Keep legacy restricted files private after store retirement.')
 
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=180, unique=True)

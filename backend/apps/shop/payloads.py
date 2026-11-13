@@ -126,7 +126,7 @@ def project_card(p: Project, guide=None) -> dict:
     return {
         'title': p.title, 'slug': p.slug, 'summary': p.summary, 'category': p.category, 'difficulty': p.difficulty, 'technologies': p.technologies,
         'featured_image': p.featured_image, 'featured_image_alt': p.featured_image_alt, 'estimated_time': p.estimated_time,
-        'is_featured': p.is_featured, 'is_paid': p.is_paid, 'price': str(p.product.price) if p.is_paid else None,
+        'is_featured': p.is_featured, 'is_paid': p.is_paid, 'files_restricted': p.files_restricted, 'price': str(p.product.price) if p.is_paid else None,
         'currency': p.product.currency if p.is_paid else None, 'published_at': p.published_at, 'guide': guide,
     }
 
@@ -204,7 +204,7 @@ def unlock_info(g: ProjectGuide):
     return {
         'type': g.access_type, 'product': {'slug': prod.slug, 'title': prod.title, 'price': str(prod.price)} if prod else None,
         'courses': [{'name': c.name, 'slug': c.slug} for c in g.included_courses.filter(is_active=True)],
-        'message': 'This guide is part of a paid resource.' if g.access_type == 'paid' else 'This guide is included with a product or course enrolment.',
+        'message': 'Contact Coding Hubs for access to this restricted guide.' if g.access_type == 'paid' else 'This guide is included with an eligible course enrollment.',
     }
 
 

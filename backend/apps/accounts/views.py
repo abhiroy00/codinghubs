@@ -139,7 +139,6 @@ class AccountExportView(APIView):
     def get(self, request):
         from apps.courses.models import CourseCertificate, LearningProgress
         from apps.enrollments.models import Enrollment
-        from apps.shop.models import Order as StoreOrder
 
         user = request.user
         return Response({
@@ -157,21 +156,14 @@ class AccountExportView(APIView):
                 {'course_slug': c.course_slug, 'certificate_id': str(c.certificate_id), 'completed_at': c.completed_at}
                 for c in CourseCertificate.objects.filter(user=user)
             ],
-            'store_orders': [
-                {
-                    'number': o.number, 'created_at': o.created_at, 'status': o.status, 'payment_status': o.payment_status,
-                    'total': str(o.total), 'items': [{'title': i.title, 'quantity': i.quantity} for i in o.items.all()],
-                }
-                for o in StoreOrder.objects.filter(user=user).prefetch_related('items')
-            ],
+
         })
 
 
 class AccountDeleteView(APIView):
     """Delete the signed-in account after confirming the password.
 
-    Orders are retained with the customer details they were placed with (tax/accounting),
-    but they are detached from the account. Resumes and their files are deleted with it.
+    Resumes and their files are deleted with the account.
     """
 
     permission_classes = [permissions.IsAuthenticated]

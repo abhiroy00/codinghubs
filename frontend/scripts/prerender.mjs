@@ -1,7 +1,7 @@
 // Build-time prerender. Writes real HTML (content + per-page metadata + JSON-LD) for every public page:
 //   home.html, program/<slug>.html, faq.html, policies.html, locations/**/index.html, 404.html
 // plus dist/sitemap.xml. dist/index.html stays the neutral, noindex SPA shell used for app-only routes
-// (login, register, dashboard, checkout, admin panel). nginx maps URLs to these files (see nginx.conf).
+// (login, register, dashboard, admin panel). nginx maps URLs to these files (see nginx.conf).
 import { createHash } from 'node:crypto'
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'

@@ -1,9 +1,8 @@
 /**
- * Once the page has loaded and the browser is idle, fetch the code of the other sections (store, blog, projects, guides,
+ * Once the page has loaded and the browser is idle, fetch the code of the other sections (blog, projects, guides,
  * courses, interview prep, locations) so moving between them feels instant. Skipped on slow or data-saving connections.
  */
 const LOADERS: (() => Promise<unknown>)[] = [
-  () => import('./../shop-pages/store'),
   () => import('./../content-pages/BlogList'),
   () => import('./../content-pages/Article'),
   () => import('./../shop-pages/projects'),

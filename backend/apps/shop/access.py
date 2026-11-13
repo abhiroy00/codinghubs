@@ -29,6 +29,8 @@ def guide_access(user, guide: ProjectGuide) -> bool:
 
 
 def project_access(user, project: Project) -> bool:
+    if project.files_restricted:
+        return bool(user and user.is_authenticated and user.is_staff)
     if not project.is_paid:
         return True
     if user and user.is_authenticated and user.is_staff:

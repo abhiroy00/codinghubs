@@ -36,7 +36,6 @@ export function UserAvatar({ user }: { user: User }) {
 const links = [
   ["/my-account", "Profile", "person"],
   ["/dashboard", "User Dashboard", "grid"],
-  ["/my-account/orders", "My Orders", "bag"],
   ["/#contact", "Support", "help"],
 ] as const;
 
@@ -44,7 +43,6 @@ function MenuIcon({ kind }: { kind: string }) {
   const paths: Record<string, string> = {
     person: "M20 21v-2a7 7 0 0 0-14 0v2M17 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0",
     grid: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
-    bag: "M5 7h14l1 14H4L5 7Zm4 0V5a3 3 0 0 1 6 0v2",
     help: "M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4m0 3h.01M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0",
     logout: "M9 21H4V3h5m6 4 5 5-5 5M8 12h12",
   };

@@ -90,7 +90,7 @@ for (const [from, to] of [
 // 4. unknown URL is a real 404, app-only routes are noindex
 const nf = await get(`${base}/this-page-does-not-exist-seo-smoke`)
 if (nf.status !== 404) fail(`unknown URL returned ${nf.status}, expected 404`)
-for (const p of ['/login', '/cart']) {
+for (const p of ['/login', '/my-account']) {
   const r = await get(`${base}${p}`)
   if (!/noindex/i.test(r.headers.get('x-robots-tag') || '')) fail(`${p}: missing X-Robots-Tag noindex`)
 }

@@ -131,7 +131,7 @@ class AccountDataTests(TestCase):
         response = self.client.get('/api/auth/me/export/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['profile']['username'], 'owner')
-        self.assertIn('store_orders', response.data)
+        self.assertNotIn('store_orders', response.data)
 
     def test_delete_requires_the_password_and_removes_the_account(self):
         wrong = self.client.post('/api/auth/me/delete/', {'password': 'nope'}, format='json')

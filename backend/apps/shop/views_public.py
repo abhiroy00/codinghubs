@@ -291,7 +291,7 @@ class ResourceDownloadLink(APIView):
         try:
             return no_cache(Response({'url': fn(request.user, asset), 'expires_in': settings.STORE_DOWNLOAD_LINK_TTL}))
         except PermissionError:
-            return Response({'detail': 'Please log in or purchase to download this file.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'detail': 'Please log in or contact Coding Hubs for access to this file.'}, status=status.HTTP_403_FORBIDDEN)
 
 
 # ============ cart ============

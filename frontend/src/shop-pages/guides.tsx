@@ -199,7 +199,7 @@ export function GuidePage() {
                 <div><strong>{u.type === 'account' ? 'Log in to read the full guide' : 'Unlock the full guide'}</strong><p>{u.message}</p>{u.courses?.length > 0 && <p>Included with: {u.courses.map((c: any) => c.name).join(', ')}.</p>}</div>
                 <div className="gd-lock-actions">
                   {u.type === 'account' && <Link className="btn btn-yellow" to="/login">Log in or sign up</Link>}
-                  {u.product && <Link className="btn btn-yellow" to={`/store/${u.product.slug}`}>Get it · {rupees(u.product.price)}</Link>}
+                  {u.type !== 'account' && <Link className="btn btn-yellow" to="/#contact">Contact us for access</Link>}
                 </div>
               </aside>
             )}

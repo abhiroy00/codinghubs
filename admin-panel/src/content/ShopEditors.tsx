@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { adminApi } from '../api'
 import { EditorShell } from './EditorShell'
-import { AssetPanel, CheckField, Chips, Field, ImageField, NumberField, RowsEditor, Section, SelectField, Text, ThumbnailField } from './fields'
+import { Chips, Field, ImageField, RowsEditor, Section, SelectField, Text } from './fields'
 import { RichEditor } from './RichEditor'
-import { SeoSection } from './SeoSection'
-import { blankGuide, blankProduct, blankProject, type GuideForm, type ProductForm, type ProjectForm } from './shopTypes'
+import { blankGuide, blankProject, type GuideForm, type ProjectForm } from './shopTypes'
 import type { Row } from './types'
 import { useContentForm } from './useContentForm'
 
@@ -96,122 +94,6 @@ export function GuideEditor() {
       <Text id="summary" label="Project query or problem" required textarea rows={3} value={form.summary} onChange={(v) => set('summary', v)} max={400} error={errors.summary} hint="Briefly describe what the learner is asking or trying to build." />
       {rich('g-guidance', 'Your guidance / answer', guidance.html, setGuidance, 380)}
       {errors.sections && <p className="ad-field-error" role="alert">{errors.sections}</p>}
-    </EditorShell>
-  )
-}
-
-/* ============================ Product ============================ */
-const TYPES: [string, string][] = [['digital', 'Digital (download)'], ['physical', 'Physical (shipped)'], ['mixed', 'Physical + digital']]
-const KINDS: [string, string][] = [
-  ['programming_notes', 'Programming notes'], ['interview_notes', 'Interview preparation notes'], ['book', 'Technical book'], ['printed_material', 'Printed study material'],
-  ['pdf_notes', 'PDF notes'], ['ebook', 'E-book'], ['source_code', 'Project source code'], ['project_report', 'Project report'], ['project_guide', 'Project guide'],
-  ['lab_manual', 'Practical lab manual'], ['question_bank', 'Question bank'], ['mock_test', 'Mock test material'], ['course_material', 'Course study material'], ['other', 'Other'],
-]
-
-export function ProductEditor() {
-  const api = useContentForm<ProductForm>('products', blankProduct)
-  const { form, set, errors } = api
-  const cats = useOptions<any>('/product-categories/')
-  const physical = form.product_type !== 'digital'
-  const digital = form.product_type !== 'physical'
-  const freeNoteKind = ['programming_notes', 'interview_notes', 'pdf_notes'].includes(form.item_kind)
-  const [showPaidSettings, setShowPaidSettings] = useState(false)
-  useEffect(() => {
-    if (!api.loading && form.id) setShowPaidSettings(Number(form.price) > 0 && !freeNoteKind)
-  }, [api.loading, form.id, freeNoteKind])
-  const freeDirectDownload = form.product_type === 'digital' && (Number(form.price) <= 0 || freeNoteKind) && !showPaidSettings
-  const discount = form.original_price && Number(form.original_price) > Number(form.price) ? Math.round((1 - Number(form.price) / Number(form.original_price)) * 100) : 0
-  return (
-    <EditorShell kind="products" api={api} noun="product"
-      side={
-        <>
-          <section className="ad-panel">
-            <h2>Product type</h2>
-            <SelectField id="product_type" label="Type" value={form.product_type} onChange={(v) => set('product_type', v)} options={TYPES} error={errors.product_type} />
-            <SelectField id="item_kind" label="Kind" value={form.item_kind} onChange={(v) => set('item_kind', v)} options={KINDS} />
-            <Field label="Category" htmlFor="pcat">
-              <select id="pcat" className="ad-input" value={form.category} onChange={(e) => set('category', e.target.value ? Number(e.target.value) : '')}>
-                <option value="">No category</option>
-                {cats.map((c: any) => (<option key={c.id} value={c.id}>{c.name}</option>))}
-              </select>
-            </Field>
-            <Text id="sku" label="SKU / product ID" value={form.sku} onChange={(v) => set('sku', v)} error={errors.sku} hint="Leave empty to generate one." max={40} />
-            <CheckField id="p-feat" label="Feature this product" checked={form.is_featured} onChange={(v) => set('is_featured', v)} />
-          </section>
-          {freeDirectDownload ? <section className="ad-panel"><h2>Free direct download</h2><p className="ad-muted">Visitors submit their name, email and mobile number, then receive the file directly. No cart, checkout or payment is used.</p>{!freeNoteKind && <button type="button" className="ad-btn" onClick={() => setShowPaidSettings(true)}>Set up paid checkout instead</button>}</section> : <section className="ad-panel">
-            <h2>Price</h2>
-            <NumberField id="price" label="Selling price (₹) *" step="0.01" min={0} value={form.price} onChange={(v) => set('price', v)} error={errors.price} hint="Paid products use the existing cart, checkout and payment flow. Free digital products use direct downloads." />
-            <NumberField id="original_price" label="Original price (₹)" step="0.01" min={0} value={form.original_price} onChange={(v) => set('original_price', v)} error={errors.original_price} hint={discount ? `Shows a ${discount}% saving. Only fill this in if it is a real earlier price.` : 'Optional. Only if it is a real earlier price.'} />
-            <Text id="currency" label="Currency" value={form.currency} onChange={(v) => set('currency', v.toUpperCase())} max={3} error={errors.currency} />
-            <NumberField id="tax_rate" label="Tax rate override (%)" step="0.01" min={0} value={form.tax_rate} onChange={(v) => set('tax_rate', v)} error={errors.tax_rate} hint="Empty = the store default (Store settings). Set only what your accountant confirms." />
-          </section>}
-          {physical && (
-            <section className="ad-panel">
-              <h2>Stock and shipping</h2>
-              <CheckField id="track_stock" label="Track stock" checked={form.track_stock} onChange={(v) => set('track_stock', v)} />
-              <NumberField id="stock_quantity" label="Quantity in stock" value={form.stock_quantity} onChange={(v) => set('stock_quantity', Number(v))} error={errors.stock_quantity} hint="After the first save use Inventory to adjust stock: every change is logged." />
-              <NumberField id="low_stock_threshold" label="Low-stock alert at" value={form.low_stock_threshold} onChange={(v) => set('low_stock_threshold', Number(v))} />
-              <NumberField id="weight_grams" label="Weight (grams)" value={form.weight_grams} onChange={(v) => set('weight_grams', v === '' ? '' : Number(v))} />
-              <Text id="dimensions" label="Dimensions" value={form.dimensions} onChange={(v) => set('dimensions', v)} placeholder="e.g. 21 × 14 × 2 cm" />
-            </section>
-          )}
-          {digital && (
-            <>
-              <section className="ad-panel">
-                <h2>Digital delivery</h2>
-                <NumberField id="download_limit" label="Downloads per file per purchase" value={form.download_limit} onChange={(v) => set('download_limit', v === '' ? '' : Number(v))} hint="Empty = unlimited." />
-              </section>
-              <AssetPanel endpoint="products" ownerId={form.id} title="Downloadable files (private)" />
-            </>
-          )}
-        </>
-      }
-    >
-      <Text id="title" label="Product name" required value={form.title} onChange={(v) => set('title', v)} error={errors.title} max={200} />
-      <Field label="URL slug" htmlFor="slug" error={errors.slug} hint={`Public address: /store/${form.slug || 'your-url'}`}>
-        <input id="slug" className="ad-input" value={form.slug} onChange={(e) => api.setSlug(e.target.value)} placeholder="generated from the name" />
-      </Field>
-      <Text id="short_description" label="Short description" textarea rows={3} value={form.short_description} onChange={(v) => set('short_description', v)} max={400} error={errors.short_description} />
-      <RichEditor id="description" label="Full description" value={form.description} onChange={(v) => set('description', v)} height={420} />
-      <Section title="Images" open>
-        <RowsEditor id="pimg" rows={form.images} onChange={(r) => set('images', r)} fields={[{ key: 'src', label: 'Image', type: 'image' }, { key: 'alt', label: 'Description (alt text)' }]} addLabel="Add an image" max={10} error={errors.images} />
-      </Section>
-      <Section title="Details">
-        <Chips id="included_materials" label="What is included" value={form.included_materials} onChange={(v) => set('included_materials', v)} max={20} hint="e.g. 120-page PDF, source code ZIP." />
-        <Text id="author" label="Author" value={form.author} onChange={(v) => set('author', v)} />
-        <Text id="publisher" label="Publisher" value={form.publisher} onChange={(v) => set('publisher', v)} />
-        <Text id="isbn" label="ISBN" value={form.isbn} onChange={(v) => set('isbn', v)} error={errors.isbn} hint="Books only; validated." />
-        <Text id="language" label="Language" value={form.language} onChange={(v) => set('language', v)} />
-        <Text id="edition" label="Edition" value={form.edition} onChange={(v) => set('edition', v)} />
-        <NumberField id="publication_year" label="Publication year" value={form.publication_year} onChange={(v) => set('publication_year', v === '' ? '' : Number(v))} />
-        <NumberField id="pages" label="Pages" value={form.pages} onChange={(v) => set('pages', v === '' ? '' : Number(v))} />
-        <Text id="format" label="Format" value={form.format} onChange={(v) => set('format', v)} placeholder="PDF, EPUB, Paperback…" />
-        <Chips id="topics" label="Technologies / topics covered" value={form.topics} onChange={(v) => set('topics', v)} max={20} />
-      </Section>
-      <SeoSection form={form} set={set} errors={errors} base="/store" />
-    </EditorShell>
-  )
-}
-
-
-/* ============================ Simple product (notes) ============================ */
-/** Quick editor for free note downloads; paid products use the advanced editor. */
-export function SimpleProductEditor() {
-  const api = useContentForm<ProductForm>('products', { ...blankProduct, price: '0', item_kind: 'pdf_notes', product_type: 'digital', format: 'PDF' })
-  const { form, set, errors } = api
-  const [files, setFiles] = useState(0)
-  const cover = form.images[0]
-  const blocked = !form.id ? 'Save the draft first, then upload the note file (PDF). Publish unlocks after that.' : files === 0 ? 'Upload the note file (PDF) below before publishing.' : undefined
-  if (form.id && (form.product_type !== 'digital' || Number(form.price) > 0)) return <div className="ad-panel"><h1 className="ad-h1">Use the advanced editor</h1><p className="ad-muted">Paid or physical products keep their existing price, stock and checkout settings.</p><Link className="ad-btn ad-btn-primary" to={`/products/advanced/${form.id}`}>Open advanced editor</Link></div>
-  return (
-    <EditorShell kind="products" api={api} noun="product" layout="single" publishBlock={blocked}>
-      <Text id="title" label="Note name" required value={form.title} onChange={(v) => set('title', v)} error={errors.title} max={200} placeholder="e.g. Python Notes — Complete Handwritten PDF" />
-      <div className="ad-note" role="note"><strong>Free direct download.</strong> Visitors enter their name, email and mobile number, then the file downloads. There is no cart, checkout or payment.</div>
-      <Text id="short_description" label="Short description" textarea rows={3} value={form.short_description} onChange={(v) => set('short_description', v)} max={400} error={errors.short_description} placeholder="One or two lines about what is inside (shown on the store card)." />
-      <ThumbnailField id="cover" label="Cover image" src={cover?.src ?? ''} alt={cover?.alt ?? ''} onSrc={(v) => set('images', v ? [{ src: v, alt: cover?.alt ?? '' }] : [])} onAlt={(v) => set('images', cover ? [{ ...cover, alt: v }] : [])} error={errors.images} />
-      <RichEditor id="description" label="Full description (optional)" value={form.description} onChange={(v) => set('description', v)} height={320} />
-      <AssetPanel endpoint="products" ownerId={form.id} title="The private file visitors can download after submitting their details" onCount={setFiles} saveFirst="Save the draft first, then upload the PDF here." />
-      {form.id && <p className="ad-note-line">Need paid checkout or physical stock? <Link to={`/products/advanced/${form.id}`}>Open the advanced editor</Link>.</p>}
     </EditorShell>
   )
 }

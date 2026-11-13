@@ -113,13 +113,13 @@ def link_for_permission(perm: DownloadPermission, user=None) -> str:
 def link_for_guide_asset(user, asset: DigitalAsset) -> str:
     if not asset.guide_id or not access.guide_access(user, asset.guide):
         raise PermissionError('You do not have access to this file.')
-    return f'/api/store/download/{make_token("guide", asset.id, user)}/'
+    return f'/api/resources/download/{make_token("guide", asset.id, user)}/'
 
 
 def link_for_project_asset(user, asset: DigitalAsset) -> str:
     if not asset.project_id or not access.project_access(user, asset.project):
         raise PermissionError('You do not have access to this file.')
-    return f'/api/store/download/{make_token("project", asset.id, user)}/'
+    return f'/api/resources/download/{make_token("project", asset.id, user)}/'
 
 
 def serve(request, token: str):

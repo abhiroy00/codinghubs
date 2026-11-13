@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react'
 import { PrivateRouteMeta } from './seo/PrivateRouteMeta'
 import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { AuthProvider } from './lib/auth-context'
-import { LazyCartDrawer } from './components/LazyCartDrawer'
 import { ScrollManager } from './components/ScrollManager'
 import { LenisProvider } from './lib/lenis-context'
 import { ModalProvider } from './lib/modal-context'
@@ -33,18 +32,11 @@ const BlogList = lazy(() => import('./content-pages/BlogList').then((m) => ({ de
 const CaseList = lazy(() => import('./content-pages/CaseList').then((m) => ({ default: m.CaseList })))
 const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.BlogDetail })))
 const CaseDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.CaseDetail })))
-const StorePage = lazy(() => import('./shop-pages/store').then((m) => ({ default: m.StorePage })))
-const ProductPage = lazy(() => import('./shop-pages/store').then((m) => ({ default: m.ProductPage })))
 const ProjectsPage = lazy(() => import('./shop-pages/projects').then((m) => ({ default: m.ProjectsPage })))
 const ProjectPage = lazy(() => import('./shop-pages/projects').then((m) => ({ default: m.ProjectPage })))
 const GuidesPage = lazy(() => import('./shop-pages/guides').then((m) => ({ default: m.GuidesPage })))
 const GuidePage = lazy(() => import('./shop-pages/guides').then((m) => ({ default: m.GuidePage })))
-const CartPage = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.CartPage })))
-const CheckoutPage = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.CheckoutPage })))
-const PaymentResult = lazy(() => import('./shop-pages/cart').then((m) => ({ default: m.PaymentResult })))
 const MyAccount = lazy(() => import('./shop-pages/account').then((m) => ({ default: m.MyAccount })))
-const MyOrders = lazy(() => import('./shop-pages/account').then((m) => ({ default: m.MyOrders })))
-const MyDownloads = lazy(() => import('./shop-pages/account').then((m) => ({ default: m.MyDownloads })))
 const Layout = lazy(() => import('./components/Layout').then((m) => ({ default: m.Layout })))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute').then((m) => ({ default: m.ProtectedRoute })))
 const CourseCheckout = lazy(() => import('./pages/CourseCheckout').then((m) => ({ default: m.CourseCheckout })))
@@ -69,7 +61,6 @@ export function App() {
       <BrowserRouter>
         <ScrollManager />
         <PrivateRouteMeta />
-        <LazyCartDrawer />
         <LenisProvider>
           <ModalProvider>
             <RegisterPopupProvider>
@@ -94,19 +85,11 @@ export function App() {
               <Route path="book-a-tutor/:tutorId" element={<BookTutor />} />
               <Route path="latest-jobs" element={<LatestJobs />} />
               <Route path="latest-jobs/:slug" element={<LatestJobs />} />
-              <Route path="store" element={<StorePage />} />
-              <Route path="store/:slug" element={<ProductPage />} />
               <Route path="projects" element={<ProjectsPage />} />
               <Route path="projects/:slug" element={<ProjectPage />} />
               <Route path="project-guides" element={<GuidesPage />} />
               <Route path="project-guides/:slug" element={<GuidePage />} />
-              <Route path="cart" element={<CartPage />} />
-              <Route path="checkout" element={<CheckoutPage />} />
-              <Route path="payment/success" element={<PaymentResult />} />
-              <Route path="payment/failure" element={<PaymentResult failed />} />
               <Route path="my-account" element={<MyAccount />} />
-              <Route path="my-account/orders" element={<MyOrders />} />
-              <Route path="my-account/downloads" element={<MyDownloads />} />
               <Route path="faq" element={<LearnFrame trail={[{ label: 'FAQ' }]}><Faq /></LearnFrame>} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />

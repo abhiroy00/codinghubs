@@ -32,7 +32,7 @@ Without a configured client ID, the page clearly reports Google sign-in as tempo
 
 ## Account photo and persistent browser session
 
-Verified Google `picture` claims from HTTPS `*.googleusercontent.com` URLs populate the read-only `avatar_url` profile field. The shared header displays the photo with a name-initial fallback and a keyboard-accessible account disclosure: Profile, User Dashboard, My Orders, Support and Logout. No separate referral feature is advertised.
+Verified Google `picture` claims from HTTPS `*.googleusercontent.com` URLs populate the read-only `avatar_url` profile field. The shared header displays the photo with a name-initial fallback and a keyboard-accessible account disclosure: Profile, User Dashboard, Support and Logout. No separate referral feature is advertised.
 
 The public React app requests `persistent: true` on password/Google login and registration. The server returns an access token and sets an opaque `ch_session` cookie (`HttpOnly`, `Secure` outside DEBUG, `SameSite=Lax`, path `/api/auth/`). Only its SHA-256 digest is stored in `accounts.LoginSession`; session secrets are never returned to JavaScript. Existing clients that omit this flag retain the original rotating JWT refresh API, including the admin application.
 
