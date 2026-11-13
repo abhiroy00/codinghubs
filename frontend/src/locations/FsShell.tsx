@@ -97,7 +97,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><Link to="/visual-lab/">Visual Lab</Link></li>
               <li><Link to="/faq">FAQ</Link></li>
               <li><Link to="/interview-studio">Interview Studio</Link></li>
-              <li><HLink home={home} to={h('#contact')}>Contact</HLink></li>
+              <li><HLink home={home} to={h('#contact')}>Support</HLink></li>
             </ul>
           </nav>
 

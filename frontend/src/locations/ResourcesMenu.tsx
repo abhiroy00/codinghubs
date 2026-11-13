@@ -16,8 +16,9 @@ const LINKS = [
   ["/case-studies", "Case Studies"],
   ["/projects", "Projects"],
   ["/#session", "About the Session"],
-  ["/#contact", "Contact"],
+  [ "/#contact", "Support"],
 ] as const;
+
 
 /** A keyboard-accessible disclosure shared by desktop and mobile primary navigation. */
 export function ResourcesMenu() {
