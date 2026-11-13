@@ -77,11 +77,37 @@ jobs:
       - name: SEO validation (site-wide metadata, canonicals, sitemap, robots, links) and location pages (word counts, uniqueness)
         run: npm run validate
         working-directory: frontend
+      # The tutor stylesheet is no longer emitted as `book-tutor-*.css`: Latest Jobs imports the same
+      # CSS module, so Vite now bundles it into a shared chunk with a different name. Resolve the file
+      # from the build manifest instead of matching a hardcoded filename.
+      - name: Resolve tutor page stylesheet for deployment verification
+        working-directory: frontend
+        run: |
+          node -e '
+            const fs = require("fs");
+            const manifest = JSON.parse(fs.readFileSync("dist/.vite/manifest.json", "utf8"));
+            const seen = new Set();
+            const cssFor = (key) => {
+              if (!key || seen.has(key) || !manifest[key]) return [];
+              seen.add(key);
+              const entry = manifest[key];
+              return [...(entry.css || []), ...(entry.imports || []).flatMap(cssFor)];
+            };
+            // Skip the app-shell stylesheet that every page imports; the tutor page has its own chunk CSS.
+            const files = [...new Set(cssFor("src/pages/BookTutor.tsx"))]
+              .filter((file) => !/(^|\/)index-[^/]*\.css$/.test(file));
+            if (files.length === 0) {
+              console.error("The tutor page stylesheet was not emitted by the build.");
+              process.exit(1);
+            }
+            fs.writeFileSync("tutor-css.txt", files.map((file) => file.split("/").pop()).join("\n") + "\n");
+            console.log("Tutor page stylesheets: " + files.join(", "));
+          '
       - name: Upload tutor page stylesheet for deployment verification
         uses: actions/upload-artifact@v4
         with:
           name: tutor-page-css
-          path: frontend/dist/assets/book-tutor-*.css
+          path: frontend/tutor-css.txt
           if-no-files-found: error
           retention-days: 1
 
@@ -211,8 +237,7 @@ jobs:
             exit 1
           fi
 
-          CSS_PATH=$(find tutor-page-css -maxdepth 1 -name 'book-tutor-*.css' -print -quit)
-          CSS_FILE=${CSS_PATH##*/}
+          CSS_FILE=$(head -1 tutor-page-css/tutor-css.txt 2>/dev/null | tr -d '\r')
           if [ -z "$CSS_FILE" ]; then
             echo "Tutor stylesheet artifact was not found."
             exit 1
