@@ -19,7 +19,16 @@ def remove_store_data(apps, schema_editor):
     # SET_NULL on Product deletion must never make previously paid project files public.
     rows('Project').filter(product__price__gt=0).update(files_restricted=True)
     rows('DownloadEvent').filter(Q(order__isnull=False) | Q(asset__product__isnull=False) | Q(source__in=['order', 'free'])).delete()
-    rows('AuditLog').exclude(object_type__in=['Project', 'ProjectGuide', 'project', 'guide', 'projectguide']).delete()
+    store_types = (
+        'Product', 'ProductCategory', 'ProductImage', 'StoreSettings', 'Coupon', 'Cart', 'CartItem',
+        'Order', 'OrderItem', 'Payment', 'PaymentEvent', 'Refund', 'InventoryMovement',
+        'CouponRedemption', 'DownloadPermission', 'FreeDownloadLead',
+    )
+    product_asset_ids = [str(pk) for pk in rows('DigitalAsset').filter(product__isnull=False).values_list('pk', flat=True)]
+    rows('AuditLog').filter(
+        Q(object_type__in=[name for model in store_types for name in (model, model.lower())])
+        | Q(object_type__in=['DigitalAsset', 'digitalasset'], object_id__in=product_asset_ids)
+    ).delete()
     for name in (
         'DownloadPermission', 'FreeDownloadLead', 'CartItem', 'Cart', 'InventoryMovement',
         'Refund', 'Payment', 'PaymentEvent', 'CouponRedemption', 'OrderItem', 'Order', 'Coupon',

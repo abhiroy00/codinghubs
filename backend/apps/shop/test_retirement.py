@@ -73,6 +73,9 @@ class StoreDataRemovalTests(TestCase):
         DownloadEvent.objects.create(asset=asset, source='order', order=order)
         AuditLog.objects.create(action='edit', object_type='Project', object_id=str(project.pk))
         AuditLog.objects.create(action='order', object_type='Order', object_id=str(order.pk))
+        AuditLog.objects.create(action='asset.uploaded', object_type='DigitalAsset', object_id=str(asset.pk))
+        product_asset = DigitalAsset.objects.get(product=product)
+        AuditLog.objects.create(action='asset.uploaded', object_type='DigitalAsset', object_id=str(product_asset.pk))
         purge = import_module('apps.shop.migrations.0008_remove_store_data').remove_store_data
         purge(apps, SimpleNamespace(connection=connection))
         for name in ('Product', 'ProductCategory', 'ProductImage', 'Order', 'OrderItem', 'Payment', 'Refund', 'PaymentEvent',
@@ -86,7 +89,7 @@ class StoreDataRemovalTests(TestCase):
         self.assertEqual(ProjectGuide.objects.count(), 1)
         self.assertEqual(DigitalAsset.objects.count(), 3)
         self.assertEqual(DownloadEvent.objects.count(), 1)
-        self.assertEqual(AuditLog.objects.count(), 1)
+        self.assertEqual(AuditLog.objects.count(), 2)
         project.refresh_from_db()
         self.assertTrue(project.files_restricted)
         self.assertFalse(access.project_access(user, project))
