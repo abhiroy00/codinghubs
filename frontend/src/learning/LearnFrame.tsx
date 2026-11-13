@@ -8,6 +8,7 @@ import { SITE_URL } from '../locations/registry'
 import type { Seo } from '../content-pages/api'
 import './learning.css'
 import './prep-shell.css'
+import '../pages/free-session/home-theme.css'
 
 export type Crumb = { label: string; to?: string }
 
@@ -52,24 +53,26 @@ export function LearnFrame({
       ? [{ label: kind === 'courses' ? 'Courses' : 'Interview Prep', to: `/${kind}/` }, ...(course ? [{ label: course.name }] : [])]
       : [])
   return (
-    <PageFrame wide>
-      <nav className="breadcrumb" aria-label="Breadcrumb">
-        <Link to="/">Home</Link>
-        {crumbs.map((crumb, index) => {
-          const current = index === crumbs.length - 1
-          return (
-            <span key={`${crumb.label}-${index}`}>
-              <span aria-hidden="true"> / </span>
-              {crumb.to && !current ? (
-                <Link to={crumb.to}>{crumb.label}</Link>
-              ) : (
-                <span aria-current={current ? 'page' : undefined}>{crumb.label}</span>
-              )}
-            </span>
-          )
-        })}
-      </nav>
-      {children}
-    </PageFrame>
+    <div className="ch-home">
+      <PageFrame wide>
+        <nav className="breadcrumb" aria-label="Breadcrumb">
+          <Link to="/">Home</Link>
+          {crumbs.map((crumb, index) => {
+            const current = index === crumbs.length - 1
+            return (
+              <span key={`${crumb.label}-${index}`}>
+                <span aria-hidden="true"> / </span>
+                {crumb.to && !current ? (
+                  <Link to={crumb.to}>{crumb.label}</Link>
+                ) : (
+                  <span aria-current={current ? 'page' : undefined}>{crumb.label}</span>
+                )}
+              </span>
+            )
+          })}
+        </nav>
+        {children}
+      </PageFrame>
+    </div>
   )
 }
