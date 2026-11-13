@@ -121,7 +121,6 @@ export function FreeSession() {
         <div className="wrap hdr-in">
           <BrandLogo home />
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary" onClick={(e) => { if ((e.target as HTMLElement).closest('a')) setNavOpen(false) }}>
-            <a href="#home">Home</a>
             <a href="#demo-classes">Free Demo Classes</a>
             <Link to="/courses/">Courses</Link>
             <Link to="/interview-prep/">Interview Prep</Link>

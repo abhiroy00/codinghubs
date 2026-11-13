@@ -23,7 +23,6 @@ export function StoreHeader() {
         <div className="wrap hdr-in">
           <BrandLogo />
           <nav className={`nav${open ? ' open' : ''}`} id="nav" aria-label="Store">
-            <Link to="/" onClick={close}>Home</Link>
             <Link to="/store" onClick={close} aria-current={here('/store')}>All Products</Link>
             <Link to="/store?category=t-shirts" onClick={close} aria-current={here('/store', 't-shirts')}>T-Shirts</Link>
             <Link to="/store?category=notes" onClick={close} aria-current={here('/store', 'notes')}>Notes</Link>

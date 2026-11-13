@@ -52,7 +52,6 @@ export function FsHeader() {
         <div className="wrap hdr-in">
           <BrandLogo />
           <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
-            <Link to="/" onClick={() => setNavOpen(false)}>Home</Link>
             <Link to="/#demo-classes" onClick={() => setNavOpen(false)}>Free Demo Classes</Link>
             <Link to="/courses/" onClick={() => setNavOpen(false)}>Courses</Link>
             <Link to="/interview-prep/" onClick={() => setNavOpen(false)}>Interview Prep</Link>
