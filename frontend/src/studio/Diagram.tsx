@@ -135,7 +135,7 @@ export function Diagram({
           }
           fitView
         >
-          <Background gap={20} color="#E7DDC2" />
+          <Background gap={20} color="#E4E9F2" />
           <Controls />
           <MiniMap pannable zoomable />
         </ReactFlow>

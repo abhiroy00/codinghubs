@@ -1,32 +1,32 @@
 html.studio-route {
   scroll-behavior: auto;
-  background: #FBF7EC;
+  background: #FFFFFF;
 }
 html.studio-route body {
-  background: #FBF7EC;
+  background: #FFFFFF;
 }
 .studio {
   /* Same palette as the public site (see public/free-session.css). */
-  --st-navy: #0A1A3F;
-  --st-navy-2: #11275C;
-  --st-blue: #1F6BFF;
-  --st-blue-2: #1554D6;
+  --st-navy: #0B1220;
+  --st-navy-2: #111B33;
+  --st-blue: #2F6BFF;
+  --st-blue-2: #1D4ED8;
   --st-yellow: #FFDE6B;
   --st-yellow-2: #FFCB3D;
-  --st-bg: #FBF7EC;
+  --st-bg: #FFFFFF;
   --st-paper: #FFFFFF;
-  --st-muted: #363636;
-  --st-faint: #8A94AD;
-  --st-ink: #0A1A3F;
-  --st-primary: #0A1A3F;
-  --st-accent: #1554D6;
-  --st-border: #E7DDC2;
-  --st-line-2: #D8CBA6;
-  --st-soft: #F4ECD6;
+  --st-muted: #475569;
+  --st-faint: #64748B;
+  --st-ink: #0B1220;
+  --st-primary: #0B1220;
+  --st-accent: #1D4ED8;
+  --st-border: #E4E9F2;
+  --st-line-2: #D2DAE8;
+  --st-soft: #F4F7FB;
   --st-highlight: #FFDE6B;
   --st-shadow:
-    0 10px 30px -12px rgba(10, 26, 63, 0.18),
-    0 2px 6px rgba(10, 26, 63, 0.05);
+    0 10px 30px -12px rgba(11, 18, 32, 0.18),
+    0 2px 6px rgba(11, 18, 32, 0.05);
   color: var(--st-ink);
   background: var(--st-bg);
   font:
@@ -91,7 +91,7 @@ html.studio-route body {
 .studio select {
   background: #FFFFFF;
   color: var(--st-ink);
-  border: 1px solid #D8CBA6;
+  border: 1px solid #D2DAE8;
   border-radius: 10px;
   padding: 10px 12px;
   max-width: 100%;
@@ -114,7 +114,7 @@ html.studio-route body {
   cursor: pointer;
 }
 .studio :focus-visible {
-  outline: 3px solid #1F6BFF;
+  outline: 3px solid #2F6BFF;
   outline-offset: 3px;
 }
 .studio label {
@@ -175,7 +175,7 @@ html.studio-route body {
   font-weight: 600;
   line-height: 1.6;
   white-space: nowrap;
-  box-shadow: 0 6px 18px -8px rgba(10, 26, 63, 0.45);
+  box-shadow: 0 6px 18px -8px rgba(11, 18, 32, 0.45);
 }
 .st-button:hover {
   background: var(--st-navy-2);
@@ -250,7 +250,7 @@ html.studio-route body {
   border-radius: 14px;
   background: #FFFFFF;
   box-shadow:
-    0 8px 20px -12px rgba(10, 26, 63, 0.45),
+    0 8px 20px -12px rgba(11, 18, 32, 0.45),
     0 0 0 1px var(--st-border);
   transition:
     transform 0.25s,
@@ -259,7 +259,7 @@ html.studio-route body {
 .st-brand:hover .st-brand-pill {
   transform: translateY(-1px);
   box-shadow:
-    0 12px 24px -14px rgba(10, 26, 63, 0.5),
+    0 12px 24px -14px rgba(11, 18, 32, 0.5),
     0 0 0 2px var(--st-yellow);
 }
 .st-brand-logo {
@@ -338,7 +338,7 @@ html.studio-route body {
   text-transform: capitalize;
   border-radius: 4px;
   background: #FFFAE6;
-  color: #8A6100;
+  color: #7A5A00;
   font-weight: 500;
   letter-spacing: 0;
 }
@@ -492,7 +492,7 @@ html.studio-route body {
   border: 1px solid var(--st-line-2);
   background: var(--st-paper);
   border-radius: 16px;
-  box-shadow: 12px 17px 0 #F4ECD6, 0 24px 60px -32px rgba(10, 26, 63, 0.45);
+  box-shadow: 12px 17px 0 #F4F7FB, 0 24px 60px -32px rgba(11, 18, 32, 0.45);
   transform: rotate(-1.5deg);
 }
 .st-window-bar {
@@ -502,7 +502,7 @@ html.studio-route body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #8A94AD;
+  color: #64748B;
   font-size: 8px;
   letter-spacing: 1.5px;
 }
@@ -514,7 +514,7 @@ html.studio-route body {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #E7DDC2;
+  background: #E4E9F2;
 }
 .st-window-dots i:first-child {
   background: #D33A2C;
@@ -556,30 +556,30 @@ html.studio-route body {
   place-items: center;
   width: 49px;
   height: 48px;
-  border: 1px solid #E7DDC2;
+  border: 1px solid #E4E9F2;
   border-radius: 4px;
   font:
     16px "JetBrains Mono",
     monospace;
-  background: #F4ECD6;
+  background: #F4F7FB;
 }
 .st-array > span.selected {
   background: var(--st-highlight);
-  border-color: #1F6BFF;
-  color: #0A1A3F;
+  border-color: #2F6BFF;
+  color: #0B1220;
 }
 .st-array small {
   font-size: 8px;
   position: absolute;
   bottom: -17px;
-  color: #8A94AD;
+  color: #64748B;
 }
 .st-preview-observation {
   display: flex;
   align-items: center;
   gap: 11px;
   color: var(--st-accent);
-  border: 1px solid #E7DDC2;
+  border: 1px solid #E4E9F2;
   border-radius: 5px;
   padding: 12px;
   margin-bottom: 20px;
@@ -591,8 +591,8 @@ html.studio-route body {
   flex: none;
 }
 .st-preview-code {
-  background: #0A1A3F;
-  color: #DCE6FF;
+  background: #0B1220;
+  color: #FFFFFF;
   border-radius: 5px;
   padding: 19px;
   font:
@@ -605,14 +605,14 @@ html.studio-route body {
 }
 .st-preview-code b {
   font-weight: 400;
-  color: #9FBCFF;
+  color: #7CC4FF;
 }
 .st-preview-code i {
   font-style: normal;
   color: #FFDE6B;
 }
 .st-preview-code .comment {
-  color: #93A0BC;
+  color: rgba(255, 255, 255, 0.45);
 }
 .st-caret {
   display: inline-block;
@@ -641,7 +641,7 @@ html.studio-route body {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #8A6100;
+  color: #7A5A00;
   transform: rotate(-5deg);
   font:
     italic 15px/1.3 Georgia,
@@ -720,7 +720,7 @@ html.studio-route body {
   font:
     10px "JetBrains Mono",
     monospace;
-  color: #8A94AD;
+  color: #64748B;
 }
 .st-feature-grid h3 {
   font-size: 17px;
@@ -748,7 +748,7 @@ html.studio-route body {
   gap: 20px;
   align-items: center;
   padding: 19px 0;
-  border-bottom: 1px solid #E7DDC2;
+  border-bottom: 1px solid #E4E9F2;
 }
 .st-path-list > a:first-child {
   padding-top: 0;
@@ -826,7 +826,7 @@ html.studio-route body {
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 1.6px;
-  color: #8A94AD;
+  color: #64748B;
   margin: 19px 13px 10px;
 }
 .st-sidebar nav > a {
@@ -835,7 +835,7 @@ html.studio-route body {
   gap: 11px;
   font-size: 11px;
   font-weight: 500;
-  color: #363636;
+  color: #475569;
   padding: 10px 13px;
   border-radius: 5px;
   margin: 3px 0;
@@ -866,7 +866,7 @@ html.studio-route body {
   font:
     8px "JetBrains Mono",
     monospace;
-  border: 1px solid #D8CBA6;
+  border: 1px solid #D2DAE8;
   border-radius: 3px;
   padding: 0 4px;
   color: var(--st-accent);
@@ -876,7 +876,7 @@ html.studio-route body {
   padding-top: 30px;
 }
 .st-sidebar-note {
-  border: 1px solid #E7DDC2;
+  border: 1px solid #E4E9F2;
   border-radius: 6px;
   background: #FFFAE6;
   padding: 16px;
@@ -912,8 +912,8 @@ html.studio-route body {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #E7DDC2;
-  color: #0A1A3F;
+  background: #E4E9F2;
+  color: #0B1220;
   font-size: 13px;
   flex: none;
 }
@@ -978,12 +978,12 @@ html.studio-route body {
 .st-breadcrumb {
   font-size: 8px;
   letter-spacing: 1.5px;
-  color: #363636;
+  color: #475569;
   margin-bottom: 25px;
 }
 .st-breadcrumb span {
   padding: 0 12px;
-  color: #8A94AD;
+  color: #64748B;
 }
 .st-page-title {
   display: flex;
@@ -1042,7 +1042,7 @@ html.studio-route body {
 }
 .st-stat small {
   font-size: 9px;
-  color: #363636;
+  color: #475569;
 }
 .st-dashboard-grid {
   display: grid;
@@ -1050,7 +1050,7 @@ html.studio-route body {
   gap: 23px;
 }
 .st-focus-card {
-  border: 1px solid #E7DDC2;
+  border: 1px solid #E4E9F2;
   background: #FFFAE6;
   border-radius: 7px;
   display: grid;
@@ -1067,7 +1067,7 @@ html.studio-route body {
 }
 .st-focus-card p:not(.st-eyebrow) {
   font-size: 11px;
-  color: #363636;
+  color: #475569;
   max-width: 330px;
   margin-bottom: 21px;
 }
@@ -1089,19 +1089,19 @@ html.studio-route body {
   width: 86px;
   height: 95px;
   background: #FFFAE6;
-  border: 1px solid #D8CBA6;
+  border: 1px solid #D2DAE8;
   border-radius: 8px;
   display: grid;
   place-items: center;
   transform: rotate(9deg);
-  box-shadow: 7px 6px 0 #E7DDC2;
+  box-shadow: 7px 6px 0 #E4E9F2;
   color: var(--st-ink);
 }
 .st-art-bracket {
   font:
     44px Georgia,
     serif;
-  color: #D8CBA6;
+  color: #D2DAE8;
   position: absolute;
   bottom: 55px;
   right: -10px;
@@ -1131,7 +1131,7 @@ html.studio-route body {
 .st-section-heading > span {
   font-size: 7px;
   letter-spacing: 1.4px;
-  color: #8A94AD;
+  color: #64748B;
 }
 .st-tool-grid {
   display: grid;
@@ -1146,7 +1146,7 @@ html.studio-route body {
   border-radius: 7px;
 }
 .st-tool-card:hover {
-  border-color: #D8CBA6;
+  border-color: #D2DAE8;
 }
 .st-tool-card .st-icon-tile {
   width: 32px;
@@ -1168,7 +1168,7 @@ html.studio-route body {
   position: absolute;
   top: 20px;
   right: 19px;
-  color: #8A94AD;
+  color: #64748B;
   font-size: 17px;
 }
 .st-dashboard-aside {
@@ -1195,7 +1195,7 @@ html.studio-route body {
   font:
     9px "JetBrains Mono",
     monospace;
-  color: #8A6100;
+  color: #7A5A00;
 }
 .st-tip h3 {
   font-size: 17px;
@@ -1241,16 +1241,16 @@ html.studio-route body {
 .studio th {
   text-transform: uppercase;
   letter-spacing: 0.7px;
-  color: #363636;
+  color: #475569;
   font-size: 8px;
   font-weight: 500;
   padding: 12px 14px;
   border-bottom: 1px solid var(--st-border);
-  background: #F4ECD6;
+  background: #F4F7FB;
 }
 .studio td {
   padding: 15px 14px;
-  border-bottom: 1px solid #F4ECD6;
+  border-bottom: 1px solid #F4F7FB;
   color: var(--st-muted);
 }
 .studio td strong {
@@ -1262,7 +1262,7 @@ html.studio-route body {
   display: block;
   margin-top: 4px;
   font-size: 9px;
-  color: #8A94AD;
+  color: #64748B;
 }
 .studio td a {
   color: var(--st-accent);
@@ -1274,7 +1274,7 @@ html.studio-route body {
   padding: 19px 38px;
   border-top: 1px solid var(--st-border);
   font-size: 9px;
-  color: #8A94AD;
+  color: #64748B;
 }
 .st-mobile-toggle {
   display: none;
@@ -1320,7 +1320,7 @@ html.studio-route body {
   font:
     10px "JetBrains Mono",
     monospace;
-  color: #8A94AD;
+  color: #64748B;
 }
 .st-problem-card h2 {
   font-size: 18px;
@@ -1426,7 +1426,7 @@ html.studio-route body {
   cursor: pointer;
 }
 .st-topic-selector label.selected {
-  border-color: #1F6BFF;
+  border-color: #2F6BFF;
   background: #FFFAE6;
 }
 .st-topic-selector input {
@@ -1498,15 +1498,15 @@ html.studio-route body {
 .st-roadmap-number {
   width: 38px;
   height: 38px;
-  border: 1px solid #E7DDC2;
+  border: 1px solid #E4E9F2;
   border-radius: 50%;
   display: grid;
   place-items: center;
   font:
     12px "JetBrains Mono",
     monospace;
-  color: #8A94AD;
-  background: #F4ECD6;
+  color: #64748B;
+  background: #F4F7FB;
 }
 .st-roadmap-step.done .st-roadmap-number {
   background: #FFFAE6;
@@ -1550,7 +1550,7 @@ html.studio-route body {
   padding: 25px;
   border: 1px solid var(--st-border);
   border-radius: 6px;
-  background: #F4ECD6;
+  background: #F4F7FB;
   margin-top: 22px;
 }
 .st-visualizer h3 {
@@ -1595,7 +1595,7 @@ html.studio-route body {
 .st-chat-message {
   padding: 15px 17px;
   border: 1px solid var(--st-border);
-  background: #F4ECD6;
+  background: #F4F7FB;
   border-radius: 5px;
   margin-right: 24px;
 }
@@ -1607,7 +1607,7 @@ html.studio-route body {
 .st-chat-message > span {
   font-size: 8px;
   letter-spacing: 1.2px;
-  color: #8A94AD;
+  color: #64748B;
   font-weight: 600;
 }
 .st-chat-message p {
@@ -1641,7 +1641,7 @@ html.studio-route body {
   flex-wrap: wrap;
 }
 .st-source-list > span {
-  border: 1px solid #D8CBA6;
+  border: 1px solid #D2DAE8;
   border-radius: 3px;
   padding: 1px 5px;
 }
@@ -1716,7 +1716,7 @@ html.studio-route body {
   color: var(--st-accent);
 }
 .st-timer.warning {
-  color: #B45309;
+  color: #7A5A00;
 }
 .st-workspace-grid {
   display: grid;
@@ -1743,12 +1743,12 @@ html.studio-route body {
   gap: 14px;
   padding: 0 18px;
   border-bottom: 1px solid var(--st-border);
-  background: #F4ECD6;
+  background: #F4F7FB;
 }
 .st-workspace-tabs button {
   border: 0;
   background: none;
-  color: #363636;
+  color: #475569;
   padding: 15px 0;
   font-size: 11px;
 }
@@ -1780,7 +1780,7 @@ html.studio-route body {
   margin-top: 24px;
 }
 .st-example {
-  background: #F4ECD6;
+  background: #F4F7FB;
   border: 1px solid var(--st-border);
   padding: 15px;
   margin-top: 17px;
@@ -1792,12 +1792,12 @@ html.studio-route body {
 .st-example > span {
   font-size: 8px;
   letter-spacing: 1px;
-  color: #8A94AD;
+  color: #64748B;
 }
 .st-example pre {
   font-size: 11px;
   padding: 9px 0 12px;
-  color: #0A1A3F;
+  color: #0B1220;
 }
 .st-panel-body > .st-fine {
   margin-top: 25px;
@@ -1818,8 +1818,8 @@ html.studio-route body {
   justify-content: space-between;
   align-items: center;
   padding: 11px 14px;
-  background: #11275C;
-  color: #C9D6F5;
+  background: #111B33;
+  color: #EAF1FF;
   gap: 12px;
 }
 .st-editor-toolbar > span {
@@ -1835,7 +1835,7 @@ html.studio-route body {
   gap: 12px;
 }
 .st-editor-toolbar button {
-  color: #A9BCE4;
+  color: rgba(255, 255, 255, 0.62);
   border: 0;
   background: none;
   font-size: 9px;
@@ -1844,9 +1844,9 @@ html.studio-route body {
 .st-editor-toolbar select {
   padding: 2px 4px;
   font-size: 9px;
-  background: #11275C;
-  color: #C9D6F5;
-  border-color: #1A3577;
+  background: #111B33;
+  color: #EAF1FF;
+  border-color: #16223F;
   min-height: 26px;
 }
 .st-editor-footer {
@@ -1860,7 +1860,7 @@ html.studio-route body {
 }
 .st-editor-footer > span {
   font-size: 9px;
-  color: #8A94AD;
+  color: var(--st-muted);
 }
 .st-editor-footer > div {
   display: flex;
@@ -1876,7 +1876,7 @@ html.studio-route body {
 }
 .st-editor-loading {
   padding: 30px;
-  color: #A9BCE4;
+  color: rgba(255, 255, 255, 0.62);
 }
 .st-custom-input {
   padding: 13px 18px;
@@ -1923,7 +1923,7 @@ html.studio-route body {
   justify-content: space-between;
 }
 .st-test-result {
-  background: #F4ECD6;
+  background: #F4F7FB;
   border-radius: 4px;
   padding: 13px;
   margin: 15px 0;
@@ -1939,7 +1939,7 @@ html.studio-route body {
   display: block;
   text-transform: uppercase;
   margin-top: 10px;
-  color: #8A94AD;
+  color: #64748B;
 }
 .st-test-result pre {
   font-size: 10px;
@@ -1953,7 +1953,7 @@ html.studio-route body {
 }
 .st-report-score small {
   font-size: 17px;
-  color: #8A94AD;
+  color: #64748B;
   letter-spacing: 0;
 }
 .st-report-score p {
@@ -2037,7 +2037,7 @@ html.studio-route body {
   margin-bottom: 10px;
 }
 .st-diagram {
-  background: #F4ECD6;
+  background: #F4F7FB;
 }
 .st-diagram-toolbar {
   display: flex;
@@ -2050,17 +2050,17 @@ html.studio-route body {
   font-size: 9px;
   padding: 5px 8px;
   background: var(--st-paper);
-  border: 1px solid #D8CBA6;
+  border: 1px solid #D2DAE8;
   border-radius: 4px;
 }
 .st-diagram > .st-fine {
   padding: 10px 15px;
 }
 .studio .react-flow__node-default {
-  border: 1px solid #D8CBA6;
+  border: 1px solid #D2DAE8;
   background: #FFFFFF;
   border-radius: 4px;
-  color: #0A1A3F;
+  color: #0B1220;
   font-size: 11px;
 }
 .studio .react-flow__handle {
@@ -2257,7 +2257,7 @@ html.studio-route body {
     width: 100%;
     height: auto;
     padding: 18px 20px;
-    background: #F4ECD6;
+    background: #F4F7FB;
     overflow: visible;
     border-right: 0;
     border-bottom: 1px solid var(--st-border);
@@ -2271,8 +2271,8 @@ html.studio-route body {
     right: 24px;
     top: 24px;
     padding: 5px 10px;
-    border: 1px solid #E7DDC2;
-    background: #FBF7EC;
+    border: 1px solid #E4E9F2;
+    background: #FFFFFF;
     border-radius: 4px;
     font-size: 11px !important;
   }
@@ -2411,7 +2411,7 @@ html.studio-route body {
     max-width: 500px;
     width: 100%;
     margin: auto;
-    box-shadow: 9px 12px 0 #F4ECD6;
+    box-shadow: 9px 12px 0 #F4F7FB;
   }
   .st-preview-main {
     padding: 23px;
