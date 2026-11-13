@@ -1,6 +1,6 @@
 # Coding Hubs home redesign
 
-The homepage keeps Coding Hubs' course catalogue, descriptions, demo videos, program curricula, contact information and published project/review data. The Product Space reference informed the broad idea of an education/community landing page. Its copy, source code, branding and media were not imported. The split hero, layered code/classroom composition, navy/yellow visual system and pathway navigation are a Coding Hubs implementation using existing local assets.
+The homepage keeps Coding Hubs' course catalogue, descriptions, demo videos, program curricula, contact information and published project/review data. The Product Space reference informed the broad idea of an education/community landing page. Its copy, source code, branding and media were not imported. The split hero, layered code/classroom composition, navy/blue visual system and pathway navigation are a Coding Hubs implementation using existing local assets.
 
 ## Behaviour
 

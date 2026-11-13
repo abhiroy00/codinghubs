@@ -11,8 +11,8 @@ html.studio-route body {
   --st-navy-2: #111B33;
   --st-blue: #2F6BFF;
   --st-blue-2: #1D4ED8;
-  --st-yellow: #FFDE6B;
-  --st-yellow-2: #FFCB3D;
+  --st-yellow: #93c5fd;
+  --st-yellow-2: #60a5fa;
   --st-bg: #FFFFFF;
   --st-paper: #FFFFFF;
   --st-muted: #475569;
@@ -23,7 +23,7 @@ html.studio-route body {
   --st-border: #E4E9F2;
   --st-line-2: #D2DAE8;
   --st-soft: #F4F7FB;
-  --st-highlight: #FFDE6B;
+  --st-highlight: #93c5fd;
   --st-shadow:
     0 10px 30px -12px rgba(11, 18, 32, 0.18),
     0 2px 6px rgba(11, 18, 32, 0.05);
@@ -189,17 +189,17 @@ html.studio-route body {
   background: var(--st-soft);
   border-color: var(--st-navy);
 }
-/* The landing hero keeps the site's yellow call to action. */
+/* The landing hero keeps the site's blue call to action. */
 .st-landing .st-hero .st-button {
   background: var(--st-yellow);
   border-color: var(--st-yellow);
   color: var(--st-navy) !important;
-  box-shadow: 0 6px 18px -6px rgba(255, 203, 61, 0.7);
+  box-shadow: 0 6px 18px -6px rgba(96, 165, 250, 0.7);
 }
 .st-landing .st-hero .st-button:hover {
   background: var(--st-yellow-2);
   border-color: var(--st-yellow-2);
-  box-shadow: 0 10px 24px -8px rgba(255, 203, 61, 0.85);
+  box-shadow: 0 10px 24px -8px rgba(96, 165, 250, 0.85);
 }
 .st-link-button {
   display: inline-flex;
@@ -234,7 +234,7 @@ html.studio-route body {
   border: 1px solid var(--st-border);
   border-radius: 10px;
   color: var(--st-accent);
-  background: #FFFAE6;
+  background: #eff6ff;
   flex: none;
 }
 .st-brand {
@@ -337,13 +337,13 @@ html.studio-route body {
   padding: 2px 8px;
   text-transform: capitalize;
   border-radius: 4px;
-  background: #FFFAE6;
+  background: #eff6ff;
   color: #7A5A00;
   font-weight: 500;
   letter-spacing: 0;
 }
 .st-difficulty.easy {
-  background: #FFFAE6;
+  background: #eff6ff;
   color: #12945A;
 }
 .st-difficulty.hard {
@@ -609,7 +609,7 @@ html.studio-route body {
 }
 .st-preview-code i {
   font-style: normal;
-  color: #FFDE6B;
+  color: #93c5fd;
 }
 .st-preview-code .comment {
   color: rgba(255, 255, 255, 0.45);
@@ -618,7 +618,7 @@ html.studio-route body {
   display: inline-block;
   height: 12px;
   width: 2px;
-  background: #FFDE6B;
+  background: #93c5fd;
   vertical-align: middle;
 }
 .st-preview-bottom {
@@ -733,7 +733,7 @@ html.studio-route body {
 }
 .st-path-section {
   padding: 65px 6%;
-  background: #FFFAE6;
+  background: #eff6ff;
   border-top: 1px solid var(--st-border);
   border-bottom: 1px solid var(--st-border);
   display: grid;
@@ -846,10 +846,10 @@ html.studio-route body {
   height: 17px;
 }
 .st-sidebar nav > a:hover {
-  background: #FFFAE6;
+  background: #eff6ff;
 }
 .st-sidebar nav > a.active {
-  background: #FFFAE6;
+  background: #eff6ff;
   color: var(--st-accent);
 }
 .st-sidebar nav > a.active:before {
@@ -878,7 +878,7 @@ html.studio-route body {
 .st-sidebar-note {
   border: 1px solid #E4E9F2;
   border-radius: 6px;
-  background: #FFFAE6;
+  background: #eff6ff;
   padding: 16px;
   margin: 0 6px 20px;
 }
@@ -1051,7 +1051,7 @@ html.studio-route body {
 }
 .st-focus-card {
   border: 1px solid #E4E9F2;
-  background: #FFFAE6;
+  background: #eff6ff;
   border-radius: 7px;
   display: grid;
   grid-template-columns: 1fr 150px;
@@ -1088,7 +1088,7 @@ html.studio-route body {
 .st-focus-art > div {
   width: 86px;
   height: 95px;
-  background: #FFFAE6;
+  background: #eff6ff;
   border: 1px solid #D2DAE8;
   border-radius: 8px;
   display: grid;
@@ -1384,7 +1384,7 @@ html.studio-route body {
 }
 .st-persona.selected {
   border: 1.5px solid var(--st-accent);
-  background: #FFFAE6;
+  background: #eff6ff;
 }
 .st-persona > input {
   position: absolute;
@@ -1427,7 +1427,7 @@ html.studio-route body {
 }
 .st-topic-selector label.selected {
   border-color: #2F6BFF;
-  background: #FFFAE6;
+  background: #eff6ff;
 }
 .st-topic-selector input {
   width: 13px !important;
@@ -1509,7 +1509,7 @@ html.studio-route body {
   background: #F4F7FB;
 }
 .st-roadmap-step.done .st-roadmap-number {
-  background: #FFFAE6;
+  background: #eff6ff;
   color: var(--st-accent);
 }
 .st-roadmap-title {
@@ -1855,7 +1855,7 @@ html.studio-route body {
   align-items: center;
   gap: 15px;
   padding: 12px 15px;
-  background: #FFFAE6;
+  background: #eff6ff;
   border-top: 1px solid var(--st-border);
 }
 .st-editor-footer > span {

@@ -6,9 +6,9 @@
   --blue: #3469ed;
   --blue-2: #2457cf;
   --blue-soft: #edf2ff;
-  --yellow: #f3d77b;
-  --yellow-2: #ffe497;
-  --yellow-soft: #fcf5df;
+  --yellow: #93c5fd;
+  --yellow-2: #bfdbfe;
+  --yellow-soft: #eff6ff;
   --ink: #152039;
   --muted: #596273;
   --bg: #fbfaf6;
@@ -51,14 +51,14 @@
 }
 .ch-home .btn-yellow,
 .ch-home .hdr .btn-yellow {
-  background: var(--yellow);
-  color: var(--ink);
-  border-color: var(--yellow);
+  background: var(--blue-2);
+  color: #fff;
+  border-color: var(--blue-2);
   border-radius: 8px;
   box-shadow: none;
 }
 .ch-home .btn-yellow:hover {
-  background: var(--yellow-2);
+  background: #1d4ed8;
 }
 .ch-home .btn-lg {
   padding: 1rem 1.3rem;
@@ -102,7 +102,7 @@
   height: 28px;
 }
 .ch-home .join-bar-close:hover {
-  background: #e4c363;
+  background: #60a5fa;
 }
 .ch-home .hdr {
   position: sticky;
@@ -808,7 +808,7 @@
   height: 56px;
 }
 .ch-home .cc-card .cc-glyph svg {
-  stroke: #f5e2a7;
+  stroke: #bfdbfe;
 }
 .ch-home .cc-cat {
   background: transparent;
@@ -869,7 +869,7 @@
   letter-spacing: -0.025em;
 }
 .ch-home .t-a {
-  background: #f1eedf;
+  background: #eef4ff;
 }
 .ch-home .t-b {
   background: #e8edf5;
@@ -878,7 +878,7 @@
   background: #e4ece6;
 }
 .ch-home .t-d {
-  background: #f0ece3;
+  background: #edf2fa;
 }
 .ch-home .t-f {
   background: var(--home-dark);
