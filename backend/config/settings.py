@@ -237,6 +237,9 @@ if TESTING:  # fast, isolated settings for the test suite only
 GIGS_ENABLED = config('GIGS_ENABLED', default=False, cast=bool)
 
 # Interview Studio: server-only credentials; disabled until configured.
+# Google Identity Services client ids allowed to sign in (comma separated).
+GOOGLE_CLIENT_IDS = config('GOOGLE_CLIENT_IDS', default='')
+
 STUDIO_AI_KEY = config('STUDIO_AI_KEY', default='')
 STUDIO_AI_MODEL = config('STUDIO_AI_MODEL', default='')
 STUDIO_AI_URL = config('STUDIO_AI_URL', default='https://api.openai.com/v1/responses')

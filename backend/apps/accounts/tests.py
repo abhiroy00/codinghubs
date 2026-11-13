@@ -1,10 +1,13 @@
 import re
+from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.core.cache import cache
 from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
+
+from apps.accounts import views
 
 User = get_user_model()
 
@@ -154,3 +157,66 @@ class AccountDataTests(TestCase):
         order.refresh_from_db()
         self.assertIsNone(order.user)
         self.assertEqual(order.status, Order.STATUS_PAID)
+
+
+class GoogleLoginTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    @override_settings(GOOGLE_CLIENT_IDS='client-abc.apps.googleusercontent.com')
+    def test_config_exposes_the_client_id(self):
+        resp = self.client.get('/api/auth/google/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data['client_id'], 'client-abc.apps.googleusercontent.com')
+
+    @override_settings(GOOGLE_CLIENT_IDS='')
+    def test_login_is_disabled_without_a_client_id(self):
+        resp = self.client.post('/api/auth/google/', {'credential': 'token'}, format='json')
+        self.assertEqual(resp.status_code, 503)
+        self.assertEqual(self.client.get('/api/auth/google/').data['client_id'], '')
+
+    @override_settings(GOOGLE_CLIENT_IDS='client-abc.apps.googleusercontent.com')
+    def test_valid_credential_creates_the_account_and_returns_tokens(self):
+        claims = {
+            'aud': 'client-abc.apps.googleusercontent.com',
+            'email': 'Learner@Example.com',
+            'email_verified': 'true',
+            'given_name': 'Asha',
+            'family_name': 'Verma',
+        }
+        with mock.patch('apps.accounts.views._google_token_info', return_value=claims):
+            resp = self.client.post('/api/auth/google/', {'credential': 'token'}, format='json')
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn('access', resp.data)
+        self.assertIn('refresh', resp.data)
+        user = User.objects.get(email='learner@example.com')
+        self.assertEqual(user.first_name, 'Asha')
+        self.assertFalse(user.has_usable_password())
+        self.assertEqual(resp.data['user']['username'], user.username)
+
+        with mock.patch('apps.accounts.views._google_token_info', return_value=claims):
+            again = self.client.post('/api/auth/google/', {'credential': 'token'}, format='json')
+        self.assertEqual(again.status_code, 200)
+        self.assertEqual(User.objects.filter(email__iexact='learner@example.com').count(), 1)
+
+    @override_settings(GOOGLE_CLIENT_IDS='client-abc.apps.googleusercontent.com')
+    def test_foreign_audience_and_unverified_email_are_rejected(self):
+        with mock.patch('apps.accounts.views._google_token_info', return_value={
+            'aud': 'other-client.apps.googleusercontent.com', 'email': 'x@example.com', 'email_verified': 'true',
+        }):
+            resp = self.client.post('/api/auth/google/', {'credential': 'token'}, format='json')
+        self.assertEqual(resp.status_code, 400)
+
+        with mock.patch('apps.accounts.views._google_token_info', return_value={
+            'aud': 'client-abc.apps.googleusercontent.com', 'email': 'x@example.com', 'email_verified': 'false',
+        }):
+            resp = self.client.post('/api/auth/google/', {'credential': 'token'}, format='json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertFalse(User.objects.filter(email='x@example.com').exists())
+
+    @override_settings(GOOGLE_CLIENT_IDS='client-abc.apps.googleusercontent.com')
+    def test_broken_credential_is_rejected(self):
+        with mock.patch('apps.accounts.views._google_token_info', side_effect=views.GoogleTokenError('nope')):
+            resp = self.client.post('/api/auth/google/', {'credential': 'token'}, format='json')
+        self.assertEqual(resp.status_code, 400)

@@ -1,23 +1,100 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { api } from '../lib/api'
 import { useAuth } from '../lib/auth-context'
+import './login.css'
+
+type GoogleCredentialResponse = { credential?: string }
+type GoogleAccounts = {
+  id: {
+    initialize: (options: { client_id: string; callback: (r: GoogleCredentialResponse) => void }) => void
+    renderButton: (parent: HTMLElement, options: Record<string, unknown>) => void
+  }
+}
+declare global {
+  interface Window {
+    google?: { accounts: GoogleAccounts }
+  }
+}
 
 export function Login() {
-  const { login } = useAuth()
+  const { login, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const location = useLocation() as { state?: { from?: { pathname: string } } }
+  const googleRef = useRef<HTMLDivElement>(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [notice, setNotice] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleClientId, setGoogleClientId] = useState('')
+
+  const goNext = () => navigate(location.state?.from?.pathname ?? '/dashboard', { replace: true })
+
+  useEffect(() => {
+    let active = true
+    api.get<{ client_id: string }>('/auth/google/')
+      .then((response) => { if (active) setGoogleClientId(response.data.client_id || '') })
+      .catch(() => { if (active) setGoogleClientId('') })
+    return () => { active = false }
+  }, [])
+
+  useEffect(() => {
+    if (!googleClientId) return
+    let cancelled = false
+    const mount = () => {
+      const google = window.google
+      if (cancelled || !google || !googleRef.current) return
+      google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: async (response) => {
+          if (!response.credential) return
+          setError('')
+          setNotice('Signing you in with Google…')
+          try {
+            await loginWithGoogle(response.credential)
+            goNext()
+          } catch {
+            setNotice('')
+            setError('Google sign-in failed. Please try again or use your password.')
+          }
+        },
+      })
+      google.accounts.id.renderButton(googleRef.current, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'pill',
+        logo_alignment: 'left',
+        width: 348,
+      })
+    }
+    if (window.google?.accounts?.id) {
+      mount()
+    } else {
+      const script = document.createElement('script')
+      script.src = 'https://accounts.google.com/gsi/client'
+      script.async = true
+      script.defer = true
+      script.onload = mount
+      document.head.appendChild(script)
+    }
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [googleClientId])
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
+    setNotice('')
     setLoading(true)
     try {
       await login(username, password)
-      navigate(location.state?.from?.pathname ?? '/dashboard', { replace: true })
+      goNext()
     } catch {
       setError('Invalid username or password.')
     } finally {
@@ -26,45 +103,98 @@ export function Login() {
   }
 
   return (
-    <section className="section" aria-labelledby="login-heading">
-      <div className="container-x" style={{ maxWidth: '26rem' }}>
-        <p className="eyebrow rv">Student login</p>
-        <h1 id="login-heading" className="display-lg mt-4">
-          Welcome back.
-        </h1>
-        <form onSubmit={handleSubmit} style={{ marginTop: '2rem' }}>
-          <div className="field">
-            <label htmlFor="username">Username</label>
-            <input id="username" required autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+    <section className="auth-page" aria-labelledby="login-heading">
+      <div className="auth-card">
+        <aside className="auth-visual" aria-hidden="true">
+          <img src="/fs-assets/img/modern-virtual-classroom-studio.jpg" alt="" width={1280} height={801} />
+          <span className="auth-badge"><i />LIVE COHORTS</span>
+          <div className="auth-visual-copy">
+            <p>Learn AI with people who build.</p>
+            <ul>
+              <li>Free 2-hour demo class</li>
+              <li>Mentors from the industry</li>
+              <li>Projects you can show</li>
+            </ul>
           </div>
-          <div className="field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              required
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {error && <p style={{ color: '#be123c', fontSize: '.875rem', marginTop: '.5rem' }}>{error}</p>}
-          <button type="submit" className="btn btn-ink" style={{ width: '100%', marginTop: '1.5rem' }} disabled={loading}>
-            <span className="shine"></span>
-            <span>{loading ? 'Logging in…' : 'Log in'}</span>
-          </button>
-        </form>
-        <p style={{ marginTop: '1.5rem', fontSize: '.875rem', color: 'var(--color-muted)' }}>
-          New here?{' '}
-          <Link to="/register" state={location.state} style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-            Create an account
+        </aside>
+
+        <div className="auth-panel">
+          <Link to="/" className="auth-close" aria-label="Back to the home page">
+            <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg>
           </Link>
-        </p>
-        <p style={{ marginTop: '.5rem', fontSize: '.875rem', color: 'var(--color-muted)' }}>
-          <Link to="/forgot-password" style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-            Forgot your password?
-          </Link>
-        </p>
+
+          <p className="auth-eyebrow">Student login</p>
+          <h1 id="login-heading">Welcome back.</h1>
+          <p className="auth-sub">Sign in to continue your learning, or use your Google account.</p>
+
+          {googleClientId ? (
+            <>
+              <div className="auth-google" ref={googleRef} />
+              <p className="auth-or"><span>or</span></p>
+            </>
+          ) : null}
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <label className="auth-field">
+              <span>Email or username</span>
+              <div className="auth-input">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6" /></svg>
+                <input
+                  id="username"
+                  required
+                  autoComplete="username"
+                  placeholder="you@example.com"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+            </label>
+
+            <label className="auth-field">
+              <span>Password</span>
+              <div className="auth-input">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3" /></svg>
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  autoComplete="current-password"
+                  placeholder="Your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="auth-eye"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword((v) => !v)}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z" />
+                    <circle cx="12" cy="12" r="2.6" />
+                  </svg>
+                </button>
+              </div>
+            </label>
+
+            <div className="auth-row">
+              <span className="auth-hint">Your progress stays linked to this device.</span>
+              <Link to="/forgot-password" className="auth-link">Forgot password?</Link>
+            </div>
+
+            {error && <p className="auth-message is-error" role="alert">{error}</p>}
+            {notice && !error && <p className="auth-message" role="status">{notice}</p>}
+
+            <button type="submit" className="auth-submit" disabled={loading}>
+              {loading ? 'Logging in…' : 'Log in'}
+            </button>
+          </form>
+
+          <p className="auth-alt">
+            Don’t have an account?{' '}
+            <Link to="/register" state={location.state}>Sign up</Link>
+          </p>
+        </div>
       </div>
     </section>
   )

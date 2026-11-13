@@ -1,3 +1,9 @@
+import json
+import re
+import urllib.error
+import urllib.parse
+import urllib.request
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
@@ -180,3 +186,78 @@ class LogoutView(APIView):
             except TokenError:
                 pass
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class GoogleTokenError(Exception):
+    pass
+
+
+def _google_token_info(credential: str) -> dict:
+    """Verify a Google ID token with Google and return its claims."""
+    url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' + urllib.parse.quote(credential, safe='')
+    try:
+        with urllib.request.urlopen(url, timeout=6) as response:  # noqa: S310 - fixed Google endpoint
+            return json.loads(response.read().decode('utf-8'))
+    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+        raise GoogleTokenError(str(exc)) from exc
+
+
+def _username_from_email(email: str) -> str:
+    base = re.sub(r'[^a-zA-Z0-9._-]', '', email.split('@')[0])[:140] or 'learner'
+    candidate, n = base, 1
+    while User.objects.filter(username__iexact=candidate).exists():
+        n += 1
+        candidate = f'{base}{n}'
+    return candidate
+
+
+class GoogleLoginThrottle(AnonRateThrottle):
+    rate = '30/hour'
+
+
+class GoogleLoginSerializer(serializers.Serializer):
+    credential = serializers.CharField()
+
+
+class GoogleLoginView(APIView):
+    """Exchange a Google Identity Services credential for site tokens."""
+
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [GoogleLoginThrottle]
+
+    def get(self, request):
+        """Public config: which Google client id the page should render."""
+        clients = [client.strip() for client in getattr(settings, 'GOOGLE_CLIENT_IDS', '').split(',') if client.strip()]
+        return Response({'client_id': clients[0] if clients else ''})
+
+    def post(self, request):
+        serializer = GoogleLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        allowed = [client.strip() for client in getattr(settings, 'GOOGLE_CLIENT_IDS', '').split(',') if client.strip()]
+        if not allowed:
+            return Response({'detail': 'Google sign-in is not configured yet.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        try:
+            info = _google_token_info(serializer.validated_data['credential'])
+        except GoogleTokenError:
+            return Response({'detail': 'Google sign-in could not be verified.'}, status=status.HTTP_400_BAD_REQUEST)
+        if info.get('aud') not in allowed:
+            return Response({'detail': 'This Google client is not allowed for this site.'}, status=status.HTTP_400_BAD_REQUEST)
+        if str(info.get('email_verified', '')).lower() not in ('true', '1'):
+            return Response({'detail': 'Your Google email is not verified.'}, status=status.HTTP_400_BAD_REQUEST)
+        email = (info.get('email') or '').strip().lower()
+        if not email:
+            return Response({'detail': 'Google did not share an email address.'}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.filter(email__iexact=email).first()
+        if user is None:
+            user = User(
+                username=_username_from_email(email),
+                email=email,
+                first_name=(info.get('given_name') or '')[:150],
+                last_name=(info.get('family_name') or '')[:150],
+            )
+            user.set_unusable_password()
+            user.save()
+        if not user.is_active:
+            return Response({'detail': 'This account is disabled.'}, status=status.HTTP_403_FORBIDDEN)
+        refresh = RefreshToken.for_user(user)
+        return Response({'user': UserSerializer(user).data, 'access': str(refresh.access_token), 'refresh': str(refresh)})
