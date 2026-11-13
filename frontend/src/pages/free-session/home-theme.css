@@ -1503,23 +1503,23 @@
 
 /* Legacy process styles use an ID selector; keep the home contrast explicit. */
 .ch-home.fs-page #how.sec-process {
-  background: var(--home-dark) !important;
-  color: var(--home-light);
+  background: #0c1424 !important;
+  color: #fff !important;
 }
 .ch-home.fs-page #how.sec-process .h2,
 .ch-home.fs-page #how.sec-process .marker,
 .ch-home.fs-page #how .step h3 {
-  color: var(--home-light);
+  color: #fff !important;
 }
 .ch-home.fs-page #how .step p {
-  color: var(--home-soft);
+  color: #e8edf2 !important;
 }
 .ch-home.fs-page #how.sec-process .eyebrow-light {
-  color: #a6bcf9;
+  color: #a6bcf9 !important;
 }
 .ch-home.fs-page #how .step-diamond {
-  background: #1c2a40;
-  border-color: #475571;
+  background: #1c2a40 !important;
+  border-color: #475571 !important;
   box-shadow: none;
 }
 .ch-home .ftr.fx .fx-social-row a {
