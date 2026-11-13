@@ -16,9 +16,9 @@ Google's current instructions: [web client and branding setup](https://developer
 
 ## Runtime configuration
 
-Local: set `GOOGLE_CLIENT_IDS=<your-web-client-id>` in the untracked `backend/.env` and restart Django. The frontend obtains the public ID from `GET /api/auth/google/`; no frontend build-time secret is required.
+The owner-supplied public Web client ID is configured as the application default in `backend/config/settings.py`. OAuth client IDs are public identifiers, not client secrets. To override it locally, set `GOOGLE_CLIENT_IDS=<your-web-client-id>` in the untracked `backend/.env` and restart Django. The frontend obtains the public ID from `GET /api/auth/google/`; no frontend build-time secret is required.
 
-Production uses the existing `/codinghubs/prod/` SSM Parameter Store → `infra/fetch-env.sh` → Docker environment path. Set `/codinghubs/prod/GOOGLE_CLIENT_IDS` to the Web client ID and redeploy/restart the backend using the existing deployment process. Do not put runtime credentials in tracked source.
+Production can override this public default through the existing `/codinghubs/prod/GOOGLE_CLIENT_IDS` SSM parameter → Docker environment path. A deliberately empty override disables Google sign-in. No client secret or private Google credential is stored in source.
 
 Install backend requirements and apply the additive migration `accounts.0002` before serving the new backend. It adds a nullable, unique Google subject field without changing existing passwords or accounts.
 

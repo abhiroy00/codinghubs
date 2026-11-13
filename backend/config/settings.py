@@ -238,7 +238,9 @@ GIGS_ENABLED = config('GIGS_ENABLED', default=False, cast=bool)
 
 # Interview Studio: server-only credentials; disabled until configured.
 # Google Identity Services client ids allowed to sign in (comma separated).
-GOOGLE_CLIENT_IDS = config('GOOGLE_CLIENT_IDS', default='')
+# Public OAuth application identifier, supplied by the site owner (not a client secret).
+# Deployments can override the allowlist, or explicitly disable sign-in with an empty value.
+GOOGLE_CLIENT_IDS = config('GOOGLE_CLIENT_IDS', default='693815999807-fi2loob14i0jkgc8jjqknp64odkd888q.apps.googleusercontent.com')
 
 STUDIO_AI_KEY = config('STUDIO_AI_KEY', default='')
 STUDIO_AI_MODEL = config('STUDIO_AI_MODEL', default='')
