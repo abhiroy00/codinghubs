@@ -1,7 +1,9 @@
 :root{
-  --color-bg:#FBF7EC;--color-surface:#fff;--color-surface-2:#F4ECD6;--color-soft:#F4ECD6;
-  --color-line:#E7DDC2;--color-line-strong:#D8CBA6;--color-ink:#111218;--color-ink-deep:#0b0c10;
-  --color-muted:#626675;--color-faint:#8b8fa0;--color-brand:#1A3577;--color-electric:#11275C;
+  /* Same palette as the public homepage (free-session.css): white surfaces, cool grey-blue lines,
+     navy ink and the blue accent, so account pages no longer render on the old cream theme. */
+  --color-bg:#fff;--color-surface:#fff;--color-surface-2:#F4F7FB;--color-soft:#F4F7FB;
+  --color-line:#E4E9F2;--color-line-strong:#D2DAE8;--color-ink:#0B1220;--color-ink-deep:#0B1220;
+  --color-muted:#475569;--color-faint:#64748b;--color-brand:#1D4ED8;--color-electric:#111B33;
   --color-success:#16a34a;--color-lime:#d6f24b;--color-lime-strong:#c6e42d;--color-lime-deep:#4d7c0f;
   --font-sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --font-display:"Inter Tight","Inter",ui-sans-serif,system-ui,sans-serif;
@@ -101,7 +103,7 @@ h1,h2,h3,.font-display{font-family:var(--font-display)}
 
 /* ---------- header ---------- */
 header.site{position:fixed;inset-inline:0;top:0;z-index:50;height:5rem;border-bottom:1px solid transparent;transition:height .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease),backdrop-filter .5s var(--ease)}
-header.site.scrolled{height:4rem;background:rgba(250,250,252,.78);border-color:var(--color-line);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4)}
+header.site.scrolled{height:4rem;background:rgba(255,255,255,.96);border-color:var(--color-line);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4)}
 header.site nav{display:flex;height:100%;align-items:center;justify-content:space-between;gap:1.5rem}
 .nav-links{display:none;align-items:center;gap:.25rem}
 .nav-link{position:relative;display:inline-flex;height:2.25rem;align-items:center;gap:.25rem;border-radius:8px;padding-inline:.875rem;font-size:.875rem;font-weight:500;color:var(--color-muted);transition:color .2s}
@@ -467,7 +469,7 @@ footer{border-top:1px solid var(--color-line);background:var(--color-surface)}
 .field{margin-top:1rem}
 .field label{display:block;font-size:.75rem;font-weight:600;color:var(--color-muted);margin-bottom:.375rem}
 .field input,.field select{width:100%;height:3rem;border-radius:.875rem;border:1px solid var(--color-line-strong);background:var(--color-surface);padding-inline:1rem;font-size:.9375rem;transition:border-color .2s,box-shadow .2s}
-.field input:focus,.field select:focus{outline:none;border-color:var(--color-brand);box-shadow:0 0 0 4px rgba(79,70,229,.12)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--color-brand);box-shadow:0 0 0 4px rgba(29,78,216,.14)}
 .form-note{margin-top:.875rem;font-size:.75rem;color:var(--color-faint);text-align:center}
 .form-ok{display:none;text-align:center;padding:1rem 0}
 .form-ok.show{display:block}

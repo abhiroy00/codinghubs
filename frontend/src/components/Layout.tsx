@@ -62,7 +62,7 @@ export function Layout() {
             <circle cx="80" cy="80" r="9.5" fill="var(--color-brand)" />
           </svg>
           <span className="logo-text" style={{ fontSize: '1.125rem' }}>
-            CodingHubs<b>AI</b>
+            Coding Hubs
           </span>
           <span className="dot"></span>
         </div>

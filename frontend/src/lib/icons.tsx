@@ -19,9 +19,7 @@ export function Logo() {
   return (
     <span className="logo">
       <Icon svg={MARK_SVG} />
-      <span className="logo-text">
-        CodingHubs<b>AI</b>
-      </span>
+      <span className="logo-text">Coding Hubs</span>
       <span className="sr-only">Coding Hubs School of AI home</span>
     </span>
   )
