@@ -15,11 +15,16 @@ export function ArrowIcon() {
   return <Icon svg={ARROW_SVG} />
 }
 
+/** Official logo image, the same asset the homepage header uses. */
 export function Logo() {
   return (
-    <span className="logo">
-      <Icon svg={MARK_SVG} />
-      <span className="logo-text">Coding Hubs</span>
+    <span className="logo logo-layout">
+      <span className="brand-pill">
+        <picture>
+          <source srcSet="/assets/coding-hubs-school-of-ai-logo-wide.webp" type="image/webp" />
+          <img className="brand-logo" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="" width={720} height={208} />
+        </picture>
+      </span>
       <span className="sr-only">Coding Hubs School of AI home</span>
     </span>
   )

@@ -56,14 +56,7 @@ export function Layout() {
       </a>
       <div id="preloader" aria-hidden="true" className={loaded ? 'done' : ''}>
         <div className="pl">
-          <svg viewBox="0 0 100 100" fill="none">
-            <path d="M44 20 L16 50 L44 80" stroke="#111218" strokeWidth="15" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M72 18 L52 70" stroke="#111218" strokeWidth="15" strokeLinecap="round" />
-            <circle cx="80" cy="80" r="9.5" fill="var(--color-brand)" />
-          </svg>
-          <span className="logo-text" style={{ fontSize: '1.125rem' }}>
-            Coding Hubs
-          </span>
+          <img src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} style={{ height: '1.75rem', width: 'auto' }} />
           <span className="dot"></span>
         </div>
       </div>

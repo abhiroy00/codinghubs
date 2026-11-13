@@ -98,11 +98,17 @@ h1,h2,h3,.font-display{font-family:var(--font-display)}
 /* ---------- logo ---------- */
 .logo{display:inline-flex;align-items:center;gap:.5rem;color:var(--color-ink)}
 .logo svg{width:26px;height:26px}
+/* Official logo image (same asset as the homepage header) on a white pill.
+   Scoped to the Logo component of these pages so the homepage header is untouched. */
+.logo-layout .brand-pill{display:inline-flex;align-items:center;padding:.3rem .8rem;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--color-line);transition:transform .25s,box-shadow .25s}
+.logo-layout .brand-logo{display:block;height:40px;width:auto}
+.logo-layout:hover .brand-pill{transform:translateY(-1px);box-shadow:0 0 0 1px var(--color-line-strong)}
+@media(max-width:640px){.logo-layout .brand-logo{height:34px}}
 .logo-text{font-family:var(--font-display);font-size:1.0625rem;font-weight:700;line-height:1;letter-spacing:-.03em}
 .logo-text b,.brand{color:var(--color-brand);font-weight:inherit}
 
 /* ---------- header ---------- */
-header.site{position:fixed;inset-inline:0;top:0;z-index:50;height:5rem;border-bottom:1px solid transparent;transition:height .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease),backdrop-filter .5s var(--ease)}
+header.site{position:fixed;inset-inline:0;top:0;z-index:50;height:5rem;background:rgba(255,255,255,.96);border-bottom:1px solid var(--color-line);backdrop-filter:saturate(1.6) blur(12px);-webkit-backdrop-filter:saturate(1.6) blur(12px);transition:height .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease),backdrop-filter .5s var(--ease)}
 header.site.scrolled{height:4rem;background:rgba(255,255,255,.96);border-color:var(--color-line);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4)}
 header.site nav{display:flex;height:100%;align-items:center;justify-content:space-between;gap:1.5rem}
 .nav-links{display:none;align-items:center;gap:.25rem}
