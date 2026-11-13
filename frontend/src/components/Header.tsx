@@ -106,9 +106,9 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
               if ((event.target as Element).closest("a")) setOpen(false);
             }}
           >
-            <Link to="/#demo-classes" className="sh-link">
+            <a href="/#demo-classes" className="sh-link">
               Free Demo Classes
-            </Link>
+            </a>
             {LINKS.map(([to, label]) => (
               <NavLink key={to} to={to} className="sh-link">
                 {label}

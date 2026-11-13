@@ -101,7 +101,11 @@ export function ResourcesMenu() {
       >
         {LINKS.map(([href, label]) => (
           <li key={href}>
-            <Link to={href}>{label}</Link>
+            {href.startsWith('/#') ? (
+              <a href={href}>{label}</a>
+            ) : (
+              <Link to={href}>{label}</Link>
+            )}
           </li>
         ))}
         {gigsEnabled && (
