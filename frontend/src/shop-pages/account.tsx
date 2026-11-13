@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { PageFrame, Pager } from '../content-pages/shared'
+import { UserAvatar } from '../components/AccountMenu'
 import { useAuth } from '../lib/auth-context'
 import { DownloadList } from './cart'
 import { errorText, fmtSize, rupees, shop, useCartData } from './api'
@@ -10,6 +11,7 @@ const nice = (s: string) => s.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperC
 
 function AccountFrame({ children, title, openToAll = false }: { children: React.ReactNode; title: string; openToAll?: boolean }) {
   const loc = useLocation()
+  const { user, loading } = useAuth()
   useEffect(() => {
     document.title = `${title} | Coding Hubs School of AI`
     const m = document.createElement('meta')
@@ -18,10 +20,11 @@ function AccountFrame({ children, title, openToAll = false }: { children: React.
     document.head.appendChild(m)
     return () => m.remove()
   }, [title])
-  if (!openToAll && !localStorage.getItem('ch_access')) return <Navigate to="/login" replace state={{ from: loc.pathname }} />
+  if (loading) return <PageFrame store><p role="status">Loading your account…</p></PageFrame>
+  if (!openToAll && !user) return <Navigate to="/login" replace state={{ from: loc.pathname }} />
   return (
     <PageFrame store>
-      {localStorage.getItem('ch_access') && (
+      {user && (
         <nav className="shop-tabs" aria-label="My account">
           <Link to="/my-account">Profile</Link>
           <Link to="/my-account/orders">Orders</Link>
@@ -41,11 +44,12 @@ export function MyAccount() {
   const [accountMsg, setAccountMsg] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
-  const { logout } = useAuth()
+  const { logout, user, loading: authLoading } = useAuth()
   const navigate = useNavigate()
   useEffect(() => {
+    if (authLoading || !user) return
     shop.get('/auth/me/').then((r) => setMe(r.data)).catch(() => undefined)
-  }, [])
+  }, [authLoading, user?.id])
 
   async function exportData() {
     setAccountMsg('')
@@ -94,6 +98,7 @@ export function MyAccount() {
   return (
     <AccountFrame title="My account">
       <h1>My account</h1>
+      {user && <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBlock: 20 }}><UserAvatar user={user} /><strong>{[user.first_name, user.last_name].filter(Boolean).join(' ') || user.username}</strong></div>}
       {me && <dl className="shop-dl"><dt>Username</dt><dd>{me.username}</dd>{me.email && <><dt>Email</dt><dd>{me.email}</dd></>}{me.phone && <><dt>Phone</dt><dd>{me.phone}</dd></>}</dl>}
       <p><Link className="btn btn-yellow" to="/my-account/orders">View my orders</Link> <Link className="btn btn-ghost-dark" to="/my-account/downloads">My downloads</Link></p>
       <section>
@@ -167,9 +172,10 @@ export function MyOrders() {
   const [open, setOpen] = useState<string | null>(null)
   const [detail, setDetail] = useState<any>(null)
   const [msg, setMsg] = useState('')
-  const signedIn = !!localStorage.getItem('ch_access')
+  const { user } = useAuth()
+  const signedIn = !!user
   useEffect(() => {
-    if (!signedIn) return
+    if (!signedIn) { setData(null); return }
     shop.get('/my-account/orders/', { params: { page } }).then((r) => setData(r.data)).catch(() => setMsg('Could not load your orders.'))
   }, [page, signedIn])
   useEffect(() => {
@@ -226,10 +232,12 @@ export function MyOrders() {
 }
 
 export function MyDownloads() {
+  const { user, loading } = useAuth()
   const [rows, setRows] = useState<any[] | null>(null)
   useEffect(() => {
+    if (loading || !user) return
     shop.get('/my-account/downloads/').then((r) => setRows(r.data)).catch(() => setRows([]))
-  }, [])
+  }, [loading, user?.id])
   return (
     <AccountFrame title="My downloads">
       <h1>My downloads</h1>

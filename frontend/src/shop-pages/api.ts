@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { api as baseApi } from '../lib/api'
+import { installSessionRecovery, api as baseApi } from '../lib/api'
 import { takeInitial } from '../content-pages/api'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -52,6 +52,8 @@ shop.interceptors.request.use((c) => {
   if (t) c.headers['X-Cart-Token'] = t
   return c
 })
+
+installSessionRecovery(shop)
 
 export interface Money {
   price: string

@@ -5,7 +5,6 @@ idle expiry; logout, password reset, disabled users and account deletion revoke 
 """
 import hashlib
 import secrets
-from urllib.parse import urlsplit
 
 from django.conf import settings
 from rest_framework.exceptions import PermissionDenied

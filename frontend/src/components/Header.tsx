@@ -7,6 +7,8 @@ import { ResourcesMenu } from "../locations/ResourcesMenu";
 import { IconSprite } from "../pages/free-session/icons";
 import { ScrollProgress } from "./ScrollProgress";
 import "./header.css";
+import { useOptionalAuth } from "../lib/auth-context";
+import { AccountMenu } from "./AccountMenu";
 
 const LINKS = [
   ["/courses/", "Courses"],
@@ -20,6 +22,7 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
   useScopedStylesheet([
     "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap",
   ]);
+  const auth = useOptionalAuth();
   const { pathname, hash } = useLocation();
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
@@ -34,7 +37,9 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       if (
-        headerRef.current?.querySelector('.sh-res-button[aria-expanded="true"]')
+        headerRef.current?.querySelector(
+          '.sh-res-button[aria-expanded="true"], .sh-account-trigger[aria-expanded="true"]',
+        )
       )
         return;
       setOpen(false);
@@ -115,9 +120,11 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
               </NavLink>
             ))}
             <ResourcesMenu />
-            <Link to="/login" className="sh-link sh-mobile-login">
-              Log in <span aria-hidden="true">↗</span>
-            </Link>
+            {!auth?.user && !auth?.loading && (
+              <Link to="/login" className="sh-link sh-mobile-login">
+                Log in <span aria-hidden="true">↗</span>
+              </Link>
+            )}
             <button
               type="button"
               className="sh-demo sh-mobile-demo"
@@ -126,10 +133,24 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
               Register for Free Demo
             </button>
           </nav>
-          <div className="sh-actions">
-            <Link to="/login" className="sh-login">
-              Log in <span aria-hidden="true">↗</span>
-            </Link>
+          <div className={`sh-actions${auth?.user ? " has-account" : ""}`}>
+            {auth?.loading ? (
+              <span
+                className="sh-account-loading"
+                aria-label="Loading account"
+              />
+            ) : auth?.user ? (
+              <AccountMenu
+                user={auth.user}
+                logout={auth.logout}
+                onOpen={() => setOpen(false)}
+              />
+            ) : (
+              <Link to="/login" className="sh-login">
+                Log in <span aria-hidden="true">↗</span>
+              </Link>
+            )}
+
             <button type="button" className="sh-demo" onClick={bookDemo}>
               Free Demo
             </button>

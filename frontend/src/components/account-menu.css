@@ -1,0 +1,195 @@
+.site-header .sh-account {
+  position: relative;
+  flex: 0 0 auto;
+}
+.sh-avatar {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #2457cf;
+  color: #fff;
+  font:
+    700 13px/1 "DM Sans",
+    sans-serif;
+}
+.sh-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.site-header .sh-account-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 4px;
+  border: 1px solid #ffffff24;
+  border-radius: 30px;
+  background: #ffffff08;
+  color: #dbeafe;
+  cursor: pointer;
+  min-height: 44px;
+  transition:
+    background 0.18s,
+    border-color 0.18s;
+}
+.site-header .sh-account-trigger > svg {
+  width: 17px;
+  height: 17px;
+  margin-right: 4px;
+  transition: transform 0.18s;
+}
+.site-header .sh-account-trigger[aria-expanded="true"] > svg {
+  transform: rotate(180deg);
+}
+.site-header .sh-account-trigger:hover,
+.site-header .sh-account-trigger[aria-expanded="true"] {
+  background: #ffffff12;
+  border-color: #93c5fd77;
+}
+.site-header .sh-account-trigger:focus-visible,
+.site-header .sh-account-panel a:focus-visible,
+.site-header .sh-account-panel button:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 3px;
+}
+.site-header .sh-account-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  width: 286px;
+  max-width: calc(100vw - 32px);
+  padding: 8px;
+  background: #0c1424;
+  color: #f8fafc;
+  border: 1px solid #29384f;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px #0005;
+  animation: sh-account-in 0.18s ease-out;
+}
+.site-header .sh-account-panel[hidden] {
+  display: none;
+}
+.site-header .sh-account-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 15px 13px 19px;
+  border-bottom: 1px solid #ffffff12;
+  margin-bottom: 7px;
+  min-width: 0;
+}
+.site-header .sh-account-caption {
+  font-size: 9px;
+  line-height: 1.4;
+  letter-spacing: 1.5px;
+  color: #93c5fd;
+  font-weight: 700;
+}
+.site-header .sh-account-identity strong {
+  color: #f8fafc;
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.site-header .sh-account-identity > span:last-child {
+  font-size: 12px;
+  color: #a8b8cf;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.site-header .sh-account-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.site-header .sh-account-panel a,
+.site-header .sh-account-logout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 13px;
+  border: 0;
+  border-radius: 9px;
+  font:
+    500 13px/1.5 "DM Sans",
+    sans-serif;
+  color: #e1e9f5;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    color 0.18s,
+    background 0.18s;
+}
+.site-header .sh-account-panel a:hover,
+.site-header .sh-account-logout:hover {
+  background: #203a65;
+  color: #fff;
+}
+.site-header .sh-account-panel a > svg,
+.site-header .sh-account-logout > svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: #93c5fd;
+}
+.site-header .sh-account-arrow {
+  margin-left: auto;
+  color: #7387a4;
+}
+.site-header .sh-account-logout {
+  margin-top: 7px;
+  border-top: 1px solid #ffffff12;
+  border-radius: 0 0 9px 9px;
+  color: #bdcce1;
+}
+.site-header .sh-account-logout:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.site-header .sh-account-loading {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff12;
+}
+@keyframes sh-account-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 600px) {
+  .site-header .sh-actions.has-account > .sh-demo {
+    display: none;
+  }
+  .site-header .sh-account-panel {
+    position: fixed;
+    top: calc(var(--site-header-height) + 8px);
+    right: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header .sh-account-panel {
+    animation: none;
+  }
+  .site-header .sh-account-trigger,
+  .site-header .sh-account-trigger > svg {
+    transition: none;
+  }
+}

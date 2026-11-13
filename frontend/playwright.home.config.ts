@@ -2,7 +2,12 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: ["home.spec.ts", "header.spec.ts", "google-login.spec.ts"],
+  testMatch: [
+    "home.spec.ts",
+    "header.spec.ts",
+    "google-login.spec.ts",
+    "account-menu.spec.ts",
+  ],
   workers: 1,
   reporter: "list",
   use: {

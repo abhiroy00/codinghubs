@@ -44,7 +44,10 @@ test("Google button signs a new user in and opens the account dashboard", async 
     .getByRole("button", { name: "Continue with Google", exact: true })
     .click();
   await expect(page).toHaveURL(/\/dashboard$/);
-  expect(sent).toEqual({ credential: "signed-google-fixture" });
+  expect(sent).toEqual({
+    credential: "signed-google-fixture",
+    persistent: true,
+  });
 });
 
 test("existing non-Gmail accounts confirm their password before Google linking", async ({
@@ -97,8 +100,12 @@ test("existing non-Gmail accounts confirm their password before Google linking",
   await page.getByRole("button", { name: "Link Google & log in" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
   expect(sent).toEqual([
-    { credential: "signed-google-fixture" },
-    { credential: "signed-google-fixture", password: "existing-password" },
+    { credential: "signed-google-fixture", persistent: true },
+    {
+      credential: "signed-google-fixture",
+      password: "existing-password",
+      persistent: true,
+    },
   ]);
 });
 

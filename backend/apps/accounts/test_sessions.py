@@ -2,6 +2,7 @@ from datetime import timedelta
 from unittest import mock
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from rest_framework.test import APIClient
@@ -12,6 +13,8 @@ from .tokens import revoke_all_tokens
 @override_settings(GOOGLE_CLIENT_IDS='test-client', DEBUG=False)
 class PersistentSessionTests(TestCase):
     def setUp(self):
+        cache.clear()
+        self.addCleanup(cache.clear)
         self.user = get_user_model().objects.create_user('learner', email='learner@gmail.com', password='Strong-password-123')
         self.client = APIClient()
         self.client.credentials(HTTP_X_REQUESTED_WITH='XMLHttpRequest')
