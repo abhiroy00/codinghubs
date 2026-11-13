@@ -10,6 +10,7 @@ def revoke_all_tokens(user) -> int:
     """
     if user is None or not getattr(user, 'pk', None):
         return 0
+    user.login_sessions.all().delete()
     count = 0
     for token in OutstandingToken.objects.filter(user=user):
         _, created = BlacklistedToken.objects.get_or_create(token=token)

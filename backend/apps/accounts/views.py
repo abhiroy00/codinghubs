@@ -1,4 +1,5 @@
 import re
+from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -16,6 +17,8 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
+from .sessions import browser_request, login_response, restore_session, end_session
 
 from .emails import send_password_reset
 from .google import GoogleTokenError, GoogleUnavailableError, verify_google_token
@@ -33,15 +36,27 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        refresh = RefreshToken.for_user(user)
-        return Response(
-            {
-                'user': UserSerializer(user).data,
-                'access': str(refresh.access_token),
-                'refresh': str(refresh),
-            },
-            status=201,
-        )
+        return login_response(user, request, status_code=201)
+
+
+class LoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        serializer = TokenObtainSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        return login_response(serializer.user, request)
+
+
+class SessionView(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        browser_request(request)
+        return restore_session(request)
+
 
 
 class MeView(APIView):
@@ -176,15 +191,18 @@ class LogoutView(APIView):
     """
 
     permission_classes = [permissions.AllowAny]
+    authentication_classes = []
 
     def post(self, request):
+        if request.COOKIES.get('ch_session'):
+            browser_request(request)
         refresh = str(request.data.get('refresh', '')).strip()
         if refresh:
             try:
                 RefreshToken(refresh).blacklist()
             except TokenError:
                 pass
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return end_session(request)
 
 
 def _google_token_info(credential: str) -> dict:
@@ -278,5 +296,12 @@ class GoogleLoginView(APIView):
             return Response({'detail': 'Please try Google sign-in again.'}, status=409)
         if not user.is_active:
             return Response({'detail': 'This account is disabled.'}, status=status.HTTP_403_FORBIDDEN)
-        refresh = RefreshToken.for_user(user)
-        return Response({'user': UserSerializer(user).data, 'access': str(refresh.access_token), 'refresh': str(refresh)})
+        picture = info.get('picture') or ''
+        try:
+            parsed = urlsplit(picture)
+            safe_picture = parsed.scheme == 'https' and (parsed.hostname or '').endswith('.googleusercontent.com') and not parsed.username and not parsed.password and parsed.port in (None, 443)
+        except (ValueError, TypeError):
+            safe_picture = False
+        user.avatar_url = picture if safe_picture and len(picture) <= 2048 else ''
+        user.save(update_fields=['avatar_url'])
+        return login_response(user, request)

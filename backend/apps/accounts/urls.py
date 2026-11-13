@@ -1,11 +1,13 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
     AccountDeleteView,
     AccountExportView,
     GoogleLoginView,
     LogoutView,
+    LoginView,
+    SessionView,
     MeView,
     PasswordResetConfirmView,
     PasswordResetRequestView,
@@ -14,8 +16,9 @@ from .views import (
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='auth-register'),
-    path('login/', TokenObtainPairView.as_view(), name='auth-login'),
+    path('login/', LoginView.as_view(), name='auth-login'),
     path('google/', GoogleLoginView.as_view(), name='auth-google'),
+    path('session/', SessionView.as_view(), name='auth-session'),
     path('refresh/', TokenRefreshView.as_view(), name='auth-refresh'),
     path('logout/', LogoutView.as_view(), name='auth-logout'),
     path('password-reset/', PasswordResetRequestView.as_view(), name='auth-password-reset'),
