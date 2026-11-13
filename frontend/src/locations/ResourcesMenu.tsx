@@ -1,7 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { api } from "../lib/api";
-import { INSTITUTE, WHATSAPP } from "../pages/free-session/data";
 
 // The backend owns the launch gate; one availability request per app session.
 let gigsStatus: Promise<boolean> | undefined;
@@ -11,22 +10,13 @@ const pilotEnabled = () =>
     .then((r) => r.data.enabled === true)
     .catch(() => false));
 
-const EXPLORE = [
+const LINKS = [
   ["/locations/", "Locations"],
   ["/blog", "Blog"],
   ["/case-studies", "Case Studies"],
   ["/projects", "Projects"],
-  ["/learn/", "Learning Library"],
-  ["/visual-lab/", "Visual Lab"],
-  ["/faq", "FAQ"],
-  ["/interview-studio", "Interview Studio"],
   ["/#session", "About the Session"],
-] as const;
-
-const COURSES = [
-  ["/courses/", "All Courses"],
-  ["/book-a-tutor/", "Book a Tutor"],
-  ["/latest-jobs/", "Latest Jobs"],
+  [ "/#contact", "Support"],
 ] as const;
 
 /** A keyboard-accessible disclosure shared by desktop and mobile primary navigation. */
@@ -63,9 +53,6 @@ export function ResourcesMenu() {
       document.removeEventListener("keydown", close);
     };
   }, [open]);
-
-  const waHref = `https://wa.me/${WHATSAPP.number}`;
-
   return (
     <div
       className="sh-res"
@@ -112,50 +99,20 @@ export function ResourcesMenu() {
         hidden={!open}
         onClick={() => setOpen(false)}
       >
-        <li className="res-col">
-          <h3 className="res-col-title">Explore</h3>
-          <ul className="res-col-links">
-            {EXPLORE.map(([href, label]) => (
-              <li key={href}>
-                {href.startsWith('/#') ? (
-                  <a href={href}>{label}</a>
-                ) : (
-                  <Link to={href}>{label}</Link>
-                )}
-              </li>
-            ))}
-          </ul>
-        </li>
-        <li className="res-col">
-          <h3 className="res-col-title">Quick links</h3>
-          <ul className="res-col-links">
-            {COURSES.map(([href, label]) => (
-              <li key={href}>
-                <Link to={href}>{label}</Link>
-              </li>
-            ))}
-            {gigsEnabled && (
-              <li><Link to="/gigs">Gigs pilot</Link></li>
+        {LINKS.map(([href, label]) => (
+          <li key={href}>
+            {href.startsWith('/#') ? (
+              <a href={href}>{label}</a>
+            ) : (
+              <Link to={href}>{label}</Link>
             )}
-          </ul>
-        </li>
-        <li className="res-contact">
-          <h3 className="res-col-title">Get in touch</h3>
-          <ul className="res-contact-links">
-            <li>
-              <a href={`tel:+${WHATSAPP.number}`}>{INSTITUTE.phone}</a>
-              <span>· Mon – Sat, 9 AM – 7 PM</span>
-            </li>
-            <li>
-              <a href={`mailto:${INSTITUTE.email}`}>{INSTITUTE.email}</a>
-            </li>
-            <li>
-              <a href={waHref} target="_blank" rel="noopener noreferrer">
-                Chat on WhatsApp
-              </a>
-            </li>
-          </ul>
-        </li>
+          </li>
+        ))}
+        {gigsEnabled && (
+          <li>
+            <Link to="/gigs">Gigs pilot</Link>
+          </li>
+        )}
       </ul>
     </div>
   );
