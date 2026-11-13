@@ -4,15 +4,13 @@ import { useLenisRef } from '../lib/lenis-context'
 import { useRegisterPopup } from '../lib/register-popup'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
-import { BrandLogo, FsFooter } from '../locations/FsShell'
-import { LocationsMenu } from '../locations/LocationsMenu'
-import { ResourcesMenu } from '../locations/ResourcesMenu'
+import { FsFooter } from '../locations/FsShell'
 import { CoursesGrid } from './free-session/CoursesGrid'
 import { COURSES } from './free-session/data'
 import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
-import { FsIcon, IconSprite } from './free-session/icons'
+import { FsIcon } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
-import { ScrollProgress } from '../components/ScrollProgress'
+import { Header } from '../components/Header'
 import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
 import { HomePathways } from './free-session/HomePathways'
 import './free-session/home.css'
@@ -40,23 +38,7 @@ export function FreeSession() {
   const location = useLocation()
   useFsReveal(rootRef)
 
-  const [navOpen, setNavOpen] = useState(false)
   const [pastHero, setPastHero] = useState(false)
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && navOpen) setNavOpen(false)
-    }
-    const onClickOutside = (e: MouseEvent) => {
-      if (navOpen && !(e.target as HTMLElement).closest('#hdr')) setNavOpen(false)
-    }
-    document.addEventListener('keydown', onKey)
-    document.addEventListener('click', onClickOutside)
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.removeEventListener('click', onClickOutside)
-    }
-  }, [navOpen])
 
   useEffect(() => {
     if (!('IntersectionObserver' in window)) return
@@ -104,41 +86,8 @@ export function FreeSession() {
 
   return (
     <div ref={rootRef} className="fs-page ch-home" onClick={handleRootClick}>
-      <IconSprite />
-      <a className="skip" href="#main">Skip to content</a>
-      <ScrollProgress />
       <BatchAnnouncement />
-      <header className="hdr" id="hdr">
-        <div className="wrap hdr-in">
-          <BrandLogo home />
-          <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary" onClick={(e) => { if ((e.target as HTMLElement).closest('a')) setNavOpen(false) }}>
-            <a href="#demo-classes">Free Demo Classes</a>
-            <Link to="/courses/">Courses</Link>
-            <Link to="/interview-prep/">Interview Prep</Link>
-            <Link to="/book-a-tutor/">Tutor</Link>
-            <Link to="/latest-jobs/">Jobs</Link>
-            <LocationsMenu onNavigate={() => setNavOpen(false)} />
-            <ResourcesMenu />
-            <button type="button" className="btn btn-yellow nav-cta" onClick={() => { setNavOpen(false); popup.open() }}>
-              <FsIcon id="i-tap" />Register for Free Demo
-            </button>
-          </nav>
-          <div className="hdr-actions">
-            <Link to="/login" className="home-login">Log in <span aria-hidden="true">↗</span></Link>
-            <a href={INSTITUTE.phoneHref} className="hdr-phone">
-              <FsIcon id="i-phone" />{INSTITUTE.phone}
-            </a>
-            <button type="button" className="btn btn-yellow btn-sm hdr-cta" onClick={() => popup.open()}>
-              <FsIcon id="i-tap" />Free Demo<span className="free-badge-red">FREE</span>
-            </button>
-            <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main id="main">
         <JoinHero />

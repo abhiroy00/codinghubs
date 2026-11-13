@@ -1,60 +1,154 @@
-import { Link } from 'react-router-dom'
-import { Logo } from '../lib/icons'
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { useRegisterPopup } from "../lib/register-popup";
+import { useLenisRef } from "../lib/lenis-context";
+import { useScopedStylesheet } from "../hooks/useScopedStylesheet";
+import { ResourcesMenu } from "../locations/ResourcesMenu";
+import { IconSprite } from "../pages/free-session/icons";
+import { ScrollProgress } from "./ScrollProgress";
+import "./header.css";
 
-const RESOURCE_LINKS = [
-  ['/blog', 'Blog'],
-  ['/case-studies', 'Case Studies'],
-  ['/projects', 'Projects'],
-  ['/#session', 'About the Session'],
-  ['/#contact', 'Contact'],
-] as const
+const LINKS = [
+  ["/courses/", "Courses"],
+  ["/interview-prep/", "Interview Prep"],
+  ["/book-a-tutor/", "Tutor"],
+  ["/latest-jobs/", "Jobs"],
+] as const;
 
-export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu: () => void }) {
+/** One primary navigation for marketing pages, accounts and learning workspaces. */
+export function Header({ mainId = "main" }: { mainId?: string }) {
+  useScopedStylesheet([
+    "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap",
+  ]);
+  const { pathname, hash } = useLocation();
+  const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const popup = useRegisterPopup();
+  const lenisRef = useLenisRef();
+
+  useEffect(() => setOpen(false), [pathname, hash]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (
+        headerRef.current?.querySelector('.sh-res-button[aria-expanded="true"]')
+      )
+        return;
+      setOpen(false);
+      toggleRef.current?.focus();
+    };
+    const onOutside = (event: MouseEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onOutside);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onOutside);
+    };
+  }, [open]);
+
+  function bookDemo() {
+    setOpen(false);
+    popup.open();
+  }
+
   return (
-    <header className={`site${scrolled ? ' scrolled' : ''}`} id="hdr">
-      <nav className="container-x" aria-label="Primary">
-        <Link to="/" style={{ flexShrink: 0 }} aria-label="Coding Hubs School of AI home">
-          <Logo />
-        </Link>
-        <ul className="nav-links">
-          <li>
-            <Link className="nav-link" to="/#demo-classes">
-              Free Demo Class
+    <>
+      <IconSprite />
+      <a href={`#${mainId}`} className="sh-skip">
+        Skip to content
+      </a>
+      <ScrollProgress className="site-progress" />
+      <header className="site-header" id="hdr" ref={headerRef}>
+        <div className="sh-inner">
+          <Link
+            to="/#home"
+            className="sh-brand"
+            aria-label="Coding Hubs School of AI home"
+            onClick={(event) => {
+              setOpen(false);
+              if (pathname !== "/") return;
+              event.preventDefault();
+              if (lenisRef.current) lenisRef.current.scrollTo(0);
+              else
+                window.scrollTo({
+                  top: 0,
+                  behavior: window.matchMedia(
+                    "(prefers-reduced-motion: reduce)",
+                  ).matches
+                    ? "auto"
+                    : "smooth",
+                });
+            }}
+          >
+            <picture>
+              <source
+                srcSet="/assets/coding-hubs-school-of-ai-logo-wide.webp"
+                type="image/webp"
+              />
+              <img
+                src="/assets/coding-hubs-school-of-ai-logo-wide.png"
+                alt="Coding Hubs School of AI"
+                width={720}
+                height={208}
+              />
+            </picture>
+          </Link>
+          <nav
+            className={`sh-nav${open ? " is-open" : ""}`}
+            id="nav"
+            aria-label="Primary"
+            onClick={(event) => {
+              if ((event.target as Element).closest("a")) setOpen(false);
+            }}
+          >
+            <Link to="/#demo-classes" className="sh-link">
+              Free Demo Classes
             </Link>
-          </li>
-          <li><Link className="nav-link" to="/courses/">Courses</Link></li>
-          <li><Link className="nav-link" to="/interview-prep/">Interview Prep</Link></li>
-          <li>
-            <Link className="nav-link" to="/book-a-tutor/">
-              Book a Tutor
+            {LINKS.map(([to, label]) => (
+              <NavLink key={to} to={to} className="sh-link">
+                {label}
+              </NavLink>
+            ))}
+            <ResourcesMenu />
+            <Link to="/login" className="sh-link sh-mobile-login">
+              Log in <span aria-hidden="true">↗</span>
             </Link>
-          </li>
-          <li><Link className="nav-link" to="/latest-jobs/">Latest Jobs</Link></li>
-          <li className="dd dd-res">
-            <button type="button" className="nav-link" aria-haspopup="true">
-              Resources{' '}
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
+            <button
+              type="button"
+              className="sh-demo sh-mobile-demo"
+              onClick={bookDemo}
+            >
+              Register for Free Demo
             </button>
-            <div className="dd-panel dd-small">
-              {RESOURCE_LINKS.map(([to, label]) => (
-                <Link key={to} to={to}>
-                  {label}
-                </Link>
-              ))}
-            </div>
-          </li>
-        </ul>
-        <div className="nav-right">
-          <button type="button" className="menu-btn" aria-haspopup="dialog" aria-expanded="false" onClick={onOpenMenu}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M4 8h16M4 16h16" />
-            </svg>
-            <span className="sr-only">Open menu</span>
-          </button>
+          </nav>
+          <div className="sh-actions">
+            <Link to="/login" className="sh-login">
+              Log in <span aria-hidden="true">↗</span>
+            </Link>
+            <button type="button" className="sh-demo" onClick={bookDemo}>
+              Free Demo
+            </button>
+            <button
+              type="button"
+              className="sh-toggle"
+              ref={toggleRef}
+              aria-expanded={open}
+              aria-controls="nav"
+              aria-label={open ? "Close menu" : "Open menu"}
+              onClick={() => setOpen((value) => !value)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+          </div>
         </div>
-      </nav>
-    </header>
-  )
+      </header>
+    </>
+  );
 }

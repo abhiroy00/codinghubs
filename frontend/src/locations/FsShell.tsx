@@ -1,12 +1,9 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FsIcon, IconSprite } from '../pages/free-session/icons'
+import { FsIcon } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { useRegisterPopup } from '../lib/register-popup'
 import { FloatingContact } from '../components/FloatingContact'
-import { ScrollProgress } from '../components/ScrollProgress'
-import { LocationsMenu } from './LocationsMenu'
-import { ResourcesMenu } from './ResourcesMenu'
+import { Header } from '../components/Header'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -37,49 +34,9 @@ export function BrandLogo({ home = false }: { home?: boolean }) {
 
 export const LOGO_WIDE = '/assets/coding-hubs-school-of-ai-logo-wide.png'
 
-/** Header for the location pages: same look as the free-session header plus the Locations menu. */
+/** Shared primary header for public page shells. */
 export function FsHeader() {
-  const [navOpen, setNavOpen] = useState(false)
-  const popup = useRegisterPopup()
-  return (
-    <>
-      <IconSprite />
-      <a href="#main" className="skip">
-        Skip to content
-      </a>
-      <ScrollProgress />
-      <header className="hdr" id="hdr">
-        <div className="wrap hdr-in">
-          <BrandLogo />
-          <nav className={`nav${navOpen ? ' open' : ''}`} id="nav" aria-label="Primary">
-            <Link to="/#demo-classes" onClick={() => setNavOpen(false)}>Free Demo Classes</Link>
-            <Link to="/courses/" onClick={() => setNavOpen(false)}>Courses</Link>
-            <Link to="/interview-prep/" onClick={() => setNavOpen(false)}>Interview Prep</Link>
-            <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
-            <Link to="/latest-jobs/" onClick={() => setNavOpen(false)}>Latest Jobs</Link>
-            <LocationsMenu onNavigate={() => setNavOpen(false)} />
-            <ResourcesMenu />
-            <button type="button" className="btn btn-yellow nav-cta" onClick={() => { setNavOpen(false); popup.open() }}>
-              <FsIcon id="i-tap" />Register for Free Demo
-            </button>
-          </nav>
-          <div className="hdr-actions">
-            <a href={INSTITUTE.phoneHref} className="hdr-phone">
-              <FsIcon id="i-phone" />{INSTITUTE.phone}
-            </a>
-            <button type="button" className="btn btn-yellow btn-sm hdr-cta" onClick={() => popup.open()}>
-              <FsIcon id="i-tap" />Free Demo<span className="free-badge-red">FREE</span>
-            </button>
-            <button type="button" className="burger" aria-expanded={navOpen} aria-controls="nav" aria-label={navOpen ? 'Close menu' : 'Open menu'} onClick={() => setNavOpen((o) => !o)}>
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-          </div>
-        </div>
-      </header>
-    </>
-  )
+  return <Header />
 }
 
 export function FsFooter({ home = false }: { home?: boolean }) {

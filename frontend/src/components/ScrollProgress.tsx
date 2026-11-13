@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
 /** Thin gradient line at the very top of the window that fills as the page is scrolled. */
-export function ScrollProgress() {
+export function ScrollProgress({ className = 'sp-bar' }: { className?: string }) {
   const bar = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const onScroll = () => {
@@ -12,5 +12,5 @@ export function ScrollProgress() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-  return <div className="sp-bar" ref={bar} aria-hidden="true" />
+  return <div className={className} ref={bar} aria-hidden="true" />
 }

@@ -2,6 +2,13 @@ import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useM
 import { useLocation, useNavigate } from 'react-router-dom'
 const RegisterForm = lazy(() => import('../pages/free-session/RegisterForm').then((m) => ({ default: m.RegisterForm })))
 import { useLenisRef } from './lenis-context'
+import { FS_CSS } from './fs-css'
+import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
+
+function PopupStyles() {
+  useScopedStylesheet([FS_CSS])
+  return null
+}
 
 const KEY = 'ch_registered'
 const AUTO_MIN_MS = 30_000
@@ -134,6 +141,7 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
       {children}
       {isOpen && (
         <div className="rp-overlay" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}>
+          <PopupStyles />
           <div className="rp-dialog fs-page" role="dialog" aria-modal="true" aria-label="Free demo registration" data-lenis-prevent>
             <button type="button" className="rp-close" aria-label="Close" onClick={close}>
               ×

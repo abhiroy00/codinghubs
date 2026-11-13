@@ -36,3 +36,11 @@ From `admin-panel/`: `npm run build`.
 ## Release
 
 Run the new additive migration `leads.0003` before serving the updated backend. No payment credentials, production content or live deployment settings are changed by this work. The implementation was prepared and checked locally; production deployment is a separate action. Existing lint and large-chunk/dynamic-import warnings are outside this redesign.
+
+## Shared site navigation
+
+All public page shells and the lesson workspace use `frontend/src/components/Header.tsx` and its independent `header.css`. The homepage, course/interview pages, blog/projects, location guides and account pages share the same logo, primary links, Resources, login and free-demo actions. Store category links and learning controls remain contextual navigation below that primary header.
+
+Locations is a link inside Resources on both desktop and mobile. The disclosure supports keyboard navigation, Escape and outside-click dismissal; navigation closes the mobile menu. The demo popup loads its own stylesheet when opened from a page without the free-session stylesheet, such as login.
+
+`frontend/e2e/header.spec.ts` checks matching header styling and links across 13 routes, mobile Resources → Locations navigation, and the demo dialog on an account page. It runs with the existing home browser command above.
