@@ -13,8 +13,7 @@ import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
 import { ScrollProgress } from '../components/ScrollProgress'
-import { HeroBot } from './free-session/HeroBot'
-import { HeroCode } from './free-session/HeroCode'
+import { JoinHero } from './free-session/JoinHero'
 import { HomeExplore } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
@@ -60,7 +59,7 @@ export function FreeSession() {
   useEffect(() => {
     if (!('IntersectionObserver' in window)) return
     const formEl = document.getElementById('register')
-    const heroTopEl = rootRef.current?.querySelector('.hero-top')
+    const heroTopEl = rootRef.current?.querySelector('.join-copy')
     const io1 = formEl
       ? new IntersectionObserver(([en]) => setFormVisible(en.isIntersecting), { threshold: 0.15 })
       : null
@@ -150,90 +149,7 @@ export function FreeSession() {
       </header>
 
       <main id="main">
-        <section className="hero" id="home" aria-labelledby="hero-title">
-          <div className="hero-deco" aria-hidden="true">
-            <span className="blob b1"></span>
-            <span className="blob b2"></span>
-            <span className="grid"></span>
-            <HeroBot />
-          </div>
-          <div className="wrap hero-grid">
-            <div className="hero-top">
-              <p className="pill">
-                <span className="live-dot" aria-hidden="true"></span>PRACTICAL AI &amp; TECHNOLOGY TRAINING
-              </p>
-              <h1 id="hero-title">
-                Learn AI.{' '}
-                <span className="hl">
-                  Build Your Future.
-                  <svg viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M3 12C70 4 180 2 297 9" />
-                  </svg>
-                </span>
-              </h1>
-              <p className="hero-sub">
-                Live, instructor-led training in Generative AI, Python, Full Stack and Data Science. Start with a free 2-hour demo session.
-              </p>
-            </div>
-
-            <HeroCode />
-
-            <div className="hero-bottom">
-              <ul className="checks">
-                <li>
-                  <FsIcon id="i-check" />100% Free Demo Session
-                </li>
-                <li>
-                  <FsIcon id="i-check" />Live Online Learning
-                </li>
-                <li>
-                  <FsIcon id="i-check" />Explore Courses Before Admission
-                </li>
-              </ul>
-              <div className="cta-row">
-                <a href="#courses" className="btn btn-anim btn-yellow btn-lg" data-cta="hero-explore">
-                  Explore Courses <FsIcon id="i-arrow" />
-                </a>
-                <a href="#register" className="btn btn-ghost-light btn-lg" data-cta="hero-primary">
-                  Book Free Live Demo
-                </a>
-              </div>
-              <p className="facts-label">
-                Session at a glance
-              </p>
-              <div className="facts" aria-label="Session at a glance">
-                <div className="fact f-1">
-                  <span className="f-ico">
-                    <FsIcon id="i-clock" />
-                  </span>
-                  <div>
-                    <strong>2 Hours</strong>
-                    <span>Live session</span>
-                  </div>
-                </div>
-                <div className="fact f-2">
-                  <span className="f-ico">
-                    <FsIcon id="i-monitor" />
-                  </span>
-                  <div>
-                    <strong>Online</strong>
-                    <span>Join from anywhere</span>
-                  </div>
-                </div>
-                <div className="fact f-3">
-                  <span className="f-ico">
-                    <FsIcon id="i-ticket" />
-                  </span>
-                  <div>
-                    <strong>Free</strong>
-                    <span>Demo session</span>
-                  </div>
-                  <span className="f-badge" aria-hidden="true">FREE</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <JoinHero />
 
         <section className="sec videos" id="demo-classes" aria-labelledby="videos-title">
           <div className="v-deco" aria-hidden="true">
