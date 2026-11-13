@@ -1461,7 +1461,7 @@ class SeoTests(ShopBase):
         self.assertNotIn(scheduled.slug, store)
         self.assertIn('<link rel="canonical" href="https://codinghubs.in/store">', store)
         sm = self.anon.get('/sitemap-shop.xml').content.decode()
-        for ok in (f'/store/{pub.slug}', f'/projects/{pr["slug"]}', f'/project-guides/{g["slug"]}', '/store<', '/projects<', '/project-guides<'):
+        for ok in (f'/projects/{pr["slug"]}', f'/project-guides/{g["slug"]}', '/projects<', '/project-guides<'):
             self.assertIn(ok, sm)
         for no in (draft.slug, scheduled.slug, 'draft-project'):
             self.assertNotIn(no, sm)
@@ -1473,7 +1473,8 @@ class SeoTests(ShopBase):
         own_url = f'https://codinghubs.in/store/{product.slug}'
         product.canonical_url = own_url
         product.save()
-        self.assertIn(own_url, self.anon.get('/sitemap-shop.xml').content.decode())
+        # The store is retired, so its catalogue is no longer advertised in the shop sitemap.
+        self.assertNotIn(own_url, self.anon.get('/sitemap-shop.xml').content.decode())
         product.canonical_url = 'https://example.org/original-notes'
         product.save()
         project = Project.objects.create(title='Syndicated project', slug='syndicated-project', status='published', published_at=timezone.now(), canonical_url='https://codinghubs.in/projects/primary-project')

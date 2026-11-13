@@ -150,11 +150,11 @@ def guide_detail(request, slug):
 
 @require_GET
 def shop_sitemap(request):
-    rows = [f'{settings.SITE_URL}{b}' for b in ('/store', '/projects', '/project-guides')]
+    rows = [f'{settings.SITE_URL}{b}' for b in ('/projects', '/project-guides')]
     out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u in rows:
         out.append(f'  <url><loc>{escape(u)}</loc></url>')
-    for qs, base in ((payloads.public_products(), '/store'), (payloads.public_projects(), '/projects'), (payloads.public_guides(), '/project-guides')):
+    for qs, base in ((payloads.public_projects(), '/projects'), (payloads.public_guides(), '/project-guides')):
         for url, mod in content_services.canonical_sitemap_rows(qs, base):
             out.append(f'  <url><loc>{escape(url)}</loc><lastmod>{mod.date().isoformat()}</lastmod></url>')
     out.append('</urlset>')

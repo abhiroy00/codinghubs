@@ -36,7 +36,6 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
         </Link>
         <Link className="m" to="/courses/" onClick={onClose}>Courses</Link>
         <Link className="m" to="/interview-prep/" onClick={onClose}>Interview Prep</Link>
-        <Link className="m" to="/ai" onClick={onClose}>AI Coach</Link>
         <Link className="m" to="/#why" onClick={onClose}>
           Success Stories
         </Link>
@@ -46,9 +45,6 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
         <Link className="m" to="/latest-jobs/" onClick={onClose}>Latest Jobs</Link>
         <Link className="m" to="/#about" onClick={onClose}>
           About Us
-        </Link>
-        <Link className="m" to="/store" onClick={onClose}>
-          Store
         </Link>
         <p className="m-head">Resources</p>
         <Link className="m m-sub" to="/blog" onClick={onClose}>
@@ -61,7 +57,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
           Projects
         </Link>
         <Link className="m m-sub" to="/#session" onClick={onClose}>
-          About the Session
+          Session
         </Link>
         <Link className="m m-sub" to="/#contact" onClick={onClose}>
           Contact
@@ -73,10 +69,6 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
           <button type="button" className="btn btn-lime" onClick={() => go('demo')}>
             <span className="shine"></span>
             <span>Join Free Demo Class</span>
-          </button>
-          <button type="button" className="btn btn-ghost" onClick={() => go()}>
-            <span className="shine"></span>
-            <span>Talk to an Expert</span>
           </button>
         </div>
       </div>

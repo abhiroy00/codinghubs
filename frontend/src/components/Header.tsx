@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Logo } from '../lib/icons'
-import { useModal } from '../lib/modal-context'
 
 const RESOURCE_LINKS = [
-  ['/faq', 'Frequently Asked Questions'],
-  ['/learn/', 'Learning Library'],
-  ['/visual-lab/', 'Interactive Visual Lab'],
-  ['/interview-studio', 'Interview Studio'],
   ['/blog', 'Blog'],
   ['/case-studies', 'Case Studies'],
   ['/projects', 'Projects'],
@@ -15,8 +10,6 @@ const RESOURCE_LINKS = [
 ] as const
 
 export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu: () => void }) {
-  const { openModal } = useModal()
-
   return (
     <header className={`site${scrolled ? ' scrolled' : ''}`} id="hdr">
       <nav className="container-x" aria-label="Primary">
@@ -31,18 +24,12 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
           </li>
           <li><Link className="nav-link" to="/courses/">Courses</Link></li>
           <li><Link className="nav-link" to="/interview-prep/">Interview Prep</Link></li>
-          <li><Link className="nav-link" to="/ai">AI Coach</Link></li>
           <li>
             <Link className="nav-link" to="/book-a-tutor/">
               Book a Tutor
             </Link>
           </li>
           <li><Link className="nav-link" to="/latest-jobs/">Latest Jobs</Link></li>
-          <li>
-            <Link className="nav-link" to="/store">
-              Store
-            </Link>
-          </li>
           <li className="dd dd-res">
             <button type="button" className="nav-link" aria-haspopup="true">
               Resources{' '}
@@ -57,11 +44,6 @@ export function Header({ scrolled, onOpenMenu }: { scrolled: boolean; onOpenMenu
                 </Link>
               ))}
             </div>
-          </li>
-          <li>
-            <button type="button" className="nav-link" onClick={() => openModal()}>
-              Talk to an Expert
-            </button>
           </li>
         </ul>
         <div className="nav-right">
