@@ -1531,6 +1531,98 @@
 .ch-home .fx-social-row {
   border-color: var(--home-border);
 }
+
+/* ===== Location & project cards: fixed heights, attractive look ===== */
+.ch-home .hx-locs {
+  align-items: start; /* stop tall Delhi card stretching short cards */
+}
+.ch-home .hx-loc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.1rem 1.1rem 1.1rem 1.1rem;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 16px -6px rgba(10, 26, 63, 0.12);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.ch-home .hx-loc-group h3 {
+  font-family: var(--f-head);
+  font-size: 1rem;
+  margin: 0 0 0.35rem;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+}
+.ch-home .hx-loc-group ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ch-home .hx-loc-group ul li {
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  background: var(--bg-2);
+  transition: background .2s, color .2s;
+}
+.ch-home .hx-loc-group:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px -10px rgba(10, 26, 63, 0.22);
+  border-color: var(--yellow-2);
+}
+.ch-home .hx-loc-group:hover ul li {
+  background: #f7f4e9;
+  color: var(--ink);
+}
+
+/* Project/review cards: attractive lift + softer shadow */
+.ch-home .hx-card {
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 16px -6px rgba(10, 26, 63, 0.1);
+}
+.ch-home .hx-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--yellow-2);
+  box-shadow: 0 24px 48px -20px rgba(10, 26, 63, 0.25);
+}
+.ch-home .hx-card h3 a {
+  color: var(--navy);
+}
+.ch-home .hx-card h3 a:hover {
+  color: var(--blue-2);
+}
+.ch-home .hx-card > p {
+  color: var(--muted);
+}
+.ch-home .hx-more {
+  margin-top: auto;
+  color: var(--blue-2);
+  font-weight: 600;
+}
+.ch-home .hx-more:hover {
+  color: var(--navy);
+}
+.ch-home .hx-tech li {
+  font-size: 0.78rem;
+  background: var(--blue-soft);
+  color: var(--blue-2);
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+.ch-home .hx-tag {
+  font-size: 0.75rem;
+  background: var(--yellow-soft);
+  color: var(--ink);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
 .ch-home .fx-cta-sec .fx-cta,
 .ch-home .cc-solid {
   box-shadow: none;
