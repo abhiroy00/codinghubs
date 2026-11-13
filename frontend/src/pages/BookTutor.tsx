@@ -5,6 +5,7 @@ import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
 import './book-tutor.css'
+import '../pages/free-session/home-theme.css'
 import type { Seo } from '../content-pages/api'
 import { useSeo } from '../seo/useSeo'
 import { TUTOR_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
@@ -133,7 +134,7 @@ export function BookTutor() {
   }
 
   return (
-    <div className="fs-page tutors-page">
+    <div className="fs-page tutors-page ch-home">
       <FsHeader />
       <main id="main">
         {tutorId ? (

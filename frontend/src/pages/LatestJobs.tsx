@@ -6,6 +6,7 @@ import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
 import './book-tutor.css'
 import './jobs.css'
+import '../pages/free-session/home-theme.css'
 import type { Seo } from '../content-pages/api'
 import { useSeo } from '../seo/useSeo'
 import { JOBS_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
@@ -83,7 +84,7 @@ export function LatestJobs() {
   const { slug } = useParams()
 
   return (
-    <div className="fs-page tutors-page jobs-page">
+    <div className="fs-page tutors-page jobs-page ch-home">
       <FsHeader />
       <main id="main">{slug ? <JobDetail slug={slug} /> : <JobListing />}</main>
       <FsFooter />
