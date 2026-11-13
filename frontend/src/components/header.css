@@ -162,24 +162,18 @@ html:root {
   display: none;
 }
 .site-header .sh-res {
-  position: fixed;
-  top: var(--site-header-height);
-  left: 0;
-  right: 0;
-  height: calc(100dvh - var(--site-header-height));
-  max-width: 400px;
-  padding: 32px;
-  border-left: 1px solid #293344;
-  border-right: 1px solid #293344;
-  border-bottom: 1px solid #293344;
-  background: #0c1424;
-  box-shadow: 0 16px 24px #0003;
-  z-index: 100;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  direction: ltr;
-  scrollbar-width: thin;
-  scrollbar-color: #1f293b transparent;
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  height: auto;
+  max-width: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  z-index: auto;
+  overflow-y: visible;
 }
 
 .site-header .sh-res-button {
@@ -210,7 +204,10 @@ html:root {
 }
 
 .site-header .sh-res-list {
-  margin-top: 12px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
   min-width: 200px;
   flex-direction: column;
   gap: 8px;
