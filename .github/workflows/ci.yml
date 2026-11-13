@@ -77,37 +77,19 @@ jobs:
       - name: SEO validation (site-wide metadata, canonicals, sitemap, robots, links) and location pages (word counts, uniqueness)
         run: npm run validate
         working-directory: frontend
-      # The tutor stylesheet is no longer emitted as `book-tutor-*.css`: Latest Jobs imports the same
-      # CSS module, so Vite now bundles it into a shared chunk with a different name. Resolve the file
-      # from the build manifest instead of matching a hardcoded filename.
-      - name: Resolve tutor page stylesheet for deployment verification
+      # Prerender already combines the manifest's directory-page styles into this stable file.
+      # Upload the actual served CSS so verification does not depend on a Vite chunk name/order.
+      - name: Validate tutor page stylesheet for deployment verification
         working-directory: frontend
         run: |
-          node -e '
-            const fs = require("fs");
-            const manifest = JSON.parse(fs.readFileSync("dist/.vite/manifest.json", "utf8"));
-            const seen = new Set();
-            const cssFor = (key) => {
-              if (!key || seen.has(key) || !manifest[key]) return [];
-              seen.add(key);
-              const entry = manifest[key];
-              return [...(entry.css || []), ...(entry.imports || []).flatMap(cssFor)];
-            };
-            // Skip the app-shell stylesheet that every page imports; the tutor page has its own chunk CSS.
-            const files = [...new Set(cssFor("src/pages/BookTutor.tsx"))]
-              .filter((file) => !/(^|\/)index-[^/]*\.css$/.test(file));
-            if (files.length === 0) {
-              console.error("The tutor page stylesheet was not emitted by the build.");
-              process.exit(1);
-            }
-            fs.writeFileSync("tutor-css.txt", files.map((file) => file.split("/").pop()).join("\n") + "\n");
-            console.log("Tutor page stylesheets: " + files.join(", "));
-          '
+          test -s dist/directory.css
+          grep -qF '.tutors-page' dist/directory.css
+          grep -qF 'max-height:calc(100dvh - 1.5rem)' dist/directory.css
       - name: Upload tutor page stylesheet for deployment verification
         uses: actions/upload-artifact@v4
         with:
           name: tutor-page-css
-          path: frontend/tutor-css.txt
+          path: frontend/dist/directory.css
           if-no-files-found: error
           retention-days: 1
 
@@ -237,15 +219,16 @@ jobs:
             exit 1
           fi
 
-          CSS_FILE=$(head -1 tutor-page-css/tutor-css.txt 2>/dev/null | tr -d '\r')
-          if [ -z "$CSS_FILE" ]; then
+          CSS_PATH="tutor-page-css/directory.css"
+          if [ ! -s "$CSS_PATH" ]; then
             echo "Tutor stylesheet artifact was not found."
             exit 1
           fi
-          CSS_URL="https://codinghubs.in/assets/$CSS_FILE"
+          CSS_SHA=$(sha256sum "$CSS_PATH" | awk '{print $1}')
+          CSS_URL="https://codinghubs.in/directory.css"
           for i in $(seq 1 90); do
-            if curl --connect-timeout 3 --max-time 5 -fsSL "https://codinghubs.in/api/learning/release/?expected=${SHA}" -o deployed-release.json && jq -e --arg sha "$SHA" '.release == $sha and .catalog_ready == true' deployed-release.json >/dev/null && curl --connect-timeout 3 --max-time 5 -fsSL "$CSS_URL" -o deployed-tutor.css && grep -q 'max-height:calc(100dvh - 1.5rem)' deployed-tutor.css; then
-              echo "Verified deployed release $SHA and tutor stylesheet: $CSS_URL"
+            if curl --connect-timeout 3 --max-time 5 -fsSL "https://codinghubs.in/api/learning/release/?expected=${SHA}" -o deployed-release.json && jq -e --arg sha "$SHA" '.release == $sha and .catalog_ready == true' deployed-release.json >/dev/null && curl --connect-timeout 3 --max-time 5 -fsSL "$CSS_URL" -o deployed-tutor.css && grep -qF 'max-height:calc(100dvh - 1.5rem)' deployed-tutor.css && [ "$(sha256sum deployed-tutor.css | awk '{print $1}')" = "$CSS_SHA" ]; then
+              echo "Verified deployed release $SHA and tutor stylesheet checksum: $CSS_URL"
               exit 0
             fi
             echo "Waiting for release $SHA and asset: $CSS_URL"
