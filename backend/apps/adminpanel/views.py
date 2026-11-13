@@ -159,15 +159,16 @@ class LeadSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'phone', 'course', 'mode', 'source_page', 'utm_source', 'utm_medium',
             'utm_campaign', 'status', 'notes', 'created_at',
+            'email', 'education', 'whatsapp_consent',
         )
-        read_only_fields = ('id', 'name', 'phone', 'course', 'mode', 'source_page', 'utm_source', 'utm_medium', 'utm_campaign', 'created_at')
+        read_only_fields = ('id', 'name', 'phone', 'course', 'mode', 'source_page', 'utm_source', 'utm_medium', 'utm_campaign', 'created_at', 'email', 'education', 'whatsapp_consent')
 
 
 def filtered_leads(request):
     qs = Lead.objects.all()
     p = request.query_params
     if q := p.get('q', '').strip():
-        qs = qs.filter(Q(name__icontains=q) | Q(phone__icontains=q) | Q(course__icontains=q) | Q(source_page__icontains=q))
+        qs = qs.filter(Q(name__icontains=q) | Q(phone__icontains=q) | Q(email__icontains=q) | Q(course__icontains=q) | Q(source_page__icontains=q))
     if s := p.get('status'):
         qs = qs.filter(status=s)
     if m := p.get('mode'):
@@ -214,11 +215,12 @@ class LeadExportView(APIView):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="coding-hubs-leads.csv"'
         writer = csv.writer(response)
-        writer.writerow(['ID', 'Created', 'Name', 'Phone', 'Course / note', 'Type', 'Source page', 'Status', 'Notes'])
+        writer.writerow(['ID', 'Created', 'Name', 'Phone', 'Course / note', 'Type', 'Source page', 'Status', 'Notes', 'Email', 'Education', 'WhatsApp consent'])
         for lead in filtered_leads(request).iterator():
             writer.writerow([
                 lead.id, timezone.localtime(lead.created_at).strftime('%Y-%m-%d %H:%M'), csv_safe(lead.name),
                 csv_safe(lead.phone), csv_safe(lead.course), lead.mode, csv_safe(lead.source_page), lead.status, csv_safe(lead.notes),
+                csv_safe(lead.email), csv_safe(lead.education), 'Yes' if lead.whatsapp_consent else 'No',
             ])
         return response
 

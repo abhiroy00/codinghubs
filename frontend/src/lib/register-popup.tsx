@@ -81,12 +81,38 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isOpen) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+      if (e.key !== 'Tab') return
+      const dialog = document.querySelector<HTMLElement>('.rp-dialog')
+      const focusable = Array.from(dialog?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), [tabindex="0"]') ?? [])
+        .filter((el) => el.tabIndex >= 0 && el.getClientRects().length > 0)
+      const first = focusable[0]
+      const last = focusable.at(-1)
+      if (!first || !last) return
+      if (e.shiftKey && (document.activeElement === first || !dialog?.contains(document.activeElement))) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && (document.activeElement === last || !dialog?.contains(document.activeElement))) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
     document.addEventListener('keydown', onKey)
-    const t = setTimeout(() => document.getElementById('rp-f-name')?.focus(), 120)
+    const dialog = document.querySelector<HTMLElement>('.rp-dialog')
+    const focusInitial = () => {
+      const input = document.getElementById('rp-f-name')
+      if (!input) return
+      // The lazy form may load after the visitor has already started tabbing.
+      if (!dialog?.contains(document.activeElement)) input.focus()
+      loading.disconnect()
+    }
+    const loading = new MutationObserver(focusInitial)
+    if (dialog) loading.observe(dialog, { childList: true, subtree: true })
+    focusInitial()
     return () => {
       document.removeEventListener('keydown', onKey)
-      clearTimeout(t)
+      loading.disconnect()
     }
   }, [isOpen, close])
 
@@ -108,7 +134,7 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
       {children}
       {isOpen && (
         <div className="rp-overlay" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}>
-          <div className="rp-dialog fs-page" role="dialog" aria-modal="true" aria-labelledby="rp-form-title">
+          <div className="rp-dialog fs-page" role="dialog" aria-modal="true" aria-label="Free demo registration" data-lenis-prevent>
             <button type="button" className="rp-close" aria-label="Close" onClick={close}>
               ×
             </button>

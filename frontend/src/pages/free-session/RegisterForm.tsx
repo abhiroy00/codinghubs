@@ -84,9 +84,14 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
 
     const normalized = normalizePhone(phone)!
     const dupKey = `lp_reg_${normalized}_${course}`
-    const prevRaw = localStorage.getItem(dupKey)
-    const prev = prevRaw ? (JSON.parse(prevRaw) as { ts: number }) : null
-    if (prev && Date.now() - prev.ts < 24 * 36e5) {
+    let prev: { ts?: number } | null = null
+    try {
+      const stored = localStorage.getItem(dupKey)
+      prev = stored ? JSON.parse(stored) : null
+    } catch {
+      // Browser storage is optional; it must never prevent registration.
+    }
+    if (prev?.ts && Date.now() - prev.ts < 24 * 36e5) {
       setStatus({ msg: `You've already registered for ${course} with this mobile number. We'll contact you with the session details — no need to register again.`, type: 'info' })
       return
     }
@@ -96,11 +101,18 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
       await api.post('/leads/', {
         name: name.trim().replace(/\s+/g, ' '),
         phone: '+91' + normalized,
+        email: email.trim(),
+        education,
+        whatsapp_consent: waConsent,
         course,
         mode: 'demo',
-        source_page: '/free-session',
+        source_page: window.location.pathname,
       })
-      localStorage.setItem(dupKey, JSON.stringify({ ts: Date.now() }))
+      try {
+        localStorage.setItem(dupKey, JSON.stringify({ ts: Date.now() }))
+      } catch {
+        // The server accepted the lead even when local storage is unavailable.
+      }
       setThanks({ firstName: name.trim().split(' ')[0], course })
     } catch {
       setStatus({ msg: 'Something went wrong and your registration was not submitted. Please try again.', type: 'error' })

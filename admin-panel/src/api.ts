@@ -81,6 +81,9 @@ export interface Lead {
   id: number
   name: string
   phone: string
+  email: string
+  education: string
+  whatsapp_consent: boolean
   course: string
   mode: 'demo' | 'expert'
   source_page: string

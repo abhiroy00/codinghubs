@@ -16,6 +16,7 @@ import { ScrollProgress } from '../components/ScrollProgress'
 import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
 import { HomePathways } from './free-session/HomePathways'
 import './free-session/home.css'
+import './free-session/home-theme.css'
 import { HomeExplore } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
@@ -90,11 +91,6 @@ export function FreeSession() {
 
   function handleRootClick(e: React.MouseEvent) {
     const target = e.target as HTMLElement
-    const courseBtn = target.closest('[data-course]') as HTMLElement | null
-    if (courseBtn) {
-      goToForm(courseBtn.dataset.course)
-      return
-    }
     const cta = target.closest('[data-cta]') as HTMLElement | null
     if (cta) {
       if (cta.getAttribute('href') === '#register') {
@@ -183,7 +179,7 @@ export function FreeSession() {
                 </p>
               </div>
               <div className="v-cta-btns">
-                <button type="button" className="btn btn-anim btn-yellow" data-course="" data-cta-location="video_section" onClick={() => goToForm()}>
+                <button type="button" className="btn btn-anim btn-yellow" data-cta-location="video_section" onClick={() => goToForm()}>
                   Join Free Live Session <FsIcon id="i-arrow" />
                 </button>
               </div>

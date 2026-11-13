@@ -294,12 +294,15 @@ export function LeadsPage() {
                 <td>
                   <strong>{l.name}</strong>
                   <small className="ad-muted">{l.mode === 'demo' ? 'Free demo' : 'Talk to expert'}</small>
+                  {l.education && <small className="ad-muted">{l.education}</small>}
                 </td>
                 <td className="nowrap">
                   <a href={`tel:${l.phone}`}>{l.phone}</a>
+                  {l.email && <small><a href={`mailto:${l.email}`}>{l.email}</a></small>}
                   <a className="ad-wa" href={`https://wa.me/${cleanPhone(l.phone)}`} target="_blank" rel="noopener noreferrer">
                     WhatsApp
                   </a>
+                  <small className="ad-muted">WhatsApp updates: {l.whatsapp_consent ? 'Opted in' : 'Not opted in'}</small>
                 </td>
                 <td className="wrap">{l.course || '—'}</td>
                 <td className="wrap">{shortSource(l.source_page)}</td>

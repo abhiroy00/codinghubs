@@ -11,6 +11,9 @@ class Lead(models.Model):
 
     name = models.CharField(max_length=120)
     phone = models.CharField(max_length=20)
+    email = models.EmailField(max_length=120, blank=True)
+    education = models.CharField(max_length=120, blank=True)
+    whatsapp_consent = models.BooleanField(default=False)
     course = models.CharField(max_length=120, blank=True)
     mode = models.CharField(max_length=10, choices=MODE_CHOICES, default=MODE_EXPERT)
     STATUS_NEW = 'new'
