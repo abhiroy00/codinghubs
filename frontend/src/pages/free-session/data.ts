@@ -39,7 +39,7 @@ export const VIDEOS: VideoItem[] = [
 
 export const COURSE_OPTIONS = [
   { group: 'Software Development & Programming', items: ['Java Full Stack Developer + Gen AI', 'MERN Stack + Gen AI', 'Python Training Course'] },
-  { group: 'Artificial Intelligence & Cyber Security', items: ['Generative AI', 'Agentic AI', 'AI Engineering', 'Vibe Coding', 'Cyber Security + Gen AI'] },
+  { group: 'Artificial Intelligence & Cyber Security', items: ['Generative AI', 'Agentic AI', 'AI Engineering', 'Vibe Coding', 'Vibe Coding with AI', 'Cyber Security + Gen AI'] },
   { group: 'Data Analytics & Business Intelligence', items: ['Data Analytics Using Python', 'Data Science Pro'] },
   { group: 'Design & Digital Marketing', items: ['UI/UX Designing', 'Advanced Digital Marketing'] },
 ]

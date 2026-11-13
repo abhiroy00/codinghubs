@@ -13,7 +13,9 @@ import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon, IconSprite } from './free-session/icons'
 import { PROGRAMS } from './free-session/programs'
 import { ScrollProgress } from '../components/ScrollProgress'
-import { JoinHero } from './free-session/JoinHero'
+import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
+import { HomePathways } from './free-session/HomePathways'
+import './free-session/home.css'
 import { HomeExplore } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
@@ -28,7 +30,7 @@ export function FreeSession() {
   useSeo(HOME_SEO)
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
+    'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap',
   ])
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -38,7 +40,6 @@ export function FreeSession() {
   useFsReveal(rootRef)
 
   const [navOpen, setNavOpen] = useState(false)
-  const [formVisible, setFormVisible] = useState(false)
   const [pastHero, setPastHero] = useState(false)
 
   useEffect(() => {
@@ -58,18 +59,12 @@ export function FreeSession() {
 
   useEffect(() => {
     if (!('IntersectionObserver' in window)) return
-    const formEl = document.getElementById('register')
     const heroTopEl = rootRef.current?.querySelector('.join-copy')
-    const io1 = formEl
-      ? new IntersectionObserver(([en]) => setFormVisible(en.isIntersecting), { threshold: 0.15 })
-      : null
     const io2 = heroTopEl
       ? new IntersectionObserver(([en]) => setPastHero(!en.isIntersecting && en.boundingClientRect.top < 0))
       : null
-    if (formEl && io1) io1.observe(formEl)
     if (heroTopEl && io2) io2.observe(heroTopEl)
     return () => {
-      io1?.disconnect()
       io2?.disconnect()
     }
   }, [])
@@ -109,13 +104,14 @@ export function FreeSession() {
     }
   }
 
-  const showSticky = !formVisible && pastHero
+  const showSticky = pastHero
 
   return (
-    <div ref={rootRef} className="fs-page" onClick={handleRootClick}>
+    <div ref={rootRef} className="fs-page ch-home" onClick={handleRootClick}>
       <IconSprite />
-
+      <a className="skip" href="#main">Skip to content</a>
       <ScrollProgress />
+      <BatchAnnouncement />
       <header className="hdr" id="hdr">
         <div className="wrap hdr-in">
           <BrandLogo home />
@@ -123,8 +119,8 @@ export function FreeSession() {
             <a href="#demo-classes">Free Demo Classes</a>
             <Link to="/courses/">Courses</Link>
             <Link to="/interview-prep/">Interview Prep</Link>
-            <Link to="/book-a-tutor/">Book a Tutor</Link>
-            <Link to="/latest-jobs/">Latest Jobs</Link>
+            <Link to="/book-a-tutor/">Tutor</Link>
+            <Link to="/latest-jobs/">Jobs</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
             <ResourcesMenu />
             <button type="button" className="btn btn-yellow nav-cta" onClick={() => { setNavOpen(false); popup.open() }}>
@@ -132,6 +128,7 @@ export function FreeSession() {
             </button>
           </nav>
           <div className="hdr-actions">
+            <Link to="/login" className="home-login">Log in <span aria-hidden="true">↗</span></Link>
             <a href={INSTITUTE.phoneHref} className="hdr-phone">
               <FsIcon id="i-phone" />{INSTITUTE.phone}
             </a>
@@ -149,6 +146,7 @@ export function FreeSession() {
 
       <main id="main">
         <JoinHero />
+        <HomePathways />
 
         <section className="sec videos" id="demo-classes" aria-labelledby="videos-title">
           <div className="v-deco" aria-hidden="true">
@@ -543,7 +541,7 @@ export function FreeSession() {
                   </div>
                   <div className="step-copy">
                     <h3>Choose Your Course</h3>
-                    <p>Pick the course you're curious about from the 12 options.</p>
+                    <p>Pick the course you're curious about from the {COURSES.length} options.</p>
                   </div>
                 </li>
                 <li className="step reveal">
