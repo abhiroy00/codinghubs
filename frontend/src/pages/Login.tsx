@@ -1,104 +1,74 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { api } from '../lib/api'
-import { useAuth } from '../lib/auth-context'
-import './login.css'
-
-type GoogleCredentialResponse = { credential?: string }
-type GoogleAccounts = {
-  id: {
-    initialize: (options: { client_id: string; callback: (r: GoogleCredentialResponse) => void }) => void
-    renderButton: (parent: HTMLElement, options: Record<string, unknown>) => void
-  }
-}
-declare global {
-  interface Window {
-    google?: { accounts: GoogleAccounts }
-  }
-}
+import { useState, type FormEvent } from "react";
+import { isAxiosError } from "axios";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { GoogleSignIn } from "../components/GoogleSignIn";
+import { useAuth } from "../lib/auth-context";
+import "./login.css";
 
 export function Login() {
-  const { login, loginWithGoogle } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation() as { state?: { from?: { pathname: string } } }
-  const googleRef = useRef<HTMLDivElement>(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [notice, setNotice] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [googleClientId, setGoogleClientId] = useState('')
+  const { login, loginWithGoogle } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation() as { state?: { from?: { pathname: string } } };
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [googleCredential, setGoogleCredential] = useState<string | null>(null);
 
-  const goNext = () => navigate(location.state?.from?.pathname ?? '/dashboard', { replace: true })
+  const goNext = () =>
+    navigate(location.state?.from?.pathname ?? "/dashboard", { replace: true });
 
-  useEffect(() => {
-    let active = true
-    api.get<{ client_id: string }>('/auth/google/')
-      .then((response) => { if (active) setGoogleClientId(response.data.client_id || '') })
-      .catch(() => { if (active) setGoogleClientId('') })
-    return () => { active = false }
-  }, [])
-
-  useEffect(() => {
-    if (!googleClientId) return
-    let cancelled = false
-    const mount = () => {
-      const google = window.google
-      if (cancelled || !google || !googleRef.current) return
-      google.accounts.id.initialize({
-        client_id: googleClientId,
-        callback: async (response) => {
-          if (!response.credential) return
-          setError('')
-          setNotice('Signing you in with Google…')
-          try {
-            await loginWithGoogle(response.credential)
-            goNext()
-          } catch {
-            setNotice('')
-            setError('Google sign-in failed. Please try again or use your password.')
-          }
-        },
-      })
-      google.accounts.id.renderButton(googleRef.current, {
-        type: 'standard',
-        theme: 'outline',
-        size: 'large',
-        text: 'continue_with',
-        shape: 'pill',
-        logo_alignment: 'left',
-        width: 348,
-      })
+  async function signInWithGoogle(
+    credential: string,
+    linkingPassword?: string,
+  ) {
+    if (linkingPassword === undefined) setGoogleCredential(null);
+    setError("");
+    setNotice("Signing you in with Google…");
+    setLoading(true);
+    try {
+      await loginWithGoogle(credential, linkingPassword);
+      goNext();
+    } catch (failure) {
+      const data = isAxiosError<{
+        code?: string;
+        detail?: string;
+        email?: string;
+      }>(failure)
+        ? failure.response?.data
+        : undefined;
+      if (data?.code === "account_link_required") {
+        setGoogleCredential(credential);
+        if (data.email) setUsername(data.email);
+      }
+      setError(
+        data?.detail ||
+          "Google sign-in failed. Please try again or use your password.",
+      );
+    } finally {
+      setNotice("");
+      setLoading(false);
     }
-    if (window.google?.accounts?.id) {
-      mount()
-    } else {
-      const script = document.createElement('script')
-      script.src = 'https://accounts.google.com/gsi/client'
-      script.async = true
-      script.defer = true
-      script.onload = mount
-      document.head.appendChild(script)
-    }
-    return () => {
-      cancelled = true
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [googleClientId])
+  }
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-    setError('')
-    setNotice('')
-    setLoading(true)
+    e.preventDefault();
+    if (googleCredential) {
+      await signInWithGoogle(googleCredential, password);
+      return;
+    }
+    setError("");
+    setNotice("");
+    setLoading(true);
     try {
-      await login(username, password)
-      goNext()
+      await login(username, password);
+      goNext();
     } catch {
-      setError('Invalid username or password.')
+      setError("Invalid username or password.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -106,8 +76,16 @@ export function Login() {
     <section className="auth-page" aria-labelledby="login-heading">
       <div className="auth-card">
         <aside className="auth-visual" aria-hidden="true">
-          <img src="/fs-assets/img/modern-virtual-classroom-studio.jpg" alt="" width={1280} height={801} />
-          <span className="auth-badge"><i />LIVE COHORTS</span>
+          <img
+            src="/fs-assets/img/modern-virtual-classroom-studio.jpg"
+            alt=""
+            width={1280}
+            height={801}
+          />
+          <span className="auth-badge">
+            <i />
+            LIVE COHORTS
+          </span>
           <div className="auth-visual-copy">
             <p>Learn AI with people who build.</p>
             <ul>
@@ -119,26 +97,39 @@ export function Login() {
         </aside>
 
         <div className="auth-panel">
-          <Link to="/" className="auth-close" aria-label="Back to the home page">
-            <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg>
+          <Link
+            to="/"
+            className="auth-close"
+            aria-label="Back to the home page"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
           </Link>
 
           <p className="auth-eyebrow">Student login</p>
           <h1 id="login-heading">Welcome back.</h1>
-          <p className="auth-sub">Sign in to continue your learning, or use your Google account.</p>
+          <p className="auth-sub">
+            Sign in to continue your learning, or use your Google account.
+          </p>
 
-          {googleClientId ? (
-            <>
-              <div className="auth-google" ref={googleRef} />
-              <p className="auth-or"><span>or</span></p>
-            </>
-          ) : null}
+          <GoogleSignIn
+            onCredential={(credential) => {
+              void signInWithGoogle(credential);
+            }}
+            disabled={loading}
+          />
+          <p className="auth-or">
+            <span>or</span>
+          </p>
 
           <form onSubmit={handleSubmit} className="auth-form">
             <label className="auth-field">
               <span>Email or username</span>
               <div className="auth-input">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6" /></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16v12H4zM4 7l8 6 8-6" />
+                </svg>
                 <input
                   id="username"
                   required
@@ -153,10 +144,12 @@ export function Login() {
             <label className="auth-field">
               <span>Password</span>
               <div className="auth-input">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3" /></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3" />
+                </svg>
                 <input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   required
                   autoComplete="current-password"
                   placeholder="Your password"
@@ -166,7 +159,7 @@ export function Login() {
                 <button
                   type="button"
                   className="auth-eye"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword((v) => !v)}
                 >
                   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -178,24 +171,56 @@ export function Login() {
             </label>
 
             <div className="auth-row">
-              <span className="auth-hint">Your progress stays linked to this device.</span>
-              <Link to="/forgot-password" className="auth-link">Forgot password?</Link>
+              <span className="auth-hint">
+                Your progress stays linked to your account.
+              </span>
+              <Link to="/forgot-password" className="auth-link">
+                Forgot password?
+              </Link>
             </div>
 
-            {error && <p className="auth-message is-error" role="alert">{error}</p>}
-            {notice && !error && <p className="auth-message" role="status">{notice}</p>}
+            {error && (
+              <p className="auth-message is-error" role="alert">
+                {error}
+              </p>
+            )}
+            {notice && !error && (
+              <p className="auth-message" role="status">
+                {notice}
+              </p>
+            )}
 
             <button type="submit" className="auth-submit" disabled={loading}>
-              {loading ? 'Logging in…' : 'Log in'}
+              {loading
+                ? "Logging in…"
+                : googleCredential
+                  ? "Link Google & log in"
+                  : "Log in"}
             </button>
           </form>
+          {googleCredential && (
+            <button
+              type="button"
+              className="auth-google-retry"
+              disabled={loading}
+              onClick={() => {
+                setGoogleCredential(null);
+                setError("");
+                setPassword("");
+              }}
+            >
+              Use password login instead
+            </button>
+          )}
 
           <p className="auth-alt">
-            Don’t have an account?{' '}
-            <Link to="/register" state={location.state}>Sign up</Link>
+            Don’t have an account?{" "}
+            <Link to="/register" state={location.state}>
+              Sign up
+            </Link>
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }

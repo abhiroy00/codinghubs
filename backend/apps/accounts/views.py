@@ -1,11 +1,9 @@
-import json
 import re
-import urllib.error
-import urllib.parse
-import urllib.request
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
+from django.db import IntegrityError, transaction
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -20,6 +18,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .emails import send_password_reset
+from .google import GoogleTokenError, GoogleUnavailableError, verify_google_token
 from .serializers import RegisterSerializer, UserSerializer
 from .tokens import revoke_all_tokens
 
@@ -127,7 +126,7 @@ class AccountExportView(APIView):
         user = request.user
         return Response({
             'exported_at': timezone.now().isoformat(),
-            'profile': UserSerializer(user).data,
+            'profile': {**UserSerializer(user).data, 'google_account_id': user.google_sub},
             'enrollments': [
                 {'course': e.course.name, 'slug': e.course.slug, 'enrolled_at': e.enrolled_at}
                 for e in Enrollment.objects.filter(user=user).select_related('course')
@@ -188,18 +187,8 @@ class LogoutView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class GoogleTokenError(Exception):
-    pass
-
-
 def _google_token_info(credential: str) -> dict:
-    """Verify a Google ID token with Google and return its claims."""
-    url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' + urllib.parse.quote(credential, safe='')
-    try:
-        with urllib.request.urlopen(url, timeout=6) as response:  # noqa: S310 - fixed Google endpoint
-            return json.loads(response.read().decode('utf-8'))
-    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
-        raise GoogleTokenError(str(exc)) from exc
+    return verify_google_token(credential)
 
 
 def _username_from_email(email: str) -> str:
@@ -216,7 +205,8 @@ class GoogleLoginThrottle(AnonRateThrottle):
 
 
 class GoogleLoginSerializer(serializers.Serializer):
-    credential = serializers.CharField()
+    credential = serializers.CharField(max_length=8192)
+    password = serializers.CharField(required=False, write_only=True, trim_whitespace=False, max_length=1024)
 
 
 class GoogleLoginView(APIView):
@@ -224,6 +214,7 @@ class GoogleLoginView(APIView):
 
     permission_classes = [permissions.AllowAny]
     throttle_classes = [GoogleLoginThrottle]
+    authentication_classes = []
 
     def get(self, request):
         """Public config: which Google client id the page should render."""
@@ -238,6 +229,8 @@ class GoogleLoginView(APIView):
             return Response({'detail': 'Google sign-in is not configured yet.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         try:
             info = _google_token_info(serializer.validated_data['credential'])
+        except GoogleUnavailableError:
+            return Response({'detail': 'Google sign-in is temporarily unavailable. Please try again.'}, status=503)
         except GoogleTokenError:
             return Response({'detail': 'Google sign-in could not be verified.'}, status=status.HTTP_400_BAD_REQUEST)
         if info.get('aud') not in allowed:
@@ -247,16 +240,42 @@ class GoogleLoginView(APIView):
         email = (info.get('email') or '').strip().lower()
         if not email:
             return Response({'detail': 'Google did not share an email address.'}, status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.filter(email__iexact=email).first()
-        if user is None:
-            user = User(
-                username=_username_from_email(email),
-                email=email,
-                first_name=(info.get('given_name') or '')[:150],
-                last_name=(info.get('family_name') or '')[:150],
-            )
-            user.set_unusable_password()
-            user.save()
+        subject = info.get('sub')
+        if not isinstance(subject, str) or not subject.strip() or len(subject) > 255:
+            return Response({'detail': 'Google did not provide a valid account identity.'}, status=400)
+        try:
+            with transaction.atomic():
+                user = User.objects.select_for_update().filter(google_sub=subject).first()
+                if user is None:
+                    matches = list(User.objects.select_for_update().filter(email__iexact=email)[:2])
+                    if len(matches) > 1:
+                        return Response({'detail': 'Please sign in with your existing username and contact support to link Google.'}, status=409)
+                    user = matches[0] if matches else None
+                    if user is not None:
+                        if not user.is_active:
+                            return Response({'detail': 'This account is disabled.'}, status=403)
+                        if user.google_sub and user.google_sub != subject:
+                            return Response({'detail': 'This email is already linked to another Google account.'}, status=409)
+                        google_owns_email = email.endswith('@gmail.com') or bool(info.get('hd'))
+                        password = serializer.validated_data.get('password')
+                        if not google_owns_email and not password:
+                            return Response({
+                                'code': 'account_link_required', 'email': email,
+                                'detail': 'Enter your existing Coding Hubs password once to connect this Google account.',
+                            }, status=409)
+                        if not google_owns_email and not user.check_password(password):
+                            return Response({'code': 'account_link_failed', 'detail': 'The existing account password is incorrect.'}, status=400)
+                        user.google_sub = subject
+                        user.save(update_fields=['google_sub'])
+                    else:
+                        user, _ = User.objects.get_or_create(google_sub=subject, defaults={
+                            'username': _username_from_email(email), 'email': email,
+                            'first_name': str(info.get('given_name') or '')[:150],
+                            'last_name': str(info.get('family_name') or '')[:150],
+                            'password': make_password(None),
+                        })
+        except IntegrityError:
+            return Response({'detail': 'Please try Google sign-in again.'}, status=409)
         if not user.is_active:
             return Response({'detail': 'This account is disabled.'}, status=status.HTTP_403_FORBIDDEN)
         refresh = RefreshToken.for_user(user)

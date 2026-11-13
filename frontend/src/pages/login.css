@@ -239,3 +239,12 @@
   .auth-visual-copy ul { display: none; }
   .auth-close { background: #fff; }
 }
+
+.auth-google-section { margin-top: 1.3rem; text-align: center; }
+.auth-google-section .auth-google { margin-top: 0; width: 100%; }
+.auth-google.is-loading { height: 0; min-height: 0; overflow: hidden; visibility: hidden; }
+.auth-google-status { color: var(--muted); font-size: .78rem; line-height: 1.6; }
+.auth-google-placeholder { width: 100%; min-height: 44px; border: 1px solid #cbd5e1; border-radius: 24px; color: #64748b; font-size: .9rem; cursor: not-allowed; }
+.auth-google-placeholder + .auth-google-status { margin-top: .65rem; }
+.auth-google-retry { display: inline-block; margin-top: .6rem; padding: .3rem; color: #1d4ed8; font-size: .8rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.auth-google-section[inert] { opacity: .7; }

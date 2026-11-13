@@ -5,7 +5,8 @@ from .models import User
 
 
 class UserAdmin(BaseUserAdmin):
-    fieldsets = BaseUserAdmin.fieldsets + ((None, {'fields': ('phone',)}),)
+    fieldsets = BaseUserAdmin.fieldsets + ((None, {'fields': ('phone', 'google_sub')}),)
+    readonly_fields = ('google_sub',)
     list_display = ('username', 'email', 'phone', 'is_staff', 'date_joined')
     search_fields = ('username', 'email', 'phone')
 

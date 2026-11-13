@@ -179,6 +179,7 @@ class GoogleLoginTests(TestCase):
     def test_valid_credential_creates_the_account_and_returns_tokens(self):
         claims = {
             'aud': 'client-abc.apps.googleusercontent.com',
+            'sub': 'google-existing-test-subject',
             'email': 'Learner@Example.com',
             'email_verified': 'true',
             'given_name': 'Asha',

@@ -14,7 +14,7 @@ interface AuthContextValue {
   user: User | null
   loading: boolean
   login: (username: string, password: string) => Promise<void>
-  loginWithGoogle: (credential: string) => Promise<void>
+  loginWithGoogle: (credential: string, password?: string) => Promise<void>
   register: (payload: RegisterPayload) => Promise<void>
   logout: () => Promise<void>
 }
@@ -50,10 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loadMe()
   }
 
-  async function loginWithGoogle(credential: string) {
-    const { data } = await api.post('/auth/google/', { credential })
+  async function loginWithGoogle(credential: string, password?: string) {
+    const { data } = await api.post<{ user: User; access: string; refresh: string }>('/auth/google/', { credential, ...(password ? { password } : {}) })
     tokenStore.set(data.access, data.refresh)
-    await loadMe()
+    setUser(data.user)
   }
 
   async function register(payload: RegisterPayload) {
