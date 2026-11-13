@@ -2,7 +2,6 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { api } from "../lib/api";
 import { INSTITUTE, WHATSAPP } from "../pages/free-session/data";
-import { useRegisterPopup } from "../lib/register-popup";
 
 // The backend owns the launch gate; one availability request per app session.
 let gigsStatus: Promise<boolean> | undefined;
@@ -38,7 +37,6 @@ export function ResourcesMenu() {
   const listId = useId();
   const ref = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const popup = useRegisterPopup();
   useEffect(() => {
     let active = true;
     pilotEnabled().then((value) => {
