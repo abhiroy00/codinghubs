@@ -156,7 +156,7 @@
 
 /* ===== Resources: back inside navbar (inline like other nav links) ===== */
 .ch-home .site-header .sh-res {
-  position: static !important;
+  position: relative !important;
   top: auto !important;
   left: auto !important;
   right: auto !important;
@@ -169,6 +169,7 @@
   overflow-y: visible !important;
   display: flex !important;
   align-items: center !important;
+  z-index: auto !important;
 }
 .ch-home .site-header .sh-res-button {
   width: auto !important;
