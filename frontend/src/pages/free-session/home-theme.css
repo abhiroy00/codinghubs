@@ -143,8 +143,83 @@
 .ch-home .hdr .nav .loc-btn:hover,
 .ch-home .hdr .nav .res-btn:hover {
   color: var(--yellow);
-  background: transparent;
 }
+
+/* ===== Resources dropdown: homepage footer columns ===== */
+.ch-home .site-header .sh-res-list {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(150px, 1fr)) !important;
+  gap: 1rem 1.5rem !important;
+  min-width: 560px !important;
+  padding: 1.1rem 1.4rem !important;
+  border-radius: 10px !important;
+}
+.ch-home .site-header .sh-res-list .res-col,
+.ch-home .site-header .sh-res-list .res-contact {
+  display: contents !important;
+}
+.ch-home .site-header .sh-res-list .res-col-title {
+  color: var(--home-light) !important;
+  font: 500 0.9rem/1.4 var(--f-head) !important;
+  margin: 0 0 0.6rem !important;
+  padding: 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  border-bottom: 1px solid var(--home-border) !important;
+  padding-bottom: 0.35rem !important;
+  font-size: 0.78rem !important;
+}
+.ch-home .site-header .sh-res-list .res-col-links {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+.ch-home .site-header .sh-res-list .res-col-links li {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.ch-home .site-header .sh-res-list .res-col-links a,
+.ch-home .site-header .sh-res-list .res-col-links Link {
+  color: #b6c2d5 !important;
+  font-size: 0.88rem !important;
+  padding: 0.35rem 0 !important;
+  border-radius: 4px !important;
+  display: block !important;
+  transition: background 0.15s, color 0.15s;
+}
+.ch-home .site-header .sh-res-list .res-col-links a:hover,
+.ch-home .site-header .sh-res-list .res-col-links Link:hover {
+  background: #162843 !important;
+  color: #fff !important;
+}
+.ch-home .site-header .sh-res-list .res-contact .res-contact-links {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.45rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+.ch-home .site-header .sh-res-list .res-contact .res-contact-links li {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 0.35rem !important;
+  font-size: 0.85rem !important;
+  color: #b6c2d5 !important;
+}
+.ch-home .site-header .sh-res-list .res-contact .res-contact-links li a {
+  color: #fff !important;
+  font-weight: 500 !important;
+}
+.ch-home .site-header .sh-res-list .res-contact .res-contact-links li span {
+  color: #7c8ca3 !important;
+  font-size: 0.78rem !important;
+  font-weight: 400 !important;
+}
+
 .ch-home .nav > a::after {
   background: var(--yellow);
 }
