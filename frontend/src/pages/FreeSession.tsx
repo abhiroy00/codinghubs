@@ -126,7 +126,6 @@ export function FreeSession() {
             <Link to="/book-a-tutor/">Book a Tutor</Link>
             <Link to="/latest-jobs/">Latest Jobs</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
-            <Link to="/store">Store</Link>
             <ResourcesMenu />
             <button type="button" className="btn btn-yellow nav-cta" onClick={() => { setNavOpen(false); popup.open() }}>
               <FsIcon id="i-tap" />Register for Free Demo

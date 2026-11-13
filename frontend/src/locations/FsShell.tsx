@@ -58,7 +58,6 @@ export function FsHeader() {
             <Link to="/book-a-tutor/" onClick={() => setNavOpen(false)}>Book a Tutor</Link>
             <Link to="/latest-jobs/" onClick={() => setNavOpen(false)}>Latest Jobs</Link>
             <LocationsMenu onNavigate={() => setNavOpen(false)} />
-            <Link to="/store" onClick={() => setNavOpen(false)}>Store</Link>
             <ResourcesMenu />
             <button type="button" className="btn btn-yellow nav-cta" onClick={() => { setNavOpen(false); popup.open() }}>
               <FsIcon id="i-tap" />Register for Free Demo
@@ -137,7 +136,6 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><Link to="/blog">Blog</Link></li>
               <li><Link to="/case-studies">Case Studies</Link></li>
               <li><Link to="/projects">Projects</Link></li>
-              <li><Link to="/store">Store</Link></li>
               <li><HLink home={home} to={h('#contact')}>Contact</HLink></li>
             </ul>
           </nav>
