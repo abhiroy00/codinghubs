@@ -1635,29 +1635,3 @@
   stroke-linejoin: round;
   color: var(--yellow);
 }
-
-/* ===== Resources dropdown: homepage footer look ===== */
-.ch-home .site-header .sh-res-list {
-  background: #0c1424 !important;
-  border: 1px solid var(--home-border) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 20px 48px #0005 !important;
-  min-width: 260px !important;
-  padding: 0.55rem 0 !important;
-}
-.ch-home .site-header .sh-res-list a {
-  color: #b6c2d5 !important;
-  border-radius: 6px !important;
-  padding: 0.7rem 1rem !important;
-  font-size: 0.9rem !important;
-  transition: background 0.15s, color 0.15s;
-}
-.ch-home .site-header .sh-res-list a:hover,
-.ch-home .site-header .sh-res-list a[aria-current="page"] {
-  background: #162843 !important;
-  color: #fff !important;
-  border-color: transparent !important;
-}
-.ch-home .site-header .sh-res-button svg {
-  stroke: #b6c2d5 !important;
-}
