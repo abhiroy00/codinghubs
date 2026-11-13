@@ -60,7 +60,7 @@ class StoreDataRemovalTests(TestCase):
         for owner in ({'product': product}, {'project': project}, {'project': free}, {'guide': guide}):
             DigitalAsset.objects.create(**owner, file='fixture.pdf', label='PDF', original_name='fixture.pdf')
         order = Order.objects.create(number='OLD', user=user, name='Learner', email='learner@example.test')
-        item = OrderItem.objects.create(order=order, product=product, title='Snapshot', sku='OLD', product_type='digital', unit_price=100, quantity=1, line_total=100)
+        OrderItem.objects.create(order=order, product=product, title='Snapshot', sku='OLD', product_type='digital', unit_price=100, quantity=1, line_total=100)
         payment = Payment.objects.create(order=order, amount=100)
         Refund.objects.create(order=order, payment=payment, amount=10)
         PaymentEvent.objects.create(event_id='old-event', event_type='captured')

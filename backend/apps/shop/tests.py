@@ -3,7 +3,6 @@ import shutil
 import tempfile
 from datetime import timedelta
 from decimal import Decimal
-from unittest import mock
 from io import BytesIO
 from zipfile import ZipFile
 
@@ -18,9 +17,8 @@ from rest_framework.test import APIClient
 from apps.courses.models import Course, CourseCategory
 from apps.enrollments.models import Enrollment
 
-from . import downloads
 from .models import (
-    DigitalAsset, Product, Project, ProjectGuide, ProjectQuestion,
+    Product, Project, ProjectGuide, ProjectQuestion,
 )
 
 User = get_user_model()
