@@ -74,7 +74,7 @@ const SLIDES: Slide[] = [
 /** Decorative pills drawn from the hero copy (live classes, mentors, projects, community). */
 const TAGS = ['live classes', 'mentors', 'real projects', 'community']
 
-const INTERVAL = 4500
+const INTERVAL = 3000
 const SIZES = '(max-width: 760px) 82vw, 640px'
 const src = (s: Slide) => `/assets/hero/${s.name}.jpg`
 const srcSet = (s: Slide) => s.widths.map((w) => `/assets/hero/${s.name}-${w}.webp ${w}w`).join(', ')
