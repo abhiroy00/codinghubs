@@ -1817,3 +1817,53 @@ body:has(.st-bar) .call-float{bottom:152px}
 .bl-reader-content .bl-share{border-top:1px solid #e0e7f1;padding-top:1.5rem;margin-top:2rem}
 @media(max-width:900px){.bl-reader-layout{grid-template-columns:200px minmax(0,1fr);gap:2rem;padding-block:3rem}.bl-reader-content .bl-body{font-size:1.05rem}}
 @media(max-width:700px){.bl-reader-hero{padding:2rem 1.25rem 2.5rem}.bl-reading-page .bl-reader-hero h1{font-size:var(--t-h1);margin-bottom:1rem}.bl-reader-hero .bl-meta{font-size:.75rem}.bl-reader-hero .bl-meta>*+*::before{padding-inline:.5rem}.bl-reader-cover{border-radius:14px;margin-top:1.75rem}.bl-reader-layout{display:block;padding:2rem 1.25rem 3rem}.bl-reader-toc{position:static;max-height:none;margin-bottom:2.5rem;padding:0}.bl-reader-toc ol{max-height:220px;overflow-y:auto}.bl-reader-toc a{padding-block:.4rem}.bl-reader-content .bl-body{font-size:1rem;line-height:1.85}.bl-reading-page .bl-reader-content h2{font-size:var(--t-h2)}.bl-reader-content .bl-related .bl-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* ============ UNIFIED DESIGN LAYER ============
+   The /courses/ look on every page: white canvas, light glow heroes with a spaced kicker,
+   white bordered cards, pill buttons (ink primary, white ghost) and one blue gradient CTA band. */
+:root{--u-ink:#0b1220;--u-muted:#4a5568;--u-line:#e1e7f0;--u-line-2:#cdd6e4;--u-brand:#0062fa;--u-brand-soft:#e9f1ff;--u-grad:linear-gradient(120deg,#0b1a3a 0%,#123a8f 60%,#0062fa 100%);--u-accent:linear-gradient(90deg,#004bd6,#0062fa 55%,#3d8bff)}
+
+/* heroes */
+.fs-page :is(.learn-hero,.bl-hero,.pj-hero,.ow-hero){position:relative;isolation:isolate;overflow:hidden!important;margin:.5rem 0 1.8rem!important;padding:clamp(2.2rem,6vw,3.8rem) clamp(1.2rem,4vw,3rem)!important;border:1px solid var(--u-line);border-radius:20px!important;background:radial-gradient(55% 70% at 8% 0%,rgba(0,98,250,.1),transparent 70%),radial-gradient(45% 70% at 100% 20%,rgba(34,211,238,.1),transparent 70%),#fff!important;color:var(--u-ink)!important;box-shadow:none!important}
+.fs-page :is(.learn-hero,.bl-hero,.pj-hero,.ow-hero)::after{content:"";position:absolute;inset:0;z-index:-1;opacity:1;background-image:radial-gradient(rgba(11,18,32,.11) 1px,transparent 1.4px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 70% 80% at 30% 20%,#000,transparent 75%);mask-image:radial-gradient(ellipse 70% 80% at 30% 20%,#000,transparent 75%)}
+.fs-page .learn-hero::before,.fs-page .pj-blob,.fs-page .pj-grid-bg{display:none}
+.fs-page :is(.learn-hero,.bl-hero,.pj-hero,.ow-hero) h1{color:var(--u-ink)!important;font:600 var(--t-h1)/1.18 var(--f-head);letter-spacing:-.02em}
+.fs-page :is(.learn-hero,.bl-hero,.pj-hero) h1::after{content:none!important}
+.fs-page :is(.learn-hero,.bl-hero,.pj-hero,.ow-hero) h1 span{background:var(--u-accent);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.fs-page :is(.learn-kicker,.bl-eyebrow,.pj-eyebrow,.ow-eyebrow){display:block;margin:0 0 1rem!important;padding:0!important;border:0!important;background:none!important;color:#334155!important;font:500 .8rem/1 var(--f-body)!important;letter-spacing:.4em!important;text-transform:uppercase}
+.fs-page :is(.learn-hero>p:not(.learn-kicker),.bl-lead,.pj-lead,.ow-lead){color:var(--u-muted)!important}
+.fs-page :is(.pj-stats,.ow-stats) strong{color:var(--u-brand)!important}
+.fs-page :is(.pj-stats,.ow-stats) span{color:var(--u-muted)!important}
+.fs-page .learn-hero .learn-button-quiet{background:#fff;border-color:var(--u-line-2);color:var(--u-ink)}
+.fs-page .learn-hero .learn-progress>span{color:var(--u-muted)}
+.fs-page .learn-hero .learn-progress>div{background:var(--u-brand-soft)}
+
+/* buttons */
+.fs-page :is(.btn,.learn-button){border-radius:999px;box-shadow:none}
+.fs-page :is(.btn-yellow,.learn-button:not(.learn-button-quiet)){background:var(--u-ink);border-color:var(--u-ink);color:#fff}
+.fs-page :is(.btn-yellow,.learn-button:not(.learn-button-quiet)):hover{background:var(--u-brand);border-color:var(--u-brand);color:#fff;box-shadow:none}
+.fs-page :is(.btn-ghost,.learn-button-quiet){background:#fff;border-color:var(--u-line-2);color:var(--u-ink)}
+.fs-page :is(.btn-ghost,.learn-button-quiet):hover{background:var(--u-brand-soft);border-color:var(--u-brand)}
+
+/* CTA bands */
+.fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta){border:0;border-radius:18px;background:var(--u-grad)!important;color:#fff!important;box-shadow:0 30px 60px -40px rgba(0,98,250,.6)}
+.fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta) :is(h2,h3){color:#fff!important}
+.fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta) p{color:rgba(255,255,255,.82)!important}
+.fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta) :is(.btn,.learn-button){background:#fff!important;border-color:#fff!important;color:var(--u-ink)!important}
+.fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta) :is(.btn,.learn-button):hover{background:var(--u-brand-soft)!important}
+.fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta) :is(.btn-ghost,.btn-ghost-light,.learn-button-quiet){background:transparent!important;border-color:rgba(255,255,255,.5)!important;color:#fff!important}
+.fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta) :is(.btn-ghost,.btn-ghost-light,.learn-button-quiet):hover{background:rgba(255,255,255,.1)!important}
+.fs-page .learn-cta a:not(.learn-button){color:#cfe0ff}
+
+/* cards */
+.fs-page :is(.pj-card,.bl-card,.ow-card,.learn-course-card,.loc-card,.lx-card,.hx-card,.hx-loc-group,.plan-card,.trainer,.contact-card){border-radius:16px}
+/* tutor and jobs heroes: same light glow hero */
+.fs-page .tutors-hero{position:relative;isolation:isolate;background:radial-gradient(50% 70% at 8% 0%,rgba(0,98,250,.1),transparent 70%),radial-gradient(45% 70% at 100% 25%,rgba(34,211,238,.1),transparent 70%),#fff;color:var(--u-ink);border-bottom:1px solid var(--u-line)}
+.fs-page .tutors-hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(11,18,32,.11) 1px,transparent 1.4px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 65% 80% at 25% 25%,#000,transparent 75%);mask-image:radial-gradient(ellipse 65% 80% at 25% 25%,#000,transparent 75%)}
+.fs-page .tutors-hero::after{border-color:rgba(0,98,250,.12);box-shadow:none}
+.fs-page .tutors-hero h1{color:var(--u-ink)}
+.fs-page .tutors-hero h1 span{background:var(--u-accent);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.fs-page .tutors-hero .lede{color:var(--u-muted)}
+.fs-page .tutors-hero .eyebrow{color:#334155}
+.fs-page .tutor-breadcrumbs,.fs-page .tutor-breadcrumbs a{color:var(--u-muted)}
+.fs-page .tutor-breadcrumbs [aria-current]{color:var(--u-brand)}
