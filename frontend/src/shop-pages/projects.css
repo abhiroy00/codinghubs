@@ -12,7 +12,7 @@
 .pj-grid-bg{position:absolute;inset:0;z-index:-1;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(circle at 70% 30%,#000,transparent 70%);-webkit-mask-image:radial-gradient(circle at 70% 30%,#000,transparent 70%)}
 .pj-hero-in{max-width:780px;animation:pjUp .6s both}
 .pj-eyebrow{display:inline-block;margin:0 0 .8rem;padding:.3rem .8rem;border-radius:8px;background:rgba(147,197,253,.16);border:1px solid rgba(147,197,253,.5);color:#93c5fd;font:700 .75rem var(--f-head);letter-spacing:.1em;text-transform:uppercase}
-.pj-hero h1{margin:0;color:#fff;font-size:clamp(1.9rem,4.8vw,3.1rem);line-height:1.12;letter-spacing:-.02em}
+.pj-hero h1{margin:0;color:#fff;font-size:var(--t-h1);line-height:1.12;letter-spacing:-.02em}
 .pj-hero h1 span{color:#93c5fd}
 .pj-lead{margin:.9rem 0 1.4rem;max-width:40rem;color:rgba(255,255,255,.82);font-size:1.08rem}
 .pj-search{display:flex;align-items:center;gap:.7rem;max-width:30rem;padding:.25rem 1rem;border-radius:8px;background:#fff;color:#8a94ad;box-shadow:0 18px 40px -18px rgba(0,0,0,.6)}
@@ -85,7 +85,7 @@
 .pj-badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem}
 .pj-pill{padding:.22rem .8rem;border-radius:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);font:600 .76rem var(--f-head)}
 .pj-pill.paid{background:var(--yellow);border-color:var(--yellow);color:var(--navy)}.pj-pill.free{background:rgba(18,148,90,.25);border-color:rgba(120,230,170,.6)}
-.pj-dhero h1{margin:0;color:#fff;font-size:clamp(1.8rem,4.4vw,2.9rem);line-height:1.15;letter-spacing:-.02em}
+.pj-dhero h1{margin:0;color:#fff;font-size:var(--t-h1);line-height:1.15;letter-spacing:-.02em}
 .pj-dlead{margin:.9rem 0 0;max-width:42rem;color:rgba(255,255,255,.86);font-size:1.1rem}
 .pj-meta{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;list-style:none;margin:1.1rem 0 0;padding:0;color:rgba(255,255,255,.8);font-size:.92rem}
 .pj-meta li{display:inline-flex;align-items:center;gap:.4rem}

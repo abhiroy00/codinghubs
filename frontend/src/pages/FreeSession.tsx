@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { SITE_FONTS } from '../lib/fonts'
 import { Link, useLocation } from 'react-router-dom'
 import { useLenisRef } from '../lib/lenis-context'
 import { useRegisterPopup } from '../lib/register-popup'
@@ -29,7 +30,7 @@ export function FreeSession() {
   useSeo(HOME_SEO)
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap',
+    SITE_FONTS,
   ])
 
   const rootRef = useRef<HTMLDivElement>(null)

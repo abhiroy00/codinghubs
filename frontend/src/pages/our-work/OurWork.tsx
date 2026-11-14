@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PageFrame } from '../../content-pages/shared'
+import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/site'
+import { useSeo } from '../../seo/useSeo'
 import './our-work.css'
 
 type Work = {
@@ -112,6 +114,27 @@ const WORKS: Work[] = [
 
 const CATEGORIES = [...new Set(WORKS.map((w) => w.category))]
 
+export const OUR_WORK_META: PageMeta = {
+  path: '/our-work',
+  title: 'Our Work: AI Apps, Platforms and Websites | Coding Hubs',
+  description: 'Explore projects we have built and shipped: AI applications, business platforms, online stores and websites, with screenshots and live links.',
+  image: LOGO_URL,
+  indexable: true,
+  jsonLd: {
+    '@context': 'https://schema.org',
+    '@graph': [
+      organizationNode(),
+      {
+        '@type': 'CollectionPage',
+        name: 'Our Work',
+        url: 'https://codinghubs.in/our-work',
+        hasPart: WORKS.map((w) => ({ '@type': 'CreativeWork', name: w.name, genre: w.category, description: w.summary, ...(w.href ? { url: w.href } : {}) })),
+      },
+    ],
+  },
+}
+const OUR_WORK_SEO = pageSeo(OUR_WORK_META)
+
 function ArrowUpRight() {
   return (
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -153,9 +176,7 @@ export function OurWork() {
   const [category, setCategory] = useState('')
   const shown = useMemo(() => (category ? WORKS.filter((w) => w.category === category) : WORKS), [category])
 
-  useEffect(() => {
-    document.title = 'Our Work | Coding Hubs School of AI'
-  }, [])
+  useSeo(OUR_WORK_SEO)
 
   return (
     <PageFrame wide>

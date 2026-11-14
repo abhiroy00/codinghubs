@@ -1,6 +1,6 @@
 /* Store: plain, clean listing and product pages (own styles, no shared banner or project-card look) */
 .shop-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem 2rem;padding:1.4rem 0 1.2rem}
-.shop-head h1{margin:0;font-size:clamp(1.8rem,4vw,2.5rem);color:var(--navy)}
+.shop-head h1{margin:0;font-size:var(--t-h1);color:var(--navy)}
 .shop-head p{margin:.35rem 0 0;color:var(--muted)}
 .shop-search{display:flex;align-items:center;gap:.6rem;width:min(100%,22rem);padding:.15rem 1rem;border:1px solid var(--line-2);border-radius:999px;background:#fff;color:var(--faint);transition:border-color .2s,box-shadow .2s}
 .shop-search:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,107,255,.14)}
@@ -59,7 +59,7 @@
 .st-detail .st-top{gap:2rem}
 .st-stage{border-radius:12px;background:#fff}
 .st-stage img{background:#fff}
-.st-info h1{font-size:clamp(1.6rem,3.2vw,2.1rem)}
+.st-info h1{font-size:var(--t-h1)}
 .st-buy{border-radius:12px;box-shadow:none;background:var(--bg-2);border:1px solid var(--line)}
 .st-priceBig strong{font-size:2rem}
 .st-priceBig em{border-radius:6px}

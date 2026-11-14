@@ -11,7 +11,7 @@
 .bl-grid-bg{position:absolute;inset:0;z-index:-1;opacity:.1;background-image:linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px);background-size:38px 38px}
 .bl-hero-in{max-width:760px;animation:blUp .6s both}
 .bl-eyebrow{display:inline-block;margin:0 0 .8rem;padding:.3rem .8rem;border-radius:8px;background:rgba(147,197,253,.16);border:1px solid rgba(147,197,253,.5);color:#93c5fd;font:700 .75rem var(--f-head);letter-spacing:.12em;text-transform:uppercase}
-.bl-main .bl-hero h1{margin:0;color:#fff;font-size:clamp(1.9rem,4.8vw,3.1rem);line-height:1.12}
+.bl-main .bl-hero h1{margin:0;color:#fff;font-size:var(--t-h1);line-height:1.12}
 .bl-hero h1 span{color:#93c5fd}
 .bl-hero .bl-lead{margin:.9rem 0 1.4rem;color:rgba(255,255,255,.82)}
 .bl-hero .bl-search{max-width:30rem;border:0;border-radius:8px;background:#fff;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transition:box-shadow .2s,transform .15s}

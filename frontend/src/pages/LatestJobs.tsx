@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { SITE_FONTS } from '../lib/fonts'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { FS_CSS } from '../lib/fs-css'
@@ -79,7 +80,7 @@ function CompanyLogo({ job, large = false }: { job: Job; large?: boolean }) {
 export function LatestJobs() {
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
+    SITE_FONTS,
   ])
   const { slug } = useParams()
 

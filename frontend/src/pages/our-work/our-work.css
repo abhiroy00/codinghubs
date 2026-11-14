@@ -4,7 +4,7 @@
 
 .ow-hero{position:relative;overflow:hidden;margin:.5rem 0 1.6rem;padding:clamp(2rem,5vw,3.6rem) clamp(1.2rem,4vw,3rem);border-radius:14px;background:linear-gradient(135deg,#0a1a3f 0%,#14307a 55%,#1a4fd0 100%);color:#fff;animation:owUp .6s both}
 .ow-eyebrow{display:inline-block;margin:0 0 .8rem;padding:.3rem .8rem;border-radius:8px;background:rgba(147,197,253,.16);border:1px solid rgba(147,197,253,.5);color:#93c5fd;font:700 .75rem var(--f-head);letter-spacing:.1em;text-transform:uppercase}
-.ow-hero h1{max-width:46rem;margin:0;color:#fff;font-size:clamp(1.9rem,4.8vw,3.1rem);line-height:1.12;letter-spacing:-.02em}
+.ow-hero h1{max-width:46rem;margin:0;color:#fff;font-size:var(--t-h1);line-height:1.12;letter-spacing:-.02em}
 .ow-hero h1 span{color:#93c5fd}
 .ow-lead{max-width:40rem;margin:.9rem 0 0;color:rgba(255,255,255,.82);font-size:1.08rem}
 .ow-stats{display:flex;gap:1.6rem;flex-wrap:wrap;list-style:none;margin:1.6rem 0 0;padding:0}
@@ -33,7 +33,7 @@ a.ow-card:hover .ow-shot img{transform:scale(1.04)}
 .ow-brand{display:flex;align-items:center;gap:.5rem;margin:0;color:var(--navy);font:800 1rem var(--f-head);letter-spacing:.06em;text-transform:uppercase}
 .ow-brand span{flex:none;width:8px;height:8px;border-radius:50%;background:#1a4fd0}
 .ow-cat{align-self:flex-start;margin:0;padding:.18rem .6rem;border-radius:6px;background:#e8efff;color:#14307a;font:600 .76rem var(--f-body)}
-.ow-sum{flex:1;margin:.2rem 0 0;color:var(--ink-2,#4a5470);font-size:.94rem;line-height:1.55}
+.ow-sum{flex:1;margin:.2rem 0 0;color:var(--ink-2,#4a5470);font-size:1rem;line-height:1.6}
 .ow-go{display:flex;align-items:center;gap:.35rem;margin:.5rem 0 0;padding-top:.8rem;border-top:1px solid var(--line);color:#1a4fd0;font:700 .9rem var(--f-body)}
 .ow-card.is-static .ow-go{color:#8a94ad;font-weight:600}
 a.ow-card:hover .ow-go svg{transform:translate(2px,-2px)}
@@ -42,7 +42,7 @@ a.ow-card:hover .ow-go svg{transform:translate(2px,-2px)}
 .ow-note{margin:1.4rem 0 0;color:#8a94ad;font-size:.85rem;text-align:center}
 
 .ow-cta{display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;justify-content:space-between;margin:2.4rem 0 1rem;padding:clamp(1.4rem,4vw,2.2rem);border-radius:14px;background:var(--navy);color:#fff}
-.ow-cta h2{margin:0 0 .3rem;color:#fff;font-size:clamp(1.3rem,3vw,1.7rem)}
+.ow-cta h2{margin:0 0 .3rem;color:#fff;font-size:var(--t-h2)}
 .ow-cta p{margin:0;color:rgba(255,255,255,.8)}
 
 @media (prefers-reduced-motion:reduce){

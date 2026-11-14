@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { SITE_FONTS } from '../lib/fonts'
 import { useParams } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
@@ -16,7 +17,7 @@ const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHAT
 export function Curriculum() {
   useScopedStylesheet([
     FS_CSS,
-    'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap',
+    SITE_FONTS,
   ])
 
   const popup = useRegisterPopup()

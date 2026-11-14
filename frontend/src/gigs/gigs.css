@@ -1,6 +1,6 @@
 .gig-shell { max-width: 58rem; margin: auto; padding: 1.5rem 0 4rem; color: #17243b; overflow-wrap: anywhere; }
 .gig-shell header { margin-block: 1.5rem 2rem; }
-.gig-shell h1 { font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; margin-block: .5rem 1rem; }
+.gig-shell h1 { font-size:var(--t-h1); line-height: 1.15; margin-block: .5rem 1rem; }
 .gig-shell h2 { font-size: 1.4rem; margin-block: 1.25rem .75rem; }
 .gig-shell h3 { font-size: 1.1rem; margin-block: 1rem .5rem; }
 .gig-shell p { line-height: 1.7; margin-block: .75rem; }

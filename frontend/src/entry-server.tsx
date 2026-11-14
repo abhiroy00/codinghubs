@@ -1,6 +1,7 @@
 import { renderToString } from 'react-dom/server'
 import { VisualLab } from './learning/VisualLab'
 import { FAQ_META, Faq } from './pages/Faq'
+import { OUR_WORK_META, OurWork } from './pages/our-work/OurWork'
 import type { ReactNode } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
@@ -66,6 +67,10 @@ export interface PrerenderedPage {
 
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
   const pages: PrerenderedPage[] = []
+  pages.push({
+    ...OUR_WORK_META, file: 'our-work.html', fsDesign: true,
+    html: renderToString(<AuthProvider><StaticRouter location="/our-work"><LenisProvider><ModalProvider><OurWork /></ModalProvider></LenisProvider></StaticRouter></AuthProvider>),
+  })
   pages.push({ ...FAQ_META, file: 'faq.html', fsDesign: false, html: renderLearningPage('/faq', <Faq />, [{ label: 'FAQ' }]) })
   pages.push({file:'visual-lab/index.html',path:'/visual-lab/',title:'Interactive engineering visual lab | Coding Hubs',description:'Explore attention, vector similarity, gradient descent and engineering workflows with step-by-step controls.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderLearningPage('/visual-lab/', <VisualLab />, [{label:'Visual lab'}]),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:'Coding Hubs engineering visual lab',url:`${SITE_URL}/visual-lab/`,learningResourceType:'Interactive simulation'}]}})
   for(const course of Object.values(COURSE_ROADMAPS)) {

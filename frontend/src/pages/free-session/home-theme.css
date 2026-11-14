@@ -19,15 +19,15 @@
   --ch-accent: #ffb547;
 
   /* Type scale shared by every homepage section. */
-  --fs-h1: clamp(2.375rem, 1.45rem + 3.5vw, 4.25rem);
-  --lh-h1: 1.04;
-  --fs-h2: clamp(1.75rem, 1.3rem + 1.7vw, 2.625rem);
-  --lh-h2: 1.12;
+  --fs-h1: clamp(2rem,1.6rem + 1.4vw,2.5rem);
+  --lh-h1: 1.15;
+  --fs-h2: clamp(1.5rem,1.35rem + .6vw,1.75rem);
+  --lh-h2: 1.25;
   --fs-h3-section: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
   --fs-h3: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
   --lh-h3: 1.35;
-  --fs-body: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
-  --lh-body: 1.7;
+  --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --lh-body: 1.65;
   --fs-caption: 0.8125rem;
   --fs-label: 0.75rem;
   --measure: 62ch;
@@ -48,8 +48,8 @@
   --bg-2: var(--ch-bg-2);
   --line: var(--ch-line);
   --line-2: var(--ch-line-2);
-  --f-head: "Space Grotesk", system-ui, sans-serif;
-  --f-body: "DM Sans", system-ui, sans-serif;
+  --f-head: 'Poppins','Poppins Fallback','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body: 'Inter','Inter Fallback','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',sans-serif;
   --home-dark: var(--ch-night);
   --home-border: #293344;
   --home-light: var(--ch-on-night);

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { SITE_FONTS } from '../lib/fonts'
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useRegisterPopup } from "../lib/register-popup";
 import { useLenisRef } from "../lib/lenis-context";
@@ -21,7 +22,7 @@ const LINKS = [
 /** One primary navigation for marketing pages, accounts and learning workspaces. */
 export function Header({ mainId = "main" }: { mainId?: string }) {
   useScopedStylesheet([
-    "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap",
+    SITE_FONTS,
   ]);
   const auth = useOptionalAuth();
   const { pathname, hash } = useLocation();

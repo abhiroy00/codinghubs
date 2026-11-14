@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import { SITE_FONTS } from '../lib/fonts'
 import { Link } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
@@ -15,7 +16,7 @@ export function SearchIcon() {
 }
 
 export function PageFrame({ children, wide = false, reading = false }: { children: ReactNode; wide?: boolean; reading?: boolean }) {
-  useScopedStylesheet([FS_CSS, 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'])
+  useScopedStylesheet([FS_CSS, SITE_FONTS])
   return (
     <div className={`fs-page${reading ? ' bl-reading-page' : ''}`}>
       <FsHeader />

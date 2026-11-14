@@ -10,7 +10,7 @@ import { pathToFileURL } from 'node:url'
 const root = path.resolve(import.meta.dirname, '..')
 const dist = path.join(root, 'dist')
 const SITE = 'https://codinghubs.in'
-const FONTS = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'
+const FONTS = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap'
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
@@ -21,6 +21,8 @@ const learningStyles = (await readdir(path.join(dist, 'assets'))).filter(name =>
 const visualStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(Academy|DiagramPlayer|VisualLab)-.*\.css$/.test(name))
 const manifest = JSON.parse(await readFile(path.join(dist, '.vite/manifest.json'), 'utf8'))
 const studioCss = manifest['src/studio/Studio.tsx']?.css ?? []
+const ourWorkCss = manifest['src/pages/our-work/OurWork.tsx']?.css ?? []
+if (!ourWorkCss.length) throw new Error('Missing Our Work styles in build manifest')
 // Directory SSR uses the existing page styles before the React chunks load.
 const directoryAssets = new Set()
 const directoryStyles = new Set()
@@ -45,7 +47,7 @@ function buildHead(page) {
   ]
   if (page.path === '/interview-studio') {
     for (const asset of studioCss) tags.push(`<link rel="stylesheet" href="/${esc(asset)}" />`)
-    // The studio uses the same Poppins pairing as the public site.
+    // The studio uses the same Poppins + Inter pairing as the public site.
     tags.push(`<link rel="preload" as="style" href="${FONTS}" onload="this.onload=null;this.rel='stylesheet'" />`)
     tags.push(`<noscript><link rel="stylesheet" href="${FONTS}" /></noscript>`)
   }
@@ -78,6 +80,9 @@ function buildHead(page) {
   if (page.jsonLd) tags.push(`<script type="application/ld+json">${JSON.stringify(page.jsonLd).replace(/</g, '\\u003c')}</script>`)
   if (page.path?.startsWith('/interview-prep/')) {
     for (const file of learningStyles) tags.push(`<link rel="stylesheet" href="/assets/${file}" />`)
+  }
+  if (page.path === '/our-work') {
+    for (const file of ourWorkCss) tags.push(`<link rel="stylesheet" href="/${file}" />`)
   }
   if (page.path === '/visual-lab/') {
     for (const file of visualStyles) tags.push(`<link rel="stylesheet" href="/assets/${file}" />`)

@@ -68,7 +68,6 @@
   /* Coverflow card size: height-aware so the photo stays in view on laptop screens. */
   --card-h: clamp(240px, calc(100svh - 470px), 460px);
   --card-w: min(calc(var(--card-h) * 4 / 3), 64vw);
-  --fs-h1: clamp(2.125rem, 1.1rem + 3.2vw, 4rem);
   background:
     radial-gradient(48% 42% at 50% 72%, rgba(0, 98, 250, 0.24) 0%, rgba(0, 98, 250, 0) 70%),
     var(--ch-night);
@@ -102,7 +101,7 @@
 .join h1 {
   margin: 0.9rem 0 0;
   color: var(--ch-on-night);
-  font: 600 var(--fs-h1)/1.06 var(--f-head);
+  font: 600 var(--fs-h1)/var(--lh-h1) var(--f-head);
   letter-spacing: -0.04em;
   text-wrap: balance;
 }
@@ -243,10 +242,6 @@
 .pathway:hover .pathway-arrow { color: var(--yellow); }
 
 /* ---------- responsive ---------- */
-@media (min-width: 901px) {
-  /* Keep the two-line headline within short laptop screens. */
-  .join { --fs-h1: max(2.25rem, min(clamp(2.125rem, 1.1rem + 3.2vw, 4rem), 6.4vh)); }
-}
 @media (max-width: 900px) {
   .join { --card-w: 72vw; --card-h: calc(var(--card-w) * 3 / 4); }
   .pathways-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
