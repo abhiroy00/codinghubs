@@ -5,8 +5,7 @@ import { useLenisRef } from '../lib/lenis-context'
 import { api } from '../lib/api'
 import type { Course } from '../lib/types'
 import { COURSE_CATALOG, COURSE_BY_SLUG, type CourseDefinition } from './catalog'
-import { CoursesGrid } from '../pages/free-session/CoursesGrid'
-import { CourseExplorer, CourseIndex } from './CourseExplorer'
+import { CoursesCta, CoursesFeatures, CoursesHero, CoursesShowcase } from './CourseShowcase'
 import { CertificateSection, CourseTiles } from './certificates'
 import { CodeEditor } from './CodeEditor'
 import { FsIcon } from '../pages/free-session/icons'
@@ -44,9 +43,6 @@ function sequentialDays(base: number[], extra: number[]) {
 /** While days are open, any day can be completed; otherwise keep the sequential rule. */
 const completeDays = (base: number[], extra: number[], openAll = true) => openAll ? [...new Set([...base, ...extra])].sort((a, b) => a - b) : sequentialDays(base, extra)
 
-function CourseCard({ course }: { course: CourseDefinition }) {
-  return <article className="learn-course-card"><span>{course.category}</span><h2>{course.name}</h2><p>{course.summary}</p><div className="learn-card-actions"><Link className="learn-button" to={`/courses/${course.slug}/`}>Course details</Link><Link className="learn-button learn-button-quiet" to={`/interview-prep/${course.slug}/`}>30-day prep</Link></div></article>
-}
 
 function EnrollmentLink({ slug }: { slug: string }) {
   const [available, setAvailable] = useState(false)
@@ -76,7 +72,7 @@ function ProjectCompletion({ slug, project }: { slug: string; project: string })
 }
 
 export function CourseDirectory() {
-  return <div className="learn-shell"><header className="learn-hero"><p className="learn-kicker">LEARN WITH A PLAN</p><h1>Courses & interview preparation</h1><p>Explore the existing course catalog, review the learning path and practise one day at a time.</p></header><div className="learn-directory"><nav className="learn-directory-nav"><a href="#catalogue">Courses</a><a href="#courses">Course curriculum</a><a href="#prep">Interview prep</a></nav><section id="catalogue" className="learn-catalogue"><h2>Explore courses</h2><CoursesGrid /></section><CourseExplorer /><CourseIndex /><section id="prep" className="learn-prep-intro"><h2>30-day interview prep</h2><p>Choose a course to open its roadmap. Daily lessons include focused theory, interview practice, a five-question knowledge check and a practical challenge.</p><div className="learn-course-grid">{COURSE_CATALOG.slice(0, 6).map((course) => <CourseCard key={course.slug} course={course}/>)}</div></section></div></div>
+  return <div className="learn-shell csx-page"><CoursesHero /><CoursesFeatures /><CoursesShowcase /><CoursesCta /></div>
 }
 
 function LearningDashboard() {
