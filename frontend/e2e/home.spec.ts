@@ -232,10 +232,95 @@ test("late-loading published content reveals itself with reduced motion", async 
   await page.reload();
   await expect(page.locator("#projects h2")).toContainText("Projects with");
   await expect(page.locator("#projects .reveal")).toHaveClass(/in/);
-  await expect(page.locator(".join-editor")).toHaveCSS(
-    "animation-name",
-    "none",
-  );
+  // Reduced motion: no rotation control and no automatic slide changes.
+  const slider = page.getByRole("region", { name: "Coding Hubs in pictures" });
+  await expect(slider.getByRole("button", { name: /slide rotation/ })).toHaveCount(0);
+  await page.waitForTimeout(5500);
+  await expect(slider.locator(".hs-count")).toHaveText("01 / 05");
+});
+
+test("hero slider shows all five photos in order with working controls", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const slider = page.getByRole("region", { name: "Coding Hubs in pictures" });
+  const count = slider.locator(".hs-count");
+  const expected = [
+    "classroom-live-coding-session",
+    "gitm-student-group-photo",
+    "team-festive-celebration",
+    "gitm-aarambh-data-science-careers-talk",
+    "gitm-aarambh-felicitation",
+  ];
+  const slides = slider.locator(".hs-slide");
+  await expect(slides).toHaveCount(5);
+  // Next walks through every slide in the specified order and wraps around.
+  for (let i = 0; i < expected.length; i++) {
+    await expect(count).toHaveText(`0${i + 1} / 05`);
+    const active = slider.locator(".hs-slide.is-active > picture img");
+    await expect(active).toHaveAttribute("src", `/assets/hero/${expected[i]}.jpg`);
+    await expect
+      .poll(() => active.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0))
+      .toBe(true);
+    await slider.getByRole("button", { name: "Next slide" }).click();
+  }
+  await expect(count).toHaveText("01 / 05");
+  await slider.getByRole("button", { name: "Previous slide" }).click();
+  await expect(count).toHaveText("05 / 05");
+  await slider.getByRole("button", { name: /Show slide 3:/ }).click();
+  await expect(count).toHaveText("03 / 05");
+  await expect(slider.getByRole("button", { name: /Show slide 3:/ })).toHaveAttribute("aria-current", "true");
+  // Arrow keys move while focus is inside; focus stays on the control.
+  await slider.getByRole("button", { name: "Next slide" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(count).toHaveText("04 / 05");
+  await expect(slider.getByRole("button", { name: "Next slide" })).toBeFocused();
+  // Hover/focus pause autoplay.
+  await page.waitForTimeout(5200);
+  await expect(count).toHaveText("04 / 05");
+  // Autoplay resumes once pointer and focus leave.
+  await page.locator("h1").click();
+  await page.mouse.move(5, 5);
+  await expect(count).toHaveText("05 / 05", { timeout: 7000 });
+  // The stop control halts rotation.
+  await slider.getByRole("button", { name: "Stop slide rotation" }).click();
+  await page.locator("h1").click();
+  await page.mouse.move(5, 5);
+  const before = await count.textContent();
+  await page.waitForTimeout(5200);
+  await expect(count).toHaveText(before ?? "");
+  await expect(slider.getByRole("button", { name: "Start slide rotation" })).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test("hero slider supports touch swipe on phones", async ({ browser }) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 390, height: 844 },
+    reducedMotion: "reduce",
+  });
+  const page = await context.newPage();
+  await page.goto("/");
+  const frame = page.locator(".hs-frame");
+  const count = page.locator(".hs-count");
+  await frame.scrollIntoViewIfNeeded();
+  const box = (await frame.boundingBox())!;
+  const swipe = (from: number, to: number) =>
+    frame.evaluate(
+      (el, [x1, x2, y]) => {
+        const t = (x: number) => new Touch({ identifier: 1, target: el, clientX: x, clientY: y });
+        el.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [t(x1)], changedTouches: [t(x1)] }));
+        el.dispatchEvent(new TouchEvent("touchend", { bubbles: true, touches: [], changedTouches: [t(x2)] }));
+      },
+      [from, to, box.y + box.height / 2],
+    );
+  await swipe(box.x + box.width - 30, box.x + 30);
+  await expect(count).toHaveText("02 / 05");
+  await swipe(box.x + 30, box.x + box.width - 30);
+  await expect(count).toHaveText("01 / 05");
+  await context.close();
 });
 
 test("all four learning and career pathways open their working pages", async ({

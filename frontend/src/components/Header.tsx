@@ -16,6 +16,7 @@ const LINKS = [
   ["/book-a-tutor/", "Tutor"],
   ["/latest-jobs/", "Jobs"],
 ] as const;
+// Locations, Blog, Case Studies, Projects, About the Session and Support live in <ResourcesMenu />.
 
 /** One primary navigation for marketing pages, accounts and learning workspaces. */
 export function Header({ mainId = "main" }: { mainId?: string }) {
@@ -125,13 +126,6 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
                 Log in <span aria-hidden="true">↗</span>
               </Link>
             )}
-            <button
-              type="button"
-              className="sh-demo sh-mobile-demo"
-              onClick={bookDemo}
-            >
-              Register for Free Demo
-            </button>
           </nav>
           <div className={`sh-actions${auth?.user ? " has-account" : ""}`}>
             {auth?.loading ? (

@@ -270,8 +270,8 @@ export function FreeSession() {
               </article>
             </div>
 
-            <div className="sec-head center" style={{ marginTop: '2.5rem' }}>
-              <h3 className="h2" style={{ fontSize: 'clamp(1.3rem,2.4vw,1.8rem)' }}>
+            <div className="sec-head center programs-step">
+              <h3 className="h3-section">
                 Step 2 — Then Choose Your <span className="marker">15-Day Program</span>
               </h3>
               <p className="sub">Tap a program to see the full day-by-day plan before you enroll.</p>
@@ -292,7 +292,7 @@ export function FreeSession() {
                       <p className="plan-meta">
                         <FsIcon id="i-cal" />15 Days · Online Live
                       </p>
-                      <p style={{ color: 'var(--muted)', fontSize: '.92rem', marginBottom: '1rem' }}>{program.tagline}</p>
+                      <p className="plan-desc">{program.tagline}</p>
                       <span className="btn btn-anim btn-yellow btn-block">
                         View Day-by-Day Plan <FsIcon id="i-arrow" />
                       </span>
