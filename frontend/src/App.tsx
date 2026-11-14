@@ -34,6 +34,7 @@ const BlogDetail = lazy(() => import('./content-pages/Article').then((m) => ({ d
 const CaseDetail = lazy(() => import('./content-pages/Article').then((m) => ({ default: m.CaseDetail })))
 const ProjectsPage = lazy(() => import('./shop-pages/projects').then((m) => ({ default: m.ProjectsPage })))
 const ProjectPage = lazy(() => import('./shop-pages/projects').then((m) => ({ default: m.ProjectPage })))
+const OurWork = lazy(() => import('./pages/our-work/OurWork').then((m) => ({ default: m.OurWork })))
 const GuidesPage = lazy(() => import('./shop-pages/guides').then((m) => ({ default: m.GuidesPage })))
 const GuidePage = lazy(() => import('./shop-pages/guides').then((m) => ({ default: m.GuidePage })))
 const MyAccount = lazy(() => import('./shop-pages/account').then((m) => ({ default: m.MyAccount })))
@@ -87,6 +88,7 @@ export function App() {
               <Route path="latest-jobs/:slug" element={<LatestJobs />} />
               <Route path="projects" element={<ProjectsPage />} />
               <Route path="projects/:slug" element={<ProjectPage />} />
+              <Route path="our-work" element={<OurWork />} />
               <Route path="project-guides" element={<GuidesPage />} />
               <Route path="project-guides/:slug" element={<GuidePage />} />
               <Route path="my-account" element={<MyAccount />} />

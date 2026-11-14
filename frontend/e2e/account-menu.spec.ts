@@ -56,7 +56,6 @@ test("photo replaces Login and account disclosure navigates and closes with keyb
   await expect(panel.getByRole("link")).toHaveText([
     "Profile↗",
     "User Dashboard↗",
-    "Support↗",
   ]);
   await page.keyboard.press("Escape");
   await expect(panel).toBeHidden();
@@ -219,7 +218,6 @@ test("Store and My Orders are removed from the menu, profile and old routes", as
   await expect(page.locator(".sh-account-panel").getByRole("link")).toHaveText([
     "Profile↗",
     "User Dashboard↗",
-    "Support↗",
   ]);
   await expect(
     page.getByRole("navigation", { name: "Store", exact: true }),

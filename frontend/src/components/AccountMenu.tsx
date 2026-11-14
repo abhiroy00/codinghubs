@@ -36,7 +36,6 @@ export function UserAvatar({ user }: { user: User }) {
 const links = [
   ["/my-account", "Profile", "person"],
   ["/dashboard", "User Dashboard", "grid"],
-  ["/#contact", "Support", "help"],
 ] as const;
 
 function MenuIcon({ kind }: { kind: string }) {

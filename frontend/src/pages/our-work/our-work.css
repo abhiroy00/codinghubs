@@ -1,0 +1,53 @@
+/* Our Work portfolio. Uses the free-session design tokens (--navy, --line, --f-head ...). */
+.bl-wide-main{max-width:1240px}
+@keyframes owUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.ow-hero{position:relative;overflow:hidden;margin:.5rem 0 1.6rem;padding:clamp(2rem,5vw,3.6rem) clamp(1.2rem,4vw,3rem);border-radius:14px;background:linear-gradient(135deg,#0a1a3f 0%,#14307a 55%,#1a4fd0 100%);color:#fff;animation:owUp .6s both}
+.ow-eyebrow{display:inline-block;margin:0 0 .8rem;padding:.3rem .8rem;border-radius:8px;background:rgba(147,197,253,.16);border:1px solid rgba(147,197,253,.5);color:#93c5fd;font:700 .75rem var(--f-head);letter-spacing:.1em;text-transform:uppercase}
+.ow-hero h1{max-width:46rem;margin:0;color:#fff;font-size:clamp(1.9rem,4.8vw,3.1rem);line-height:1.12;letter-spacing:-.02em}
+.ow-hero h1 span{color:#93c5fd}
+.ow-lead{max-width:40rem;margin:.9rem 0 0;color:rgba(255,255,255,.82);font-size:1.08rem}
+.ow-stats{display:flex;gap:1.6rem;flex-wrap:wrap;list-style:none;margin:1.6rem 0 0;padding:0}
+.ow-stats strong{display:block;font:800 1.7rem var(--f-head);color:#93c5fd}
+.ow-stats span{font-size:.82rem;color:rgba(255,255,255,.72);text-transform:uppercase;letter-spacing:.08em}
+
+.ow-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin:0 0 1.4rem}
+.ow-chips button{padding:.45rem 1rem;border-radius:8px;border:1.5px solid var(--line-2);background:#fff;color:var(--navy);font:600 .88rem var(--f-body);cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.ow-chips button:hover{border-color:var(--yellow-2);background:var(--yellow-soft)}
+.ow-chips button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.ow-chips button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+.ow-grid{display:grid;gap:1.4rem;grid-template-columns:1fr;list-style:none;margin:0;padding:0}
+@media (min-width:660px){.ow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1040px){.ow-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ow-item{display:flex;animation:owUp .5s both;animation-delay:calc(var(--i,0) * 60ms)}
+.ow-card{display:flex;flex-direction:column;width:100%;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#fff;color:inherit;text-decoration:none;box-shadow:0 8px 26px -20px rgba(10,26,63,.45);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .25s}
+a.ow-card:hover{transform:translateY(-4px);border-color:#93c5fd;box-shadow:0 22px 44px -24px rgba(10,26,63,.55)}
+a.ow-card:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+.ow-shot{aspect-ratio:16/10;overflow:hidden;border-bottom:1px solid var(--line);background:#eef2fb}
+.ow-shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+a.ow-card:hover .ow-shot img{transform:scale(1.04)}
+
+.ow-body{display:flex;flex:1;flex-direction:column;gap:.45rem;padding:1.15rem 1.25rem 1.25rem}
+.ow-brand{display:flex;align-items:center;gap:.5rem;margin:0;color:var(--navy);font:800 1rem var(--f-head);letter-spacing:.06em;text-transform:uppercase}
+.ow-brand span{flex:none;width:8px;height:8px;border-radius:50%;background:#1a4fd0}
+.ow-cat{align-self:flex-start;margin:0;padding:.18rem .6rem;border-radius:6px;background:#e8efff;color:#14307a;font:600 .76rem var(--f-body)}
+.ow-sum{flex:1;margin:.2rem 0 0;color:var(--ink-2,#4a5470);font-size:.94rem;line-height:1.55}
+.ow-go{display:flex;align-items:center;gap:.35rem;margin:.5rem 0 0;padding-top:.8rem;border-top:1px solid var(--line);color:#1a4fd0;font:700 .9rem var(--f-body)}
+.ow-card.is-static .ow-go{color:#8a94ad;font-weight:600}
+a.ow-card:hover .ow-go svg{transform:translate(2px,-2px)}
+.ow-go svg{transition:transform .25s}
+
+.ow-note{margin:1.4rem 0 0;color:#8a94ad;font-size:.85rem;text-align:center}
+
+.ow-cta{display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;justify-content:space-between;margin:2.4rem 0 1rem;padding:clamp(1.4rem,4vw,2.2rem);border-radius:14px;background:var(--navy);color:#fff}
+.ow-cta h2{margin:0 0 .3rem;color:#fff;font-size:clamp(1.3rem,3vw,1.7rem)}
+.ow-cta p{margin:0;color:rgba(255,255,255,.8)}
+
+@media (prefers-reduced-motion:reduce){
+  .ow-hero,.ow-item{animation:none}
+  .ow-card,.ow-shot img,.ow-go svg{transition:none}
+  a.ow-card:hover{transform:none}
+  a.ow-card:hover .ow-shot img{transform:none}
+}

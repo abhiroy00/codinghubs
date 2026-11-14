@@ -14,7 +14,7 @@ const LINKS = [
   ["/locations/", "Locations"],
   ["/blog", "Blog"],
   ["/case-studies", "Case Studies"],
-  ["/projects", "Projects"],
+  ["/our-work", "Our Work"],
   ["/#session", "About the Session"],
   [ "/#contact", "Support"],
 ] as const;

@@ -215,53 +215,8 @@
 .hs-tag-4 { left: calc(50% + var(--card-w) / 2 - 40px); bottom: 14%; animation-delay: -4.5s; }
 @keyframes hs-float { 50% { transform: translateY(-7px); } }
 
-.hs-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1.25rem;
-}
-.hs-btn {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  color: #eef3fb;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-}
-.hs-btn:hover { border-color: var(--ch-on-night-accent); background: rgba(255, 255, 255, 0.1); }
-.hs-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.hs-play svg { fill: currentColor; stroke: none; width: 16px; height: 16px; }
-.hs-dots { display: flex; gap: 0; }
-.hs-dot {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-.hs-dot::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.4);
-  transition: width 0.25s ease, background 0.25s ease;
-}
-.hs-dot:hover::before { background: rgba(255, 255, 255, 0.8); }
-.hs-dot.is-active::before { width: 22px; background: #fff; }
 .ch-home .hs :focus-visible { outline: 2px solid var(--ch-on-night-accent); outline-offset: 2px; border-radius: 999px; }
-.hs-count { min-width: 3.5rem; margin-left: 0.4rem; color: var(--ch-on-night-muted); font: 600 var(--fs-caption)/1 var(--f-body); font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
-.hs-still .hs-slide, .hs-still .hs-cap, .hs-still .hs-dot::before { transition: none; }
+.hs-still .hs-slide, .hs-still .hs-cap { transition: none; }
 .hs-still .hs-tag { animation: none; }
 
 /* ---------- pathways band ---------- */
@@ -309,7 +264,6 @@
 }
 @media (max-width: 560px) {
   .join-actions .btn { flex: 1 1 100%; }
-  .hs-count { display: none; }
   .pathways-grid { grid-template-columns: minmax(0, 1fr); }
   .pathway { border-left: 0; }
   .pathway + .pathway { border-top: 1px solid rgba(255, 255, 255, 0.1); }

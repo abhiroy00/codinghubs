@@ -107,13 +107,12 @@ function offset(i: number, index: number, count: number) {
 
 const POS: Record<number, string> = { [-2]: 'is-far-prev', [-1]: 'is-prev', 0: 'is-active', 1: 'is-next', 2: 'is-far-next' }
 
-/** Accessible, dependency-free coverflow carousel (WAI-ARIA carousel pattern, autoplay with a pause control). */
+/** Dependency-free coverflow carousel: autoplays, pauses on hover/focus, and moves by swipe, arrow keys or clicking a side card. */
 export function HeroSlider() {
   const count = SLIDES.length
   const [index, setIndex] = useState(0)
   // Images mount only for the active card and its neighbours, so later photos never compete with the first paint.
   const [mounted, setMounted] = useState<Set<number>>(() => new Set([0]))
-  const [userPaused, setUserPaused] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [focused, setFocused] = useState(false)
   const [hidden, setHidden] = useState(false)
@@ -160,7 +159,7 @@ export function HeroSlider() {
     }
   }, [])
 
-  const running = !reduced && !userPaused && !hovered && !focused && !hidden
+  const running = !reduced && !hovered && !focused && !hidden
 
   useEffect(() => {
     if (!running) return
@@ -245,44 +244,6 @@ export function HeroSlider() {
             </li>
           ))}
         </ul>
-      </div>
-
-      <div className="hs-bar">
-        {!reduced && (
-          <button
-            type="button"
-            className="hs-btn hs-play"
-            onClick={() => setUserPaused((v) => !v)}
-            aria-label={userPaused ? 'Start slide rotation' : 'Stop slide rotation'}
-          >
-            {userPaused ? (
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
-            ) : (
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" /></svg>
-            )}
-          </button>
-        )}
-        <button type="button" className="hs-btn" onClick={() => go(index - 1)} aria-label="Previous slide">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
-        </button>
-        <div className="hs-dots" role="group" aria-label="Choose slide">
-          {SLIDES.map((slide, i) => (
-            <button
-              key={slide.name}
-              type="button"
-              className={`hs-dot${i === index ? ' is-active' : ''}`}
-              aria-label={`Show slide ${i + 1}: ${slide.title}`}
-              aria-current={i === index ? 'true' : undefined}
-              onClick={() => go(i)}
-            />
-          ))}
-        </div>
-        <button type="button" className="hs-btn" onClick={() => go(index + 1)} aria-label="Next slide">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
-        </button>
-        <span className="hs-count" aria-hidden="true">
-          {String(index + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
-        </span>
       </div>
     </section>
   )
