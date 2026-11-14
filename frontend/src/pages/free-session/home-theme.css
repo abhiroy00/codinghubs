@@ -1402,3 +1402,11 @@
 .ch-home.fs-page .fx-cta-sec .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); }
 .ch-home.fs-page .hx-loc-group ul li a,
 .ch-home.fs-page .hx-loc-group ul li { border-radius: 999px; }
+
+/* Bluish page wash shows through every home band (see free-session.css). */
+.ch-home.fs-page,
+.ch-home.fs-page main > section,
+.ch-home.fs-page main > nav,
+.ch-home.fs-page :is(.videos, .plan-sec, .why-sec, #session, #about, #courses, .fx-cta-sec, .home-pathways) { background: transparent !important; }
+.ch-home.fs-page #how.sec-process { background: transparent !important; }
+.ch-home.fs-page .join { background: radial-gradient(60% 50% at 50% 0%, rgba(0, 98, 250, 0.1) 0%, rgba(0, 98, 250, 0) 70%) !important; }

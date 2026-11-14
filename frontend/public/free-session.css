@@ -1867,3 +1867,20 @@ body:has(.st-bar) .call-float{bottom:152px}
 .fs-page .tutors-hero .eyebrow{color:#334155}
 .fs-page .tutor-breadcrumbs,.fs-page .tutor-breadcrumbs a{color:var(--u-muted)}
 .fs-page .tutor-breadcrumbs [aria-current]{color:var(--u-brand)}
+
+/* ============ BLUISH PAGE WASH ============
+   The /courses/ hero glow as the canvas of every page: a fixed blue / cyan / indigo wash behind
+   transparent section bands, so each section reads on the same soft gradient. Cards stay white. */
+:root{--u-wash:radial-gradient(60% 50% at 0% 0%,rgba(0,98,250,.12),transparent 70%),radial-gradient(50% 45% at 100% 35%,rgba(34,211,238,.12),transparent 70%),radial-gradient(55% 50% at 45% 100%,rgba(99,102,241,.08),transparent 70%),#fff}
+html{background:#fff}
+body{background:var(--u-wash) fixed}
+.fs-page,.ch-home,.ch-home.fs-page{background:transparent}
+.sec-alt,.why-sec,.plan-sec,.fs-page main>section,.fs-page>section,.fs-page main>div>section{background-color:transparent}
+.fs-page :is(.learn-hero,.bl-hero,.pj-hero,.ow-hero){background:radial-gradient(55% 70% at 8% 0%,rgba(0,98,250,.1),transparent 70%),rgba(255,255,255,.55)!important;backdrop-filter:blur(2px)}
+.fs-page .tutors-hero{background:transparent}
+.fs-page .csx-hero{background:radial-gradient(60% 55% at 50% 0%,rgba(0,98,250,.1),transparent 70%),rgba(255,255,255,.55)}
+/* breadcrumbs that sit on the light wash (learning shell, content pages) */
+.fs-page main>.breadcrumb{color:var(--u-muted)}
+.fs-page main>.breadcrumb a{color:var(--u-ink)}
+.fs-page main>.breadcrumb a:hover{color:var(--u-brand)}
+.fs-page main>.breadcrumb :is(.current,[aria-current]){color:var(--u-brand)}
