@@ -303,7 +303,7 @@ test("hero slider supports touch swipe on phones", async ({ browser }) => {
   });
   const page = await context.newPage();
   await page.goto("/");
-  const frame = page.locator(".hs-frame");
+  const frame = page.locator(".hs-stage");
   const count = page.locator(".hs-count");
   await frame.scrollIntoViewIfNeeded();
   const box = (await frame.boundingBox())!;
