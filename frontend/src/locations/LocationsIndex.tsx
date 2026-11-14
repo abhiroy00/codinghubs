@@ -148,7 +148,7 @@ export function LocationsIndex() {
           </div>
         </section>
 
-        <Marquee title="Courses at Coding Hubs" tone="navy" reverse items={COURSE_NAMES.map((c) => ({ label: c, href: '/#courses' }))} />
+        <Marquee title="Courses at Coding Hubs" tone="navy" reverse items={COURSE_NAMES.map((c) => ({ label: c, href: '/courses/' }))} />
 
         <section className="lx-cta" id="enquire" aria-labelledby="idx-cta">
           <span className="lx-blob lx-b2" aria-hidden="true"></span>
@@ -184,7 +184,7 @@ export function LocationsIndex() {
               </p>
             </div>
             <div className="loc-office-cta">
-              <a href="/#courses" className="btn btn-yellow btn-lg">Explore AI Course</a>
+              <a href="/courses/" className="btn btn-yellow btn-lg">Explore AI Course</a>
             </div>
           </div>
         </section>

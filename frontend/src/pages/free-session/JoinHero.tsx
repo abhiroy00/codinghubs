@@ -32,7 +32,7 @@ export function JoinHero() {
           <p className="join-sub">Live classes, mentors from the industry and projects you can show. Start with a free 2-hour demo class.</p>
           <div className="join-actions">
             <a href="#register" className="btn btn-yellow btn-lg" data-cta="hero-primary">Book free demo class <FsIcon id="i-arrow" /></a>
-            <a href="#courses" className="btn btn-lg join-explore">Explore courses</a>
+            <a href="/courses/" className="btn btn-lg join-explore">Explore courses</a>
           </div>
         </div>
 

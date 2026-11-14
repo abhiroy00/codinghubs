@@ -42,42 +42,14 @@ test("home content and layout fit phone, tablet and desktop screens", async ({
   expect(errors).toEqual([]);
 });
 
-test("category, search and reset work together across the full catalogue", async ({
+test("home has no course grid and Explore courses opens the courses page", async ({
   page,
 }) => {
-  const courses = page.locator("#courses");
-  await expect(courses.locator(".cc-card")).toHaveCount(13);
-  await courses.getByRole("button", { name: /AI & Cyber Security/ }).click();
-  await expect(courses.locator(".cc-card")).toHaveCount(6);
-  await courses.getByRole("searchbox").fill("Agentic");
-  await expect(courses.locator(".cc-card")).toHaveCount(1);
-  await expect(courses.locator(".cc-card h3")).toHaveText("Agentic AI");
-  await courses.getByRole("searchbox").fill("no matching course");
-  await expect(
-    courses.getByText("No course matches your search."),
-  ).toBeVisible();
-  await courses.getByRole("button", { name: "Show all courses" }).click();
-  await expect(courses.locator(".cc-card")).toHaveCount(13);
-  await expect(courses.getByRole("searchbox")).toHaveValue("");
-});
-
-test("every course card opens a demo with that exact course selected", async ({
-  page,
-}) => {
-  const cards = page.locator("#courses .cc-card");
-  const titles = await cards.locator("h3").allTextContents();
-  for (let index = 0; index < titles.length; index++) {
-    await cards
-      .nth(index)
-      .getByRole("button", { name: /Free demo/ })
-      .click();
-    const dialog = page.getByRole("dialog", { name: "Free demo registration" });
-    await expect(
-      dialog.getByRole("combobox", { name: /Select Your Interested Course/ }),
-    ).toHaveValue(titles[index]);
-    await dialog.getByRole("button", { name: "Close", exact: true }).click();
-    await expect(dialog).not.toBeVisible();
-  }
+  await expect(page.locator("#courses")).toHaveCount(0);
+  await expect(page.locator(".cc-card")).toHaveCount(0);
+  await page.getByRole("link", { name: "Explore courses" }).click();
+  await expect(page).toHaveURL(/\/courses\/$/);
+  await expect(page.locator("#catalogue .csx-list a")).toHaveCount(43);
 });
 
 test("mobile menu, announcement and demo keyboard controls work", async ({

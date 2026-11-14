@@ -119,7 +119,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
           </div>
         </section>
 
-        <Marquee title="Courses at Coding Hubs" items={COURSE_NAMES.map((c) => ({ label: c, href: '/#courses' }))} />
+        <Marquee title="Courses at Coding Hubs" items={COURSE_NAMES.map((c) => ({ label: c, href: '/courses/' }))} />
 
         <div className="wrap loc-body">
           <div className="loc-layout">
@@ -238,7 +238,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               <Link to="/locations/" className="btn btn-navy btn-lg">
                 View All Locations
               </Link>
-              <a href="/#courses" className="btn btn-ghost btn-lg">
+              <a href="/courses/" className="btn btn-ghost btn-lg">
                 Explore AI Course
               </a>
             </div>

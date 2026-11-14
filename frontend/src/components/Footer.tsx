@@ -66,13 +66,13 @@ export function Footer() {
                   <Link to="/#demo-classes">Free Demo Class</Link>
                 </li>
                 <li>
-                  <Link to="/#courses">AI &amp; Data</Link>
+                  <Link to="/courses/">AI &amp; Data</Link>
                 </li>
                 <li>
-                  <Link to="/#courses">Full Stack</Link>
+                  <Link to="/courses/">Full Stack</Link>
                 </li>
                 <li>
-                  <Link to="/#courses">Cloud &amp; Cyber</Link>
+                  <Link to="/courses/">Cloud &amp; Cyber</Link>
                 </li>
                 <li>
                   <Link to="/#program">Compare Programs</Link>

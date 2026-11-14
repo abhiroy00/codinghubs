@@ -82,7 +82,7 @@ export function CourseCheckout() {
     return (
       <div className="container-x" style={{ padding: '6rem 0', textAlign: 'center' }}>
         <p>Course not found.</p>
-        <Link to="/#courses" style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+        <Link to="/courses/" style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>
           Browse programs
         </Link>
       </div>

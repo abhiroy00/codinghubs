@@ -6,7 +6,6 @@ import { useRegisterPopup } from '../lib/register-popup'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter } from '../locations/FsShell'
-import { CoursesGrid } from './free-session/CoursesGrid'
 import { COURSES } from './free-session/data'
 import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon } from './free-session/icons'
@@ -306,22 +305,6 @@ export function FreeSession() {
             <p className="plan-note">
               <FsIcon id="i-ticket" />Registering for the free demo costs nothing. Contact us for details of the 15-day programs.
             </p>
-          </div>
-        </section>
-
-        <section className="sec sec-alt" id="courses" aria-labelledby="courses-title">
-          <div className="wrap">
-            <div className="sec-head center reveal">
-              <p className="eyebrow">{COURSES.length} courses</p>
-              <h2 id="courses-title" className="h2">
-                Explore <span className="marker">All Courses</span>
-              </h2>
-              <p className="sub">
-                Pick a course to see its details, or book the free live demo for it in one step.
-              </p>
-            </div>
-            <CoursesGrid />
-            <p className="cc-all"><Link className="btn btn-ghost" to="/courses/">See all courses and learning paths</Link></p>
           </div>
         </section>
 

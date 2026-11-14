@@ -107,7 +107,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             <ul>
               {COURSE_NAMES.slice(0, 7).map((c) => (
                 <li key={c}>
-                  <HLink home={home} to={h('#courses')}>{c}</HLink>
+                  <Link to="/courses/">{c}</Link>
                 </li>
               ))}
             </ul>

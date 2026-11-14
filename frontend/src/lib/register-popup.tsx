@@ -59,7 +59,7 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
   const open = useCallback(
     (c?: string) => {
       if (readFlag()) {
-        navigate({ pathname: '/', hash: '#courses' })
+        navigate('/courses/')
         return
       }
       returnFocus.current = document.activeElement as HTMLElement | null

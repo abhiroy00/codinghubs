@@ -416,7 +416,7 @@ export function ProjectPage() {
             {(p.related_courses?.length > 0 || p.related_blogs?.length > 0) && (
               <section className="pj-sec"><h2>Keep learning</h2>
                 <ul className="pj-links">
-                  {p.related_courses?.map((c: any) => (<li key={c.slug}><a href="/#courses"><strong>{c.name}</strong><span>Course</span><Arrow /></a></li>))}
+                  {p.related_courses?.map((c: any) => (<li key={c.slug}><a href="/courses/"><strong>{c.name}</strong><span>Course</span><Arrow /></a></li>))}
                   {p.related_blogs?.map((b: any) => (<li key={b.slug}><Link to={`/blog/${b.slug}`}><strong>{b.title}</strong><span>Article</span><Arrow /></Link></li>))}
                 </ul>
               </section>
