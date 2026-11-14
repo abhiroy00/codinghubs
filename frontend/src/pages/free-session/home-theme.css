@@ -11,8 +11,8 @@
   --ch-on-night: #f4f7fb;
   --ch-on-night-muted: #b3bfd1;
   --ch-on-night-accent: #9cc0ff;
-  --ch-bg: #f7f9fc;
-  --ch-bg-2: #eef2f8;
+  --ch-bg: #ffffff;
+  --ch-bg-2: #ffffff;
   --ch-line: #e1e7f0;
   --ch-line-2: #cdd6e4;
   /* Restrained warm accent: decorative only (underlines, live dot), never body text on light surfaces. */
@@ -370,7 +370,7 @@
   background: var(--bg) !important;
 }
 .ch-home #courses {
-  background: #edf0f6 !important;
+  background: #ffffff !important;
 }
 .ch-home #how.sec-process {
   background: var(--home-dark) !important;
@@ -1292,3 +1292,32 @@
 .ch-home .programs-step {
   margin-top: 2.5rem;
 }
+
+/* ---------- white canvas ----------
+   Every section sits on #FFFFFF; thin rules separate them. The hero carries the only
+   decoration: a static dot grid, a soft brand glow and two faint arcs (no animation). */
+.ch-home main > section.sec + section.sec,
+.ch-home main > section + section,
+.ch-home main > nav + section { border-top: 1px solid var(--ch-line); }
+
+.ch-home .home-pathways { background: #ffffff; border-top: 1px solid var(--ch-line); border-bottom: 1px solid var(--ch-line); }
+.ch-home .pathway,
+.ch-home .pathway:first-child { border-color: var(--ch-line); color: var(--ch-ink); }
+.ch-home .pathway:hover { background: var(--ch-brand-soft); }
+.ch-home .pathway-number { color: #6b7689; }
+.ch-home .pathway > svg { color: var(--ch-brand); }
+.ch-home .pathway-copy small,
+.ch-home .pathway-arrow { color: var(--ch-muted); }
+
+.ch-home.fs-page #how.sec-process { background: #ffffff !important; color: var(--ch-ink) !important; }
+.ch-home.fs-page #how.sec-process .h2,
+.ch-home.fs-page #how.sec-process .marker,
+.ch-home.fs-page #how .step h3 { color: var(--ch-ink) !important; }
+.ch-home.fs-page #how .step p { color: var(--ch-muted) !important; }
+.ch-home.fs-page #how.sec-process .eyebrow-light { color: var(--ch-brand) !important; }
+.ch-home.fs-page #how .step-diamond {
+  background: var(--ch-brand-soft) !important;
+  border-color: #c9dcff !important;
+  box-shadow: 0 10px 22px -12px rgba(0, 98, 250, 0.35);
+}
+.ch-home.fs-page #how .step-icon { color: var(--ch-brand); }
