@@ -1864,3 +1864,17 @@ body{background:#fff}
 .fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta) :is(.btn,.learn-button):hover{background:var(--u-brand-soft)!important}
 .fs-page :is(.fx-cta,.pj-cta,.ow-cta,.bl-cta,.learn-cta) :is(.btn-ghost,.btn-ghost-light,.learn-button-quiet){background:transparent!important;border-color:rgba(255,255,255,.45)!important;color:#fff!important}
 .fs-page .learn-cta a:not(.learn-button){color:#bfdbfe}
+/* Floating call + WhatsApp: keep a 12px gap whenever the WhatsApp button is lifted above a bottom bar. */
+.call-float{transition:transform .2s,bottom .25s}
+.wa-float{transition:background .2s,bottom .25s}
+@media (max-width:999px){
+  body:has(.sticky-cta.show) .call-float{bottom:154px}
+  .lv .call-float{bottom:148px}
+}
+@media (max-width:480px){
+  .call-float{right:14px;bottom:79px;width:52px;height:52px}
+  .call-float svg{width:23px;height:23px}
+  body:has(.sticky-cta.show) .call-float{bottom:148px}
+  .lv .call-float{bottom:142px}
+}
+@media (prefers-reduced-motion:reduce){.call-float,.wa-float{transition:none}}
