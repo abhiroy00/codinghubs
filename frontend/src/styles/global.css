@@ -592,3 +592,37 @@ header.site .nav-link{white-space:nowrap;padding-inline:.7rem}
 .f-credit{margin:.75rem 0 0;text-align:center;font-size:.8125rem;color:var(--color-faint)}
 .f-credit a{color:var(--color-brand);font-weight:600;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
 .f-credit a:hover,.f-credit a:focus-visible{border-bottom-color:currentColor}
+
+.join-accent {
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    #7c3aed,
+    #06b6d4,
+    #ec4899,
+    #7c3aed
+  );
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation:
+    text-gradient 5s linear infinite,
+    text-float 3s ease-in-out infinite;
+}
+
+@keyframes text-gradient {
+  from { background-position: 0% 50%; }
+  to { background-position: 300% 50%; }
+}
+
+@keyframes text-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .join-accent {
+    animation: none;
+  }
+}
