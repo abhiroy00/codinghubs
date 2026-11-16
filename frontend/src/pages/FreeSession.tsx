@@ -250,25 +250,34 @@ export function FreeSession() {
               <p className="sub">Attend the free demo session first. If you like it, join the paid 15-day training program for the same course.</p>
             </div>
 
-            <div className="programs-intro">
-              <article className="plan-card">
-                <div className="plan-media">
-                  <img src="/fs-assets/img/modern-virtual-classroom-studio.jpg" alt="Free live demo session" width={800} height={500} loading="lazy" decoding="async" />
-                  <span className="plan-step">Step 1</span>
-                </div>
-                <div className="plan-body">
-                  <h3>
-                    Free Demo Session <span className="free-tag">FREE</span>
-                  </h3>
-                  <p className="plan-meta">
-                    <FsIcon id="i-clock" />2 Hours · Online Live
-                  </p>
-                  <a href="#register" className="btn btn-ghost btn-block" data-cta="plan-demo">
-                    Register for Free <FsIcon id="i-arrow" />
+            <article className="demo-pass" aria-labelledby="demo-pass-title">
+              <div className="dp-stub" aria-hidden="true">
+                <span className="dp-step">Step 1</span>
+                <span className="dp-free">FREE</span>
+                <span className="dp-admit">Admit one · Live class</span>
+              </div>
+              <div className="dp-body">
+                <p className="dp-live"><span className="dp-dot" aria-hidden="true" />Live online demo class</p>
+                <h3 id="demo-pass-title">Your free pass to a 2-hour live class</h3>
+                <p className="dp-lead">Sit in on a real class, see how we teach and ask the trainer anything — before you pay for anything.</p>
+                <ol className="dp-agenda" aria-label="What happens in the session">
+                  <li><b>01</b>Course introduction</li>
+                  <li><b>02</b>Live demonstration</li>
+                  <li><b>03</b>Modules &amp; roadmap</li>
+                  <li><b>04</b>Trainer Q&amp;A</li>
+                </ol>
+                <div className="dp-foot">
+                  <ul className="dp-facts" aria-label="Session details">
+                    <li><FsIcon id="i-clock" />2 hours</li>
+                    <li><FsIcon id="i-monitor" />Online live</li>
+                    <li><FsIcon id="i-ticket" />No payment needed</li>
+                  </ul>
+                  <a href="#register" className="dp-cta" data-cta="plan-demo">
+                    Claim my free seat <FsIcon id="i-arrow" />
                   </a>
                 </div>
-              </article>
-            </div>
+              </div>
+            </article>
 
             <div className="sec-head center programs-step">
               <h3 className="h3-section">
