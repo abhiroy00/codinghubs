@@ -204,61 +204,80 @@ test("late-loading published content reveals itself with reduced motion", async 
   await page.reload();
   await expect(page.locator("#projects h2")).toContainText("Projects with");
   await expect(page.locator("#projects .reveal")).toHaveClass(/in/);
-  // Reduced motion: the redesigned home has no carousel in the hero and reveal content is visible.
-  await expect(page.locator(".hs-slide")).toHaveCount(0);
-  await expect(page.locator("#why .reveal").first()).toHaveCSS("opacity", "1");
+  // Reduced motion: no slider controls and no automatic slide changes.
+  const slider = page.getByRole("region", { name: "Coding Hubs in pictures" });
+  await expect(slider.getByRole("button")).toHaveCount(0);
+  await page.waitForTimeout(4000);
+  await expect(slider.locator(".hs-slide.is-active")).toHaveAttribute("aria-label", /^1 of 5:/);
 });
 
-test("Our Work showcase filters real projects and links to the full list", async ({
+test("hero slider auto-advances through all five photos without controls", async ({
   page,
 }) => {
-  const work = page.locator("#our-work");
-  await expect(work.locator(".hm-work")).toHaveCount(6);
-  await work.getByRole("button", { name: /^E-Commerce/ }).click();
-  await expect(work.locator(".hm-work h3")).toHaveText(["Gmart Fresh", "Sportswear9"]);
-  await expect(work.getByRole("button", { name: /^E-Commerce/ })).toHaveAttribute("aria-pressed", "true");
-  await work.getByRole("button", { name: /^All/ }).click();
-  await expect(work.locator(".hm-work")).toHaveCount(6);
-  await work.getByRole("link", { name: /See all 14 projects/ }).click();
-  await expect(page).toHaveURL(/\/our-work$/);
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const slider = page.getByRole("region", { name: "Coding Hubs in pictures" });
+  const active = slider.locator(".hs-slide.is-active");
+  const expected = [
+    "classroom-live-coding-session",
+    "gitm-student-group-photo",
+    "team-festive-celebration",
+    "gitm-aarambh-data-science-careers-talk",
+    "gitm-aarambh-felicitation",
+  ];
+  await expect(slider.locator(".hs-slide")).toHaveCount(5);
+  // The pause, previous/next, dot and counter controls are gone.
+  await expect(slider.getByRole("button")).toHaveCount(0);
+  await expect(slider.locator(".hs-count")).toHaveCount(0);
+  await page.mouse.move(5, 5);
+  // Autoplay walks every slide in order every 3 seconds and wraps around.
+  for (let i = 0; i < expected.length; i++) {
+    await expect(active).toHaveAttribute("aria-label", new RegExp(`^${i + 1} of 5:`), { timeout: 4500 });
+    const img = active.locator("> picture img");
+    await expect(img).toHaveAttribute("src", `/assets/hero/${expected[i]}.jpg`);
+    await expect
+      .poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
+      .toBe(true);
+  }
+  await expect(active).toHaveAttribute("aria-label", /^1 of 5:/, { timeout: 4500 });
+  // Clicking a side card still moves to it.
+  await slider.locator(".hs-slide.is-next").click();
+  await expect(active).toHaveAttribute("aria-label", /^2 of 5:/);
+  // Hovering pauses autoplay; leaving resumes it.
+  await page.waitForTimeout(3600);
+  await expect(active).toHaveAttribute("aria-label", /^2 of 5:/);
+  await page.mouse.move(5, 5);
+  await expect(active).toHaveAttribute("aria-label", /^3 of 5:/, { timeout: 4500 });
+  expect(errors).toEqual([]);
 });
 
-test("AI tools search, category filter, reset and empty state work together", async ({
-  page,
-}) => {
-  const tools = page.locator("#ai-tools");
-  const cards = tools.locator(".hm-tool");
-  await expect(cards).toHaveCount(12);
-  await tools.getByRole("button", { name: "Coding", exact: true }).click();
-  await expect(cards).toHaveCount(2);
-  await tools.getByRole("searchbox", { name: "Search AI tools" }).fill("cursor");
-  await expect(cards).toHaveCount(1);
-  await expect(cards.locator("h3")).toHaveText("Cursor");
-  await tools.getByRole("searchbox", { name: "Search AI tools" }).fill("no such tool");
-  await expect(tools.getByText(/No tools match/)).toBeVisible();
-  await tools.getByRole("button", { name: "Show all tools" }).click();
-  await expect(cards).toHaveCount(12);
-  await expect(tools.getByRole("searchbox", { name: "Search AI tools" })).toHaveValue("");
-  await expect(tools.getByRole("button", { name: "All", exact: true })).toHaveAttribute("aria-pressed", "true");
-  const links = await cards.locator("a").evaluateAll((as) => as.map((a) => (a as HTMLAnchorElement).href));
-  expect(links.every((href) => href.startsWith("https://"))).toBe(true);
-});
-
-test("Visit section keeps the head office details and a working directions link", async ({
-  page,
-}) => {
-  const visit = page.locator("#contact");
-  await expect(visit.locator("address")).toContainText("904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi");
-  await expect(visit.getByRole("link", { name: /Get Directions/ })).toHaveAttribute(
-    "href",
-    /^https:\/\/www\.google\.com\/maps\/dir\/\?api=1&destination=904/,
-  );
-  await expect(visit.locator('a[href="tel:+917464099059"]').first()).toBeVisible();
-  await expect(visit.locator('a[href="mailto:info@codingnowai.in"]')).toBeVisible();
-  const faq = page.locator("#faq details");
-  await expect(faq).toHaveCount(7);
-  await faq.nth(1).locator("summary").click();
-  await expect(faq.nth(1)).toHaveAttribute("open", "");
+test("hero slider supports touch swipe on phones", async ({ browser }) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 390, height: 844 },
+    reducedMotion: "reduce",
+  });
+  const page = await context.newPage();
+  await page.goto("/");
+  const frame = page.locator(".hs-stage");
+  const active = page.locator(".hs-slide.is-active");
+  await frame.scrollIntoViewIfNeeded();
+  const box = (await frame.boundingBox())!;
+  const swipe = (from: number, to: number) =>
+    frame.evaluate(
+      (el, [x1, x2, y]) => {
+        const t = (x: number) => new Touch({ identifier: 1, target: el, clientX: x, clientY: y });
+        el.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [t(x1)], changedTouches: [t(x1)] }));
+        el.dispatchEvent(new TouchEvent("touchend", { bubbles: true, touches: [], changedTouches: [t(x2)] }));
+      },
+      [from, to, box.y + box.height / 2],
+    );
+  await swipe(box.x + box.width - 30, box.x + 30);
+  await expect(active).toHaveAttribute("aria-label", /^2 of 5:/);
+  await swipe(box.x + 30, box.x + box.width - 30);
+  await expect(active).toHaveAttribute("aria-label", /^1 of 5:/);
+  await context.close();
 });
 
 test("all four learning and career pathways open their working pages", async ({

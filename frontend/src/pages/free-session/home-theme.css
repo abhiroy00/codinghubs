@@ -1290,10 +1290,123 @@
   margin-top: 2.5rem;
 }
 
-/* Closing CTA band in the shared footer: solid ink, no gradient. */
-.ch-home.fs-page .fx-cta-sec { background: #fff; }
-.ch-home.fs-page .fx-cta-sec .fx-cta { border: 0; border-radius: 12px; background: #0b1220; color: #fff; }
-.ch-home.fs-page .fx-cta-sec .fx-cta :is(h2, p) { color: #fff; }
-.ch-home.fs-page .fx-cta-sec .fx-cta p { color: #cbd5e1; }
-.ch-home.fs-page .fx-cta-sec .btn-navy { background: #fff; border-color: #fff; color: #0b1220; }
-.ch-home.fs-page .fx-cta-sec .btn-ghost { background: transparent; border-color: rgba(255,255,255,.45); color: #fff; }
+/* ---------- white canvas ----------
+   Every section sits on #FFFFFF; thin rules separate them. The hero carries the only
+   decoration: a static dot grid, a soft brand glow and two faint arcs (no animation). */
+.ch-home main > section.sec + section.sec,
+.ch-home main > section + section,
+.ch-home main > nav + section { border-top: 1px solid var(--ch-line); }
+
+.ch-home .home-pathways { background: #ffffff; border-top: 1px solid var(--ch-line); border-bottom: 1px solid var(--ch-line); }
+.ch-home .pathway,
+.ch-home .pathway:first-child { border-color: var(--ch-line); color: var(--ch-ink); }
+.ch-home .pathway:hover { background: var(--ch-brand-soft); }
+.ch-home .pathway-number { color: #6b7689; }
+.ch-home .pathway > svg { color: var(--ch-brand); }
+.ch-home .pathway-copy small,
+.ch-home .pathway-arrow { color: var(--ch-muted); }
+
+.ch-home.fs-page #how.sec-process { background: #ffffff !important; color: var(--ch-ink) !important; }
+.ch-home.fs-page #how.sec-process .h2,
+.ch-home.fs-page #how.sec-process .marker,
+.ch-home.fs-page #how .step h3 { color: var(--ch-ink) !important; }
+.ch-home.fs-page #how .step p { color: var(--ch-muted) !important; }
+.ch-home.fs-page #how.sec-process .eyebrow-light { color: var(--ch-brand) !important; }
+.ch-home.fs-page #how .step-diamond {
+  background: var(--ch-brand-soft) !important;
+  border-color: #c9dcff !important;
+  box-shadow: 0 10px 22px -12px rgba(0, 98, 250, 0.35);
+}
+.ch-home.fs-page #how .step-icon { color: var(--ch-brand); }
+
+/* ---------- courses-page design language on every home section ---------- */
+.ch-home.fs-page #session,
+.ch-home.fs-page #about,
+.ch-home.fs-page .fx-cta-sec { background: #ffffff; }
+
+/* Section heads: centred, spaced kicker, ink headline with a blue accent word. */
+.ch-home.fs-page .sec-head { text-align: center; }
+.ch-home.fs-page .sec-head, .ch-home.fs-page .sec-head.center { margin-inline: auto; text-align: center; max-width: 46rem; }
+.ch-home.fs-page .sec-head .sub { margin-inline: auto; }
+.ch-home.fs-page .sec-head :is(.h2, h2)::after { display: none; }
+.ch-home.fs-page .eyebrow {
+  display: block;
+  color: #334155;
+  font: 500 0.8rem/1 var(--f-body);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+.ch-home.fs-page .eyebrow::before,
+.ch-home.fs-page .eyebrow::after { display: none !important; }
+.ch-home.fs-page .session-grid .eyebrow,
+.ch-home.fs-page .about-grid .eyebrow { text-align: left; }
+.ch-home.fs-page :is(.h2, .fx-cta-sec .fx-cta h2) { font-weight: 600; letter-spacing: -0.02em; color: var(--ch-ink); }
+.ch-home.fs-page .marker {
+  background: linear-gradient(90deg, #004bd6, #0062fa 55%, #3d8bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.ch-home.fs-page .marker::after { display: none; }
+
+/* Buttons: ink pill primary, white pill secondary. */
+.ch-home.fs-page .btn { border-radius: 999px; }
+.ch-home.fs-page .btn:hover { transform: none; }
+.ch-home.fs-page :is(.btn-yellow, .join .btn-yellow) { background: var(--ch-ink); border-color: var(--ch-ink); color: #fff; }
+.ch-home.fs-page :is(.btn-yellow, .join .btn-yellow):hover { background: var(--ch-brand); border-color: var(--ch-brand); }
+.ch-home.fs-page .btn-ghost { background: #fff; border-color: var(--ch-line-2); color: var(--ch-ink); }
+.ch-home.fs-page .btn-ghost:hover { background: var(--ch-brand-soft); border-color: var(--ch-brand); }
+
+/* Cards: white, hairline border, 16px radius, soft blue lift on hover. */
+.ch-home.fs-page :is(.learn li, .tile:not(.t-f), .plan-card, .trainer, .contact-card, .hx-loc-group, .hx-card) {
+  border: 1px solid var(--ch-line) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ch-home.fs-page :is(.learn li, .tile:not(.t-f), .trainer, .contact-card, .hx-loc-group):hover,
+.ch-home.fs-page .program-card-link:hover .plan-card {
+  border-color: #9cc0ff !important;
+  box-shadow: 0 18px 36px -26px rgba(0, 98, 250, 0.5);
+  transform: none;
+}
+.ch-home.fs-page .learn { display: grid; gap: 0.7rem; }
+.ch-home.fs-page .learn li { padding: 1rem 1.1rem; }
+.ch-home.fs-page .learn li:last-child { border: 1px solid var(--ch-line) !important; }
+.ch-home.fs-page .learn-ico { border-color: #c9dcff; background: var(--ch-brand-soft); color: var(--ch-brand); }
+.ch-home.fs-page .plan-badge,
+.ch-home.fs-page .plan-step { background: var(--ch-brand-soft); color: var(--ch-brand-strong); border-radius: 999px; }
+
+/* Accent cards (session info, "2 hours. Live. Free.") and the closing CTA: one blue gradient. */
+.ch-home.fs-page :is(.session-card, .t-f, .fx-cta-sec .fx-cta) {
+  border: 0 !important;
+  border-radius: 18px !important;
+  background: linear-gradient(120deg, #0b1a3a 0%, #123a8f 60%, #0062fa 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 30px 60px -40px rgba(0, 98, 250, 0.6);
+}
+.ch-home.fs-page .sc-head { background: transparent; border-color: rgba(255, 255, 255, 0.16); color: #fff; }
+.ch-home.fs-page .sc-list > div { border-color: rgba(255, 255, 255, 0.16); }
+.ch-home.fs-page .sc-list dt { color: #c7d6f5; }
+.ch-home.fs-page .sc-list dd { color: #fff; }
+.ch-home.fs-page .sc-note { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: #e3ebfa; }
+.ch-home.fs-page .t-f .t-f-sub { color: rgba(255, 255, 255, 0.82); }
+.ch-home.fs-page .t-f-big > span { color: #9cc0ff; }
+.ch-home.fs-page :is(.session-card, .t-f, .fx-cta-sec .fx-cta) :is(.btn-yellow, .btn-navy) { background: #fff !important; border-color: #fff !important; color: var(--ch-ink) !important; }
+.ch-home.fs-page :is(.session-card, .t-f, .fx-cta-sec .fx-cta) :is(.btn-yellow, .btn-navy):hover { background: var(--ch-brand-soft) !important; }
+.ch-home.fs-page .fx-cta-sec .fx-cta :is(h2, p) { color: #fff !important; }
+.ch-home.fs-page .fx-cta-sec .fx-cta p { opacity: 0.85; }
+.ch-home.fs-page .fx-cta-sec .btn-ghost { background: transparent; border-color: rgba(255, 255, 255, 0.5); color: #fff; }
+.ch-home.fs-page .fx-cta-sec .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); }
+.ch-home.fs-page .hx-loc-group ul li a,
+.ch-home.fs-page .hx-loc-group ul li { border-radius: 999px; }
+
+/* Bluish page wash shows through every home band (see free-session.css). */
+.ch-home.fs-page,
+.ch-home.fs-page main > section,
+.ch-home.fs-page main > nav,
+.ch-home.fs-page :is(.videos, .plan-sec, .why-sec, #session, #about, #courses, .fx-cta-sec, .home-pathways) { background: transparent !important; }
+.ch-home.fs-page #how.sec-process { background: transparent !important; }
+.ch-home.fs-page .join { background: radial-gradient(60% 50% at 50% 0%, rgba(0, 98, 250, 0.1) 0%, rgba(0, 98, 250, 0) 70%) !important; }

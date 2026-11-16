@@ -112,12 +112,3 @@
   .csx-strip{gap:.5rem 1.4rem;font-size:.88rem}
 }
 @media (prefers-reduced-motion:reduce){.csx-preview,.csx-aurora span{animation:none}.csx-hero *,.csx-courses *{transition:none!important}}
-
-/* Restrained pass: flat hero, solid accents, no aurora, glows or gradient bands. */
-.csx-hero{background:#f6f8fb!important;border-radius:12px}
-.csx-hero::before,.csx-hero::after,.csx-aurora{display:none}
-.csx-hero h1 em{background:none;color:#0062fa;-webkit-text-fill-color:currentColor}
-.csx-glow{display:none}
-.csx-art{background:#0f172a}
-.csx-cta{border-radius:12px;background:#0b1220}
-.csx-preview,.csx-features li{border-radius:12px;box-shadow:none}
