@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useReveal } from '../hooks/useReveal'
 import { pageSeo, POLICIES_META } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
+import { HeroVideo } from '../components/HeroVideo'
 
 const POLICIES_SEO = pageSeo(POLICIES_META)
 
@@ -12,7 +13,7 @@ export function Policies() {
 
   return (
     <div ref={ref}>
-      <section className="page-hero" aria-labelledby="policies-heading">
+      <section className="page-hero hv-host" aria-labelledby="policies-heading"><HeroVideo />
         <div className="container-x">
           <div className="narrow center">
             <p className="eyebrow rv">Legal</p>

@@ -1,0 +1,154 @@
+/* Background video for page heroes (HeroVideo.tsx).
+   Usage: give the hero element the `hv-host` class and render <HeroVideo /> as its first child.
+   Clip source and license: public/assets/hero/video/SOURCE.md */
+
+/* ---------- layers (shared by every hero) ---------- */
+.hv-host {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+/* Still/video sits below the hero's own decorations (-2/-1) and content. Nothing in it takes clicks. */
+.hv-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+  /* Navy base shows until the poster loads; the poster is the still for phones, reduced motion and data saver. */
+  background: #0b1424 url("/assets/hero/video/team-coding-review-poster-1280.webp") center / cover no-repeat;
+  background-image: image-set(
+    url("/assets/hero/video/team-coding-review-poster-1280.webp") type("image/webp"),
+    url("/assets/hero/video/team-coding-review-poster.jpg") type("image/jpeg")
+  );
+}
+.hv-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.hv-bg.is-playing .hv-video { opacity: 1; }
+/* Dark brand-tinted overlay keeps headlines and buttons readable over any frame of the clip. */
+.hv-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(70% 55% at 50% 22%, rgba(0, 98, 250, 0.22) 0%, rgba(0, 98, 250, 0) 70%),
+    linear-gradient(180deg, rgba(6, 11, 22, 0.8) 0%, rgba(6, 11, 22, 0.72) 42%, rgba(6, 11, 22, 0.88) 100%);
+}
+.hv-toggle {
+  position: absolute;
+  /* Top corner: visible on first view and clear of the fixed call/WhatsApp buttons at the bottom right. */
+  top: clamp(0.75rem, 2vw, 1.25rem);
+  right: clamp(0.75rem, 2vw, 1.5rem);
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  background: rgba(6, 11, 22, 0.55);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s, border-color 0.2s;
+}
+.hv-toggle:hover { background: rgba(6, 11, 22, 0.8); border-color: #fff; }
+.hv-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.hv-toggle svg { width: 16px; height: 16px; fill: currentColor; }
+
+@media (max-width: 767px) {
+  .hv-bg { background-image: url("/assets/hero/video/team-coding-review-poster-768.webp"); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hv-video { transition: none; }
+}
+
+/* Very tall hosts: keep the clip to the top band and fade it out instead of stretching it down the page. */
+.hv-host.hv-tall > .hv-bg {
+  bottom: auto;
+  height: min(100%, 640px);
+  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+}
+
+/* ---------- text and controls recoloured for the dark background ---------- */
+/* public/free-session.css loads after this file and pins these heroes' light-theme colours with
+   !important, so these overrides need !important and a tripled host class to outrank them. They only apply inside .hv-host heroes. */
+/* Colours on the dark background; the accent is for gradient headline words and stats. */
+.hv-host {
+  --hv-ink: #ffffff;
+  --hv-text: #d3dcea;
+  --hv-kicker: #dbe4f3;
+  --hv-accent: #9cc0ff;
+  --hv-accent-grad: linear-gradient(90deg, #8fb8ff 0%, #b8d2ff 50%, #e2edff 100%);
+}
+
+/* Card heroes: courses, course and interview-prep pages, FAQ, AI hub, blog, projects, guides, our work. */
+.hv-host.hv-host.hv-host:is(.csx-hero, .learn-hero, .bl-hero, .pj-hero, .ow-hero) {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--hv-text) !important;
+}
+.hv-host.hv-host.hv-host:is(.csx-hero, .learn-hero, .bl-hero, .pj-hero, .ow-hero) h1,
+.hv-host.hv-host.hv-host.csx-hero h1 span { color: var(--hv-ink) !important; }
+.hv-host.hv-host.hv-host:is(.csx-hero, .learn-hero, .bl-hero, .pj-hero, .ow-hero) :is(.csx-kicker, .learn-kicker, .bl-eyebrow, .pj-eyebrow, .ow-eyebrow) { color: var(--hv-kicker) !important; }
+.hv-host.hv-host.hv-host:is(.csx-hero, .learn-hero, .bl-hero, .pj-hero, .ow-hero) :is(p, li, small, dt, dd, span):not(h1 *, a *, button *, label *) { color: var(--hv-text) !important; }
+.hv-host.hv-host.hv-host:is(.bl-hero, .pj-hero, .ow-hero) h1 span,
+.hv-host.hv-host.hv-host.csx-hero h1 em { background-image: var(--hv-accent-grad) !important; }
+.hv-host.hv-host.hv-host:is(.bl-hero, .pj-hero, .ow-hero) strong,
+.hv-host.hv-host.hv-host.learn-hero a:not([class]) { color: var(--hv-accent) !important; }
+/* Keep form fields (search boxes) as they are: light field, dark text. */
+.hv-host.hv-host.hv-host :is(input, select, textarea) { color: #0c1220 !important; }
+
+/* Primary buttons: brand blue instead of near-black, which disappears on the dark video. */
+.hv-host.hv-host.hv-host :is(.csx-pill:not(.csx-pill-ghost), .learn-button:not(.learn-button-quiet), .btn-yellow, .academy-primary) {
+  background: var(--ch-brand, #0062fa) !important;
+  border-color: var(--ch-brand, #0062fa) !important;
+  color: #ffffff !important;
+}
+.hv-host.hv-host.hv-host :is(.csx-pill:not(.csx-pill-ghost), .learn-button:not(.learn-button-quiet), .btn-yellow, .academy-primary):hover {
+  background: var(--ch-brand-strong, #004bd6) !important;
+  border-color: var(--ch-brand-strong, #004bd6) !important;
+}
+/* Secondary buttons: outlined white. */
+.hv-host.hv-host.hv-host :is(.csx-pill-ghost, .learn-button-quiet) {
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+}
+.hv-host.hv-host.hv-host :is(.csx-pill-ghost, .learn-button-quiet):hover { border-color: #ffffff !important; background: rgba(255, 255, 255, 0.16) !important; }
+.hv-host.hv-host.hv-host :focus-visible { outline-color: #ffffff !important; }
+
+/* Full-width heroes: book a tutor, latest jobs. */
+.hv-host.hv-host.hv-host.tutors-hero { color: var(--hv-text) !important; }
+.hv-host.hv-host.hv-host.tutors-hero :is(h1, .display-lg) { color: var(--hv-ink) !important; }
+.hv-host.hv-host.hv-host.tutors-hero h1 span { background-image: var(--hv-accent-grad) !important; }
+.hv-host.hv-host.hv-host.tutors-hero .eyebrow { color: var(--hv-kicker) !important; }
+.hv-host.hv-host.hv-host.tutors-hero :is(.lede, p, nav a, nav span) { color: var(--hv-text) !important; }
+
+/* Policies. */
+.hv-host.hv-host.hv-host.page-hero h1,
+.hv-host.hv-host.hv-host.page-hero h1 span { color: var(--hv-ink) !important; }
+.hv-host.hv-host.hv-host.page-hero .eyebrow { color: var(--hv-accent) !important; }
+
+/* Learning library (/learn). The illustration panel keeps its own light card; the control moves to the
+   bottom corner so it does not sit on that card. */
+.hv-host.academy-hero > .hv-toggle { top: auto; bottom: clamp(0.75rem, 2vw, 1.25rem); }
+.hv-host.hv-host.hv-host.academy-hero { padding: clamp(1.25rem, 3vw, 2.5rem) !important; border-radius: 20px !important; }
+.hv-host.hv-host.hv-host.academy-hero h1 { color: var(--hv-ink) !important; }
+.hv-host.hv-host.hv-host.academy-hero h1 em { color: var(--hv-accent) !important; }
+.hv-host.hv-host.hv-host.academy-hero :is(.academy-eyebrow, .academy-lead, .academy-principles, .academy-principles span) { color: var(--hv-text) !important; }
+.hv-host.hv-host.hv-host.academy-hero .academy-secondary { color: var(--hv-ink) !important; }
+
+/* Blog article: title block over the clip; the article's own cover image stays on top. */
+.hv-host.hv-host.hv-host.bl-reader-hero { background: transparent !important; }
+.hv-host.hv-host.hv-host.bl-reader-hero h1 { color: var(--hv-ink) !important; }
+.hv-host.hv-host.hv-host.bl-reader-hero :is(.bl-deck, .bl-meta, .bl-meta span, .bl-meta time) { color: var(--hv-text) !important; }
+.hv-host.hv-host.hv-host.bl-reader-hero .bl-cat a { color: var(--hv-accent) !important; }

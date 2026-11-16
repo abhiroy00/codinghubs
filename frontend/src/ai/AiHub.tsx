@@ -3,13 +3,14 @@ import { LearnFrame } from '../learning/LearnFrame'
 import { AI_TOOLS } from './ai-shared'
 import '../learning/learning.css'
 import './ai.css'
+import { HeroVideo } from '../components/HeroVideo'
 
 /** Landing page for the four AI tools. Public: the tools themselves ask people to log in. */
 export function AiHub() {
   return (
     <LearnFrame>
       <div className="learn-shell ai-shell">
-        <header className="learn-hero">
+        <header className="learn-hero hv-host"><HeroVideo />
           <p className="learn-kicker">AI INTERVIEW COACH</p>
           <h1>Practise, get feedback, get interview ready</h1>
           <p>Four AI tools that work alongside the 30-day roadmaps. Feedback is a guide: it can be wrong, and it never guarantees a job.</p>

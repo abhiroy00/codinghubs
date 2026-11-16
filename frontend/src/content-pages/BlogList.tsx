@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { getBlogCategories, getBlogs, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
 import { CardView, PageFrame, Pager, SearchIcon } from './shared'
 import './blog.css'
+import { HeroVideo } from '../components/HeroVideo'
 
 type Cats = { name: string; slug: string; blog_count: number }[]
 const initial = typeof document === 'undefined' ? null : takeInitial()
@@ -71,7 +72,7 @@ export function BlogList() {
 
   return (
     <PageFrame wide>
-      <section className="bl-hero">
+      <section className="bl-hero hv-host"><HeroVideo />
         <span className="bl-blob b1" aria-hidden="true" />
         <span className="bl-blob b2" aria-hidden="true" />
         <span className="bl-grid-bg" aria-hidden="true" />

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FsIcon } from './icons'
 import { HeroSlider } from './HeroSlider'
-import { HeroVideo } from './HeroVideo'
+import { HeroVideo } from '../../components/HeroVideo'
 
 export function BatchAnnouncement() {
   const [open, setOpen] = useState(true)
@@ -21,7 +21,7 @@ export function BatchAnnouncement() {
 /** Original Coding Hubs hero: centred headline over a coverflow of the institute's own photographs, on a muted background video. */
 export function JoinHero() {
   return (
-    <section className="join join-has-media" id="home" aria-labelledby="hero-title">
+    <section className="join join-has-media hv-host" id="home" aria-labelledby="hero-title">
       <HeroVideo />
       <div className="join-arcs" aria-hidden="true"><span /><span /></div>
       <div className="wrap join-in">

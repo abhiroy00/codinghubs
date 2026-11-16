@@ -154,62 +154,7 @@
 .join-proof svg { width: 15px; height: 15px; color: var(--ch-brand); }
 .join-media { margin-top: clamp(1.6rem, 3.5vh, 2.5rem); }
 
-/* ---------- hero background video (HeroVideo.tsx) ---------- */
-/* Layer order inside the isolated hero: still/video (-3) < arcs (-1) < content. Nothing here takes clicks. */
-.join-bg {
-  position: absolute;
-  inset: 0;
-  z-index: -3;
-  overflow: hidden;
-  pointer-events: none;
-  /* Navy base shows if the poster has not loaded; the poster is the still for phones, reduced motion and data saver. */
-  background: #0b1424 url("/assets/hero/video/team-coding-review-poster-1280.webp") center / cover no-repeat;
-  background-image: image-set(
-    url("/assets/hero/video/team-coding-review-poster-1280.webp") type("image/webp"),
-    url("/assets/hero/video/team-coding-review-poster.jpg") type("image/jpeg")
-  );
-}
-.join-bg-video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-.join-bg.is-playing .join-bg-video { opacity: 1; }
-/* Dark brand-tinted overlay keeps the headline and buttons readable over any frame of the clip. */
-.join-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(70% 55% at 50% 22%, rgba(0, 98, 250, 0.22) 0%, rgba(0, 98, 250, 0) 70%),
-    linear-gradient(180deg, rgba(6, 11, 22, 0.8) 0%, rgba(6, 11, 22, 0.72) 42%, rgba(6, 11, 22, 0.88) 100%);
-}
-.join-bg-toggle {
-  position: absolute;
-  /* Top corner: visible on first view and clear of the fixed call/WhatsApp buttons at the bottom right. */
-  top: clamp(0.75rem, 2vw, 1.25rem);
-  right: clamp(0.75rem, 2vw, 1.5rem);
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 50%;
-  background: rgba(6, 11, 22, 0.55);
-  color: #fff;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition: background 0.2s, border-color 0.2s;
-}
-.join-bg-toggle:hover { background: rgba(6, 11, 22, 0.8); border-color: #fff; }
-.join-bg-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-.join-bg-toggle svg { width: 16px; height: 16px; fill: currentColor; }
-
+/* ---------- hero background video: layers in src/components/hero-video.css ---------- */
 /* Hero text and buttons recoloured for the dark background. */
 .join.join-has-media { color: var(--ch-on-night); }
 .join.join-has-media::before { display: none; }
@@ -228,13 +173,6 @@
 .join.join-has-media .join-proof { color: #d3dcea; }
 .join.join-has-media .join-proof svg { color: var(--ch-on-night-accent); }
 .join.join-has-media .hs-slide { border-color: rgba(255, 255, 255, 0.16); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7); }
-
-@media (max-width: 767px) {
-  .join-bg { background-image: url("/assets/hero/video/team-coding-review-poster-768.webp"); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .join-bg-video { transition: none; }
-}
 
 /* ---------- hero coverflow slider ---------- */
 .hs { position: relative; }

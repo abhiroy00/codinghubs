@@ -1,6 +1,6 @@
 # Home hero background video
 
-Decorative background for the home page hero (`src/pages/free-session/HeroVideo.tsx`).
+Decorative background for page heroes (`src/components/HeroVideo.tsx`, styles in `src/components/hero-video.css`): the home page and the hero of every public page type.
 
 | Field | Value |
 | --- | --- |

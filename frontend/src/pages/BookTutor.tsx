@@ -10,6 +10,7 @@ import '../pages/free-session/home-theme.css'
 import type { Seo } from '../content-pages/api'
 import { useSeo } from '../seo/useSeo'
 import { TUTOR_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
+import { HeroVideo } from '../components/HeroVideo'
 
 interface Tutor {
   seo?: Seo
@@ -157,7 +158,7 @@ export function BookTutor() {
           </section>
         ) : (
           <>
-        <section className="tutors-hero">
+        <section className="tutors-hero hv-host"><HeroVideo />
           <div className="container-x tutors-hero-inner">
             <nav className="tutor-breadcrumbs" aria-label="Breadcrumb">
               <Link to="/">Home</Link><span aria-hidden="true">/</span><span aria-current="page">Book a Tutor</span>

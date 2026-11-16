@@ -8,6 +8,7 @@ import { AI_TOOLS, AI_TOOL_CATEGORIES, logoColors, type AiTool, type AiToolCateg
 import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/site'
 import { useSeo } from '../../seo/useSeo'
 import './ai-tools.css'
+import { HeroVideo } from '../../components/HeroVideo'
 
 export const AI_TOOLS_META: PageMeta = {
   path: '/ai-tools',
@@ -75,7 +76,7 @@ export function AiTools() {
     <div className="fs-page at-page">
       <FsHeader />
       <main id="main">
-        <section className="at-band" aria-labelledby="at-title">
+        <section className="at-band hv-host hv-tall" aria-labelledby="at-title"><HeroVideo />
           <div className="at-stars" aria-hidden="true" />
           <div className="at-in">
             <header className="at-head">

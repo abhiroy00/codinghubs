@@ -6,6 +6,7 @@ import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { FileList, Html, useDetail } from './catalog'
 import { errorText, get, initial, rupees, shop, type Card, type Paged } from './api'
 import './projects.css'
+import { HeroVideo } from '../components/HeroVideo'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 9
@@ -154,7 +155,7 @@ export function ProjectsPage() {
 
   return (
     <PageFrame wide>
-      <section className="pj-hero">
+      <section className="pj-hero hv-host"><HeroVideo />
         <span className="pj-blob b1" aria-hidden="true" /><span className="pj-blob b2" aria-hidden="true" /><span className="pj-grid-bg" aria-hidden="true" />
         <div className="pj-hero-in">
           <p className="pj-eyebrow">Learn by building</p>

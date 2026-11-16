@@ -3,6 +3,7 @@ import { PageFrame } from '../../content-pages/shared'
 import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/site'
 import { useSeo } from '../../seo/useSeo'
 import './our-work.css'
+import { HeroVideo } from '../../components/HeroVideo'
 
 type Work = {
   name: string
@@ -180,7 +181,7 @@ export function OurWork() {
 
   return (
     <PageFrame wide>
-      <section className="ow-hero">
+      <section className="ow-hero hv-host"><HeroVideo />
         <p className="ow-eyebrow">Our Work</p>
         <h1>Projects built, shipped and <span>working in the real world</span></h1>
         <p className="ow-lead">AI applications, business platforms, online stores and websites. Open a project to see it live.</p>

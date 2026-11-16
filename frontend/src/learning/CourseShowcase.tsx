@@ -4,6 +4,7 @@ import { COURSE_CATALOG, COURSE_CATEGORIES, type CourseDefinition, type CourseTr
 import { COURSES } from '../pages/free-session/data'
 import { FsIcon } from '../pages/free-session/icons'
 import './course-showcase.css'
+import { HeroVideo } from '../components/HeroVideo'
 
 /** Hand-written blurbs and icons for the flagship courses shown on the homepage. */
 const FLAGSHIP = new Map(COURSES.map((c) => [c.title, c]))
@@ -25,7 +26,7 @@ function Arrow() {
 /** Hero: spaced kicker, two-line headline over a slow-moving aurora, CTAs and a highlight strip. */
 export function CoursesHero() {
   return (
-    <header className="csx-hero">
+    <header className="csx-hero hv-host"><HeroVideo />
       <div className="csx-aurora" aria-hidden="true"><span className="a1" /><span className="a2" /><span className="a3" /></div>
       <p className="csx-kicker">Introducing</p>
       <h1>

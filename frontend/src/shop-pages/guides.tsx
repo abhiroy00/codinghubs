@@ -8,6 +8,7 @@ import { Arrow, Clock, Cover, cap } from './projects'
 import { get, initial, rupees, type Card, type Paged } from './api'
 import './projects.css'
 import './shopui.css'
+import { HeroVideo } from '../components/HeroVideo'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 9
@@ -109,7 +110,7 @@ export function GuidesPage() {
 
   return (
     <PageFrame wide>
-      <section className="pj-hero gd-hero">
+      <section className="pj-hero gd-hero hv-host"><HeroVideo />
         <span className="pj-blob b1" aria-hidden="true" /><span className="pj-blob b2" aria-hidden="true" /><span className="pj-grid-bg" aria-hidden="true" />
         <div className="pj-hero-in">
           <p className="pj-eyebrow">Step by step</p>

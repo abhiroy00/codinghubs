@@ -1,6 +1,7 @@
 import { ExpertCTA } from '../components/ExpertCTA'
 import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
+import { HeroVideo } from '../components/HeroVideo'
 
 export const FAQS = [
   { q: 'Do you provide placement support?', a: 'Yes. We provide 100% placement assistance, including resume building, mock interviews, portfolio preparation and job referrals.', open: true },
@@ -40,7 +41,7 @@ export function Faq() {
   useSeo(FAQ_SEO)
   return (
     <div className="learn-shell">
-      <section className="learn-hero" aria-labelledby="faq-heading">
+      <section className="learn-hero hv-host" aria-labelledby="faq-heading"><HeroVideo />
         <p className="learn-kicker">FAQ</p>
         <h1 id="faq-heading">Everything you need to know.</h1>
         <p>Can’t find your answer? Talk to an expert — we will call you back.</p>

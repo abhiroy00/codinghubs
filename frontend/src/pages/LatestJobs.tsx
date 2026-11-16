@@ -11,6 +11,7 @@ import '../pages/free-session/home-theme.css'
 import type { Seo } from '../content-pages/api'
 import { useSeo } from '../seo/useSeo'
 import { JOBS_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
+import { HeroVideo } from '../components/HeroVideo'
 
 interface Job {
   seo?: Seo
@@ -142,7 +143,7 @@ function JobListing() {
 
   return (
     <>
-      <section className="tutors-hero">
+      <section className="tutors-hero hv-host"><HeroVideo />
         <div className="container-x tutors-hero-inner">
           <p className="eyebrow">CAREER OPPORTUNITIES</p>
           <h1 className="display-lg">Latest <span>Jobs</span></h1>

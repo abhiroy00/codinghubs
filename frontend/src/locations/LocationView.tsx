@@ -8,6 +8,7 @@ import { LocationFx } from './LocationFx'
 import { Marquee } from './Marquee'
 import { COURSE_NAMES, GROUP_LABELS, HEAD_OFFICE, LOCATIONS, getLocation, locationPath } from './registry'
 import type { LocationContent, LocationMeta } from './types'
+import { HeroVideo } from '../components/HeroVideo'
 
 const FIGURES: Record<string, { src: string; alt: string }> = {
   curriculum: { src: '/assets/ai/path.jpg', alt: 'AI-generated illustration of a staircase of learning steps from code to data, neural networks and an AI assistant' },
@@ -63,7 +64,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
       <LocationFx />
       <FsHeader />
       <main id="main">
-        <section className="loc-hero" aria-labelledby="loc-title">
+        <section className="loc-hero hv-host" aria-labelledby="loc-title"><HeroVideo />
           <div className="wrap loc-hero-in">
             <p className="eyebrow eyebrow-light">AI training · Delhi NCR</p>
             <h1 id="loc-title">

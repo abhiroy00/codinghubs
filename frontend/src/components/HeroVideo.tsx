@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import './hero-video.css'
 
 /**
- * Decorative background video for the home hero.
+ * Decorative background video for page heroes. The host element gets the `hv-host` class (see hero-video.css).
  * Source and license: public/assets/hero/video/SOURCE.md (Pexels #8632602, Pexels License).
  *
  * The server render and first client paint show only the static poster. The video is added after
@@ -98,15 +99,15 @@ export function HeroVideo() {
   }
 
   if (!src || failed) {
-    return <div className="join-bg" aria-hidden="true" />
+    return <div className="hv-bg" aria-hidden="true" />
   }
 
   return (
     <>
-      <div className={`join-bg${playing ? ' is-playing' : ''}`} aria-hidden="true">
+      <div className={`hv-bg${playing ? ' is-playing' : ''}`} aria-hidden="true">
         <video
           ref={videoRef}
-          className="join-bg-video"
+          className="hv-video"
           poster={POSTER}
           autoPlay
           muted
@@ -125,7 +126,7 @@ export function HeroVideo() {
       </div>
       <button
         type="button"
-        className="join-bg-toggle"
+        className="hv-toggle"
         aria-label={playing ? 'Pause background video' : 'Play background video'}
         onClick={toggle}
       >

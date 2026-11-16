@@ -5,6 +5,7 @@ import { fmtDate, getBlog, getCase, takeInitial, type Article } from './api'
 import { CardView, PageFrame, useSeo } from './shared'
 import { ArticleToc } from './ArticleToc'
 import './blog.css'
+import { HeroVideo } from '../components/HeroVideo'
 
 const initial = typeof document === 'undefined' ? null : takeInitial()
 
@@ -91,7 +92,7 @@ export function BlogDetail() {
       <ReadProgress />
       <article className="bl-reader">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <header className="bl-reader-hero">
+        <header className="bl-reader-hero hv-host"><HeroVideo />
           <div className="bl-reader-hero-in">
             {a.category && (
               <p className="bl-cat">

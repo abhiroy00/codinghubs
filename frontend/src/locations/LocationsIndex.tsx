@@ -16,6 +16,7 @@ import { useSeo } from '../seo/useSeo'
 
 const INDEX_SEO = pageSeo({ path: '/locations/', title: INDEX_TITLE, description: INDEX_DESCRIPTION, image: LOGO_URL, indexable: true, jsonLd: indexJsonLd() })
 import type { LocationGroup } from './types'
+import { HeroVideo } from '../components/HeroVideo'
 
 const PERKS = [
   { i: 'i-monitor', t: 'Learn online', d: 'The free demo and 15-day programs are live and online, so learners anywhere in NCR can join.' },
@@ -51,7 +52,7 @@ export function LocationsIndex() {
     <div className="fs-page">
       <FsHeader />
       <main id="main">
-        <section className="lx-hero" aria-labelledby="idx-title">
+        <section className="lx-hero hv-host" aria-labelledby="idx-title"><HeroVideo />
           <span className="lx-blob lx-b1" aria-hidden="true"></span>
           <span className="lx-blob lx-b2" aria-hidden="true"></span>
           <span className="lx-blob lx-b3" aria-hidden="true"></span>
