@@ -14,7 +14,6 @@ const LINKS = [
   ["/locations/", "Locations"],
   ["/blog", "Blog"],
   ["/case-studies", "Case Studies"],
-  ["/projects", "Projects"],
   ["/book-a-tutor/", "Tutor"],
   ["/#session", "About the Session"],
   [ "/#contact", "Support"],
