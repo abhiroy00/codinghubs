@@ -2,6 +2,8 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { api } from '../../lib/api'
 import { COURSE_OPTIONS, EDUCATION_OPTIONS, WHATSAPP } from './data'
 import { FsIcon } from './icons'
+import { COURSE_CATALOG } from '../../learning/catalog'
+import './enrollment.css'
 
 export function normalizePhone(v: string): string | null {
   let d = String(v).replace(/[\s\-().]/g, '')
@@ -24,6 +26,7 @@ const messages = {
 }
 
 interface RegisterFormProps {
+  intent?: 'demo' | 'enrollment'
   onThanksChange?: (shown: boolean) => void
   prefillCourse?: string | null
   prefillToken?: number
@@ -31,7 +34,8 @@ interface RegisterFormProps {
   idPrefix?: string
 }
 
-export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPrefix = '' }: RegisterFormProps = {}) {
+export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPrefix = '', intent = 'demo' }: RegisterFormProps = {}) {
+  const enrollment = intent === 'enrollment'
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -46,6 +50,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
 
   useEffect(() => {
     onThanksChange?.(!!thanks)
+    if (thanks && enrollment) document.getElementById(`${idPrefix}thanks`)?.focus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thanks])
 
@@ -77,13 +82,12 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
     }
 
     if (company) {
-      // honeypot tripped — silently "succeed" without actually submitting
-      setThanks({ firstName: '', course })
+      setStatus({ msg: 'Your request was not submitted. Please reload the page and try again.', type: 'error' })
       return
     }
 
     const normalized = normalizePhone(phone)!
-    const dupKey = `lp_reg_${normalized}_${course}`
+    const dupKey = `${enrollment ? 'enrollment_enquiry' : 'lp_reg'}_${normalized}_${course}`
     let prev: { ts?: number } | null = null
     try {
       const stored = localStorage.getItem(dupKey)
@@ -92,7 +96,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
       // Browser storage is optional; it must never prevent registration.
     }
     if (prev?.ts && Date.now() - prev.ts < 24 * 36e5) {
-      setStatus({ msg: `You've already registered for ${course} with this mobile number. We'll contact you with the session details — no need to register again.`, type: 'info' })
+      setStatus({ msg: enrollment ? `You've already sent an enquiry for ${course} with this mobile number. Our team will contact you about admission options.` : `You've already registered for ${course} with this mobile number. We'll contact you with the session details — no need to register again.`, type: 'info' })
       return
     }
 
@@ -105,7 +109,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
         education,
         whatsapp_consent: waConsent,
         course,
-        mode: 'demo',
+        mode: enrollment ? 'expert' : 'demo',
         source_page: window.location.pathname,
       })
       try {
@@ -115,7 +119,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
       }
       setThanks({ firstName: name.trim().split(' ')[0], course })
     } catch {
-      setStatus({ msg: 'Something went wrong and your registration was not submitted. Please try again.', type: 'error' })
+      setStatus({ msg: enrollment ? 'Your enquiry could not be sent. Please try again.' : 'Something went wrong and your registration was not submitted. Please try again.', type: 'error' })
     } finally {
       setSubmitting(false)
     }
@@ -134,33 +138,37 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
   }
 
   if (thanks) {
-    const waText = WHATSAPP.message.replace('{course}', thanks.course).replace('{name}', thanks.firstName)
+    const waText = enrollment ? `Hi! I sent an enrollment enquiry for "${thanks.course}". My name is ${thanks.firstName}. Please share the admission details.` : WHATSAPP.message.replace('{course}', thanks.course).replace('{name}', thanks.firstName)
     return (
       <div className="thanks" id={`${idPrefix}thanks`} tabIndex={-1}>
         <div className="thanks-ico" aria-hidden="true">
           <FsIcon id="i-check" />
         </div>
-        <h2 id={`${idPrefix}thanks-title`}>You're registered!</h2>
+        <h2 id={`${idPrefix}thanks-title`}>{enrollment ? 'Enquiry received' : "You're registered!"}</h2>
         <p className="thanks-sub">
-          {thanks.firstName ? `Thank you, ${thanks.firstName}. We've received your registration for the free live session.` : "We've received your registration for the free live session."}
+          {enrollment ? `Thank you, ${thanks.firstName}. We've received your enrollment enquiry.` : thanks.firstName ? `Thank you, ${thanks.firstName}. We've received your registration for the free live session.` : "We've received your registration for the free live session."}
         </p>
         <div className="thanks-course">
           <span>Selected course</span>
           <strong>{thanks.course}</strong>
         </div>
         <h3>What happens next?</h3>
-        <ol className="next">
+        {enrollment ? <ol className="next">
+          <li>Our team will contact you at the mobile number or email you provided.</li>
+          <li>Discuss course availability, fees and admission steps with our counsellor.</li>
+          <li>This enquiry does not confirm enrollment or take a payment.</li>
+        </ol> : <ol className="next">
           <li>We'll share the confirmed session date, time and joining link on the mobile number / email you provided.</li>
           <li>Keep a laptop or phone with a stable internet connection ready for the live session.</li>
           <li>Note down your questions — you can ask the trainer during the Q&amp;A.</li>
-        </ol>
+        </ol>}
         <a className="btn btn-wa btn-block" href={`https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer">
           <FsIcon id="i-wa" />
           <span>Message us on WhatsApp</span>
         </a>
         <p className="wa-note">Optional — opens WhatsApp with a pre-filled message. Only send it if you'd like to chat with us there.</p>
         <button type="button" className="link-btn" id={`${idPrefix}againBtn`} onClick={registerAgain}>
-          Register for another course
+          {enrollment ? 'Enquire about another course' : 'Register for another course'}
         </button>
       </div>
     )
@@ -169,9 +177,9 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
   return (
     <div id={`${idPrefix}formWrap`}>
       <div className="form-head">
-        <h2 id={`${idPrefix}form-title`}>Reserve your free seat</h2>
-        <p>Fill in your details to register for the free live online session.</p>
-        <ul className="form-meta" aria-label="Session summary">
+        <h2 id={`${idPrefix}form-title`}>{enrollment ? 'Enrollment enquiry' : 'Reserve your free seat'}</h2>
+        <p>{enrollment ? 'Share your contact details and preferred course. Our team will help you explore admission options.' : 'Fill in your details to register for the free live online session.'}</p>
+        {!enrollment && <ul className="form-meta" aria-label="Session summary">
           <li>
             <FsIcon id="i-clock" />2 Hours
           </li>
@@ -181,7 +189,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
           <li>
             <FsIcon id="i-ticket" />Free
           </li>
-        </ul>
+        </ul>}
       </div>
       <form className="lead-form" id={`${idPrefix}leadForm`} noValidate aria-labelledby={`${idPrefix}form-title`} onSubmit={handleSubmit}>
         <div className="field">
@@ -257,7 +265,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
           </label>
           <select id={`${idPrefix}f-course`} name="course" required aria-describedby={`${idPrefix}e-course`} value={course} onChange={(e) => setCourse(e.target.value)} aria-invalid={!!errors.course}>
             <option value="">Choose a course</option>
-            {COURSE_OPTIONS.map((g) => (
+            {enrollment ? COURSE_CATALOG.map((item) => <option key={item.slug} value={item.name}>{item.name}</option>) : COURSE_OPTIONS.map((g) => (
               <optgroup label={g.group} key={g.group}>
                 {g.items.map((c) => (
                   <option key={c}>{c}</option>
@@ -283,7 +291,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
         <label className="check">
           <input type="checkbox" name="whatsapp_consent" id={`${idPrefix}f-wa`} checked={waConsent} onChange={(e) => setWaConsent(e.target.checked)} />
           <span>
-            Send me session updates on WhatsApp <span className="opt">(optional)</span>
+            {enrollment ? 'Send me enrollment updates on WhatsApp' : 'Send me session updates on WhatsApp'} <span className="opt">(optional)</span>
           </span>
         </label>
         <div className="hp" aria-hidden="true">
@@ -292,7 +300,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
         </div>
 
         <button type="submit" className="btn btn-yellow btn-block btn-lg lead-submit" id={`${idPrefix}submitBtn`} disabled={submitting} aria-busy={submitting}>
-          <span className="btn-label">{submitting ? 'Submitting…' : 'Reserve My Free Seat'}</span>
+          <span className="btn-label">{submitting ? 'Submitting…' : enrollment ? 'Send enrollment enquiry' : 'Reserve My Free Seat'}</span>
           <FsIcon id="i-arrow" />
           {submitting && <span className="spinner" aria-hidden="true"></span>}
         </button>
@@ -301,7 +309,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
         </p>
         <p className="privacy">
           <span>
-            <FsIcon id="i-lock" />No payment needed
+            <FsIcon id="i-lock" />{enrollment ? 'No payment collected' : 'No payment needed'}
           </span>
           <a href="/policies#privacy">Privacy Policy</a>
         </p>

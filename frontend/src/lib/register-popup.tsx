@@ -17,12 +17,14 @@ const AUTO_MAX_MS = 45_000
 interface PopupApi {
   /** Opens the "Reserve your free seat" popup; after the visitor has registered it takes them to the courses instead. */
   open: (course?: string) => void
+  /** Enrollment enquiries remain available after a previous demo registration. */
+  openEnrollment: (course: string) => void
   registered: boolean
   /** Call when a registration form was submitted successfully. */
   markRegistered: () => void
 }
 
-const FALLBACK: PopupApi = { open: () => undefined, registered: false, markRegistered: () => undefined }
+const FALLBACK: PopupApi = { open: () => undefined, openEnrollment: () => undefined, registered: false, markRegistered: () => undefined }
 const PopupContext = createContext<PopupApi>(FALLBACK)
 
 export function useRegisterPopup() {
@@ -44,6 +46,7 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
   const [registered, setRegistered] = useState(false)
   const [isOpen, setOpen] = useState(false)
   const [course, setCourse] = useState<string | null>(null)
+  const [intent, setIntent] = useState<'demo' | 'enrollment'>('demo')
   const [token, setToken] = useState(0)
   const returnFocus = useRef<HTMLElement | null>(null)
 
@@ -56,21 +59,25 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
     returnFocus.current?.focus?.()
   }, [lenisRef])
 
-  const open = useCallback(
-    (c?: string) => {
-      if (readFlag()) {
-        navigate('/courses/')
-        return
-      }
+  const showPopup = useCallback(
+    (nextIntent: 'demo' | 'enrollment', c?: string) => {
       returnFocus.current = document.activeElement as HTMLElement | null
+      setIntent(nextIntent)
       setCourse(c ?? null)
       setToken((t) => t + 1)
       setOpen(true)
       document.body.style.overflow = 'hidden'
       lenisRef.current?.stop()
     },
-    [navigate, lenisRef],
+    [lenisRef],
   )
+
+  const open = useCallback((c?: string) => {
+    if (readFlag()) { navigate('/courses/'); return }
+    showPopup('demo', c)
+  }, [navigate, showPopup])
+
+  const openEnrollment = useCallback((c: string) => showPopup('enrollment', c), [showPopup])
 
   // Home page: bring the popup back every 30-45 seconds until the visitor has registered.
   useEffect(() => {
@@ -134,7 +141,7 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const markRegistered = useCallback(() => onThanks(true), [onThanks])
-  const api = useMemo(() => ({ open, registered, markRegistered }), [open, registered, markRegistered])
+  const api = useMemo(() => ({ open, openEnrollment, registered, markRegistered }), [open, openEnrollment, registered, markRegistered])
 
   return (
     <PopupContext.Provider value={api}>
@@ -142,13 +149,13 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
       {isOpen && (
         <div className="rp-overlay" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}>
           <PopupStyles />
-          <div className="rp-dialog fs-page" role="dialog" aria-modal="true" aria-label="Free demo registration" data-lenis-prevent>
+          <div className="rp-dialog fs-page" role="dialog" aria-modal="true" aria-label={intent === 'enrollment' ? 'Enrollment enquiry' : 'Free demo registration'} data-intent={intent} data-lenis-prevent>
             <button type="button" className="rp-close" aria-label="Close" onClick={close}>
               ×
             </button>
             <div className="form-card">
               <Suspense fallback={<p className="rp-loading" role="status">Loading…</p>}>
-                <RegisterForm idPrefix="rp-" onThanksChange={onThanks} prefillCourse={course} prefillToken={token} />
+                <RegisterForm key={token} idPrefix="rp-" intent={intent} onThanksChange={intent === 'demo' ? onThanks : undefined} prefillCourse={course} prefillToken={token} />
               </Suspense>
             </div>
           </div>

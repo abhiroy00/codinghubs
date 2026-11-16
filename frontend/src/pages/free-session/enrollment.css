@@ -1,0 +1,26 @@
+/* Enrollment reuses the existing lead form; these styles leave the demo popup intact. */
+.rp-dialog[data-intent='enrollment'] { max-width:560px; }
+.rp-dialog[data-intent='enrollment'] .form-card { --fp-x:1.5rem;--fp-y:1.5rem;border:1px solid #e4e9f2;border-radius:16px;padding-bottom:1.5rem; }
+.rp-dialog[data-intent='enrollment'] .form-head { padding-right:3.75rem;background:#0c1220;border-bottom:3px solid #3b6bff; }
+.rp-dialog[data-intent='enrollment'] .form-head h2 { font-size:1.5rem;line-height:1.3; }
+.rp-dialog[data-intent='enrollment'] .form-head p { margin-top:.75rem;font-size:1rem;line-height:1.6;color:#d1d9e8; }
+.rp-dialog[data-intent='enrollment'] .lead-form { margin-top:1.5rem;gap:1rem; }
+.rp-dialog[data-intent='enrollment'] .field label { margin-bottom:.5rem;font-size:.875rem;line-height:1.5; }
+.rp-dialog[data-intent='enrollment'] .field :is(input,select) { min-height:48px;height:auto;padding:.75rem;font-size:1rem;line-height:1.5;border-color:#aeb8c8;background-color:#fff;color:#1f2937; }
+.rp-dialog[data-intent='enrollment'] .field select { padding-right:2.5rem; }
+.rp-dialog[data-intent='enrollment'] .field input::placeholder { color:#64748b; }
+.rp-dialog[data-intent='enrollment'] .opt { color:#4b5563;font-size:.875rem; }
+.rp-dialog[data-intent='enrollment'] .check { min-height:44px;align-items:center;font-size:.875rem;line-height:1.6;color:#4b5563; }
+.rp-dialog[data-intent='enrollment'] .lead-form .lead-submit { min-height:48px;border:0;border-radius:10px;background-color:#4675ff;background-image:linear-gradient(90deg,#4675ff,#22d3ee);color:#0c1220;box-shadow:none; }
+.rp-dialog[data-intent='enrollment'] .lead-form .lead-submit:hover { background-color:#5a85ff;background-image:linear-gradient(90deg,#5a85ff,#51def2);transform:none; }
+.rp-dialog[data-intent='enrollment'] .lead-submit[aria-busy='true'] .spinner { display:inline-block; }
+.rp-dialog[data-intent='enrollment'] .lead-submit[aria-busy='true'] .ico { display:none; }
+.rp-dialog[data-intent='enrollment'] .privacy { flex-wrap:wrap;font-size:.875rem;line-height:1.5; }
+.rp-dialog[data-intent='enrollment'] .privacy a { display:inline-flex;align-items:center;min-height:44px; }
+.rp-dialog[data-intent='enrollment'] .rp-close { width:44px;height:44px;background:#ffffff16; }
+.rp-dialog[data-intent='enrollment'] .rp-close:hover { background:#4675ff;color:#0c1220;transform:none; }
+.rp-dialog[data-intent='enrollment'] .thanks-sub,
+.rp-dialog[data-intent='enrollment'] .next { font-size:1rem;line-height:1.65; }
+@media (max-width:480px) {
+  .rp-dialog[data-intent='enrollment'] .form-card { --fp-x:1.25rem;--fp-y:1.25rem; }
+}

@@ -57,6 +57,10 @@ The public **Book a Tutor** page saves requests in Django and the custom admin p
 
 Apply the schema with `python manage.py migrate` in `backend/`. Email notifications are not configured; bookings are persisted and visible to staff without email setup.
 
+## Course enrollment enquiries
+
+“Enrollment options” on course detail pages opens a contact form with the current course preselected. Learners can provide their name, mobile, email and preferred course, plus optional education and WhatsApp consent. The form saves an expert lead through `/api/leads/` for the admissions team; it works without login and after a previous demo registration. Confirmation means the enquiry was saved. Existing paid checkout at `/enroll/:slug` is separate and remains unchanged.
+
 ## Razorpay setup (required for payments to work)
 
 1. Create a [Razorpay](https://dashboard.razorpay.com/) account, switch to **Test Mode**.

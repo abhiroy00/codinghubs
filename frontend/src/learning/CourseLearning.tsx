@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../lib/auth-context'
 import { useLenisRef } from '../lib/lenis-context'
 import { api } from '../lib/api'
-import type { Course } from '../lib/types'
+import { useRegisterPopup } from '../lib/register-popup'
 import { COURSE_CATALOG, COURSE_BY_SLUG, type CourseDefinition } from './catalog'
 import { CoursesCta, CoursesFeatures, CoursesHero, CoursesShowcase } from './CourseShowcase'
 import { CertificateSection, CourseTiles } from './certificates'
@@ -44,10 +44,10 @@ function sequentialDays(base: number[], extra: number[]) {
 const completeDays = (base: number[], extra: number[], openAll = true) => openAll ? [...new Set([...base, ...extra])].sort((a, b) => a - b) : sequentialDays(base, extra)
 
 
-function EnrollmentLink({ slug }: { slug: string }) {
-  const [available, setAvailable] = useState(false)
-  useEffect(() => { let active = true; api.get<Course>(`/courses/${slug}/`).then(() => active && setAvailable(true)).catch(() => active && setAvailable(false)); return () => { active = false } }, [slug])
-  return available ? <Link className="learn-button learn-button-quiet" to={`/enroll/${slug}/`}>Enrollment options</Link> : null
+function EnrollmentButton({ slug }: { slug: string }) {
+  const { openEnrollment } = useRegisterPopup()
+  const course = COURSE_BY_SLUG.get(slug)
+  return course ? <button type="button" className="learn-button learn-button-quiet" aria-haspopup="dialog" onClick={() => openEnrollment(course.name)}>Enrollment options</button> : null
 }
 
 function ProjectCompletion({ slug, project }: { slug: string; project: string }) {
@@ -104,7 +104,7 @@ export function CourseDetails() {
   const { slug = '' } = useParams()
   const course = COURSE_BY_SLUG.get(slug)
   if (!course) return <div className="learn-shell"><h1>Course not found</h1><Link to="/courses/">Browse all courses</Link></div>
-  return <div className="learn-shell learn-detail"><header className="learn-hero"><p className="learn-kicker">{course.category.toUpperCase()} · 30 DAY LEARNING PATH</p><h1>{course.name}</h1><p>{course.introduction}</p><div className="learn-hero-actions"><Link className="learn-button" to={`/interview-prep/${course.slug}/`}>Start interview prep</Link><EnrollmentLink slug={course.slug}/><Link className="learn-button learn-button-quiet" to="/#register">Book a demo</Link><Link className="learn-button learn-button-quiet" to="/courses/">Browse courses</Link></div></header>
+  return <div className="learn-shell learn-detail"><header className="learn-hero"><p className="learn-kicker">{course.category.toUpperCase()} · 30 DAY LEARNING PATH</p><h1>{course.name}</h1><p>{course.introduction}</p><div className="learn-hero-actions"><Link className="learn-button" to={`/interview-prep/${course.slug}/`}>Start interview prep</Link><EnrollmentButton slug={course.slug}/><Link className="learn-button learn-button-quiet" to="/#register">Book a demo</Link><Link className="learn-button learn-button-quiet" to="/courses/">Browse courses</Link></div></header>
     <div className="learn-content"><section className="learn-section"><h2>Course overview</h2><p>{course.summary}</p><p>This self-guided roadmap provides a practical structure for building and reviewing skills. Confirm schedule, fees and prerequisites with the school before enrolling.</p></section>
       <section className="learn-section"><h2>What you will learn</h2><div className="learn-pills">{course.skills.map((skill) => <span key={skill}>{skill}</span>)}</div></section>
       <section className="learn-section"><h2>Tools and concepts</h2><div className="learn-pills">{course.tools.map((tool) => <span key={tool}>{tool}</span>)}</div></section>
