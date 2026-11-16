@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -258,6 +259,8 @@ class Testimonial(models.Model):
     course = models.CharField(max_length=120, blank=True)
     text = models.TextField(max_length=1200)
     photo_url = models.CharField(max_length=500, blank=True, validators=[validate_media_or_https_url])
+    rating = models.PositiveSmallIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    submitted_by_user = models.BooleanField(default=False, editable=False, help_text='Sent from the website review form. Read it before publishing.')
     permission_confirmed = models.BooleanField(default=False, help_text='Tick only when the student has agreed to show this review (and photo) publicly.')
     is_published = models.BooleanField(default=False)
     position = models.PositiveSmallIntegerField(default=0, help_text='Lower numbers appear first.')

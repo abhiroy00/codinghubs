@@ -13,7 +13,7 @@ from PIL import Image, UnidentifiedImageError
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.throttling import UserRateThrottle
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
 from . import services
@@ -473,4 +473,41 @@ class PublicTestimonials(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         rows = Testimonial.objects.filter(is_published=True, permission_confirmed=True)[:12]
-        return Response([{'name': t.name, 'course': t.course, 'text': t.text, 'photo': t.photo_url} for t in rows])
+        return Response([{'name': t.name, 'course': t.course, 'text': t.text, 'photo': t.photo_url, 'rating': t.rating} for t in rows])
+
+
+class ReviewThrottle(AnonRateThrottle):
+    rate = '5/hour'
+
+
+class ReviewSubmissionSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=80, trim_whitespace=True)
+    course = serializers.CharField(max_length=120, required=False, allow_blank=True, trim_whitespace=True)
+    text = serializers.CharField(min_length=20, max_length=1200, trim_whitespace=True)
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+    permission = serializers.BooleanField()
+    website = serializers.CharField(required=False, allow_blank=True)  # honeypot: humans leave it empty
+
+    def validate_permission(self, value):
+        if not value:
+            raise serializers.ValidationError('Please allow us to show your review on the website.')
+        return value
+
+
+class SubmitReview(generics.GenericAPIView):
+    """Public review form. Reviews are stored unpublished; the team reads and publishes them in the admin."""
+
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [ReviewThrottle]
+    serializer_class = ReviewSubmissionSerializer
+
+    def post(self, request):
+        data = self.get_serializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        v = data.validated_data
+        if not v.get('website'):
+            Testimonial.objects.create(
+                name=v['name'], course=v.get('course', ''), text=v['text'], rating=v['rating'],
+                permission_confirmed=True, is_published=False, submitted_by_user=True,
+            )
+        return Response({'detail': 'Thank you! Your review will appear on the website after our team checks it.'}, status=201)

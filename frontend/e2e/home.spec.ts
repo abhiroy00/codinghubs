@@ -186,24 +186,15 @@ test("late-loading published content reveals itself with reduced motion", async 
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.route("**/api/projects/?*", async (route) => {
+  await page.route("**/api/testimonials/", async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 150));
-    await route.fulfill({
-      contentType: "application/json",
-      body: JSON.stringify({
-        results: [
-          {
-            title: "Published project",
-            slug: "published-project",
-            summary: "A published Coding Hubs project.",
-          },
-        ],
-      }),
-    });
+    await route.fulfill({ json: [{ name: "Riya", course: "Generative AI", text: "Clear, practical classes.", photo: "", rating: 5 }] });
   });
   await page.reload();
-  await expect(page.locator("#projects h2")).toContainText("Projects with");
-  await expect(page.locator("#projects .reveal")).toHaveClass(/in/);
+  await expect(page.locator("#reviews .rv-card")).toHaveCount(1);
+  await expect(page.locator("#reviews .reveal")).toHaveClass(/in/);
+  await expect(page.locator("#projects")).toHaveCount(0);
+  await expect(page.locator("#locations")).toHaveCount(0);
   // Reduced motion: no slider controls and no automatic slide changes.
   const slider = page.getByRole("region", { name: "Coding Hubs in pictures" });
   await expect(slider.getByRole("button")).toHaveCount(0);
@@ -278,6 +269,28 @@ test("hero slider supports touch swipe on phones", async ({ browser }) => {
   await swipe(box.x + 30, box.x + box.width - 30);
   await expect(active).toHaveAttribute("aria-label", /^1 of 5:/);
   await context.close();
+});
+
+test("learners can send a review that waits for approval", async ({ page }) => {
+  let posted: Record<string, unknown> | null = null;
+  await page.route("**/api/testimonials/", (route) => route.fulfill({ json: [] }));
+  await page.route("**/api/testimonials/submit/", (route) => {
+    posted = route.request().postDataJSON();
+    return route.fulfill({ status: 201, json: { detail: "Thank you! Your review will appear on the website after our team checks it." } });
+  });
+  await page.reload();
+  const form = page.locator("#reviews form");
+  await expect(page.getByText("Be the first to leave a review")).toBeVisible();
+  await form.getByRole("button", { name: "Submit review" }).click();
+  await expect(form.getByText("Please choose a star rating.")).toBeVisible();
+  expect(posted).toBeNull();
+  await form.locator('label[title="5 stars"]').click();
+  await form.getByLabel("Your name").fill("Test Learner");
+  await form.getByLabel("Your review").fill("Loved the hands-on approach and clear explanations.");
+  await form.getByRole("checkbox").check();
+  await form.getByRole("button", { name: "Submit review" }).click();
+  await expect(page.getByText("Thank you for your review!")).toBeVisible();
+  expect(posted).toMatchObject({ name: "Test Learner", rating: 5, permission: true });
 });
 
 test("all four learning and career pathways open their working pages", async ({

@@ -13,7 +13,7 @@ from PIL import Image
 from rest_framework.test import APIClient
 
 from . import ssr
-from .models import Blog, BlogCategory, CaseStudy, SlugRedirect
+from .models import Blog, BlogCategory, CaseStudy, SlugRedirect, Testimonial
 from .sanitize import add_heading_ids, sanitize_html, word_count
 
 User = get_user_model()
@@ -483,6 +483,41 @@ class TestimonialTests(TestCase):
         Testimonial.objects.create(name='C', text='Draft', is_published=False, permission_confirmed=True)
         rows = APIClient().get('/api/testimonials/').json()
         self.assertEqual([r['name'] for r in rows], ['A'])
+
+
+class ReviewSubmissionTests(TestCase):
+    def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
+        self.client = APIClient()
+        self.ok = {'name': 'Riya', 'course': 'Generative AI', 'text': 'The live demo class was clear and the trainer answered every question.', 'rating': 5, 'permission': True}
+
+    def test_submission_is_saved_unpublished_and_not_shown(self):
+        response = self.client.post('/api/testimonials/submit/', self.ok, format='json')
+        self.assertEqual(response.status_code, 201)
+        review = Testimonial.objects.get()
+        self.assertEqual((review.rating, review.is_published, review.permission_confirmed, review.submitted_by_user), (5, False, True, True))
+        self.assertEqual(self.client.get('/api/testimonials/').json(), [])
+
+    def test_published_review_lists_its_rating(self):
+        self.client.post('/api/testimonials/submit/', self.ok, format='json')
+        Testimonial.objects.update(is_published=True)
+        self.assertEqual(self.client.get('/api/testimonials/').json()[0]['rating'], 5)
+
+    def test_invalid_reviews_are_rejected(self):
+        for bad in ({'rating': 6}, {'rating': 0}, {'text': 'too short'}, {'permission': False}, {'name': ''}):
+            response = self.client.post('/api/testimonials/submit/', {**self.ok, **bad}, format='json')
+            self.assertEqual(response.status_code, 400, bad)
+        self.assertFalse(Testimonial.objects.exists())
+
+    def test_honeypot_submission_is_accepted_but_not_stored(self):
+        response = self.client.post('/api/testimonials/submit/', {**self.ok, 'website': 'spam.example'}, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertFalse(Testimonial.objects.exists())
+
+    def test_submissions_are_rate_limited(self):
+        codes = [self.client.post('/api/testimonials/submit/', self.ok, format='json').status_code for _ in range(6)]
+        self.assertEqual(codes[-1], 429)
 
 
 class OptimizeMediaTests(TestCase):

@@ -15,7 +15,7 @@ import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
 import { HomePathways } from './free-session/HomePathways'
 import './free-session/home.css'
 import './free-session/home-theme.css'
-import { HomeExplore } from './free-session/HomeExplore'
+import { HomeExplore, LogoWall } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
 import { HOME_META, pageSeo } from '../seo/site'
@@ -93,6 +93,7 @@ export function FreeSession() {
       <main id="main">
         <JoinHero />
         <HomePathways />
+        <LogoWall />
 
         <section className="sec videos" id="demo-classes" aria-labelledby="videos-title">
           <div className="v-deco" aria-hidden="true">
