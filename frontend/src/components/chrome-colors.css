@@ -1,0 +1,97 @@
+/* Header/footer colors inspired by innovativeaislabs.com.
+   Keep the existing page layouts, navigation destinations and footer groups. */
+body .site-header {
+  --chrome-ink: #0c1220;
+  --chrome-muted: #3c4560;
+  --chrome-blue: #3b6bff;
+  border-top: 2px solid #3b6bff;
+  border-bottom-color: #e4e9f2;
+  background: #fff;
+  color: var(--chrome-ink);
+  box-shadow: 0 8px 24px -18px #0c122040;
+  backdrop-filter: none;
+}
+body .site-header .sh-brand {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+body .site-header .sh-link,
+body .site-header .sh-login,
+body .site-header #nav .sh-res-button { color: var(--chrome-muted) !important; }
+body .site-header .sh-link:hover,
+body .site-header .sh-login:hover,
+body .site-header #nav .sh-res-button:hover,
+body .site-header .sh-link[aria-current=page],
+body .site-header #nav .sh-res-button[aria-expanded=true] { color: #2450d4 !important; }
+body .site-header .sh-demo {
+  border: 0;
+  border-radius: 999px;
+  background-color: #4675ff;
+  background-image: linear-gradient(90deg, #4675ff, #22d3ee);
+  color: #0c1220;
+  box-shadow: 0 8px 20px -12px #3b6bff80;
+}
+body .site-header .sh-demo:hover { background-color: #5a85ff; background-image: linear-gradient(90deg, #5a85ff, #51def2); }
+body .site-header .sh-toggle { border-color: #cbd5e1; background: #fff; }
+body .site-header .sh-toggle span { background: var(--chrome-ink); }
+body .site-header #nav .sh-res-list { border-color: #e4e9f2 !important; background: #fff !important; box-shadow: 0 12px 30px -18px #0c122040 !important; }
+body .site-header #nav .sh-res-list a { color: var(--chrome-muted) !important; }
+body .site-header #nav .sh-res-list a:hover,
+body .site-header #nav .sh-res-list a[aria-current=page] { background: #edf3ff !important; color: #2450d4 !important; }
+body .site-header :focus-visible { outline-color: #2450d4; }
+body .site-header .sh-account-trigger { border-color: #e4e9f2; background: #fff; color: var(--chrome-ink); }
+body .site-header .sh-account-trigger:hover,
+body .site-header .sh-account-trigger[aria-expanded=true] { border-color: #b6c6e6; background: #edf3ff; }
+body .site-header .sh-account-panel { border-color: #e4e9f2; background: #fff; color: var(--chrome-ink); box-shadow: 0 12px 30px -18px #0c122040; }
+body .site-header .sh-account-identity { border-color: #e4e9f2; }
+body .site-header .sh-account-identity strong { color: var(--chrome-ink); }
+body .site-header .sh-account-identity > span:last-child { color: var(--chrome-muted); }
+body .site-header .sh-account-caption { color: #2450d4; }
+body .site-header .sh-account-panel a,
+body .site-header .sh-account-logout { color: var(--chrome-muted); }
+body .site-header .sh-account-panel a:hover,
+body .site-header .sh-account-logout:hover { background: #edf3ff; color: #2450d4; }
+body .site-header .sh-account-logout { border-color: #e4e9f2; }
+body .site-header .sh-account-loading { background: #e4e9f2; }
+@media (max-width: 1100px) {
+  body .site-header .sh-nav { border-bottom-color: #e4e9f2; background: #fff; }
+  body .site-header #nav .sh-res-list { background: #f4f6fb !important; }
+}
+
+/* Both existing footer variants use the same blue-grey surface and dark bar. */
+#site-footer {
+  --color-muted: #363636;
+  --color-faint: #4b5563;
+  background: #ebf0f7;
+  border-top-color: #dce3ee;
+  color: #363636;
+}
+#site-footer .fx-blob { display: none; }
+#site-footer h2,
+#site-footer .fx-contact strong,
+#site-footer .fx-social-row a { color: #0c1220; }
+#site-footer .fx-col h2::after { background: #0c1220; }
+#site-footer .fx-brand p,
+#site-footer .fx-col > ul > li > a,
+#site-footer .fx-contact a,
+#site-footer .fx-contact li > span:last-child,
+#site-footer .fx-loc-regions a { color: #363636; }
+#site-footer .fx-col > ul > li > a:hover,
+#site-footer .fx-contact a:hover,
+#site-footer .fx-social-row a:hover,
+#site-footer .f-cols a:hover { color: #2450d4; }
+#site-footer .fx-ico { background: #fff; color: #2450d4; }
+#site-footer .fx-locs,
+#site-footer .fx-social-row { border-color: #dce3ee; }
+#site-footer .fx-loc-regions a { background: #fff; border-color: #cbd5e1; }
+#site-footer .fx-bar,
+#site-footer .f-bottom { background: #0b1120; border-color: #1e293b; color: #d1d5db; }
+#site-footer .fx-bar :is(p,a),
+#site-footer .f-bottom a { color: #d1d5db; }
+#site-footer .fx-bar a:hover,
+#site-footer .f-bottom a:hover { color: #67e8f9; }
+#site-footer .f-bottom { padding: 1.5rem; border-radius: 10px; }

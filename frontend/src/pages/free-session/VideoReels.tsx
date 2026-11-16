@@ -29,6 +29,7 @@ export function VideoReels() {
     io.observe(el)
     return () => io.disconnect()
   }, [])
+  const holdRef = useRef(false)
 
   const step = () => {
     const list = listRef.current
@@ -75,9 +76,9 @@ export function VideoReels() {
     const list = listRef.current
     if (!list) return
     const ms = maxScroll()
-    if (dir > 0 && list.scrollLeft >= ms - 4) list.scrollTo({ left: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
-    else if (dir < 0 && list.scrollLeft <= 4) list.scrollTo({ left: ms, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
-    else list.scrollBy({ left: dir * step(), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+    if (dir > 0 && list.scrollLeft >= ms - 4) list.scrollTo({ left: 0, behavior: 'smooth' })
+    else if (dir < 0 && list.scrollLeft <= 4) list.scrollTo({ left: ms, behavior: 'smooth' })
+    else list.scrollBy({ left: dir * step(), behavior: 'smooth' })
   }
 
   function play(i: number) {
@@ -95,12 +96,33 @@ export function VideoReels() {
     setPlayingIndex(i)
   }
 
+  useEffect(() => {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+    const id = setInterval(() => {
+      if (holdRef.current || document.hidden || playingIndex !== null || maxScroll() <= 4) return
+      go(1)
+    }, 3500)
+    return () => clearInterval(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playingIndex])
+
+  const holdOn = () => (holdRef.current = true)
+  const holdOff = () => (holdRef.current = false)
+  const holdOffDelayed = () => setTimeout(() => (holdRef.current = false), 4000)
+
   return (
     <>
       <div
         className="reel-carousel reveal"
         aria-roledescription="carousel"
         aria-label="Demo class videos"
+        onMouseEnter={holdOn}
+        onMouseLeave={holdOff}
+        onFocus={holdOn}
+        onBlur={holdOff}
+        onTouchStart={holdOn}
+        onTouchEnd={holdOffDelayed}
       >
         <button type="button" className="rc-arrow rc-prev" hidden={!scrollable} aria-label="Previous videos" onClick={() => go(-1)}>
           <svg className="ico" aria-hidden="true" style={{ transform: 'scaleX(-1)' }}>
@@ -116,7 +138,6 @@ export function VideoReels() {
                     videoRefs.current[i] = el
                   }}
                   src={`${v.src}#t=0.5`}
-                  poster={near ? v.src.replace('.mp4', '-poster.webp') : undefined}
                   preload={near ? 'metadata' : 'none'}
                   playsInline
                   onEnded={() => setPlayingIndex(null)}
@@ -145,7 +166,7 @@ export function VideoReels() {
               type="button"
               tabIndex={-1}
               className={k === activeDot ? 'on' : ''}
-              onClick={() => listRef.current?.scrollTo({ left: k * step(), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}
+              onClick={() => listRef.current?.scrollTo({ left: k * step(), behavior: 'smooth' })}
             />
           ))}
       </div>

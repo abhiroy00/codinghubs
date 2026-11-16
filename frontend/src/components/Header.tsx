@@ -10,9 +10,16 @@ import { ScrollProgress } from "./ScrollProgress";
 import "./header.css";
 import { useOptionalAuth } from "../lib/auth-context";
 import { AccountMenu } from "./AccountMenu";
+import "./chrome-colors.css";
 
-// Visible navigation: Courses | Free Demo | Resources | About | Contact.
-// Interview Prep, Our Work, AI Tools, Jobs, Tutor, Locations, Blog and Case Studies live in <ResourcesMenu />.
+const LINKS = [
+  ["/courses/", "Courses"],
+  ["/interview-prep/", "Interview Prep"],
+  ["/our-work", "Our Work"],
+  ["/ai-tools", "AI Tools"],
+  ["/latest-jobs/", "Jobs"],
+] as const;
+// Locations, Blog, Case Studies, Projects, Tutor, About the Session and Support live in <ResourcesMenu />.
 
 /** One primary navigation for marketing pages, accounts and learning workspaces. */
 export function Header({ mainId = "main" }: { mainId?: string }) {
@@ -31,7 +38,6 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
 
   useEffect(() => {
     if (!open) return;
-    headerRef.current?.querySelector<HTMLAnchorElement>(".sh-nav > a")?.focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       if (
@@ -109,22 +115,15 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
               if ((event.target as Element).closest("a")) setOpen(false);
             }}
           >
-            <NavLink to="/courses/" className="sh-link">
-              Courses
-            </NavLink>
             <a href="/#demo-classes" className="sh-link">
-              Free Demo
+              Free Demo Classes
             </a>
+            {LINKS.map(([to, label]) => (
+              <NavLink key={to} to={to} className="sh-link">
+                {label}
+              </NavLink>
+            ))}
             <ResourcesMenu />
-            <a href="/#about" className="sh-link">
-              About
-            </a>
-            <a href="/#contact" className="sh-link">
-              Contact
-            </a>
-            <button type="button" className="sh-demo sh-mobile-demo" onClick={() => { toggleRef.current?.focus(); bookDemo(); }}>
-              Book Free Demo
-            </button>
             {!auth?.user && !auth?.loading && (
               <Link to="/login" className="sh-link sh-mobile-login">
                 Log in <span aria-hidden="true">↗</span>
@@ -150,7 +149,7 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
             )}
 
             <button type="button" className="sh-demo" onClick={bookDemo}>
-              Book Free Demo
+              Free Demo
             </button>
             <button
               type="button"

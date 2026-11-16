@@ -46,7 +46,6 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
 
   useEffect(() => {
     onThanksChange?.(!!thanks)
-    if (thanks) document.getElementById(`${idPrefix}thanks`)?.focus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thanks])
 
@@ -74,13 +73,12 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
     const fieldErrors = validateAll()
     if (Object.keys(fieldErrors).length > 0) {
       setStatus({ msg: 'Please correct the highlighted fields.', type: 'error' })
-      document.getElementById(`${idPrefix}f-${Object.keys(fieldErrors)[0]}`)?.focus()
       return
     }
 
     if (company) {
-      // A rejected request must never display a successful registration.
-      setStatus({ msg: 'Your registration was not submitted. Please reload the page and try again.', type: 'error' })
+      // honeypot tripped — silently "succeed" without actually submitting
+      setThanks({ firstName: '', course })
       return
     }
 
@@ -171,7 +169,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
   return (
     <div id={`${idPrefix}formWrap`}>
       <div className="form-head">
-        <h2 id={`${idPrefix}form-title`}>Book Free Demo</h2>
+        <h2 id={`${idPrefix}form-title`}>Reserve your free seat</h2>
         <p>Fill in your details to register for the free live online session.</p>
         <ul className="form-meta" aria-label="Session summary">
           <li>
@@ -294,7 +292,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
         </div>
 
         <button type="submit" className="btn btn-yellow btn-block btn-lg lead-submit" id={`${idPrefix}submitBtn`} disabled={submitting} aria-busy={submitting}>
-          <span className="btn-label">{submitting ? 'Submitting…' : 'Book Free Demo'}</span>
+          <span className="btn-label">{submitting ? 'Submitting…' : 'Reserve My Free Seat'}</span>
           <FsIcon id="i-arrow" />
           {submitting && <span className="spinner" aria-hidden="true"></span>}
         </button>

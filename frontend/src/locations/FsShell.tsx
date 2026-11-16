@@ -4,9 +4,9 @@ import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { useRegisterPopup } from '../lib/register-popup'
 import { FloatingContact } from '../components/FloatingContact'
 import { Header } from '../components/Header'
-import '../components/shared-footer.css'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
+/** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
 /** In-page anchor on the home page, client-side route to it from every other page (no full reload). */
 function HLink({ home, to, children, ...rest }: { home: boolean; to: string; children: React.ReactNode } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>) {
   return home ? <a href={to} {...rest}>{children}</a> : <Link to={to} {...(rest as object)}>{children}</Link>
@@ -54,39 +54,40 @@ export function FsFooter({ home = false }: { home?: boolean }) {
 
   return (
     <>
-    <section className="footer-cta" aria-label="Register for the free demo">
+    <section className="fx-cta-sec" aria-label="Register for the free demo">
       <div className="wrap">
-        <div className="sf-cta">
+        <div className="fx-cta">
           <div>
-            <h2>Find the Right Course for Your Next Step</h2>
-            <p>Join a free 2-hour live demo to explore the course, see a practical demonstration and ask the trainer your questions.</p>
+            <h2>Ready to start learning AI?</h2>
+            <p>Join the free 2-hour live online demo, or talk to a counsellor about the course that fits your goals.</p>
           </div>
-          <div className="sf-cta-btns">
-            <button type="button" className="sf-button sf-button-primary" data-cta="footer" onClick={() => popup.open()}>
-              Book Free Demo <FsIcon id="i-arrow" />
+          <div className="fx-cta-btns">
+            <button type="button" className="btn btn-navy btn-lg" data-cta="footer" onClick={() => popup.open()}>
+              Register Free <FsIcon id="i-arrow" />
             </button>
-            <a href={INSTITUTE.phoneHref} className="sf-button sf-button-secondary">
-              Talk to a Counsellor
+            <a href={INSTITUTE.phoneHref} className="btn btn-ghost btn-lg">
+              Call {INSTITUTE.phone}
             </a>
           </div>
         </div>
       </div>
     </section>
-    <footer className="site-footer">
+    <footer className="ftr fx" id="site-footer">
+      <span className="fx-blob" aria-hidden="true"></span>
       <div className="wrap">
-        <div className="sf-grid">
-          <div className="sf-brand">
-            <Link to="/" className="sf-logo" aria-label="Coding Hubs School of AI home">
+        <div className="fx-grid">
+          <div className="fx-brand">
+            <Link to="/" className="fx-logo" aria-label="Coding Hubs School of AI home">
               <img src={LOGO_WIDE} alt="Coding Hubs School of AI logo" width={720} height={208} loading="lazy" />
             </Link>
             <p>Practical AI &amp; development training for learners across Delhi NCR. Learn live, build real projects, ask your questions.</p>
           </div>
 
-          <nav className="sf-col" aria-label="Quick links">
+          <nav className="fx-col" aria-label="Quick links">
             <h2>Explore</h2>
             <ul>
               <li><a href={home ? '#home' : '/'}>Home</a></li>
-              <li><HLink home={home} to={h('#demo-classes')}>Recorded Demo Videos</HLink></li>
+              <li><HLink home={home} to={h('#demo-classes')}>Free Demo Classes</HLink></li>
               <li><Link to="/courses/">All Courses</Link></li>
               <li><Link to="/locations/">AI Course Locations</Link></li>
               <li><Link to="/blog">Blog</Link></li>
@@ -94,10 +95,6 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><Link to="/our-work">Our Work</Link></li>
               <li><Link to="/ai-tools">AI Tools</Link></li>
               <li><Link to="/projects">Projects</Link></li>
-              <li><Link to="/project-guides">Project Guides</Link></li>
-              <li><Link to="/interview-prep/">Interview Prep</Link></li>
-              <li><Link to="/book-a-tutor/">Book a Tutor</Link></li>
-              <li><Link to="/latest-jobs/">Latest Jobs</Link></li>
               <li><Link to="/learn/">Learning Library</Link></li>
               <li><Link to="/visual-lab/">Visual Lab</Link></li>
               <li><Link to="/faq">FAQ</Link></li>
@@ -106,7 +103,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             </ul>
           </nav>
 
-          <nav className="sf-col" aria-label="Popular courses">
+          <nav className="fx-col" aria-label="Popular courses">
             <h2>Popular Courses</h2>
             <ul>
               {COURSE_NAMES.slice(0, 7).map((c) => (
@@ -117,23 +114,23 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             </ul>
           </nav>
 
-          <div className="sf-col">
+          <div className="fx-col">
             <h2>Get in touch</h2>
-            <ul className="sf-contact">
+            <ul className="fx-contact">
               <li>
-                <span className="sf-ico"><FsIcon id="i-phone" /></span>
+                <span className="fx-ico"><FsIcon id="i-phone" /></span>
                 <a href={INSTITUTE.phoneHref}>{INSTITUTE.phone}</a>
               </li>
               <li>
-                <span className="sf-ico"><FsIcon id="i-mail" /></span>
+                <span className="fx-ico"><FsIcon id="i-mail" /></span>
                 <a href={`mailto:${INSTITUTE.email}`}>{INSTITUTE.email}</a>
               </li>
               <li>
-                <span className="sf-ico"><FsIcon id="i-wa" className="ico ico-fill" /></span>
+                <span className="fx-ico"><FsIcon id="i-wa" className="ico ico-fill" /></span>
                 <a href={waHref} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
               </li>
               <li>
-                <span className="sf-ico"><FsIcon id="i-pin" /></span>
+                <span className="fx-ico"><FsIcon id="i-pin" /></span>
                 <span>
                   <strong>Head Office</strong>
                   <br />
@@ -144,10 +141,9 @@ export function FsFooter({ home = false }: { home?: boolean }) {
           </div>
         </div>
 
-        <div className="sf-locs">
-          <h2>Explore AI courses by location</h2>
-          <p className="sf-location-note">Our head office is in Netaji Subhash Place, Delhi. These guides cover learning options by area; they are not a list of physical campuses.</p>
-          <ul className="sf-loc-regions">
+        <div className="fx-locs">
+          <h2>AI course locations</h2>
+          <ul className="fx-loc-regions">
             {GROUP_ORDER.map((g) => (
               <li key={g}>
                 <Link to={`/locations/?region=${g}`}>
@@ -156,14 +152,14 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               </li>
             ))}
             <li>
-              <Link to="/locations/" className="sf-loc-all">
+              <Link to="/locations/" className="fx-loc-all">
                 View all {LOCATIONS.length} locations
               </Link>
             </li>
           </ul>
         </div>
 
-        <ul className="sf-social-row" aria-label="Social media">
+        <ul className="fx-social-row" aria-label="Social media">
           {socials.map((x) => (
             <li key={x.label}>
               <a href={x.href} target="_blank" rel="noopener noreferrer">
@@ -175,12 +171,12 @@ export function FsFooter({ home = false }: { home?: boolean }) {
         </ul>
       </div>
 
-      <div className="sf-bar">
-        <div className="wrap sf-bottom">
+      <div className="fx-bar">
+        <div className="wrap fx-bottom">
           <p>
             © {new Date().getFullYear()} {INSTITUTE.name}. All rights reserved.
           </p>
-          <p className="sf-credit">
+          <p className="fx-credit">
             Powered and developed by <a href="https://innovativeais.com/" target="_blank" rel="noopener noreferrer">Innovative AI Solutions</a>
           </p>
           <ul>

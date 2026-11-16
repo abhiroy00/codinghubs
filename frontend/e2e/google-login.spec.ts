@@ -154,13 +154,13 @@ test("a failed Google SDK load can be retried without duplicating the sign-in bu
   ).toBeVisible();
 });
 
-test("primary call-to-action buttons preserve readable text contrast", async ({
+test("blue call-to-action buttons preserve readable text contrast", async ({
   page,
 }) => {
   await page.goto("/");
   for (const button of [
     page.locator(".site-header .sh-demo").last(),
-    page.locator(".join-actions .hp-btn-primary"),
+    page.locator(".join-actions .btn-yellow"),
   ]) {
     const ratio = await button.evaluate((element) => {
       const styles = getComputedStyle(element);
