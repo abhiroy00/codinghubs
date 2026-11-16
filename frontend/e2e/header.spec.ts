@@ -31,6 +31,7 @@ test("all site sections share the same header and place Locations inside Resourc
       "Courses",
       "Interview Prep",
       "Our Work",
+      "AI Tools",
       "Jobs",
     ]);
     await expect(primary.locator(':scope > a[href="/locations/"]')).toHaveCount(

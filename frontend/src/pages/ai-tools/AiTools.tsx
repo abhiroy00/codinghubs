@@ -1,0 +1,131 @@
+import { useMemo, useState, type CSSProperties } from 'react'
+import { FS_CSS } from '../../lib/fs-css'
+import { SITE_FONTS } from '../../lib/fonts'
+import { useScopedStylesheet } from '../../hooks/useScopedStylesheet'
+import { FsFooter, FsHeader } from '../../locations/FsShell'
+import { AI_TOOLS, AI_TOOL_CATEGORIES, logoColors, type AiTool, type AiToolCategory } from '../../data/ai-tools'
+import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/site'
+import { useSeo } from '../../seo/useSeo'
+import './ai-tools.css'
+
+export const AI_TOOLS_META: PageMeta = {
+  path: '/ai-tools',
+  title: 'AI Tools to Learn: Assistants, Coding & Data | Coding Hubs',
+  description: 'The AI assistants, coding tools, data platforms and design apps used in Coding Hubs classes and projects, with links to each official site.',
+  image: LOGO_URL,
+  indexable: true,
+  jsonLd: {
+    '@context': 'https://schema.org',
+    '@graph': [
+      organizationNode(),
+      {
+        '@type': 'CollectionPage',
+        name: 'AI Tools',
+        url: 'https://codinghubs.in/ai-tools',
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: AI_TOOLS.map((t, i) => ({ '@type': 'ListItem', position: i + 1, name: t.name, url: t.officialUrl })),
+        },
+      },
+    ],
+  },
+}
+const AI_TOOLS_SEO = pageSeo(AI_TOOLS_META)
+
+/** Rows alternate 4 and 5 cards on wide screens so the grid reads as a staggered wall. */
+function stagger<T>(items: T[]) {
+  const rows: T[][] = []
+  let i = 0
+  let size = 4
+  while (i < items.length) {
+    rows.push(items.slice(i, i + size))
+    i += size
+    size = size === 4 ? 5 : 4
+  }
+  // Avoid a lonely single card on the last row: borrow one from the row above.
+  const last = rows[rows.length - 1]
+  const prev = rows[rows.length - 2]
+  if (last && prev && last.length === 1 && prev.length > 3) last.unshift(prev.pop()!)
+  return rows
+}
+
+function Logo({ tool }: { tool: AiTool }) {
+  const { bg, fg } = logoColors(tool.color)
+  const style = { '--at-bg': bg, '--at-fg': fg } as CSSProperties
+  return (
+    <span className="at-logo" style={style} aria-hidden="true">
+      {tool.icon ? (
+        <span className="at-glyph" style={{ WebkitMaskImage: `url(/assets/ai-tools/${tool.icon}.svg)`, maskImage: `url(/assets/ai-tools/${tool.icon}.svg)` }} />
+      ) : (
+        <span className="at-mono">{tool.monogram}</span>
+      )}
+    </span>
+  )
+}
+
+export function AiTools() {
+  useSeo(AI_TOOLS_SEO)
+  useScopedStylesheet([FS_CSS, SITE_FONTS])
+  const [category, setCategory] = useState<AiToolCategory | ''>('')
+  const shown = useMemo(() => (category ? AI_TOOLS.filter((t) => t.category === category) : AI_TOOLS), [category])
+  const rows = stagger(shown)
+
+  return (
+    <div className="fs-page at-page">
+      <FsHeader />
+      <main id="main">
+        <section className="at-band" aria-labelledby="at-title">
+          <div className="at-stars" aria-hidden="true" />
+          <div className="at-in">
+            <header className="at-head">
+              <h1 id="at-title">
+                <span>Master the Tools Behind</span>
+                <span className="at-accent">AI Tools</span>
+              </h1>
+              <p>Get hands-on with the AI assistants, coding tools, data platforms and design apps we use in class and on real projects.</p>
+            </header>
+
+            <div className="at-chips" role="group" aria-label="Filter tools by category">
+              <button type="button" className={!category ? 'on' : ''} aria-pressed={!category} onClick={() => setCategory('')}>
+                All <span>{AI_TOOLS.length}</span>
+              </button>
+              {AI_TOOL_CATEGORIES.map((c) => (
+                <button key={c} type="button" className={category === c ? 'on' : ''} aria-pressed={category === c} onClick={() => setCategory(category === c ? '' : c)}>
+                  {c} <span>{AI_TOOLS.filter((t) => t.category === c).length}</span>
+                </button>
+              ))}
+            </div>
+            <p className="at-count" role="status" aria-live="polite">
+              Showing {shown.length} {category ? `${category} ` : ''}tool{shown.length === 1 ? '' : 's'}
+            </p>
+
+            <ul className="at-rows" aria-label="Tools">
+              {rows.map((row, r) => (
+                <li key={r} className="at-row">
+                  <ul>
+                    {row.map((t) => (
+                      <li key={t.id}>
+                        <a className="at-card" href={t.officialUrl} target="_blank" rel="noopener noreferrer">
+                          <Logo tool={t} />
+                          <span className="at-text">
+                            <strong>{t.name}</strong>
+                            <span>{t.description}</span>
+                          </span>
+                          <span className="sr-only"> (opens the official site in a new tab)</span>
+                          <span className="at-go" aria-hidden="true">↗</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+
+            <p className="at-note">Each card opens the tool’s official website. Plans and pricing are set by each provider. Logos and names are trademarks of their owners.</p>
+          </div>
+        </section>
+      </main>
+      <FsFooter />
+    </div>
+  )
+}

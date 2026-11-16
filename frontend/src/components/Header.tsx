@@ -15,6 +15,7 @@ const LINKS = [
   ["/courses/", "Courses"],
   ["/interview-prep/", "Interview Prep"],
   ["/our-work", "Our Work"],
+  ["/ai-tools", "AI Tools"],
   ["/latest-jobs/", "Jobs"],
 ] as const;
 // Locations, Blog, Case Studies, Projects, Tutor, About the Session and Support live in <ResourcesMenu />.

@@ -23,6 +23,8 @@ const manifest = JSON.parse(await readFile(path.join(dist, '.vite/manifest.json'
 const studioCss = manifest['src/studio/Studio.tsx']?.css ?? []
 const ourWorkCss = manifest['src/pages/our-work/OurWork.tsx']?.css ?? []
 if (!ourWorkCss.length) throw new Error('Missing Our Work styles in build manifest')
+const aiToolsCss = manifest['src/pages/ai-tools/AiTools.tsx']?.css ?? []
+if (!aiToolsCss.length) throw new Error('Missing AI Tools styles in build manifest')
 // Directory SSR uses the existing page styles before the React chunks load.
 const directoryAssets = new Set()
 const directoryStyles = new Set()
@@ -80,6 +82,9 @@ function buildHead(page) {
   if (page.jsonLd) tags.push(`<script type="application/ld+json">${JSON.stringify(page.jsonLd).replace(/</g, '\\u003c')}</script>`)
   if (page.path?.startsWith('/interview-prep/')) {
     for (const file of learningStyles) tags.push(`<link rel="stylesheet" href="/assets/${file}" />`)
+  }
+  if (page.path === '/ai-tools') {
+    for (const file of aiToolsCss) tags.push(`<link rel="stylesheet" href="/${file}" />`)
   }
   if (page.path === '/our-work') {
     for (const file of ourWorkCss) tags.push(`<link rel="stylesheet" href="/${file}" />`)

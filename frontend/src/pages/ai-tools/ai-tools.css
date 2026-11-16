@@ -1,0 +1,145 @@
+/* /ai-tools: deep-navy band with a static star field, centred heading and a staggered wall of tool cards. */
+.at-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(3rem, 7vw, 5.5rem) clamp(16px, 3vw, 48px) clamp(3.5rem, 8vw, 6rem);
+  background: radial-gradient(120% 70% at 50% 0%, #10224a 0%, #070d1f 55%, #050913 100%);
+  color: #e7ecf6;
+}
+.at-stars {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 72% 12%, #cfe0ff 50%, transparent 51%),
+    radial-gradient(1.4px 1.4px at 38% 64%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 52%, #fff 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 22% 86%, #cfe0ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 60% 36%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 94% 88%, #cfe0ff 50%, transparent 51%),
+    radial-gradient(1.3px 1.3px at 50% 94%, #fff 50%, transparent 51%);
+  background-size: 420px 420px;
+}
+.at-in { max-width: 1720px; margin: 0 auto; }
+
+.at-head { max-width: 58rem; margin: 0 auto; text-align: center; }
+.at-head h1 { margin: 0; color: #fff; font: 700 clamp(2rem, 1.4rem + 2.6vw, 3.4rem)/1.12 var(--f-head); letter-spacing: -0.025em; }
+.at-head h1 span { display: block; }
+.at-head .at-accent {
+  margin-top: 0.15rem;
+  font-size: clamp(2.6rem, 1.6rem + 4.6vw, 5.2rem);
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  color: #34e3c4;
+  background: linear-gradient(90deg, #2ee6a8 0%, #22d3ee 55%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.at-head p { max-width: 46rem; margin: 1.1rem auto 0; color: #c3cde0; font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); line-height: 1.6; }
+
+.at-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 2.2rem 0 0.8rem; }
+.at-chips button {
+  min-height: 40px; padding: 0.45rem 1rem; border: 1px solid rgba(148, 170, 214, 0.35); border-radius: 999px;
+  background: rgba(13, 24, 52, 0.6); color: #d6deee; font: 500 0.9rem var(--f-body); cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.at-chips button span { margin-left: 0.2rem; color: #8ea0c3; font-size: 0.8rem; }
+.at-chips button:hover { border-color: #60a5fa; color: #fff; }
+.at-chips button.on { border-color: #2ee6a8; background: #2ee6a8; color: #04121f; font-weight: 600; }
+.at-chips button.on span { color: #0b3b33; }
+.at-count { margin: 0 0 2rem; color: #8ea0c3; font-size: 0.88rem; text-align: center; }
+
+/* staggered rows: rows of 4 and 5, centred, on wide screens; a regular grid below that */
+.at-rows, .at-row > ul { margin: 0; padding: 0; list-style: none; }
+.at-rows { display: grid; gap: 1.1rem; }
+.at-row > ul { display: flex; justify-content: center; gap: 1.1rem; }
+.at-row > ul > li { flex: 0 1 360px; min-width: 0; }
+@media (max-width: 1279px) {
+  .at-rows { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); max-width: 1200px; margin-inline: auto; }
+  .at-row, .at-row > ul { display: contents; }
+}
+@media (max-width: 420px) { .at-rows { grid-template-columns: 1fr; } }
+
+.at-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  height: 100%;
+  min-height: 112px;
+  padding: 1.15rem 1.3rem;
+  border: 1px solid rgba(120, 146, 196, 0.22);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(14, 25, 54, 0.92), rgba(9, 17, 38, 0.92));
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+.at-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #2ee6a8, #22d3ee 45%, #3b82f6);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+.at-card:hover,
+.at-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: transparent;
+  background: linear-gradient(180deg, rgba(20, 36, 76, 0.96), rgba(12, 23, 50, 0.96));
+  box-shadow: 0 18px 40px -18px rgba(34, 211, 238, 0.45), 0 0 0 1px rgba(59, 130, 246, 0.15);
+}
+.at-card:hover::before,
+.at-card:focus-visible::before { opacity: 1; }
+.at-card:focus-visible { outline: 3px solid #60a5fa; outline-offset: 3px; }
+
+.at-logo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  background: var(--at-bg);
+  color: var(--at-fg);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.at-card:hover .at-logo, .at-card:focus-visible .at-logo { transform: scale(1.08) rotate(-3deg); }
+.at-glyph {
+  width: 30px;
+  height: 30px;
+  background: var(--at-fg);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+}
+.at-mono { font: 700 1.05rem/1 var(--f-head); letter-spacing: -0.02em; }
+
+.at-text { display: grid; gap: 0.25rem; min-width: 0; }
+.at-text strong { color: #fff; font: 500 1.2rem/1.25 var(--f-head); }
+.at-text > span { color: #a9b6cf; font-size: 0.92rem; line-height: 1.45; }
+.at-go {
+  position: absolute; top: 0.7rem; right: 0.85rem; color: #8ea0c3; font-size: 0.9rem;
+  opacity: 0; transform: translate(-4px, 4px); transition: opacity 0.2s, transform 0.25s;
+}
+.at-card:hover .at-go, .at-card:focus-visible .at-go { opacity: 1; transform: none; color: #2ee6a8; }
+
+.at-note { margin: 2.4rem auto 0; max-width: 46rem; color: #8ea0c3; font-size: 0.86rem; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .at-card, .at-card::before, .at-logo, .at-go, .at-chips button { transition: none; }
+  .at-card:hover, .at-card:focus-visible { transform: none; }
+  .at-card:hover .at-logo, .at-card:focus-visible .at-logo { transform: none; }
+}
