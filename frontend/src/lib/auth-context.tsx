@@ -10,6 +10,8 @@ interface AuthContextValue {
   loginWithGoogle: (credential: string, password?: string) => Promise<void>
   register: (payload: RegisterPayload) => Promise<void>
   logout: () => Promise<void>
+  /** Replace the signed-in user after the server confirms a profile update. */
+  updateUser: (next: User) => void
 }
 const AuthContext = createContext<AuthContextValue | null>(null)
 const PENDING_LOGOUT = 'ch_pending_logout'
@@ -95,7 +97,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // If offline, retry server revocation on reconnect/before the next sign-in.
     await finishLogout().catch(() => undefined)
   }
-  return <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, register, logout }}>{children}</AuthContext.Provider>
+  function updateUser(next: User) {
+    localStorage.setItem('ch_user', JSON.stringify(next))
+    setUser(next)
+  }
+  return <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, register, logout, updateUser }}>{children}</AuthContext.Provider>
 }
 
 export const useOptionalAuth = () => useContext(AuthContext)

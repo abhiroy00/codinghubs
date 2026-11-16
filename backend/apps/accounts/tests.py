@@ -142,6 +142,28 @@ class AccountDataTests(TestCase):
         self.assertEqual(deleted.status_code, 204)
         self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
 
+    def test_profile_update_changes_only_editable_fields(self):
+        response = self.client.patch('/api/auth/me/', {
+            'first_name': ' Asha ', 'last_name': 'Sharma', 'phone': '+91 98765 43210',
+            'email': 'hijack@example.com', 'username': 'someone-else',
+        }, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual((self.user.first_name, self.user.last_name, self.user.phone), ('Asha', 'Sharma', '+91 98765 43210'))
+        self.assertEqual((self.user.email, self.user.username), ('owner@example.com', 'owner'))
+        self.assertEqual(response.data['first_name'], 'Asha')
+
+    def test_profile_update_rejects_an_invalid_phone(self):
+        response = self.client.patch('/api/auth/me/', {'phone': 'call me maybe'}, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('phone', response.data)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.phone, '')
+
+    def test_profile_update_requires_authentication(self):
+        self.client.force_authenticate(None)
+        self.assertEqual(self.client.patch('/api/auth/me/', {'first_name': 'X'}, format='json').status_code, 401)
+
     def test_course_payment_orders_are_kept_without_the_account_link(self):
         from apps.courses.models import Course, CourseCategory
         from apps.payments.models import Order

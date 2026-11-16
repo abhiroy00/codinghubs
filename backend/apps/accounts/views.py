@@ -22,7 +22,7 @@ from .sessions import browser_request, login_response, restore_session, end_sess
 
 from .emails import send_password_reset
 from .google import GoogleTokenError, GoogleUnavailableError, verify_google_token
-from .serializers import RegisterSerializer, UserSerializer
+from .serializers import ProfileUpdateSerializer, RegisterSerializer, UserSerializer
 from .tokens import revoke_all_tokens
 
 User = get_user_model()
@@ -66,6 +66,12 @@ class MeView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
+        return Response(UserSerializer(request.user).data)
+
+    def patch(self, request):
+        serializer = ProfileUpdateSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(UserSerializer(request.user).data)
 
 

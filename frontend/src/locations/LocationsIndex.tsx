@@ -6,7 +6,8 @@ import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { INSTITUTE } from '../pages/free-session/data'
 import { FsIcon } from '../pages/free-session/icons'
 import { EnquiryForm } from './EnquiryForm'
-import { FsFooter, FsHeader } from './FsShell'
+import { FsHeader } from './FsShell'
+import { SiteFooter } from '../components/SiteFooter'
 import { Marquee } from './Marquee'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
 import { INDEX_TITLE, INDEX_DESCRIPTION, indexJsonLd } from './seo'
@@ -189,7 +190,7 @@ export function LocationsIndex() {
           </div>
         </section>
       </main>
-      <FsFooter />
+      <SiteFooter />
     </div>
   )
 }

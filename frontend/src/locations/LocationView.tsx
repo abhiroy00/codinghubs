@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { FsIcon } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { EnquiryForm } from './EnquiryForm'
-import { FsFooter, FsHeader } from './FsShell'
+import { FsHeader } from './FsShell'
+import { SiteFooter } from '../components/SiteFooter'
 import { LocationFx } from './LocationFx'
 import { Marquee } from './Marquee'
 import { COURSE_NAMES, GROUP_LABELS, HEAD_OFFICE, LOCATIONS, getLocation, locationPath } from './registry'
@@ -272,7 +273,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
         <a href="#enquire" className="btn btn-yellow btn-sm">Request Course Details</a>
         <a href={waHref} className="btn btn-wa btn-sm" target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </div>
-      <FsFooter />
+      <SiteFooter />
     </div>
   )
 }

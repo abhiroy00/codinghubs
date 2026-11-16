@@ -94,6 +94,7 @@ export function App() {
               <Route path="project-guides" element={<GuidesPage />} />
               <Route path="project-guides/:slug" element={<GuidePage />} />
               <Route path="my-account" element={<MyAccount />} />
+              <Route element={<ProtectedRoute />}><Route path="dashboard" element={<Dashboard />} /></Route>
               <Route path="faq" element={<LearnFrame trail={[{ label: 'FAQ' }]}><Faq /></LearnFrame>} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
@@ -122,9 +123,6 @@ export function App() {
                 <Route path="forgot-password" element={<ForgotPassword />} />
                 <Route path="reset-password" element={<ResetPassword />} />
                 <Route path="enroll/:slug" element={<CourseCheckout />} />
-                <Route element={<ProtectedRoute />}>
-                  <Route path="dashboard" element={<Dashboard />} />
-                </Route>
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

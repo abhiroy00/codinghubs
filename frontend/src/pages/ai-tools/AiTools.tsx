@@ -2,7 +2,8 @@ import { useMemo, useState, type CSSProperties } from 'react'
 import { FS_CSS } from '../../lib/fs-css'
 import { SITE_FONTS } from '../../lib/fonts'
 import { useScopedStylesheet } from '../../hooks/useScopedStylesheet'
-import { FsFooter, FsHeader } from '../../locations/FsShell'
+import { FsHeader } from '../../locations/FsShell'
+import { SiteFooter } from '../../components/SiteFooter'
 import { AI_TOOLS, AI_TOOL_CATEGORIES, logoColors, type AiTool, type AiToolCategory } from '../../data/ai-tools'
 import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/site'
 import { useSeo } from '../../seo/useSeo'
@@ -125,7 +126,7 @@ export function AiTools() {
           </div>
         </section>
       </main>
-      <FsFooter />
+      <SiteFooter />
     </div>
   )
 }

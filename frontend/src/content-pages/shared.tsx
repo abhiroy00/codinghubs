@@ -3,7 +3,8 @@ import { SITE_FONTS } from '../lib/fonts'
 import { Link } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
-import { FsFooter, FsHeader } from '../locations/FsShell'
+import { FsHeader } from '../locations/FsShell'
+import { SiteFooter } from '../components/SiteFooter'
 import { fmtDate, type Card } from './api'
 
 export function SearchIcon() {
@@ -23,7 +24,7 @@ export function PageFrame({ children, wide = false, reading = false }: { childre
       <main id="main" className={reading ? 'bl-main bl-reading-main' : `wrap bl-main${wide ? ' bl-wide-main' : ''}`}>
         {children}
       </main>
-      <FsFooter />
+      <SiteFooter />
     </div>
   )
 }
