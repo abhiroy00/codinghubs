@@ -52,7 +52,7 @@ export function LocationsIndex() {
     <div className="fs-page">
       <FsHeader />
       <main id="main">
-        <section className="lx-hero hv-host" aria-labelledby="idx-title"><HeroVideo />
+        <section className="lx-hero hv-host" aria-labelledby="idx-title"><HeroVideo clip="locations" />
           <span className="lx-blob lx-b1" aria-hidden="true"></span>
           <span className="lx-blob lx-b2" aria-hidden="true"></span>
           <span className="lx-blob lx-b3" aria-hidden="true"></span>

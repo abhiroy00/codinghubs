@@ -41,7 +41,7 @@ export function Faq() {
   useSeo(FAQ_SEO)
   return (
     <div className="learn-shell">
-      <section className="learn-hero hv-host" aria-labelledby="faq-heading"><HeroVideo />
+      <section className="learn-hero hv-host" aria-labelledby="faq-heading"><HeroVideo clip="faq" />
         <p className="learn-kicker">FAQ</p>
         <h1 id="faq-heading">Everything you need to know.</h1>
         <p>Can’t find your answer? Talk to an expert — we will call you back.</p>

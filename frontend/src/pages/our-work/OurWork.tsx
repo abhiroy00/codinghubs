@@ -181,7 +181,7 @@ export function OurWork() {
 
   return (
     <PageFrame wide>
-      <section className="ow-hero hv-host"><HeroVideo />
+      <section className="ow-hero hv-host"><HeroVideo clip="our-work" />
         <p className="ow-eyebrow">Our Work</p>
         <h1>Projects built, shipped and <span>working in the real world</span></h1>
         <p className="ow-lead">AI applications, business platforms, online stores and websites. Open a project to see it live.</p>

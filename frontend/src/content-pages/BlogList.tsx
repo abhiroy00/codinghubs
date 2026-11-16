@@ -72,7 +72,7 @@ export function BlogList() {
 
   return (
     <PageFrame wide>
-      <section className="bl-hero hv-host"><HeroVideo />
+      <section className="bl-hero hv-host"><HeroVideo clip="blog" />
         <span className="bl-blob b1" aria-hidden="true" />
         <span className="bl-blob b2" aria-hidden="true" />
         <span className="bl-grid-bg" aria-hidden="true" />

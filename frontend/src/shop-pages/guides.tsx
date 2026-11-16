@@ -110,7 +110,7 @@ export function GuidesPage() {
 
   return (
     <PageFrame wide>
-      <section className="pj-hero gd-hero hv-host"><HeroVideo />
+      <section className="pj-hero gd-hero hv-host"><HeroVideo clip="project-guides" />
         <span className="pj-blob b1" aria-hidden="true" /><span className="pj-blob b2" aria-hidden="true" /><span className="pj-grid-bg" aria-hidden="true" />
         <div className="pj-hero-in">
           <p className="pj-eyebrow">Step by step</p>

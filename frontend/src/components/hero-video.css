@@ -1,6 +1,6 @@
 /* Background video for page heroes (HeroVideo.tsx).
    Usage: give the hero element the `hv-host` class and render <HeroVideo /> as its first child.
-   Clip source and license: public/assets/hero/video/SOURCE.md */
+   Clip sources and licenses: public/assets/hero/video/SOURCE.md */
 
 /* ---------- layers (shared by every hero) ---------- */
 .hv-host {
@@ -64,8 +64,12 @@
 .hv-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .hv-toggle svg { width: 16px; height: 16px; fill: currentColor; }
 
+/* Page clips (HeroVideo clip="...") pass their own posters; the home hero keeps the defaults above. */
+.hv-bg[style] { background-image: var(--hv-poster); }
+
 @media (max-width: 767px) {
   .hv-bg { background-image: url("/assets/hero/video/team-coding-review-poster-768.webp"); }
+  .hv-bg[style] { background-image: var(--hv-poster-sm); }
 }
 @media (prefers-reduced-motion: reduce) {
   .hv-video { transition: none; }
@@ -141,7 +145,12 @@
 /* Learning library (/learn). The illustration panel keeps its own light card; the control moves to the
    bottom corner so it does not sit on that card. */
 .hv-host.academy-hero > .hv-toggle { top: auto; bottom: clamp(0.75rem, 2vw, 1.25rem); }
-.hv-host.hv-host.hv-host.academy-hero { padding: clamp(1.25rem, 3vw, 2.5rem) !important; border-radius: 20px !important; }
+.hv-host.hv-host.hv-host.academy-hero {
+  /* Full width (out of the learning frame's column); the content stays in that column. */
+  max-width: none !important;
+  margin-inline: calc(50% - 50vw) !important;
+  padding-inline: calc(50vw - 50% + clamp(1.25rem, 3vw, 2.5rem)) !important;
+}
 .hv-host.hv-host.hv-host.academy-hero h1 { color: var(--hv-ink) !important; }
 .hv-host.hv-host.hv-host.academy-hero h1 em { color: var(--hv-accent) !important; }
 .hv-host.hv-host.hv-host.academy-hero :is(.academy-eyebrow, .academy-lead, .academy-principles, .academy-principles span) { color: var(--hv-text) !important; }
@@ -152,3 +161,16 @@
 .hv-host.hv-host.hv-host.bl-reader-hero h1 { color: var(--hv-ink) !important; }
 .hv-host.hv-host.hv-host.bl-reader-hero :is(.bl-deck, .bl-meta, .bl-meta span, .bl-meta time) { color: var(--hv-text) !important; }
 .hv-host.hv-host.hv-host.bl-reader-hero .bl-cat a { color: var(--hv-accent) !important; }
+
+/* ---------- full-width banners ---------- */
+/* Card heroes break out of the page container to the screen edges (html/body use overflow-x: clip in
+   free-session.css, so this never adds a horizontal scrollbar). Padding keeps the content in its
+   original column: in both margin and padding, % is the container's width. */
+.hv-host.hv-host.hv-host:is(.csx-hero, .learn-hero, .bl-hero, .pj-hero, .ow-hero) {
+  width: auto !important;
+  max-width: none !important;
+  margin-inline: calc(50% - 50vw) !important;
+  padding-inline: calc(50vw - 50% + clamp(1.25rem, 3vw, 2.5rem)) !important;
+  border-inline: 0 !important;
+  border-radius: 0 !important;
+}

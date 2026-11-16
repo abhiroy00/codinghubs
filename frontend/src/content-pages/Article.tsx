@@ -92,7 +92,7 @@ export function BlogDetail() {
       <ReadProgress />
       <article className="bl-reader">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <header className="bl-reader-hero hv-host"><HeroVideo />
+        <header className="bl-reader-hero hv-host"><HeroVideo clip="blog-article" />
           <div className="bl-reader-hero-in">
             {a.category && (
               <p className="bl-cat">

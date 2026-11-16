@@ -13,7 +13,7 @@ export function Policies() {
 
   return (
     <div ref={ref}>
-      <section className="page-hero hv-host" aria-labelledby="policies-heading"><HeroVideo />
+      <section className="page-hero hv-host" aria-labelledby="policies-heading"><HeroVideo clip="policies" />
         <div className="container-x">
           <div className="narrow center">
             <p className="eyebrow rv">Legal</p>

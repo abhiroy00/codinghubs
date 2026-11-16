@@ -158,7 +158,7 @@ export function BookTutor() {
           </section>
         ) : (
           <>
-        <section className="tutors-hero hv-host"><HeroVideo />
+        <section className="tutors-hero hv-host"><HeroVideo clip="book-a-tutor" />
           <div className="container-x tutors-hero-inner">
             <nav className="tutor-breadcrumbs" aria-label="Breadcrumb">
               <Link to="/">Home</Link><span aria-hidden="true">/</span><span aria-current="page">Book a Tutor</span>

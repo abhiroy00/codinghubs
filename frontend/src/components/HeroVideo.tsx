@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import './hero-video.css'
 
 /**
  * Decorative background video for page heroes. The host element gets the `hv-host` class (see hero-video.css).
- * Source and license: public/assets/hero/video/SOURCE.md (Pexels #8632602, Pexels License).
+ * Sources and licenses: public/assets/hero/video/SOURCE.md (Pexels clips, Pexels License).
+ *
+ * Without `clip` it plays the home page clip (720p/540p by screen width). With `clip` it plays that page's
+ * own 720p clip from /assets/hero/video/pages/<clip>.mp4 and uses that clip's posters.
  *
  * The server render and first client paint show only the static poster. The video is added after
  * hydration when the viewer has a tablet or larger screen, has not asked for reduced motion and is not
@@ -11,6 +14,13 @@ import './hero-video.css'
  */
 const BASE = '/assets/hero/video/team-coding-review'
 const POSTER = `${BASE}-poster-1280.webp`
+const PAGE_BASE = '/assets/hero/video/pages'
+
+/** One clip per page type; files live in public/assets/hero/video/pages/. */
+export type HeroClip =
+  | 'courses' | 'course-detail' | 'interview-prep' | 'interview-prep-detail' | 'faq' | 'ai' | 'ai-tools'
+  | 'blog' | 'blog-article' | 'projects' | 'project-guides' | 'book-a-tutor' | 'latest-jobs' | 'our-work'
+  | 'learn' | 'locations' | 'location-detail' | 'policies'
 const VIDEO_MIN_WIDTH = 768
 const HD_MIN_WIDTH = 1100
 
@@ -21,7 +31,15 @@ function saverOn() {
   return Boolean(c && (c.saveData || /(^|-)2g$/.test(c.effectiveType ?? '')))
 }
 
-export function HeroVideo() {
+export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
+  const poster = clip ? `${PAGE_BASE}/${clip}-poster-1280.webp` : POSTER
+  // The still background (phones, reduced motion, data saver, before the video starts) is set in CSS from these.
+  const stillStyle = clip
+    ? ({
+        '--hv-poster': `url("${PAGE_BASE}/${clip}-poster-1280.webp")`,
+        '--hv-poster-sm': `url("${PAGE_BASE}/${clip}-poster-768.webp")`,
+      } as CSSProperties)
+    : undefined
   const videoRef = useRef<HTMLVideoElement>(null)
   const [src, setSrc] = useState<string | null>(null)
   const [playing, setPlaying] = useState(false)
@@ -38,6 +56,8 @@ export function HeroVideo() {
       setSrc((current) => {
         if (!allowed) return null
         // Keep the first chosen size so a resize never restarts the download.
+        // Page clips come in one size. The home clip keeps its first chosen size so a resize never restarts the download.
+        if (clip) return `${PAGE_BASE}/${clip}.mp4`
         return current ?? `${BASE}-${window.innerWidth >= HD_MIN_WIDTH ? '720p' : '540p'}.mp4`
       })
     }
@@ -48,7 +68,7 @@ export function HeroVideo() {
       reduce.removeEventListener('change', sync)
       wide.removeEventListener('change', sync)
     }
-  }, [])
+  }, [clip])
 
   // Pause while the hero is scrolled away or the tab is hidden, to save CPU and battery.
   useEffect(() => {
@@ -99,16 +119,16 @@ export function HeroVideo() {
   }
 
   if (!src || failed) {
-    return <div className="hv-bg" aria-hidden="true" />
+    return <div className="hv-bg" style={stillStyle} aria-hidden="true" />
   }
 
   return (
     <>
-      <div className={`hv-bg${playing ? ' is-playing' : ''}`} aria-hidden="true">
+      <div className={`hv-bg${playing ? ' is-playing' : ''}`} style={stillStyle} aria-hidden="true">
         <video
           ref={videoRef}
           className="hv-video"
-          poster={POSTER}
+          poster={poster}
           autoPlay
           muted
           loop

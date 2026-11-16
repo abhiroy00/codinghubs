@@ -64,7 +64,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
       <LocationFx />
       <FsHeader />
       <main id="main">
-        <section className="loc-hero hv-host" aria-labelledby="loc-title"><HeroVideo />
+        <section className="loc-hero hv-host" aria-labelledby="loc-title"><HeroVideo clip="location-detail" />
           <div className="wrap loc-hero-in">
             <p className="eyebrow eyebrow-light">AI training · Delhi NCR</p>
             <h1 id="loc-title">

@@ -143,7 +143,7 @@ function JobListing() {
 
   return (
     <>
-      <section className="tutors-hero hv-host"><HeroVideo />
+      <section className="tutors-hero hv-host"><HeroVideo clip="latest-jobs" />
         <div className="container-x tutors-hero-inner">
           <p className="eyebrow">CAREER OPPORTUNITIES</p>
           <h1 className="display-lg">Latest <span>Jobs</span></h1>

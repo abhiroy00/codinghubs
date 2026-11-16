@@ -155,7 +155,7 @@ export function ProjectsPage() {
 
   return (
     <PageFrame wide>
-      <section className="pj-hero hv-host"><HeroVideo />
+      <section className="pj-hero hv-host"><HeroVideo clip="projects" />
         <span className="pj-blob b1" aria-hidden="true" /><span className="pj-blob b2" aria-hidden="true" /><span className="pj-grid-bg" aria-hidden="true" />
         <div className="pj-hero-in">
           <p className="pj-eyebrow">Learn by building</p>

@@ -26,7 +26,7 @@ function Arrow() {
 /** Hero: spaced kicker, two-line headline over a slow-moving aurora, CTAs and a highlight strip. */
 export function CoursesHero() {
   return (
-    <header className="csx-hero hv-host"><HeroVideo />
+    <header className="csx-hero hv-host"><HeroVideo clip="courses" />
       <div className="csx-aurora" aria-hidden="true"><span className="a1" /><span className="a2" /><span className="a3" /></div>
       <p className="csx-kicker">Introducing</p>
       <h1>

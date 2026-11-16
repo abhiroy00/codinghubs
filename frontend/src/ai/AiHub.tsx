@@ -10,7 +10,7 @@ export function AiHub() {
   return (
     <LearnFrame>
       <div className="learn-shell ai-shell">
-        <header className="learn-hero hv-host"><HeroVideo />
+        <header className="learn-hero hv-host"><HeroVideo clip="ai" />
           <p className="learn-kicker">AI INTERVIEW COACH</p>
           <h1>Practise, get feedback, get interview ready</h1>
           <p>Four AI tools that work alongside the 30-day roadmaps. Feedback is a guide: it can be wrong, and it never guarantees a job.</p>
