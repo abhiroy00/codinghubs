@@ -246,3 +246,19 @@ test("Store and My Orders are removed from the menu, profile and old routes", as
     await expect(page.locator(".sh-account-trigger")).toBeVisible();
   }
 });
+
+test("signed-in mobile header fits and keeps demo registration in the menu", async ({ page }) => {
+  for (const width of [360, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto('/');
+    await expect(page.locator('.sh-account-trigger')).toBeVisible();
+    const header = page.locator('.site-header');
+    const toggle = header.getByRole('button', { name: 'Open menu' });
+    const box = (await toggle.boundingBox())!;
+    expect(box.x + box.width).toBeLessThanOrEqual(width);
+    await toggle.click();
+    await header.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Book Free Demo' }).click();
+    await expect(page.getByRole('dialog', { name: 'Free demo registration' })).toBeVisible();
+    await page.keyboard.press('Escape');
+  }
+});

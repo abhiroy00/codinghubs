@@ -3,7 +3,7 @@ import { AI_TOOLS, logoColors } from '../../data/ai-tools'
 import { COURSE_OPTIONS } from './data'
 
 /** Small public GET/POST without pulling the HTTP client into the home page bundle. */
-const getJson = (path: string) => fetch(`/api${path}`, { headers: { Accept: 'application/json' } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+const getJson = (path: string, signal?: AbortSignal) => fetch(`/api${path}`, { signal, headers: { Accept: 'application/json' } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
 
 /* ------------------------------------------------------------------ moving logo wall */
 
@@ -117,7 +117,7 @@ function ReviewForm() {
 
   return (
     <form className="rv-form" onSubmit={submit} noValidate aria-labelledby={`${id}-t`}>
-      <h3 id={`${id}-t`}>Share your experience</h3>
+      <h3 id={`${id}-t`}>Write a Review</h3>
       <p className="rv-form-sub">Took a demo class or a course with us? Tell other learners how it went.</p>
 
       <fieldset className="rv-rate">
@@ -173,27 +173,43 @@ function ReviewForm() {
 /** Published reviews (with permission) plus a form for learners to send a new one. */
 function Reviews() {
   const [rows, setRows] = useState<Review[] | null>(null)
+  const [failed, setFailed] = useState(false)
+  const [attempt, setAttempt] = useState(0)
   useEffect(() => {
     let live = true
-    getJson('/testimonials/').then((d) => live && setRows(Array.isArray(d) ? d : [])).catch(() => live && setRows([]))
-    return () => { live = false }
-  }, [])
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 12_000)
+    getJson('/testimonials/', controller.signal)
+      .then((data) => {
+        if (!Array.isArray(data)) throw new Error('Invalid reviews response')
+        if (live) setRows(data)
+      })
+      .catch(() => { if (live) setFailed(true) })
+      .finally(() => clearTimeout(timeout))
+    return () => { live = false; clearTimeout(timeout); controller.abort() }
+  }, [attempt])
   const rated = (rows ?? []).filter((r) => r.rating)
   const avg = rated.length ? rated.reduce((s, r) => s + (r.rating || 0), 0) / rated.length : 0
 
   return (
-    <section className="sec rvw" id="reviews" aria-labelledby="reviews-title">
-      <div className="wrap">
-        <div className="sec-head center reveal">
-          <p className="eyebrow">Reviews &amp; testimonials</p>
-          <h2 id="reviews-title" className="h2">What our <span className="marker">learners</span> say</h2>
+    <section className="hp-sec hp-alt rvw" id="reviews" aria-labelledby="reviews-title">
+      <div className="hp-wrap">
+        <div className="hp-head reveal">
+          <p className="hp-eyebrow">Reviews &amp; testimonials</p>
+          <h2 id="reviews-title">Learner Experiences</h2>
           {rated.length > 0 && (
             <p className="rv-summary"><Stars value={Math.round(avg)} label={`Average ${avg.toFixed(1)} out of 5`} /> <strong>{avg.toFixed(1)}</strong> from {rated.length} review{rated.length === 1 ? '' : 's'}</p>
           )}
         </div>
         <div className="rv-grid">
           <div className="rv-list">
-            {rows === null ? (
+            {failed ? (
+              <div className="rv-empty" role="status">
+                <h3>Reviews are unavailable</h3>
+                <p>Could not load learner reviews. Please try again.</p>
+                <button type="button" className="hp-btn hp-btn-secondary" onClick={() => { setRows(null); setFailed(false); setAttempt((n) => n + 1) }}>Try loading reviews again</button>
+              </div>
+            ) : rows === null ? (
               <p className="rv-muted" role="status">Loading reviews…</p>
             ) : rows.length ? (
               <ul>
@@ -211,7 +227,6 @@ function Reviews() {
               </ul>
             ) : (
               <div className="rv-empty">
-                <span aria-hidden="true">★★★★★</span>
                 <h3>Be the first to leave a review</h3>
                 <p>Reviews from our learners will appear here once they are checked and approved.</p>
               </div>

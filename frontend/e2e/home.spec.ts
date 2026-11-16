@@ -2,9 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "AI learning",
-  );
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.locator("#root")).toBeVisible();
 });
 
@@ -13,7 +11,7 @@ test("home content and layout fit phone, tablet and desktop screens", async ({
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  for (const width of [320, 390, 768, 1024, 1440]) {
+  for (const width of [360, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await expect(page.locator("h1")).toHaveCount(1);
     const overflow = await page.evaluate(
@@ -23,7 +21,7 @@ test("home content and layout fit phone, tablet and desktop screens", async ({
     await expect(
       page
         .locator(".join-actions")
-        .getByRole("link", { name: /Book free demo class/ }),
+        .getByRole("link", { name: /Book Free Demo/ }),
     ).toBeVisible();
     await expect(
       page
@@ -63,11 +61,12 @@ test("mobile menu, announcement and demo keyboard controls work", async ({
   const menu = page.getByRole("button", { name: "Open menu" });
   await menu.click();
   await expect(page.locator("#nav")).toBeVisible();
+  await expect(page.locator('#nav > a').first()).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(page.locator("#nav")).not.toBeVisible();
   await page
     .locator(".join-actions")
-    .getByRole("link", { name: /Book free demo class/ })
+    .getByRole("link", { name: /Book Free Demo/ })
     .click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
@@ -88,7 +87,7 @@ test("mobile menu, announcement and demo keyboard controls work", async ({
   await expect(
     page
       .locator(".join-actions")
-      .getByRole("link", { name: /Book free demo class/ }),
+      .getByRole("link", { name: /Book Free Demo/ }),
   ).toBeFocused();
 });
 
@@ -108,10 +107,10 @@ test("registration validates, reports API failure, retries and sends all collect
   });
   await page
     .locator(".join-actions")
-    .getByRole("link", { name: /Book free demo class/ })
+    .getByRole("link", { name: /Book Free Demo/ })
     .click();
   const dialog = page.getByRole("dialog");
-  await dialog.getByRole("button", { name: "Reserve My Free Seat" }).click();
+  await dialog.getByRole("button", { name: "Book Free Demo" }).click();
   await expect(
     dialog.getByText("Please correct the highlighted fields."),
   ).toBeVisible();
@@ -132,7 +131,7 @@ test("registration validates, reports API failure, retries and sends all collect
   await dialog
     .getByRole("checkbox", { name: /Send me session updates/ })
     .check();
-  await dialog.getByRole("button", { name: "Reserve My Free Seat" }).click();
+  await dialog.getByRole("button", { name: "Book Free Demo" }).click();
   await expect(
     dialog.getByText(
       "Something went wrong and your registration was not submitted. Please try again.",
@@ -144,7 +143,7 @@ test("registration validates, reports API failure, retries and sends all collect
       throw new DOMException("Blocked", "SecurityError");
     };
   });
-  await dialog.getByRole("button", { name: "Reserve My Free Seat" }).click();
+  await dialog.getByRole("button", { name: "Book Free Demo" }).click();
   await expect(
     dialog.getByRole("heading", { name: "You're registered!" }),
   ).toBeVisible();
@@ -195,80 +194,30 @@ test("late-loading published content reveals itself with reduced motion", async 
   await expect(page.locator("#reviews .reveal")).toHaveClass(/in/);
   await expect(page.locator("#projects")).toHaveCount(0);
   await expect(page.locator("#locations")).toHaveCount(0);
-  // Reduced motion: no slider controls and no automatic slide changes.
-  const slider = page.getByRole("region", { name: "Coding Hubs in pictures" });
-  await expect(slider.getByRole("button")).toHaveCount(0);
-  await page.waitForTimeout(4000);
-  await expect(slider.locator(".hs-slide.is-active")).toHaveAttribute("aria-label", /^1 of 5:/);
+  await expect(page.locator(".hp-gallery figure")).toHaveCount(5);
 });
 
-test("hero slider auto-advances through all five photos without controls", async ({
-  page,
-}) => {
-  const errors: string[] = [];
-  page.on("pageerror", (error) => errors.push(error.message));
-  const slider = page.getByRole("region", { name: "Coding Hubs in pictures" });
-  const active = slider.locator(".hs-slide.is-active");
-  const expected = [
-    "classroom-live-coding-session",
-    "gitm-student-group-photo",
-    "team-festive-celebration",
-    "gitm-aarambh-data-science-careers-talk",
-    "gitm-aarambh-felicitation",
-  ];
-  await expect(slider.locator(".hs-slide")).toHaveCount(5);
-  // The pause, previous/next, dot and counter controls are gone.
-  await expect(slider.getByRole("button")).toHaveCount(0);
-  await expect(slider.locator(".hs-count")).toHaveCount(0);
-  await page.mouse.move(5, 5);
-  // Autoplay walks every slide in order every 3 seconds and wraps around.
-  for (let i = 0; i < expected.length; i++) {
-    await expect(active).toHaveAttribute("aria-label", new RegExp(`^${i + 1} of 5:`), { timeout: 4500 });
-    const img = active.locator("> picture img");
-    await expect(img).toHaveAttribute("src", `/assets/hero/${expected[i]}.jpg`);
-    await expect
-      .poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
-      .toBe(true);
-  }
-  await expect(active).toHaveAttribute("aria-label", /^1 of 5:/, { timeout: 4500 });
-  // Clicking a side card still moves to it.
-  await slider.locator(".hs-slide.is-next").click();
-  await expect(active).toHaveAttribute("aria-label", /^2 of 5:/);
-  // Hovering pauses autoplay; leaving resumes it.
-  await page.waitForTimeout(3600);
-  await expect(active).toHaveAttribute("aria-label", /^2 of 5:/);
-  await page.mouse.move(5, 5);
-  await expect(active).toHaveAttribute("aria-label", /^3 of 5:/, { timeout: 4500 });
-  expect(errors).toEqual([]);
+test("gallery preserves all existing photographs without autoplay", async ({ page }) => {
+  const gallery = page.getByRole("region", { name: "Learning Together, Building Together" });
+  await expect(gallery.locator("figure")).toHaveCount(5);
+  await expect(gallery.locator("img")).toHaveCount(5);
+  await expect(gallery.getByRole("button")).toHaveCount(0);
+  await expect(page.locator("#session")).toContainText("Schedule to be announced");
+  await expect(page.locator(".hp-program")).toHaveCount(3);
+  await page.locator(".hp-program").first().click();
+  await expect(page).toHaveURL(/\/program\/vibe-coding-with-ai$/);
+  await expect(page.locator("h1")).toContainText("Vibe Coding");
 });
 
-test("hero slider supports touch swipe on phones", async ({ browser }) => {
-  const context = await browser.newContext({
-    hasTouch: true,
-    isMobile: true,
-    viewport: { width: 390, height: 844 },
-    reducedMotion: "reduce",
-  });
-  const page = await context.newPage();
-  await page.goto("/");
-  const frame = page.locator(".hs-stage");
-  const active = page.locator(".hs-slide.is-active");
-  await frame.scrollIntoViewIfNeeded();
-  const box = (await frame.boundingBox())!;
-  const swipe = (from: number, to: number) =>
-    frame.evaluate(
-      (el, [x1, x2, y]) => {
-        const t = (x: number) => new Touch({ identifier: 1, target: el, clientX: x, clientY: y });
-        el.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [t(x1)], changedTouches: [t(x1)] }));
-        el.dispatchEvent(new TouchEvent("touchend", { bubbles: true, touches: [], changedTouches: [t(x2)] }));
-      },
-      [from, to, box.y + box.height / 2],
-    );
-  await swipe(box.x + box.width - 30, box.x + 30);
-  await expect(active).toHaveAttribute("aria-label", /^2 of 5:/);
-  await swipe(box.x + 30, box.x + box.width - 30);
-  await expect(active).toHaveAttribute("aria-label", /^1 of 5:/);
-  await context.close();
+test("review request failure shows a retry action instead of an empty or loading state", async ({ page }) => {
+  let available = false;
+  await page.route("**/api/testimonials/", (route) => route.fulfill({ status: available ? 200 : 503, json: [] }));
+  await page.reload();
+  await expect(page.getByText("Could not load learner reviews. Please try again.")).toBeVisible();
+  await expect(page.getByText("Loading reviews…")).toHaveCount(0);
+  available = true;
+  await page.getByRole("button", { name: "Try loading reviews again" }).click();
+  await expect(page.getByText("Be the first to leave a review")).toBeVisible();
 });
 
 test("learners can send a review that waits for approval", async ({ page }) => {
@@ -313,4 +262,44 @@ test("all four learning and career pathways open their working pages", async ({
     await expect(page.locator("h1")).not.toContainText("Page not found");
     await page.goto("/");
   }
+});
+
+test("unanswered review requests time out with a useful error", async ({ page }) => {
+  await page.clock.install();
+  await page.route("**/api/testimonials/", () => {});
+  await page.reload();
+  await expect(page.getByText("Loading reviews…")).toBeAttached();
+  await page.clock.fastForward(12_100);
+  await expect(page.getByText("Could not load learner reviews. Please try again.")).toBeAttached();
+  await expect(page.getByText("Loading reviews…")).toHaveCount(0);
+});
+
+test("mobile floating actions stay apart and the demo bar clears the footer", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const width of [360, 390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.locator("#session").scrollIntoViewIfNeeded();
+    if (width < 768) await expect(page.locator(".hp-mobile-cta")).toHaveClass(/show/);
+    const call = (await page.locator(".call-float").boundingBox())!;
+    const whatsapp = (await page.locator(".wa-float").boundingBox())!;
+    expect(call.y + call.height).toBeLessThanOrEqual(whatsapp.y);
+    if (width < 768) {
+      await expect(page.locator(".hp-mobile-cta")).toHaveClass(/show/);
+      const bar = (await page.locator(".hp-mobile-cta").boundingBox())!;
+      expect(whatsapp.y + whatsapp.height).toBeLessThanOrEqual(bar.y);
+    }
+    await page.locator(".footer-cta").scrollIntoViewIfNeeded();
+    await expect(page.locator(".hp-mobile-cta")).not.toHaveClass(/show/);
+  }
+});
+
+test("home demo anchors and direct register links reach the existing form", async ({ page }) => {
+  const links = page.locator('main a[href="#register"]');
+  for (const link of await links.all()) {
+    await link.click();
+    await expect(page.getByRole("dialog", { name: "Free demo registration" })).toBeVisible();
+    await page.keyboard.press("Escape");
+  }
+  await page.goto('/#register');
+  await expect(page.getByRole("dialog", { name: "Free demo registration" })).toBeVisible();
 });

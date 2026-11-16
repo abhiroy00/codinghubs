@@ -11,12 +11,14 @@ const pilotEnabled = () =>
     .catch(() => false));
 
 const LINKS = [
+  ["/interview-prep/", "Interview Prep"],
+  ["/our-work", "Our Work"],
+  ["/ai-tools", "AI Tools"],
+  ["/latest-jobs/", "Jobs"],
+  ["/book-a-tutor/", "Tutor"],
   ["/locations/", "Locations"],
   ["/blog", "Blog"],
   ["/case-studies", "Case Studies"],
-  ["/book-a-tutor/", "Tutor"],
-  ["/#session", "About the Session"],
-  [ "/#contact", "Support"],
 ] as const;
 
 /** A keyboard-accessible disclosure shared by desktop and mobile primary navigation. */

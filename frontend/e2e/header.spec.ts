@@ -26,20 +26,15 @@ test("all site sections share the same header and place Locations inside Resourc
     await expect(header, route).toBeVisible();
     await expect(header).toHaveCount(1);
     const primary = header.getByRole("navigation", { name: "Primary" });
-    await expect(primary.getByRole("link")).toHaveText([
-      "Free Demo Classes",
-      "Courses",
-      "Interview Prep",
-      "Our Work",
-      "AI Tools",
-      "Jobs",
+    await expect(primary.locator(":scope > a:not(.sh-mobile-login)")).toHaveText([
+      "Courses", "Free Demo", "About", "Contact",
     ]);
     await expect(primary.locator(':scope > a[href="/locations/"]')).toHaveCount(
       0,
     );
     await expect(header.getByRole("link", { name: /Log in/ })).toBeVisible();
     await expect(
-      header.getByRole("button", { name: "Free Demo", exact: true }),
+      header.getByRole("button", { name: "Book Free Demo", exact: true }),
     ).toBeVisible();
     const style = await header.evaluate((element) => {
       const computed = getComputedStyle(element);
@@ -68,7 +63,7 @@ test("all site sections share the same header and place Locations inside Resourc
     ).toHaveAttribute("href", "/book-a-tutor/");
     await expect(
       primary.locator(".sh-res-list").getByRole("link", { name: "Our Work" }),
-    ).toHaveCount(0);
+    ).toHaveCount(1);
     await page.keyboard.press("Escape");
     await expect(
       primary.getByRole("link", { name: "Locations", exact: true }),
@@ -109,7 +104,7 @@ test("Free Demo opens a styled, usable dialog on account pages", async ({
   await page.goto("/login");
   await page
     .locator(".site-header")
-    .getByRole("button", { name: "Free Demo", exact: true })
+    .getByRole("button", { name: "Book Free Demo", exact: true })
     .click();
   const dialog = page.getByRole("dialog", { name: "Free demo registration" });
   await expect(
@@ -132,7 +127,7 @@ test("the shared logo returns to the top of home from inner pages and home secti
     .click();
   await expect(page).toHaveURL(/\/#home$/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "AI learning",
+    "Build Practical AI & Coding Skills",
   );
   await page.locator("#about").scrollIntoViewIfNeeded();
   await page
@@ -140,4 +135,16 @@ test("the shared logo returns to the top of home from inner pages and home secti
     .getByRole("link", { name: "Coding Hubs School of AI home", exact: true })
     .click();
   await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(200);
+});
+
+test("marketing and account pages share the light footer and a navy final CTA", async ({ page }) => {
+  for (const route of ['/', '/courses/', '/blog', '/locations/', '/login', '/policies']) {
+    await page.goto(route);
+    const footer = page.locator('.site-footer');
+    await expect(footer).toHaveCount(1);
+    await expect(footer).toHaveCSS('background-color', 'rgb(248, 250, 252)');
+    await expect(footer.locator('.sf-col h2').first()).toHaveCSS('font-size', '16px');
+    await expect(page.locator('.sf-cta')).toHaveCSS('background-color', 'rgb(10, 26, 63)');
+    await expect(footer.getByRole('link', { name: 'Privacy Policy', exact: true })).toHaveAttribute('href', '/policies#privacy');
+  }
 });

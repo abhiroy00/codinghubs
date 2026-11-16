@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-type Slide = {
+export type Slide = {
   /** File stem inside /assets/hero/. */
   name: string
   /** Available WebP widths (never upscaled beyond the source). */
@@ -15,7 +15,7 @@ type Slide = {
   position?: string
 }
 
-const SLIDES: Slide[] = [
+export const SLIDES: Slide[] = [
   {
     name: 'classroom-live-coding-session',
     widths: [720, 1440],

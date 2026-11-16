@@ -193,3 +193,15 @@
     transition: none;
   }
 }
+
+/* Light header variant */
+.site-header .sh-account-trigger { border-color: #e5e7eb; background: #fff; color: #0a1a3f; }
+.site-header .sh-account-trigger:hover,
+.site-header .sh-account-trigger[aria-expanded="true"] { border-color: #cbd5e1; background: #f1f5f9; }
+.site-header .sh-account-panel { border-color: #e5e7eb; background: #fff; color: #1f2937; box-shadow: 0 18px 40px -20px rgba(10, 26, 63, 0.35); }
+.site-header .sh-account-caption { color: #0062fa; }
+.site-header .sh-account-identity strong { color: #0a1a3f; }
+.site-header .sh-account-identity > span:last-child { color: #4b5563; }
+.site-header .sh-account-identity { border-color: #e5e7eb; }
+.site-header .sh-account-panel a, .site-header .sh-account-logout { color: #1f2937; }
+.site-header .sh-account-panel a:hover, .site-header .sh-account-logout:hover { background: #f1f5f9; color: #0a1a3f; }
