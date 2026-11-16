@@ -22,6 +22,7 @@ import { HOME_META, pageSeo } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
 
 const HOME_SEO = pageSeo(HOME_META)
+const PROGRAM_ICONS = ['i-code', 'i-line', 'i-spark']
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
 
@@ -286,29 +287,34 @@ export function FreeSession() {
               <p className="sub">Tap a program to see the full day-by-day plan before you enroll.</p>
             </div>
 
-            <div className="programs-grid">
-              {PROGRAMS.map((program) => (
-                <Link to={`/program/${program.slug}`} key={program.slug} className="program-card-link">
-                  <article className="plan-card plan-featured">
-                    <div className="plan-media">
-                      <img src={program.image} alt={program.title} width={800} height={500} loading="lazy" decoding="async" />
-                      <span className="plan-badge">Paid Program</span>
+            <div className="programs-grid rm-grid">
+              {PROGRAMS.map((program, i) => {
+                const milestones = [0, 7, program.days.length - 1].map((d) => ({ day: d + 1, title: program.days[d]?.title })).filter((m) => m.title)
+                return (
+                  <Link to={`/program/${program.slug}`} key={program.slug} className={`rm-card rm-t${i % 3}`}>
+                    <div className="rm-top">
+                      <div className="rm-top-row">
+                        <span className="rm-ico" aria-hidden="true"><FsIcon id={PROGRAM_ICONS[i % PROGRAM_ICONS.length]} /></span>
+                        <span className="rm-badge">Paid · 15-day program</span>
+                      </div>
+                      <h3>{program.title}</h3>
+                      <ol className="rm-strip" aria-hidden="true">
+                        {program.days.map((_, d) => <li key={d} className={d === 0 || d === 7 || d === program.days.length - 1 ? 'on' : ''}>{d + 1}</li>)}
+                      </ol>
                     </div>
-                    <div className="plan-body">
-                      <h3>
-                        {program.title} <span className="paid-tag">PAID</span>
-                      </h3>
-                      <p className="plan-meta">
-                        <FsIcon id="i-cal" />15 Days · Online Live
-                      </p>
-                      <p className="plan-desc">{program.tagline}</p>
-                      <span className="btn btn-anim btn-yellow btn-block">
-                        View Day-by-Day Plan <FsIcon id="i-arrow" />
-                      </span>
+                    <div className="rm-body">
+                      <p className="rm-desc">{program.tagline}</p>
+                      <ol className="rm-miles" aria-label={`${program.title} milestones`}>
+                        {milestones.map((m) => (
+                          <li key={m.day}><span>Day {m.day}</span>{m.title}</li>
+                        ))}
+                      </ol>
+                      <p className="plan-meta rm-meta"><FsIcon id="i-cal" />15 Days · Online Live</p>
+                      <span className="rm-cta">View Day-by-Day Plan <FsIcon id="i-arrow" /></span>
                     </div>
-                  </article>
-                </Link>
-              ))}
+                  </Link>
+                )
+              })}
             </div>
 
             <p className="plan-note">

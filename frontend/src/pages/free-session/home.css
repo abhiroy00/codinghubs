@@ -373,3 +373,55 @@
   .dp-cta, .dp-cta svg { transition: none; }
   .dp-cta:hover { transform: none; }
 }
+
+/* ---------- Step 2: 15-day program roadmap cards (no photos) ---------- */
+.rm-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; }
+@media (max-width: 1000px) { .rm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .rm-grid { grid-template-columns: minmax(0, 1fr); } }
+.rm-card {
+  --rm-a: #0b2a7a; --rm-b: #0062fa; --rm-hi: #9cc0ff;
+  display: flex; flex-direction: column; overflow: hidden; border: 1px solid #dbe4f2; border-radius: 20px; background: #fff;
+  color: inherit; text-decoration: none; text-align: left;
+  box-shadow: 0 20px 44px -34px rgba(11, 30, 80, 0.5);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s, border-color 0.25s;
+}
+.rm-t1 { --rm-a: #064e4a; --rm-b: #0d9488; --rm-hi: #99f6e4; }
+.rm-t2 { --rm-a: #3b0f7a; --rm-b: #7c3aed; --rm-hi: #ddd6fe; }
+.rm-card:hover, .rm-card:focus-visible { transform: translateY(-6px); border-color: var(--rm-b); box-shadow: 0 30px 56px -30px rgba(11, 30, 80, 0.55); }
+.rm-card:focus-visible { outline: 3px solid var(--rm-b); outline-offset: 3px; }
+
+.rm-top {
+  position: relative; display: grid; gap: 0.9rem; padding: 1.3rem 1.3rem 1.2rem; color: #fff;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, 0.18), transparent 55%),
+    linear-gradient(150deg, var(--rm-a), var(--rm-b));
+}
+.rm-top-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; }
+.rm-ico { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 12px; background: rgba(255, 255, 255, 0.12); }
+.rm-ico svg { width: 22px; height: 22px; }
+.rm-badge { padding: 0.3rem 0.7rem; border-radius: 999px; background: rgba(255, 255, 255, 0.16); font: 600 0.72rem/1.2 var(--f-body); letter-spacing: 0.06em; text-transform: uppercase; }
+.rm-top h3 { margin: 0; color: #fff; font: 700 1.35rem/1.25 var(--f-head); letter-spacing: -0.01em; }
+.rm-strip { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 3px; margin: 0; padding: 0; list-style: none; }
+.rm-strip li { display: grid; place-items: center; aspect-ratio: 1; border-radius: 5px; background: rgba(255, 255, 255, 0.14); color: rgba(255, 255, 255, 0.75); font: 600 0.58rem/1 var(--f-body); transition: background 0.2s, color 0.2s; }
+.rm-strip li.on { background: #fff; color: var(--rm-a); }
+.rm-card:hover .rm-strip li:not(.on) { background: rgba(255, 255, 255, 0.24); }
+
+.rm-body { display: flex; flex: 1; flex-direction: column; gap: 0.9rem; padding: 1.2rem 1.3rem 1.3rem; }
+.rm-desc { margin: 0; color: var(--ch-muted, #4a5568); line-height: 1.6; }
+.rm-miles { display: grid; gap: 0; margin: 0; padding: 0 0 0 0.2rem; list-style: none; }
+.rm-miles li { position: relative; display: grid; gap: 0.1rem; padding: 0 0 0.75rem 1.3rem; color: var(--ch-ink, #0b1220); font: 600 0.92rem/1.4 var(--f-body); }
+.rm-miles li::before { content: ""; position: absolute; left: 0; top: 0.35rem; width: 9px; height: 9px; border: 2px solid var(--rm-b); border-radius: 50%; background: #fff; }
+.rm-miles li:not(:last-child)::after { content: ""; position: absolute; left: 5px; top: 1.05rem; bottom: 0.1rem; border-left: 2px dotted #c7d3e6; }
+.rm-miles span { color: var(--rm-b); font: 700 0.7rem/1.2 var(--f-body); letter-spacing: 0.1em; text-transform: uppercase; }
+.rm-meta { margin: 0; }
+.rm-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 48px; margin-top: auto; padding: 0.7rem 1.2rem;
+  border-radius: 999px; background: #0b1220; color: #fff; font: 700 0.98rem var(--f-body); transition: background 0.2s;
+}
+.rm-cta svg { width: 18px; height: 18px; transition: transform 0.2s; }
+.rm-card:hover .rm-cta { background: var(--rm-b); }
+.rm-card:hover .rm-cta svg { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) {
+  .rm-card, .rm-strip li, .rm-cta, .rm-cta svg { transition: none; }
+  .rm-card:hover, .rm-card:focus-visible { transform: none; }
+}
