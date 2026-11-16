@@ -14,10 +14,10 @@ import { AccountMenu } from "./AccountMenu";
 const LINKS = [
   ["/courses/", "Courses"],
   ["/interview-prep/", "Interview Prep"],
-  ["/book-a-tutor/", "Tutor"],
+  ["/our-work", "Our Work"],
   ["/latest-jobs/", "Jobs"],
 ] as const;
-// Locations, Blog, Case Studies, Our Work, About the Session and Support live in <ResourcesMenu />.
+// Locations, Blog, Case Studies, Projects, Tutor, About the Session and Support live in <ResourcesMenu />.
 
 /** One primary navigation for marketing pages, accounts and learning workspaces. */
 export function Header({ mainId = "main" }: { mainId?: string }) {

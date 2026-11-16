@@ -30,7 +30,7 @@ test("all site sections share the same header and place Locations inside Resourc
       "Free Demo Classes",
       "Courses",
       "Interview Prep",
-      "Tutor",
+      "Our Work",
       "Jobs",
     ]);
     await expect(primary.locator(':scope > a[href="/locations/"]')).toHaveCount(
@@ -62,6 +62,12 @@ test("all site sections share the same header and place Locations inside Resourc
     await expect(
       primary.getByRole("link", { name: "Locations", exact: true }),
     ).toBeVisible();
+    await expect(
+      primary.getByRole("link", { name: "Tutor", exact: true }),
+    ).toHaveAttribute("href", "/book-a-tutor/");
+    await expect(
+      primary.locator(".sh-res-list").getByRole("link", { name: "Our Work" }),
+    ).toHaveCount(0);
     await page.keyboard.press("Escape");
     await expect(
       primary.getByRole("link", { name: "Locations", exact: true }),
