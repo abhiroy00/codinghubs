@@ -508,6 +508,7 @@ interface CourseRow {
   duration_display: string
   is_active: boolean
   brochure_status: 'published' | 'draft' | 'none'
+  brochure_cover_url: string
 }
 
 export function CoursesPage() {
@@ -551,6 +552,7 @@ export function CoursesPage() {
           <thead>
             <tr>
               <th>Course</th>
+              <th>Card image</th>
               <th>Category</th>
               <th>Duration</th>
               <th>Visible</th><th>Brochure</th>
@@ -561,6 +563,12 @@ export function CoursesPage() {
               <tr key={c.id}>
                 <td>
                   <strong>{c.name}</strong>
+                </td>
+                <td>
+                  <Link className="ad-course-cover-link" to={`/courses/${c.id}/brochure#brochure-cover-h`} aria-label={`${c.brochure_cover_url ? 'Change' : 'Add'} card image for ${c.name}`}>
+                    {c.brochure_cover_url && <img className="ad-course-cover-thumb" src={c.brochure_cover_url} alt="" width={96} height={54} loading="lazy" />}
+                    <span>{c.brochure_cover_url ? 'Change image' : 'Add image'}</span>
+                  </Link>
                 </td>
                 <td>{c.category}</td>
                 <td>{c.duration_display || '—'}</td>

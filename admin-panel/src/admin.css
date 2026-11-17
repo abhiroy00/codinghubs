@@ -168,6 +168,9 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .ad-chip button{border:0;background:none;cursor:pointer;color:inherit;font-size:1rem;line-height:1}
 .ad-thumb{width:100%;max-height:10rem;object-fit:cover;border-radius:10px;margin-bottom:.5rem;background:#eef2f8}
 .ad-image-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.ad-course-cover-link{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;white-space:nowrap}
+.ad-course-cover-thumb{display:block;object-fit:cover;border-radius:6px;background:var(--bg)}
+#brochure-cover-h{scroll-margin-top:5rem}
 .ad-rich{display:grid;gap:.4rem}.ad-rich-head{display:flex;justify-content:space-between;align-items:center}
 .ad-skeleton{display:grid;place-items:center;border:1px dashed var(--line);border-radius:12px;color:var(--mut);background:#fafcff}
 .ad-serp{padding:.8rem 1rem;border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:1rem}

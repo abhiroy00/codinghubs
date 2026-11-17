@@ -127,6 +127,24 @@ class BrochureTests(TestCase):
         self.api.force_authenticate(None)
         self.assertEqual(self.api.get('/api/courses/brochures/').status_code, 200)
 
+    def test_admin_course_list_includes_current_card_image(self):
+        self.api.force_authenticate(self.staff)
+
+        def card_image():
+            rows = self.api.get('/api/admin/courses/').data
+            rows = rows['results'] if isinstance(rows, dict) else rows
+            return next(r['brochure_cover_url'] for r in rows if r['id'] == self.course.pk)
+
+        self.assertEqual(card_image(), '')
+        self.upload()
+        self.assertEqual(card_image(), '')
+        row = CourseBrochure.objects.get(course=self.course)
+        row.cover_small_key = 'brochure-covers/card-480.webp'
+        row.save()
+        self.assertEqual(card_image(), '/media/brochure-covers/card-480.webp')
+        self.api.delete(self.url + 'cover/')
+        self.assertEqual(card_image(), '')
+
 
     def test_cover_image_upload_replace_and_remove(self):
         media = tempfile.TemporaryDirectory()

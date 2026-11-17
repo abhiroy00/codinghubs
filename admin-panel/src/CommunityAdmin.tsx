@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { adminApi } from "./api";
 import "./community-admin.css";
 
@@ -667,6 +667,8 @@ type Brochure = {
 };
 export function BrochureAdmin() {
   const { id } = useParams();
+  const { hash } = useLocation();
+  const coverHeading = useRef<HTMLHeadingElement>(null);
   const [course, setCourse] = useState("");
   const [form, setForm] = useState({
     title: "",
@@ -681,6 +683,9 @@ export function BrochureAdmin() {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (hash === "#brochure-cover-h") coverHeading.current?.focus();
+  }, [id, hash]);
   useEffect(() => {
     let active = true;
     adminApi
@@ -889,47 +894,47 @@ export function BrochureAdmin() {
               : "Save details and status"}
         </button>
       </form>
-      {data && (
-        <section className="cm-form" aria-labelledby="brochure-cover-h">
-          <h2 id="brochure-cover-h">Cover image (optional)</h2>
-          <p className="ad-muted">
-            Shown at the top of this brochure's card on the website. The card
-            frame is landscape 16:9 (for example 1200 × 675); other shapes are
-            cropped to fit. JPEG, PNG or WebP up to 5 MB, optimised
-            automatically.
-          </p>
-          {data.cover_small_url ? (
-            <img
-              src={data.cover_small_url}
-              alt="Current cover"
-              width={320}
-              height={180}
-              style={{ objectFit: "cover", borderRadius: 10, border: "1px solid #d9e2f0", background: "#eef3fb" }}
-            />
-          ) : (
-            <p>No cover image yet: the card shows text only.</p>
+      <section className="cm-form" aria-labelledby="brochure-cover-h">
+        <h2 id="brochure-cover-h" ref={coverHeading} tabIndex={-1}>Card image (optional)</h2>
+        <p className="ad-muted">
+          Shown at the top of this brochure's card on the website. The card
+          frame is landscape 16:9 (for example 1200 × 675); other shapes are
+          cropped to fit. JPEG, PNG or WebP up to 5 MB, optimised
+          automatically.
+        </p>
+        {!data && <p>Upload and save the PDF above first, then add its card image here.</p>}
+        {data?.cover_small_url ? (
+          <img
+            src={data.cover_small_url}
+            alt="Current cover"
+            width={320}
+            height={180}
+            style={{ objectFit: "cover", borderRadius: 10, border: "1px solid #d9e2f0", background: "#eef3fb" }}
+          />
+        ) : (
+          data && <p>No cover image yet: the card shows text only.</p>
+        )}
+        <label>
+          {data?.cover_url ? "Replace cover image" : "Cover image"}
+          <input
+            key={data?.cover_url || "no-cover"}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            disabled={!data || busy}
+            onChange={(e) => setCover(e.target.files?.[0] || null)}
+          />
+        </label>
+        <div>
+          <button type="button" className="ad-btn" disabled={!data || busy || !cover} onClick={() => saveCover()}>
+            {busy ? "Saving…" : "Upload cover image"}
+          </button>{" "}
+          {data?.cover_url && (
+            <button type="button" className="ad-btn" disabled={busy} onClick={() => window.confirm("Remove the cover image?") && saveCover(true)}>
+              Remove cover image
+            </button>
           )}
-          <label>
-            {data.cover_url ? "Replace cover image" : "Cover image"}
-            <input
-              key={data.cover_url || "no-cover"}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={(e) => setCover(e.target.files?.[0] || null)}
-            />
-          </label>
-          <div>
-            <button type="button" className="ad-btn" disabled={busy || !cover} onClick={() => saveCover()}>
-              {busy ? "Saving…" : "Upload cover image"}
-            </button>{" "}
-            {data.cover_url && (
-              <button type="button" className="ad-btn" disabled={busy} onClick={() => window.confirm("Remove the cover image?") && saveCover(true)}>
-                Remove cover image
-              </button>
-            )}
-          </div>
-        </section>
-      )}
+        </div>
+      </section>
     </div>
   );
 }

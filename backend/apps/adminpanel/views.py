@@ -1,6 +1,7 @@
 import csv
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
 from django.db.models import Count, Q
 from django.db.models.functions import TruncDate
@@ -288,11 +289,16 @@ class OrderListView(generics.ListAPIView):
 class CourseRowSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name', read_only=True)
     brochure_status = serializers.SerializerMethodField()
+    brochure_cover_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'category', 'duration_display', 'is_active', 'brochure_status')
-        read_only_fields = ('id', 'name', 'category', 'duration_display', 'brochure_status')
+        fields = ('id', 'name', 'category', 'duration_display', 'is_active', 'brochure_status', 'brochure_cover_url')
+        read_only_fields = ('id', 'name', 'category', 'duration_display', 'brochure_status', 'brochure_cover_url')
+
+    def get_brochure_cover_url(self, obj):
+        brochure = getattr(obj, 'brochure', None)
+        return f'{settings.MEDIA_URL}{brochure.cover_small_key}' if brochure and brochure.cover_small_key else ''
 
     def get_brochure_status(self, obj):
         """'published' (on the website), 'draft' (uploaded but hidden) or 'none', for the admin course list."""
