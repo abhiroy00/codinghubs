@@ -1,7 +1,16 @@
 <div class="fs-page">{% include "content/_chrome_top.html" %}
 <main id="main" class="wrap bl-main">
-  <h1>Case Studies</h1>
-  <p class="bl-lead">Learning and project stories from Coding Hubs School of AI.</p>
+  <section class="bl-hero hv-host" aria-labelledby="case-studies-title">
+    <div class="hv-bg" style='--hv-poster: url("/assets/hero/video/pages/our-work-poster-1280.webp"); --hv-poster-sm: url("/assets/hero/video/pages/our-work-poster-768.webp");' aria-hidden="true"></div>
+    <span class="bl-blob b1" aria-hidden="true"></span>
+    <span class="bl-blob b2" aria-hidden="true"></span>
+    <span class="bl-grid-bg" aria-hidden="true"></span>
+    <div class="bl-hero-in">
+      <p class="bl-eyebrow">Build · Case studies</p>
+      <h1 id="case-studies-title">Case <span>Studies</span></h1>
+      <p class="bl-lead">Learning and project stories from Coding Hubs School of AI.</p>
+    </div>
+  </section>
   <div class="bl-grid">{% for c in items %}{% include "content/_card.html" %}{% empty %}<p>No case studies published yet.</p>{% endfor %}</div>
   {% if page.paginator.num_pages > 1 %}<nav class="bl-pager" aria-label="Pagination">
     {% if page.has_previous %}<a rel="prev" href="?page={{ page.previous_page_number }}">Previous</a>{% endif %}

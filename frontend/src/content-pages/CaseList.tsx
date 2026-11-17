@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { getCases, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
 import { CardView, PageFrame, Pager, SearchIcon } from './shared'
+import { HeroVideo } from '../components/HeroVideo'
+import './blog.css'
 
 const initial = typeof document === 'undefined' ? null : takeInitial()
 
@@ -61,8 +63,17 @@ export function CaseList() {
 
   return (
     <PageFrame>
-      <h1>Case Studies</h1>
-      <p className="bl-lead">Learning and project stories from Coding Hubs School of AI.</p>
+      <section className="bl-hero hv-host" aria-labelledby="case-studies-title">
+        <HeroVideo clip="our-work" />
+        <span className="bl-blob b1" aria-hidden="true" />
+        <span className="bl-blob b2" aria-hidden="true" />
+        <span className="bl-grid-bg" aria-hidden="true" />
+        <div className="bl-hero-in">
+          <p className="bl-eyebrow">Build · Case studies</p>
+          <h1 id="case-studies-title">Case <span>Studies</span></h1>
+          <p className="bl-lead">Learning and project stories from Coding Hubs School of AI.</p>
+        </div>
+      </section>
       <div className="bl-tools">
         <label className="bl-search">
           <span className="sr-only">Search case studies</span>
