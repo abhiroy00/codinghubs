@@ -507,6 +507,7 @@ interface CourseRow {
   category: string
   duration_display: string
   is_active: boolean
+  brochure_status: 'published' | 'draft' | 'none'
 }
 
 export function CoursesPage() {
@@ -526,6 +527,17 @@ export function CoursesPage() {
       await adminApi.patch(`/courses/${c.id}/`, { is_active: !c.is_active })
     } catch {
       setRows((rs) => rs && rs.map((x) => (x.id === c.id ? { ...x, is_active: c.is_active } : x)))
+    }
+  }
+
+  // A draft brochure is uploaded but not on the website; publish it from here in one click.
+  async function publishBrochure(c: CourseRow) {
+    setRows((rs) => rs && rs.map((x) => (x.id === c.id ? { ...x, brochure_status: 'published' } : x)))
+    try {
+      await adminApi.patch(`/courses/${c.id}/brochure/`, { is_published: true })
+    } catch {
+      setRows((rs) => rs && rs.map((x) => (x.id === c.id ? { ...x, brochure_status: 'draft' } : x)))
+      setError(`Could not publish the ${c.name} brochure.`)
     }
   }
 
@@ -556,7 +568,17 @@ export function CoursesPage() {
                   <button type="button" className={`ad-switch${c.is_active ? ' on' : ''}`} role="switch" aria-checked={c.is_active} aria-label={`${c.name} visible`} onClick={() => toggle(c)}>
                     <i />
                   </button>
-                </td><td><Link to={`/courses/${c.id}/brochure`}>Manage PDF brochure</Link></td>
+                </td>
+                <td>
+                  {c.brochure_status === 'published' && <span className="ad-badge st-paid" title={c.is_active ? 'Shown on the Course Brochures page' : 'Hidden while the course is switched off'}>Published</span>}
+                  {c.brochure_status === 'draft' && (
+                    <>
+                      <span className="ad-badge st-pending" title="Uploaded, but not shown on the website">Draft</span>{' '}
+                      <button type="button" className="ad-btn ad-btn-sm" onClick={() => publishBrochure(c)}>Publish</button>
+                    </>
+                  )}{' '}
+                  <Link to={`/courses/${c.id}/brochure`}>Manage PDF brochure</Link>
+                </td>
               </tr>
             ))}
           </tbody>

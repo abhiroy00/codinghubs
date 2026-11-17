@@ -67,9 +67,16 @@ export function HeroSlider() {
   )
 
   useEffect(() => {
-    // Neighbouring cards load after the first photo has painted.
-    const t = window.setTimeout(() => mount(1, count - 1), 900)
-    return () => window.clearTimeout(t)
+    // Neighbouring cards load once the page itself has finished loading, so they never compete with the first photo
+    // or the hero background (the LCP image).
+    let t: number | undefined
+    const later = () => { t = window.setTimeout(() => mount(1, count - 1), 900) }
+    if (document.readyState === 'complete') later()
+    else window.addEventListener('load', later, { once: true })
+    return () => {
+      window.removeEventListener('load', later)
+      window.clearTimeout(t)
+    }
   }, [mount, count])
 
   useEffect(() => {

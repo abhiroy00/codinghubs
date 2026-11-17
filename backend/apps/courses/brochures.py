@@ -1,4 +1,5 @@
 import logging
+import math
 import uuid
 from pathlib import PurePosixPath
 from django.conf import settings
@@ -15,6 +16,11 @@ from apps.shop.downloads import safe_name
 from .models import Course, CourseBrochure
 
 logger = logging.getLogger(__name__)
+
+
+def size_label(size):
+    """Same format as Brochures.tsx: one decimal in MB from 1 MB up, whole KB (rounded up) below."""
+    return f'{size / 1024 / 1024:.1f} MB' if size >= 1024 * 1024 else f'{math.ceil(size / 1024)} KB'
 
 
 def remove_file(key):
@@ -42,19 +48,23 @@ class Metadata(serializers.ModelSerializer):
     course_slug = serializers.CharField(source='course.slug', read_only=True)
     course_name = serializers.CharField(source='course.name', read_only=True)
     download_url = serializers.SerializerMethodField()
+    view_url = serializers.SerializerMethodField()
 
     class Meta:
         model = CourseBrochure
-        fields = ['id', 'course_id', 'course_slug', 'course_name', 'title', 'description', 'download_name', 'size', 'is_published', 'updated_at', 'download_url']
+        fields = ['id', 'course_id', 'course_slug', 'course_name', 'title', 'description', 'download_name', 'size', 'is_published', 'updated_at', 'download_url', 'view_url']
         read_only_fields = fields
 
     def get_download_url(self, obj):
         return f'/api/courses/brochures/{obj.course.slug}/download/'
 
+    def get_view_url(self, obj):
+        return f'/api/courses/brochures/{obj.course.slug}/view/'
+
 
 class AdminMetadata(Metadata):
     class Meta(Metadata.Meta):
-        fields = Metadata.Meta.fields + ['original_name']
+        fields = [name for name in Metadata.Meta.fields if name != 'view_url'] + ['original_name']
 
     def get_download_url(self, obj):
         return f'/api/admin/courses/{obj.course_id}/brochure/download/'
@@ -74,14 +84,16 @@ class PublicBrochure(generics.RetrieveAPIView):
     queryset = PublicBrochures.queryset
 
 
-def download(row):
+def download(row, inline=False):
     try:
         stream = private_storage.open(row.storage_key, 'rb')
     except (OSError, ValueError) as error:
         raise Http404('Brochure temporarily unavailable.') from error
-    response = FileResponse(stream, as_attachment=True, filename=row.download_name, content_type='application/pdf')
+    response = FileResponse(stream, as_attachment=not inline, filename=row.download_name, content_type='application/pdf')
     response['X-Content-Type-Options'] = 'nosniff'
-    response['Content-Security-Policy'] = "sandbox; default-src 'none'"
+    # Browsers' built-in PDF viewers do not run inside a CSP-sandboxed document, so the inline "View" response only
+    # forbids framing; the download keeps the full sandbox.
+    response['Content-Security-Policy'] = "frame-ancestors 'none'" if inline else "sandbox; default-src 'none'"
     response['X-Frame-Options'] = 'DENY'
     response['Cache-Control'] = 'private, no-store'
     return response
@@ -93,6 +105,15 @@ class PublicDownload(APIView):
     def get(self, request, slug):
         row = get_object_or_404(PublicBrochures.queryset, course__slug=slug)
         return download(row)
+
+
+class PublicView(APIView):
+    """Opens a published brochure in the browser's PDF viewer (inline) instead of saving it."""
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, slug):
+        row = get_object_or_404(PublicBrochures.queryset, course__slug=slug)
+        return download(row, inline=True)
 
 
 class AdminDownload(APIView):

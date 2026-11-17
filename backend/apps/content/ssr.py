@@ -3,6 +3,7 @@ sitemap. The built single-page app is a static bundle that knows nothing about d
 answered here: we take the app's HTML shell (fetched from the frontend container, cached), fill in <head> metadata,
 JSON-LD and the page content, and the React app then takes over in the browser (same as the prerendered pages)."""
 import json
+import re
 import logging
 import time
 import urllib.request
@@ -22,6 +23,16 @@ from .views import blog_detail_payload, case_detail_payload, load_public_or_prev
 
 logger = logging.getLogger(__name__)
 HEAD_MARK, ROOT_MARK = '<!--SEO_HEAD-->', '<!--SSR_ROOT-->'
+# The frontend build puts the real React header/footer in the shell (CHROME_* blocks, see frontend/scripts/prerender.mjs).
+# They replace the template chrome (chrome:* spans, whose content is only a fallback) and are removed from the shell.
+SHELL_CHROME = re.compile(r'<!--CHROME_(TOP|BOTTOM)-->(.*?)<!--/CHROME_\1-->', re.S)
+PAGE_CHROME = re.compile(r'<!--chrome:(top|bottom)-->(.*?)<!--/chrome:\1-->', re.S)
+
+
+def apply_chrome(shell, body_html):
+    parts = {m.group(1).lower(): m.group(2) for m in SHELL_CHROME.finditer(shell)}
+    body_html = PAGE_CHROME.sub(lambda m: parts.get(m.group(1), m.group(2)), body_html)
+    return SHELL_CHROME.sub('', shell), body_html
 _shell = {'html': None, 'at': 0.0}
 
 FALLBACK_SHELL = (
@@ -83,7 +94,8 @@ def head_tags(seo: dict, with_og=True) -> str:
 
 
 def respond(seo, body_html, status=200, preview=False, data=None):
-    shell = get_shell().replace(HEAD_MARK, head_tags(seo)).replace(ROOT_MARK, body_html)
+    shell, body_html = apply_chrome(get_shell(), body_html)
+    shell = shell.replace(HEAD_MARK, head_tags(seo)).replace(ROOT_MARK, body_html)
     if data is not None:  # first-paint data for the React page (no second fetch / no flash)
         payload = json.dumps(data, default=str).replace('<', '\\u003c')
         shell = shell.replace('</body>', f'<script id="__CONTENT__" type="application/json">{payload}</script></body>', 1)

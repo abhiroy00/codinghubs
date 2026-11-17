@@ -5,6 +5,8 @@ from django.views.decorators.http import require_GET
 from .services import public_issue_html
 from apps.content.ssr import respond
 from apps.content.services import LOGO_URL
+from django.utils.dateparse import parse_datetime
+from apps.courses.brochures import Metadata, size_label
 from apps.courses.models import CourseBrochure
 from .models import Issue
 
@@ -37,7 +39,11 @@ def brochures(request):
     rows = CourseBrochure.objects.select_related('course').filter(is_published=True, course__is_active=True).exclude(storage_key='').order_by('course__order')
     seo = metadata('/brochures/', 'Course PDF Brochures | Coding Hubs School of AI', 'Download published Coding Hubs course PDF brochures for free, with course descriptions and file sizes. No signup is required to download a brochure.')
     seo['preload_images'] = hero_preloads('courses')
-    return respond(seo, render_to_string('newsletter/brochures.html', {'brochures': rows}))
+    data = Metadata(rows, many=True).data
+    # Same values the React page renders (Brochures.tsx), and the list itself embedded for its first render, so the
+    # page is not replaced by a loading state and a second request.
+    cards = [{**row, 'size_label': size_label(row['size']), 'updated': parse_datetime(row['updated_at'])} for row in data]
+    return respond(seo, render_to_string('newsletter/brochures.html', {'brochures': cards}), data=data)
 
 
 def hero_preloads(clip):

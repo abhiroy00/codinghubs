@@ -15,6 +15,7 @@ urlpatterns = [
     path('brochures/', brochures.PublicBrochures.as_view()),
     path('brochures/<slug:slug>/', brochures.PublicBrochure.as_view()),
     path('brochures/<slug:slug>/download/', brochures.PublicDownload.as_view()),
+    path('brochures/<slug:slug>/view/', brochures.PublicView.as_view()),
     path('roadmap/<slug:slug>/progress/', RoadmapProgressView.as_view(), name='course-roadmap-progress'),
     path('prep/<slug:slug>/', PrepCurriculumView.as_view(), name='prep-curriculum'),
     path('prep/<slug:slug>/<int:day>/', PrepLessonView.as_view(), name='prep-lesson'),

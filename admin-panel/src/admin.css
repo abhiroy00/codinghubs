@@ -312,3 +312,6 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .ad-blog-visual .tableWrapper{overflow-x:auto}.ad-blog-visual table{border-collapse:collapse;max-width:100%}.ad-blog-visual :is(td,th){border:1px solid var(--line);padding:.5rem;min-width:60px}
 .ad-blog-link-box{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.75rem;border:1px solid var(--line)}
 .ad-blog-link-box label{font-size:.85rem}.ad-blog-link-box .ad-input{flex:1;min-width:140px}
+
+/* Compact button inside table cells (e.g. Publish a draft brochure from the course list). */
+.ad-btn.ad-btn-sm{height:30px;padding:0 .7rem;font-size:.8rem;border-radius:8px;vertical-align:middle}

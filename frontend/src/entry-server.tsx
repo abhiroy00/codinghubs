@@ -2,6 +2,7 @@ import { InterviewHub } from './interview/InterviewHub'
 import { InterviewGuide } from './interview/InterviewGuide'
 import interviewGuides from './interview/guides.json'
 import { renderToString } from 'react-dom/server'
+import { PageFrame } from './content-pages/shared'
 import { VisualLab } from './learning/VisualLab'
 import { FAQ_META, Faq } from './pages/Faq'
 import { OUR_WORK_META, OurWork } from './pages/our-work/OurWork'
@@ -311,4 +312,24 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
   })
 
   return pages
+}
+
+const CHROME_SPLIT = '@@CONTENT_CHROME_SPLIT@@'
+/**
+ * The site header and footer of the backend-rendered pages (blog, case studies, newsletter, brochures, directory),
+ * rendered by the same React components the client uses. The backend templates used to carry their own hand-written
+ * copy, which had drifted (different header, a PNG logo, a placeholder phone number), so the page changed size and
+ * look when React took over. Returned as the parts before <main> and after </main> inside <div class="fs-page">.
+ */
+export function renderContentChrome(): { top: string; bottom: string } {
+  const html = renderToString(
+    <AuthProvider><StaticRouter location="/__content"><LenisProvider><ModalProvider><PageFrame>{CHROME_SPLIT}</PageFrame></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
+  )
+  const open = html.indexOf('>') + 1
+  const mainStart = html.indexOf('<main')
+  const split = html.indexOf(CHROME_SPLIT)
+  const mainEnd = html.indexOf('</main>', split) + '</main>'.length
+  const close = html.lastIndexOf('</div>')
+  if (!html.startsWith('<div class="fs-page') || mainStart < 0 || split < 0 || close < mainEnd) throw new Error('Unexpected PageFrame markup')
+  return { top: html.slice(open, mainStart), bottom: html.slice(mainEnd, close) }
 }

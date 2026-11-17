@@ -40,7 +40,16 @@
     url("/assets/hero/video/team-coding-review-poster.jpg") type("image/jpeg")
   );
 }
+/* The still image fills the band; the clip and the overlay (::after) stack above it in DOM order. */
+.hv-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .hv-video {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;

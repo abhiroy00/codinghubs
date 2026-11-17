@@ -287,17 +287,25 @@ class OrderListView(generics.ListAPIView):
 
 class CourseRowSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name', read_only=True)
+    brochure_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'category', 'duration_display', 'is_active')
-        read_only_fields = ('id', 'name', 'category', 'duration_display')
+        fields = ('id', 'name', 'category', 'duration_display', 'is_active', 'brochure_status')
+        read_only_fields = ('id', 'name', 'category', 'duration_display', 'brochure_status')
+
+    def get_brochure_status(self, obj):
+        """'published' (on the website), 'draft' (uploaded but hidden) or 'none', for the admin course list."""
+        brochure = getattr(obj, 'brochure', None)
+        if not brochure or not brochure.storage_key:
+            return 'none'
+        return 'published' if brochure.is_published else 'draft'
 
 
 class CourseListView(generics.ListAPIView):
     permission_classes = [IsStaff]
     serializer_class = CourseRowSerializer
-    queryset = Course.objects.select_related('category').order_by('category__order', 'order')
+    queryset = Course.objects.select_related('category', 'brochure').order_by('category__order', 'order')
 
 
 class CourseDetailView(generics.UpdateAPIView):

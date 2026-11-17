@@ -288,3 +288,122 @@
 }
 
 .interview-topic-nav nav{max-height:calc(100dvh - 130px);overflow-y:auto;padding-right:.5rem}.community-article > section{margin-top:2rem}
+
+/* ---------- Course brochures (Brochures.tsx and backend newsletter/brochures.html share this markup) ---------- */
+.brochure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 1.25rem;
+  margin-block: 2rem 3rem;
+}
+.brochure-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border: 1px solid #d9e2f0;
+  border-top: 4px solid #1554d6;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(11, 18, 32, 0.05), 0 12px 28px -18px rgba(11, 18, 32, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.brochure-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 1px 2px rgba(11, 18, 32, 0.06), 0 18px 36px -18px rgba(21, 84, 214, 0.35);
+}
+.brochure-course {
+  margin: 0;
+  color: #1554d6;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.brochure-card h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.brochure-desc {
+  margin: 0;
+  color: #475569;
+  line-height: 1.65;
+}
+.brochure-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  margin: 0.15rem 0 0;
+  color: #475569;
+  font-size: 0.88rem;
+}
+.brochure-tag {
+  padding: 0.12rem 0.5rem;
+  border-radius: 6px;
+  background: #e8f0ff;
+  color: #1554d6;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.brochure-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+}
+.community .brochure-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid #1554d6;
+  border-radius: 10px;
+  font: 600 0.95rem var(--f-body, system-ui);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.community .brochure-download {
+  flex: 1;
+  background: #1554d6;
+  color: #fff;
+}
+.community .brochure-download:hover {
+  background: #0f43b0;
+}
+.community .brochure-view {
+  min-width: 6.5rem;
+  background: #fff;
+  color: #1554d6;
+}
+.community .brochure-view:hover {
+  background: #eef4ff;
+}
+.community .brochure-more {
+  align-self: flex-start;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+.brochure-empty {
+  margin-block: 2rem 3rem;
+  line-height: 1.7;
+}
+@media (max-width: 700px) {
+  .brochure-card {
+    padding: 1.15rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brochure-card,
+  .community .brochure-btn {
+    transition: none;
+  }
+  .brochure-card:hover {
+    transform: none;
+  }
+}

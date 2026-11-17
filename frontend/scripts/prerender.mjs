@@ -13,7 +13,7 @@ const SITE = 'https://codinghubs.in'
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-const { renderAll } = await import(pathToFileURL(path.join(root, 'dist-ssr', 'entry-server.js')).href)
+const { renderAll, renderContentChrome } = await import(pathToFileURL(path.join(root, 'dist-ssr', 'entry-server.js')).href)
 const template = await readFile(path.join(dist, 'index.html'), 'utf8')
 // Same hash as vite.config.ts (from the source file; the built copy is minified).
 const cssVersion = createHash('md5').update(await readFile(path.join(root, 'public', 'free-session.css'))).digest('hex').slice(0, 8)
@@ -185,12 +185,23 @@ function render(page) {
     html = html.replace(/\s*<noscript><link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*><\/noscript>/, '')
   }
   html = html.replace('</head>', `    ${page.rawHead ?? buildHead(page)}\n  </head>`)
-  if (page.html) html = html.replace('<div id="root"></div>', `<div id="root">${page.html}</div>`)
+  if (page.html) {
+    html = html.replace('<div id="root"></div>', `<div id="root">${page.html}</div>`)
+    // The page is already complete HTML; the app JS only adds interactivity. Fetch it after the CSS, the hero image
+    // and the fonts, so on slow connections those are not sharing bandwidth with ~170 KB of JS.
+    html = html.replace(/<script type="module" crossorigin src=/g, '<script type="module" crossorigin fetchpriority="low" src=')
+    html = html.replace(/<link rel="modulepreload" crossorigin href=/g, '<link rel="modulepreload" crossorigin fetchpriority="low" href=')
+  }
   return html
 }
 
 // App shell for server-rendered content pages (blog, case studies): the backend fills the two markers.
-await writeFile(path.join(dist, 'content-shell.html'), render({ fsDesign: true, rawHead: `<!--SEO_HEAD-->\n    <link rel="stylesheet" href="/free-session.css?v=${cssVersion}" />`, html: '<!--SSR_ROOT-->' }))
+// free-session.css comes before the page's own styles (SEO_HEAD), the order the client ends up with after it attaches
+// the page chunk's CSS; the other way round, free-session.css won on the server page and the layout changed on boot.
+// The backend swaps these blocks in for its template header/footer and removes them from the page (backend/apps/content/ssr.py).
+const chrome = renderContentChrome()
+await writeFile(path.join(dist, 'content-shell.html'), render({ fsDesign: true, rawHead: `<link rel="stylesheet" href="/free-session.css?v=${cssVersion}" />\n    <!--SEO_HEAD-->`, html: '<!--SSR_ROOT-->' })
+  .replace('</body>', `<!--CHROME_TOP-->${chrome.top}<!--/CHROME_TOP--><!--CHROME_BOTTOM-->${chrome.bottom}<!--/CHROME_BOTTOM-->\n</body>`))
 
 const pages = renderAll({ skipMissing: process.env.ALLOW_MISSING_LOCATIONS === '1' })
 for (const page of pages) {

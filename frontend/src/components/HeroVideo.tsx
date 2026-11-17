@@ -14,6 +14,7 @@ import './hero-video.css'
  */
 const BASE = '/assets/hero/video/team-coding-review'
 const POSTER = `${BASE}-poster-1280.webp`
+const POSTER_SM = `${BASE}-poster-768.webp`
 const PAGE_BASE = '/assets/hero/video/pages'
 
 /** One clip per page type; files live in public/assets/hero/video/pages/. */
@@ -33,6 +34,17 @@ function saverOn() {
 
 export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
   const poster = clip ? `${PAGE_BASE}/${clip}-poster-1280.webp` : POSTER
+  const posterSm = clip ? `${PAGE_BASE}/${clip}-poster-768.webp` : POSTER_SM
+  // The still as a real image (the CSS background stays as a fallback): it is the LCP element on most pages, and an
+  // <img> with decoding="sync" paints in the first frame, whereas a background image is decoded asynchronously and
+  // painted a frame later, after the app JS has taken the main thread. Same files and media split as the preloads
+  // in scripts/prerender.mjs, so nothing is downloaded twice.
+  const still = (
+    <picture>
+      <source media="(max-width: 767px)" srcSet={posterSm} type="image/webp" />
+      <img className="hv-still" src={poster} alt="" width={1280} height={720} decoding="sync" fetchPriority="high" />
+    </picture>
+  )
   // The still background (phones, reduced motion, data saver, before the video starts) is set in CSS from these.
   const stillStyle = clip
     ? ({
@@ -119,12 +131,13 @@ export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
   }
 
   if (!src || failed) {
-    return <div className="hv-bg" style={stillStyle} aria-hidden="true" />
+    return <div className="hv-bg" style={stillStyle} aria-hidden="true">{still}</div>
   }
 
   return (
     <>
       <div className={`hv-bg${playing ? ' is-playing' : ''}`} style={stillStyle} aria-hidden="true">
+        {still}
         <video
           ref={videoRef}
           className="hv-video"

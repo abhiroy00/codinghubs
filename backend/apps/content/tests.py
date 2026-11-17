@@ -548,3 +548,19 @@ class OptimizeMediaTests(TestCase):
                 self.assertIn('/media/uploads/2026/10/big.webp', blog.content)
                 self.assertTrue(os.path.exists(png))  # original kept
                 self.assertLess(os.path.getsize(os.path.join(tmp, 'uploads', '2026', '10', 'big.webp')), os.path.getsize(png))
+
+
+class ShellChromeTests(TestCase):
+    def test_shell_header_and_footer_replace_template_chrome(self):
+        from .ssr import apply_chrome
+        shell = '<body><div id="root"><!--SSR_ROOT--></div><!--CHROME_TOP--><header>react</header><!--/CHROME_TOP--><!--CHROME_BOTTOM--><footer>react</footer><!--/CHROME_BOTTOM--></body>'
+        body = '<div class="fs-page"><!--chrome:top--><header>old</header><!--/chrome:top--><main>x</main><!--chrome:bottom--><footer>old</footer><!--/chrome:bottom--></div>'
+        new_shell, new_body = apply_chrome(shell, body)
+        self.assertEqual(new_body, '<div class="fs-page"><header>react</header><main>x</main><footer>react</footer></div>')
+        self.assertNotIn('CHROME', new_shell)
+        self.assertNotIn('react', new_shell)
+
+    def test_template_chrome_is_the_fallback_without_shell_blocks(self):
+        from .ssr import apply_chrome
+        body = '<!--chrome:top--><header>old</header><!--/chrome:top--><main>x</main>'
+        self.assertEqual(apply_chrome('<body><!--SSR_ROOT--></body>', body)[1], '<header>old</header><main>x</main>')

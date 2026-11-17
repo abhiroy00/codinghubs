@@ -670,7 +670,7 @@ export function BrochureAdmin() {
     title: "",
     description: "",
     download_name: "",
-    is_published: false,
+    is_published: true,
   });
   const [data, setData] = useState<Brochure | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -736,8 +736,8 @@ export function BrochureAdmin() {
       <Link to="/courses">← Courses</Link>
       <h1 className="ad-h1">{course} brochure</h1>
       <p>
-        One PDF per course. Files download as attachments; no document is
-        embedded or preloaded.
+        One PDF per course. Published brochures appear on the website's Course
+        Brochures page (/brochures/) with Download and View buttons.
       </p>
       {error && (
         <p role="alert" className="ad-error">
@@ -751,6 +751,11 @@ export function BrochureAdmin() {
             Original: {data.original_name} · {(data.size / 1024).toFixed(1)} KB
             · Updated {date(data.updated_at)} ·{" "}
             {data.is_published ? "Published" : "Draft"}
+          </p>
+          <p className={data.is_published ? "ad-muted" : "ad-error"}>
+            {data.is_published
+              ? "Showing on the website at /brochures/ (only while the course itself is switched on in Courses)."
+              : "Draft: not shown on the website. Tick “Published for public download” and save to show it."}
           </p>
           <button
             className="ad-btn"
@@ -780,7 +785,7 @@ export function BrochureAdmin() {
                   title: "",
                   description: "",
                   download_name: "",
-                  is_published: false,
+                  is_published: true,
                 });
                 setNote("Brochure removed.");
                 setTick((x) => x + 1);
@@ -847,6 +852,10 @@ export function BrochureAdmin() {
           />{" "}
           Published for public download
         </label>
+        <p className="ad-muted">
+          Ticked by default for a new brochure, so it shows on the website as
+          soon as it is uploaded. Untick to keep it hidden.
+        </p>
         <button className="ad-btn" disabled={busy || (!data && !file)}>
           {busy
             ? "Saving…"

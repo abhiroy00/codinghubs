@@ -70,10 +70,21 @@ class BrochureTests(TestCase):
         self.assertIn('sandbox', result['Content-Security-Policy'])
         self.assertIn('no-store', result['Cache-Control'])
         self.assertTrue(b''.join(result.streaming_content).startswith(b'%PDF-'))
+        self.assertEqual(response.data['view_url'], self.public + 'view/')
+        viewed = self.api.get(self.public + 'view/')
+        self.assertEqual(viewed['Content-Type'], 'application/pdf')
+        self.assertTrue(viewed['Content-Disposition'].startswith('inline'))
+        self.assertEqual(viewed['X-Content-Type-Options'], 'nosniff')
+        self.assertNotIn('sandbox', viewed['Content-Security-Policy'])
+        self.assertIn("frame-ancestors 'none'", viewed['Content-Security-Policy'])
+        self.assertEqual(viewed['X-Frame-Options'], 'DENY')
+        self.assertIn('no-store', viewed['Cache-Control'])
+        self.assertTrue(b''.join(viewed.streaming_content).startswith(b'%PDF-'))
         self.api.force_authenticate(self.staff)
         self.api.patch(self.url, {'is_published': False}, format='json')
         self.api.force_authenticate(None)
         self.assertEqual(self.api.get(self.public + 'download/').status_code, 404)
+        self.assertEqual(self.api.get(self.public + 'view/').status_code, 404)
 
     def test_failed_replacement_preserves_old_file_and_cleans_new_file(self):
         self.upload(is_published=True)
@@ -98,3 +109,18 @@ class BrochureTests(TestCase):
         with self.captureOnCommitCallbacks(execute=True):
             self.api.delete(self.url)
         self.assertFalse(list(Path(self.temp.name).rglob('*.pdf')))
+
+
+    def test_admin_course_list_shows_brochure_status(self):
+        def status():
+            self.api.force_authenticate(self.staff)
+            rows = self.api.get('/api/admin/courses/').data
+            rows = rows['results'] if isinstance(rows, dict) else rows
+            return next(r['brochure_status'] for r in rows if r['id'] == self.course.pk)
+        self.assertEqual(status(), 'none')
+        self.upload()
+        self.assertEqual(status(), 'draft')
+        self.api.patch(self.url, {'is_published': True}, format='json')
+        self.assertEqual(status(), 'published')
+        self.api.force_authenticate(None)
+        self.assertEqual(self.api.get('/api/courses/brochures/').status_code, 200)
