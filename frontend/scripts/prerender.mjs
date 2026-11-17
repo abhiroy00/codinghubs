@@ -41,11 +41,7 @@ function chunkCss(key) {
   walk(key)
   return [...out].filter(file => !shellCss.has(`/${file}`))
 }
-<<<<<<< HEAD
 // Pages rendered inside LearnFrame (and the course/interview pages) were prerendered without their chunks' CSS,
-=======
-// Pages rendered inside LearnFrame (and the course/interview-prep pages) were prerendered without their chunks' CSS,
->>>>>>> be068415c233d90148f2ac0838c3e023ae7a5c38
 // which only arrived once the JS attached it: the page first painted half-styled and then reflowed (CLS 0.21 on
 // /courses/, and a late LCP). Link that CSS in <head> like the other lazy pages below.
 // Same order as the client's lazy loader inserts them (read from Vite's preload map in the entry chunk), so the cascade
@@ -63,14 +59,9 @@ function clientCssOrder(key) {
 const learnFrameCss = clientCssOrder(Object.keys(manifest).find(k => /(^|\/|_)LearnFrame[.-].*\.(js|tsx)$/.test(k)))
 const courseLearningCss = clientCssOrder('src/learning/CourseLearning.tsx')
 if (!learnFrameCss.length || !courseLearningCss.length) throw new Error('Missing LearnFrame / CourseLearning styles in build manifest')
-<<<<<<< HEAD
 const interviewHubCss = clientCssOrder('src/interview/InterviewHub.tsx')
 const isLearnFramePage = (p) => /^\/(faq|interview-studio|visual-lab\/|courses\/)/.test(p ?? '') || (/^\/interview\//.test(p ?? '') && !/\/levels\//.test(p))
 const isCoursePage = (p) => /^\/courses\//.test(p ?? '') || (/^\/interview\/[^/]+\/$/.test(p ?? '') && !p.startsWith('/interview/guides/'))
-=======
-const isLearnFramePage = (p) => /^\/(faq|interview-studio|visual-lab\/|courses\/)/.test(p ?? '') || (/^\/interview-prep\//.test(p ?? '') && !/\/levels\//.test(p))
-const isCoursePage = (p) => /^\/(courses|interview-prep)\//.test(p ?? '') && !/\/levels\//.test(p)
->>>>>>> be068415c233d90148f2ac0838c3e023ae7a5c38
 
 // Directory SSR uses the existing page styles before the React chunks load.
 const directoryAssets = new Set()
@@ -106,24 +97,6 @@ function heroPosterPreloads(html) {
     `<link rel="preload" as="image" type="image/webp" href="${esc(lg)}" media="(min-width: 768px)" fetchpriority="high" />`,
   ]
 }
-
-// Hero banners (HeroVideo.tsx) paint their poster as a CSS background, so the browser only finds it after the
-// stylesheets have loaded. It is the LCP element of nearly every page: preload it, one file per screen class
-// (the same media split as hero-video.css), so the poster arrives together with the CSS.
-const DEFAULT_POSTER_SM = '/assets/hero/video/team-coding-review-poster-768.webp'
-const DEFAULT_POSTER_LG = '/assets/hero/video/team-coding-review-poster-1280.webp'
-function heroPosterPreloads(html) {
-  const m = html?.match(/<div class="hv-bg[^"]*"(?: style="([^"]*)")?/)
-  if (!m) return []
-  const style = (m[1] ?? '').replace(/&quot;/g, '"')
-  const sm = style.match(/--hv-poster-sm:\s*url\("([^"]+)"\)/)?.[1] ?? DEFAULT_POSTER_SM
-  const lg = style.match(/--hv-poster:\s*url\("([^"]+)"\)/)?.[1] ?? DEFAULT_POSTER_LG
-  return [
-    `<link rel="preload" as="image" type="image/webp" href="${esc(sm)}" media="(max-width: 767px)" fetchpriority="high" />`,
-    `<link rel="preload" as="image" type="image/webp" href="${esc(lg)}" media="(min-width: 768px)" fetchpriority="high" />`,
-  ]
-}
-
 function buildHead(page) {
   const canonical = page.canonical ?? `${SITE}${page.path}`
   const imageAlt = page.image?.endsWith('/assets/coding-hubs-school-of-ai-logo.jpeg') ? 'Coding Hubs School of AI logo' : page.title
@@ -169,11 +142,7 @@ function buildHead(page) {
   {
     const linked = new Set(tags.join('\n').match(/href="\/assets\/[^"]+\.css"/g)?.map(h => h.slice(6, -1)) ?? [])
     // main.tsx starts the page chunk (CourseLearning) before LearnFrame, so its CSS comes first.
-<<<<<<< HEAD
     const extra = [...(page.path === '/interview/' ? interviewHubCss : []), ...(isCoursePage(page.path) ? courseLearningCss : []), ...(isLearnFramePage(page.path) ? learnFrameCss : [])]
-=======
-    const extra = [...(isCoursePage(page.path) ? courseLearningCss : []), ...(isLearnFramePage(page.path) ? learnFrameCss : [])]
->>>>>>> be068415c233d90148f2ac0838c3e023ae7a5c38
     for (const file of new Set(extra)) if (!linked.has(`/${file}`)) tags.push(`<link rel="stylesheet" href="/${esc(file)}" />`)
   }
   if (page.path === '/ai-tools') {
