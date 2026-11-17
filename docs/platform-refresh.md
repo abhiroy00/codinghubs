@@ -1,12 +1,12 @@
 # CodingHubs platform refresh — review and operations
 
-Implemented locally on 17 November 2026. Nothing was pushed, deployed, migrated in production, or emailed to real subscribers.
+Implemented and verified on 17 November 2026. The implementation/verification phase did not initiate a commit, push, deployment, production migration or real-subscriber email. The user subsequently authorized pushing the remaining report updates. The repository advanced through external commits during implementation; the final combined-state verification starts at `c6f460d`.
 
 ## Scope and preservation
 
 The existing React 19 / TypeScript / Vite public app, Django 6.1 / DRF backend, protected React admin, JWT/browser sessions, PostgreSQL deployment and persistent private-media volume were extended. Existing SMTP configuration is reused through Django's email backend. No new framework, identity system, external email SDK or PDF viewer dependency was added.
 
-The workspace already contained extensive uncommitted/staged performance work. It was retained. The initial working-tree/index patches and original status were captured under `/tmp/codinghubs-existing-*`; these are local preservation files, not deployment inputs. Existing performance edits were not committed or reset.
+The workspace already contained extensive uncommitted/staged performance work. It was retained. The initial working-tree/index patches and original status were captured under `/tmp/codinghubs-existing-*`; these are local preservation files, not deployment inputs. Existing performance edits were not committed or reset by this session.
 
 **Content inventory:** 43 course routes, 25 source-backed preparation mappings and 20 curricula remain. All **693 existing JSON data files** in the initial inventory are byte-for-byte unchanged. Existing roadmap/article/question identifiers and local progress keys remain stable. Eight original topic guides were added. The server search catalogue contains 259 resource URLs and also searches newly published database interview questions. See `artifacts/platform/content-preservation.json`.
 
@@ -171,11 +171,11 @@ Machine-readable evidence is under `artifacts/platform/`; screenshots include `i
 
 ## Main implementation surfaces
 
-- Public UI: `frontend/src/interview/`, `frontend/src/community/`, `frontend/src/shop-pages/account.tsx`.
-- Routing/static rendering: `frontend/src/App.tsx`, `frontend/src/entry-server.tsx`, `frontend/scripts/prerender.mjs`, `frontend/nginx.conf`.
-- Authenticated state/search: `backend/apps/accounts/interview.py`, `backend/apps/accounts/models.py`, `backend/apps/courses/progress_import.py`.
-- Newsletter: `backend/apps/newsletter/` and `admin-panel/src/CommunityAdmin.tsx`.
-- Brochures: `backend/apps/courses/brochures.py`, `backend/apps/courses/test_brochures.py`, course admin controls and `cleanup_brochures` management command.
+- Public UI: `frontend/src/interview/`, `frontend/src/community/`, [Unified account](../frontend/src/shop-pages/account.tsx).
+- Routing/static rendering: [Public routing](../frontend/src/App.tsx), `frontend/src/entry-server.tsx`, `frontend/scripts/prerender.mjs`, [Nginx routes and upload limits](../frontend/nginx.conf).
+- Authenticated state/search: [Interview search and owner-scoped state](../backend/apps/accounts/interview.py), `backend/apps/accounts/models.py`, [Guest import](../backend/apps/courses/progress_import.py).
+- Newsletter: `backend/apps/newsletter/` and [Admin controls](../admin-panel/src/CommunityAdmin.tsx).
+- Brochures: [Brochure validation/storage/downloads](../backend/apps/courses/brochures.py), `backend/apps/courses/test_brochures.py`, course admin controls and `cleanup_brochures` management command.
 - Setup: `docker-compose.prod.yml`, environment examples, the migrations listed above.
 
 Genuine external limitations: public inspiration/live-site access failed; SMTP sender/provider and worker activation were not verified live; production field performance and Docker sandbox execution were unavailable. These do not represent placeholder persistence or simulated production delivery.
@@ -184,4 +184,4 @@ Genuine external limitations: public inspiration/live-site access failed; SMTP s
 
 Public development preview: http://127.0.0.1:5178/interview/ (with the isolated review API). Admin preview: http://127.0.0.1:5177/admin-panel/. Production-style local nginx review: https://localhost:5181/ with a locally generated, self-signed review certificate. These are local review services, not a deployment.
 
-The remote-tracking branch advanced by two commits while this work was in progress. No merge/rebase, commit or push was performed for this task; reconcile that remote advance before a later requested push, preserving the existing staged/unstaged performance work.
+The branch advanced outside this session through `cd81171`, merge `3b0993a`, `d90f024` and conflict fix `c6f460d`; local `main` and `origin/main` matched at the start of final verification. Those implementation commits were created outside this session. Final checks were repeated against that combined state; no history rewrite or rollback was attempted.
