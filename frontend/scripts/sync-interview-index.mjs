@@ -1,4 +1,4 @@
-import { readFile,writeFile } from 'node:fs/promises'
+import { mkdir,readFile,writeFile } from 'node:fs/promises'
 import path from 'node:path'
 const root=path.resolve(import.meta.dirname,'../..')
 const read=async p=>JSON.parse(await readFile(path.join(root,p),'utf8'))
@@ -31,7 +31,10 @@ for(const level of genai){
 }
 const serialized=JSON.stringify(rows.sort((a,b)=>a.url.localeCompare(b.url)))+'\n'
 const destination=path.join(root,'backend/apps/accounts/interview_catalog.json')
-if(process.argv.includes('--check')){if(await readFile(destination,'utf8')!==serialized)throw Error('Interview index is stale. Run npm run interview:sync.')}else await writeFile(destination,serialized)
+if(process.argv.includes('--check')){if(await readFile(destination,'utf8')!==serialized)throw Error('Interview index is stale. Run npm run interview:sync.')}else {
+ await mkdir(path.dirname(destination),{recursive:true})
+ await writeFile(destination,serialized)
+}
 console.log(`Interview catalog: ${rows.length} existing/new resource URLs; full text stays on the server.`)
 
 const summariesPath=path.join(root,"frontend/src/interview/summaries.json")
