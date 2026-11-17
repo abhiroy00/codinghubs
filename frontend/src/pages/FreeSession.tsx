@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { SITE_FONTS } from '../lib/fonts'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useLenisRef } from '../lib/lenis-context'
 import { useRegisterPopup } from '../lib/register-popup'
 import { FS_CSS } from '../lib/fs-css'
@@ -9,7 +9,6 @@ import { FsFooter } from '../locations/FsShell'
 import { COURSES } from './free-session/data'
 import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
 import { FsIcon } from './free-session/icons'
-import { PROGRAMS } from './free-session/programs'
 import { Header } from '../components/Header'
 import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
 import { HomePathways } from './free-session/HomePathways'
@@ -22,7 +21,6 @@ import { HOME_META, pageSeo } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
 
 const HOME_SEO = pageSeo(HOME_META)
-const PROGRAM_ICONS = ['i-code', 'i-line', 'i-spark']
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
 
@@ -245,16 +243,16 @@ export function FreeSession() {
         <section className="sec plan-sec" id="program" aria-labelledby="program-title">
           <div className="wrap">
             <div className="sec-head center reveal">
-              <p className="eyebrow">Programs</p>
+              <p className="eyebrow">Free live session</p>
               <h2 id="program-title" className="h2">
-                Start <span className="marker">Free</span>. Then Go Deeper in 15&nbsp;Days.
+                Start with a <span className="marker">Free Live</span> Session.
               </h2>
-              <p className="sub">Attend the free demo session first. If you like it, join the paid 15-day training program for the same course.</p>
+              <p className="sub">Attend a free demo, see how we teach and ask your questions before choosing a course.</p>
             </div>
 
             <article className="demo-pass" aria-labelledby="demo-pass-title">
               <div className="dp-stub" aria-hidden="true">
-                <span className="dp-step">Step 1</span>
+                <span className="dp-step">Free demo</span>
                 <span className="dp-free">FREE</span>
                 <span className="dp-admit">Admit one · Live class</span>
               </div>
@@ -281,45 +279,8 @@ export function FreeSession() {
               </div>
             </article>
 
-            <div className="sec-head center programs-step">
-              <h3 className="h3-section">
-                Step 2 — Then Choose Your <span className="marker">15-Day Program</span>
-              </h3>
-              <p className="sub">Tap a program to see the full day-by-day plan before you enroll.</p>
-            </div>
-
-            <div className="programs-grid rm-grid">
-              {PROGRAMS.map((program, i) => {
-                const milestones = [0, 7, program.days.length - 1].map((d) => ({ day: d + 1, title: program.days[d]?.title })).filter((m) => m.title)
-                return (
-                  <Link to={`/program/${program.slug}`} key={program.slug} className={`rm-card rm-t${i % 3}`}>
-                    <div className="rm-top">
-                      <div className="rm-top-row">
-                        <span className="rm-ico" aria-hidden="true"><FsIcon id={PROGRAM_ICONS[i % PROGRAM_ICONS.length]} /></span>
-                        <span className="rm-badge">Paid · 15-day program</span>
-                      </div>
-                      <h3>{program.title}</h3>
-                      <ol className="rm-strip" aria-hidden="true">
-                        {program.days.map((_, d) => <li key={d} className={d === 0 || d === 7 || d === program.days.length - 1 ? 'on' : ''}>{d + 1}</li>)}
-                      </ol>
-                    </div>
-                    <div className="rm-body">
-                      <p className="rm-desc">{program.tagline}</p>
-                      <ol className="rm-miles" aria-label={`${program.title} milestones`}>
-                        {milestones.map((m) => (
-                          <li key={m.day}><span>Day {m.day}</span>{m.title}</li>
-                        ))}
-                      </ol>
-                      <p className="plan-meta rm-meta"><FsIcon id="i-cal" />15 Days · Online Live</p>
-                      <span className="rm-cta">View Day-by-Day Plan <FsIcon id="i-arrow" /></span>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-
             <p className="plan-note">
-              <FsIcon id="i-ticket" />Registering for the free demo costs nothing. Contact us for details of the 15-day programs.
+              <FsIcon id="i-ticket" />Registering for the free demo costs nothing.
             </p>
           </div>
         </section>
