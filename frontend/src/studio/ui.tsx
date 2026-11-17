@@ -84,7 +84,7 @@ export function Brand() {
     <Link to={ROOT} className="st-brand" aria-label="Coding Hubs School of AI — Interview Studio">
       <span className="st-brand-pill">
         <picture>
-          <source srcSet="/assets/coding-hubs-school-of-ai-logo-wide.webp" type="image/webp" />
+          <source srcSet="/assets/coding-hubs-school-of-ai-logo-wide-w288.webp 288w, /assets/coding-hubs-school-of-ai-logo-wide.webp 720w" sizes="132px" type="image/webp" />
           <img
             className="st-brand-logo"
             src="/assets/coding-hubs-school-of-ai-logo-wide.png"

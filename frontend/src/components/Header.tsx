@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { SITE_FONTS } from '../lib/fonts'
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useRegisterPopup } from "../lib/register-popup";
 import { useLenisRef } from "../lib/lenis-context";
-import { useScopedStylesheet } from "../hooks/useScopedStylesheet";
 import { ResourcesMenu } from "../locations/ResourcesMenu";
 import { IconSprite } from "../pages/free-session/icons";
 import { ScrollProgress } from "./ScrollProgress";
@@ -23,9 +21,6 @@ const LINKS = [
 
 /** One primary navigation for marketing pages, accounts and learning workspaces. */
 export function Header({ mainId = "main" }: { mainId?: string }) {
-  useScopedStylesheet([
-    SITE_FONTS,
-  ]);
   const auth = useOptionalAuth();
   const { pathname, hash } = useLocation();
   const [open, setOpen] = useState(false);

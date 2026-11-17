@@ -10,6 +10,8 @@ export interface Program {
   image: string
   imageWidth: number
   imageHeight: number
+  /** WebP widths generated next to the JPG as <name>-w<width>.webp */
+  webpWidths: number[]
   days: ProgramDay[]
 }
 
@@ -19,7 +21,7 @@ export const PROGRAMS: Program[] = [
     title: 'Vibe Coding with AI',
     tagline: 'Build real, working apps by pairing with AI coding assistants — describe, generate, test and ship.',
     image: '/fs-assets/img/modern-virtual-classroom-studio.jpg',
-    imageWidth: 1280, imageHeight: 801,
+    imageWidth: 1280, imageHeight: 801, webpWidths: [640, 1280],
     days: [
       { title: 'Welcome & your AI coding setup', desc: 'Meet your trainer, install your AI coding assistant (Claude / Copilot / Cursor), and understand how the 15 days are structured.' },
       { title: 'How AI understands code', desc: 'Learn how LLMs read and write code, and how to prompt them clearly for programming tasks instead of vague requests.' },
@@ -43,7 +45,7 @@ export const PROGRAMS: Program[] = [
     title: 'Data Analytics with AI',
     tagline: 'Go from spreadsheets to real analysis — Python, SQL, dashboards and AI-assisted insights.',
     image: '/fs-assets/img/live-python-class-studio.jpg',
-    imageWidth: 1280, imageHeight: 683,
+    imageWidth: 1280, imageHeight: 683, webpWidths: [640, 1280],
     days: [
       { title: 'Welcome to data analytics', desc: 'What a data analyst actually does day to day, and how AI tools are changing the job.' },
       { title: 'Spreadsheets + AI', desc: 'Faster analysis in Excel / Google Sheets using AI-assisted formulas and summaries.' },
@@ -67,7 +69,7 @@ export const PROGRAMS: Program[] = [
     title: 'AI for All',
     tagline: 'No coding background needed — practical AI skills for students, professionals and business owners.',
     image: '/fs-assets/img/banner.jpg',
-    imageWidth: 1600, imageHeight: 533,
+    imageWidth: 1600, imageHeight: 533, webpWidths: [800, 1600],
     days: [
       { title: 'What is AI, really?', desc: 'Demystifying AI, machine learning and large language models in plain language — no jargon.' },
       { title: 'Getting started with ChatGPT/Claude', desc: 'Prompting basics: how to ask AI for what you actually want, and get useful answers.' },
@@ -91,3 +93,6 @@ export const PROGRAMS: Program[] = [
 export function getProgram(slug: string | undefined) {
   return PROGRAMS.find((p) => p.slug === slug)
 }
+
+/** srcset of a program's WebP banner variants. */
+export const programWebpSrcSet = (p: Program) => p.webpWidths.map((w) => `${p.image.replace(/\.jpg$/, '')}-w${w}.webp ${w}w`).join(', ')

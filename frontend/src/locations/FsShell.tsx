@@ -12,14 +12,24 @@ import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from 
 function HLink({ home, to, children, ...rest }: { home: boolean; to: string; children: React.ReactNode } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>) {
   return home ? <a href={to} {...rest}>{children}</a> : <Link to={to} {...(rest as object)}>{children}</Link>
 }
+/** WebP logo widths: 288 covers the ~140px-wide header logo on 1x/2x screens, 720 covers 3x screens. */
+export const LOGO_WIDE_SRCSET = '/assets/coding-hubs-school-of-ai-logo-wide-w288.webp 288w, /assets/coding-hubs-school-of-ai-logo-wide.webp 720w'
+
+/** Wide logo as WebP with the PNG as fallback. `displayWidth` is the CSS width it renders at (for srcset selection). */
+export function LogoWide({ alt, displayWidth, className, lazy, style }: { alt: string; displayWidth: number; className?: string; lazy?: boolean; style?: React.CSSProperties }) {
+  return (
+    <picture>
+      <source srcSet={LOGO_WIDE_SRCSET} sizes={`${displayWidth}px`} type="image/webp" />
+      <img className={className} src={LOGO_WIDE} alt={alt} width={720} height={208} loading={lazy ? 'lazy' : undefined} decoding={lazy ? 'async' : undefined} style={style} />
+    </picture>
+  )
+}
 
 export function BrandLogo({ home = false }: { home?: boolean }) {
+  // .brand-logo is 40px tall at most (free-session.css), i.e. about 139px wide.
   const inner = (
     <span className="brand-pill">
-      <picture>
-        <source srcSet="/assets/coding-hubs-school-of-ai-logo-wide.webp" type="image/webp" />
-        <img className="brand-logo" src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
-      </picture>
+      <LogoWide className="brand-logo" alt="Coding Hubs School of AI" displayWidth={139} />
     </span>
   )
   return home ? (
@@ -79,7 +89,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
         <div className="fx-grid">
           <div className="fx-brand">
             <Link to="/" className="fx-logo" aria-label="Coding Hubs School of AI home">
-              <img src={LOGO_WIDE} alt="Coding Hubs School of AI logo" width={720} height={208} loading="lazy" />
+              <LogoWide alt="Coding Hubs School of AI logo" displayWidth={160} lazy />
             </Link>
             <p>Practical AI &amp; development training for learners across Delhi NCR. Learn live, build real projects, ask your questions.</p>
           </div>

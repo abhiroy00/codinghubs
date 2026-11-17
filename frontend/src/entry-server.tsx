@@ -15,6 +15,7 @@ import { Curriculum } from './pages/Curriculum'
 import { BookTutor } from './pages/BookTutor'
 import { LatestJobs } from './pages/LatestJobs'
 import { FreeSession } from './pages/FreeSession'
+import { FIRST_SLIDE_PRELOAD } from './pages/free-session/hero-slides'
 import { StudioLanding } from './studio/Landing'
 import { NotFound } from './pages/NotFound'
 import { LocationsIndex } from './locations/LocationsIndex'
@@ -64,6 +65,8 @@ export interface PrerenderedPage {
   fsDesign: boolean
   html: string
   jsonLd?: unknown
+  /** Images in the initial viewport to preload from <head> (srcset/sizes must equal the <img>'s). */
+  preloadImages?: { imagesrcset: string; imagesizes: string }[]
 }
 
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
@@ -123,6 +126,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       </AuthProvider>,
     ),
     jsonLd: HOME_META.jsonLd,
+    preloadImages: [FIRST_SLIDE_PRELOAD],
   })
 
   const learningPages = [

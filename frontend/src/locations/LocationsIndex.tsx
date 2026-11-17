@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { SITE_FONTS } from '../lib/fonts'
 import { Link } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
@@ -28,7 +27,6 @@ export function LocationsIndex() {
   useSeo(INDEX_SEO)
   useScopedStylesheet([
     FS_CSS,
-    SITE_FONTS,
   ])
   useEffect(() => {
     window.scrollTo(0, 0)

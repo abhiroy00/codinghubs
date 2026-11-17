@@ -1,6 +1,5 @@
 import { useMemo, useState, type CSSProperties } from 'react'
 import { FS_CSS } from '../../lib/fs-css'
-import { SITE_FONTS } from '../../lib/fonts'
 import { useScopedStylesheet } from '../../hooks/useScopedStylesheet'
 import { FsHeader } from '../../locations/FsShell'
 import { SiteFooter } from '../../components/SiteFooter'
@@ -67,7 +66,7 @@ function Logo({ tool }: { tool: AiTool }) {
 
 export function AiTools() {
   useSeo(AI_TOOLS_SEO)
-  useScopedStylesheet([FS_CSS, SITE_FONTS])
+  useScopedStylesheet([FS_CSS])
   const [category, setCategory] = useState<AiToolCategory | ''>('')
   const shown = useMemo(() => (category ? AI_TOOLS.filter((t) => t.category === category) : AI_TOOLS), [category])
   const rows = stagger(shown)

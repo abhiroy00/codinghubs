@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { SITE_FONTS } from '../lib/fonts'
 import { Navigate, useParams } from 'react-router-dom'
 import { getCachedContent, loadContent } from './content-loader'
 import { LocationView } from './LocationView'
@@ -14,7 +13,6 @@ import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 export function LocationRoute() {
   useScopedStylesheet([
     FS_CSS,
-    SITE_FONTS,
   ])
   const { slug } = useParams<{ slug: string }>()
   const meta = getLocation(slug)

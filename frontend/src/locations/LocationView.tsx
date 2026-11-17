@@ -15,6 +15,12 @@ const FIGURES: Record<string, { src: string; alt: string }> = {
   projects: { src: '/assets/ai/team.jpg', alt: 'AI-generated illustration of learners and professionals building an AI chatbot and data dashboard together' },
 }
 
+/** WebP widths generated next to each /assets/ai/loc/<slug>.jpg (the JPG stays as fallback and og:image). */
+const LOCATION_HERO_WIDTHS = [640, 960, 1280]
+/** Rendered width of .lv-hero-img: nearly full width on phones/tablets, a 522px column on desktop. */
+const LOCATION_HERO_SIZES = '(max-width: 960px) 94vw, 522px'
+const locationHeroSrcSet = (slug: string) => LOCATION_HERO_WIDTHS.map((w) => `/assets/ai/loc/${slug}-w${w}.webp ${w}w`).join(', ')
+
 const KICKERS: Record<string, { label: string; icon: string }> = {
   'understanding-ai': { label: 'AI basics', icon: 'i-monitor' },
   'why-learn-ai': { label: 'Why now', icon: 'i-clock' },
@@ -89,7 +95,10 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               </div>
               <div className="lv-visual">
                 <figure className="lv-hero-img">
-                  <img src={`/assets/ai/loc/${meta.slug}.jpg`} alt={`AI-generated illustration of learners studying artificial intelligence, with a ${meta.short} backdrop`} width={1280} height={725} fetchPriority="high" />
+                  <picture>
+                    <source type="image/webp" srcSet={locationHeroSrcSet(meta.slug)} sizes={LOCATION_HERO_SIZES} />
+                    <img src={`/assets/ai/loc/${meta.slug}.jpg`} alt={`AI-generated illustration of learners studying artificial intelligence, with a ${meta.short} backdrop`} width={1280} height={725} />
+                  </picture>
                   <span className="lv-chip lv-chip-1">Free 2-hour live online demo</span>
                   <span className="lv-chip lv-chip-2">Learn from {meta.short}</span>
                 </figure>
@@ -161,7 +170,10 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
                   ))}
                   {FIGURES[s.id] && (
                     <figure className="loc-fig">
-                      <img src={FIGURES[s.id].src} alt={FIGURES[s.id].alt} width={1024} height={768} loading="lazy" decoding="async" />
+                      <picture>
+                        <source type="image/webp" srcSet={FIGURES[s.id].src.replace(/\.jpg$/, '.webp')} />
+                        <img src={FIGURES[s.id].src} alt={FIGURES[s.id].alt} width={1024} height={768} loading="lazy" decoding="async" />
+                      </picture>
                       <figcaption>AI-generated illustration</figcaption>
                     </figure>
                   )}

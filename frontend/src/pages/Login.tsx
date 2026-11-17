@@ -76,12 +76,15 @@ export function Login() {
     <section className="auth-page" aria-labelledby="login-heading">
       <div className="auth-card">
         <aside className="auth-visual" aria-hidden="true">
-          <img
-            src="/fs-assets/img/modern-virtual-classroom-studio.jpg"
-            alt=""
-            width={1280}
-            height={801}
-          />
+          <picture>
+            <source type="image/webp" srcSet="/fs-assets/img/modern-virtual-classroom-studio-w640.webp 640w, /fs-assets/img/modern-virtual-classroom-studio-w1280.webp 1280w" sizes="(max-width: 900px) 100vw, 50vw" />
+            <img
+              src="/fs-assets/img/modern-virtual-classroom-studio.jpg"
+              alt=""
+              width={1280}
+              height={801}
+            />
+          </picture>
           <span className="auth-badge">
             <i />
             LIVE COHORTS

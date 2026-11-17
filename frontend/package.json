@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "npm run genai:sync && npm run roadmap:sync",
-    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/precompress.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "validate:locations": "node scripts/validate-locations.mjs",
@@ -42,6 +42,7 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "jsdom": "^29.1.1",
+    "lightningcss": "^1.33.0",
     "oxlint": "^1.81.0",
     "prettier": "^3.10.0",
     "typescript": "~6.0.2",
