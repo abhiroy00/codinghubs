@@ -204,4 +204,7 @@ class CourseBrochure(models.Model):
     original_name = models.CharField(max_length=120)
     size = models.PositiveIntegerField(default=0)
     is_published = models.BooleanField(default=False, db_index=True)
+    # Optional public cover for the website card: WebP files below MEDIA_ROOT (480 and 960 px wide), made by brochures.save_cover.
+    cover_key = models.CharField(max_length=200, blank=True)
+    cover_small_key = models.CharField(max_length=200, blank=True)
     updated_at = models.DateTimeField(auto_now=True)

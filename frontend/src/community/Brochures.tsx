@@ -19,6 +19,8 @@ type Brochure = {
   size: number;
   download_url: string;
   view_url: string;
+  cover_url: string;
+  cover_small_url: string;
   updated_at: string;
 };
 const size = (bytes: number) =>
@@ -128,10 +130,16 @@ export function Brochures() {
           </p>
         ) : (
           // Same markup as the server page (backend newsletter/brochures.html), so nothing moves when React takes over.
-          // No image yet: the card is text-only until brochure covers are added.
+          // The cover image is optional (added in the admin panel); without one the card is text-only.
           <div className="brochure-grid">
             {data.map((b) => (
               <article className="brochure-card" key={b.id}>
+                {b.cover_url && (
+                  // Optional cover from the admin panel, in a fixed 16:9 frame (no layout shift). Decorative: the title follows.
+                  <div className="brochure-cover">
+                    <img src={b.cover_url} srcSet={`${b.cover_small_url} 480w, ${b.cover_url} 960w`} sizes="(max-width: 700px) calc(100vw - 3rem), 400px" alt="" width={960} height={540} loading="lazy" decoding="async" />
+                  </div>
+                )}
                 <p className="brochure-course">{b.course_name}</p>
                 <h2>{b.title}</h2>
                 {b.description && <p className="brochure-desc">{b.description}</p>}

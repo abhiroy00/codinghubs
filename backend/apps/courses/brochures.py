@@ -1,11 +1,15 @@
 import logging
 import math
 import uuid
+from io import BytesIO
 from pathlib import PurePosixPath
 from django.conf import settings
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.db import transaction
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
+from PIL import Image, ImageOps, UnidentifiedImageError
 from rest_framework import generics, permissions, serializers
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
@@ -16,6 +20,50 @@ from apps.shop.downloads import safe_name
 from .models import Course, CourseBrochure
 
 logger = logging.getLogger(__name__)
+
+
+COVER_MAX_BYTES = 5 * 1024 * 1024
+COVER_FORMATS = {'JPEG', 'PNG', 'WEBP'}
+COVER_MAX_PIXELS = 40_000_000
+COVER_WIDTHS = (480, 960)  # card on phones / on wide screens and 2x displays (srcset in Brochures.tsx)
+
+
+def save_cover(upload):
+    """Decode the image with Pillow and re-encode it as WebP at the card sizes (drops metadata and anything hidden in
+    the file; never upscales). Returns the (small, large) keys in the public media storage."""
+    if upload.size > COVER_MAX_BYTES:
+        raise serializers.ValidationError({'cover': 'Choose an image no larger than 5 MB.'})
+    try:
+        image = Image.open(upload)
+        if image.format not in COVER_FORMATS or image.width * image.height > COVER_MAX_PIXELS:
+            raise ValueError
+        image.load()
+    except (UnidentifiedImageError, ValueError, OSError, Image.DecompressionBombError) as error:
+        raise serializers.ValidationError({'cover': 'Upload a JPEG, PNG or WebP image (max 5 MB).'}) from error
+    image = ImageOps.exif_transpose(image)
+    image = image.convert('RGBA' if 'A' in image.getbands() else 'RGB')
+    stem = uuid.uuid4().hex
+    keys = []
+    try:
+        for width in COVER_WIDTHS:
+            copy = image.copy()
+            copy.thumbnail((width, width * 4), Image.LANCZOS)
+            out = BytesIO()
+            copy.save(out, 'WEBP', quality=80, method=6)
+            keys.append(default_storage.save(f'brochure-covers/{stem}-{width}.webp', ContentFile(out.getvalue())))
+    except Exception:
+        remove_cover(*keys)
+        raise
+    return keys[0], keys[1]
+
+
+def remove_cover(*keys):
+    for key in keys:
+        if key:
+            try:
+                default_storage.delete(key)
+            except OSError:
+                logger.warning('Brochure cover cleanup failed for %s.', key)
 
 
 def size_label(size):
@@ -49,10 +97,12 @@ class Metadata(serializers.ModelSerializer):
     course_name = serializers.CharField(source='course.name', read_only=True)
     download_url = serializers.SerializerMethodField()
     view_url = serializers.SerializerMethodField()
+    cover_url = serializers.SerializerMethodField()
+    cover_small_url = serializers.SerializerMethodField()
 
     class Meta:
         model = CourseBrochure
-        fields = ['id', 'course_id', 'course_slug', 'course_name', 'title', 'description', 'download_name', 'size', 'is_published', 'updated_at', 'download_url', 'view_url']
+        fields = ['id', 'course_id', 'course_slug', 'course_name', 'title', 'description', 'download_name', 'size', 'is_published', 'updated_at', 'download_url', 'view_url', 'cover_url', 'cover_small_url']
         read_only_fields = fields
 
     def get_download_url(self, obj):
@@ -60,6 +110,12 @@ class Metadata(serializers.ModelSerializer):
 
     def get_view_url(self, obj):
         return f'/api/courses/brochures/{obj.course.slug}/view/'
+
+    def get_cover_url(self, obj):
+        return f'{settings.MEDIA_URL}{obj.cover_key}' if obj.cover_key else ''
+
+    def get_cover_small_url(self, obj):
+        return f'{settings.MEDIA_URL}{obj.cover_small_key}' if obj.cover_small_key else ''
 
 
 class AdminMetadata(Metadata):
@@ -184,7 +240,41 @@ class AdminBrochure(APIView):
     def delete(self, request, pk):
         with transaction.atomic():
             row = get_object_or_404(CourseBrochure.objects.select_for_update(), course_id=pk)
-            key = row.storage_key
+            key, covers = row.storage_key, (row.cover_small_key, row.cover_key)
             row.delete()
             transaction.on_commit(lambda: remove_file(key), robust=True)
+            transaction.on_commit(lambda: remove_cover(*covers), robust=True)
         return Response(status=204)
+
+
+class AdminBrochureCover(APIView):
+    """Optional cover image for the brochure's website card. The PDF has to be uploaded first."""
+    permission_classes = [IsStaff]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def put(self, request, pk):
+        upload = request.FILES.get('cover')
+        if not upload:
+            raise serializers.ValidationError({'cover': 'Choose a cover image.'})
+        get_object_or_404(CourseBrochure, course_id=pk)
+        small, large = save_cover(upload)
+        try:
+            with transaction.atomic():
+                row = get_object_or_404(CourseBrochure.objects.select_for_update().select_related('course'), course_id=pk)
+                old = (row.cover_small_key, row.cover_key)
+                row.cover_small_key, row.cover_key = small, large
+                row.save()
+                transaction.on_commit(lambda: remove_cover(*old), robust=True)
+        except Exception:
+            remove_cover(small, large)
+            raise
+        return Response(AdminMetadata(row).data)
+
+    def delete(self, request, pk):
+        with transaction.atomic():
+            row = get_object_or_404(CourseBrochure.objects.select_for_update().select_related('course'), course_id=pk)
+            old = (row.cover_small_key, row.cover_key)
+            row.cover_small_key = row.cover_key = ''
+            row.save()
+            transaction.on_commit(lambda: remove_cover(*old), robust=True)
+        return Response(AdminMetadata(row).data)

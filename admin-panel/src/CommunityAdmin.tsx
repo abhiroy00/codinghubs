@@ -662,6 +662,8 @@ type Brochure = {
   is_published: boolean;
   updated_at: string;
   download_url: string;
+  cover_url: string;
+  cover_small_url: string;
 };
 export function BrochureAdmin() {
   const { id } = useParams();
@@ -674,6 +676,7 @@ export function BrochureAdmin() {
   });
   const [data, setData] = useState<Brochure | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [cover, setCover] = useState<File | null>(null);
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -725,6 +728,28 @@ export function BrochureAdmin() {
       setForm(r.data);
       setFile(null);
       setNote("Brochure saved.");
+    } catch (e) {
+      setError(message(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function saveCover(remove = false) {
+    setBusy(true);
+    setError("");
+    setNote("");
+    try {
+      let r;
+      if (remove) r = await adminApi.delete<Brochure>(`/courses/${id}/brochure/cover/`);
+      else {
+        if (!cover) return;
+        const body = new FormData();
+        body.append("cover", cover);
+        r = await adminApi.put<Brochure>(`/courses/${id}/brochure/cover/`, body);
+      }
+      setData(r.data);
+      setCover(null);
+      setNote(remove ? "Cover image removed." : "Cover image saved.");
     } catch (e) {
       setError(message(e));
     } finally {
@@ -864,6 +889,47 @@ export function BrochureAdmin() {
               : "Save details and status"}
         </button>
       </form>
+      {data && (
+        <section className="cm-form" aria-labelledby="brochure-cover-h">
+          <h2 id="brochure-cover-h">Cover image (optional)</h2>
+          <p className="ad-muted">
+            Shown at the top of this brochure's card on the website. The card
+            frame is landscape 16:9 (for example 1200 × 675); other shapes are
+            cropped to fit. JPEG, PNG or WebP up to 5 MB, optimised
+            automatically.
+          </p>
+          {data.cover_small_url ? (
+            <img
+              src={data.cover_small_url}
+              alt="Current cover"
+              width={320}
+              height={180}
+              style={{ objectFit: "cover", borderRadius: 10, border: "1px solid #d9e2f0", background: "#eef3fb" }}
+            />
+          ) : (
+            <p>No cover image yet: the card shows text only.</p>
+          )}
+          <label>
+            {data.cover_url ? "Replace cover image" : "Cover image"}
+            <input
+              key={data.cover_url || "no-cover"}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={(e) => setCover(e.target.files?.[0] || null)}
+            />
+          </label>
+          <div>
+            <button type="button" className="ad-btn" disabled={busy || !cover} onClick={() => saveCover()}>
+              {busy ? "Saving…" : "Upload cover image"}
+            </button>{" "}
+            {data.cover_url && (
+              <button type="button" className="ad-btn" disabled={busy} onClick={() => window.confirm("Remove the cover image?") && saveCover(true)}>
+                Remove cover image
+              </button>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

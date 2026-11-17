@@ -1,4 +1,6 @@
 import tempfile
+from io import BytesIO
+from PIL import Image
 from pathlib import Path
 from unittest.mock import patch
 from django.contrib.auth import get_user_model
@@ -124,3 +126,48 @@ class BrochureTests(TestCase):
         self.assertEqual(status(), 'published')
         self.api.force_authenticate(None)
         self.assertEqual(self.api.get('/api/courses/brochures/').status_code, 200)
+
+
+    def test_cover_image_upload_replace_and_remove(self):
+        media = tempfile.TemporaryDirectory()
+        self.addCleanup(media.cleanup)
+        with override_settings(MEDIA_ROOT=media.name):
+            cover_url = self.url + 'cover/'
+            self.api.force_authenticate(self.staff)
+
+            def image(fmt='PNG', size=(1600, 900)):
+                out = BytesIO()
+                Image.new('RGB', size, (20, 80, 200)).save(out, fmt)
+                return SimpleUploadedFile('cover.' + fmt.lower(), out.getvalue(), content_type='image/' + fmt.lower())
+
+            self.assertEqual(self.api.put(cover_url, {'cover': image()}, format='multipart').status_code, 404)  # PDF first
+            self.upload(is_published='true')
+            first = self.api.put(cover_url, {'cover': image()}, format='multipart')
+            self.assertEqual(first.status_code, 200)
+            row = CourseBrochure.objects.get(course=self.course)
+            for key, width in ((row.cover_small_key, 480), (row.cover_key, 960)):
+                path = Path(media.name) / key
+                self.assertTrue(key.startswith('brochure-covers/') and key.endswith('.webp'))
+                with Image.open(path) as saved:
+                    self.assertEqual((saved.format, saved.width), ('WEBP', width))
+            self.assertEqual(first.data['cover_url'], '/media/' + row.cover_key)
+            self.api.force_authenticate(None)
+            public = self.api.get(self.public).data
+            self.assertEqual((public['cover_url'], public['cover_small_url']), ('/media/' + row.cover_key, '/media/' + row.cover_small_key))
+            self.api.force_authenticate(self.student)
+            self.assertEqual(self.api.put(cover_url, {'cover': image()}, format='multipart').status_code, 403)
+            self.api.force_authenticate(self.staff)
+            bad = self.api.put(cover_url, {'cover': SimpleUploadedFile('x.png', b'not an image', content_type='image/png')}, format='multipart')
+            self.assertEqual(bad.status_code, 400)
+            with self.captureOnCommitCallbacks(execute=True):
+                small = self.api.put(cover_url, {'cover': image('JPEG', (300, 200))}, format='multipart')
+            self.assertEqual(small.status_code, 200)
+            old = row
+            row = CourseBrochure.objects.get(course=self.course)
+            self.assertFalse((Path(media.name) / old.cover_key).exists())
+            with Image.open(Path(media.name) / row.cover_key) as saved:
+                self.assertEqual(saved.width, 300)  # never upscaled
+            with self.captureOnCommitCallbacks(execute=True):
+                removed = self.api.delete(cover_url)
+            self.assertEqual((removed.status_code, removed.data['cover_url']), (200, ''))
+            self.assertFalse((Path(media.name) / row.cover_key).exists())

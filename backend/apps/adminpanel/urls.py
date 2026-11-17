@@ -6,6 +6,7 @@ from apps.courses import brochures
 urlpatterns = [
     path('courses/<int:pk>/brochure/', brochures.AdminBrochure.as_view()),
     path('courses/<int:pk>/brochure/download/', brochures.AdminDownload.as_view()),
+    path('courses/<int:pk>/brochure/cover/', brochures.AdminBrochureCover.as_view()),
     path('login/', views.AdminLoginView.as_view(), name='admin-login'),
     path('stats/', views.StatsView.as_view(), name='admin-stats'),
     path('change-password/', views.ChangePasswordView.as_view(), name='admin-change-password'),
