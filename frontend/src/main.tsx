@@ -39,13 +39,22 @@ async function start() {
     : null
   // Lazy route wrappers too: if the first render has to wait for one, React commits the empty Suspense fallback
   // over the prerendered page (a blank flash, a layout shift and a late LCP) until the chunk arrives.
+<<<<<<< HEAD
   const wrapper = /^\/(learn|visual-lab|interview-studio|faq|courses)(\/|$)/.test(path) || (/^\/interview(\/|$)/.test(path) && !/\/levels\//.test(path))
+=======
+  const wrapper = /^\/(learn|visual-lab|interview-studio|faq|courses)(\/|$)/.test(path) || (/^\/interview-prep(\/|$)/.test(path) && !/\/levels\//.test(path))
+>>>>>>> be068415c233d90148f2ac0838c3e023ae7a5c38
     ? import('./learning/LearnFrame')
     : /^\/(policies|login|register|forgot-password|reset-password|enroll)(\/|$)/.test(path) ? import('./components/Layout')
     : null
   await Promise.all([lazyPage, wrapper].map((p) => p?.catch(() => null)))
+<<<<<<< HEAD
   const prep = path.match(/^\/interview\/([^/]+)\/?$/)
   const genai = path.match(/^\/interview\/generative-ai\/levels\/(\d+)(\/|$)/)
+=======
+  const prep = path.match(/^\/interview-prep\/([^/]+)\/?$/)
+  const genai = path.match(/^\/interview-prep\/generative-ai\/levels\/(\d+)(\/|$)/)
+>>>>>>> be068415c233d90148f2ac0838c3e023ae7a5c38
   if(genai) await Promise.all([import('./learning/GenAILearning'),loadGenAILevel(Number(genai[1]))]).catch(()=>null)
   const subject=path.match(/^\/interview\/([^/]+)\/levels\//)
   if(subject&&subject[1]!=='generative-ai') await Promise.all([import('./learning/CourseRoadmapLearning'),import('./learning/course-roadmap-content').then(m=>m.loadCourseRoadmap(subject[1]))]).catch(()=>null)

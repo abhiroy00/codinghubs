@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+<<<<<<< HEAD
     "prebuild": "npm run genai:sync && npm run roadmap:sync && npm run interview:sync",
+=======
+    "prebuild": "npm run genai:sync && npm run roadmap:sync",
+>>>>>>> be068415c233d90148f2ac0838c3e023ae7a5c38
     "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/precompress.mjs",
     "lint": "oxlint",
     "preview": "vite preview",

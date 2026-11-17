@@ -8,16 +8,23 @@
  * current page. Skipped on slow or data-saving connections.
  */
 const ROUTES: [RegExp, () => Promise<unknown>][] = [
+<<<<<<< HEAD
   [/^\/interview\/?$/, () => Promise.all([import('../interview/InterviewHub'),import('../learning/LearnFrame')])],
   [/^\/interview\/guides\//, () => import('../interview/InterviewGuide')],
   [/^\/newsletter(?:\/|$)/, () => import('../community/Newsletter')],
   [/^\/brochures(?:\/|$)/, () => import('../community/Brochures')],
+=======
+>>>>>>> be068415c233d90148f2ac0838c3e023ae7a5c38
   [/^\/blog\/?$/, () => import('./../content-pages/BlogList')],
   [/^\/(blog|case-studies)\/[^/]+/, () => import('./../content-pages/Article')],
   [/^\/case-studies\/?$/, () => import('./../content-pages/CaseList')],
   [/^\/projects(\/|$)/, () => import('./../shop-pages/projects')],
   [/^\/project-guides(\/|$)/, () => import('./../shop-pages/guides')],
+<<<<<<< HEAD
   [/^\/(courses|interview)(\/|$)/, () => Promise.all([import('./../learning/CourseLearning'), import('./../learning/LearnFrame')])],
+=======
+  [/^\/(courses|interview-prep)(\/|$)/, () => Promise.all([import('./../learning/CourseLearning'), import('./../learning/LearnFrame')])],
+>>>>>>> be068415c233d90148f2ac0838c3e023ae7a5c38
   [/^\/program\//, () => import('./../pages/Curriculum')],
   [/^\/locations\/?$/, () => import('./../locations/LocationsIndex')],
 ]
