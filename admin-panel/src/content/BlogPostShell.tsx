@@ -11,12 +11,22 @@ type BlogApi = ReturnType<typeof useContentForm<BlogForm>>
 export function BlogPostShell({ api, children, uploading = false }: { api: BlogApi; children: ReactNode; uploading?: boolean }) {
   const { form, busy, dirty, loading, notice, recover, revisions, errors } = api
   const [confirm, setConfirm] = useState(false)
+  const [dateError, setDateError] = useState('')
   const disabled = busy || uploading
   const live = form.status === 'published' || form.status === 'scheduled'
   const future = !!form.published_at && new Date(form.published_at).getTime() > Date.now()
+  /** The publish date is mandatory: a post never goes out undated. */
+  const hasDate = () => {
+    if (form.published_at) {
+      setDateError('')
+      return true
+    }
+    setDateError('The publish date is required. Keep today’s date or choose when this post should go live.')
+    return false
+  }
   if (loading) return <p role="status">Loading post…</p>
   return (
-    <form className="ad-post ad-blog-post" noValidate onSubmit={(e) => { e.preventDefault(); if (!disabled) void api.save() }}>
+    <form className="ad-post ad-blog-post" noValidate onSubmit={(e) => { e.preventDefault(); if (!disabled && hasDate()) void api.save() }}>
       <header className="ad-blog-heading">
         <div>
           <Link to="/blogs" className="ad-blog-back">← All posts</Link>
@@ -32,12 +42,27 @@ export function BlogPostShell({ api, children, uploading = false }: { api: BlogA
       </div>}
       {notice && <div className={`ad-notice ${notice.type}`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.text}</div>}
       <div className="ad-post-card"><div className="ad-post-body">{children}</div></div>
+      <section className="ad-section ad-blog-date">
+        <Field
+          label="Publish date"
+          htmlFor="published_at"
+          error={errors.published_at || dateError}
+          hint="Required. Already set to today — change it to schedule the post for a future date."
+        >
+          <input
+            id="published_at"
+            type="datetime-local"
+            className="ad-input"
+            required
+            aria-required="true"
+            value={form.published_at}
+            onChange={(e) => { setDateError(''); api.set('published_at', e.target.value) }}
+          />
+        </Field>
+      </section>
       <details className="ad-section ad-blog-options" open={!!errors.published_at}>
-        <summary>Publishing options <span className="ad-muted">Optional</span></summary>
+        <summary>Publishing options</summary>
         <div className="ad-section-body">
-          <Field label="Publish date" htmlFor="published_at" error={errors.published_at} hint="Leave empty to publish now. Choose a future date to schedule.">
-            <input id="published_at" type="datetime-local" className="ad-input" value={form.published_at} onChange={(e) => api.set('published_at', e.target.value)} />
-          </Field>
           <label className="ad-check"><input type="checkbox" checked={form.is_featured} onChange={(e) => api.set('is_featured', e.target.checked)} />Feature this post on the blog</label>
           {form.id && <div className="ad-blog-manage">
             {live && <button type="button" className="ad-btn" disabled={disabled} onClick={() => void api.action('unpublish', 'Post unpublished. It is now a draft.')}>Unpublish</button>}
@@ -58,7 +83,7 @@ export function BlogPostShell({ api, children, uploading = false }: { api: BlogA
         <div>
           <button type="submit" className="ad-btn" disabled={disabled}>{live ? 'Save changes' : 'Save draft'}</button>
           <button type="button" className="ad-btn" disabled={disabled} onClick={() => void api.preview()}>Preview</button>
-          <button type="button" className="ad-btn ad-btn-primary" disabled={disabled} onClick={() => void api.publish(form.published_at || undefined)}>{future ? 'Schedule post' : live ? 'Update post' : 'Publish post'}</button>
+          <button type="button" className="ad-btn ad-btn-primary" disabled={disabled} onClick={() => { if (hasDate()) void api.publish(form.published_at) }}>{future ? 'Schedule post' : live ? 'Update post' : 'Publish post'}</button>
         </div>
       </footer>
       {confirm && <ConfirmDelete title={form.title} onCancel={() => setConfirm(false)} onConfirm={() => void api.remove()} />}

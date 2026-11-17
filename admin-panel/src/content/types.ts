@@ -128,7 +128,8 @@ export function fromApi<T extends Common>(blank: T, data: any): T {
   const out: any = { ...blank }
   for (const k of Object.keys(blank)) if (data[k] !== undefined && data[k] !== null) out[k] = data[k]
   out.id = data.id
-  out.published_at = toLocalInput(data.published_at)
+  // An item without a stored publish date keeps the form's default (today) instead of going blank.
+  if (data.published_at) out.published_at = toLocalInput(data.published_at)
   if (Array.isArray(data.tags)) out.tag_names = data.tags
   out.related_ids = (data.related ?? []).map((r: { id: number }) => r.id)
   out.related_titles = data.related ?? []

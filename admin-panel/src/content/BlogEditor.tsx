@@ -1,15 +1,17 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { adminApi } from '../api'
 import { BlogPostShell } from './BlogPostShell'
 import { BlogCover } from './BlogCover'
 import { Chips, Field, Text, ThumbnailField } from './fields'
-import { blankBlog, MAX_BLOG_WORDS, readingMinutes, wordCount, type Taxon } from './types'
+import { blankBlog, MAX_BLOG_WORDS, readingMinutes, toLocalInput, wordCount, type Taxon } from './types'
 import { useContentForm } from './useContentForm'
 
 const BlogBodyEditor = lazy(() => import('./BlogBodyEditor').then((m) => ({ default: m.BlogBodyEditor })))
 
 export function BlogEditor() {
-  const api = useContentForm('blogs', blankBlog)
+  // Every post is dated the moment it is written; the admin can still change or schedule it.
+  const blank = useMemo(() => ({ ...blankBlog, published_at: toLocalInput(new Date().toISOString()) }), [])
+  const api = useContentForm('blogs', blank)
   const { form, set, errors } = api
   const [cats, setCats] = useState<Taxon[]>([])
   const [uploadingCover, setUploadingCover] = useState(false)
