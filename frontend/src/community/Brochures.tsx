@@ -27,36 +27,6 @@ const size = (bytes: number) =>
   bytes >= 1024 * 1024
     ? `${(bytes / 1024 / 1024).toFixed(1)} MB`
     : `${Math.ceil(bytes / 1024)} KB`;
-export function CourseBrochureDownload({ slug }: { slug: string }) {
-  const [data, setData] = useState<Brochure | null>(null);
-  const [error, setError] = useState(false);
-  useEffect(() => {
-    let active = true;
-    setData(null);
-    api
-      .get<Brochure>(`/courses/brochures/${slug}/`)
-      .then((r) => {
-        if (active) setData(r.data);
-      })
-      .catch((e) => {
-        if (active) setError(e.response?.status !== 404);
-      });
-    return () => {
-      active = false;
-    };
-  }, [slug]);
-  return data ? (
-    <a
-      className="learn-button learn-button-quiet"
-      href={data.download_url}
-      download
-    >
-      Download Brochure · {size(data.size)}
-    </a>
-  ) : error ? (
-    <span role="status">Brochure temporarily unavailable.</span>
-  ) : null;
-}
 export function Brochures() {
   useSeo(
     pageSeo({

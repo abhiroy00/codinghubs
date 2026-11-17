@@ -29,7 +29,7 @@ test("all site sections share the same header and place Locations inside Resourc
     await expect(primary.getByRole("link")).toHaveText([
       "Free Demo Classes",
       "Courses",
-      "Interview Prep",
+      "Interview",
       "Our Work",
       "AI Tools",
       "Jobs",
@@ -53,19 +53,11 @@ test("all site sections share the same header and place Locations inside Resourc
     expect(style, route).toEqual(expectedStyle);
     await primary
       .getByRole("button", { name: "Resources", exact: true })
-      .hover();
-    await expect(
-      primary.getByRole("link", { name: "Locations", exact: true }),
-    ).toBeVisible();
-    await primary
-      .getByRole("button", { name: "Resources", exact: true })
       .click();
     await expect(
       primary.getByRole("link", { name: "Locations", exact: true }),
     ).toBeVisible();
-    await expect(
-      primary.getByRole("link", { name: "Tutor", exact: true }),
-    ).toHaveAttribute("href", "/book-a-tutor/");
+    await expect(primary.locator('.sh-res:not(.sh-courses)').getByRole('link', { name: 'Tutor', exact: true })).toHaveCount(0);
     await expect(
       primary.locator(".sh-res-list").getByRole("link", { name: "Our Work" }),
     ).toHaveCount(0);
@@ -73,6 +65,10 @@ test("all site sections share the same header and place Locations inside Resourc
     await expect(
       primary.getByRole("link", { name: "Locations", exact: true }),
     ).not.toBeVisible();
+    await primary.getByRole('link', { name: 'Courses', exact: true }).hover();
+    await expect(primary.locator('.sh-courses ul a')).toHaveText(['Course Brochures', 'Tutor', 'Support']);
+    await expect(primary.getByRole('link', { name: 'Tutor', exact: true })).toHaveAttribute('href', '/book-a-tutor/');
+    await page.keyboard.press('Escape');
   }
 });
 

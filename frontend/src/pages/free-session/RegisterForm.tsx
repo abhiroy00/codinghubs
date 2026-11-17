@@ -265,6 +265,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
           </label>
           <select id={`${idPrefix}f-course`} name="course" required aria-describedby={`${idPrefix}e-course`} value={course} onChange={(e) => setCourse(e.target.value)} aria-invalid={!!errors.course}>
             <option value="">Choose a course</option>
+            {enrollment && prefillCourse && !COURSE_CATALOG.some(item => item.name === prefillCourse) && <option value={prefillCourse}>{prefillCourse}</option>}
             {enrollment ? COURSE_CATALOG.map((item) => <option key={item.slug} value={item.name}>{item.name}</option>) : COURSE_OPTIONS.map((g) => (
               <optgroup label={g.group} key={g.group}>
                 {g.items.map((c) => (

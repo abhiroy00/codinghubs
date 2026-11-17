@@ -298,7 +298,7 @@ test("all four learning and career pathways open their working pages", async ({
 }) => {
   const paths = [
     ["Courses", "/courses/"],
-    ["Interview Prep", "/interview-prep/"],
+    ["Interview", "/interview/"],
     ["Book a Tutor", "/book-a-tutor/"],
     ["Latest Jobs", "/latest-jobs/"],
   ];

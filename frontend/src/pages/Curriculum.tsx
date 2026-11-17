@@ -10,6 +10,7 @@ import { useRegisterPopup } from '../lib/register-popup'
 import { getProgram, programWebpSrcSet } from './free-session/programs'
 import { pageSeo, programMeta } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
+import { CourseBrochureSection } from '../learning/CourseBrochureSection'
 
 const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
 
@@ -52,6 +53,10 @@ export function Curriculum() {
             </ul>
           </div>
         </section>
+
+        <div className="wrap" style={{ paddingTop: '2rem' }}>
+          <CourseBrochureSection key={program.slug} course={{ slug: program.slug, name: program.title, category: '15-Day Training Program' }} />
+        </div>
 
         <section className="sec sec-alt curriculum-sec" aria-label={`${program.title} day-by-day plan`}>
           <div className="wrap">
