@@ -8,16 +8,16 @@ import { ScrollProgress } from "./ScrollProgress";
 import "./header.css";
 import { useOptionalAuth } from "../lib/auth-context";
 import { AccountMenu } from "./AccountMenu";
+import { CoursesMenu } from "./CoursesMenu";
 import "./chrome-colors.css";
 
 const LINKS = [
-  ["/courses/", "Courses"],
   ["/interview/", "Interview"],
   ["/our-work", "Our Work"],
   ["/ai-tools", "AI Tools"],
   ["/latest-jobs/", "Jobs"],
 ] as const;
-// Locations, Blog, Case Studies, Projects, Tutor, About the Session and Support live in <ResourcesMenu />.
+// Course Brochures, Tutor and Support live in <CoursesMenu />.
 
 /** One primary navigation for marketing pages, accounts and learning workspaces. */
 export function Header({ mainId = "main" }: { mainId?: string }) {
@@ -132,6 +132,7 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
             <a href="/#demo-classes" className="sh-link">
               Free Demo Classes
             </a>
+            <CoursesMenu key={`${pathname}${hash}`} />
             {LINKS.map(([to, label]) => (
               <NavLink key={to} to={to} className="sh-link">
                 {label}

@@ -165,6 +165,23 @@ html:root {
 .site-header .sh-res {
   position: relative;
 }
+.site-header .sh-courses-trigger {
+  display: flex;
+  align-items: center;
+}
+.site-header .sh-courses-trigger .sh-link {
+  padding-right: 2px;
+}
+.site-header .sh-courses-trigger .sh-res-button {
+  justify-content: center;
+  min-width: 32px;
+  min-height: 40px;
+  padding-inline: 6px;
+}
+.site-header .sh-courses .sh-res-list {
+  right: auto;
+  left: 0;
+}
 .site-header .sh-res-button svg {
   width: 14px;
   height: 14px;
@@ -337,6 +354,17 @@ html:root {
   }
   .site-header .sh-res-button {
     justify-content: space-between;
+  }
+  .site-header .sh-courses-trigger .sh-link {
+    flex: 1;
+    min-height: 44px;
+    padding: 12px;
+    font-size: 14px;
+  }
+  .site-header .sh-courses-trigger .sh-res-button {
+    width: 44px;
+    min-height: 44px;
+    padding: 12px;
   }
   .site-header .sh-res-list {
     position: static;

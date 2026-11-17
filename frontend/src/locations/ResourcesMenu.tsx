@@ -12,13 +12,10 @@ const pilotEnabled = () =>
 
 const LINKS = [
   ["/newsletter/", "Newsletter"],
-  ["/brochures/", "Course Brochures"],
   ["/locations/", "Locations"],
   ["/blog", "Blog"],
   ["/case-studies", "Case Studies"],
-  ["/book-a-tutor/", "Tutor"],
   ["/#session", "About the Session"],
-  [ "/#contact", "Support"],
 ] as const;
 
 /** A keyboard-accessible disclosure shared by desktop and mobile primary navigation. */
