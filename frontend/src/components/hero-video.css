@@ -8,6 +8,23 @@
   isolation: isolate;
   overflow: hidden;
 }
+.hv-host.hv-host.hv-host { margin-top: 0 !important; }
+/* Start page banners at the header; keep learning breadcrumbs over the banner. */
+.bl-main:has(.hv-host) {
+  position: relative;
+  padding-top: 0 !important;
+}
+.bl-main:has(.hv-host) > .breadcrumb {
+  position: absolute;
+  top: 0.75rem;
+  inset-inline: 0;
+  z-index: 2;
+  color: #d3dcea;
+}
+.bl-main:has(.hv-host) > .breadcrumb a { color: #ffffff; }
+.bl-main:has(> .breadcrumb) .hv-host {
+  padding-top: clamp(3.5rem, 5vw, 5.5rem) !important;
+}
 /* Still/video sits below the hero's own decorations (-2/-1) and content. Nothing in it takes clicks. */
 .hv-bg {
   position: absolute;
@@ -42,27 +59,8 @@
     linear-gradient(180deg, rgba(6, 11, 22, 0.8) 0%, rgba(6, 11, 22, 0.72) 42%, rgba(6, 11, 22, 0.88) 100%);
 }
 .hv-toggle {
-  position: absolute;
-  /* Top corner: visible on first view and clear of the fixed call/WhatsApp buttons at the bottom right. */
-  top: clamp(0.75rem, 2vw, 1.25rem);
-  right: clamp(0.75rem, 2vw, 1.5rem);
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 50%;
-  background: rgba(6, 11, 22, 0.55);
-  color: #fff;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition: background 0.2s, border-color 0.2s;
+  display: none;
 }
-.hv-toggle:hover { background: rgba(6, 11, 22, 0.8); border-color: #fff; }
-.hv-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-.hv-toggle svg { width: 16px; height: 16px; fill: currentColor; }
 
 /* Page clips (HeroVideo clip="...") pass their own posters; the home hero keeps the defaults above. */
 .hv-bg[style] { background-image: var(--hv-poster); }
@@ -142,9 +140,7 @@
 .hv-host.hv-host.hv-host.page-hero h1 span { color: var(--hv-ink) !important; }
 .hv-host.hv-host.hv-host.page-hero .eyebrow { color: var(--hv-accent) !important; }
 
-/* Learning library (/learn). The illustration panel keeps its own light card; the control moves to the
-   bottom corner so it does not sit on that card. */
-.hv-host.academy-hero > .hv-toggle { top: auto; bottom: clamp(0.75rem, 2vw, 1.25rem); }
+/* Learning library (/learn). The illustration panel keeps its own light card. */
 .hv-host.hv-host.hv-host.academy-hero {
   /* Full width (out of the learning frame's column); the content stays in that column. */
   max-width: none !important;
