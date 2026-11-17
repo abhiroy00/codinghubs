@@ -182,6 +182,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     image: POLICIES_META.image,
     indexable: POLICIES_META.indexable,
     fsDesign: false,
+    jsonLd: POLICIES_META.jsonLd,
     html: renderToString(
       <AuthProvider>
         <StaticRouter location="/policies">
