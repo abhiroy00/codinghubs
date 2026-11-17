@@ -9,7 +9,7 @@ export interface CourseRoadmapDay {day:number;id:string;title:string;available:b
 export interface CourseRoadmapData {slug:string;name:string;focus:string;track:string;tools:string[];projects:CourseDefinition['projects'];hasCoding:boolean;primary:string;levels:{level:number;title:string;start:number;end:number;articles:{id:string;slug:string;lesson:Lesson}[];questions:CourseRoadmapQuestion[];days:CourseRoadmapDay[];progressIds:RoadmapIds}[]}
 const modules=import.meta.env.SSR?{}:import.meta.glob<{default:CourseRoadmapData}>(['./course-roadmaps/*.json','!./course-roadmaps/manifest.json'])
 const cache=new Map<string,CourseRoadmapData>()
-export const courseLevelPath=(slug:string,level:number)=>`/interview-prep/${slug}/levels/${level}/`
+export {courseLevelPath} from './roadmap-paths'
 export const getCourseRoadmap=(slug:string)=>cache.get(slug)
 export async function loadCourseRoadmap(slug:string){
  if(cache.has(slug))return cache.get(slug)!

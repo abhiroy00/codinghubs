@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer-core'
 import fs from 'fs'
 const shell=fs.readFileSync((process.argv[2]||'dist')+'/content-shell.html','utf8')
 const b=await puppeteer.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:'new'})
-const pages=['/','/program/ai-for-all','/locations/','/locations/ai-course-in-rohini-delhi/','/book-a-tutor/','/courses/','/courses/agentic-ai/','/interview-prep/agentic-ai/','/certificates/','/policies','/login','/store','/blog','/projects','/cart']
+const pages=['/','/program/ai-for-all','/locations/','/locations/ai-course-in-rohini-delhi/','/book-a-tutor/','/courses/','/courses/agentic-ai/','/interview/agentic-ai/','/certificates/','/policies','/login','/store','/blog','/projects','/cart']
 const used={}; const total={}
 for(const u of pages){
  const p=await b.newPage();await p.setViewport({width:1280,height:900});await p.evaluateOnNewDocument(()=>localStorage.setItem('ch_registered','1'))

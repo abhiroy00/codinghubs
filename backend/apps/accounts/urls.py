@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from .interview import StateList, ResourceState
 from .views import (
     AccountDeleteView,
     AccountExportView,
@@ -15,6 +16,8 @@ from .views import (
 )
 
 urlpatterns = [
+    path('interview-state/', StateList.as_view()),
+    path('interview-state/resource/', ResourceState.as_view()),
     path('register/', RegisterView.as_view(), name='auth-register'),
     path('login/', LoginView.as_view(), name='auth-login'),
     path('google/', GoogleLoginView.as_view(), name='auth-google'),

@@ -1,0 +1,342 @@
+[
+  {
+    "slug": "sliding-window",
+    "title": "Sliding windows: reason about a moving interval",
+    "category": "DSA",
+    "difficulty": "Intermediate",
+    "summary": "Use an invariant to find the longest substring without repeated characters, then explain why the pointers move only forward.",
+    "sections": [
+      {
+        "id": "problem",
+        "title": "Start with the problem and a brute-force baseline",
+        "paragraphs": [
+          "Given a string, return the length of its longest contiguous substring containing no repeated character. For abcaef, the answer is 5: bcaef. A substring must be contiguous; a subsequence can skip positions and is a different problem. Ask whether comparison is case-sensitive and whether the input is restricted to a known alphabet before choosing a representation.",
+          "The obvious baseline chooses a starting position, extends an ending position and stops when a character repeats. Repeating this scan can take quadratic time. The useful observation is that the valid interval for the next position usually shares most of the previous interval. We can maintain that interval instead of reconstructing it."
+        ]
+      },
+      {
+        "id": "invariant",
+        "title": "State an invariant before writing the loop",
+        "paragraphs": [
+          "Maintain a half-open interval from left through the current position whose characters are unique. Store the most recent index of each character. When a character last appeared inside the current interval, move left just beyond that occurrence. Never move left backward: an older occurrence outside the interval imposes no new restriction.",
+          "For abba, the second b moves left to index 2. The final a was last seen at index 0, outside the interval, so left stays at 2. Omitting the maximum operation is a common bug: it moves left backward and incorrectly counts bba as unique."
+        ]
+      },
+      {
+        "id": "implementation",
+        "title": "A compact implementation",
+        "paragraphs": [
+          "The map contains indices, not just membership, so the left edge can jump directly. Empty input returns zero because the loop performs no iteration. The result is a length; retaining the best pair of boundaries would also let you return the substring."
+        ],
+        "language": "python",
+        "code": "def longest_unique(text):\n    last = {}\n    left = best = 0\n    for right, char in enumerate(text):\n        left = max(left, last.get(char, -1) + 1)\n        last[char] = right\n        best = max(best, right - left + 1)\n    return best\n\nassert longest_unique('abba') == 2\nassert longest_unique('abcaef') == 5\nassert longest_unique('') == 0"
+      },
+      {
+        "id": "tradeoffs",
+        "title": "Complexity and interview follow-ups",
+        "paragraphs": [
+          "Each right position is visited once and left never retreats, so expected time is O(n) with a hash map. Space is O(min(n, alphabet size)). Explain that a fixed array can replace the map only when the alphabet contract permits it. In a Unicode product, decide whether uniqueness refers to code points or user-perceived grapheme clusters; the Python loop uses code points.",
+          "Try modifying the rule to at most two distinct characters. A last-seen map alone no longer expresses the constraint: use character counts and shrink while the number of distinct keys exceeds two. For a sum-constrained window, check the sign of the input values. Negative values can break the monotonicity that makes a simple shrinking strategy correct."
+        ]
+      }
+    ],
+    "exercise": "Write tests for repeated identical characters, two separated repeats, a single character and a string containing spaces. Then return the actual best substring and explain your tie-breaking rule."
+  },
+  {
+    "slug": "database-indexes",
+    "title": "Database indexes: choose for the query, measure the cost",
+    "category": "SQL & Databases",
+    "difficulty": "Intermediate",
+    "summary": "Design a composite index for a real query and reason about ordering, selectivity, write amplification and execution plans.",
+    "sections": [
+      {
+        "id": "query-first",
+        "title": "Begin with one query and its access pattern",
+        "paragraphs": [
+          "An index is an auxiliary structure that helps the database find rows without scanning every row. It costs storage and work during writes. Start with the actual WHERE, ORDER BY and LIMIT clauses, the table size and the distribution of values. An index on a frequently mentioned column is not automatically useful.",
+          "Suppose a support screen asks for the newest open tickets for one customer. It filters on customer_id and status, orders by created_at descending and returns twenty rows. A composite index beginning with the equality predicates and continuing with the ordering column can avoid finding all matching rows and sorting them afterward."
+        ]
+      },
+      {
+        "id": "example",
+        "title": "An example index and query",
+        "paragraphs": [
+          "The query includes id as a deterministic tie-breaker because timestamps can repeat. Pagination based on this ordered pair can use a cursor; OFFSET becomes increasingly expensive on deep pages. Bind values through the database driver rather than concatenating untrusted values into SQL."
+        ],
+        "language": "sql",
+        "code": "CREATE INDEX tickets_customer_status_created\nON tickets (customer_id, status, created_at DESC, id DESC);\n\nSELECT id, subject, created_at\nFROM tickets\nWHERE customer_id = 42 AND status = 'open'\nORDER BY created_at DESC, id DESC\nLIMIT 20;"
+      },
+      {
+        "id": "explain",
+        "title": "Read the plan and check representative data",
+        "paragraphs": [
+          "Use EXPLAIN to inspect the planned operations, and use EXPLAIN ANALYZE carefully when executing the query against representative safe data is acceptable. Look at estimated versus actual rows, scans, sorts and total work. A small table may be faster to scan, and stale statistics can produce poor estimates. Do not force an index solely because it exists.",
+          "A B-tree follows its column order. The example is tailored to one customer and one status; it is not necessarily the best index for finding all open tickets across customers. A partial index for open tickets may be smaller, but only helps queries whose predicates imply that condition. Describe the workload and database engine before prescribing a universal ordering rule."
+        ]
+      },
+      {
+        "id": "costs",
+        "title": "Discuss writes, constraints and safe rollout",
+        "paragraphs": [
+          "Every relevant insert, delete or indexed-column update maintains index entries. Additional indexes can improve reads while slowing writes and increasing disk usage. A unique index also enforces an invariant, unlike a normal performance index. Neither kind removes the need for correct transaction boundaries in a multi-step workflow.",
+          "On a busy production table, investigate the database's supported online or concurrent index creation and failure cleanup. Measure the query before and after under similar data and cache conditions. Retain the old access path until the replacement is verified, and avoid deleting an index that also backs a constraint or a less frequent critical query."
+        ]
+      }
+    ],
+    "exercise": "Design an index for a newest-first list filtered by project_id and assignee_id. Explain what changes when assignee_id is optional, and write the two query shapes before choosing one or two indexes."
+  },
+  {
+    "slug": "cache-aside",
+    "title": "Cache-aside: latency, invalidation and stale reads",
+    "category": "System Design",
+    "difficulty": "Intermediate",
+    "summary": "Walk through a cache miss and a concurrent update, then choose TTL, failure behavior and stampede protection.",
+    "sections": [
+      {
+        "id": "request-path",
+        "title": "Describe the request path precisely",
+        "paragraphs": [
+          "In cache-aside, the application reads the cache first. On a miss, it reads the authoritative database, stores the result with an expiry and returns it. The cache accelerates access; it does not become the source of truth. State the key shape, ownership boundary and acceptable staleness before discussing implementation.",
+          "For public product descriptions, a key such as product:v3:42 includes an explicit schema version. A private account response also needs the user or tenant identity in the key, or it should bypass shared caching entirely. Never use a public URL alone as the cache key for a personalized response."
+        ]
+      },
+      {
+        "id": "race",
+        "title": "Walk through the stale-write race",
+        "paragraphs": [
+          "Reader A misses the cache and reads the old database value. Writer B updates the database and invalidates the cache. Reader A then puts its old value into the cache. Simple invalidation after writing does not eliminate this race. A TTL bounds stale residence, while versioned values or coordination can provide a stronger guarantee when the product requires it.",
+          "Choose the guarantee from the use case. A slightly stale article excerpt may be acceptable. Subscription eligibility, access revocation and an account balance should be checked against authoritative state at the decision point. Describe the failure consequence rather than promising that any single caching pattern is strongly consistent."
+        ]
+      },
+      {
+        "id": "misses",
+        "title": "Control stampedes and expensive misses",
+        "paragraphs": [
+          "When a popular key expires, many requests can hit the database at once. A short-lived per-key fill lock or request coalescing lets one request populate the value while others wait or use an allowed stale value. Add bounded random jitter to TTLs so many keys created together do not expire at the same instant.",
+          "Negative caching can reduce repeated requests for missing records, but its short TTL must account for newly created records. Large serialized values can cost more CPU and transfer time than the database query they replace. Measure hit rate together with latency, value size, eviction rate and database load; a high hit rate alone is not success."
+        ]
+      },
+      {
+        "id": "outage",
+        "title": "Specify behavior when the cache fails",
+        "paragraphs": [
+          "For an optional performance cache, a timeout should normally fall back to a bounded database request. Use a short cache timeout and a concurrency budget so a cache outage does not create an uncontrolled database surge. If the cache stores essential coordination state, silently treating it as optional is a correctness bug.",
+          "Test a warm cache, a cold cache, an expired value, concurrent writers and an unavailable cache. Compare p50 and tail latency under the same traffic model. Explain which stale results are acceptable and how an operator can disable the cache safely without changing business rules."
+        ]
+      }
+    ],
+    "exercise": "Draw the timeline for a cache miss racing with an update. Propose a versioned-key strategy and explain how you would retire old versions without exposing private cached data."
+  },
+  {
+    "slug": "oop-composition",
+    "title": "OOP design: composition and a small notification boundary",
+    "category": "OOP",
+    "difficulty": "Beginner",
+    "summary": "Separate a business action from message delivery using a small interface, then test behavior without a deep class hierarchy.",
+    "sections": [
+      {
+        "id": "responsibilities",
+        "title": "Identify responsibilities before creating classes",
+        "paragraphs": [
+          "Consider an enrollment service that validates a course choice, persists an enrollment and sends a notification. These are different reasons for change. Course rules change with the product; persistence changes with the database; delivery changes with the mail provider. Putting all three into a growing superclass makes independent changes harder to reason about.",
+          "Composition means constructing an object with the collaborators it needs. The enrollment service can depend on a small notification boundary rather than an SMTP client or a large inheritance tree. The interface should describe the business need, such as enrollment_received, without exposing provider-specific options to every caller."
+        ]
+      },
+      {
+        "id": "example",
+        "title": "A small boundary in code",
+        "paragraphs": [
+          "Python protocols describe the required behavior without requiring implementations to inherit from one base class. The example returns the persistence result and lets delivery be implemented independently. In a durable application, enqueue the notification after the transaction commits rather than sending it before the enrollment exists."
+        ],
+        "language": "python",
+        "code": "from typing import Protocol\n\nclass Notifier(Protocol):\n    def enrollment_received(self, enrollment_id: int) -> None: ...\n\nclass EnrollmentService:\n    def __init__(self, repository, notifier: Notifier):\n        self.repository = repository\n        self.notifier = notifier\n\n    def enroll(self, student_id, course_id):\n        enrollment = self.repository.create(student_id, course_id)\n        self.notifier.enrollment_received(enrollment.id)\n        return enrollment"
+      },
+      {
+        "id": "tradeoffs",
+        "title": "When inheritance still helps",
+        "paragraphs": [
+          "Inheritance is useful when a subtype can safely fulfill the contract of its parent. A subclass that rejects operations callers reasonably expect from the parent violates substitutability. Do not choose inheritance only to reuse a few lines; extracting a small helper or composing a collaborator may express the relationship more honestly.",
+          "Likewise, an interface for every one-line function is not automatically good design. Introduce a boundary where behavior varies, side effects need isolation or a dependency must be replaceable. Keep the public contract smaller than the implementation details it hides, and avoid passing an entire application context when two dependencies are sufficient."
+        ]
+      },
+      {
+        "id": "testing",
+        "title": "Test the contract and the failure paths",
+        "paragraphs": [
+          "Use a fake repository to supply a real domain-shaped enrollment and a recording notifier to capture the enrollment identifier. Assert that successful persistence leads to the expected notification request. Separately test repository failure, duplicate enrollment and notification failure. The service must not report a durable enrollment failure merely because an optional email timed out after commit.",
+          "In an interview, explain who owns retries and idempotency. A durable outbox makes a notification request recoverable after a process restart. The interface should make that boundary clear: enqueueing a message is different from proving it was delivered to an inbox."
+        ]
+      }
+    ],
+    "exercise": "Add an SMS notifier without changing enrollment rules. Then explain whether both channels should be called synchronously, queued independently or selected by user preference."
+  },
+  {
+    "slug": "processes-threads",
+    "title": "Processes and threads: shared memory changes the failure model",
+    "category": "Operating Systems",
+    "difficulty": "Beginner",
+    "summary": "Compare isolation and shared memory, trace a race condition, and explain why an atomic-looking operation can still lose updates.",
+    "sections": [
+      {
+        "id": "model",
+        "title": "Start with isolation and ownership",
+        "paragraphs": [
+          "A process has its own virtual address space and operating-system resources. Threads in one process share that process's memory while keeping separate execution state and stacks. A process boundary gives stronger fault and memory isolation, while threads make sharing data inexpensive and make synchronization necessary.",
+          "Neither is universally faster. Startup cost, memory footprint, the runtime, CPU versus I/O work and the cost of communication all matter. A web server can use several processes and several threads per process; calling it simply threaded or process-based can hide the actual concurrency model."
+        ]
+      },
+      {
+        "id": "race",
+        "title": "Trace a lost update",
+        "paragraphs": [
+          "Imagine two workers increasing a counter. Each reads 10, computes 11 and writes 11. The correct result is 12, but one update disappears. An expression such as counter += 1 can include multiple operations, and language syntax alone does not establish a synchronization guarantee.",
+          "A lock can protect the read-modify-write sequence inside one process. It does not coordinate unrelated server processes unless it is backed by an inter-process mechanism. For a database counter, an atomic database update or an appropriate transaction can enforce the invariant where the shared state actually lives."
+        ]
+      },
+      {
+        "id": "coordination",
+        "title": "Choose the smallest coordination mechanism",
+        "paragraphs": [
+          "A mutex grants exclusive access; a semaphore limits concurrent access to a resource; a condition variable lets a worker wait for a predicate while releasing a lock. Keep critical sections short and establish a consistent lock acquisition order. A lock held across a slow network call can turn a small correctness fix into a throughput bottleneck.",
+          "Deadlock requires a cycle of dependencies. If worker A holds one lock and waits for a second while worker B holds the second and waits for the first, neither progresses. Timeouts can make the failure recoverable, but avoiding inconsistent lock order is a stronger design choice than relying on timeouts alone."
+        ]
+      },
+      {
+        "id": "runtime",
+        "title": "Account for runtime and deployment details",
+        "paragraphs": [
+          "Some runtimes constrain parallel execution of language-level code, while native extensions or I/O operations may release those constraints. Verify the runtime version and build before asserting a universal rule. Concurrency means work can overlap; parallelism means work executes simultaneously. They solve related but different problems.",
+          "Test coordination across the actual deployment boundary. An in-memory rate limiter in one process does not enforce a global limit across four server workers. Similarly, a local thread lock does not protect two machines. Identify the shared state and use a database, shared cache or message boundary that all participants actually observe."
+        ]
+      }
+    ],
+    "exercise": "A service runs four processes with two threads each. Where would you store a strict per-account request quota, and why would a module-level dictionary plus a thread lock be insufficient?"
+  },
+  {
+    "slug": "http-retries",
+    "title": "HTTP retries and idempotency: recover without repeating a purchase",
+    "category": "Networking",
+    "difficulty": "Intermediate",
+    "summary": "Reason about a timeout after a server commit, classify retryable failures, and design a bounded idempotency-key contract.",
+    "sections": [
+      {
+        "id": "ambiguity",
+        "title": "A timeout does not prove failure",
+        "paragraphs": [
+          "A client sends a purchase request. The server commits the order, but the connection closes before the response arrives. The client sees a timeout and cannot know whether the operation happened. Retrying an operation that creates a new order on every request can charge twice. This ambiguity is a distributed-systems concern, not a frontend loading-state problem.",
+          "An idempotency key identifies one intended operation across retries. The client creates it once and retains it until the outcome is known. The server associates the key with the authenticated actor, a normalized request fingerprint and a recorded result. Reusing the key with different parameters must fail clearly rather than silently applying a different purchase."
+        ]
+      },
+      {
+        "id": "storage",
+        "title": "Persist the claim and business result together",
+        "paragraphs": [
+          "Enforce a unique constraint on the actor and key. Within the transaction, create or lock the idempotency record, perform the database work and record the result. Concurrent requests with the same key must converge on one operation. A process-local set is insufficient because it disappears on restart and cannot coordinate different workers.",
+          "External payment or email delivery cannot generally be included atomically in the local database transaction. Use the provider's idempotency mechanism when it exists and track durable state transitions. If a provider may have accepted a request before a timeout, record an ambiguous state and reconcile it rather than blindly generating a new request identifier."
+        ]
+      },
+      {
+        "id": "retry-policy",
+        "title": "Use bounded retries and classify the error",
+        "paragraphs": [
+          "Retry only failures whose semantics permit it. A malformed request or failed authorization will not become valid after a short delay. Transient connection failures, overload responses and selected server failures may be retryable, subject to the operation's contract. Respect Retry-After when provided and impose a total time budget as well as an attempt limit.",
+          "Exponential backoff with jitter spreads recovery attempts instead of synchronizing every client into another traffic spike. Set connection and response timeouts deliberately. A retry at each of several service layers can multiply work dramatically, so assign retry ownership and propagate a request deadline."
+        ]
+      },
+      {
+        "id": "tests",
+        "title": "Test the uncertain boundary",
+        "paragraphs": [
+          "Simulate a failure before the transaction starts, after the business row is committed and before the response is delivered. Repeat the same key concurrently and after a process restart. Test that another account cannot retrieve or reuse someone else's idempotency result. Also document key retention: an expired key must not be mistaken for a guarantee that a very old operation can safely be repeated.",
+          "In an interview answer, state exactly which effect is protected. One database order is different from exactly one physical email delivery. At-least-once delivery plus an idempotent consumer is often practical, but it requires the consumer's deduplication to be durable and aligned with the business operation."
+        ]
+      }
+    ],
+    "exercise": "Design the response for a second request using the same key while the first request is still running. Explain how the client learns whether to wait, retry or display the original result."
+  },
+  {
+    "slug": "javascript-event-loop",
+    "title": "JavaScript event loop: tasks, microtasks and a responsive page",
+    "category": "Languages",
+    "difficulty": "Intermediate",
+    "summary": "Predict promise and timer ordering, explain why async does not make CPU work parallel, and split expensive UI work safely.",
+    "sections": [
+      {
+        "id": "execution",
+        "title": "Separate the call stack from scheduled work",
+        "paragraphs": [
+          "JavaScript executes a piece of synchronous code on the current call stack. An asynchronous API can arrange later work without keeping that stack frame running. A promise callback does not interrupt the current synchronous function. It becomes eligible after the current work completes and the runtime reaches the relevant microtask checkpoint.",
+          "In a browser, timers and many event callbacks are tasks. Promise reactions and queueMicrotask callbacks use the microtask queue. The browser ordinarily drains pending microtasks before moving to another task or a rendering opportunity. This ordering explains common examples, but timing-sensitive rendering behavior should be tested in the actual runtime."
+        ]
+      },
+      {
+        "id": "example",
+        "title": "Predict an ordering example",
+        "paragraphs": [
+          "A and D are synchronous. B is a promise reaction and C is a timer callback, so the expected browser ordering is A, D, B, C. A timer delay of zero means no earlier than a later eligible task; it does not mean immediate execution or an exact scheduling deadline."
+        ],
+        "language": "javascript",
+        "code": "console.log('A');\nPromise.resolve().then(() => console.log('B'));\nsetTimeout(() => console.log('C'), 0);\nconsole.log('D');\n// Browser output: A, D, B, C"
+      },
+      {
+        "id": "cpu",
+        "title": "Async does not move CPU work off the main thread",
+        "paragraphs": [
+          "An async function runs synchronously until it reaches an await that yields. A long sorting loop before that point still blocks input and rendering. Awaiting an already resolved promise schedules continuation as a microtask; repeatedly doing this can keep the microtask queue busy without giving the browser a useful rendering opportunity.",
+          "For substantial computation, consider a worker and account for the cost of copying or transferring data. For incremental UI work, split the job into bounded chunks using an appropriate task scheduling mechanism supported by the target browsers. Start with measurement: a worker adds complexity and does not help when the bottleneck is a slow network response."
+        ]
+      },
+      {
+        "id": "failure",
+        "title": "Handle ordering, errors and cancellation together",
+        "paragraphs": [
+          "A search interface can receive the result for an older query after a newer query. Debouncing reduces requests but does not establish response ordering. Abort a previous request when possible and retain an identity or active flag so stale responses cannot replace current results. Handle rejected promises and distinguish cancellation from a real loading failure.",
+          "Use the performance panel to inspect long tasks and input responsiveness. Test a fast response, a slow response, rapid query changes and navigation away during a request. Explain which state is authoritative rather than assuming that the latest response to arrive belongs to the latest user action."
+        ]
+      }
+    ],
+    "exercise": "Add a second promise callback from inside B and a second timer from inside C. Predict the order, run it in a browser console, and explain any difference between prediction and observation."
+  },
+  {
+    "slug": "behavioral-evidence",
+    "title": "Behavioral interviews: turn a project into a clear evidence-based story",
+    "category": "Behavioral",
+    "difficulty": "Beginner",
+    "summary": "Prepare an honest project story that explains your contribution, trade-offs, evidence and learning without inventing impact.",
+    "sections": [
+      {
+        "id": "choose",
+        "title": "Choose a situation with a real decision",
+        "paragraphs": [
+          "A useful behavioral story contains a concrete problem, your responsibility and a decision under constraints. It does not require a dramatic launch or a famous employer. A student project, an internal tool or a volunteer task can work if you can explain what you actually did and what you learned.",
+          "Prepare stories about disagreement, an error, an ambiguous task and a technical trade-off. Choose examples you can discuss in depth. Interviewers often ask what you tried first, why it failed and what you would do differently. Memorizing polished claims without the underlying details makes those follow-ups harder."
+        ]
+      },
+      {
+        "id": "structure",
+        "title": "Use situation, task, action and result as a structure",
+        "paragraphs": [
+          "Keep the situation brief: who needed what, and what constraint made the problem difficult? State your task separately from the team's goal. Spend most of the answer on actions: the alternatives you considered, the evidence you gathered and the steps you personally took. Attribute collaborators' work accurately.",
+          "For the result, use evidence you actually have. A measured reduction in build time needs a baseline and comparable conditions. If the project was not deployed, say that the prototype passed the agreed tests and explain what remains unknown. An honest limited result is stronger than an invented percentage or a vague claim that everyone was delighted."
+        ]
+      },
+      {
+        "id": "example",
+        "title": "A concrete way to discuss a mistake",
+        "paragraphs": [
+          "Suppose you removed a homepage feature and later discovered that it also contained the only links to three still-public pages. Describe the original request, why the UI was removed, how the missing-link check exposed the consequence and how you restored navigation through a smaller footer entry. The lesson is about tracing dependencies and validating the built output.",
+          "Avoid blaming an automated check for catching a real issue. Explain which verification you added and why it protects the user requirement. If a colleague identified the problem, credit that contribution. The story becomes useful because it demonstrates ownership, a bounded correction and a change in your future practice."
+        ]
+      },
+      {
+        "id": "practice",
+        "title": "Prepare follow-ups and keep the answer conversational",
+        "paragraphs": [
+          "Write a short outline rather than a script. Rehearse a two-minute version, then a deeper version with technical details. Ask yourself what the strongest alternative was, what information you lacked at the time and which assumption proved wrong. This makes it easier to answer a follow-up directly instead of restarting the story.",
+          "Protect private information. Replace client identifiers and personal data with role descriptions, and avoid sharing credentials, internal metrics you are not permitted to disclose or colleagues' personal circumstances. You can describe the decision and your reasoning without exposing confidential records."
+        ]
+      }
+    ],
+    "exercise": "Write six bullet points for a real project: constraint, responsibility, alternatives, decision, verified outcome and next improvement. Remove any claim you cannot support with a concrete example."
+  }
+]

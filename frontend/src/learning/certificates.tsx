@@ -62,7 +62,7 @@ export function CourseTiles() {
               const done = days[course.slug] ?? 0
               const complete = !!certificates[course.slug] || done >= 30
               return (
-                <Link key={course.slug} to={`/interview-prep/${course.slug}/`} className={`prep-tile${complete ? ' done' : ''}`}>
+                <Link key={course.slug} to={`/interview/${course.slug}/`} className={`prep-tile${complete ? ' done' : ''}`}>
                   <span className="pt-ico"><FsIcon id={TRACK_ICON[course.track] ?? 'i-code'} /></span>
                   <span className="pt-name">{course.name}</span>
                   <span className="pt-meta">{complete ? 'Certificate ready' : done > 0 ? `${done}/30 days` : '30 days'}</span>
@@ -76,7 +76,7 @@ export function CourseTiles() {
   )
 }
 
-/** The certificate of one course, shown at the end of its interview-prep roadmap (locked until all 30 days are done). */
+/** The certificate of one course, shown at the end of its interview roadmap (locked until all 30 days are done). */
 export function CertificateSection({ slug }: { slug: string }) {
   const { user, days, certificates } = useCertificates()
   const course = COURSE_BY_SLUG.get(slug)

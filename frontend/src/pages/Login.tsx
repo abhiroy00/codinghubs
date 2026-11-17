@@ -8,7 +8,7 @@ import "./login.css";
 export function Login() {
   const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation() as { state?: { from?: { pathname: string } } };
+  const location = useLocation() as { state?: { from?: { pathname: string; search?:string; hash?:string } } };
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +18,7 @@ export function Login() {
   const [googleCredential, setGoogleCredential] = useState<string | null>(null);
 
   const goNext = () =>
-    navigate(location.state?.from?.pathname ?? "/dashboard", { replace: true });
+    navigate(location.state?.from ? location.state.from.pathname + (location.state.from.search || "") + (location.state.from.hash || "") : "/my-account", { replace: true });
 
   async function signInWithGoogle(
     credential: string,
@@ -76,12 +76,15 @@ export function Login() {
     <section className="auth-page" aria-labelledby="login-heading">
       <div className="auth-card">
         <aside className="auth-visual" aria-hidden="true">
-          <img
-            src="/fs-assets/img/modern-virtual-classroom-studio.jpg"
-            alt=""
-            width={1280}
-            height={801}
-          />
+          <picture>
+            <source type="image/webp" srcSet="/fs-assets/img/modern-virtual-classroom-studio-w640.webp 640w, /fs-assets/img/modern-virtual-classroom-studio-w1280.webp 1280w" sizes="(max-width: 900px) 100vw, 50vw" />
+            <img
+              src="/fs-assets/img/modern-virtual-classroom-studio.jpg"
+              alt=""
+              width={1280}
+              height={801}
+            />
+          </picture>
           <span className="auth-badge">
             <i />
             LIVE COHORTS

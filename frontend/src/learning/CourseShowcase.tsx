@@ -52,7 +52,7 @@ const FEATURES = [
   { title: 'Free Demo Class', text: 'Try a 2-hour live session before you decide. No payment needed.', art: 'tri' },
   { title: 'Industry-Relevant Content', text: 'Built around real tools, real projects and day-to-day workflows.', art: 'rings' },
   { title: 'Completion Certificate', text: 'Finish the 30-day roadmap to earn your course certificate.', art: 'slash' },
-  { title: 'Interview Preparation', text: 'Daily lessons, questions and challenges to get job-ready.', art: 'bars' },
+  { title: 'Interview', text: 'Daily lessons, questions and challenges to get job-ready.', art: 'bars' },
 ] as const
 
 function FeatureArt({ kind }: { kind: (typeof FEATURES)[number]['art'] }) {

@@ -35,7 +35,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
           Free Demo Class
         </Link>
         <Link className="m" to="/courses/" onClick={onClose}>Courses</Link>
-        <Link className="m" to="/interview-prep/" onClick={onClose}>Interview Prep</Link>
+        <Link className="m" to="/interview/" onClick={onClose}>Interview</Link>
         <Link className="m" to="/#why" onClick={onClose}>
           Success Stories
         </Link>

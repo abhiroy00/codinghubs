@@ -16,3 +16,16 @@ class LoginSession(models.Model):
     token_hash = models.CharField(max_length=64, primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='login_sessions')
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class InterviewState(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interview_state')
+    resource = models.CharField(max_length=500)
+    bookmarked = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
+    viewed_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'resource'], name='interview_state_owner_resource')]
+        ordering = ['-viewed_at', '-updated_at']

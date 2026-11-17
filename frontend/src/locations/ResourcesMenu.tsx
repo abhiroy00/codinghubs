@@ -11,6 +11,8 @@ const pilotEnabled = () =>
     .catch(() => false));
 
 const LINKS = [
+  ["/newsletter/", "Newsletter"],
+  ["/brochures/", "Course Brochures"],
   ["/locations/", "Locations"],
   ["/blog", "Blog"],
   ["/case-studies", "Case Studies"],
@@ -57,12 +59,6 @@ export function ResourcesMenu() {
     <div
       className="sh-res"
       ref={ref}
-      onMouseEnter={() => {
-        if (window.matchMedia("(hover:hover)").matches) setOpen(true);
-      }}
-      onMouseLeave={() => {
-        if (!ref.current?.contains(document.activeElement)) setOpen(false);
-      }}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null))
           setOpen(false);
@@ -74,11 +70,7 @@ export function ResourcesMenu() {
         ref={triggerRef}
         aria-expanded={open}
         aria-controls={listId}
-        onClick={() =>
-          setOpen((value) =>
-            window.matchMedia("(hover:hover)").matches && value ? true : !value,
-          )
-        }
+        onClick={() => setOpen(value => !value)}
       >
         Resources
         <svg

@@ -20,6 +20,9 @@ import { AssignmentReviewEditor, AssignmentReviewQueue } from './learning/Assign
 import { StudioAdmin } from './StudioAdmin'
 import './admin.css'
 
+const NewsletterAdmin = lazy(() => import('./CommunityAdmin').then(m=>({default:m.NewsletterAdmin})))
+const BrochureAdmin = lazy(() => import('./CommunityAdmin').then(m=>({default:m.BrochureAdmin})))
+
 const NAV: { heading: string; items: { to: string; label: string; icon: string; end?: boolean; count?: 'blogs' | 'cases' }[] }[] = [
   {
     heading: 'Learning platform',
@@ -43,6 +46,7 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
       { to: '/enrollments', label: 'Enrollments', icon: 'M12 3 2 8l10 5 8-4v6h2V8L12 3Zm-6 9.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-3.5l-6 3-6-3Z' },
       { to: '/orders', label: 'Course Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
       { to: '/users', label: 'Users', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
+      { to: '/newsletter', label: 'Newsletter', icon: 'M3 5h18v14H3V5Zm0 0 9 7 9-7' },
       { to: '/courses', label: 'Courses', icon: 'M4 5h16v3H4V5Zm0 5h16v3H4v-3Zm0 5h10v3H4v-3Z' },
       { to: '/jobs', label: 'Latest Jobs', icon: 'M9 4h6a2 2 0 0 1 2 2v1h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3V6a2 2 0 0 1 2-2Zm0 3h6V6H9v1Zm-4 5v6h14v-6H5Z' },
       { to: '/questions', label: 'Interview Questions', icon: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7 6a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm10 15H7v-6h10v6Z' },
@@ -285,6 +289,8 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
               }
             />
             <Route path="courses" element={<CoursesPage />} />
+            <Route path="courses/:id/brochure" element={<BrochureAdmin key={location.pathname} />} />
+            <Route path="newsletter" element={<NewsletterAdmin />} />
             <Route path="questions" element={<QuestionManager />} />
             <Route path="jobs" element={<JobsPage />} />
             <Route path="interview-studio" element={<StudioAdmin />} />

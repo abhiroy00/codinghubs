@@ -1,4 +1,7 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { GuestProgressImport } from '../interview/GuestProgressImport'
+import { InterviewActivity } from '../interview/ResourceActions'
+import '../community/public.css'
+import { lazy, Suspense, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { PageFrame } from '../content-pages/shared'
 import { UserAvatar } from '../components/AccountMenu'
@@ -8,8 +11,13 @@ import type { User } from '../lib/types'
 import { errorText } from './api'
 import './profile.css'
 
-type Section = 'personal' | 'security' | 'data'
+const LearningDashboard = lazy(() => import('../pages/Dashboard').then(m=>({default:m.Dashboard})))
+const StudioPreferences = lazy(() => import('../studio/pages').then(m=>({default:m.Profile})))
+type Section = 'personal' | 'security' | 'data' | 'learning' | 'interview' | 'studio'
 const SECTIONS: { id: Section; label: string; icon: string }[] = [
+  {id:'learning',label:'Courses & progress',icon:'M3 3h18v18H3z'},
+  {id:'interview',label:'Interview activity',icon:'M6 3h12v18l-6-4-6 4V3z'},
+  {id:'studio',label:'Studio preferences',icon:'M4 4h16v16H4z'},
   { id: 'personal', label: 'Personal Info', icon: 'M20 21v-2a7 7 0 0 0-14 0v2M17 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0' },
   { id: 'security', label: 'Security', icon: 'M6 11V8a6 6 0 1 1 12 0v3M5 11h14v10H5zM12 15v2' },
   { id: 'data', label: 'Your Data', icon: 'M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3Zm0 0v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3' },
@@ -260,12 +268,14 @@ export function MyAccount() {
                 <Icon d={s.icon} />{s.label}
               </button>
             ))}
-            <Link to="/dashboard" className="pf-nav-link">
-              <Icon d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" />My Dashboard<span aria-hidden="true">↗</span>
-            </Link>
+
           </nav>
         </aside>
         <section className="pf-main" aria-labelledby="pf-section-title">
+          {section === 'learning' && <GuestProgressImport/>}
+          {section === 'learning' && <Suspense fallback={<p role="status">Loading learning dashboard…</p>}><LearningDashboard embedded/></Suspense>}
+          {section === 'interview' && <InterviewActivity/>}
+          {section === 'studio' && <Suspense fallback={<p role="status">Loading preferences…</p>}><StudioPreferences embedded/></Suspense>}
           {section === 'personal' && <PersonalInfo user={user} onSaved={updateUser} />}
           {section === 'security' && <Security user={user} onSignOut={() => { void logout().then(() => navigate('/', { replace: true })) }} />}
           {section === 'data' && <YourData onDeleted={async () => { await logout(); navigate('/', { replace: true }) }} />}

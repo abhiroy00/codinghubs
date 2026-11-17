@@ -1,0 +1,14 @@
+import {chromium} from '@playwright/test'
+import assert from 'node:assert/strict'
+import {readFile,writeFile} from 'node:fs/promises'
+const tokens=JSON.parse(await readFile('/tmp/codinghubs-review-tokens.json','utf8'))
+const browser=await chromium.launch({channel:'chrome',headless:true});const results=[]
+try{
+ const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:390,height:844},reducedMotion:'reduce'}),page=await context.newPage();const base='https://localhost:5181'
+ const legacy=await context.request.get(base+'/interview-prep/generative-ai/levels/1/articles/ai-ml-deep-learning/?q=kept',{maxRedirects:0});assert.equal(legacy.status(),301);assert.ok(legacy.headers().location.endsWith('/interview/generative-ai/levels/1/articles/ai-ml-deep-learning/?q=kept'));results.push('Actual nginx permanent nested redirect retains query')
+ await page.goto(base+'/newsletter/',{waitUntil:'domcontentloaded'});await page.getByLabel('Email address').waitFor();await page.getByLabel('Email address').fill('browser-subscription@example.test');await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Subscribe free',exact:true}).click();await page.getByText('If eligible, a confirmation email will be queued. Check your inbox and confirm to subscribe.',{exact:true}).waitFor();results.push('Public signup records consent and queues confirmation, without sending real email')
+ const confirmation=await page.goto(base+'/newsletter/confirm/?token='+encodeURIComponent(tokens.confirm),{waitUntil:'domcontentloaded'});assert.equal(confirmation.headers()['referrer-policy'],'no-referrer');assert.ok(confirmation.headers()['cache-control'].includes('no-store'));await page.getByRole('button',{name:'Confirm subscription',exact:true}).click();await page.getByText('Subscription confirmed.',{exact:true}).waitFor();assert.equal(new URL(page.url()).search,'');results.push('Explicit confirmation works and removes token from browser URL; nginx sends no-referrer/no-store')
+ for(let i=0;i<2;i++){await page.goto(base+'/newsletter/unsubscribe/?token='+encodeURIComponent(tokens.unsubscribe),{waitUntil:'domcontentloaded'});await page.getByRole('button',{name:'Unsubscribe',exact:true}).click();await page.getByText('You have been unsubscribed.',{exact:true}).waitFor()}results.push('Explicit unsubscribe succeeds idempotently')
+ await page.goto(base+'/newsletter/issues/local-verification/',{waitUntil:'domcontentloaded'});await page.getByRole('heading',{name:'Local verification issue',exact:true}).waitFor();assert.equal(await page.locator('link[rel=canonical]').getAttribute('href'),'https://codinghubs.in/newsletter/issues/local-verification/');results.push('Published issue has rendered content and correct canonical')
+ await writeFile('../artifacts/platform/lifecycle-browser-results.json',JSON.stringify({results},null,2));console.log(`PASS: ${results.length} nginx and newsletter lifecycle groups`)
+}finally{await browser.close()}

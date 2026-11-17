@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { loadContent } from './locations/content-loader'
+// Self-hosted fonts first (index CSS, so every page has them, including the prerendered ones before JS runs).
+import './styles/fonts.css'
 import './styles/global.css'
 import { loadPrepGuide } from './learning/prep-content'
 import { loadGenAILevel } from './learning/genai-content'
@@ -24,18 +26,28 @@ async function start() {
   if (/^\/book-a-tutor(?:\/|$)/.test(path)) await import('./pages/BookTutor').catch(() => null)
   if (/^\/latest-jobs(?:\/|$)/.test(path)) await import('./pages/LatestJobs').catch(() => null)
   if (/^\/interview-studio(\/|$)/.test(path)) await import('./studio/Studio').catch(() => null)
+  if (/^\/interview\/guides\//.test(path)) await import('./interview/InterviewGuide').catch(()=>null)
+  if (/^\/interview\/?$/.test(path)) await import('./interview/InterviewHub').catch(()=>null)
+  if (/^\/newsletter(?:\/|$)/.test(path)) await import('./community/Newsletter').catch(()=>null)
+  if (/^\/brochures(?:\/|$)/.test(path)) await import('./community/Brochures').catch(()=>null)
   const lazyPage = /^\/program\//.test(path) ? import('./pages/Curriculum')
     : /^\/visual-lab\/?$/.test(path) ? import('./learning/VisualLab')
     : /^\/learn\/?$/.test(path) ? import('./learning/Academy')
     : /^\/learn\//.test(path) ? import('./learning/Learning')
-    : /^\/(courses|interview-prep)(\/|$)/.test(path) ? import('./learning/CourseLearning')
+    : (/^\/courses(?:\/|$)/.test(path) || /^\/interview\/(?!guides\/).+/.test(path)) ? import('./learning/CourseLearning')
     : /^\/locations\/?$/.test(path) ? import('./locations/LocationsIndex')
     : null
-  if (lazyPage) await lazyPage.catch(() => null)
-  const prep = path.match(/^\/interview-prep\/([^/]+)\/?$/)
-  const genai = path.match(/^\/interview-prep\/generative-ai\/levels\/(\d+)(\/|$)/)
+  // Lazy route wrappers too: if the first render has to wait for one, React commits the empty Suspense fallback
+  // over the prerendered page (a blank flash, a layout shift and a late LCP) until the chunk arrives.
+  const wrapper = /^\/(learn|visual-lab|interview-studio|faq|courses)(\/|$)/.test(path) || (/^\/interview(\/|$)/.test(path) && !/\/levels\//.test(path))
+    ? import('./learning/LearnFrame')
+    : /^\/(policies|login|register|forgot-password|reset-password|enroll)(\/|$)/.test(path) ? import('./components/Layout')
+    : null
+  await Promise.all([lazyPage, wrapper].map((p) => p?.catch(() => null)))
+  const prep = path.match(/^\/interview\/([^/]+)\/?$/)
+  const genai = path.match(/^\/interview\/generative-ai\/levels\/(\d+)(\/|$)/)
   if(genai) await Promise.all([import('./learning/GenAILearning'),loadGenAILevel(Number(genai[1]))]).catch(()=>null)
-  const subject=path.match(/^\/interview-prep\/([^/]+)\/levels\//)
+  const subject=path.match(/^\/interview\/([^/]+)\/levels\//)
   if(subject&&subject[1]!=='generative-ai') await Promise.all([import('./learning/CourseRoadmapLearning'),import('./learning/course-roadmap-content').then(m=>m.loadCourseRoadmap(subject[1]))]).catch(()=>null)
   if (prep) await loadPrepGuide(prep[1]).catch(() => null)
   prefetchRoutesWhenIdle()

@@ -1,0 +1,66 @@
+[
+  {
+    "url": "/interview/guides/behavioral-evidence/",
+    "title": "Behavioral interviews: turn a project into a clear evidence-based story",
+    "category": "Behavioral",
+    "difficulty": "Beginner",
+    "summary": "Prepare an honest project story that explains your contribution, trade-offs, evidence and learning without inventing impact.",
+    "kind": "guide"
+  },
+  {
+    "url": "/interview/guides/cache-aside/",
+    "title": "Cache-aside: latency, invalidation and stale reads",
+    "category": "System Design",
+    "difficulty": "Intermediate",
+    "summary": "Walk through a cache miss and a concurrent update, then choose TTL, failure behavior and stampede protection.",
+    "kind": "guide"
+  },
+  {
+    "url": "/interview/guides/database-indexes/",
+    "title": "Database indexes: choose for the query, measure the cost",
+    "category": "SQL & Databases",
+    "difficulty": "Intermediate",
+    "summary": "Design a composite index for a real query and reason about ordering, selectivity, write amplification and execution plans.",
+    "kind": "guide"
+  },
+  {
+    "url": "/interview/guides/http-retries/",
+    "title": "HTTP retries and idempotency: recover without repeating a purchase",
+    "category": "Networking",
+    "difficulty": "Intermediate",
+    "summary": "Reason about a timeout after a server commit, classify retryable failures, and design a bounded idempotency-key contract.",
+    "kind": "guide"
+  },
+  {
+    "url": "/interview/guides/javascript-event-loop/",
+    "title": "JavaScript event loop: tasks, microtasks and a responsive page",
+    "category": "Languages",
+    "difficulty": "Intermediate",
+    "summary": "Predict promise and timer ordering, explain why async does not make CPU work parallel, and split expensive UI work safely.",
+    "kind": "guide"
+  },
+  {
+    "url": "/interview/guides/oop-composition/",
+    "title": "OOP design: composition and a small notification boundary",
+    "category": "OOP",
+    "difficulty": "Beginner",
+    "summary": "Separate a business action from message delivery using a small interface, then test behavior without a deep class hierarchy.",
+    "kind": "guide"
+  },
+  {
+    "url": "/interview/guides/processes-threads/",
+    "title": "Processes and threads: shared memory changes the failure model",
+    "category": "Operating Systems",
+    "difficulty": "Beginner",
+    "summary": "Compare isolation and shared memory, trace a race condition, and explain why an atomic-looking operation can still lose updates.",
+    "kind": "guide"
+  },
+  {
+    "url": "/interview/guides/sliding-window/",
+    "title": "Sliding windows: reason about a moving interval",
+    "category": "DSA",
+    "difficulty": "Intermediate",
+    "summary": "Use an invariant to find the longest substring without repeated characters, then explain why the pointers move only forward.",
+    "kind": "guide"
+  }
+]

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
-import { SITE_FONTS } from '../lib/fonts'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { FS_CSS } from '../lib/fs-css'
@@ -53,7 +52,6 @@ function bookingError(error: unknown) {
 export function BookTutor() {
   useScopedStylesheet([
     FS_CSS,
-    SITE_FONTS,
   ])
 
   const initial = useMemo(() => {

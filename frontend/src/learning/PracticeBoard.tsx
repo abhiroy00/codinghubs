@@ -1,3 +1,4 @@
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import { CodeEditor } from './CodeEditor'
 
@@ -38,7 +39,10 @@ export function PracticeBoard({ slug, bank, loading, solved, onToggle }: { slug:
   const [company, setCompany] = useState('')
   const [role, setRole] = useState('')
   const [provenance, setProvenance] = useState('')
-  const [openId, setOpenId] = useState<number | null>(null)
+  const [params] = useSearchParams()
+  const navigate = useNavigate()
+  const openId = Number(params.get('question')) || null
+  const setOpenId = (id:number|null) => {const next = new URLSearchParams(params); if(id)next.set('question',String(id));else next.delete('question');navigate({search:next.toString(),hash:'#practice'})}
 
   const topicCounts = useMemo(() => {
     const m = new Map<string, number>()

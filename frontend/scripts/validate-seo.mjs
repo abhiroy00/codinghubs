@@ -18,6 +18,7 @@ const read = (f) => readFile(path.join(dist, f), 'utf8')
 
 /** Mirrors nginx.conf: where a clean URL is served from. */
 function resolveUrl(urlPath) {
+  if (/^\/(newsletter|brochures)(?:\/|$)/.test(urlPath)) return {file:'content-shell.html', dynamic:true}
   if (/^\/learn(?:\/|$)/.test(urlPath)) return {file: 'content-shell.html', dynamic: true}
   // Explicit Studio nginx locations: canonical landing has no slash; private routes use the SPA shell.
   if (urlPath === '/interview-studio') return { file: 'interview-studio/index.html' }
@@ -162,8 +163,8 @@ const sources = JSON.parse(await readFile(path.resolve(import.meta.dirname, '../
 const catalog = await readFile(path.resolve(import.meta.dirname, '../src/learning/catalog.ts'), 'utf8')
 const courseSlugs = [...catalog.matchAll(/^  \['([^']+)',/gm)].map(m => m[1])
 for (const slug of courseSlugs) {
-  const p = '/interview-prep/' + slug + '/'
-  const html = await read('interview-prep/' + slug + '/index.html')
+  const p = '/interview/' + slug + '/'
+  const html = await read('interview/' + slug + '/index.html')
   const source = sources[slug]
   const ready = (source?.availableDays ?? 0) >= 3
   const indexed = ready && source.primary === slug
@@ -177,7 +178,7 @@ for (const slug of courseSlugs) {
   } else if (!ready && !/<meta name="robots" content="noindex, follow"/.test(html)) fail(p + ' should remain noindex until distinct content is available')
   if (ready && source.primary !== slug && /<meta name="robots" content="noindex/.test(html)) fail(p + ' should use canonical consolidation without noindex')
   if (/is a core concept in|It improves reliability, maintainability and clarity|An unrelated concept/.test(html) && source) fail(p + ' exposes source template placeholders')
-  const expected = SITE + '/interview-prep/' + (source?.primary ?? slug) + '/'
+  const expected = SITE + '/interview/' + (source?.primary ?? slug) + '/'
   if (!html.includes('<link rel="canonical" href="' + expected + '"')) fail(p + ' canonical differs from source mapping')
 }
 if (urls.some(u => /\/gigs(?:\/|$)/.test(u))) fail('Staged marketplace must stay outside the sitemap')

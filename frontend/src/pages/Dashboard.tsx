@@ -74,7 +74,7 @@ function ContinueCard({ progress }: { progress: Load<ProgressRow> }) {
       <Status
         load={progress}
         error="We couldn’t load your learning progress. Please refresh the page."
-        empty={<><p><strong>No roadmap in progress yet.</strong></p><p>Pick a course and start its 30-day interview roadmap — your progress shows up here.</p><Link className="db-btn" to="/interview-prep/">Start a 30-day roadmap</Link></>}
+        empty={<><p><strong>No roadmap in progress yet.</strong></p><p>Pick a course and start its 30-day interview roadmap — your progress shows up here.</p><Link className="db-btn" to="/interview/">Start a 30-day roadmap</Link></>}
       >
         {active ? (
           <div className="db-feature">
@@ -87,10 +87,10 @@ function ContinueCard({ progress }: { progress: Load<ProgressRow> }) {
               {active.last_learning_date && <li><Ico d={I.cal} />Last studied {fmtDate(active.last_learning_date)}</li>}
             </ul>
             <Bar done={active.completed_days.length} />
-            <Link className="db-btn" to={`/interview-prep/${active.course_slug}/`}>Continue Day {active.current_day}</Link>
+            <Link className="db-btn" to={`/interview/${active.course_slug}/`}>Continue Day {active.current_day}</Link>
           </div>
         ) : (
-          <div className="db-empty"><p><strong>All your roadmaps are complete.</strong></p><p>Collect your certificates or start a new course.</p><Link className="db-btn" to="/dashboard?tab=certificates">View certificates</Link></div>
+          <div className="db-empty"><p><strong>All your roadmaps are complete.</strong></p><p>Collect your certificates or start a new course.</p><Link className="db-btn" to="/my-account?section=learning&tab=certificates">View certificates</Link></div>
         )}
       </Status>
     </section>
@@ -149,7 +149,7 @@ function Recommended({ progress, enrollments }: { progress: Load<ProgressRow>; e
   )
 }
 
-export function Dashboard() {
+export function Dashboard({ embedded = false }: {embedded?:boolean} = {}) {
   const { user } = useAuth()
   const [params, setParams] = useSearchParams()
   const requested = params.get('tab') as Tab | null
@@ -162,17 +162,16 @@ export function Dashboard() {
   const name = user?.first_name || user?.username || 'there'
   const started = progress.state === 'ready' ? progress.rows.filter((r) => r.completed_days.length > 0 || r.current_day > 1) : []
 
-  return (
-    <PageFrame wide>
+  const content = (
       <div className="db">
         <header className="db-hello">
-          <h1>Hi {name} <span aria-hidden="true">👋</span></h1>
+          {embedded ? <h2 id="pf-section-title">Your learning dashboard</h2> : <h1>Hi {name} <span aria-hidden="true">👋</span></h1>}
           <p>Welcome back to Coding Hubs</p>
         </header>
 
         <nav className="db-tabs" aria-label="Dashboard sections">
           {TABS.map((t) => (
-            <button key={t.id} type="button" className={tab === t.id ? 'on' : ''} aria-current={tab === t.id ? 'page' : undefined} onClick={() => setParams(t.id === 'overview' ? {} : { tab: t.id })}>
+            <button key={t.id} type="button" className={tab === t.id ? 'on' : ''} aria-current={tab === t.id ? 'page' : undefined} onClick={() => setParams({ ...(embedded ? {section:'learning'} : {}), ...(t.id==='overview'?{}:{tab:t.id}) })}>
               {t.label}
             </button>
           ))}
@@ -185,7 +184,7 @@ export function Dashboard() {
               <section className="db-card" aria-labelledby="db-enrolled">
                 <div className="db-card-head">
                   <h2 id="db-enrolled" className="db-card-title"><Ico d={I.bag} />My Enrollments</h2>
-                  {enrollments.state === 'ready' && enrollments.rows.length > 3 && <Link className="db-link" to="/dashboard?tab=courses">View all</Link>}
+                  {enrollments.state === 'ready' && enrollments.rows.length > 3 && <Link className="db-link" to="/my-account?section=learning&tab=courses">View all</Link>}
                 </div>
                 <EnrollmentsTable enrollments={enrollments} compact />
               </section>
@@ -201,7 +200,7 @@ export function Dashboard() {
         {tab === 'progress' && (
           <section className="db-card" aria-labelledby="db-progress">
             <h2 id="db-progress" className="db-card-title"><Ico d={I.book} />Learning Progress</h2>
-            <Status load={progress} error="We couldn’t load your learning progress. Please refresh the page." empty={<><p><strong>No progress saved yet.</strong></p><p>Open a course’s 30-day roadmap and your completed days will appear here.</p><Link className="db-btn" to="/interview-prep/">Browse roadmaps</Link></>}>
+            <Status load={progress} error="We couldn’t load your learning progress. Please refresh the page." empty={<><p><strong>No progress saved yet.</strong></p><p>Open a course’s 30-day roadmap and your completed days will appear here.</p><Link className="db-btn" to="/interview/">Browse roadmaps</Link></>}>
               {started.length ? (
                 <ul className="db-progress">
                   {started.map((r) => (
@@ -211,12 +210,12 @@ export function Dashboard() {
                         <p className="db-muted">{r.completed_days.length}/30 days{r.last_learning_date ? ` · last studied ${fmtDate(r.last_learning_date)}` : ''}</p>
                       </div>
                       <Bar done={r.completed_days.length} />
-                      <Link className="db-link" to={`/interview-prep/${r.course_slug}/`}>{r.completed_days.length >= 30 ? 'Review' : `Continue Day ${r.current_day}`} <span aria-hidden="true">→</span></Link>
+                      <Link className="db-link" to={`/interview/${r.course_slug}/`}>{r.completed_days.length >= 30 ? 'Review' : `Continue Day ${r.current_day}`} <span aria-hidden="true">→</span></Link>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="db-empty"><p><strong>No completed days yet.</strong></p><Link className="db-btn" to="/interview-prep/">Browse roadmaps</Link></div>
+                <div className="db-empty"><p><strong>No completed days yet.</strong></p><Link className="db-btn" to="/interview/">Browse roadmaps</Link></div>
               )}
             </Status>
           </section>
@@ -225,7 +224,7 @@ export function Dashboard() {
         {tab === 'certificates' && (
           <section className="db-card" aria-labelledby="db-certs">
             <h2 id="db-certs" className="db-card-title"><Ico d={I.check} />Certificates</h2>
-            <Status load={certificates} error="We couldn’t load your certificates. Please refresh the page." empty={<><p><strong>No certificates yet.</strong></p><p>Finish all 30 days of a course roadmap to receive its certificate.</p><Link className="db-btn" to="/interview-prep/">Go to interview prep</Link></>}>
+            <Status load={certificates} error="We couldn’t load your certificates. Please refresh the page." empty={<><p><strong>No certificates yet.</strong></p><p>Finish all 30 days of a course roadmap to receive its certificate.</p><Link className="db-btn" to="/interview/">Go to interview prep</Link></>}>
               {certificates.state === 'ready' && (
                 <ul className="db-certs">
                   {certificates.rows.map((c) => (
@@ -233,7 +232,7 @@ export function Dashboard() {
                       <span className="db-tag">Certificate</span>
                       <h3>{c.course_name}</h3>
                       <p>Issued {fmtDate(c.completed_at)} · ID {c.certificate_id}</p>
-                      <Link className="db-link" to={`/interview-prep/${c.course_slug}/#certificate`}>View certificate <span aria-hidden="true">→</span></Link>
+                      <Link className="db-link" to={`/interview/${c.course_slug}/#certificate`}>View certificate <span aria-hidden="true">→</span></Link>
                     </li>
                   ))}
                 </ul>
@@ -242,6 +241,6 @@ export function Dashboard() {
           </section>
         )}
       </div>
-    </PageFrame>
   )
+  return embedded ? content : <PageFrame wide>{content}</PageFrame>
 }

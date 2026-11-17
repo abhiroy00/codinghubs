@@ -2,7 +2,7 @@
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/gigs">Gigs pilot</a></nav>
 <h1>{% if brief %}{{ brief.title }}{% else %}Gigs pilot{% endif %}</h1>
 <p>Client briefs and private expressions of interest. No payments, escrow, messaging or identity verification are provided in this pilot.</p>
-<p><a href="/gigs/workspace">Your private workspace</a> · <a href="/interview-prep/">Interview preparation guides</a></p>
+<p><a href="/gigs/workspace">Your private workspace</a> · <a href="/interview/">Interview guides</a></p>
 {% if brief %}
 <section><h2>Project scope</h2><p style="white-space:pre-wrap">{{ brief.scope }}</p><h2>Expected deliverable</h2><p style="white-space:pre-wrap">{{ brief.deliverable }}</p><h2>Skills</h2><ul>{% for skill in brief.skills %}<li>{{ skill }}</li>{% endfor %}</ul><p>Sign in and use the interactive page to send a private proposal or report a concern. Do not include contact details or confidential material.</p></section>
 {% else %}

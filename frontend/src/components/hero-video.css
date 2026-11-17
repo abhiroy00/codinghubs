@@ -170,3 +170,5 @@
   border-inline: 0 !important;
   border-radius: 0 !important;
 }
+
+.bl-main:has(.hv-host) > .breadcrumb [aria-current="page"] { color: #d3dcea !important; }

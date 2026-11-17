@@ -11,7 +11,7 @@ const seen = new Set()
 let pages = 0, answers = 0
 const graph = html => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap(m => JSON.parse(m[1])['@graph'] ?? [])
 for (const level of manifest) {
-  const base = `/interview-prep/generative-ai/levels/${level.level}/`
+  const base = `/interview/generative-ai/levels/${level.level}/`
   const data = JSON.parse(fs.readFileSync(path.join(generated, `level-${level.level}.json`), 'utf8'))
   const routes = [{ suffix: '' }, ...level.articleSlugs.map(article => ({ suffix: `articles/${article.slug}/`, article })), ...level.days.map(day => ({ suffix: `days/${day.day}/` }))]
   for (const route of routes) {
@@ -37,7 +37,7 @@ for (const level of manifest) {
     pages++
   }
 }
-const landing = fs.readFileSync(path.join(dist, 'interview-prep/generative-ai/index.html'), 'utf8')
+const landing = fs.readFileSync(path.join(dist, 'interview/generative-ai/index.html'), 'utf8')
 assert(graph(landing).some(n => n['@type'] === 'ItemList' && n.numberOfItems === 4), 'Missing four-level roadmap schema')
 assert(answers === 400, 'Not all interview answers are discoverable in article HTML')
 console.log(`PASS: ${pages} GenAI pages in sitemap, distinct descriptions, learning-resource schema, first-paint CSS and ${answers} prerendered question answers.`)

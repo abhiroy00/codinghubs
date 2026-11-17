@@ -1,5 +1,6 @@
+import { CourseBrochureDownload } from '../community/Brochures'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../lib/auth-context'
 import { useLenisRef } from '../lib/lenis-context'
 import { api } from '../lib/api'
@@ -98,14 +99,14 @@ function LearningDashboard() {
     }).catch(() => undefined)
   }, [user])
   const active = COURSE_CATALOG.filter((course) => saved[course.slug])
-  return <div className="learn-shell"><header className="learn-hero hv-host"><HeroVideo clip="interview-prep" /><p className="learn-kicker">YOUR LEARNING SPACE</p><h1>Interview preparation guides</h1><p>Choose a course roadmap or continue your saved preparation.</p></header><div className="learn-directory"><CourseTiles /><section className="learn-prep-intro"><h2>My progress</h2>{active.length ? <div className="learn-course-grid">{active.map((course) => { const data = saved[course.slug]; const average = Object.values(data.scores).length ? Math.round(Object.values(data.scores).reduce((a, b) => a + b, 0) / Object.values(data.scores).length) : 0; return <article className="learn-course-card" key={course.slug}><span>{course.category}</span><h2>{course.name}</h2><p>Current day {data.currentDay || 1} · {data.done.length}/30 complete · {Math.round(data.done.length / 30 * 100)}%</p><p>Quiz average {average}/5 · {data.questions.length} questions · {data.challenge.length} challenges · {data.projects.length} projects</p><p>Last learning date: {data.lastLearningDate || 'Not started'}</p><div className="learn-card-actions"><Link className="learn-button" to={`/interview-prep/${course.slug}/`}>Continue roadmap</Link><Link className="learn-button learn-button-quiet" to={`/interview-prep/${course.slug}/#certificate`}>{data.done.length === 30 ? 'View certificate' : `Certificate locked · ${data.done.length}/30 days`}</Link></div></article>})}</div> : <p className="learn-muted">No saved course progress yet. Start a roadmap above to track your learning.</p>}</section></div></div>
+  return <div className="learn-shell"><header className="learn-hero hv-host"><HeroVideo clip="interview-prep" /><p className="learn-kicker">YOUR LEARNING SPACE</p><h1>Interview guides</h1><p>Choose a course roadmap or continue your saved preparation.</p></header><div className="learn-directory"><CourseTiles /><section className="learn-prep-intro"><h2>My progress</h2>{active.length ? <div className="learn-course-grid">{active.map((course) => { const data = saved[course.slug]; const average = Object.values(data.scores).length ? Math.round(Object.values(data.scores).reduce((a, b) => a + b, 0) / Object.values(data.scores).length) : 0; return <article className="learn-course-card" key={course.slug}><span>{course.category}</span><h2>{course.name}</h2><p>Current day {data.currentDay || 1} · {data.done.length}/30 complete · {Math.round(data.done.length / 30 * 100)}%</p><p>Quiz average {average}/5 · {data.questions.length} questions · {data.challenge.length} challenges · {data.projects.length} projects</p><p>Last learning date: {data.lastLearningDate || 'Not started'}</p><div className="learn-card-actions"><Link className="learn-button" to={`/interview/${course.slug}/`}>Continue roadmap</Link><Link className="learn-button learn-button-quiet" to={`/interview/${course.slug}/#certificate`}>{data.done.length === 30 ? 'View certificate' : `Certificate locked · ${data.done.length}/30 days`}</Link></div></article>})}</div> : <p className="learn-muted">No saved course progress yet. Start a roadmap above to track your learning.</p>}</section></div></div>
 }
 
 export function CourseDetails() {
   const { slug = '' } = useParams()
   const course = COURSE_BY_SLUG.get(slug)
   if (!course) return <div className="learn-shell"><h1>Course not found</h1><Link to="/courses/">Browse all courses</Link></div>
-  return <div className="learn-shell learn-detail"><header className="learn-hero hv-host"><HeroVideo clip="course-detail" /><p className="learn-kicker">{course.category.toUpperCase()} · 30 DAY LEARNING PATH</p><h1>{course.name}</h1><p>{course.introduction}</p><div className="learn-hero-actions"><Link className="learn-button" to={`/interview-prep/${course.slug}/`}>Start interview prep</Link><EnrollmentButton slug={course.slug}/><Link className="learn-button learn-button-quiet" to="/#register">Book a demo</Link><Link className="learn-button learn-button-quiet" to="/courses/">Browse courses</Link></div></header>
+  return <div className="learn-shell learn-detail"><header className="learn-hero hv-host"><HeroVideo clip="course-detail" /><p className="learn-kicker">{course.category.toUpperCase()} · 30 DAY LEARNING PATH</p><h1>{course.name}</h1><p>{course.introduction}</p><div className="learn-hero-actions"><Link className="learn-button" to={`/interview/${course.slug}/`}>Start interview</Link><EnrollmentButton slug={course.slug}/><CourseBrochureDownload slug={course.slug}/><Link className="learn-button learn-button-quiet" to="/#register">Book a demo</Link><Link className="learn-button learn-button-quiet" to="/courses/">Browse courses</Link></div></header>
     <div className="learn-content"><section className="learn-section"><h2>Course overview</h2><p>{course.summary}</p><p>This self-guided roadmap provides a practical structure for building and reviewing skills. Confirm schedule, fees and prerequisites with the school before enrolling.</p></section>
       <section className="learn-section"><h2>What you will learn</h2><div className="learn-pills">{course.skills.map((skill) => <span key={skill}>{skill}</span>)}</div></section>
       <section className="learn-section"><h2>Tools and concepts</h2><div className="learn-pills">{course.tools.map((tool) => <span key={tool}>{tool}</span>)}</div></section>
@@ -113,7 +114,7 @@ export function CourseDetails() {
       <section className="learn-section"><h2>Practical projects</h2><div className="learn-project-grid">{course.projects.map((project) => <article key={project.name}><h3>{project.name}</h3><p>{project.description}</p><h4>Objectives</h4><ul>{project.objectives.map((item) => <li key={item}>{item}</li>)}</ul><h4>Suggested steps</h4><ol>{project.steps.map((item) => <li key={item}>{item}</li>)}</ol><p><b>Outcome:</b> {project.outcome}</p><ProjectCompletion slug={course.slug} project={project.name}/></article>)}</div></section>
       <section className="learn-section"><h2>Career directions</h2><div className="learn-pills">{course.careers.map((career) => <span key={career}>{career}</span>)}</div></section>
       <section className="learn-section"><h2>Frequently asked questions</h2>{course.faqs.map((faq) => <details className="learn-faq" key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</section>
-      <aside className="learn-cta"><div><h2>Prepare for your next interview</h2><p>Follow the course-specific 30-day roadmap and track your progress in this browser.</p></div><Link className="learn-button" to={`/interview-prep/${course.slug}/`}>Open 30-day plan</Link><CourseLevelLinks slug={course.slug} /></aside>
+      <aside className="learn-cta"><div><h2>Prepare for your next interview</h2><p>Follow the course-specific 30-day roadmap and track your progress in this browser.</p></div><Link className="learn-button" to={`/interview/${course.slug}/`}>Open 30-day plan</Link><CourseLevelLinks slug={course.slug} /></aside>
     </div>
   </div>
 }
@@ -154,6 +155,8 @@ export function InterviewPrep({ initialGuide }: { initialGuide?: PrepGuide } = {
 }
 
 function InterviewPrepSession({ initialGuide }: { initialGuide?: PrepGuide }) {
+  const [resourceParams] = useSearchParams()
+  const requestedQuestion = Number(resourceParams.get('question')) || null
   const { slug } = useParams()
   const [loadedGuide, setLoadedGuide] = useState<{ slug: string; guide: PrepGuide } | null>(null)
   const guide = initialGuide ?? getPrepGuide(slug ?? '') ?? (loadedGuide?.slug === slug ? loadedGuide?.guide : undefined)
@@ -171,7 +174,8 @@ function InterviewPrepSession({ initialGuide }: { initialGuide?: PrepGuide }) {
   const [draft, setDraft] = useState('')
   const [bank, setBank] = useState<BankQuestion[]>([])
   const [bankLoading, setBankLoading] = useState(false)
-  const [tab, setTab] = useState<'roadmap' | 'practice' | 'editor'>(() => (typeof window !== 'undefined' && window.location.hash === '#practice' ? 'practice' : typeof window !== 'undefined' && window.location.hash === '#editor' ? 'editor' : 'roadmap'))
+  const [tab, setTab] = useState<'roadmap' | 'practice' | 'editor'>(() => (typeof window !== 'undefined' && (window.location.hash === '#practice' || requestedQuestion) ? 'practice' : typeof window !== 'undefined' && window.location.hash === '#editor' ? 'editor' : 'roadmap'))
+  useEffect(()=>{if(requestedQuestion)setTab('practice')},[requestedQuestion])
   const [challengeChecks, setChallengeChecks] = useState<boolean[]>([])
   const [outline, setOutline] = useState<PrepOutline | null>(null)
   const [remoteLesson, setPrepLesson] = useState<{ slug: string; day: number; lesson: Lesson } | null>(null)

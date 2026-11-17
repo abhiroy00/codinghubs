@@ -27,6 +27,7 @@ User = get_user_model()
 
 
 class LoginThrottle(AnonRateThrottle):
+    scope = 'admin_login'
     rate = '5/min'
 
 

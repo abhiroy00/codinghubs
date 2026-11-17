@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { adminApi, STATUSES, type Lead, type Paged, type Stats } from './api'
 
@@ -540,7 +541,7 @@ export function CoursesPage() {
               <th>Course</th>
               <th>Category</th>
               <th>Duration</th>
-              <th>Visible</th>
+              <th>Visible</th><th>Brochure</th>
             </tr>
           </thead>
           <tbody>
@@ -555,7 +556,7 @@ export function CoursesPage() {
                   <button type="button" className={`ad-switch${c.is_active ? ' on' : ''}`} role="switch" aria-checked={c.is_active} aria-label={`${c.name} visible`} onClick={() => toggle(c)}>
                     <i />
                   </button>
-                </td>
+                </td><td><Link to={`/courses/${c.id}/brochure`}>Manage PDF brochure</Link></td>
               </tr>
             ))}
           </tbody>

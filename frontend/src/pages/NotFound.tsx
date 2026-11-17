@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { SITE_FONTS } from '../lib/fonts'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter, FsHeader } from '../locations/FsShell'
@@ -11,7 +10,7 @@ const NOT_FOUND_SEO = pageSeo(NOT_FOUND_META)
 /** Shown for unknown routes. The server also answers 404 for these URLs (see nginx.conf); this covers client-side navigation. */
 export function NotFound() {
   useSeo(NOT_FOUND_SEO)
-  useScopedStylesheet([FS_CSS, SITE_FONTS])
+  useScopedStylesheet([FS_CSS])
   return (
     <div className="fs-page">
       <FsHeader />

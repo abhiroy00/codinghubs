@@ -12,7 +12,7 @@ const allIds=new Set()
 for(const course of Object.values(manifest)){
  const data=JSON.parse(fs.readFileSync(path.join(dir,course.slug+'.json'),'utf8'))
  assert(data.levels.length===4&&data.levels.flatMap(l=>l.days).length===30,'Incomplete roadmap: '+course.slug)
- const landing=fs.readFileSync(path.join(dist,'interview-prep',course.slug,'index.html'),'utf8')
+ const landing=fs.readFileSync(path.join(dist,'interview',course.slug,'index.html'),'utf8')
  assert((landing.match(/class="genai-arrow"/g)??[]).length===4,'Expected exactly four roadmap arrows: '+course.slug)
  const daySet=new Set()
  for(const level of data.levels){
@@ -26,7 +26,7 @@ for(const course of Object.values(manifest)){
   for(const day of level.days){assert(!daySet.has(day.day),'Duplicate day');daySet.add(day.day)}
   for(const article of level.articles){assert(article.lesson.definition.length>60&&article.lesson.interview.length>0,'Empty article');articles++}
   questions+=level.questions.length
-  const base=`/interview-prep/${course.slug}/levels/${level.level}/`
+  const base=`/interview/${course.slug}/levels/${level.level}/`
   const routes=[{suffix:'',ready:level.articles.length>0},...level.articles.map(a=>({suffix:`articles/${a.slug}/`,ready:true})),...level.days.map(d=>({suffix:`days/${d.day}/`,ready:d.available}))]
   for(const route of routes){
    const url=base+route.suffix,html=fs.readFileSync(path.join(dist,url.slice(1),'index.html'),'utf8')

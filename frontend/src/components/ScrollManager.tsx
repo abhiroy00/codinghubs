@@ -48,7 +48,7 @@ export function ScrollManager() {
     }
     if (changed && !hash) window.scrollTo(0, 0)
     if (hash && pathname !== '/') {
-      // in-site link to a section of another page (for example /interview-prep/<course>/#certificate)
+      // in-site link to a section of another page (for example /interview/<course>/#certificate)
       let tries = 0
       const t = setInterval(() => {
         const el = document.getElementById(decodeURIComponent(hash.slice(1)))

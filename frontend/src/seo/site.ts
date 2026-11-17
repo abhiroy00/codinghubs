@@ -111,6 +111,10 @@ export const POLICIES_META: PageMeta = {
   description: 'Read the privacy policy, terms and conditions, cookie notice and rescheduling policy of Coding Hubs School of AI.',
   image: LOGO_URL,
   indexable: true,
+  jsonLd: {
+    '@context': 'https://schema.org',
+    '@graph': [organizationNode()],
+  },
 }
 
 export const TUTOR_META: PageMeta = {

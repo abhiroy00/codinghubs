@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { PrivateRouteMeta } from './seo/PrivateRouteMeta'
-import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useParams, useLocation } from 'react-router-dom'
 import { AuthProvider } from './lib/auth-context'
 import { ScrollManager } from './components/ScrollManager'
 import { LenisProvider } from './lib/lenis-context'
@@ -9,6 +9,12 @@ import { RegisterPopupProvider } from './lib/register-popup'
 import { FreeSession } from './pages/FreeSession'
 import { NotFound } from './pages/NotFound'
 import { LocationRoute } from './locations/LocationRoute'
+const Newsletter = lazy(() => import('./community/Newsletter').then(m => ({default:m.Newsletter})))
+const NewsletterIssue = lazy(() => import('./community/Newsletter').then(m => ({default:m.NewsletterIssue})))
+const NewsletterAction = lazy(() => import('./community/Newsletter').then(m => ({default:m.NewsletterAction})))
+const Brochures = lazy(() => import('./community/Brochures').then(m => ({default:m.Brochures})))
+const InterviewHub = lazy(() => import('./interview/InterviewHub').then(m=>({default:m.InterviewHub})))
+const InterviewGuide = lazy(() => import('./interview/InterviewGuide').then(m=>({default:m.InterviewGuide})))
 const LearnFrame = lazy(() => import('./learning/LearnFrame').then(m => ({ default: m.LearnFrame })))
 const Academy = lazy(() => import('./learning/Academy').then(m => ({ default: m.Academy })))
 const Learning = lazy(() => import('./learning/Learning').then(m => ({ default: m.Learning })))
@@ -42,7 +48,6 @@ const MyAccount = lazy(() => import('./shop-pages/account').then((m) => ({ defau
 const Layout = lazy(() => import('./components/Layout').then((m) => ({ default: m.Layout })))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute').then((m) => ({ default: m.ProtectedRoute })))
 const CourseCheckout = lazy(() => import('./pages/CourseCheckout').then((m) => ({ default: m.CourseCheckout })))
-const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })))
 const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })))
 const ForgotPassword = lazy(() => import('./pages/PasswordReset').then((m) => ({ default: m.ForgotPassword })))
 const ResetPassword = lazy(() => import('./pages/PasswordReset').then((m) => ({ default: m.ResetPassword })))
@@ -52,9 +57,13 @@ const BookTutor = lazy(() => import('./pages/BookTutor').then((m) => ({ default:
 const LatestJobs = lazy(() => import('./pages/LatestJobs').then((m) => ({ default: m.LatestJobs })))
 const StudioApp = lazy(() => import('./studio/Studio').then((m) => ({ default: m.StudioApp })))
 
+function LegacyInterviewRedirect(){const location=useLocation();return <Navigate to={location.pathname.replace(/^\/interview-prep(?=\/|$)/,'/interview')+location.search+location.hash} replace/>}
+
+function DashboardRedirect(){const location=useLocation();const params=new URLSearchParams(location.search);params.set('section','learning');return <Navigate to={'/my-account?'+params.toString()+location.hash} replace/>}
+
 function CertificateRedirect() {
   const { slug = '' } = useParams()
-  return <Navigate to={`/interview-prep/${slug}/#certificate`} replace />
+  return <Navigate to={`/interview/${slug}/#certificate`} replace />
 }
 
 export function App() {
@@ -68,6 +77,8 @@ export function App() {
             <RegisterPopupProvider>
             <Suspense fallback={null}>
 <Routes>
+<Route path="interview-prep/*" element={<LegacyInterviewRedirect/>}/>
+<Route path="newsletter" element={<Newsletter/>}/><Route path="newsletter/issues/:slug" element={<NewsletterIssue/>}/><Route path="newsletter/confirm" element={<NewsletterAction action="confirm"/>}/><Route path="newsletter/unsubscribe" element={<NewsletterAction action="unsubscribe"/>}/><Route path="brochures" element={<Brochures/>}/>
               <Route path="learn" element={<LearnFrame trail={[{ label: 'Learning library' }]}><Academy /></LearnFrame>} />
               <Route path="learn/:course" element={<Learning />} />
               <Route path="learn/:course/:slug" element={<Learning />} />
@@ -94,27 +105,28 @@ export function App() {
               <Route path="project-guides" element={<GuidesPage />} />
               <Route path="project-guides/:slug" element={<GuidePage />} />
               <Route path="my-account" element={<MyAccount />} />
-              <Route element={<ProtectedRoute />}><Route path="dashboard" element={<Dashboard />} /></Route>
+              <Route element={<ProtectedRoute />}><Route path="dashboard" element={<DashboardRedirect />} /></Route>
               <Route path="faq" element={<LearnFrame trail={[{ label: 'FAQ' }]}><Faq /></LearnFrame>} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
 
                 <Route path="courses" element={<LearnFrame><CourseDirectory /></LearnFrame>} />
                 <Route path="courses/:slug" element={<LearnFrame><CourseDetails /></LearnFrame>} />
-                <Route path="interview-prep" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
-                <Route path="interview-prep/:slug" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
-                <Route path="interview-prep/generative-ai/levels/:level" element={<GenAILearning />} />
-                <Route path="interview-prep/generative-ai/levels/:level/articles/:article" element={<GenAILearning />} />
-                <Route path="interview-prep/generative-ai/levels/:level/days/:day" element={<GenAILearning />} />
-                <Route path="interview-prep/:slug/levels/:level" element={<CourseRoadmapLearning />} />
-                <Route path="interview-prep/:slug/levels/:level/articles/:article" element={<CourseRoadmapLearning />} />
-                <Route path="interview-prep/:slug/levels/:level/days/:day" element={<CourseRoadmapLearning />} />
+                <Route path="interview" element={<LearnFrame><InterviewHub /></LearnFrame>} />
+                <Route path="interview/guides/:slug" element={<InterviewGuide/>} />
+                <Route path="interview/:slug" element={<LearnFrame><InterviewPrep /></LearnFrame>} />
+                <Route path="interview/generative-ai/levels/:level" element={<GenAILearning />} />
+                <Route path="interview/generative-ai/levels/:level/articles/:article" element={<GenAILearning />} />
+                <Route path="interview/generative-ai/levels/:level/days/:day" element={<GenAILearning />} />
+                <Route path="interview/:slug/levels/:level" element={<CourseRoadmapLearning />} />
+                <Route path="interview/:slug/levels/:level/articles/:article" element={<CourseRoadmapLearning />} />
+                <Route path="interview/:slug/levels/:level/days/:day" element={<CourseRoadmapLearning />} />
                 <Route path="ai" element={<AiHub />} />
                 <Route path="ai/answer-evaluation" element={<AnswerEvaluation />} />
                 <Route path="ai/mock-interview" element={<MockInterview />} />
                 <Route path="ai/resume-analyzer" element={<ResumeAnalyzer />} />
                 <Route path="ai/job-matcher" element={<JobMatcher />} />
-                <Route path="certificates" element={<Navigate to="/interview-prep/#certificates" replace />} />
+                <Route path="certificates" element={<Navigate to="/interview/#certificates" replace />} />
                 <Route path="certificates/:slug" element={<CertificateRedirect />} />
               <Route element={<Layout />}>
                 <Route path="policies" element={<Policies />} />

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Footer } from './Footer'
 import { Header } from './Header'
 import { LeadModal } from './LeadModal'
+import { LogoWide } from '../locations/FsShell'
 
 export function Layout() {
   const [loaded, setLoaded] = useState(false)
@@ -33,7 +34,7 @@ export function Layout() {
     <>
       <div id="preloader" aria-hidden="true" className={loaded ? 'done' : ''}>
         <div className="pl">
-          <img src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} style={{ height: '1.75rem', width: 'auto' }} />
+          <LogoWide alt="Coding Hubs School of AI" displayWidth={97} style={{ height: '1.75rem', width: 'auto' }} />
           <span className="dot"></span>
         </div>
       </div>

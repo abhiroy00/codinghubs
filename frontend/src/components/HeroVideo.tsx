@@ -133,7 +133,7 @@ export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           tabIndex={-1}
           disablePictureInPicture
           disableRemotePlayback

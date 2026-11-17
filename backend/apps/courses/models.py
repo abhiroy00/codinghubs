@@ -192,3 +192,16 @@ class PrepLesson(models.Model):
 
     def as_lesson(self):
         return {'day': self.day, 'title': self.title, 'module': self.module, 'level': self.level, **self.content}
+
+
+class CourseBrochure(models.Model):
+    """One current brochure per stable database course ID. Files live in the persistent private volume."""
+    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='brochure')
+    storage_key = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=180)
+    description = models.CharField(max_length=500, blank=True)
+    download_name = models.CharField(max_length=120)
+    original_name = models.CharField(max_length=120)
+    size = models.PositiveIntegerField(default=0)
+    is_published = models.BooleanField(default=False, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)

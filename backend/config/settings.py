@@ -48,10 +48,12 @@ INSTALLED_APPS = [
     'apps.gigs',
     'apps.learning',
     'apps.studio',
+    'apps.newsletter',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'apps.accounts.cache.PrivateAPICacheMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -87,6 +89,10 @@ DATABASES = {
         conn_max_age=600,
     )
 }
+
+# SQLite development/import writes acquire their reservation before reading rows. PostgreSQL remains unchanged.
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    DATABASES['default'].setdefault('OPTIONS', {}).update({'transaction_mode': 'IMMEDIATE', 'timeout': 20})
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -253,3 +259,11 @@ STUDIO_EMBEDDING_URL = config('STUDIO_EMBEDDING_URL', default='https://api.opena
 STUDIO_DAILY_AI_CALLS = config('STUDIO_DAILY_AI_CALLS', default=100, cast=int)
 STUDIO_RETENTION_DAYS = config('STUDIO_RETENTION_DAYS', default=180, cast=int)
 REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'].update({'studio_ai': '12/min', 'studio_run': '10/min'})
+
+# Newsletter uses existing SMTP and a durable database outbox.
+NEWSLETTER_EMAIL_ENABLED = config("NEWSLETTER_EMAIL_ENABLED", default=False, cast=bool)
+NEWSLETTER_CONFIRM_TTL = config("NEWSLETTER_CONFIRM_TTL", default=172800, cast=int)
+NEWSLETTER_UNSUBSCRIBE_TTL = config("NEWSLETTER_UNSUBSCRIBE_TTL", default=31536000, cast=int)
+BROCHURE_MAX_BYTES = config("BROCHURE_MAX_BYTES", default=10 * 1024 * 1024, cast=int)
+
+EMAIL_TIMEOUT = config("EMAIL_TIMEOUT", default=15, cast=int)

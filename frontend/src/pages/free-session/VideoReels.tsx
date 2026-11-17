@@ -138,7 +138,10 @@ export function VideoReels() {
                     videoRefs.current[i] = el
                   }}
                   src={`${v.src}#t=0.5`}
-                  preload={near ? 'metadata' : 'none'}
+                  // A small WebP of the 0.5s frame is the thumbnail (it used to come from fetching each video's
+                  // metadata and first frames). It loads only near the viewport; the video itself loads on Play.
+                  poster={near ? v.src.replace(/\.mp4$/, '-poster.webp') : undefined}
+                  preload="none"
                   playsInline
                   onEnded={() => setPlayingIndex(null)}
                 />

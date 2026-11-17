@@ -1,5 +1,5 @@
+import { HomeNewsletter } from '../community/HomeNewsletter'
 import { useEffect, useRef, useState } from 'react'
-import { SITE_FONTS } from '../lib/fonts'
 import { useLocation } from 'react-router-dom'
 import { useLenisRef } from '../lib/lenis-context'
 import { useRegisterPopup } from '../lib/register-popup'
@@ -28,7 +28,6 @@ export function FreeSession() {
   useSeo(HOME_SEO)
   useScopedStylesheet([
     FS_CSS,
-    SITE_FONTS,
   ])
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -554,6 +553,7 @@ export function FreeSession() {
         </section>
 
         <HomeExplore />
+        <HomeNewsletter />
       </main>
 
       <FsFooter home />

@@ -590,7 +590,7 @@ export function Performance() {
     </>
   );
 }
-export function Profile() {
+export function Profile({embedded=false}:{embedded?:boolean}={}) {
   const { user } = useAuth();
   const prefs = useResource<LearningRecord[]>("/records/?kind=preferences");
   const [message, setMessage] = useState("");
@@ -598,11 +598,11 @@ export function Profile() {
   const existing = prefs.data?.[0]?.data;
   return (
     <>
-      <PageTitle
+      {embedded ? <h2 id="pf-section-title">Interview Studio preferences</h2> : <PageTitle
         eyebrow="YOUR ACCOUNT"
         title="Make space for your best work."
         description="Your Coding Hubs identity and Interview Studio preferences."
-      />
+      />}
       <section className="st-card st-profile">
         <span className="st-avatar large">
           {user?.username?.[0]?.toUpperCase()}

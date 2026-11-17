@@ -35,6 +35,31 @@ services:
     expose:
       - '8000'
 
+  newsletter-worker:
+    profiles: ['newsletter']
+    image: ${BACKEND_IMAGE:-codinghubs-backend}
+    build: ./backend
+    restart: unless-stopped
+    entrypoint: ['python', 'manage.py', 'process_newsletter', '--watch', '--limit', '50']
+    healthcheck:
+      disable: true
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-codinghubs}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-codinghubs}
+      SITE_URL: https://${DOMAIN:-codinghubs.in}
+      PYTHONDONTWRITEBYTECODE: '1'
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    mem_limit: 256m
+    cpus: 0.5
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    depends_on:
+      db:
+        condition: service_healthy
+
   learning-worker:
     profiles: ['learning']
     image: ${BACKEND_IMAGE:-codinghubs-backend}

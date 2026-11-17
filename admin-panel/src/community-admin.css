@@ -1,0 +1,77 @@
+.cm-admin {
+  max-width: 1200px;
+}
+.cm-tabs,
+.cm-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-block: 1.25rem;
+}
+.cm-fields label {
+  flex: 1;
+  min-width: 180px;
+}
+.cm-admin label {
+  display: block;
+  margin-block: 0.8rem;
+}
+.cm-admin input:not([type="checkbox"]),
+.cm-admin textarea,
+.cm-admin select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #b8c4d5;
+  border-radius: 6px;
+  padding: 0.6rem;
+  background: white;
+  color: #17253c;
+  font: inherit;
+}
+.cm-admin button {
+  min-height: 40px;
+  cursor: pointer;
+  margin-right: 0.4rem;
+}
+.cm-admin button:focus-visible,
+.cm-admin input:focus-visible,
+.cm-admin a:focus-visible,
+.cm-admin textarea:focus-visible,
+.cm-admin select:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+.cm-form {
+  max-width: 750px;
+}
+.cm-columns {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+}
+.cm-preview {
+  border: 1px solid #cbd5e1;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  background: white;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.cm-preview img {
+  max-width: 100%;
+  height: auto;
+}
+.cm-preview pre {
+  overflow: auto;
+}
+.cm-admin pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 800px) {
+  .cm-columns {
+    grid-template-columns: 1fr;
+  }
+}

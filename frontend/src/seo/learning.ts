@@ -4,32 +4,34 @@ import { LOGO_URL, ORG_ID, organizationNode } from './site'
 import { SITE_URL } from '../locations/registry'
 import type { Seo } from '../content-pages/api'
 import { GENAI_LEVELS, genaiPath } from '../learning/genai-content'
-import { COURSE_ROADMAPS,courseLevelPath } from '../learning/course-roadmap-content'
+import { courseLevelPath } from '../learning/roadmap-paths'
+import roadmapSummary from './roadmap-summary.json'
+const COURSE_ROADMAPS: Record<string,{primary:string;levels:{level:number;title:string}[]}> = roadmapSummary
 const shortNames: Record<string, string> = {
   'java-full-stack-developer-gen-ai': 'Java Full Stack + Gen AI',
   'azure-solutions-architect-expert-az-305': 'Azure Architect AZ-305',
   'azure-administrator-az-104': 'Azure Admin AZ-104',
   'aws-certified-solutions-architect': 'AWS Certified Solutions Architect',
 }
-export function learningMeta(kind: 'courses' | 'interview-prep', slug?: string): Seo {
+export function learningMeta(kind: 'courses' | 'interview', slug?: string): Seo {
   const course = slug ? COURSE_BY_SLUG.get(slug) : undefined
-  const prep = kind === 'interview-prep'
+  const prep = kind === 'interview'
   const source = slug ? PREP_SOURCES[slug] : undefined
   const name = course?.name ?? (prep ? 'Interview preparation' : 'Courses')
   const shortName = course ? shortNames[course.slug] ?? course.name : name
   const path = '/' + kind + '/' + (course ? course.slug + '/' : '')
-  const canonicalPath = prep && source ? '/interview-prep/' + source.primary + '/' : path
+  const canonicalPath = prep && source ? '/interview/' + source.primary + '/' : path
   const canonical = SITE_URL + canonicalPath
   // Partial guides need at least three substantive lessons before search promotion.
   const indexable = (!slug || !!course) && (!prep || !course || (source?.availableDays ?? 0) >= 3)
   const description = course
     ? prep ? 'Prepare for ' + course.name + ' interviews with topic-wise answers, practical examples and ' + (source?.complete ? 'a 30-day study roadmap.' : 'available subject-specific lessons.')
-      : 'Explore ' + course.name + ': learning topics, tools, project ideas and related interview-preparation resources from Coding Hubs.'
+      : 'Explore ' + course.name + ': learning topics, tools, project ideas and related interviewaration resources from Coding Hubs.'
     : prep ? 'Browse subject-specific interview guides, questions, worked examples and available study lessons. Read without an account and save progress optionally.'
       : 'Explore Coding Hubs courses in AI, full-stack development, data, cloud, security and design, with learning paths and related interview preparation.'
-  const title = course ? shortName + (prep ? ': Interview Prep' : ' Course') + ' | Coding Hubs'
-    : prep ? 'Interview Preparation Guides | Coding Hubs' : 'Courses & Learning Paths | Coding Hubs'
-  const trail = [['Home', '/'], [prep ? 'Interview Prep' : 'Courses', '/' + kind + '/'], ...(course ? [[name, path]] : [])]
+  const title = course ? shortName + (prep ? ': Interview' : ' Course') + ' | Coding Hubs'
+    : prep ? 'Interview Guides & Practice Topics | Coding Hubs' : 'Courses & Learning Paths | Coding Hubs'
+  const trail = [['Home', '/'], [prep ? 'Interview' : 'Courses', '/' + kind + '/'], ...(course ? [[name, path]] : [])]
   const graph: Record<string, unknown>[] = [organizationNode(),
     { '@type':'WebPage', '@id':canonical + '#webpage', url:canonical, name:title, description, inLanguage:'en-IN', about:{ '@id':ORG_ID } },
     { '@type':'BreadcrumbList', itemListElement:trail.map(([label, url], i) => ({ '@type':'ListItem', position:i+1, name:label, item:SITE_URL+url })) },

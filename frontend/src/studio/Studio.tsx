@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import {
   Link,
-  NavLink,
+  Navigate, NavLink,
   Outlet,
   Route,
   Routes,
@@ -12,7 +12,7 @@ import { useAuth } from "../lib/auth-context";
 import { ROOT } from "./api";
 import { Brand, Icon, Loading } from "./ui";
 import { StudioLanding } from "./Landing";
-import { Dashboard, History, Library, Performance, Profile } from "./pages";
+import { Dashboard, History, Library, Performance } from "./pages";
 import { Configure } from "./configure";
 import { Roadmaps, Tutor } from "./learning";
 import { STUDIO_META, pageSeo } from '../seo/site';
@@ -80,7 +80,7 @@ function Shell() {
             <p>Small, focused sessions add up.</p>
             <Link to={`${ROOT}/dsa-roadmaps`}>Find your path →</Link>
           </div>
-          <Link className="st-user" to={`${ROOT}/profile`}>
+          <Link className="st-user" to="/my-account">
             <span className="st-avatar">
               {user?.username?.[0]?.toUpperCase()}
             </span>
@@ -172,7 +172,7 @@ export function StudioApp() {
             <Route path="dsa-roadmaps" element={<Roadmaps />} />
             <Route path="analytics" element={<Performance />} />
             <Route path="ai-tutor" element={<Tutor />} />
-            <Route path="profile" element={<Profile />} />
+            <Route path="profile" element={<Navigate to="/my-account?section=studio" replace />} />
             <Route
               path="*"
               element={

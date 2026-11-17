@@ -1,11 +1,19 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from apps.accounts.interview import Resources, legacy_redirect
+from apps.newsletter import ssr as newsletter_ssr
+from apps.newsletter.urls import admin_urlpatterns as newsletter_admin_urls
 from apps.learning.ssr import academy_page, learning_page, sitemap as learning_sitemap
 from apps.content.directory_ssr import directory_page, directory_sitemap
 
 urlpatterns = [
+    path('newsletter/', newsletter_ssr.newsletter),
+    path('newsletter/issues/<slug:slug>/', newsletter_ssr.issue),
+    path('brochures/', newsletter_ssr.brochures),
+    re_path(r'^interview-prep(?:/(?P<remainder>.*))?$', legacy_redirect),
+    path('api/interview/resources/', Resources.as_view()),
     path('book-a-tutor', directory_page, {'kind': 'tutors'}),
     path('book-a-tutor/', directory_page, {'kind': 'tutors'}),
     path('book-a-tutor/<str:key>', directory_page, {'kind': 'tutors'}),
@@ -22,6 +30,8 @@ urlpatterns = [
     path('api/learning/', include('apps.learning.urls')),
     path('api/admin/', include('apps.learning.admin_urls')),
     path('admin/', admin.site.urls),
+    path('api/newsletter/', include('apps.newsletter.urls')),
+    path('api/admin/', include(newsletter_admin_urls)),
     path('api/auth/', include('apps.accounts.urls')),
     path('api/studio/v1/', include('apps.studio.urls')),
     path('api/leads/', include('apps.leads.urls')),

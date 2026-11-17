@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { SITE_FONTS } from '../lib/fonts'
 import { useParams } from 'react-router-dom'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
@@ -8,7 +7,7 @@ import { WHATSAPP } from './free-session/data'
 import { FsIcon } from './free-session/icons'
 import { NotFound } from './NotFound'
 import { useRegisterPopup } from '../lib/register-popup'
-import { getProgram } from './free-session/programs'
+import { getProgram, programWebpSrcSet } from './free-session/programs'
 import { pageSeo, programMeta } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
 
@@ -17,7 +16,6 @@ const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHAT
 export function Curriculum() {
   useScopedStylesheet([
     FS_CSS,
-    SITE_FONTS,
   ])
 
   const popup = useRegisterPopup()
@@ -35,7 +33,11 @@ export function Curriculum() {
 
       <main id="main">
         <section className="curriculum-banner" aria-labelledby="curriculum-title">
-          <img src={program.image} width={program.imageWidth} height={program.imageHeight} alt="" aria-hidden="true" />
+          {/* Full-bleed banner and the page's LCP image: WebP by width, JPG fallback. */}
+          <picture>
+            <source type="image/webp" srcSet={programWebpSrcSet(program)} sizes="100vw" />
+            <img src={program.image} width={program.imageWidth} height={program.imageHeight} alt="" aria-hidden="true" fetchPriority="high" />
+          </picture>
           <div className="wrap curriculum-banner-in">
             <p className="eyebrow">15-Day Training Program</p>
             <h1 id="curriculum-title">{program.title}</h1>

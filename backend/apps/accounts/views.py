@@ -76,6 +76,7 @@ class MeView(APIView):
 
 
 class PasswordResetThrottle(AnonRateThrottle):
+    scope = 'password_reset'
     rate = '5/hour'
 
 
@@ -148,6 +149,7 @@ class AccountExportView(APIView):
 
         user = request.user
         return Response({
+            'interview_activity': list(user.interview_state.values('resource', 'bookmarked', 'completed', 'viewed_at', 'updated_at')),
             'exported_at': timezone.now().isoformat(),
             'profile': {**UserSerializer(user).data, 'google_account_id': user.google_sub},
             'enrollments': [

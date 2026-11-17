@@ -54,6 +54,7 @@ def head_tags(seo: dict, with_og=True) -> str:
         f'<meta name="robots" content="{seo["robots"]}">',
     ]
     tags.extend(f'<link rel="stylesheet" href="{escape(url)}">' for url in seo.get('styles', []))
+    tags.extend(f'<link rel="preload" as="image" type="image/webp" href="{escape(url)}" media="{escape(media)}" fetchpriority="high">' for url, media in seo.get('preload_images', []))
     if seo['robots'].startswith('index'):
         tags.append(f'<link rel="canonical" href="{escape(seo["canonical"])}">')
     og = seo.get('og')
@@ -220,7 +221,9 @@ def case_detail(request, slug):
 
 @require_GET
 def content_sitemap(request):
-    rows = [(f'{settings.SITE_URL}/blog', None), (f'{settings.SITE_URL}/case-studies', None)]
+    rows = [(f'{settings.SITE_URL}/blog', None), (f'{settings.SITE_URL}/case-studies', None), (f'{settings.SITE_URL}/newsletter/', None), (f'{settings.SITE_URL}/brochures/', None)]
+    from apps.newsletter.models import Issue
+    rows += [(f'{settings.SITE_URL}/newsletter/issues/{slug}/', modified) for slug, modified in Issue.objects.filter(published=True).values_list('slug', 'updated_at')]
     rows += list(services.canonical_sitemap_rows(public_blog_qs(), '/blog'))
     rows += list(services.canonical_sitemap_rows(public_case_qs(), '/case-studies'))
     out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']

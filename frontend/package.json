@@ -5,13 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm run genai:sync && npm run roadmap:sync",
-    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "prebuild": "npm run genai:sync && npm run roadmap:sync && npm run interview:sync",
+    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/precompress.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "validate:locations": "node scripts/validate-locations.mjs",
     "validate:seo": "node scripts/validate-seo.mjs && node scripts/validate-genai-seo.mjs",
-    "validate": "npm run prep:check && npm run genai:check && npm run roadmap:check && npm run validate:genai && npm run validate:roadmaps && npm run validate:seo && npm run validate:locations",
+    "validate": "npm run interview:check && npm run prep:check && npm run genai:check && npm run roadmap:check && npm run validate:genai && npm run validate:roadmaps && npm run validate:seo && npm run validate:locations",
     "roadmap:sync": "node scripts/sync-course-roadmaps.mjs",
     "roadmap:check": "node scripts/sync-course-roadmaps.mjs --check",
     "validate:roadmaps": "node scripts/validate-course-roadmaps.mjs",
@@ -21,7 +21,9 @@
     "seo:smoke": "node scripts/seo-smoke.mjs",
     "prep:sync": "node scripts/sync-prep-content.mjs",
     "prep:check": "node scripts/sync-prep-content.mjs --check",
-    "test": "vitest run"
+    "test": "vitest run",
+    "interview:sync": "node scripts/sync-interview-index.mjs",
+    "interview:check": "node scripts/sync-interview-index.mjs --check"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -42,6 +44,7 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "jsdom": "^29.1.1",
+    "lightningcss": "^1.33.0",
     "oxlint": "^1.81.0",
     "prettier": "^3.10.0",
     "typescript": "~6.0.2",

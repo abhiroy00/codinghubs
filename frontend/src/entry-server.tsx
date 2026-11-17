@@ -1,3 +1,6 @@
+import { InterviewHub } from './interview/InterviewHub'
+import { InterviewGuide } from './interview/InterviewGuide'
+import interviewGuides from './interview/guides.json'
 import { renderToString } from 'react-dom/server'
 import { VisualLab } from './learning/VisualLab'
 import { FAQ_META, Faq } from './pages/Faq'
@@ -15,6 +18,7 @@ import { Curriculum } from './pages/Curriculum'
 import { BookTutor } from './pages/BookTutor'
 import { LatestJobs } from './pages/LatestJobs'
 import { FreeSession } from './pages/FreeSession'
+import { FIRST_SLIDE_PRELOAD } from './pages/free-session/hero-slides'
 import { StudioLanding } from './studio/Landing'
 import { NotFound } from './pages/NotFound'
 import { LocationsIndex } from './locations/LocationsIndex'
@@ -39,7 +43,7 @@ import { HOME_META, LOGO_URL, NOT_FOUND_META, STUDIO_META, POLICIES_META, PROGRA
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
 function renderLearningPage(path: string, element: ReactNode, trail?: { label: string; to?: string }[]) {
-  // /courses/<slug>/ and /interview-prep/<slug>/ need a :slug param for useParams()
+  // /courses/<slug>/ and /interview/<slug>/ need a :slug param for useParams()
   const pattern = path.replace(/^(\/[^/]+)\/[^/]+\/?$/, '$1/:slug')
   return renderToString(
     <AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<LearnFrame trail={trail}>{element}</LearnFrame>} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
@@ -64,6 +68,8 @@ export interface PrerenderedPage {
   fsDesign: boolean
   html: string
   jsonLd?: unknown
+  /** Images in the initial viewport to preload from <head> (srcset/sizes must equal the <img>'s). */
+  preloadImages?: { imagesrcset: string; imagesizes: string }[]
 }
 
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
@@ -85,7 +91,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       for(const route of routes) {
         const path=courseLevelPath(course.slug,level.level)+route.suffix
         const seo=courseRoadmapMeta(course.slug,level.level,route.article,route.day)
-        const pattern='/interview-prep/:slug/levels/:level/'+(route.article?'articles/:article/':route.day?'days/:day/':'')
+        const pattern='/interview/:slug/levels/:level/'+(route.article?'articles/:article/':route.day?'days/:day/':'')
         pages.push({file:path.slice(1)+'index.html',path,title:seo.title,description:seo.description,image:LOGO_URL,indexable:seo.robots.startsWith('index'),canonical:seo.canonical,robots:seo.robots,fsDesign:true,jsonLd:seo.json_ld,
           html:renderToString(<AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<CourseRoadmapLearning initialData={data}/>}/></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
       }
@@ -97,7 +103,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     for(const route of routes) {
       const path=genaiPath(level.level)+route.suffix
       const seo=genaiMeta(level.level,route.article,route.day)
-      const pattern='/interview-prep/generative-ai/levels/:level/'+(route.article?'articles/:article/':route.day?'days/:day/':'')
+      const pattern='/interview/generative-ai/levels/:level/'+(route.article?'articles/:article/':route.day?'days/:day/':'')
       pages.push({file:path.slice(1)+'index.html',path,title:seo.title,description:seo.description,image:LOGO_URL,indexable:true,canonical:seo.canonical,robots:seo.robots,fsDesign:true,jsonLd:seo.json_ld,
         html:renderToString(<AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<GenAILearning initialData={data}/>}/></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
     }
@@ -123,6 +129,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       </AuthProvider>,
     ),
     jsonLd: HOME_META.jsonLd,
+    preloadImages: [FIRST_SLIDE_PRELOAD],
   })
 
   const learningPages = [
@@ -132,10 +139,10 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       const guide = source ? prepModules['./learning/prep-generated/' + source.curriculum + '.json']?.default : undefined
       return [
         { kind:'courses' as const, slug:course.slug, element:<CourseDetails /> },
-        { kind:'interview-prep' as const, slug:course.slug, element:<InterviewPrep initialGuide={guide} /> },
+        { kind:'interview' as const, slug:course.slug, element:<InterviewPrep initialGuide={guide} /> },
       ]
     }),
-    { kind:'interview-prep' as const, slug:undefined, element:<InterviewPrep /> },
+    { kind:'interview' as const, slug:undefined, element:<InterviewHub /> },
   ]
   for (const item of learningPages) {
     const seo = learningMeta(item.kind, item.slug)
@@ -144,6 +151,16 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       file:pagePath.slice(1) + 'index.html', path:pagePath, title:seo.title, description:seo.description,
       image:seo.og.image, canonical:seo.canonical, robots:seo.robots, indexable:seo.robots.startsWith('index') && seo.canonical === SITE_URL + pagePath, fsDesign:true,
       html:renderLearningPage(pagePath, item.element), jsonLd:seo.json_ld,
+    })
+  }
+
+  for (const guide of interviewGuides) {
+    const path = `/interview/guides/${guide.slug}/`
+    const title = guide.title.length > 47 ? guide.title.slice(0,44) + '… | Coding Hubs' : guide.title + ' | Coding Hubs'
+    const canonical = SITE_URL + path
+    pages.push({ file:path.slice(1)+'index.html', path, title, description:guide.summary, image:LOGO_URL, indexable:true, fsDesign:true,
+      html:renderToString(<AuthProvider><StaticRouter location={path}><Routes><Route path="/interview/guides/:slug/" element={<InterviewGuide/>}/></Routes></StaticRouter></AuthProvider>),
+      jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:guide.title,url:canonical,description:guide.summary,inLanguage:'en-IN',isAccessibleForFree:true}]},
     })
   }
 
@@ -178,6 +195,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     image: POLICIES_META.image,
     indexable: POLICIES_META.indexable,
     fsDesign: false,
+    jsonLd: POLICIES_META.jsonLd,
     html: renderToString(
       <AuthProvider>
         <StaticRouter location="/policies">

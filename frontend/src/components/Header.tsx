@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { SITE_FONTS } from '../lib/fonts'
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useRegisterPopup } from "../lib/register-popup";
 import { useLenisRef } from "../lib/lenis-context";
-import { useScopedStylesheet } from "../hooks/useScopedStylesheet";
 import { ResourcesMenu } from "../locations/ResourcesMenu";
 import { IconSprite } from "../pages/free-session/icons";
 import { ScrollProgress } from "./ScrollProgress";
@@ -14,7 +12,7 @@ import "./chrome-colors.css";
 
 const LINKS = [
   ["/courses/", "Courses"],
-  ["/interview-prep/", "Interview Prep"],
+  ["/interview/", "Interview"],
   ["/our-work", "Our Work"],
   ["/ai-tools", "AI Tools"],
   ["/latest-jobs/", "Jobs"],
@@ -23,9 +21,6 @@ const LINKS = [
 
 /** One primary navigation for marketing pages, accounts and learning workspaces. */
 export function Header({ mainId = "main" }: { mainId?: string }) {
-  useScopedStylesheet([
-    SITE_FONTS,
-  ]);
   const auth = useOptionalAuth();
   const { pathname, hash } = useLocation();
   const [open, setOpen] = useState(false);
@@ -58,6 +53,25 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("mousedown", onOutside);
     };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || !window.matchMedia('(max-width: 1100px)').matches) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    headerRef.current?.querySelector<HTMLAnchorElement>('.sh-nav a')?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+      const items = [...(headerRef.current?.querySelectorAll<HTMLElement>('a[href], button:not(:disabled)') ?? [])].filter(el => el.getClientRects().length > 0);
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {event.preventDefault();last?.focus();}
+      else if (!event.shiftKey && document.activeElement === last) {event.preventDefault();first?.focus();}
+    };
+    const desktop = window.matchMedia('(min-width: 1101px)');
+    const closeOnDesktop = () => { if (desktop.matches) setOpen(false); };
+    desktop.addEventListener('change', closeOnDesktop);
+    document.addEventListener('keydown', trap);
+    return () => {document.body.style.overflow = previous;desktop.removeEventListener('change', closeOnDesktop);document.removeEventListener('keydown', trap);};
   }, [open]);
 
   function bookDemo() {

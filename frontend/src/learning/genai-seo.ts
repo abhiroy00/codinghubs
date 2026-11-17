@@ -22,7 +22,7 @@ export function genaiMeta(level: number, article?: string, day?: number): Seo {
   const description = snippet(reading ? reading.summary
     : daily ? `Day ${daily.day}: study ${daily.title.toLowerCase()}. Explore worked Python examples, interview answers, a practical assignment and revision checklist.`
       : `Study ${entry?.title.toLowerCase() ?? 'GenAI'} with ${entry?.articleCount ?? 0} articles, ${entry?.questionCount ?? 0} original interview questions, Python exercises and a daily learning plan.`)
-  const trail = [['Home', '/'], ['Interview Prep', '/interview-prep/'], ['Generative AI', '/interview-prep/generative-ai/'], [`Level ${level}`, genaiPath(level)], ...(article || day !== undefined ? [[name, path]] : [])]
+  const trail = [['Home', '/'], ['Interview', '/interview/'], ['Generative AI', '/interview/generative-ai/'], [`Level ${level}`, genaiPath(level)], ...(article || day !== undefined ? [[name, path]] : [])]
   const resourceId = canonical + '#learning-resource'
   const graph: Record<string, unknown>[] = [organizationNode(), {
     '@type': 'WebPage', '@id': canonical + '#webpage', url: canonical, name: title, description,

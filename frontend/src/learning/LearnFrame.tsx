@@ -38,8 +38,8 @@ export function LearnFrame({
 }) {
   const { pathname } = useLocation()
   const parts = pathname.split('/').filter(Boolean)
-  const learning = parts[0] === 'courses' || parts[0] === 'interview-prep'
-  const kind = parts[0] === 'interview-prep' ? 'interview-prep' : 'courses'
+  const learning = parts[0] === 'courses' || parts[0] === 'interview'
+  const kind = parts[0] === 'interview' ? 'interview' : 'courses'
   const slug = parts[1]
   const seo = useMemo(
     () => (learning ? learningMeta(kind, slug) : title && description ? pageMeta(pathname, title, description) : null),
@@ -50,7 +50,7 @@ export function LearnFrame({
   const crumbs: Crumb[] =
     trail ??
     (learning
-      ? [{ label: kind === 'courses' ? 'Courses' : 'Interview Prep', to: `/${kind}/` }, ...(course ? [{ label: course.name }] : [])]
+      ? [{ label: kind === 'courses' ? 'Courses' : 'Interview', to: `/${kind}/` }, ...(course ? [{ label: course.name }] : [])]
       : [])
   return (
     <div className="ch-home">

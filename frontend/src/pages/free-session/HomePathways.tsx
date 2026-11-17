@@ -3,7 +3,7 @@ import { FsIcon } from './icons'
 
 const PATHWAYS = [
   { number: '01', title: 'Courses', detail: 'AI, development, data & design', href: '/courses/', icon: 'i-code' },
-  { number: '02', title: 'Interview Prep', detail: 'Your 30-day learning roadmap', href: '/interview-prep/', icon: 'i-map' },
+  { number: '02', title: 'Interview', detail: 'Your 30-day learning roadmap', href: '/interview/', icon: 'i-map' },
   { number: '03', title: 'Book a Tutor', detail: 'Learn with personal guidance', href: '/book-a-tutor/', icon: 'i-users' },
   { number: '04', title: 'Latest Jobs', detail: 'Explore your next opportunity', href: '/latest-jobs/', icon: 'i-compass' },
 ]
