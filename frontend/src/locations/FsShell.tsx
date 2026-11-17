@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FsIcon } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
+import { PROGRAMS } from '../pages/free-session/programs'
 import { useRegisterPopup } from '../lib/register-popup'
 import { FloatingContact } from '../components/FloatingContact'
 import { Header } from '../components/Header'
@@ -103,12 +104,20 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             </ul>
           </nav>
 
-          <nav className="fx-col" aria-label="Popular courses">
+          <nav className="fx-col" aria-label="Courses and programs">
             <h2>Popular Courses</h2>
             <ul>
               {COURSE_NAMES.slice(0, 7).map((c) => (
                 <li key={c}>
                   <Link to="/courses/">{c}</Link>
+                </li>
+              ))}
+            </ul>
+            <h2>15-Day Programs</h2>
+            <ul>
+              {PROGRAMS.map((program) => (
+                <li key={program.slug}>
+                  <Link to={`/program/${program.slug}`}>{program.title}</Link>
                 </li>
               ))}
             </ul>
