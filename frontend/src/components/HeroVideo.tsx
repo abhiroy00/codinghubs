@@ -4,6 +4,7 @@ import homePoster from '../assets/hero/home-poster-1280.webp'
 import homePosterSmall from '../assets/hero/home-poster-768.webp'
 import homePosterAvif from '../assets/hero/home-poster-1280.avif'
 import homePosterSmallAvif from '../assets/hero/home-poster-768.avif'
+import { PageBannerArt } from './PageBannerArt'
 
 /**
  * Decorative background video for page heroes. The host element gets the `hv-host` class (see hero-video.css).
@@ -37,6 +38,11 @@ function saverOn() {
 }
 
 export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
+  return clip ? <PageBannerArt clip={clip} /> : <HomeHeroVideo />
+}
+
+function HomeHeroVideo() {
+  const clip: HeroClip | undefined = undefined
   const poster = clip ? `${PAGE_BASE}/${clip}-poster-1280.webp` : POSTER
   const posterSm = clip ? `${PAGE_BASE}/${clip}-poster-768.webp` : POSTER_SM
   const posterAvif = clip ? `${PAGE_BASE}/${clip}-poster-1280.avif` : homePosterAvif
