@@ -7,7 +7,7 @@ const LOADING_ATTR = 'data-fs-loading'
  * Same-origin stylesheets (those starting with "/") hide #root until they have loaded (see global.css), so the
  * page never flashes unstyled. If the stylesheet is already in the HTML and loaded, nothing is added or hidden.
  */
-export function useScopedStylesheet(hrefs: string[]) {
+export function useScopedStylesheet(hrefs: string[], { preserveFirstPaint = false }: { preserveFirstPaint?: boolean } = {}) {
   useLayoutEffect(() => {
     const html = document.documentElement
     const added: HTMLLinkElement[] = []
@@ -23,6 +23,10 @@ export function useScopedStylesheet(hrefs: string[]) {
       const blocking = href.startsWith('/')
       const existing = document.querySelector<HTMLLinkElement>(`link[rel="stylesheet"][href="${href}"]`)
       if (existing && existing.sheet) continue // already in the page and loaded
+      // The prerendered homepage already has its first-viewport styles inline. Its
+      // preload will attach the full sheet; duplicating it here would hide a painted page.
+      if (preserveFirstPaint && document.querySelector('style[data-home-critical]') &&
+        document.querySelector(`link[rel="preload"][as="style"][href="${href}"]`)) continue
 
       const link = document.createElement('link')
       link.rel = 'stylesheet'

@@ -75,10 +75,10 @@ test('keyboard Tab, Enter, Space and Escape operate the disclosures', async ({ p
   await page.keyboard.press('Escape')
 })
 
-for (const width of [390, 1024, 1366]) test(`touch navigation uses tap disclosures at ${width}px`, async ({ browser }) => {
+for (const width of [390, 1024, 1366]) test(`touch navigation uses tap disclosures at ${width}px`, async ({ browser, baseURL }) => {
   const context = await browser.newContext({ viewport: { width, height: 900 }, hasTouch: true })
   const page = await context.newPage()
-  await page.goto('http://localhost:5173/our-work')
+  await page.goto(new URL('/our-work', baseURL!).href)
   const toggle = header(page).getByRole('button', { name: 'Open menu', exact: true })
   await expect(toggle).toBeVisible(); await toggle.tap()
   for (const name of ['Courses', 'Careers', 'Resources'] as const) {
@@ -147,14 +147,14 @@ test('Book Free Demo preserves the registration dialog, focus and scroll lock', 
   await expect(header(page).getByRole('button', { name: 'Open menu' })).toBeFocused()
 })
 
-test('every dropdown link navigates to its existing page and closes its disclosure', async ({ page }) => {
+test('every dropdown link navigates to its existing page and closes its disclosure', async ({ page, baseURL }) => {
   test.setTimeout(60000)
   for (const [menu, links] of Object.entries(menus)) {
     for (const [label, href] of links) {
       await page.goto('/our-work')
       await primary(page).getByRole('button', { name: menu, exact: true }).click()
       await primary(page).getByRole('link', { name: label, exact: true }).click()
-      await expect(page).toHaveURL(new URL(href, 'http://localhost:5173').href)
+      await expect(page).toHaveURL(new URL(href, baseURL!).href)
       await expect(page.locator('main h1').first()).toBeVisible()
       await expect(primary(page).locator('.sh-res-button[aria-expanded="true"]')).toHaveCount(0)
     }

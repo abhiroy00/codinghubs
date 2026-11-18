@@ -59,6 +59,7 @@ export function VideoReels() {
   }
 
   useEffect(() => {
+    if (!near) return
     buildDots()
     const onResize = () => buildDots()
     window.addEventListener('resize', onResize)
@@ -70,7 +71,7 @@ export function VideoReels() {
       list?.removeEventListener('scroll', onScroll)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [near])
 
   function go(dir: 1 | -1) {
     const list = listRef.current
@@ -97,6 +98,7 @@ export function VideoReels() {
   }
 
   useEffect(() => {
+    if (!near) return
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) return
     const id = setInterval(() => {
@@ -105,7 +107,7 @@ export function VideoReels() {
     }, 3500)
     return () => clearInterval(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playingIndex])
+  }, [playingIndex, near])
 
   const holdOn = () => (holdRef.current = true)
   const holdOff = () => (holdRef.current = false)
@@ -145,7 +147,7 @@ export function VideoReels() {
                   playsInline
                   onEnded={() => setPlayingIndex(null)}
                 />
-                <button type="button" className="reel-btn" aria-label={`Play video: ${v.title}`} onClick={() => play(i)}>
+                <button type="button" className="reel-btn" aria-label={`Play video: ${v.title}. VIDEO ${String(i + 1).padStart(2, '0')}${v.duration ? `, ${v.duration}` : ''}`} onClick={() => play(i)}>
                   <span className="n">VIDEO {String(i + 1).padStart(2, '0')}</span>
                   {v.duration && <span className="d">{v.duration}</span>}
                   <span className="pl" aria-hidden="true">

@@ -49,7 +49,7 @@ test("home has no course grid and Explore courses opens the courses page", async
   await expect(page.locator(".cc-card")).toHaveCount(0);
   await page.getByRole("link", { name: "Explore courses" }).click();
   await expect(page).toHaveURL(/\/courses\/$/);
-  await expect(page.locator("#catalogue .csx-list a")).toHaveCount(43);
+  await expect(page.locator("#catalogue .csx-card")).toHaveCount(43);
 });
 
 test("mobile menu, announcement and demo keyboard controls work", async ({

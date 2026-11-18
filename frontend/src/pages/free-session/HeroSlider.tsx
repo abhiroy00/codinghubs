@@ -37,6 +37,7 @@ const POS: Record<number, string> = { [-2]: 'is-far-prev', [-1]: 'is-prev', 0: '
 /** Dependency-free coverflow carousel: autoplays, pauses on hover/focus, and moves by swipe, arrow keys or clicking a side card. */
 export function HeroSlider() {
   const count = SLIDES.length
+  const carouselRef = useRef<HTMLElement>(null)
   const [index, setIndex] = useState(0)
   // Images mount only for the active card and its neighbours, so later photos never compete with the first paint.
   const [mounted, setMounted] = useState<Set<number>>(() => new Set([0]))
@@ -44,6 +45,7 @@ export function HeroSlider() {
   const [focused, setFocused] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [reduced, setReduced] = useState(false)
+  const [ready, setReady] = useState(false)
   const touchX = useRef<number | null>(null)
 
   const mount = useCallback(
@@ -80,6 +82,18 @@ export function HeroSlider() {
   }, [mount, count])
 
   useEffect(() => {
+    if (ready || !mounted.has(1) || !mounted.has(count - 1)) return
+    let cancelled = false
+    // Give the first photo its full viewing interval after the visible neighbouring
+    // photos are decoded, rather than rotating away during the initial image load.
+    const images = [...(carouselRef.current?.querySelectorAll('img') ?? [])]
+    void Promise.all(images.map(image => image.decode().catch(() => undefined))).then(() => {
+      if (!cancelled) setReady(true)
+    })
+    return () => { cancelled = true }
+  }, [ready, mounted, count])
+
+  useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     const sync = () => setReduced(mq.matches)
     sync()
@@ -93,7 +107,7 @@ export function HeroSlider() {
     }
   }, [])
 
-  const running = !reduced && !hovered && !focused && !hidden
+  const running = ready && !reduced && !hovered && !focused && !hidden
 
   useEffect(() => {
     if (!running) return
@@ -113,6 +127,7 @@ export function HeroSlider() {
 
   return (
     <section
+      ref={carouselRef}
       className={`hs${reduced ? ' hs-still' : ''}`}
       aria-roledescription="carousel"
       aria-label="Coding Hubs in pictures"

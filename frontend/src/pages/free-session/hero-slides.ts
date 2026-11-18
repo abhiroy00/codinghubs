@@ -17,7 +17,7 @@ export type Slide = {
 export const SLIDES: Slide[] = [
   {
     name: 'classroom-live-coding-session',
-    widths: [720, 1440],
+    widths: [480, 640, 720, 1440],
     width: 1440,
     height: 1080,
     alt: 'Students with laptops around a classroom table while a trainer walks through code on a wall screen',
@@ -28,7 +28,7 @@ export const SLIDES: Slide[] = [
   },
   {
     name: 'gitm-student-group-photo',
-    widths: [720, 1440],
+    widths: [480, 640, 720, 1440],
     width: 1440,
     height: 681,
     alt: 'Large group photo of students and trainers on stage at Ganga Institute of Technology and Management',
@@ -38,7 +38,7 @@ export const SLIDES: Slide[] = [
   },
   {
     name: 'team-festive-celebration',
-    widths: [720, 1200],
+    widths: [480, 640, 720, 1200],
     width: 1200,
     height: 1600,
     alt: 'Three people in festive clothes exchanging a gift in an office decorated with marigold garlands',
@@ -49,7 +49,7 @@ export const SLIDES: Slide[] = [
   },
   {
     name: 'gitm-aarambh-data-science-careers-talk',
-    widths: [720, 1440],
+    widths: [480, 640, 720, 1440],
     width: 1440,
     height: 1080,
     alt: 'Trainer presenting a slide on top data science careers at the Aarambh 2026 student induction programme',
@@ -60,7 +60,7 @@ export const SLIDES: Slide[] = [
   },
   {
     name: 'gitm-aarambh-felicitation',
-    widths: [714],
+    widths: [480, 640, 714],
     width: 714,
     height: 319,
     alt: 'Four people on stage exchanging a certificate at the Aarambh 2026 student induction programme',
@@ -72,7 +72,12 @@ export const SLIDES: Slide[] = [
 
 export const SIZES = '(max-width: 760px) 82vw, 640px'
 export const src = (s: Slide) => `/assets/hero/${s.name}.jpg`
-export const srcSet = (s: Slide) => s.widths.map((w) => `/assets/hero/${s.name}-${w}.webp ${w}w`).join(', ')
+const images = import.meta.glob<string>('../../assets/hero/*.webp', { eager: true, query: '?url', import: 'default' })
+export const srcSet = (s: Slide) => s.widths.map((w) => {
+  const file = images[`../../assets/hero/${s.name}-${w}.webp`]
+  if (!file) throw new Error(`Missing responsive hero image: ${s.name}-${w}.webp`)
+  return `${file} ${w}w`
+}).join(', ')
 
 /** Preload for the first (eagerly loaded) slide. The prerender puts it in <head>; it uses the exact srcset/sizes of
  * the <img> so the browser reuses the preloaded file instead of downloading a second candidate. */

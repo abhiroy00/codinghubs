@@ -22,6 +22,7 @@
     "prep:sync": "node scripts/sync-prep-content.mjs",
     "prep:check": "node scripts/sync-prep-content.mjs --check",
     "test": "vitest run",
+    "test:performance": "playwright test --config playwright.performance.config.ts e2e/performance.spec.ts",
     "interview:sync": "node scripts/sync-interview-index.mjs",
     "interview:check": "node scripts/sync-interview-index.mjs --check"
   },

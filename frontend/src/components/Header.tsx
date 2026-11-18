@@ -12,6 +12,7 @@ import { CoursesMenu } from "./CoursesMenu";
 import { CareersMenu } from "./CareersMenu";
 import { DESKTOP_NAV_QUERY, MOBILE_NAV_QUERY } from "./HeaderDropdown";
 import "./chrome-colors.css";
+import { BRAND_LOGO_SRCSET } from '../lib/brand-images';
 
 type Menu = 'Courses' | 'Careers' | 'Resources';
 
@@ -124,7 +125,8 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
           >
             <picture>
               <source
-                srcSet="/assets/coding-hubs-school-of-ai-logo-wide.webp"
+                srcSet={BRAND_LOGO_SRCSET}
+                sizes="(max-width: 380px) 100px, (max-width: 760px) 132px, (max-width: 1250px) 140px, 156px"
                 type="image/webp"
               />
               <img

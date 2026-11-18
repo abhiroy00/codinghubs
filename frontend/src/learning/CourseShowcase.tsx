@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { COURSE_CATALOG, COURSE_CATEGORIES, type CourseDefinition, type CourseTrack } from './catalog'
 import { COURSES } from '../pages/free-session/data'
@@ -83,17 +83,16 @@ export function CoursesFeatures() {
   )
 }
 
-function Preview({ c }: { c: CourseDefinition }) {
+function CourseCard({ c }: { c: CourseDefinition }) {
   const tags = [c.category, ...c.tools.slice(0, 2)]
   return (
-    <article className="csx-preview">
+    <article className="csx-card">
       <div className={`csx-art art-${c.track}`} aria-hidden="true">
-        <span className="csx-glow g1" /><span className="csx-glow g2" /><span className="csx-lines" />
         <span className="csx-glyph"><FsIcon id={icon(c)} /></span>
       </div>
       <div className="csx-pbody">
         <div className="csx-ptop">
-          <h3>{c.name}</h3>
+          <h3><Link to={`/courses/${c.slug}/`}>{c.name}</Link></h3>
           <ul className="csx-tags" aria-label="Topics">
             {tags.map((t, i) => (<li key={t} className={`t${i}`}>{t}</li>))}
           </ul>
@@ -114,7 +113,7 @@ function Preview({ c }: { c: CourseDefinition }) {
         </ul>
         <p className="csx-pdesc">{blurb(c)}</p>
         <div className="csx-pactions">
-          <Link className="csx-start" to={`/courses/${c.slug}/`}>Start Learning <Arrow /></Link>
+          <Link className="csx-start" to={`/courses/${c.slug}/`} aria-label={`View ${c.name} course`}>View course <Arrow /></Link>
           <a className="csx-demo" href="/#register">Free demo</a>
         </div>
       </div>
@@ -122,69 +121,29 @@ function Preview({ c }: { c: CourseDefinition }) {
   )
 }
 
-/**
- * Course list with a sticky preview. The preview follows whichever title is in the middle of the
- * screen while scrolling, and also follows hover/keyboard focus. Every title links to its course page.
- */
+/** Every course is visible as a card; category filters narrow the same catalogue. */
 export function CoursesShowcase() {
   const [filter, setFilter] = useState('')
-  const [active, setActive] = useState(COURSE_CATALOG[0].slug)
-  const listRef = useRef<HTMLUListElement>(null)
-  const visible = useMemo(() => (filter ? COURSE_CATALOG.filter((c) => c.category === filter) : COURSE_CATALOG), [filter])
-  const current = visible.find((c) => c.slug === active) ?? visible[0]
-
-  useEffect(() => {
-    const list = listRef.current
-    if (!list || !('IntersectionObserver' in window)) return
-    // Only on the two-column layout, where the preview stays in view beside the list.
-    const wide = window.matchMedia('(min-width: 861px)')
-    let io: IntersectionObserver | undefined
-    const start = () => {
-      io?.disconnect()
-      if (!wide.matches) return
-      io = new IntersectionObserver(
-        (entries) => {
-          const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0]
-          const slug = hit && (hit.target as HTMLElement).dataset.slug
-          if (slug) setActive(slug)
-        },
-        { rootMargin: '-45% 0px -50% 0px' },
-      )
-      list.querySelectorAll('li').forEach((li) => io!.observe(li))
-    }
-    start()
-    wide.addEventListener('change', start)
-    return () => { io?.disconnect(); wide.removeEventListener('change', start) }
-  }, [visible])
+  const visible = filter ? COURSE_CATALOG.filter((c) => c.category === filter) : COURSE_CATALOG
 
   return (
     <section id="catalogue" className="csx-courses" aria-labelledby="csx-courses-title">
       <h2 id="csx-courses-title">Our Courses</h2>
-      <p className="csx-sub">Scroll through the list to preview each course, then start learning or book a free demo class.</p>
+      <p className="csx-sub">Explore our courses, compare learning paths and find the right next step for you.</p>
       <div className="csx-chips" role="group" aria-label="Filter by category">
-        <button type="button" className={!filter ? 'on' : ''} aria-pressed={!filter} onClick={() => { setFilter(''); setActive(COURSE_CATALOG[0].slug) }}>
+        <button type="button" className={!filter ? 'on' : ''} aria-pressed={!filter} onClick={() => setFilter('')}>
           All <span>{COURSE_CATALOG.length}</span>
         </button>
         {COURSE_CATEGORIES.map((cat) => (
-          <button key={cat.name} type="button" className={filter === cat.name ? 'on' : ''} aria-pressed={filter === cat.name} onClick={() => { setFilter(cat.name); setActive(cat.courses[0].slug) }}>
+          <button key={cat.name} type="button" className={filter === cat.name ? 'on' : ''} aria-pressed={filter === cat.name} onClick={() => setFilter(cat.name)}>
             {cat.name} <span>{cat.courses.length}</span>
           </button>
         ))}
       </div>
 
-      <div className="csx-split">
-        <div className="csx-sticky"><Preview key={current.slug} c={current} /></div>
-        <ul className="csx-list" ref={listRef} aria-label="Courses">
-          {visible.map((c) => (
-            <li key={c.slug} data-slug={c.slug}>
-              <Link to={`/courses/${c.slug}/`} className={c.slug === current.slug ? 'on' : ''} aria-current={c.slug === current.slug ? 'true' : undefined} onMouseEnter={() => setActive(c.slug)} onFocus={() => setActive(c.slug)}>
-                <span>{c.name}</span>
-                <small>{c.category}</small>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="csx-grid" aria-label="Courses">
+        {visible.map((c) => <li key={c.slug}><CourseCard c={c} /></li>)}
+      </ul>
     </section>
   )
 }

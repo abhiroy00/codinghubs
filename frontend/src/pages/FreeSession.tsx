@@ -28,7 +28,7 @@ export function FreeSession() {
   useSeo(HOME_SEO)
   useScopedStylesheet([
     FS_CSS,
-  ])
+  ], { preserveFirstPaint: true })
 
   const rootRef = useRef<HTMLDivElement>(null)
   const lenisRef = useLenisRef()

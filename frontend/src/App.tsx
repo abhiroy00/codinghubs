@@ -70,6 +70,16 @@ export function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </AuthProvider>
+  )
+}
+
+/** Keep the homepage's server and client trees identical so React can reuse its HTML. */
+export function AppContent() {
+  return (
+    <>
         <ScrollManager />
         <PrivateRouteMeta />
         <LenisProvider>
@@ -142,7 +152,6 @@ export function App() {
             </RegisterPopupProvider>
           </ModalProvider>
         </LenisProvider>
-      </BrowserRouter>
-    </AuthProvider>
+    </>
   )
 }

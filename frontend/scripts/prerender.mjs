@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto'
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { inlineHomeCriticalCss } from './home-critical-css.mjs'
 
 const root = path.resolve(import.meta.dirname, '..')
 const dist = path.join(root, 'dist')
@@ -90,8 +91,9 @@ function heroPosterPreloads(html) {
   const m = html?.match(/<div class="hv-bg[^"]*"(?: style="([^"]*)")?/)
   if (!m) return []
   const style = (m[1] ?? '').replace(/&quot;/g, '"')
-  const sm = style.match(/--hv-poster-sm:\s*url\("([^"]+)"\)/)?.[1] ?? DEFAULT_POSTER_SM
-  const lg = style.match(/--hv-poster:\s*url\("([^"]+)"\)/)?.[1] ?? DEFAULT_POSTER_LG
+  const picture = html.match(/<div class="hv-bg[^>]*>([\s\S]*?)<\/picture>/)?.[1] ?? ''
+  const sm = picture.match(/<source[^>]*srcset="([^"]+)"/i)?.[1] ?? style.match(/--hv-poster-sm:\s*url\("([^"]+)"\)/)?.[1] ?? DEFAULT_POSTER_SM
+  const lg = picture.match(/<img[^>]*src="([^"]+)"/)?.[1] ?? style.match(/--hv-poster:\s*url\("([^"]+)"\)/)?.[1] ?? DEFAULT_POSTER_LG
   return [
     `<link rel="preload" as="image" type="image/webp" href="${esc(sm)}" media="(max-width: 767px)" fetchpriority="high" />`,
     `<link rel="preload" as="image" type="image/webp" href="${esc(lg)}" media="(min-width: 768px)" fetchpriority="high" />`,
@@ -207,7 +209,8 @@ const pages = renderAll({ skipMissing: process.env.ALLOW_MISSING_LOCATIONS === '
 for (const page of pages) {
   const file = path.join(dist, page.file)
   await mkdir(path.dirname(file), { recursive: true })
-  await writeFile(file, render(page))
+  const html = render(page)
+  await writeFile(file, page.path === '/' ? await inlineHomeCriticalCss(html, dist) : html)
 }
 
 // sitemap: indexable canonical URLs only; no <lastmod> (we do not track real content-change dates)

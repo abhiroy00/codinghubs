@@ -34,9 +34,9 @@
   pointer-events: none;
   border-radius: inherit;
   /* Navy base shows until the poster loads; the poster is the still for phones, reduced motion and data saver. */
-  background: #0b1424 url("/assets/hero/video/team-coding-review-poster-1280.webp") center / cover no-repeat;
+  background: #0b1424 url("../assets/hero/home-poster-1280.webp") center / cover no-repeat;
   background-image: image-set(
-    url("/assets/hero/video/team-coding-review-poster-1280.webp") type("image/webp"),
+    url("../assets/hero/home-poster-1280.webp") type("image/webp"),
     url("/assets/hero/video/team-coding-review-poster.jpg") type("image/jpeg")
   );
 }
@@ -91,7 +91,7 @@
 .hv-bg[style] { background-image: var(--hv-poster); }
 
 @media (max-width: 767px) {
-  .hv-bg { background-image: url("/assets/hero/video/team-coding-review-poster-768.webp"); }
+  .hv-bg { background-image: url("../assets/hero/home-poster-768.webp"); }
   .hv-bg[style] { background-image: var(--hv-poster-sm); }
 }
 @media (prefers-reduced-motion: reduce) {

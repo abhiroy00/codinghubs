@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import './hero-video.css'
+import homePoster from '../assets/hero/home-poster-1280.webp'
+import homePosterSmall from '../assets/hero/home-poster-768.webp'
 
 /**
  * Decorative background video for page heroes. The host element gets the `hv-host` class (see hero-video.css).
@@ -13,8 +15,8 @@ import './hero-video.css'
  * on a data saver or 2G connection. Otherwise the poster stays as a still background.
  */
 const BASE = '/assets/hero/video/team-coding-review'
-const POSTER = `${BASE}-poster-1280.webp`
-const POSTER_SM = `${BASE}-poster-768.webp`
+const POSTER = homePoster
+const POSTER_SM = homePosterSmall
 const PAGE_BASE = '/assets/hero/video/pages'
 
 /** One clip per page type; files live in public/assets/hero/video/pages/. */

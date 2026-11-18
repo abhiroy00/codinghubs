@@ -6,6 +6,7 @@ import { useRegisterPopup } from '../lib/register-popup'
 import { FloatingContact } from '../components/FloatingContact'
 import { Header } from '../components/Header'
 import { useOptionalAuth } from '../lib/auth-context'
+import { BRAND_LOGO_SRCSET } from '../lib/brand-images'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -14,7 +15,7 @@ function HLink({ home, to, children, ...rest }: { home: boolean; to: string; chi
   return home ? <a href={to} {...rest}>{children}</a> : <Link to={to} {...(rest as object)}>{children}</Link>
 }
 /** WebP logo widths: 288 covers the ~140px-wide header logo on 1x/2x screens, 720 covers 3x screens. */
-export const LOGO_WIDE_SRCSET = '/assets/coding-hubs-school-of-ai-logo-wide-w288.webp 288w, /assets/coding-hubs-school-of-ai-logo-wide.webp 720w'
+export const LOGO_WIDE_SRCSET = BRAND_LOGO_SRCSET
 
 /** Wide logo as WebP with the PNG as fallback. `displayWidth` is the CSS width it renders at (for srcset selection). */
 export function LogoWide({ alt, displayWidth, className, lazy, style }: { alt: string; displayWidth: number; className?: string; lazy?: boolean; style?: React.CSSProperties }) {

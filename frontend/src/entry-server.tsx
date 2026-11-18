@@ -18,7 +18,7 @@ import { StaticRouter } from 'react-router-dom'
 import { Curriculum } from './pages/Curriculum'
 import { BookTutor } from './pages/BookTutor'
 import { LatestJobs } from './pages/LatestJobs'
-import { FreeSession } from './pages/FreeSession'
+import { AppContent } from './App'
 import { FIRST_SLIDE_PRELOAD } from './pages/free-session/hero-slides'
 import { StudioLanding } from './studio/Landing'
 import { NotFound } from './pages/NotFound'
@@ -125,7 +125,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     html: renderToString(
       <AuthProvider>
         <StaticRouter location="/">
-          <FreeSession />
+          <AppContent />
         </StaticRouter>
       </AuthProvider>,
     ),

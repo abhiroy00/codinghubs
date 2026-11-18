@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import { App } from './App'
 import { loadContent } from './locations/content-loader'
 // Self-hosted fonts first (index CSS, so every page has them, including the prerendered ones before JS runs).
@@ -51,11 +51,14 @@ async function start() {
   if(subject&&subject[1]!=='generative-ai') await Promise.all([import('./learning/CourseRoadmapLearning'),import('./learning/course-roadmap-content').then(m=>m.loadCourseRoadmap(subject[1]))]).catch(()=>null)
   if (prep) await loadPrepGuide(prep[1]).catch(() => null)
   prefetchRoutesWhenIdle()
-  createRoot(document.getElementById('root')!).render(
+  const root = document.getElementById('root')!
+  const app = (
     <StrictMode>
       <App />
-    </StrictMode>,
+    </StrictMode>
   )
+  if (path === '/' && root.hasChildNodes()) hydrateRoot(root, app)
+  else createRoot(root).render(app)
 }
 
 void start()
