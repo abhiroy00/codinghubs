@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { PHONE, WA, Logo } from '../lib/icons'
 import { INSTITUTE } from '../pages/free-session/data'
+import { useOptionalAuth } from '../lib/auth-context'
 
 export function Footer() {
+  const auth = useOptionalAuth()
   return (
     <footer id="site-footer">
       <div className="container-x f-in">
@@ -105,6 +107,9 @@ export function Footer() {
             <nav aria-label="Support">
               <h2>Support</h2>
               <ul>
+                <li><Link to="/#contact">Support</Link></li>
+                <li><Link to="/locations/">Locations</Link></li>
+                {!auth?.user && <li><Link to="/login" className="sh-login">Log in</Link></li>}
                 <li>
                   <Link to="/policies">Terms</Link>
                 </li>

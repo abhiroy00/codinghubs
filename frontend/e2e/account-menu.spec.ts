@@ -122,6 +122,7 @@ test("mobile drawer fits and missing images use initials", async ({ page }) => {
   for (const width of [320, 390, 768]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/");
+    await expect(page.locator('.site-header').getByRole('button', { name: 'Book Free Demo', exact: true })).toBeVisible();
     const trigger = page.locator(".sh-account-trigger");
     await trigger.click();
     const panel = page.locator(".sh-account-panel");
@@ -136,6 +137,22 @@ test("mobile drawer fits and missing images use initials", async ({ page }) => {
     await page.mouse.click(5, 220);
     await expect(panel).toBeHidden();
   }
+});
+
+test('navigation and account dropdowns are mutually exclusive', async ({ page }) => {
+  await page.goto('/');
+  const account = page.locator('.sh-account-trigger');
+  const courses = page.locator('.site-header').getByRole('button', { name: 'Courses', exact: true });
+  await account.click();
+  await expect(page.locator('.sh-account-panel')).toBeVisible();
+  await courses.hover();
+  await expect(courses).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('.sh-account-panel')).toBeHidden();
+  await account.click();
+  await expect(courses).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('.sh-account-panel')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(account).toBeFocused();
 });
 
 test("logout in another tab immediately removes the avatar", async ({

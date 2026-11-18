@@ -5,6 +5,7 @@ import { PROGRAMS } from '../pages/free-session/programs'
 import { useRegisterPopup } from '../lib/register-popup'
 import { FloatingContact } from '../components/FloatingContact'
 import { Header } from '../components/Header'
+import { useOptionalAuth } from '../lib/auth-context'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -52,6 +53,7 @@ export function FsHeader() {
 
 export function FsFooter({ home = false }: { home?: boolean }) {
   const popup = useRegisterPopup()
+  const auth = useOptionalAuth()
   // On the home page the in-page anchors scroll; everywhere else they go back to the home page section.
   const h = (hash: string) => (home ? hash : `/${hash}`)
   const waHref = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
@@ -113,6 +115,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><Link to="/brochures/">Course Brochures</Link></li>
               <li><Link to="/interview-studio">Interview Studio</Link></li>
               <li><HLink home={home} to={h('#contact')}>Support</HLink></li>
+              {!auth?.user && <li><Link to="/login" className="sh-login">Log in</Link></li>}
             </ul>
           </nav>
 

@@ -175,9 +175,6 @@
   }
 }
 @media (max-width: 600px) {
-  .site-header .sh-actions.has-account > .sh-demo {
-    display: none;
-  }
   .site-header .sh-account-panel {
     position: fixed;
     top: calc(var(--site-header-height) + 8px);

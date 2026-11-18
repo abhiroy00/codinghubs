@@ -64,10 +64,12 @@ export function AccountMenu({
   user,
   logout,
   onOpen,
+  closeForNavigation = false,
 }: {
   user: User;
   logout: () => Promise<void>;
   onOpen: () => void;
+  closeForNavigation?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -80,6 +82,7 @@ export function AccountMenu({
     [user.first_name, user.last_name].filter(Boolean).join(" ") ||
     user.username;
   useEffect(() => setOpen(false), [pathname, hash]);
+  useEffect(() => { if (closeForNavigation) setOpen(false); }, [closeForNavigation]);
   useEffect(() => {
     if (!open) return;
     const outside = (event: PointerEvent) => {

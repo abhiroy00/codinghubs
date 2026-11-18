@@ -79,6 +79,6 @@ test('enrollment enquiry validates, retries and saves contact details without a 
   await expect(dialog.getByRole('combobox', { name: /Select Your Interested Course/ })).toHaveValue('Generative AI')
   await expect(dialog.getByRole('textbox', { name: /Full Name/ })).toHaveValue('')
   await page.keyboard.press('Escape')
-  await page.locator('.site-header').getByRole('button', { name: 'Free Demo', exact: true }).click()
+  await page.locator('.site-header').getByRole('button', { name: 'Book Free Demo', exact: true }).click()
   await expect(page.getByRole('dialog', { name: 'Free demo registration' })).toBeVisible()
 })

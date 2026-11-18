@@ -58,16 +58,39 @@ export function FreeSession() {
   useEffect(() => {
     const id = location.hash.slice(1)
     if (!id) return
-    const t = setTimeout(() => {
-      if (id === 'register') goToForm()
-      else {
-        const el = document.getElementById(id)
-        if (el) (lenisRef.current ? lenisRef.current.scrollTo(el, { offset: -72 }) : el.scrollIntoView({ behavior: 'smooth', block: 'start' }))
-      }
-    }, 120)
-    return () => clearTimeout(t)
+    if (id === 'register') { goToForm(); return }
+    let cancelled = false
+    let frame = 0
+    const align = () => {
+      // Page styles and fonts change section positions after an inner-page navigation.
+      void document.fonts.ready.then(() => {
+        if (cancelled) return
+        frame = requestAnimationFrame(() => {
+          const el = document.getElementById(id)
+          if (!el) return
+          const inset = (document.getElementById('hdr')?.getBoundingClientRect().height ?? 72) + 16
+          const top = id === 'home' ? 0 : Math.max(0, window.scrollY + el.getBoundingClientRect().top - inset)
+          if (lenisRef.current) {
+            lenisRef.current.resize()
+            // Numeric targets avoid applying the header inset again via CSS scroll-margin/padding.
+            lenisRef.current.scrollTo(top)
+          } else window.scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+        })
+      })
+    }
+    const stylesheet = document.querySelector<HTMLLinkElement>(`link[rel="stylesheet"][href="${FS_CSS}"]`)
+    if (stylesheet && !stylesheet.sheet) {
+      stylesheet.addEventListener('load', align, { once: true })
+      stylesheet.addEventListener('error', align, { once: true })
+    } else align()
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(frame)
+      stylesheet?.removeEventListener('load', align)
+      stylesheet?.removeEventListener('error', align)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.hash])
+  }, [location.hash, location.key])
 
   function handleRootClick(e: React.MouseEvent) {
     const target = e.target as HTMLElement
