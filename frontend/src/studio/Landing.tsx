@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ROOT } from "./api";
 import { ButtonLink, Icon } from "./ui";
+import { PageBannerArt } from "../components/PageBannerArt";
 
 export function StudioLanding() {
   return (

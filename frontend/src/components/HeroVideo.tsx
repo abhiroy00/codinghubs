@@ -7,11 +7,11 @@ import homePosterSmallAvif from '../assets/hero/home-poster-768.avif'
 import { PageBannerArt } from './PageBannerArt'
 
 /**
- * Decorative background video for page heroes. The host element gets the `hv-host` class (see hero-video.css).
+ * Page hero media. Inner-page clips select static editorial artwork; the home page keeps its background video.
+ * The host element gets the `hv-host` class (see hero-video.css and page-banner.css).
  * Sources and licenses: public/assets/hero/video/SOURCE.md (Pexels clips, Pexels License).
  *
- * Without `clip` it plays the home page clip (720p/540p by screen width). With `clip` it plays that page's
- * own 720p clip from /assets/hero/video/pages/<clip>.mp4 and uses that clip's posters.
+ * Without `clip` it plays the home page clip (720p/540p by screen width).
  *
  * The server render and first client paint show only the static poster. The video is added after
  * hydration when the viewer has a tablet or larger screen, has not asked for reduced motion and is not
@@ -20,9 +20,8 @@ import { PageBannerArt } from './PageBannerArt'
 const BASE = '/assets/hero/video/team-coding-review'
 const POSTER = homePoster
 const POSTER_SM = homePosterSmall
-const PAGE_BASE = '/assets/hero/video/pages'
 
-/** One clip per page type; files live in public/assets/hero/video/pages/. */
+/** Retained page identifiers select the matching static banner illustration. */
 export type HeroClip =
   | 'courses' | 'course-detail' | 'interview-prep' | 'interview-prep-detail' | 'faq' | 'ai' | 'ai-tools'
   | 'blog' | 'blog-article' | 'projects' | 'project-guides' | 'book-a-tutor' | 'latest-jobs' | 'our-work'
@@ -42,11 +41,10 @@ export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
 }
 
 function HomeHeroVideo() {
-  const clip: HeroClip | undefined = undefined
-  const poster = clip ? `${PAGE_BASE}/${clip}-poster-1280.webp` : POSTER
-  const posterSm = clip ? `${PAGE_BASE}/${clip}-poster-768.webp` : POSTER_SM
-  const posterAvif = clip ? `${PAGE_BASE}/${clip}-poster-1280.avif` : homePosterAvif
-  const posterSmAvif = clip ? `${PAGE_BASE}/${clip}-poster-768.avif` : homePosterSmallAvif
+  const poster = POSTER
+  const posterSm = POSTER_SM
+  const posterAvif = homePosterAvif
+  const posterSmAvif = homePosterSmallAvif
   // The still as a real image (the only copy: no CSS background or video poster repeats it): it is the LCP element on most pages, and an
   // <img> with decoding="sync" paints in the first frame, whereas a background image is decoded asynchronously and
   // painted a frame later, after the app JS has taken the main thread. Same files and media split as the preloads
@@ -75,8 +73,6 @@ function HomeHeroVideo() {
       setSrc((current) => {
         if (!allowed) return null
         // Keep the first chosen size so a resize never restarts the download.
-        // Page clips come in one size. The home clip keeps its first chosen size so a resize never restarts the download.
-        if (clip) return `${PAGE_BASE}/${clip}.mp4`
         return current ?? `${BASE}-${window.innerWidth >= HD_MIN_WIDTH ? '720p' : '540p'}.mp4`
       })
     }
@@ -87,7 +83,7 @@ function HomeHeroVideo() {
       reduce.removeEventListener('change', sync)
       wide.removeEventListener('change', sync)
     }
-  }, [clip])
+  }, [])
 
   // Pause while the hero is scrolled away or the tab is hidden, to save CPU and battery.
   useEffect(() => {
