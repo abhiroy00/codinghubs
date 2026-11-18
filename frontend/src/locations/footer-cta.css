@@ -1,0 +1,75 @@
+/* Site-wide banner directly above the footer: one benefit, one primary action. Self-contained so page themes cannot restyle it. */
+.ch-band {
+  padding: clamp(2.5rem, 1.5rem + 3vw, 4rem) 16px;
+  background: transparent;
+}
+.ch-band-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.5rem 3rem;
+  max-width: 1144px;
+  margin-inline: auto;
+  padding: clamp(1.75rem, 1rem + 3vw, 3rem) clamp(1.5rem, 1rem + 3vw, 3.5rem);
+  overflow: hidden;
+  border-radius: 24px;
+  background:
+    radial-gradient(60% 120% at 100% 0%, rgba(59, 130, 246, 0.35) 0%, rgba(59, 130, 246, 0) 60%),
+    linear-gradient(135deg, #0b1424 0%, #12223f 100%);
+  color: #f4f7fb;
+  font-family: 'Inter', 'Noto Sans Devanagari', system-ui, sans-serif;
+}
+.ch-band-copy { max-width: 40rem; }
+.ch-band-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 0.85rem;
+  color: #9cc0ff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ch-band-kicker span { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.2); }
+.ch-band h2 {
+  margin: 0;
+  color: #fff;
+  font: 700 clamp(1.5rem, 1.2rem + 1.3vw, 2.25rem)/1.2 'Poppins', 'Poppins Fallback', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+.ch-band-copy > p:last-child { margin: 0.75rem 0 0; color: #c3cfe0; font-size: 1.0625rem; line-height: 1.6; }
+.ch-band-actions { display: grid; justify-items: center; gap: 0.75rem; }
+.ch-band-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 56px;
+  padding: 0 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #0b1220;
+  font: 700 1.0625rem/1 'Inter', system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 14px 30px -16px rgba(0, 0, 0, 0.6);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+.ch-band-btn svg { width: 18px; height: 18px; }
+.ch-band-btn:hover { background: #e9f1ff; transform: translateY(-1px); }
+.ch-band-btn:focus-visible, .ch-band-alt a:focus-visible { outline: 3px solid #9cc0ff; outline-offset: 3px; }
+.ch-band-alt { margin: 0; color: #c3cfe0; font-size: 0.9375rem; }
+.ch-band-alt a { color: #fff; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 760px) {
+  .ch-band-card { grid-template-columns: 1fr; border-radius: 18px; }
+  .ch-band-actions { justify-items: stretch; text-align: center; }
+  .ch-band-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ch-band-btn { transition: none; }
+  .ch-band-btn:hover { transform: none; }
+}
+#site-footer .fx-col ul + h2{margin-top:1.75rem}

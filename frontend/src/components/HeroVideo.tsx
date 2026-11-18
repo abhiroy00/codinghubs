@@ -1,14 +1,17 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './hero-video.css'
 import homePoster from '../assets/hero/home-poster-1280.webp'
 import homePosterSmall from '../assets/hero/home-poster-768.webp'
+import homePosterAvif from '../assets/hero/home-poster-1280.avif'
+import homePosterSmallAvif from '../assets/hero/home-poster-768.avif'
+import { PageBannerArt } from './PageBannerArt'
 
 /**
- * Decorative background video for page heroes. The host element gets the `hv-host` class (see hero-video.css).
+ * Page hero media. Inner-page clips select static editorial artwork; the home page keeps its background video.
+ * The host element gets the `hv-host` class (see hero-video.css and page-banner.css).
  * Sources and licenses: public/assets/hero/video/SOURCE.md (Pexels clips, Pexels License).
  *
- * Without `clip` it plays the home page clip (720p/540p by screen width). With `clip` it plays that page's
- * own 720p clip from /assets/hero/video/pages/<clip>.mp4 and uses that clip's posters.
+ * Without `clip` it plays the home page clip (720p/540p by screen width).
  *
  * The server render and first client paint show only the static poster. The video is added after
  * hydration when the viewer has a tablet or larger screen, has not asked for reduced motion and is not
@@ -17,9 +20,8 @@ import homePosterSmall from '../assets/hero/home-poster-768.webp'
 const BASE = '/assets/hero/video/team-coding-review'
 const POSTER = homePoster
 const POSTER_SM = homePosterSmall
-const PAGE_BASE = '/assets/hero/video/pages'
 
-/** One clip per page type; files live in public/assets/hero/video/pages/. */
+/** Retained page identifiers select the matching static banner illustration. */
 export type HeroClip =
   | 'courses' | 'course-detail' | 'interview-prep' | 'interview-prep-detail' | 'faq' | 'ai' | 'ai-tools'
   | 'blog' | 'blog-article' | 'projects' | 'project-guides' | 'book-a-tutor' | 'latest-jobs' | 'our-work'
@@ -35,25 +37,26 @@ function saverOn() {
 }
 
 export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
-  const poster = clip ? `${PAGE_BASE}/${clip}-poster-1280.webp` : POSTER
-  const posterSm = clip ? `${PAGE_BASE}/${clip}-poster-768.webp` : POSTER_SM
-  // The still as a real image (the CSS background stays as a fallback): it is the LCP element on most pages, and an
+  return clip ? <PageBannerArt clip={clip} /> : <HomeHeroVideo />
+}
+
+function HomeHeroVideo() {
+  const poster = POSTER
+  const posterSm = POSTER_SM
+  const posterAvif = homePosterAvif
+  const posterSmAvif = homePosterSmallAvif
+  // The still as a real image (the only copy: no CSS background or video poster repeats it): it is the LCP element on most pages, and an
   // <img> with decoding="sync" paints in the first frame, whereas a background image is decoded asynchronously and
   // painted a frame later, after the app JS has taken the main thread. Same files and media split as the preloads
-  // in scripts/prerender.mjs, so nothing is downloaded twice.
+  // in scripts/prerender.mjs, so nothing is downloaded twice. AVIF first (about a third smaller), WebP fallback.
   const still = (
     <picture>
+      <source media="(max-width: 767px)" srcSet={posterSmAvif} type="image/avif" />
       <source media="(max-width: 767px)" srcSet={posterSm} type="image/webp" />
+      <source srcSet={posterAvif} type="image/avif" />
       <img className="hv-still" src={poster} alt="" width={1280} height={720} decoding="sync" fetchPriority="high" />
     </picture>
   )
-  // The still background (phones, reduced motion, data saver, before the video starts) is set in CSS from these.
-  const stillStyle = clip
-    ? ({
-        '--hv-poster': `url("${PAGE_BASE}/${clip}-poster-1280.webp")`,
-        '--hv-poster-sm': `url("${PAGE_BASE}/${clip}-poster-768.webp")`,
-      } as CSSProperties)
-    : undefined
   const videoRef = useRef<HTMLVideoElement>(null)
   const [src, setSrc] = useState<string | null>(null)
   const [playing, setPlaying] = useState(false)
@@ -70,8 +73,6 @@ export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
       setSrc((current) => {
         if (!allowed) return null
         // Keep the first chosen size so a resize never restarts the download.
-        // Page clips come in one size. The home clip keeps its first chosen size so a resize never restarts the download.
-        if (clip) return `${PAGE_BASE}/${clip}.mp4`
         return current ?? `${BASE}-${window.innerWidth >= HD_MIN_WIDTH ? '720p' : '540p'}.mp4`
       })
     }
@@ -82,7 +83,7 @@ export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
       reduce.removeEventListener('change', sync)
       wide.removeEventListener('change', sync)
     }
-  }, [clip])
+  }, [])
 
   // Pause while the hero is scrolled away or the tab is hidden, to save CPU and battery.
   useEffect(() => {
@@ -133,17 +134,16 @@ export function HeroVideo({ clip }: { clip?: HeroClip } = {}) {
   }
 
   if (!src || failed) {
-    return <div className="hv-bg" style={stillStyle} aria-hidden="true">{still}</div>
+    return <div className="hv-bg" aria-hidden="true">{still}</div>
   }
 
   return (
     <>
-      <div className={`hv-bg${playing ? ' is-playing' : ''}`} style={stillStyle} aria-hidden="true">
+      <div className={`hv-bg${playing ? ' is-playing' : ''}`} aria-hidden="true">
         {still}
         <video
           ref={videoRef}
           className="hv-video"
-          poster={poster}
           autoPlay
           muted
           loop

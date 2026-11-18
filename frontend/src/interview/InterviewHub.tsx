@@ -7,6 +7,8 @@ import { PREP_SOURCES } from "../learning/prep-content";
 import initial from "./summaries.json";
 import "../community/public.css";
 import "../content-pages/blog.css";
+import "./interview-hub.css";
+import type { CourseTrack } from "../learning/catalog";
 
 type Resource = {
   url: string;
@@ -22,6 +24,63 @@ type Results = {
   categories: string[];
   difficulties: string[];
 };
+/** Roles group the existing subject roadmaps by the course track they already belong to. */
+const ROLES: { id: string; label: string; tracks: CourseTrack[] }[] = [
+  { id: "ai", label: "AI & GenAI engineer", tracks: ["ai"] },
+  { id: "developer", label: "Software developer", tracks: ["development"] },
+  { id: "data", label: "Data analyst & scientist", tracks: ["data"] },
+  { id: "cloud", label: "Cloud & DevOps engineer", tracks: ["cloud"] },
+  { id: "security", label: "Security analyst", tracks: ["security"] },
+  { id: "design", label: "Design & marketing", tracks: ["design", "marketing"] },
+  { id: "programs", label: "Internships & projects", tracks: ["program"] },
+];
+const PRACTICE = [
+  { title: "Mock coding interview", detail: "Timed problems with a code editor and feedback in Interview Studio.", href: "/interview-studio/coding-interviews/new" },
+  { title: "Practice problem library", detail: "Browse problems by topic and difficulty, then solve them at your own pace.", href: "/interview-studio/practice" },
+  { title: "System design practice", detail: "Work through design prompts and explain your trade-offs.", href: "/interview-studio/system-design" },
+];
+const lessons = (slug: string) => PREP_SOURCES[slug]?.availableDays;
+
+function RoleRoadmaps() {
+  const [role, setRole] = useState("");
+  const groups = ROLES.map((r) => ({ ...r, courses: COURSE_CATALOG.filter((c) => r.tracks.includes(c.track)) }))
+    .filter((g) => g.courses.length && (!role || g.id === role));
+  return (
+    <section className="ih-section" aria-labelledby="existing-roadmaps">
+      <div className="ih-head">
+        <h2 id="existing-roadmaps">Roadmaps by role</h2>
+        <p>Pick the role you are preparing for. Each roadmap is a 30-day plan with lessons, questions and practice; lesson counts show what is published today.</p>
+      </div>
+      <div className="ih-chips" role="group" aria-label="Filter roadmaps by role">
+        <button type="button" aria-pressed={!role} onClick={() => setRole("")}>All roles</button>
+        {ROLES.map((r) => (
+          <button key={r.id} type="button" aria-pressed={role === r.id} onClick={() => setRole(r.id)}>{r.label}</button>
+        ))}
+      </div>
+      <div className="ih-roles">
+        {groups.map((g) => (
+          <article className="ih-role" key={g.id} aria-labelledby={`role-${g.id}`}>
+            <header>
+              <h3 id={`role-${g.id}`}>{g.label}</h3>
+              <p>Common roles: {g.courses[0].careers.slice(0, 3).join(", ")}</p>
+            </header>
+            <ul>
+              {g.courses.map((c) => (
+                <li key={c.slug}>
+                  <Link to={`/interview/${c.slug}/`}>{c.name}</Link>
+                  <span className={lessons(c.slug) ? "ih-count" : "ih-count ih-outline"}>
+                    {lessons(c.slug) ? `${lessons(c.slug)} lessons` : "Study outline"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const INITIAL: Results = {
   count: initial.length,
   results: initial,
@@ -96,8 +155,30 @@ export function InterviewHub() {
           </p>
         </div>
       </section>
-      <section aria-labelledby="interview-search">
-        <h2 id="interview-search">Find your next topic</h2>
+      <section className="ih-section ih-practice" aria-labelledby="ih-practice">
+        <div className="ih-head">
+          <h2 id="ih-practice">Practise like the real interview</h2>
+          <p>Read a guide, then rehearse. Interview Studio sessions are saved to your account, so you will be asked to log in.</p>
+        </div>
+        <ul className="ih-practice-grid">
+          {PRACTICE.map((p, i) => (
+            <li key={p.href}>
+              <Link to={p.href} className={i === 0 ? "ih-practice-card is-primary" : "ih-practice-card"}>
+                <strong>{p.title}</strong>
+                <span>{p.detail}</span>
+                <span className="ih-go" aria-hidden="true">→</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="ih-studio-link"><Link to="/interview-studio">What is Interview Studio?</Link></p>
+      </section>
+      <RoleRoadmaps />
+      <section className="ih-section" aria-labelledby="interview-search">
+        <div className="ih-head">
+          <h2 id="interview-search">Topic guides</h2>
+          <p>Search focused guides by topic and difficulty.</p>
+        </div>
         <div className="community-filters">
           <label>
             Search topics, questions and explanations
@@ -157,9 +238,10 @@ export function InterviewHub() {
         <div className="community-grid" aria-busy={busy}>
           {data.results.map((r) => (
             <article className="community-card" key={r.url}>
-              <small>
-                {r.category} · {r.difficulty} · {r.kind}
-              </small>
+              <p className="ih-tags">
+                <span>{r.category}</span>
+                <span className={`ih-level ih-${r.difficulty.toLowerCase()}`}>{r.difficulty}</span>
+              </p>
               <h3>
                 <Link to={r.url}>{r.title}</Link>
               </h3>
@@ -196,27 +278,6 @@ export function InterviewHub() {
             </button>
           </nav>
         )}
-      </section>
-      <section aria-labelledby="existing-roadmaps">
-        <h2 id="existing-roadmaps">Subject interview roadmaps</h2>
-        <p>
-          Existing course questions, lessons and study plans are preserved. Each
-          roadmap shows which lessons are available.
-        </p>
-        <ul className="community-link-list">
-          {COURSE_CATALOG.map((c) => (
-            <li key={c.slug}>
-              <Link to={`/interview/${c.slug}/`}>{c.name}</Link>
-              <span>
-                {" "}
-                ·{" "}
-                {PREP_SOURCES[c.slug]?.availableDays
-                  ? `${PREP_SOURCES[c.slug].availableDays} available lessons`
-                  : "Course study outline"}
-              </span>
-            </li>
-          ))}
-        </ul>
       </section>
     </div>
   );

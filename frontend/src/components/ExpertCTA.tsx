@@ -5,7 +5,7 @@ export function ExpertCTA() {
   const { openModal } = useModal()
 
   return (
-    <section className="section bg-2" aria-labelledby="expert-heading">
+    <section className="section bg-2 expert-banner" aria-labelledby="expert-heading">
       <div className="container-x">
         <div className="center" style={{ maxWidth: '42rem', marginInline: 'auto' }}>
           <h2 id="expert-heading" className="display-md">

@@ -17,6 +17,10 @@ const INDEX_SEO = pageSeo({ path: '/locations/', title: INDEX_TITLE, description
 import type { LocationGroup } from './types'
 import { HeroVideo } from '../components/HeroVideo'
 
+/** Card thumbnails: AVIF/WebP at 400w and 640w next to the original JPG (kept as the fallback). */
+const THUMB_SIZES = '(min-width: 1000px) 400px, (min-width: 640px) 50vw, 100vw'
+const thumbSet = (slug: string, ext: 'avif' | 'webp') => `/assets/ai/loc/thumb/${slug}-w400.${ext} 400w, /assets/ai/loc/thumb/${slug}-w640.${ext} 640w`
+
 const PERKS = [
   { i: 'i-monitor', t: 'Learn online', d: 'The free demo and 15-day programs are live and online, so learners anywhere in NCR can join.' },
   { i: 'i-pin', t: 'Honest about location', d: 'One official head office at Netaji Subhash Place. No fake local branches.' },
@@ -38,6 +42,14 @@ export function LocationsIndex() {
     const h = new URLSearchParams(window.location.search).get('region') || ''
     if ((GROUP_ORDER as string[]).includes(h)) setGroup(h as LocationGroup)
   }, [])
+  // Keep ?region= in the address bar so a filtered view can be shared and the footer's region links keep working.
+  function chooseGroup(next: LocationGroup | 'all') {
+    setGroup(next)
+    const url = new URL(window.location.href)
+    if (next === 'all') url.searchParams.delete('region')
+    else url.searchParams.set('region', next)
+    window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash)
+  }
 
   const filtered = useMemo(() => {
     const t = q.trim().toLowerCase()
@@ -92,11 +104,11 @@ export function LocationsIndex() {
 
             <div className="lx-filter">
               <div className="lx-tabs" role="group" aria-label="Filter by region">
-                <button type="button" className="lx-tab" aria-pressed={group === 'all'} onClick={() => setGroup('all')}>
+                <button type="button" className="lx-tab" aria-pressed={group === 'all'} onClick={() => chooseGroup('all')}>
                   All <span>{LOCATIONS.length}</span>
                 </button>
                 {GROUP_ORDER.map((g) => (
-                  <button key={g} type="button" className={`lx-tab g-${g}`} aria-pressed={group === g} onClick={() => setGroup(g)}>
+                  <button key={g} type="button" className={`lx-tab g-${g}`} aria-pressed={group === g} onClick={() => chooseGroup(g)}>
                     {GROUP_LABELS[g]} <span>{LOCATIONS.filter((l) => l.group === g).length}</span>
                   </button>
                 ))}
@@ -106,6 +118,10 @@ export function LocationsIndex() {
                 <input id="loc-q" type="search" placeholder="Search your area, e.g. Laxmi Nagar, Sector 62" value={q} onChange={(e) => setQ(e.target.value)} />
               </div>
             </div>
+            <div className="lx-avail" aria-label="How you can learn">
+              <p><span className="lx-dot lx-dot-online" aria-hidden="true" /><strong>Online live</strong> classes and the free demo are available from every area listed.</p>
+              <p><span className="lx-dot lx-dot-office" aria-hidden="true" /><strong>In person</strong> at our one head office in Netaji Subhash Place, Delhi. <a href="#head-office">Contact us before visiting</a>.</p>
+            </div>
             <p className="lx-count" role="status" aria-live="polite">
               Showing {filtered.length} of {LOCATIONS.length} locations
             </p>
@@ -114,10 +130,15 @@ export function LocationsIndex() {
               {filtered.map((l, i) => (
                 <li key={l.slug} style={{ ['--i' as string]: i }}>
                   <Link to={locationPath(l.slug)} className={`lx-card g-${l.group}`}>
-                    <img className="lx-thumb" src={`/assets/ai/loc/thumb/${l.slug}.jpg`} alt="" width={640} height={363} loading="lazy" decoding="async" />
+                    <picture>
+                      <source type="image/avif" srcSet={thumbSet(l.slug, 'avif')} sizes={THUMB_SIZES} />
+                      <source type="image/webp" srcSet={thumbSet(l.slug, 'webp')} sizes={THUMB_SIZES} />
+                      <img className="lx-thumb" src={`/assets/ai/loc/thumb/${l.slug}.jpg`} alt="" width={640} height={363} loading="lazy" decoding="async" />
+                    </picture>
                     <span className="lx-badge" aria-hidden="true">{String(LOCATIONS.indexOf(l) + 1).padStart(2, '0')}</span>
                     <span className="lx-tag">{GROUP_LABELS[l.group]}</span>
                     <strong>AI Course in {l.short}</strong>
+                    <span className="lx-mode">Online live · Head office in NSP, Delhi</span>
                     <span className="lx-blurb">{l.blurb}</span>
                     <span className="lx-go">
                       Read the guide <FsIcon id="i-arrow" />

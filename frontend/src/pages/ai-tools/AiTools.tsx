@@ -68,17 +68,21 @@ export function AiTools() {
   useSeo(AI_TOOLS_SEO)
   useScopedStylesheet([FS_CSS])
   const [category, setCategory] = useState<AiToolCategory | ''>('')
-  const shown = useMemo(() => (category ? AI_TOOLS.filter((t) => t.category === category) : AI_TOOLS), [category])
+  const [query, setQuery] = useState('')
+  const shown = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return AI_TOOLS.filter((t) => (!category || t.category === category) && (!q || `${t.name} ${t.description} ${t.category}`.toLowerCase().includes(q)))
+  }, [category, query])
   const rows = stagger(shown)
 
   return (
     <div className="fs-page at-page">
       <FsHeader />
       <main id="main">
-        <section className="at-band hv-host hv-tall" aria-labelledby="at-title"><HeroVideo clip="ai-tools" />
+        <section className="at-band" aria-labelledby="at-title">
           <div className="at-stars" aria-hidden="true" />
           <div className="at-in">
-            <header className="at-head">
+            <header className="at-head hv-host"><HeroVideo clip="ai-tools" />
               <h1 id="at-title">
                 <span>Master the Tools Behind</span>
                 <span className="at-accent">AI Tools</span>
@@ -96,9 +100,16 @@ export function AiTools() {
                 </button>
               ))}
             </div>
+            <div className="at-search">
+              <label htmlFor="at-q" className="sr-only">Search tools</label>
+              <input id="at-q" type="search" placeholder="Search tools, e.g. Python, deployment, design" value={query} maxLength={80} onChange={(e) => setQuery(e.target.value)} />
+            </div>
             <p className="at-count" role="status" aria-live="polite">
-              Showing {shown.length} {category ? `${category} ` : ''}tool{shown.length === 1 ? '' : 's'}
+              Showing {shown.length} {category ? `${category} ` : ''}tool{shown.length === 1 ? '' : 's'}{query.trim() ? ` matching “${query.trim()}”` : ''}
             </p>
+            {shown.length === 0 && (
+              <p className="at-empty">No tools match. <button type="button" onClick={() => { setQuery(''); setCategory('') }}>Clear search and filters</button></p>
+            )}
 
             <ul className="at-rows" aria-label="Tools">
               {rows.map((row, r) => (

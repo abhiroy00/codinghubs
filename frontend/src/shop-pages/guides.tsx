@@ -174,8 +174,8 @@ export function GuidePage() {
     <PageFrame wide>
       <article className="pj-detail">
         {g.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <header className="pj-dhero gd-dhero">
-          <div className="pj-dhero-bg" aria-hidden="true">{g.featured_image && <img src={g.featured_image} alt="" />}</div>
+        <header className="pj-dhero gd-dhero hv-host">
+          <HeroVideo clip="project-guides" />
           <div className="pj-dhero-in">
             <BackLink to="/project-guides" className="pj-back"><span aria-hidden="true">←</span> All guides</BackLink>
             <div className="pj-badges">

@@ -1898,3 +1898,11 @@ body{background:var(--u-wash) fixed}
   .lv .call-float{bottom:142px}
 }
 @media (prefers-reduced-motion:reduce){.call-float,.wa-float{transition:none}}
+.lx-card picture{display:contents}
+.lx-avail{display:grid;gap:.5rem;margin:1rem 0 .25rem;padding:1rem 1.15rem;border:1px solid #d9e2f0;border-radius:12px;background:#fff}
+.lx-avail p{margin:0;display:flex;align-items:baseline;gap:.55rem;color:#334155;line-height:1.55}
+.lx-avail a{color:#1554d6;font-weight:600}
+.lx-dot{flex:none;width:9px;height:9px;border-radius:50%;transform:translateY(-1px)}
+.lx-dot-online{background:#16a34a;box-shadow:0 0 0 3px #16a34a26}
+.lx-dot-office{background:#1554d6;box-shadow:0 0 0 3px #1554d626}
+.lx-card .lx-mode{position:relative;z-index:1;display:block;color:#475569;font-size:.82rem;font-weight:600}

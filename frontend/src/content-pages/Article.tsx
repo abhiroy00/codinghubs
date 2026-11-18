@@ -165,7 +165,7 @@ export function CaseDetail() {
       <ReadProgress />
       <article className="bl-article">
         {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <header className="bl-head">
+        <header className="bl-head hv-host"><HeroVideo clip="our-work" />
           {a.industry && <p className="bl-cat">{a.industry}</p>}
           <h1>{a.title}</h1>
           <p className="bl-meta">

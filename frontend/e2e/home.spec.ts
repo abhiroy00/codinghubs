@@ -42,10 +42,14 @@ test("home content and layout fit phone, tablet and desktop screens", async ({
   expect(errors).toEqual([]);
 });
 
-test("home has no course grid and Explore courses opens the courses page", async ({
+test("home lists popular courses linking to course pages and Explore courses opens the catalogue", async ({
   page,
 }) => {
-  await expect(page.locator("#courses")).toHaveCount(0);
+  // Popular courses (the 13 homepage courses) link to their real course pages; the full catalogue stays on /courses/.
+  const cards = page.locator("#courses .hc-card");
+  await expect(cards).toHaveCount(13);
+  for (const href of await cards.locator("h3 a").evaluateAll((els) => els.map((el) => el.getAttribute("href"))))
+    expect(href).toMatch(/^\/courses\/[a-z0-9-]+\/$/);
   await expect(page.locator(".cc-card")).toHaveCount(0);
   await page.getByRole("link", { name: "Explore courses" }).click();
   await expect(page).toHaveURL(/\/courses\/$/);

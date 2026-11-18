@@ -88,15 +88,19 @@ await writeFile(path.join(dist, 'community.css'), (await Promise.all([...directo
 const DEFAULT_POSTER_SM = '/assets/hero/video/team-coding-review-poster-768.webp'
 const DEFAULT_POSTER_LG = '/assets/hero/video/team-coding-review-poster-1280.webp'
 function heroPosterPreloads(html) {
-  const m = html?.match(/<div class="hv-bg[^"]*"(?: style="([^"]*)")?/)
-  if (!m) return []
-  const style = (m[1] ?? '').replace(/&quot;/g, '"')
+  if (!/<div class="hv-bg/.test(html ?? '')) return []
   const picture = html.match(/<div class="hv-bg[^>]*>([\s\S]*?)<\/picture>/)?.[1] ?? ''
-  const sm = picture.match(/<source[^>]*srcset="([^"]+)"/i)?.[1] ?? style.match(/--hv-poster-sm:\s*url\("([^"]+)"\)/)?.[1] ?? DEFAULT_POSTER_SM
-  const lg = picture.match(/<img[^>]*src="([^"]+)"/)?.[1] ?? style.match(/--hv-poster:\s*url\("([^"]+)"\)/)?.[1] ?? DEFAULT_POSTER_LG
+  // The browser picks the first matching AVIF <source>; preload exactly those files (type-gated, so a browser
+  // without AVIF skips the hint and uses the WebP fallback).
+  const sources = [...picture.matchAll(/<source([^>]*)>/gi)].map(([, attrs]) => ({
+    srcset: attrs.match(/srcset="([^"]+)"/i)?.[1], media: attrs.match(/media="([^"]+)"/i)?.[1], type: attrs.match(/type="([^"]+)"/i)?.[1],
+  }))
+  const sm = sources.find(s => s.media && s.type === 'image/avif')?.srcset ?? DEFAULT_POSTER_SM
+  const lg = sources.find(s => !s.media && s.type === 'image/avif')?.srcset ?? DEFAULT_POSTER_LG
+  const type = url => url.endsWith('.avif') ? 'image/avif' : 'image/webp'
   return [
-    `<link rel="preload" as="image" type="image/webp" href="${esc(sm)}" media="(max-width: 767px)" fetchpriority="high" />`,
-    `<link rel="preload" as="image" type="image/webp" href="${esc(lg)}" media="(min-width: 768px)" fetchpriority="high" />`,
+    `<link rel="preload" as="image" type="${type(sm)}" href="${esc(sm)}" media="(max-width: 767px)" fetchpriority="high" />`,
+    `<link rel="preload" as="image" type="${type(lg)}" href="${esc(lg)}" media="(min-width: 768px)" fetchpriority="high" />`,
   ]
 }
 function buildHead(page) {

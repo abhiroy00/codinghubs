@@ -33,12 +33,8 @@
   overflow: hidden;
   pointer-events: none;
   border-radius: inherit;
-  /* Navy base shows until the poster loads; the poster is the still for phones, reduced motion and data saver. */
-  background: #0b1424 url("../assets/hero/home-poster-1280.webp") center / cover no-repeat;
-  background-image: image-set(
-    url("../assets/hero/home-poster-1280.webp") type("image/webp"),
-    url("/assets/hero/video/team-coding-review-poster.jpg") type("image/jpeg")
-  );
+  /* Navy base until the still (.hv-still, AVIF/WebP <picture>) paints; no CSS image, so nothing downloads twice. */
+  background: #0b1424;
 }
 /* The still image fills the band; the clip and the overlay (::after) stack above it in DOM order. */
 .hv-still {
@@ -87,13 +83,6 @@
 .hv-toggle:hover { background: #071923; }
 .hv-toggle:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 
-/* Page clips (HeroVideo clip="...") pass their own posters; the home hero keeps the defaults above. */
-.hv-bg[style] { background-image: var(--hv-poster); }
-
-@media (max-width: 767px) {
-  .hv-bg { background-image: url("../assets/hero/home-poster-768.webp"); }
-  .hv-bg[style] { background-image: var(--hv-poster-sm); }
-}
 @media (prefers-reduced-motion: reduce) {
   .hv-video { transition: none; }
 }

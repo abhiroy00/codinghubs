@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { ROOT } from "./api";
 import { ButtonLink, Icon } from "./ui";
+import { PageBannerArt } from "../components/PageBannerArt";
 
 export function StudioLanding() {
   return (
     <div className="studio st-landing">
       <main>
-        <section className="st-hero">
+        <section className="st-hero hv-host"><PageBannerArt clip="interview-prep" />
           <div className="st-hero-copy">
             <p className="st-eyebrow">
               <span className="st-live-dot" /> BUILT FOR YOUR NEXT CHAPTER

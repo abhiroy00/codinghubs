@@ -309,8 +309,8 @@ export function ProjectPage() {
     <PageFrame wide>
       <article className="pj-detail">
         {p.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <header className="pj-dhero">
-          <div className="pj-dhero-bg" aria-hidden="true">{p.featured_image && <img src={p.featured_image} alt="" />}</div>
+        <header className="pj-dhero hv-host">
+          <HeroVideo clip="projects" />
           <div className="pj-dhero-in">
             <BackLink to="/projects" className="pj-back"><span aria-hidden="true">←</span> All projects</BackLink>
             <div className="pj-badges">

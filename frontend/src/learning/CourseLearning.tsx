@@ -106,7 +106,7 @@ export function CourseDetails() {
   const { slug = '' } = useParams()
   const course = COURSE_BY_SLUG.get(slug)
   if (!course) return <div className="learn-shell"><h1>Course not found</h1><Link to="/courses/">Browse all courses</Link></div>
-  return <div className="learn-shell learn-detail"><header className="learn-hero course-programme-hero hv-host"><p className="learn-kicker">Coding Hubs School of AI · {course.category}</p><h1>Build practical skills in <em>{course.name}</em></h1><p>{course.introduction}</p>
+  return <div className="learn-shell learn-detail"><header className="learn-hero course-programme-hero hv-host"><HeroVideo clip="course-detail" /><p className="learn-kicker">Coding Hubs School of AI · {course.category}</p><h1>Build practical skills in <em>{course.name}</em></h1><p>{course.introduction}</p>
     <dl className="course-facts" aria-label={`${course.name} at a glance`}>
       <div><dt>Learning roadmap</dt><dd>30 days</dd></div>
       <div><dt>Curriculum modules</dt><dd>{course.modules.length}</dd></div>

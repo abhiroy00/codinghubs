@@ -7,7 +7,8 @@ import { WHATSAPP } from './free-session/data'
 import { FsIcon } from './free-session/icons'
 import { NotFound } from './NotFound'
 import { useRegisterPopup } from '../lib/register-popup'
-import { getProgram, programWebpSrcSet } from './free-session/programs'
+import { getProgram } from './free-session/programs'
+import { HeroVideo } from '../components/HeroVideo'
 import { pageSeo, programMeta } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
 import { CourseBrochureSection } from '../learning/CourseBrochureSection'
@@ -33,12 +34,8 @@ export function Curriculum() {
       <FsHeader />
 
       <main id="main">
-        <section className="curriculum-banner" aria-labelledby="curriculum-title">
-          {/* Full-bleed banner and the page's LCP image: WebP by width, JPG fallback. */}
-          <picture>
-            <source type="image/webp" srcSet={programWebpSrcSet(program)} sizes="100vw" />
-            <img src={program.image} width={program.imageWidth} height={program.imageHeight} alt="" aria-hidden="true" fetchPriority="high" />
-          </picture>
+        <section className="curriculum-banner hv-host" aria-labelledby="curriculum-title">
+          <HeroVideo clip="course-detail" />
           <div className="wrap curriculum-banner-in">
             <p className="eyebrow">15-Day Training Program</p>
             <h1 id="curriculum-title">{program.title}</h1>
