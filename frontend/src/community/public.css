@@ -435,3 +435,40 @@
     transition: none;
   }
 }
+
+/* ---------- technology news feed (TechFeed.tsx) ---------- */
+.tf { margin-block: clamp(2.25rem, 1.5rem + 2.5vw, 3.5rem); }
+.tf-head { max-width: 46rem; margin-bottom: 1.25rem; }
+.tf-kicker { margin: 0 0 0.35rem; color: #1446b8; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.tf-head h2 { margin: 0 0 0.4rem; font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem); letter-spacing: -0.01em; }
+.tf-head p:last-child { margin: 0; color: #475569; line-height: 1.65; }
+.tf-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+.tf-chips button { min-height: 44px; padding: 0.5rem 1rem; border: 1px solid #cdd6e4; border-radius: 999px; background: #fff; color: #0b1220; font: 600 0.92rem/1.2 var(--f-body, system-ui); cursor: pointer; }
+.tf-chips button span { margin-left: 0.25rem; color: #64748b; font-weight: 500; }
+.tf-chips button[aria-pressed="true"] { border-color: #0b1220; background: #0b1220; color: #fff; }
+.tf-chips button[aria-pressed="true"] span { color: #cbd5e1; }
+.tf-chips button:focus-visible, .tf-more button:focus-visible, .tf-card h3 a:focus-visible { outline: 3px solid #1554d6; outline-offset: 2px; }
+.tf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.tf-card { display: flex; flex-direction: column; gap: 0.55rem; min-width: 0; padding: 1.25rem; border: 1px solid #d9e2f0; border-radius: 14px; background: #fff; }
+.tf-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 0.75rem; margin: 0; color: #475569; font-size: 0.82rem; }
+.tf-source { color: #0b1220; font-weight: 700; }
+.tf-card h3 { margin: 0; font-size: 1.05rem; line-height: 1.4; }
+.community .tf-card h3 a { color: #0b1220; text-decoration: none; overflow-wrap: anywhere; }
+.community .tf-card h3 a:hover { color: #1554d6; text-decoration: underline; }
+.tf-summary { margin: 0; color: #475569; font-size: 0.93rem; line-height: 1.6; }
+.tf-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: auto 0 0; padding: 0; list-style: none; }
+.tf-tags li { padding: 0.15rem 0.55rem; border-radius: 999px; background: #f1f4f9; color: #334155; font-size: 0.78rem; font-weight: 600; }
+.tf-note { padding: 0.9rem 1rem; border: 1px solid #d9e2f0; border-radius: 12px; background: #f8fafc; color: #334155; }
+.tf-muted { margin: 0 0 1rem; font-size: 0.9rem; }
+.tf-link-btn { padding: 0; border: 0; background: none; color: #1554d6; font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+.tf-more { margin: 1.25rem 0 0; text-align: center; }
+.tf-more button { min-height: 44px; padding: 0.6rem 1.25rem; border: 1px solid #0b1220; border-radius: 999px; background: #fff; color: #0b1220; font: 600 0.95rem var(--f-body, system-ui); cursor: pointer; }
+.tf-skeleton { min-height: 170px; }
+.tf-skeleton span { display: block; height: 0.9rem; border-radius: 6px; background: #edf1f7; }
+.tf-skeleton span:nth-child(1) { width: 40%; }
+.tf-skeleton span:nth-child(2) { width: 90%; height: 1.2rem; }
+.tf-skeleton span:nth-child(3) { width: 75%; }
+@media (prefers-reduced-motion: no-preference) {
+  .tf-skeleton span { animation: tf-pulse 1.4s ease-in-out infinite; }
+}
+@keyframes tf-pulse { 50% { opacity: 0.55; } }

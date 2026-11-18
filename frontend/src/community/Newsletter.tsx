@@ -1,4 +1,5 @@
 import NewsletterSignup from "./NewsletterSignup";
+import { TechFeed } from "./TechFeed";
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { PageFrame } from "../content-pages/shared";
@@ -67,6 +68,7 @@ export function Newsletter() {
           </div>
         </section>
         <NewsletterSignup />
+        <TechFeed />
         <section aria-labelledby="published-issues">
           <h2 id="published-issues">Published issues</h2>
           {!data && !error && <p role="status">Loading issues…</p>}

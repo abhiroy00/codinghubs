@@ -143,3 +143,8 @@
   .at-card:hover, .at-card:focus-visible { transform: none; }
   .at-card:hover .at-logo, .at-card:focus-visible .at-logo { transform: none; }
 }
+.at-search { display: flex; justify-content: center; margin: 1rem auto 0; max-width: 34rem; }
+.at-search input { width: 100%; min-height: 48px; padding: 0.7rem 1.1rem; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 999px; background: rgba(255, 255, 255, 0.95); color: #0b1220; font: 500 1rem/1.3 var(--f-body, system-ui); }
+.at-search input:focus-visible { outline: 3px solid #9cc0ff; outline-offset: 2px; }
+.at-empty { margin: 1rem auto; text-align: center; color: #e6edf8; }
+.at-empty button { padding: 0; border: 0; background: none; color: #9cc0ff; font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }

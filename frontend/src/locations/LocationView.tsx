@@ -19,7 +19,7 @@ const FIGURES: Record<string, { src: string; alt: string }> = {
 const LOCATION_HERO_WIDTHS = [640, 960, 1280]
 /** Rendered width of .lv-hero-img: nearly full width on phones/tablets, a 522px column on desktop. */
 const LOCATION_HERO_SIZES = '(max-width: 960px) 94vw, 522px'
-const locationHeroSrcSet = (slug: string) => LOCATION_HERO_WIDTHS.map((w) => `/assets/ai/loc/${slug}-w${w}.webp ${w}w`).join(', ')
+const locationHeroSrcSet = (slug: string, ext: 'avif' | 'webp' = 'webp') => LOCATION_HERO_WIDTHS.map((w) => `/assets/ai/loc/${slug}-w${w}.${ext} ${w}w`).join(', ')
 
 const KICKERS: Record<string, { label: string; icon: string }> = {
   'understanding-ai': { label: 'AI basics', icon: 'i-monitor' },
@@ -96,6 +96,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               <div className="lv-visual">
                 <figure className="lv-hero-img">
                   <picture>
+                    <source type="image/avif" srcSet={locationHeroSrcSet(meta.slug, 'avif')} sizes={LOCATION_HERO_SIZES} />
                     <source type="image/webp" srcSet={locationHeroSrcSet(meta.slug)} sizes={LOCATION_HERO_SIZES} />
                     <img src={`/assets/ai/loc/${meta.slug}.jpg`} alt={`AI-generated illustration of learners studying artificial intelligence, with a ${meta.short} backdrop`} width={1280} height={725} />
                   </picture>

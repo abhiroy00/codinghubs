@@ -68,11 +68,13 @@
 .csx-pmeta{display:flex;flex-wrap:wrap;gap:.5rem .75rem;margin:1rem 0 0;padding:0;list-style:none;color:#475569;font:500 .75rem var(--f-body,Inter,sans-serif)}
 .csx-pmeta li{display:inline-flex;align-items:center;gap:.35rem}
 .csx-pdesc{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin:.85rem 0 1rem;color:#4a5568;font-size:.875rem;line-height:1.6}
-.csx-pactions{display:grid;grid-template-columns:1fr auto;gap:.5rem;margin-top:auto;padding-top:.5rem}
-.csx-start{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:44px;padding:.5rem;border-radius:8px;background:var(--ch-brand,#0062fa);color:#fff;font:600 .8125rem var(--f-body,Inter,sans-serif);text-decoration:none;transition:background .2s}
+.csx-pactions{display:grid;gap:.35rem;margin-top:auto;padding-top:.5rem}
+.csx-start{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:46px;padding:.5rem;border-radius:999px;background:var(--ch-brand,#0062fa);color:#fff;font:600 .9375rem var(--f-body,Inter,sans-serif);text-decoration:none;transition:background .2s}
 .csx-start:hover{background:#004bd6}
-.csx-demo{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 .6rem;border:1px solid #cdd6e4;border-radius:8px;color:#0b1220;font:600 .75rem var(--f-body,Inter,sans-serif);text-decoration:none}
-.csx-demo:hover{border-color:#0062fa;background:#e9f1ff}
+.csx-demo{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 .6rem;color:#1446b8;font:600 .875rem var(--f-body,Inter,sans-serif);text-decoration:underline;text-underline-offset:3px}
+.csx-demo:hover{color:#0b1220}
+.csx-outcome{margin:0 0 .75rem;padding:.6rem .75rem;border-radius:10px;background:#f4f7fc;color:#334155;font-size:.84rem;line-height:1.5}
+.csx-outcome strong{color:#0b1220}
 
 .csx-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.4rem;margin:clamp(3rem,7vw,4.5rem) 0 0;padding:clamp(1.6rem,4vw,2.6rem);border-radius:18px;background:linear-gradient(120deg,#0b1a3a 0%,#123a8f 60%,#0062fa 100%);color:#fff}
 .csx-cta-kicker{margin:0 0 .4rem;color:#9cc0ff;font:600 .78rem var(--f-body,Inter,sans-serif);letter-spacing:.14em;text-transform:uppercase}

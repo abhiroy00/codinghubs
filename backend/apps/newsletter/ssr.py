@@ -47,4 +47,5 @@ def brochures(request):
 
 
 def hero_preloads(clip):
-    return [(f"/assets/hero/video/pages/{clip}-poster-768.webp", "(max-width: 767px)"), (f"/assets/hero/video/pages/{clip}-poster-1280.webp", "(min-width: 768px)")]
+    # Same AVIF files the hero <picture> selects first (HeroVideo.tsx); type-gated so other browsers skip them.
+    return [(f"/assets/hero/video/pages/{clip}-poster-768.avif", "(max-width: 767px)"), (f"/assets/hero/video/pages/{clip}-poster-1280.avif", "(min-width: 768px)")]

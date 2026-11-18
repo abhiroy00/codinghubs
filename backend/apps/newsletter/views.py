@@ -273,3 +273,17 @@ class AdminPreview(PrivateView, APIView):
         issue = get_object_or_404(NewsletterIssue, pk=pk)
         token = signing.dumps({'issue': issue.pk, 'version': issue.updated_at.isoformat()}, salt='newsletter-preview')
         return Response({'title': issue.title, 'content_html': sanitize_html(issue.content), 'confirmed_recipients': Subscriber.objects.filter(status='confirmed').count(), 'preview_token': token})
+
+
+class TechFeed(APIView):
+    """Public, cached technology news from allowlisted publishers (see feeds.py)."""
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    def get(self, request):
+        from . import feeds
+        category = request.query_params.get('category', '')
+        if category and category not in feeds.CATEGORIES:
+            raise ValidationError({'category': 'Unknown category.'})
+        # Cached server-side; the site-wide API policy keeps browser caching off.
+        return Response(feeds.public_payload(feeds.get_feed(), category))

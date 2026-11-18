@@ -44,3 +44,14 @@ All public page shells and the lesson workspace use `frontend/src/components/Hea
 Locations is a link inside Resources on both desktop and mobile. The disclosure supports keyboard navigation, Escape and outside-click dismissal; navigation closes the mobile menu. The demo popup loads its own stylesheet when opened from a page without the free-session stylesheet, such as login.
 
 `frontend/e2e/header.spec.ts` checks matching header styling and links across 13 routes, mobile Resources → Locations navigation, and the demo dialog on an account page. It runs with the existing home browser command above.
+
+## November 2026 refresh: learning block, popular courses, profile and footer banner
+
+- **Start learning right now** (`#learn-free`, `frontend/src/pages/free-session/HomeLearn.tsx`) sits directly below the pathways band: the Generative AI 30-day roadmap (four levels linking to their lesson pages), a two-minute Python challenge with answer and explanation, and a beginner project with steps and outcome. All three work without sign-up and without JavaScript (the answer is a native `<details>`).
+- **Editing path.** The content lives in `frontend/src/pages/free-session/learning-hub.ts` as a typed copy of existing sources, so the homepage bundle does not ship the roadmap or catalogue JSON. Change the source first (`learning/genai-generated/*.json`, `learning/catalog.ts`), then mirror it here; `learning-hub.test.ts` fails `npm test` if the copy drifts or a course link has no course page.
+- **Popular courses** (`#courses`) reuse the 13 existing homepage courses (`COURSES` in `data.ts`) with the existing category tabs. Each card links to its course page and opens the demo form with that course preselected. The three 15-day programs follow from `programs.ts`. Only verified metadata is shown (live online, 30-day roadmap, 15 days); levels and prices are not shown because the catalogue does not record them.
+- **About / profile** (`#about`) keeps its content and actions but no longer uses boxed panels or a section seam; the contact column is separated by a hairline only.
+- **Banner above the footer** (`.ch-band` in `locations/FsShell.tsx`, styles in `locations/footer-cta.css`) is shared by every page using the site footer: one benefit line and one primary action, **Book a Free Demo**, which opens the existing registration popup. A quiet phone link remains for people who prefer to call.
+- **Header** navigation is 16.5px/600 on desktop (16px between 1101–1250px) and 17px in the mobile menu; the homepage-only header overrides were removed so every route shares `components/header.css`.
+
+Browser checks: `frontend/e2e/redesign.spec.ts` (run with `npx playwright test --config playwright.performance.config.ts` after `npm run build`).

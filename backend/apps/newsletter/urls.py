@@ -5,6 +5,7 @@ urlpatterns = [
     path('subscribe/', views.Subscribe.as_view()),
     path('confirm/', views.TokenAction.as_view()),
     path('unsubscribe/', views.Unsubscribe.as_view()),
+    path('feed/', views.TechFeed.as_view()),
     path('issues/', views.IssueList.as_view()),
     path('issues/<slug:slug>/', views.IssueDetail.as_view()),
 ]

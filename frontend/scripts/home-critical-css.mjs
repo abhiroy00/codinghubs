@@ -8,7 +8,7 @@ export async function inlineHomeCriticalCss(html, dist) {
   const dom = new JSDOM(html)
   const document = dom.window.document
   // Keep the header, announcement, hero, their ancestors and floating contact controls.
-  document.querySelectorAll('main > :not(#home), #site-footer, .fx-cta-sec').forEach(el => el.remove())
+  document.querySelectorAll('main > :not(#home), #site-footer, .ch-band').forEach(el => el.remove())
   const classes = new Set(), ids = new Set(), tags = new Set(['strong', 'small'])
   for (const element of document.querySelectorAll('*')) {
     element.classList.forEach(name => classes.add(name))

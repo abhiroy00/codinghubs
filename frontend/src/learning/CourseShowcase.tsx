@@ -112,9 +112,10 @@ function CourseCard({ c }: { c: CourseDefinition }) {
           </li>
         </ul>
         <p className="csx-pdesc">{blurb(c)}</p>
+        <p className="csx-outcome"><strong>You will practise:</strong> {c.skills.slice(0, 3).join(', ')}</p>
         <div className="csx-pactions">
           <Link className="csx-start" to={`/courses/${c.slug}/`} aria-label={`View ${c.name} course`}>View course <Arrow /></Link>
-          <a className="csx-demo" href="/#register">Free demo</a>
+          <a className="csx-demo" href="/#register" aria-label={`Book a free demo for ${c.name}`}>or try a free demo</a>
         </div>
       </div>
     </article>

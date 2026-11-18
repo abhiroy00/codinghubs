@@ -267,3 +267,10 @@ NEWSLETTER_UNSUBSCRIBE_TTL = config("NEWSLETTER_UNSUBSCRIBE_TTL", default=315360
 BROCHURE_MAX_BYTES = config("BROCHURE_MAX_BYTES", default=10 * 1024 * 1024, cast=int)
 
 EMAIL_TIMEOUT = config("EMAIL_TIMEOUT", default=15, cast=int)
+
+# Technology news feed on /newsletter/ (apps/newsletter/feeds.py). Allowlisted public RSS/Atom
+# feeds only; no credentials. Cached for TECH_FEED_TTL seconds; the last validated items of each
+# source are kept if a provider fails. Tests never reach the network.
+TECH_FEED_TTL = config('TECH_FEED_TTL', default=1800, cast=int)
+TECH_FEED_TIMEOUT = config('TECH_FEED_TIMEOUT', default=6, cast=float)
+TECH_FEED_REFRESH_ON_REQUEST = config('TECH_FEED_REFRESH_ON_REQUEST', default=not TESTING, cast=bool)

@@ -5,7 +5,7 @@ import path from 'node:path'
 
 const root = path.resolve(import.meta.dirname, '../dist')
 await stat(path.join(root, 'home.html')) // Build first; never silently audit an empty app shell.
-const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.mp4': 'video/mp4', '.ico': 'image/x-icon' }
+const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.webp': 'image/webp', '.avif': 'image/avif', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.mp4': 'video/mp4', '.ico': 'image/x-icon' }
 const exists = file => stat(file).catch(() => null)
 
 http.createServer(async (request, response) => {
@@ -15,6 +15,7 @@ http.createServer(async (request, response) => {
     if (pathname.startsWith('/api/')) {
       const data = pathname === '/api/interview/resources/' ? { count: 0, results: [], categories: [], difficulties: [] }
         : pathname === '/api/gigs/status/' ? { enabled: false }
+        : pathname === '/api/newsletter/feed/' ? { refreshed_at: null, stale: false, categories: [], sources: [], items: [] }
         : /^\/api\/(blogs|projects|case-studies|newsletter\/issues)\//.test(pathname) ? { count: 0, results: [], next: null, previous: null }
         : []
       response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }).end(JSON.stringify(data))

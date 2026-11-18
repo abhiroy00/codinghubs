@@ -7,6 +7,7 @@ import { FloatingContact } from '../components/FloatingContact'
 import { Header } from '../components/Header'
 import { useOptionalAuth } from '../lib/auth-context'
 import { BRAND_LOGO_SRCSET } from '../lib/brand-images'
+import './footer-cta.css'
 import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS } from './registry'
 
 /** Official Coding Hubs School of AI logo (transparent PNG) on a white pill so it reads on the dark header. */
@@ -68,21 +69,18 @@ export function FsFooter({ home = false }: { home?: boolean }) {
 
   return (
     <>
-    <section className="fx-cta-sec" aria-label="Register for the free demo">
-      <div className="wrap">
-        <div className="fx-cta">
-          <div>
-            <h2>Ready to start learning AI?</h2>
-            <p>Join the free 2-hour live online demo, or talk to a counsellor about the course that fits your goals.</p>
-          </div>
-          <div className="fx-cta-btns">
-            <button type="button" className="btn btn-navy btn-lg" data-cta="footer" onClick={() => popup.open()}>
-              Register Free <FsIcon id="i-arrow" />
-            </button>
-            <a href={INSTITUTE.phoneHref} className="btn btn-ghost btn-lg">
-              Call {INSTITUTE.phone}
-            </a>
-          </div>
+    <section className="ch-band" aria-labelledby="ch-band-title">
+      <div className="ch-band-card">
+        <div className="ch-band-copy">
+          <p className="ch-band-kicker"><span aria-hidden="true" />Free · Live online · 2 hours</p>
+          <h2 id="ch-band-title">Try a real class before you choose a course.</h2>
+          <p>See how we teach, follow a live demo and ask the trainer your questions. No payment needed.</p>
+        </div>
+        <div className="ch-band-actions">
+          <button type="button" className="ch-band-btn" data-cta="footer" onClick={() => popup.open()}>
+            Book a Free Demo <FsIcon id="i-arrow" />
+          </button>
+          <p className="ch-band-alt">Prefer to talk? <a href={INSTITUTE.phoneHref}>Call {INSTITUTE.phone}</a></p>
         </div>
       </div>
     </section>
