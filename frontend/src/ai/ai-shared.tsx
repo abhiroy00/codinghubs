@@ -6,6 +6,7 @@ import { useAuth } from '../lib/auth-context'
 import { LearnFrame } from '../learning/LearnFrame'
 import '../learning/learning.css'
 import './ai.css'
+import { HeroVideo } from '../components/HeroVideo'
 
 /** A readable message for any failed API call: the server's own wording when it sent one. */
 export function errorMessage(error: unknown): string {
@@ -35,7 +36,7 @@ export function AiPage({ kicker, title, intro, children }: { kicker: string; tit
   return (
     <LearnFrame>
       <div className="learn-shell ai-shell">
-        <header className="learn-hero">
+        <header className="learn-hero hv-host"><HeroVideo clip="ai" />
           <p className="learn-kicker">{kicker}</p>
           <h1>{title}</h1>
           <p>{intro}</p>

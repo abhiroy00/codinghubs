@@ -79,10 +79,10 @@ export function AiTools() {
     <div className="fs-page at-page">
       <FsHeader />
       <main id="main">
-        <section className="at-band hv-host hv-tall" aria-labelledby="at-title"><HeroVideo clip="ai-tools" />
+        <section className="at-band" aria-labelledby="at-title">
           <div className="at-stars" aria-hidden="true" />
           <div className="at-in">
-            <header className="at-head">
+            <header className="at-head hv-host"><HeroVideo clip="ai-tools" />
               <h1 id="at-title">
                 <span>Master the Tools Behind</span>
                 <span className="at-accent">AI Tools</span>

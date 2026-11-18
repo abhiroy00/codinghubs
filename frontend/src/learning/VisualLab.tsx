@@ -6,6 +6,7 @@ import { PracticeSandbox } from './PracticeSandbox'
 import { useAcademySeo } from './useAcademySeo'
 import './academy.css'
 import './visual-lab.css'
+import { HeroVideo } from '../components/HeroVideo'
 
 export function VisualLab(){
   const [params,setParams]=useSearchParams()
