@@ -6,14 +6,12 @@ import { useRegisterPopup } from '../lib/register-popup'
 import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter } from '../locations/FsShell'
-import { COURSES } from './free-session/data'
 import { INSTITUTE, SESSION } from './free-session/data'
 import { FsIcon } from './free-session/icons'
 import { Header } from '../components/Header'
 import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
 import { HomePathways } from './free-session/HomePathways'
 import { HomeProjects } from './free-session/HomeProjects'
-import { HomeTools } from './free-session/HomeTools'
 import { CareerLaunch } from './free-session/CareerLaunch'
 import { InnovativeToolkit } from '../components/InnovativeToolkit'
 import { ContactHub } from './free-session/ContactHub'
@@ -138,7 +136,6 @@ export function FreeSession() {
         <HomePathways />
         <HomeProjects />
 
-        <HomeTools />
         <InnovativeToolkit />
         <LogoWall />
 
@@ -288,59 +285,6 @@ export function FreeSession() {
             <p className="plan-note">
               <FsIcon id="i-ticket" />Registering for the free demo costs nothing.
             </p>
-          </div>
-        </section>
-
-        <section className="sec sec-process" id="how" aria-labelledby="how-title">
-          <div className="wrap">
-            <div className="sec-head center reveal">
-              <p className="eyebrow eyebrow-light">How it works</p>
-              <h2 id="how-title" className="h2">
-                3 Simple <span className="marker">Steps</span>
-              </h2>
-            </div>
-            <div className="steps-layout">
-              <svg className="steps-thread" viewBox="0 0 1000 288" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M0 64C90 64 110 64 167 64 300 64 350 92 500 92S700 64 833 64 930 64 1000 64" />
-              </svg>
-              <ol className="steps">
-                <AnimatedCard bare as="li" className="step reveal">
-                  <div className="step-visual" aria-hidden="true">
-                    <span className="step-diamond"><FsIcon id="i-compass" className="step-icon" /></span>
-                    <span className="step-n">01</span>
-                  </div>
-                  <div className="step-copy">
-                    <h3>Choose Your Course</h3>
-                    <p>Pick the course you're curious about from the {COURSES.length} options.</p>
-                  </div>
-                </AnimatedCard>
-                <AnimatedCard bare as="li" className="step reveal">
-                  <div className="step-visual" aria-hidden="true">
-                    <span className="step-diamond"><FsIcon id="i-pen" className="step-icon" /></span>
-                    <span className="step-n">02</span>
-                  </div>
-                  <div className="step-copy">
-                    <h3>Register for the Free Online Session</h3>
-                    <p>Fill the short form — it's free.</p>
-                  </div>
-                </AnimatedCard>
-                <AnimatedCard bare as="li" className="step reveal">
-                  <div className="step-visual" aria-hidden="true">
-                    <span className="step-diamond"><FsIcon id="i-monitor" className="step-icon" /></span>
-                    <span className="step-n">03</span>
-                  </div>
-                  <div className="step-copy">
-                    <h3>Attend the Live Demo &amp; Explore the Full Course</h3>
-                    <p>Join online, learn live, ask questions and explore the full course.</p>
-                  </div>
-                </AnimatedCard>
-              </ol>
-            </div>
-            <div className="center">
-              <a href="#register" className="btn btn-anim btn-yellow btn-lg" data-cta="how-it-works">
-                Book My Free Seat <FsIcon id="i-arrow" />
-              </a>
-            </div>
           </div>
         </section>
 

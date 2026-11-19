@@ -55,7 +55,7 @@ test("Join Coding Hub follows the hero, removed sections stay gone and its butto
   await expect.poll(() => page.locator("#contact").evaluate((el) => Math.round(el.getBoundingClientRect().top))).toBeLessThan(150);
   await page.goto("/");
   await page.locator("#start-career").getByRole("link", { name: "View Courses" }).click();
-  await expect(page).toHaveURL(/\/courses#catalogue$/);
+  await expect(page).toHaveURL(/\/courses\/?#catalogue$/);
   await expect(page.locator("#catalogue .csx-card")).toHaveCount(43);
 });
 
