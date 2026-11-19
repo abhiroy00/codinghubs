@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { DEMO_VIDEOS, getYouTubeId, thumbnailFor, type DemoVideo } from '../data/demoVideos'
+import { DEMO_CHANNEL_URL, DEMO_VIDEOS, getYouTubeId, thumbnailFor, type DemoVideo } from '../data/demoVideos'
 import { AnimatedCard, Reveal, VideoModal } from './ui'
 import './demo-videos.css'
 
@@ -36,11 +36,14 @@ export function DemoVideos({ videos = DEMO_VIDEOS }: { videos?: DemoVideo[] }) {
                   {v.course} <span className="sr-only">: play demo class</span>
                 </button>
               </h3>
-              <p className="dv-meta">Free demo class · Coding Hub</p>
+              <p className="dv-meta">Free class · Hindi · Coding Hub</p>
             </AnimatedCard>
           </li>
         ))}
       </Reveal>
+      <p className="dv-more">
+        <a className="ui-btn ui-btn-ghost" href={DEMO_CHANNEL_URL} target="_blank" rel="noopener noreferrer">View all videos on YouTube <span aria-hidden="true">↗</span></a>
+      </p>
       <VideoModal videoId={active?.videoId ?? null} title={active ? `${active.course} demo class` : ''} onClose={close} />
     </div>
   )

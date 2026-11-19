@@ -12,8 +12,19 @@ export interface DemoVideo {
   youtubeUrl: string
 }
 
+/** All demo classes live on the Coding Hub YouTube channel. */
+export const DEMO_CHANNEL_URL = 'https://www.youtube.com/@codingnowai/videos'
+
 export const DEMO_VIDEOS: DemoVideo[] = [
-  // { id: 'genai-intro', course: 'Generative AI', thumbnail: '/demo/genai-intro.webp', youtubeUrl: 'https://www.youtube.com/watch?v=XXXXXXXXXXX' },
+  { id: 'sql-ep1', course: 'MySQL Ep 1: What is SQL & how databases work', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=Gpc-xAEmaGE' },
+  { id: 'sql-ep2', course: 'MySQL Ep 2: Types of SQL & SQL operators', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=NA9KkXxK4EA' },
+  { id: 'sql-ep3', course: 'MySQL Ep 3: BETWEEN operator + 5 solved questions', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=bMLyH67mF1I' },
+  { id: 'sql-ep4', course: 'MySQL Ep 4: Constraints & relationships', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=qqZStVP0jOQ' },
+  { id: 'py-types', course: 'Python: Data types for beginners', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=YvNX0l67CB8' },
+  { id: 'py-loops', course: 'Python: Loops explained', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=LEP0lMD7nU4' },
+  { id: 'py-functions', course: 'Python: Functions, a complete guide', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=J-Bu3U_4l6I' },
+  { id: 'html-intro', course: 'HTML from scratch: Introduction', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=6vunhd0thPw' },
+  { id: 'css-intro', course: 'CSS introduction for full stack', thumbnail: '', youtubeUrl: 'https://www.youtube.com/watch?v=yQaT2Uiadb4' },
 ]
 
 /** Extracts the 11-character video id from watch, youtu.be, shorts, embed and live URLs; null if none. */
