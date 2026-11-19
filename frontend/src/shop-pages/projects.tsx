@@ -7,6 +7,7 @@ import { FileList, Html, useDetail } from './catalog'
 import { errorText, get, initial, rupees, shop, type Card, type Paged } from './api'
 import './projects.css'
 import { HeroVideo } from '../components/HeroVideo'
+import { AnimatedCard, Reveal, Section } from '../components/ui'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 9
@@ -44,8 +45,8 @@ export function Cover({ c, big = false }: { c: Card; big?: boolean }) {
 export function ProjectCard({ c, i = 0, featured = false }: { c: Card; i?: number; featured?: boolean }) {
   const tech = c.technologies ?? []
   return (
-    <article className={`pj-card${featured ? ' pj-card-feat' : ''}`} style={{ ['--i' as string]: i }}>
-      <Link to={`/projects/${c.slug}`} className="pj-card-media" tabIndex={-1} aria-hidden="true">
+    <AnimatedCard bare className={`pj-card${featured ? ' pj-card-feat' : ''}`} data-index={i}>
+      <Link to={`/projects/${c.slug}`} className="pj-card-media ui-zoom" tabIndex={-1} aria-hidden="true">
         <Cover c={c} />
         <span className={`pj-lvl pj-${c.difficulty}`}>{cap(c.difficulty)}</span>
         <span className={`pj-price${c.is_paid ? ' paid' : ''}`}>{c.is_paid ? rupees(c.price) : 'Free'}</span>
@@ -72,7 +73,7 @@ export function ProjectCard({ c, i = 0, featured = false }: { c: Card; i?: numbe
           <Link to={`/projects/${c.slug}`} className="pj-go" aria-label={`View ${c.title}`}>View project <Arrow /></Link>
         </div>
       </div>
-    </article>
+    </AnimatedCard>
   )
 }
 
@@ -215,15 +216,14 @@ export function ProjectsPage() {
       {featured && (
         <div className="pj-featured"><p className="pj-feat-label">Featured project</p><ProjectCard c={featured} featured /></div>
       )}
-      <div className="pj-grid" key={`${page}-${category}-${difficulty}-${tech}-${price}-${q}-${ordering}`}>
+      <Reveal stagger className="pj-grid" key={`${page}-${category}-${difficulty}-${tech}-${price}-${q}-${ordering}`}>
         {rest.map((c, i) => (<ProjectCard key={c.slug} c={c} i={i} />))}
-      </div>
+      </Reveal>
       {data && <Pager page={page} count={data.count} size={PAGE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
 
-      <section className="pj-cta">
-        <div><h2>Stuck on a project?</h2><p>Join the free 2-hour live session and learn how to plan, build and debug with real mentors.</p></div>
-        <a className="btn btn-yellow btn-lg" href="/#register">Join free demo</a>
-      </section>
+      <Section id="pj-cta" className="pj-cta-band" tone="dark" align="left" badge="Mentor help" title="Stuck on a project?"
+        subtitle="Join the free 2-hour live session at Coding Hub and learn how to plan, build and debug with real mentors."
+        aside={<a className="ui-btn ui-btn-primary pj-cta-btn" href="/#register">Join free demo</a>} />
     </PageFrame>
   )
 }

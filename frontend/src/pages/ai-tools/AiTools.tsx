@@ -9,6 +9,7 @@ import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/si
 import { useSeo } from '../../seo/useSeo'
 import './ai-tools.css'
 import { HeroVideo } from '../../components/HeroVideo'
+import { AnimatedCard } from '../../components/ui'
 
 export const AI_TOOLS_META: PageMeta = {
   path: '/ai-tools',
@@ -120,7 +121,7 @@ export function AiTools() {
                   <ul>
                     {row.map((t) => (
                       <li key={t.id}>
-                        <a className="at-card" href={t.officialUrl} target="_blank" rel="noopener noreferrer">
+                        <AnimatedCard bare as="a" className="at-card" href={t.officialUrl} target="_blank" rel="noopener noreferrer">
                           <Logo tool={t} />
                           <span className="at-text">
                             <strong>{t.name}</strong>
@@ -128,7 +129,7 @@ export function AiTools() {
                           </span>
                           <span className="sr-only"> (opens the official site in a new tab)</span>
                           <span className="at-go" aria-hidden="true">↗</span>
-                        </a>
+                        </AnimatedCard>
                       </li>
                     ))}
                   </ul>

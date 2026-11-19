@@ -7,7 +7,7 @@ import { FS_CSS } from '../lib/fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsFooter } from '../locations/FsShell'
 import { COURSES } from './free-session/data'
-import { INSTITUTE, SESSION, WHATSAPP } from './free-session/data'
+import { INSTITUTE, SESSION } from './free-session/data'
 import { FsIcon } from './free-session/icons'
 import { Header } from '../components/Header'
 import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
@@ -15,6 +15,9 @@ import { HomePathways } from './free-session/HomePathways'
 import { HomeCourses } from './free-session/HomeLearn'
 import { HomeProjects } from './free-session/HomeProjects'
 import { HomeTools } from './free-session/HomeTools'
+import { CareerLaunch } from './free-session/CareerLaunch'
+import { ContactHub } from './free-session/ContactHub'
+import { DemoVideos } from '../components/DemoVideos'
 import './free-session/home.css'
 import './free-session/home-theme.css'
 import { HomeExplore, LogoWall } from './free-session/HomeExplore'
@@ -25,7 +28,6 @@ import { useSeo } from '../seo/useSeo'
 
 const HOME_SEO = pageSeo(HOME_META)
 
-const WA_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.genericMessage)}`
 
 export function FreeSession() {
   useSeo(HOME_SEO)
@@ -142,6 +144,7 @@ export function FreeSession() {
             </div>
 
             <VideoReels />
+            <DemoVideos />
 
             <div className="v-cta reveal">
               <div className="v-cta-text">
@@ -164,6 +167,7 @@ export function FreeSession() {
         <HomeCourses onDemo={goToForm} />
         <HomeTools />
         <LogoWall />
+        <CareerLaunch />
 
         <section className="sec" id="session" aria-labelledby="session-title">
           <div className="wrap session-grid">
@@ -528,59 +532,14 @@ export function FreeSession() {
                 </div>
               </div>
             </div>
-            <div className="contact-card" id="contact">
-              <h3>Contact us</h3>
-              <ul className="contact-list">
-                <li>
-                  <FsIcon id="i-phone" />
-                  <a href={INSTITUTE.phoneHref}>{INSTITUTE.phone}</a>
-                </li>
-                <li>
-                  <FsIcon id="i-mail" />
-                  <a href={`mailto:${INSTITUTE.email}`}>{INSTITUTE.email}</a>
-                </li>
-                <li>
-                  <FsIcon id="i-globe" />
-                  <a href={INSTITUTE.websiteHref} target="_blank" rel="noopener">{INSTITUTE.website}</a>
-                </li>
-                <li>
-                  <FsIcon id="i-pin" />
-                  <span>{INSTITUTE.address}</span>
-                </li>
-              </ul>
-              <a className="btn btn-wa btn-block" href={WA_HREF} target="_blank" rel="noopener noreferrer" data-cta="contact-whatsapp">
-                <FsIcon id="i-wa" />
-                <span>Chat on WhatsApp</span>
-              </a>
-              <ul className="social" aria-label="Social media">
-                <li>
-                  <a href={INSTITUTE.social.instagram} target="_blank" rel="noopener">
-                    <FsIcon id="i-ig" />
-                    <span className="sr-only">Instagram</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={INSTITUTE.social.linkedin} target="_blank" rel="noopener">
-                    <FsIcon id="i-in" />
-                    <span className="sr-only">LinkedIn</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={INSTITUTE.social.youtube} target="_blank" rel="noopener">
-                    <FsIcon id="i-yt" />
-                    <span className="sr-only">YouTube</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={INSTITUTE.social.facebook} target="_blank" rel="noopener">
-                    <FsIcon id="i-fb" />
-                    <span className="sr-only">Facebook</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <figure className="about-students" aria-hidden="true">
+              <span className="about-blob" />
+              <img src="/img/students.webp" alt="" width={1400} height={665} loading="lazy" decoding="async" />
+            </figure>
           </div>
         </section>
+
+        <ContactHub />
 
         <HomeExplore />
         <HomeNewsletter />

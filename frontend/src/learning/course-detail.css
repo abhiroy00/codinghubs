@@ -1,0 +1,52 @@
+/* /courses/:slug/ sections built on the shared UI kit (components/ui). */
+.cd-content{display:block}
+.cd-content .ui-section:first-child{margin-top:clamp(1.5rem,4vw,2.5rem)}
+
+/* Overview: three cards for skills, tools and careers */
+.cd-trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem}
+.cd-trio-card .ui-card-body{gap:.75rem;padding:1.5rem}
+.cd-trio-card h3{margin:0;color:var(--ui-ink);font-size:1.125rem}
+.cd-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--ui-gradient);color:#fff;box-shadow:0 10px 20px -10px rgba(0,98,250,.8)}
+.cd-icon svg,.cd-icon .ico{width:24px;height:24px}
+.cd-content .learn-pills span{border:1px solid #d6e3fb;border-radius:999px;background:var(--ui-primary-soft);color:var(--ui-primary-strong);font-weight:500;font-size:.8125rem}
+.cd-content .learn-pills span:hover{border-color:var(--ui-primary);background:var(--ui-primary);color:#fff}
+
+/* Curriculum accordion */
+.cd-curriculum .learn-modules details{border-radius:var(--ui-radius);transition:border-color var(--ui-dur),box-shadow var(--ui-dur),transform var(--ui-dur)}
+.cd-curriculum .learn-modules details:hover{border-color:#9cc0ff;transform:translateX(4px)}
+.cd-curriculum .learn-modules details[open]{border-color:var(--ui-primary);box-shadow:var(--ui-shadow-hover)}
+.cd-curriculum .learn-modules summary span{background:var(--ui-gradient);color:#fff}
+.cd-content .learn-modules p,.cd-content .learn-modules li,.cd-content .learn-faq p{color:#363636;line-height:1.7}
+
+/* Projects */
+.cd-projects .learn-project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.25rem}
+.cd-project{background:#fff}
+.cd-project .ui-card-body{padding:1.5rem}
+.cd-project .cd-project-num{margin:0;background:var(--ui-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;font:700 .8125rem/1.4 var(--f-body,Poppins,sans-serif);letter-spacing:.1em;text-transform:uppercase}
+.cd-project h3{margin:.375rem 0 .5rem;color:var(--ui-ink);font-size:1.1875rem}
+.cd-project p,.cd-project li{color:#363636;line-height:1.65}
+.cd-project h4{margin:1rem 0 .375rem;color:var(--ui-ink);font-size:.9375rem}
+.cd-project ul,.cd-project ol{margin:0;padding-left:1.25rem}
+.cd-chips{display:flex;flex-wrap:wrap;gap:.375rem;margin:.75rem 0 0}
+.cd-chips .ui-chip{background:var(--ui-primary-soft);box-shadow:none;color:var(--ui-primary-strong);font-weight:500}
+.cd-outcome{margin:1rem 0 0;padding:.75rem 1rem;border-radius:12px;background:#f4f7fc}
+
+/* FAQ */
+.cd-faq .learn-faq{border-radius:var(--ui-radius)}
+.cd-faq .learn-faq[open]{border-color:var(--ui-primary);box-shadow:var(--ui-shadow-hover)}
+
+/* CTA band */
+.cd-cta .ui-head{margin-bottom:0}
+.cd-cta-actions{display:flex;flex-wrap:wrap;gap:.75rem}
+.cd-cta .ui-btn-primary{background:#fff;color:var(--ui-ink)}
+.cd-cta .ui-btn-primary:hover{color:var(--ui-ink)}
+.cd-levels:has(nav){margin-top:1.5rem}
+.cd-levels nav{display:flex;flex-wrap:wrap;gap:.5rem}
+.cd-levels a{display:inline-flex;align-items:center;min-height:40px;padding:.375rem .875rem;border:1px solid #ffffff40;border-radius:999px;color:#e6eefc;font:500 .875rem var(--f-body,Poppins,sans-serif);text-decoration:none;transition:background var(--ui-dur)}
+.cd-levels a:hover{background:#ffffff1a}
+
+/* Hero buttons from the kit sit in the existing hero action row. */
+.learn-hero-actions .ui-btn{min-height:48px}
+
+@media (max-width:900px){.cd-trio{grid-template-columns:1fr}.cd-projects .learn-project-grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.cd-curriculum .learn-modules details,.cd-curriculum .learn-modules details:hover{transition:none;transform:none}}

@@ -9,6 +9,7 @@ import "../community/public.css";
 import "../content-pages/blog.css";
 import "./interview-hub.css";
 import type { CourseTrack } from "../learning/catalog";
+import { AnimatedCard, Reveal, Section } from '../components/ui'
 
 type Resource = {
   url: string;
@@ -46,11 +47,7 @@ function RoleRoadmaps() {
   const groups = ROLES.map((r) => ({ ...r, courses: COURSE_CATALOG.filter((c) => r.tracks.includes(c.track)) }))
     .filter((g) => g.courses.length && (!role || g.id === role));
   return (
-    <section className="ih-section" aria-labelledby="existing-roadmaps">
-      <div className="ih-head">
-        <h2 id="existing-roadmaps">Roadmaps by role</h2>
-        <p>Pick the role you are preparing for. Each roadmap is a 30-day plan with lessons, questions and practice; lesson counts show what is published today.</p>
-      </div>
+    <Section className="ih-section" titleId="existing-roadmaps" align="left" badge="Roadmaps" title="Roadmaps by role" subtitle="Pick the role you are preparing for. Each roadmap is a 30-day plan with lessons, questions and practice; lesson counts show what is published today.">
       <div className="ih-chips" role="group" aria-label="Filter roadmaps by role">
         <button type="button" aria-pressed={!role} onClick={() => setRole("")}>All roles</button>
         {ROLES.map((r) => (
@@ -77,7 +74,7 @@ function RoleRoadmaps() {
           </article>
         ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
@@ -155,30 +152,22 @@ export function InterviewHub() {
           </p>
         </div>
       </section>
-      <section className="ih-section ih-practice" aria-labelledby="ih-practice">
-        <div className="ih-head">
-          <h2 id="ih-practice">Practise like the real interview</h2>
-          <p>Read a guide, then rehearse. Interview Studio sessions are saved to your account, so you will be asked to log in.</p>
-        </div>
-        <ul className="ih-practice-grid">
+      <Section className="ih-section ih-practice" titleId="ih-practice" align="left" badge="Interview Studio" title="Practise like the real interview" subtitle="Read a guide, then rehearse. Interview Studio sessions are saved to your account, so you will be asked to log in.">
+        <Reveal as="ul" stagger className="ih-practice-grid">
           {PRACTICE.map((p, i) => (
             <li key={p.href}>
-              <Link to={p.href} className={i === 0 ? "ih-practice-card is-primary" : "ih-practice-card"}>
+              <AnimatedCard bare as={Link} to={p.href} className={i === 0 ? "ih-practice-card is-primary" : "ih-practice-card"}>
                 <strong>{p.title}</strong>
                 <span>{p.detail}</span>
                 <span className="ih-go" aria-hidden="true">→</span>
-              </Link>
+              </AnimatedCard>
             </li>
           ))}
-        </ul>
+        </Reveal>
         <p className="ih-studio-link"><Link to="/interview-studio">What is Interview Studio?</Link></p>
-      </section>
+      </Section>
       <RoleRoadmaps />
-      <section className="ih-section" aria-labelledby="interview-search">
-        <div className="ih-head">
-          <h2 id="interview-search">Topic guides</h2>
-          <p>Search focused guides by topic and difficulty.</p>
-        </div>
+      <Section className="ih-section" titleId="interview-search" align="left" badge="Topic guides" title="Topic guides" subtitle="Search focused guides by topic and difficulty.">
         <div className="community-filters">
           <label>
             Search topics, questions and explanations
@@ -237,7 +226,7 @@ export function InterviewHub() {
         )}
         <div className="community-grid" aria-busy={busy}>
           {data.results.map((r) => (
-            <article className="community-card" key={r.url}>
+            <AnimatedCard bare className="community-card" key={r.url}>
               <p className="ih-tags">
                 <span>{r.category}</span>
                 <span className={`ih-level ih-${r.difficulty.toLowerCase()}`}>{r.difficulty}</span>
@@ -247,7 +236,7 @@ export function InterviewHub() {
               </h3>
               <p>{r.summary}</p>
               <Link to={r.url}>Open resource →</Link>
-            </article>
+            </AnimatedCard>
           ))}
         </div>
         {!error && data.count > 24 && (
@@ -278,7 +267,7 @@ export function InterviewHub() {
             </button>
           </nav>
         )}
-      </section>
+      </Section>
     </div>
   );
 }

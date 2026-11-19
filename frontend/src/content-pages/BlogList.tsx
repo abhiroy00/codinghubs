@@ -4,6 +4,7 @@ import { getBlogCategories, getBlogs, PAGE_SIZE, takeInitial, type Card, type Pa
 import { CardView, PageFrame, Pager, SearchIcon } from './shared'
 import './blog.css'
 import { HeroVideo } from '../components/HeroVideo'
+import { Reveal } from '../components/ui'
 
 type Cats = { name: string; slug: string; blog_count: number }[]
 const initial = typeof document === 'undefined' ? null : takeInitial()
@@ -127,11 +128,11 @@ export function BlogList() {
           <CardView c={featured} base="/blog" />
         </div>
       )}
-      <div className="bl-grid" key={`${page}-${category}-${q}`}>
+      <Reveal stagger className="bl-grid" key={`${page}-${category}-${q}`}>
         {rest.map((c, i) => (
           <CardView key={c.slug} c={c} base="/blog" index={i} />
         ))}
-      </div>
+      </Reveal>
       {data && <Pager page={page} count={data.count} size={PAGE_SIZE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
     </PageFrame>
   )

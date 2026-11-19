@@ -20,30 +20,15 @@
 .ow-grid{display:grid;gap:1.4rem;grid-template-columns:1fr;list-style:none;margin:0;padding:0}
 @media (min-width:660px){.ow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (min-width:1040px){.ow-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.ow-item{display:flex;animation:owUp .5s both;animation-delay:calc(var(--i,0) * 60ms)}
-.ow-card{display:flex;flex-direction:column;width:100%;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#fff;color:inherit;text-decoration:none;box-shadow:0 8px 26px -20px rgba(10,26,63,.45);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .25s}
 a.ow-card:hover{transform:translateY(-4px);border-color:#93c5fd;box-shadow:0 22px 44px -24px rgba(10,26,63,.55)}
 a.ow-card:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 
-.ow-shot{aspect-ratio:16/10;overflow:hidden;border-bottom:1px solid var(--line);background:#eef2fb}
-.ow-shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 a.ow-card:hover .ow-shot img{transform:scale(1.04)}
 
-.ow-body{display:flex;flex:1;flex-direction:column;gap:.45rem;padding:1.15rem 1.25rem 1.25rem}
-.ow-brand{display:flex;align-items:center;gap:.5rem;margin:0;color:var(--navy);font:800 1rem var(--f-head);letter-spacing:.06em;text-transform:uppercase}
-.ow-brand span{flex:none;width:8px;height:8px;border-radius:50%;background:#1a4fd0}
-.ow-cat{align-self:flex-start;margin:0;padding:.18rem .6rem;border-radius:6px;background:#e8efff;color:#14307a;font:600 .76rem var(--f-body)}
-.ow-sum{flex:1;margin:.2rem 0 0;color:#363636;font-size:1rem;line-height:1.6}
-.ow-go{display:flex;align-items:center;gap:.35rem;margin:.5rem 0 0;padding-top:.8rem;border-top:1px solid var(--line);color:#1a4fd0;font:700 .9rem var(--f-body)}
-.ow-card.is-static .ow-go{color:#8a94ad;font-weight:600}
 a.ow-card:hover .ow-go svg{transform:translate(2px,-2px)}
-.ow-go svg{transition:transform .25s}
 
 .ow-note{margin:1.4rem 0 0;color:#8a94ad;font-size:.85rem;text-align:center}
 
-.ow-cta{display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;justify-content:space-between;margin:2.4rem 0 1rem;padding:clamp(1.4rem,4vw,2.2rem);border-radius:14px;background:var(--navy);color:#fff}
-.ow-cta h2{margin:0 0 .3rem;color:#fff;font-size:var(--t-h2)}
-.ow-cta p{margin:0;color:rgba(255,255,255,.8)}
 
 @media (prefers-reduced-motion:reduce){
   .ow-hero,.ow-item{animation:none}
@@ -51,3 +36,23 @@ a.ow-card:hover .ow-go svg{transform:translate(2px,-2px)}
   a.ow-card:hover{transform:none}
   a.ow-card:hover .ow-shot img{transform:none}
 }
+
+
+/* Project cards on the shared UI kit */
+.ow-item{display:flex}
+.ow-card .ui-card-media{aspect-ratio:16/10}
+.ow-card .ui-card-media img{object-position:top}
+.ow-card .ui-card-media::after{display:none}
+.ow-card .ui-card-body{gap:.625rem}
+.ow-brand{display:flex;align-items:center;gap:.5rem;margin:0;color:var(--ui-ink);font-size:1.0625rem;font-weight:800;letter-spacing:.02em}
+.ow-brand span{flex:none;width:8px;height:8px;border-radius:50%;background:var(--ui-gradient)}
+.ow-chips-row{display:flex;flex-wrap:wrap;gap:.375rem;margin:0;padding:0;list-style:none}
+.ow-cat{padding:.25rem .625rem;border-radius:999px;background:var(--ui-gradient);color:#fff;font:600 .75rem/1.3 var(--f-body,Poppins,sans-serif)}
+.ow-tech{background:var(--ui-primary-soft);box-shadow:none;color:var(--ui-primary-strong);font-weight:500}
+.ow-sum{flex:1;margin:0;color:#363636;font-size:.9688rem;line-height:1.6}
+.ow-view{position:relative;z-index:2;align-self:flex-start;margin-top:.375rem}
+.ow-private{margin:.375rem 0 0;padding-top:.75rem;border-top:1px solid var(--ui-line);color:#6b7891;font:600 .875rem var(--f-body,Poppins,sans-serif)}
+.ow-cta .ui-head{margin:0}
+.ow-cta .ui-btn-primary{background:#fff;color:var(--ui-ink)}
+.ow-cta .ui-btn-primary:hover{color:var(--ui-ink)}
+

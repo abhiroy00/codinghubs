@@ -18,6 +18,8 @@ import { getPrepGuide, loadPrepGuide, PREP_SOURCES, type PrepGuide } from './pre
 import './learning.css'
 import './learning-extra.css'
 import { HeroVideo } from '../components/HeroVideo'
+import { AnimatedCard, Reveal, Section } from '../components/ui'
+import './course-detail.css'
 
 type Saved = { done: number[]; scores: Record<number, number>; challenge: number[]; questions: number[]; projects: string[]; theory: number[]; currentDay?: number; lastLearningDate?: string | null; updated: string }
 const empty: Saved = { done: [], scores: {}, challenge: [], questions: [], projects: [], theory: [], currentDay: 1, lastLearningDate: null, updated: '' }
@@ -49,7 +51,13 @@ const completeDays = (base: number[], extra: number[], openAll = true) => openAl
 function EnrollmentButton({ slug }: { slug: string }) {
   const { openEnrollment } = useRegisterPopup()
   const course = COURSE_BY_SLUG.get(slug)
-  return course ? <button type="button" className="learn-button learn-button-quiet" aria-haspopup="dialog" onClick={() => openEnrollment(course.name)}>Enrollment options</button> : null
+  return course ? <button type="button" className="ui-btn ui-btn-primary" aria-haspopup="dialog" onClick={() => openEnrollment(course.name)}>Enroll Now <span aria-hidden="true">→</span></button> : null
+}
+
+function EnrollmentButtonGhost({ slug }: { slug: string }) {
+  const { openEnrollment } = useRegisterPopup()
+  const course = COURSE_BY_SLUG.get(slug)
+  return course ? <button type="button" className="ui-btn ui-btn-ghost" aria-haspopup="dialog" onClick={() => openEnrollment(course.name)}>Enroll Now</button> : null
 }
 
 function ProjectCompletion({ slug, project }: { slug: string; project: string }) {
@@ -106,24 +114,49 @@ export function CourseDetails() {
   const { slug = '' } = useParams()
   const course = COURSE_BY_SLUG.get(slug)
   if (!course) return <div className="learn-shell"><h1>Course not found</h1><Link to="/courses/">Browse all courses</Link></div>
-  return <div className="learn-shell learn-detail"><header className="learn-hero course-programme-hero hv-host"><HeroVideo clip="course-detail" /><p className="learn-kicker">Coding Hubs School of AI · {course.category}</p><h1>Build practical skills in <em>{course.name}</em></h1><p>{course.introduction}</p>
+  return <div className="learn-shell learn-detail"><header className="learn-hero course-programme-hero hv-host"><HeroVideo clip="course-detail" /><p className="learn-kicker">Coding Hub School of AI · {course.category}</p><h1>Build practical skills in <em>{course.name}</em></h1><p>{course.introduction}</p>
     <dl className="course-facts" aria-label={`${course.name} at a glance`}>
       <div><dt>Learning roadmap</dt><dd>30 days</dd></div>
       <div><dt>Curriculum modules</dt><dd>{course.modules.length}</dd></div>
       <div><dt>Practical projects</dt><dd>{course.projects.length}</dd></div>
       <div><dt>Tools &amp; concepts</dt><dd>{course.tools.length}</dd></div>
     </dl>
-    <div className="learn-hero-actions"><EnrollmentButton slug={course.slug}/><a className="learn-button" href="#brochure">Explore course brochure <span aria-hidden="true">↓</span></a><Link className="learn-button learn-button-quiet" to="/#register">Book a free demo</Link></div><p className="course-hero-note">Self-guided 30-day roadmap · Ask our team about live batch schedules and fees.</p></header>
+    <div className="learn-hero-actions"><EnrollmentButton slug={course.slug}/><a className="ui-btn ui-btn-ghost" href="#brochure">Explore course brochure <span aria-hidden="true">↓</span></a><Link className="ui-btn ui-btn-ghost" to="/#register">Book a free demo</Link></div><p className="course-hero-note">Self-guided 30-day roadmap · Ask our team about live batch schedules and fees.</p></header>
     <nav className="course-section-nav" aria-label="Course sections"><a href="#brochure">Brochure</a><a href="#curriculum">Curriculum</a><a href="#course-projects">Projects</a><Link to={`/interview/${course.slug}/`}>Start interview prep →</Link><Link to="/courses/">All courses</Link></nav>
     <CourseBrochureSection key={course.slug} course={course}/>
-    <div className="learn-content"><section className="learn-section"><h2>Course overview</h2><p>{course.summary}</p><p>This self-guided roadmap provides a practical structure for building and reviewing skills. Confirm schedule, fees and prerequisites with the school before enrolling.</p></section>
-      <section className="learn-section"><h2>What you will learn</h2><div className="learn-pills">{course.skills.map((skill) => <span key={skill}>{skill}</span>)}</div></section>
-      <section className="learn-section"><h2>Tools and concepts</h2><div className="learn-pills">{course.tools.map((tool) => <span key={tool}>{tool}</span>)}</div></section>
-      <section className="learn-section" id="curriculum"><h2>Curriculum</h2><div className="learn-modules">{course.modules.map((module, i) => <details key={module.title} open={i === 0}><summary><span>Module {i + 1}</span>{module.title}</summary><p>{module.description}</p><ul>{module.topics.map((topic) => <li key={topic}>{topic}</li>)}</ul></details>)}</div></section>
-      <section className="learn-section" id="course-projects"><h2>Practical projects</h2><div className="learn-project-grid">{course.projects.map((project) => <article key={project.name}><h3>{project.name}</h3><p>{project.description}</p><h4>Objectives</h4><ul>{project.objectives.map((item) => <li key={item}>{item}</li>)}</ul><h4>Suggested steps</h4><ol>{project.steps.map((item) => <li key={item}>{item}</li>)}</ol><p><b>Outcome:</b> {project.outcome}</p><ProjectCompletion slug={course.slug} project={project.name}/></article>)}</div></section>
-      <section className="learn-section"><h2>Career directions</h2><div className="learn-pills">{course.careers.map((career) => <span key={career}>{career}</span>)}</div></section>
-      <section className="learn-section"><h2>Frequently asked questions</h2>{course.faqs.map((faq) => <details className="learn-faq" key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</section>
-      <aside className="learn-cta"><div><h2>Prepare for your next interview</h2><p>Follow the course-specific 30-day roadmap and track your progress in this browser.</p></div><Link className="learn-button" to={`/interview/${course.slug}/`}>Open 30-day plan</Link><CourseLevelLinks slug={course.slug} /></aside>
+    <div className="learn-content cd-content">
+      <Section id="cd-overview" className="cd-overview" align="left" badge="Course overview" title={<>About {course.name} at Coding Hub</>}
+        subtitle={<>{course.summary} This self-guided roadmap provides a practical structure for building and reviewing skills. Confirm schedule, fees and prerequisites with the school before enrolling.</>}>
+        <Reveal stagger className="cd-trio">
+          {([['What you will learn', 'i-spark', course.skills], ['Tools and concepts', 'i-code', course.tools], ['Career directions', 'i-brief', course.careers]] as const).map(([title, icon, items]) => (
+            <AnimatedCard key={title} as="div" className="cd-trio-card">
+              <span className="cd-icon" aria-hidden="true"><FsIcon id={icon} /></span>
+              <h3>{title}</h3>
+              <div className="learn-pills">{items.map((item) => <span key={item}>{item}</span>)}</div>
+            </AnimatedCard>
+          ))}
+        </Reveal>
+      </Section>
+
+      <Section id="curriculum" titleId="cd-curriculum-title" className="cd-curriculum" tone="soft" align="left" badge={`${course.modules.length} modules · 30 days`} title="Curriculum"
+        subtitle="Open a module to see what each week covers.">
+        <Reveal stagger className="learn-modules">{course.modules.map((module, i) => <details key={module.title} open={i === 0}><summary><span>Module {i + 1}</span>{module.title}</summary><p>{module.description}</p><ul>{module.topics.map((topic) => <li key={topic}>{topic}</li>)}</ul></details>)}</Reveal>
+      </Section>
+
+      <Section id="course-projects" titleId="cd-projects-title" className="cd-projects" align="left" badge={`${course.projects.length} portfolio projects`} title="Practical projects"
+        subtitle="Build real, reviewable work you can show in interviews.">
+        <Reveal stagger className="learn-project-grid">{course.projects.map((project, i) => <AnimatedCard key={project.name} className="cd-project"><p className="cd-project-num">Project {String(i + 1).padStart(2, '0')}</p><h3>{project.name}</h3><p>{project.description}</p><div className="cd-chips">{project.skills.map((skill) => <span key={skill} className="ui-chip">{skill}</span>)}</div><h4>Objectives</h4><ul>{project.objectives.map((item) => <li key={item}>{item}</li>)}</ul><h4>Suggested steps</h4><ol>{project.steps.map((item) => <li key={item}>{item}</li>)}</ol><p className="cd-outcome"><b>Outcome:</b> {project.outcome}</p><ProjectCompletion slug={course.slug} project={project.name}/></AnimatedCard>)}</Reveal>
+      </Section>
+
+      <Section id="cd-faq" className="cd-faq" align="left" badge="FAQ" title="Frequently asked questions">
+        <Reveal stagger>{course.faqs.map((faq) => <details className="learn-faq" key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</Reveal>
+      </Section>
+
+      <Section id="cd-cta" className="cd-cta" tone="dark" align="left" badge="Interview ready" title="Prepare for your next interview"
+        subtitle="Follow the course-specific 30-day roadmap and track your progress in this browser."
+        aside={<div className="cd-cta-actions"><Link className="ui-btn ui-btn-primary" to={`/interview/${course.slug}/`}>Open 30-day plan <span aria-hidden="true">→</span></Link><EnrollmentButtonGhost slug={course.slug} /></div>}>
+        <div className="cd-levels"><CourseLevelLinks slug={course.slug} /></div>
+      </Section>
     </div>
   </div>
 }

@@ -4,6 +4,7 @@ import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/si
 import { useSeo } from '../../seo/useSeo'
 import './our-work.css'
 import { HeroVideo } from '../../components/HeroVideo'
+import { AnimatedCard, Reveal, Section } from '../../components/ui'
 import { PROJECTS as WORKS, PROJECT_CATEGORIES as CATEGORIES, type Project as Work } from '../../data/projects'
 
 
@@ -37,30 +38,25 @@ function ArrowUpRight() {
 }
 
 function WorkCard({ w, i }: { w: Work; i: number }) {
-  const body = (
-    <>
-      <div className="ow-shot">
-        <img src={`/assets/our-work/${w.image}.webp`} alt={`${w.name} screenshot`} width={800} height={500} loading={i < 3 ? 'eager' : 'lazy'} decoding="async" />
-      </div>
-      <div className="ow-body">
-        <p className="ow-brand"><span aria-hidden="true" />{w.name}</p>
-        <p className="ow-cat">{w.category}</p>
-        <p className="ow-sum">{w.summary}</p>
-        <p className="ow-go">
-          {w.href ? <>View project <ArrowUpRight /></> : 'Private client project'}
-        </p>
-      </div>
-    </>
-  )
   return (
-    <li className="ow-item" style={{ ['--i' as string]: Math.min(i, 8) }}>
-      {w.href ? (
-        <a className="ow-card" href={w.href} target="_blank" rel="noopener noreferrer" aria-label={`${w.name}, ${w.category} (opens in a new tab)`}>
-          {body}
-        </a>
-      ) : (
-        <div className="ow-card is-static">{body}</div>
-      )}
+    <li className="ow-item">
+      <AnimatedCard className="ow-card" media={
+        <img src={`/assets/our-work/${w.image}.webp`} alt={`${w.name} screenshot`} width={800} height={500} loading={i < 3 ? 'eager' : 'lazy'} decoding="async" />
+      }>
+        <h3 className="ow-brand"><span aria-hidden="true" />{w.name}</h3>
+        <ul className="ow-chips-row" aria-label="Category and tech stack">
+          <li className="ow-cat">{w.category}</li>
+          {w.stack?.map((t) => <li key={t} className="ui-chip ow-tech">{t}</li>)}
+        </ul>
+        <p className="ow-sum">{w.summary}</p>
+        {w.href ? (
+          <a className="ui-btn ui-btn-primary ow-view" href={w.href} target="_blank" rel="noopener noreferrer" aria-label={`View project ${w.name} (opens in a new tab)`}>
+            View Project <ArrowUpRight />
+          </a>
+        ) : (
+          <p className="ow-private">Private client project</p>
+        )}
+      </AnimatedCard>
     </li>
   )
 }
@@ -93,21 +89,17 @@ export function OurWork() {
         ))}
       </div>
 
-      <ul className="ow-grid" key={category} aria-label="Projects">
+      <Reveal as="ul" stagger className="ow-grid" key={category} aria-label="Projects">
         {shown.map((w, i) => (
           <WorkCard key={w.name} w={w} i={i} />
         ))}
-      </ul>
+      </Reveal>
 
       <p className="ow-note">Screens show each project at delivery. Live websites may have changed since.</p>
 
-      <section className="ow-cta">
-        <div>
-          <h2>Want to build projects like these?</h2>
-          <p>Join the free 2-hour live session and see how we plan, build and ship real software.</p>
-        </div>
-        <a className="btn btn-yellow btn-lg" href="/#register">Join free demo</a>
-      </section>
+      <Section id="ow-cta" className="ow-cta" tone="dark" align="left" badge="Learn by building" title="Want to build projects like these?"
+        subtitle="Join the free 2-hour live session at Coding Hub and see how we plan, build and ship real software."
+        aside={<a className="ui-btn ui-btn-primary" href="/#register">Join free demo <ArrowUpRight /></a>} />
     </PageFrame>
   )
 }

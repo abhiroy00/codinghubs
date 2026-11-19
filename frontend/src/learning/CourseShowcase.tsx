@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { COURSE_CATALOG, COURSE_CATEGORIES, type CourseDefinition, type CourseTrack } from './catalog'
 import { COURSES } from '../pages/free-session/data'
@@ -6,6 +6,8 @@ import { FsIcon } from '../pages/free-session/icons'
 import thumbnails from './course-thumbnails.json'
 import './course-showcase.css'
 import { HeroVideo } from '../components/HeroVideo'
+import { AnimatedCard, Reveal, Section } from '../components/ui'
+import { useRegisterPopup } from '../lib/register-popup'
 
 /** Hand-written blurbs and icons for the flagship courses shown on the homepage. */
 const FLAGSHIP = new Map(COURSES.map((c) => [c.title, c]))
@@ -23,8 +25,8 @@ function CourseThumbnail({ c }: { c: CourseDefinition }) {
   const fallback = `/assets/courses/track-${c.track}.webp`
   const src = [primary, fallback].find(source => source && !failedSources.includes(source))
   return (
-    <div className={`csx-art art-${c.track}`} aria-hidden="true">
-      {src ? <img src={src} alt="" width={960} height={540} loading="lazy" decoding="async"
+    <div className={`csx-art art-${c.track}`}>
+      {src ? <img src={src} alt={`${c.name} course at Coding Hub`} width={960} height={540} loading="lazy" decoding="async"
         onError={() => setFailedSources(sources => [...sources, src])} />
         : <span className="csx-glyph"><FsIcon id={icon(c)} /></span>}
     </div>
@@ -51,8 +53,8 @@ export function CoursesHero() {
       </h1>
       <p className="csx-lead">Live, mentor-led courses in AI, full stack development, cloud, data, security and design. Start with a free 2-hour demo class.</p>
       <div className="csx-hero-actions">
-        <a className="csx-pill" href="#catalogue">Start Learning <Arrow /></a>
-        <a className="csx-pill csx-pill-ghost" href="/#register">Book free demo</a>
+        <a className="ui-btn ui-btn-primary" href="#catalogue">Start Learning <Arrow /></a>
+        <a className="ui-btn ui-btn-ghost" href="/#register">Book free demo</a>
       </div>
       <ul className="csx-strip" aria-label="Highlights">
         <li>Mentor-led live classes</li>
@@ -84,67 +86,93 @@ function FeatureArt({ kind }: { kind: (typeof FEATURES)[number]['art'] }) {
 
 export function CoursesFeatures() {
   return (
-    <section className="csx-features" aria-labelledby="csx-feat-title">
-      <h2 id="csx-feat-title">Everything You Need To Start Learning</h2>
-      <ul>
+    <Section id="csx-feat" className="csx-features" tone="soft" badge="Why Coding Hub" title="Everything You Need To Start Learning"
+      subtitle="Mentor-led classes at Coding Hub, Pitampura, built to take you from first lesson to job-ready portfolio.">
+      <Reveal as="ul" stagger>
         {FEATURES.map((f) => (
           <li key={f.title}>
-            <h3>{f.title}</h3>
-            <p>{f.text}</p>
-            <FeatureArt kind={f.art} />
+            <AnimatedCard as="div" className="csx-feature">
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+              <FeatureArt kind={f.art} />
+            </AnimatedCard>
           </li>
         ))}
-      </ul>
-    </section>
+      </Reveal>
+    </Section>
   )
 }
 
-function CourseCard({ c }: { c: CourseDefinition }) {
-  const tags = [c.category, ...c.tools.slice(0, 2)]
+/* Real learner ratings from the public testimonials feed, averaged per course; fetched once per page load. */
+type Rating = { avg: number; count: number }
+let ratingsCache: Promise<Map<string, Rating>> | null = null
+function loadRatings() {
+  ratingsCache ??= fetch('/api/testimonials/', { headers: { Accept: 'application/json' } })
+    .then((r) => (r.ok ? r.json() : []))
+    .then((rows: { course?: string; rating?: number | null }[]) => {
+      const sums = new Map<string, { total: number; count: number }>()
+      for (const row of Array.isArray(rows) ? rows : []) {
+        if (!row.course || !row.rating) continue
+        const key = row.course.trim().toLowerCase()
+        const cur = sums.get(key) ?? { total: 0, count: 0 }
+        sums.set(key, { total: cur.total + row.rating, count: cur.count + 1 })
+      }
+      return new Map([...sums].map(([k, v]) => [k, { avg: v.total / v.count, count: v.count }]))
+    })
+    .catch(() => new Map())
+  return ratingsCache
+}
+function useCourseRatings() {
+  const [ratings, setRatings] = useState<Map<string, Rating>>(new Map())
+  useEffect(() => { let live = true; loadRatings().then((m) => live && setRatings(m)); return () => { live = false } }, [])
+  return ratings
+}
+
+function Stars({ rating }: { rating?: Rating }) {
+  if (!rating) return <p className="csx-rating csx-rating-new">New batch · be the first to review</p>
+  const rounded = Math.round(rating.avg * 10) / 10
   return (
-    <article className="csx-card">
-      <CourseThumbnail c={c} />
-      <div className="csx-pbody">
-        <div className="csx-ptop">
-          <h3><Link to={`/courses/${c.slug}/`}>{c.name}</Link></h3>
-          <ul className="csx-tags" aria-label="Topics">
-            {tags.map((t, i) => (<li key={t} className={`t${i}`}>{t}</li>))}
-          </ul>
-        </div>
-        <ul className="csx-pmeta">
-          <li>
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z" /><path d="m3 13 9 5 9-5" /></svg>
-            {c.modules.length} Modules
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
-            30-day path
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 6h16v10H4zM8 20h8M12 16v4" /></svg>
-            Live online
-          </li>
-        </ul>
-        <p className="csx-pdesc">{blurb(c)}</p>
-        <p className="csx-outcome"><strong>You will practise:</strong> {c.skills.slice(0, 3).join(', ')}</p>
-        <div className="csx-pactions">
-          <Link className="csx-start" to={`/courses/${c.slug}/`} aria-label={`View ${c.name} course`}>View course <Arrow /></Link>
-          <a className="csx-demo" href="/#register" aria-label={`Book a free demo for ${c.name}`}>or try a free demo</a>
-        </div>
+    <p className="csx-rating">
+      <span className="csx-stars" role="img" aria-label={`Rated ${rounded} out of 5`}>
+        {[1, 2, 3, 4, 5].map((n) => <span key={n} className={n <= Math.round(rating.avg) ? 'on' : ''} aria-hidden="true">★</span>)}
+      </span>
+      <strong>{rounded.toFixed(1)}</strong> ({rating.count} review{rating.count === 1 ? '' : 's'})
+    </p>
+  )
+}
+
+function CourseCard({ c, rating }: { c: CourseDefinition; rating?: Rating }) {
+  const { openEnrollment } = useRegisterPopup()
+  return (
+    <AnimatedCard className="csx-card" media={<CourseThumbnail c={c} />}>
+      <div className="csx-badges">
+        <span className="csx-cat">{c.category}</span>
+        {c.level && <span className="ui-chip ui-chip-brand">{c.level}</span>}
+        <span className="ui-chip">30 days</span>
+        <span className="ui-chip">{c.modules.length} modules</span>
       </div>
-    </article>
+      <h3 className="csx-title"><Link to={`/courses/${c.slug}/`}>{c.name}</Link></h3>
+      <p className="csx-pdesc">{blurb(c)}</p>
+      <Stars rating={rating} />
+      <div className="csx-pactions">
+        <button type="button" className="ui-btn ui-btn-primary" aria-haspopup="dialog" onClick={() => openEnrollment(c.name)}>
+          Enroll Now <Arrow />
+        </button>
+        <Link className="ui-btn ui-btn-ghost" to={`/courses/${c.slug}/`} aria-label={`View details of ${c.name}`}>View Details</Link>
+      </div>
+    </AnimatedCard>
   )
 }
 
 /** Every course is visible as a card; category filters narrow the same catalogue. */
 export function CoursesShowcase() {
   const [filter, setFilter] = useState('')
+  const ratings = useCourseRatings()
   const visible = filter ? COURSE_CATALOG.filter((c) => c.category === filter) : COURSE_CATALOG
 
   return (
-    <section id="catalogue" className="csx-courses" aria-labelledby="csx-courses-title">
-      <h2 id="csx-courses-title">All Courses</h2>
-      <p className="csx-sub">Explore our courses, compare learning paths and find the right next step for you.</p>
+    <Section id="catalogue" titleId="csx-courses-title" className="csx-courses" align="left" badge={`${COURSE_CATALOG.length}+ courses`} title="All Courses"
+      subtitle="Explore Coding Hub courses in AI, data science, GenAI, development and more. Compare paths and find the right next step for you.">
       <div className="csx-chips" role="group" aria-label="Filter by category">
         <button type="button" className={!filter ? 'on' : ''} aria-pressed={!filter} onClick={() => setFilter('')}>
           All <span>{COURSE_CATALOG.length}</span>
@@ -158,25 +186,20 @@ export function CoursesShowcase() {
 
       <p className="csx-count" role="status">Showing {visible.length} of {COURSE_CATALOG.length} courses{filter ? ` in ${filter}` : ''}</p>
 
-      <ul className="csx-grid" aria-label="Courses">
-        {visible.map((c) => <li key={c.slug}><CourseCard c={c} /></li>)}
-      </ul>
-    </section>
+      <Reveal as="ul" stagger key={filter} className="csx-grid" aria-label="Courses">
+        {visible.map((c) => <li key={c.slug}><CourseCard c={c} rating={ratings.get(c.name.trim().toLowerCase())} /></li>)}
+      </Reveal>
+    </Section>
   )
 }
 
 export function CoursesCta() {
   return (
-    <section className="csx-cta" aria-labelledby="csx-cta-title">
-      <div>
-        <p className="csx-cta-kicker">Free demo class</p>
-        <h2 id="csx-cta-title">Not sure which course fits you?</h2>
-        <p>Join a free 2-hour live session, meet a mentor and get your questions answered before you enrol.</p>
-      </div>
-      <div className="csx-cta-actions">
-        <a className="csx-pill" href="/#register">Book free demo <Arrow /></a>
-        <a className="csx-pill csx-pill-ghost" href="/#contact">Talk to a counsellor</a>
-      </div>
-    </section>
+    <Section id="csx-cta" className="csx-cta" tone="dark" align="left" badge="Free demo class" title="Not sure which course fits you?"
+      subtitle="Join a free 2-hour live session at Coding Hub, meet a mentor and get your questions answered before you enrol."
+      aside={<div className="csx-cta-actions">
+        <a className="ui-btn ui-btn-primary" href="/#register">Book free demo <Arrow /></a>
+        <a className="ui-btn ui-btn-ghost" href="/#contact">Talk to a counsellor</a>
+      </div>} />
   )
 }

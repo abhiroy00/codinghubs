@@ -16,6 +16,8 @@ export interface CourseDefinition {
   faqs: { question: string; answer: string }[]
   days: { title: string; module: string; focus: string }[]
   hasCoding: boolean
+  /** Optional difficulty shown as a badge on course cards (e.g. 'Beginner'). Leave unset if unknown. */
+  level?: 'Beginner' | 'Intermediate' | 'Advanced'
 }
 
 const TRACKS: Record<CourseTrack, { modules: string[]; topics: string[]; tools: string[]; skills: string[]; careers: string[] }> = {

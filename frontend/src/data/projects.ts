@@ -6,6 +6,8 @@ export type Project = {
   image: string
   /** Live site or case study; cards without one are not links. */
   href?: string
+  /** Tech stack chips on /our-work cards, e.g. ['React', 'Django', 'PostgreSQL']. Only list what was actually used. */
+  stack?: string[]
 }
 
 const SITE = 'https://innovativeais.com'

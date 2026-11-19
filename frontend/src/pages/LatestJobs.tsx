@@ -11,6 +11,7 @@ import type { Seo } from '../content-pages/api'
 import { useSeo } from '../seo/useSeo'
 import { JOBS_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
 import { HeroVideo } from '../components/HeroVideo'
+import { AnimatedCard, Reveal } from '../components/ui'
 
 interface Job {
   seo?: Seo
@@ -209,9 +210,9 @@ function JobListing() {
             </div>
           )}
           {visible.length > 0 && (
-            <div className="job-grid">
+            <Reveal stagger className="job-grid">
               {visible.map((job) => (
-                <article className="job-card" key={job.id}>
+                <AnimatedCard bare className="job-card" key={job.id}>
                   <div className="job-card-head">
                     <CompanyLogo job={job} />
                     <div>
@@ -231,9 +232,9 @@ function JobListing() {
                     <Link className="btn btn-ghost" to={`/latest-jobs/${job.slug}/`}>View Details</Link>
                     <ApplyButton job={job} />
                   </div>
-                </article>
+                </AnimatedCard>
               ))}
-            </div>
+            </Reveal>
           )}
         </div>
       </section>

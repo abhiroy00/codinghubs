@@ -4,6 +4,7 @@ import { getCases, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
 import { CardView, PageFrame, Pager, SearchIcon } from './shared'
 import { HeroVideo } from '../components/HeroVideo'
 import './blog.css'
+import { Reveal } from '../components/ui'
 
 const initial = typeof document === 'undefined' ? null : takeInitial()
 
@@ -99,7 +100,7 @@ export function CaseList() {
       {error && <p className="bl-state" role="alert">We could not load the case studies. Please refresh the page.</p>}
       {!data && !error && <p className="bl-state" role="status">Loading…</p>}
       {data && data.count === 0 && <p className="bl-state">{q || industry || technology ? 'No case studies match your filters.' : 'No case studies published yet. Check back soon.'}</p>}
-      <div className="bl-grid">{data?.results.map((c) => <CardView key={c.slug} c={c} base="/case-studies" />)}</div>
+      <Reveal stagger className="bl-grid" key={data ? `${page}-${q}-${industry}-${technology}` : "loading"}>{data?.results.map((c) => <CardView key={c.slug} c={c} base="/case-studies" />)}</Reveal>
       {data && <Pager page={page} count={data.count} size={PAGE_SIZE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
     </PageFrame>
   )

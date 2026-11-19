@@ -9,6 +9,7 @@ import { useSeo } from "../seo/useSeo";
 import { pageSeo, LOGO_URL } from "../seo/site";
 import "./public.css";
 import "../content-pages/blog.css";
+import { AnimatedCard, Reveal } from '../components/ui'
 
 type Issue = {
   id: number;
@@ -86,9 +87,9 @@ export function Newsletter() {
           {data?.count === 0 && (
             <p>No newsletter issues have been published yet.</p>
           )}
-          <div className="community-grid">
+          <Reveal stagger className="community-grid" key={data ? "ready" : "loading"}>
             {data?.results.map((issue) => (
-              <article className="community-card" key={issue.id}>
+              <AnimatedCard bare className="community-card" key={issue.id}>
                 <small>
                   <time dateTime={issue.published_at}>
                     {new Date(issue.published_at).toLocaleDateString("en-IN", {
@@ -102,9 +103,9 @@ export function Newsletter() {
                   </Link>
                 </h3>
                 <p>{issue.excerpt}</p>
-              </article>
+              </AnimatedCard>
             ))}
-          </div>
+          </Reveal>
           {data && data.count > 25 && (
             <nav className="community-pager" aria-label="Newsletter pages">
               <button

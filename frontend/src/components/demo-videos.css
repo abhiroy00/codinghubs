@@ -1,0 +1,17 @@
+/* YouTube demo grid (DemoVideos.tsx) */
+.dv{margin:clamp(2rem,5vw,3rem) 0 0}
+.dv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem;margin:0;padding:0;list-style:none}
+.dv-grid>li{display:flex;margin:0}
+.dv-card .ui-card-media{background:#0b1424}
+.dv-play{position:absolute;z-index:1;left:50%;top:50%;display:grid;place-items:center;width:64px;height:64px;padding-left:4px;border-radius:50%;background:var(--ui-gradient);color:#fff;transform:translate(-50%,-50%);box-shadow:0 0 0 8px rgba(255,255,255,.22),0 12px 30px -10px rgba(0,98,250,.9);transition:transform var(--ui-dur) var(--ease,ease),box-shadow var(--ui-dur)}
+.dv-card:hover .dv-play,.dv-card:focus-within .dv-play{transform:translate(-50%,-50%) scale(1.12);box-shadow:0 0 0 14px rgba(255,255,255,.18),0 0 40px rgba(34,211,238,.7)}
+.dv-title{margin:0;font-size:1.0625rem;line-height:1.35}
+.dv-title button{padding:0;border:0;background:none;color:var(--ui-ink);font:inherit;text-align:left;cursor:pointer}
+/* Whole card opens the video. */
+.dv-title button::after{content:"";position:absolute;inset:0;z-index:2}
+.dv-title button:focus-visible{outline:none}
+.dv-card:has(.dv-title button:focus-visible){outline:3px solid var(--ui-primary);outline-offset:3px}
+.dv-meta{margin:.375rem 0 0;color:#363636;font-size:.875rem}
+@media (max-width:900px){.dv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.dv-grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.dv-play{transition:none}.dv-card:hover .dv-play{transform:translate(-50%,-50%)}}

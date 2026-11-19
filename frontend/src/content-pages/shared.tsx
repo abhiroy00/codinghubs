@@ -5,6 +5,7 @@ import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import { FsHeader } from '../locations/FsShell'
 import { SiteFooter } from '../components/SiteFooter'
 import { fmtDate, type Card } from './api'
+import { AnimatedCard } from '../components/ui'
 
 export function SearchIcon() {
   return (
@@ -31,9 +32,9 @@ export function PageFrame({ children, wide = false, reading = false }: { childre
 export function CardView({ c, base, index = 0 }: { c: Card; base: string; index?: number }) {
   const tag = c.category?.name ?? c.industry
   return (
-    <article className="bl-card bl-in" style={{ ['--i' as string]: Math.min(index, 8) }}>
+    <AnimatedCard bare className="bl-card" data-index={index}>
       {c.featured_image && (
-        <Link to={`${base}/${c.slug}`} className="bl-card-img" tabIndex={-1} aria-hidden="true">
+        <Link to={`${base}/${c.slug}`} className="bl-card-img ui-zoom" tabIndex={-1} aria-hidden="true">
           <img src={c.featured_image} alt={c.featured_image_alt} loading="lazy" decoding="async" width={640} height={360} />
         </Link>
       )}
@@ -61,7 +62,7 @@ export function CardView({ c, base, index = 0 }: { c: Card; base: string; index?
           Read more <span aria-hidden="true">→</span>
         </Link>
       </div>
-    </article>
+    </AnimatedCard>
   )
 }
 
