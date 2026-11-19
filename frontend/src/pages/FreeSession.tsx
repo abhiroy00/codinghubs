@@ -25,6 +25,7 @@ import { useFsReveal } from './free-session/useFsReveal'
 import { VideoReels } from './free-session/VideoReels'
 import { HOME_META, pageSeo } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
+import { AnimatedCard, Reveal } from '../components/ui'
 
 const HOME_SEO = pageSeo(HOME_META)
 
@@ -177,7 +178,7 @@ export function FreeSession() {
                 What Will You Learn in Our <span className="marker">Free Live</span> Session?
               </h2>
               <p className="sub">A focused 2-hour live introduction to the course you choose — so you can decide with confidence.</p>
-              <ol className="learn">
+              <Reveal as="ol" stagger className="learn">
                 <li>
                   <span className="learn-ico">
                     <FsIcon id="i-compass" />
@@ -223,7 +224,7 @@ export function FreeSession() {
                     <p>Details of the complete course and how the admission process works.</p>
                   </div>
                 </li>
-              </ol>
+              </Reveal>
             </div>
             <aside className="session-card" aria-label="Session information">
               <div className="sc-head">
@@ -283,7 +284,7 @@ export function FreeSession() {
               <p className="sub">Attend a free demo, see how we teach and ask your questions before choosing a course.</p>
             </div>
 
-            <article className="demo-pass" aria-labelledby="demo-pass-title">
+            <AnimatedCard bare className="demo-pass" aria-labelledby="demo-pass-title">
               <div className="dp-stub" aria-hidden="true">
                 <span className="dp-step">Free demo</span>
                 <span className="dp-free">FREE</span>
@@ -310,7 +311,7 @@ export function FreeSession() {
                   </a>
                 </div>
               </div>
-            </article>
+            </AnimatedCard>
 
             <p className="plan-note">
               <FsIcon id="i-ticket" />Registering for the free demo costs nothing.
@@ -337,7 +338,7 @@ export function FreeSession() {
             </div>
 
             <div className="bento">
-              <article className="tile t-a reveal">
+              <AnimatedCard bare className="tile t-a reveal">
                 <span className="t-num">01</span>
                 <span className="t-ico">
                   <FsIcon id="i-eye" />
@@ -380,9 +381,9 @@ export function FreeSession() {
                   </span>
                   <b>FREE</b>
                 </div>
-              </article>
+              </AnimatedCard>
 
-              <article className="tile t-b reveal">
+              <AnimatedCard bare className="tile t-b reveal">
                 <span className="t-num">02</span>
                 <h3>A practical introduction</h3>
                 <p>Get a hands-on introduction to the subject, not just theory.</p>
@@ -401,9 +402,9 @@ export function FreeSession() {
                     <span className="c-o">› Hello, You!</span>
                   </pre>
                 </div>
-              </article>
+              </AnimatedCard>
 
-              <article className="tile t-c reveal">
+              <AnimatedCard bare className="tile t-c reveal">
                 <span className="t-num">03</span>
                 <span className="t-ico">
                   <FsIcon id="i-hand" />
@@ -415,9 +416,9 @@ export function FreeSession() {
                   <span className="bub">What will I learn first?</span>
                   <span className="bub">How is the full course structured?</span>
                 </div>
-              </article>
+              </AnimatedCard>
 
-              <article className="tile t-d reveal">
+              <AnimatedCard bare className="tile t-d reveal">
                 <span className="t-num">04</span>
                 <span className="t-ico">
                   <FsIcon id="i-compass" />
@@ -441,9 +442,9 @@ export function FreeSession() {
                     <b>&#10003;</b>Your path
                   </span>
                 </div>
-              </article>
+              </AnimatedCard>
 
-              <article className="tile t-f reveal">
+              <AnimatedCard bare className="tile t-f reveal">
                 <p className="t-f-big">
                   2 hours.
                   <br />
@@ -455,7 +456,7 @@ export function FreeSession() {
                 <a href="#register" className="btn btn-anim btn-yellow btn-block" data-cta="why-tile">
                   Reserve My Free Seat <FsIcon id="i-arrow" />
                 </a>
-              </article>
+              </AnimatedCard>
             </div>
           </div>
         </section>
@@ -473,7 +474,7 @@ export function FreeSession() {
                 <path d="M0 64C90 64 110 64 167 64 300 64 350 92 500 92S700 64 833 64 930 64 1000 64" />
               </svg>
               <ol className="steps">
-                <li className="step reveal">
+                <AnimatedCard bare as="li" className="step reveal">
                   <div className="step-visual" aria-hidden="true">
                     <span className="step-diamond"><FsIcon id="i-compass" className="step-icon" /></span>
                     <span className="step-n">01</span>
@@ -482,8 +483,8 @@ export function FreeSession() {
                     <h3>Choose Your Course</h3>
                     <p>Pick the course you're curious about from the {COURSES.length} options.</p>
                   </div>
-                </li>
-                <li className="step reveal">
+                </AnimatedCard>
+                <AnimatedCard bare as="li" className="step reveal">
                   <div className="step-visual" aria-hidden="true">
                     <span className="step-diamond"><FsIcon id="i-pen" className="step-icon" /></span>
                     <span className="step-n">02</span>
@@ -492,8 +493,8 @@ export function FreeSession() {
                     <h3>Register for the Free Online Session</h3>
                     <p>Fill the short form — it's free.</p>
                   </div>
-                </li>
-                <li className="step reveal">
+                </AnimatedCard>
+                <AnimatedCard bare as="li" className="step reveal">
                   <div className="step-visual" aria-hidden="true">
                     <span className="step-diamond"><FsIcon id="i-monitor" className="step-icon" /></span>
                     <span className="step-n">03</span>
@@ -502,7 +503,7 @@ export function FreeSession() {
                     <h3>Attend the Live Demo &amp; Explore the Full Course</h3>
                     <p>Join online, learn live, ask questions and explore the full course.</p>
                   </div>
-                </li>
+                </AnimatedCard>
               </ol>
             </div>
             <div className="center">

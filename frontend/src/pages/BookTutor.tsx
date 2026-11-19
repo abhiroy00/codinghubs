@@ -10,6 +10,7 @@ import type { Seo } from '../content-pages/api'
 import { useSeo } from '../seo/useSeo'
 import { TUTOR_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
 import { HeroVideo } from '../components/HeroVideo'
+import { AnimatedCard, Reveal } from '../components/ui'
 
 interface Tutor {
   seo?: Seo
@@ -191,9 +192,9 @@ export function BookTutor() {
               </div>
             )}
             {tutors.length > 0 && (
-              <div className="tutor-grid">
+              <Reveal stagger className="tutor-grid">
                 {tutors.map((tutor) => (
-                  <article className="tutor-card" key={tutor.id}>
+                  <AnimatedCard bare className="tutor-card" key={tutor.id}>
                     <TutorPortrait tutor={tutor} />
                     <div className="tutor-card-body">
                       <p className="tutor-designation">{tutor.designation}</p>
@@ -204,9 +205,9 @@ export function BookTutor() {
                         <button type="button" className="btn btn-yellow" onClick={() => { setBooking(null); setBookingTutor(tutor) }}>Book a Tutor</button>
                       </div>
                     </div>
-                  </article>
+                  </AnimatedCard>
                 ))}
-              </div>
+              </Reveal>
             )}
           </div>
         </section>

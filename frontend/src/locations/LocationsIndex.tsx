@@ -16,6 +16,7 @@ import { useSeo } from '../seo/useSeo'
 const INDEX_SEO = pageSeo({ path: '/locations/', title: INDEX_TITLE, description: INDEX_DESCRIPTION, image: LOGO_URL, indexable: true, jsonLd: indexJsonLd() })
 import type { LocationGroup } from './types'
 import { HeroVideo } from '../components/HeroVideo'
+import { AnimatedCard } from '../components/ui'
 
 /** Card thumbnails: AVIF/WebP at 400w and 640w next to the original JPG (kept as the fallback). */
 const THUMB_SIZES = '(min-width: 1000px) 400px, (min-width: 640px) 50vw, 100vw'
@@ -129,7 +130,7 @@ export function LocationsIndex() {
             <ul className="lx-grid">
               {filtered.map((l, i) => (
                 <li key={l.slug} style={{ ['--i' as string]: i }}>
-                  <Link to={locationPath(l.slug)} className={`lx-card g-${l.group}`}>
+                  <AnimatedCard bare as={Link} to={locationPath(l.slug)} className={`lx-card ui-zoom g-${l.group}`}>
                     <picture>
                       <source type="image/avif" srcSet={thumbSet(l.slug, 'avif')} sizes={THUMB_SIZES} />
                       <source type="image/webp" srcSet={thumbSet(l.slug, 'webp')} sizes={THUMB_SIZES} />
@@ -143,7 +144,7 @@ export function LocationsIndex() {
                     <span className="lx-go">
                       Read the guide <FsIcon id="i-arrow" />
                     </span>
-                  </Link>
+                  </AnimatedCard>
                 </li>
               ))}
             </ul>

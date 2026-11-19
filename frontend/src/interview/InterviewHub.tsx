@@ -54,9 +54,9 @@ function RoleRoadmaps() {
           <button key={r.id} type="button" aria-pressed={role === r.id} onClick={() => setRole(r.id)}>{r.label}</button>
         ))}
       </div>
-      <div className="ih-roles">
+      <Reveal stagger className="ih-roles" key={role || "all"}>
         {groups.map((g) => (
-          <article className="ih-role" key={g.id} aria-labelledby={`role-${g.id}`}>
+          <AnimatedCard bare className="ih-role" key={g.id} aria-labelledby={`role-${g.id}`}>
             <header>
               <h3 id={`role-${g.id}`}>{g.label}</h3>
               <p>Common roles: {g.courses[0].careers.slice(0, 3).join(", ")}</p>
@@ -71,9 +71,9 @@ function RoleRoadmaps() {
                 </li>
               ))}
             </ul>
-          </article>
+          </AnimatedCard>
         ))}
-      </div>
+      </Reveal>
     </Section>
   );
 }

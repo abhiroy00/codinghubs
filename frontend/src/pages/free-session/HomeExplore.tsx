@@ -1,6 +1,7 @@
 import { useEffect, useId, useState, type CSSProperties, type FormEvent } from 'react'
 import { AI_TOOLS, logoColors } from '../../data/ai-tools'
 import { COURSE_OPTIONS } from './data'
+import { AnimatedCard } from '../../components/ui'
 
 /** Small public GET/POST without pulling the HTTP client into the home page bundle. */
 const getJson = (path: string) => fetch(`/api${path}`, { headers: { Accept: 'application/json' } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
@@ -198,7 +199,7 @@ function Reviews() {
             ) : rows.length ? (
               <ul>
                 {rows.map((r) => (
-                  <li key={r.name + r.text.slice(0, 16)} className="rv-card">
+                  <AnimatedCard bare as="li" key={r.name + r.text.slice(0, 16)} className="rv-card">
                     <span className="rv-quote" aria-hidden="true">“</span>
                     {r.rating ? <Stars value={r.rating} /> : null}
                     <blockquote>{r.text}</blockquote>
@@ -206,7 +207,7 @@ function Reviews() {
                       {r.photo ? <img src={r.photo} alt="" width={44} height={44} loading="lazy" /> : <span className="rv-initial" aria-hidden="true">{r.name.slice(0, 1).toUpperCase()}</span>}
                       <span><strong>{r.name}</strong>{r.course && <em>{r.course}</em>}</span>
                     </p>
-                  </li>
+                  </AnimatedCard>
                 ))}
               </ul>
             ) : (

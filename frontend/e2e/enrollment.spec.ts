@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test'
 
 for (const [slug, name] of [['generative-ai', 'Generative AI'], ['google-cloud', 'Google Cloud']]) {
-  test(`Enrollment options opens the enquiry popup for ${name}`, async ({ page }) => {
+  test(`Enroll Now opens the enquiry popup for ${name}`, async ({ page }) => {
     // Enquiries are independent of whether a paid checkout product is configured.
     await page.route(`**/api/courses/${slug}/`, route => route.fulfill({ status: 404, json: { detail: 'Not found' } }))
     await page.goto(`/courses/${slug}/`)
-    const trigger = page.getByRole('button', { name: 'Enrollment options' })
+    const trigger = page.getByRole('button', { name: /Enroll Now/ }).first()
     await trigger.click()
     const dialog = page.getByRole('dialog', { name: 'Enrollment enquiry' })
     await expect(dialog).toBeVisible()
@@ -29,7 +29,7 @@ test('existing demo registrants can still open enrollment enquiries on mobile', 
   for (const width of [360, 390]) {
     await page.setViewportSize({ width, height: 844 })
     await page.goto('/courses/generative-ai/')
-    await page.getByRole('button', { name: 'Enrollment options' }).click()
+    await page.getByRole('button', { name: /Enroll Now/ }).first().click()
     const dialog = page.getByRole('dialog', { name: 'Enrollment enquiry' })
     await expect(dialog.getByRole('textbox', { name: /Full Name/ })).toBeVisible()
     await expect(page).toHaveURL(/\/courses\/generative-ai\/$/)
@@ -51,7 +51,7 @@ test('enrollment enquiry validates, retries and saves contact details without a 
     return route.fulfill({ status: attempts === 1 ? 503 : 201, json: attempts === 1 ? { detail: 'Unavailable' } : { id: 42 } })
   })
   await page.goto('/courses/generative-ai/')
-  await page.getByRole('button', { name: 'Enrollment options' }).click()
+  await page.getByRole('button', { name: /Enroll Now/ }).first().click()
   const dialog = page.getByRole('dialog', { name: 'Enrollment enquiry' })
   await dialog.getByRole('button', { name: 'Send enrollment enquiry' }).click()
   await expect(dialog.getByText('Please correct the highlighted fields.')).toBeVisible()
@@ -75,7 +75,7 @@ test('enrollment enquiry validates, retries and saves contact details without a 
   expect(payments).toEqual([])
   expect(await page.evaluate(() => localStorage.getItem('ch_registered'))).toBeNull()
   await page.keyboard.press('Escape')
-  await page.getByRole('button', { name: 'Enrollment options' }).click()
+  await page.getByRole('button', { name: /Enroll Now/ }).first().click()
   await expect(dialog.getByRole('combobox', { name: /Select Your Interested Course/ })).toHaveValue('Generative AI')
   await expect(dialog.getByRole('textbox', { name: /Full Name/ })).toHaveValue('')
   await page.keyboard.press('Escape')

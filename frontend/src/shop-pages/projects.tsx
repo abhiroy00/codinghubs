@@ -447,10 +447,7 @@ export function ProjectPage() {
         {p.related_projects?.length > 0 && (
           <section className="pj-more"><h2>More projects</h2><div className="pj-grid">{p.related_projects.map((r: Card, i: number) => (<ProjectCard key={r.slug} c={r} i={i} />))}</div></section>
         )}
-        <section className="pj-cta">
-          <div><h2>Want to build this with a mentor?</h2><p>Join the free 2-hour live session and get your questions answered live.</p></div>
-          <a className="btn btn-yellow btn-lg" href="/#register">Join free demo</a>
-        </section>
+        <Section id="pj-help" className="pj-cta-band" tone="dark" align="left" badge="Mentor help" title="Want to build this with a mentor?" subtitle="Join the free 2-hour live session and get your questions answered live." aside={<a className="ui-btn ui-btn-primary" href="/#register">Join free demo</a>} />
       </article>
       {shot !== null && shots[shot] && <Lightbox shots={shots} index={shot} onClose={() => setShot(null)} onMove={(d) => setShot((i) => (i === null ? i : (i + d + shots.length) % shots.length))} />}
     </PageFrame>

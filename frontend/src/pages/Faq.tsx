@@ -2,6 +2,7 @@ import { ExpertCTA } from '../components/ExpertCTA'
 import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
 import { HeroVideo } from '../components/HeroVideo'
+import { AnimatedCard, Reveal, Section } from '../components/ui'
 
 export const FAQS = [
   { q: 'Do you provide placement support?', a: 'Yes. We provide 100% placement assistance, including resume building, mock interviews, portfolio preparation and job referrals.', open: true },
@@ -47,21 +48,21 @@ export function Faq() {
         <p>Can’t find your answer? Talk to an expert — we will call you back.</p>
       </section>
 
-      <section className="learn-section" aria-label="Frequently asked questions">
-        {FAQS.map((item) => (
+      <Section id="faq-list" className="faq-list" align="left" badge="FAQ" title="Your questions, answered"
+        subtitle="Courses, the free demo, certificates and how Coding Hub classes work.">
+        <Reveal stagger>{FAQS.map((item) => (
           <details key={item.q} className="learn-faq" open={item.open}>
             <summary>{item.q}</summary>
             <p>{item.a}</p>
           </details>
-        ))}
-      </section>
+        ))}</Reveal>
+      </Section>
 
-      <section className="learn-section" id="team" aria-labelledby="team-heading">
-        <h2 id="team-heading">Mentors who’ve done it.</h2>
-        <p className="learn-muted">In partnership with Innovative AI Solutions — where traditional mentorship meets modern technology.</p>
-        <div className="learn-project-grid">
+      <Section id="team" titleId="team-heading" className="faq-team" tone="soft" align="left" badge="Mentors" title="Mentors who’ve done it."
+        subtitle="In partnership with Innovative AI Solutions — where traditional mentorship meets modern technology.">
+        <Reveal stagger className="learn-project-grid">
           {TEAM.map((member) => (
-            <article key={member.name}>
+            <AnimatedCard key={member.name} className="faq-mentor">
               <p className="learn-kicker">{member.initials} · {member.role}</p>
               <h3>{member.name}</h3>
               <p>{member.bio}</p>
@@ -70,10 +71,10 @@ export function Faq() {
                   <li key={tick}>{tick}</li>
                 ))}
               </ul>
-            </article>
+            </AnimatedCard>
           ))}
-        </div>
-      </section>
+        </Reveal>
+      </Section>
 
       <ExpertCTA />
     </div>

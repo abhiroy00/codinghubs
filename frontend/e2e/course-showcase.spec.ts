@@ -27,14 +27,14 @@ test('all thumbnails load locally and all course actions keep their destinations
   const cards = await page.locator('.csx-card').evaluateAll(els => els.map(el => ({
     title: el.querySelector('h3')!.textContent!,
     href: el.querySelector('h3 a')!.getAttribute('href')!,
-    action: el.querySelector('.csx-start')!.getAttribute('href'),
-    demo: el.querySelector('.csx-demo')!.getAttribute('href'),
+    action: el.querySelector('.csx-pactions a')!.getAttribute('href'),
+    enroll: el.querySelector('.csx-pactions button')!.textContent!,
     image: el.querySelector('img')!.getAttribute('src')!,
   })))
   expect(new Set(cards.map(c => c.image)).size).toBe(43)
   for (const card of cards) {
     expect(card.action).toBe(card.href)
-    expect(card.demo).toBe('/#register')
+    expect(card.enroll).toContain('Enroll Now')
     expect(card.image).toMatch(/^\/assets\/courses\/.+\.webp$/)
     const response = await request.get(card.image)
     expect(response.ok(), card.image).toBe(true)
@@ -42,7 +42,7 @@ test('all thumbnails load locally and all course actions keep their destinations
   }
   // Exercise actual client navigation for every catalogue link, not just HTTP fallback responses.
   for (const card of cards) {
-    await page.locator(`.csx-start[href="${card.href}"]`).click()
+    await page.locator(`.csx-pactions a[href="${card.href}"]`).click()
     await expect(page).toHaveURL(new RegExp(`${card.href}$`))
     await expect(page.locator('main h1').first()).toContainText(card.title)
     await page.goBack()
@@ -61,7 +61,7 @@ test('category filters preserve data, pressed state and keyboard focus', async (
     await expect(button).toBeFocused()
     await expect(page.locator('.csx-card')).toHaveCount(count)
     await expect(page.locator('.csx-count')).toContainText(`Showing ${count} of 43 courses in ${category}`)
-    expect(await page.locator('.csx-tags .t0').allTextContents()).toEqual(Array(count).fill(category))
+    expect(await page.locator('.csx-cat').allTextContents()).toEqual(Array(count).fill(category))
     expect(await button.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid')
   }
   await filters.getByRole('button', { name: 'All 43', exact: true }).click()
@@ -83,7 +83,8 @@ test('a missing course image uses track artwork, then the existing icon if both 
   await expect(card.locator('img')).toHaveCount(0)
   const after = await card.locator('.csx-art').boundingBox()
   expect(after!.height).toBeCloseTo(before!.height, 0)
-  await expect(card.getByRole('link', { name: 'View Generative AI course', exact: true })).toBeVisible()
+  await expect(card.getByRole('link', { name: 'View details of Generative AI', exact: true })).toBeVisible()
+  await expect(card.getByRole('button', { name: /Enroll Now/ })).toBeVisible()
 })
 
 test('navigation shares Inter, highlights the active route and respects reduced motion', async ({ page }) => {

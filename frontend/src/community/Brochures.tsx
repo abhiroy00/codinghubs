@@ -8,6 +8,7 @@ import { PageFrame } from "../content-pages/shared";
 import { HeroVideo } from "../components/HeroVideo";
 import "./public.css";
 import "../content-pages/blog.css";
+import { AnimatedCard, Reveal } from '../components/ui'
 
 type Brochure = {
   id: number;
@@ -101,9 +102,9 @@ export function Brochures() {
         ) : (
           // Same markup as the server page (backend newsletter/brochures.html), so nothing moves when React takes over.
           // The cover image is optional (added in the admin panel); without one the card is text-only.
-          <div className="brochure-grid">
+          <Reveal stagger className="brochure-grid">
             {data.map((b) => (
-              <article className="brochure-card" key={b.id}>
+              <AnimatedCard bare className="brochure-card" key={b.id}>
                 {b.cover_url && (
                   // Optional cover from the admin panel, in a fixed 16:9 frame (no layout shift). Decorative: the title follows.
                   <div className="brochure-cover">
@@ -129,9 +130,9 @@ export function Brochures() {
                 <Link className="brochure-more" to={`/courses/${b.course_slug}/`}>
                   Course details →
                 </Link>
-              </article>
+              </AnimatedCard>
             ))}
-          </div>
+          </Reveal>
         )}
       </div>
     </PageFrame>

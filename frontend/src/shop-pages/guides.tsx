@@ -9,6 +9,7 @@ import { get, initial, rupees, type Card, type Paged } from './api'
 import './projects.css'
 import './shopui.css'
 import { HeroVideo } from '../components/HeroVideo'
+import { AnimatedCard, Reveal, Section } from '../components/ui'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 9
@@ -22,8 +23,8 @@ function accessLabel(c: Card) {
 export function GuideCard({ c, i = 0, featured = false }: { c: Card; i?: number; featured?: boolean }) {
   const project = (c as any).project as { title: string; slug: string } | null
   return (
-    <article className={`pj-card${featured ? ' pj-card-feat' : ''}`} style={{ ['--i' as string]: i }}>
-      <Link to={`/project-guides/${c.slug}`} className="pj-card-media" tabIndex={-1} aria-hidden="true">
+    <AnimatedCard bare className={`pj-card${featured ? ' pj-card-feat' : ''}`} data-index={i}>
+      <Link to={`/project-guides/${c.slug}`} className="pj-card-media ui-zoom" tabIndex={-1} aria-hidden="true">
         <Cover c={c} />
         <span className={`pj-lvl pj-${c.difficulty}`}>{cap(c.difficulty)}</span>
         <span className={`pj-price${c.access_type === 'paid' ? ' paid' : ''}`}>{accessLabel(c)}</span>
@@ -41,7 +42,7 @@ export function GuideCard({ c, i = 0, featured = false }: { c: Card; i?: number;
           <Link to={`/project-guides/${c.slug}`} className="pj-go" aria-label={`Read ${c.title}`}>Read guide <Arrow /></Link>
         </div>
       </div>
-    </article>
+    </AnimatedCard>
   )
 }
 
@@ -145,11 +146,11 @@ export function GuidesPage() {
       {data && data.count === 0 && (
         <div className="pj-empty"><strong>{active ? 'No guide matches these filters.' : 'Guides are coming soon.'}</strong><p>{active ? 'Try removing a filter.' : 'Check back soon.'}</p>{active > 0 && <button type="button" className="btn btn-yellow" onClick={reset}>Clear filters</button>}</div>
       )}
-      <div className="pj-grid" key={`${page}-${category}-${difficulty}-${access}-${q}`}>
+      <Reveal stagger className="pj-grid" key={`${page}-${category}-${difficulty}-${access}-${q}`}>
         {data?.results.map((c, i) => (<GuideCard key={c.slug} c={c} i={i} />))}
-      </div>
+      </Reveal>
       {data && <Pager page={page} count={data.count} size={PAGE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
-      <section className="pj-cta"><div><h2>Want a project to follow?</h2><p>Browse real projects with features, tech stack and learning outcomes.</p></div><Link className="btn btn-yellow btn-lg" to="/projects">Explore projects</Link></section>
+      <Section id="gd-cta" className="pj-cta-band" tone="dark" align="left" badge="Build next" title="Want a project to follow?" subtitle="Browse real Coding Hub projects with features, tech stack and learning outcomes." aside={<Link className="ui-btn ui-btn-primary" to="/projects">Explore projects</Link>} />
     </PageFrame>
   )
 }
@@ -256,10 +257,10 @@ export function GuidePage() {
         </div>
         {g.related_projects?.length > 0 && (
           <section className="pj-more"><h2>Related projects</h2>
-            <div className="pj-grid">{g.related_projects.map((r: Card) => (<article key={r.slug} className="pj-card"><Link to={`/projects/${r.slug}`} className="pj-card-media" tabIndex={-1} aria-hidden="true"><Cover c={r} /></Link><div className="pj-card-body"><h2><Link to={`/projects/${r.slug}`}>{r.title}</Link></h2><p className="pj-sum">{r.summary}</p></div></article>))}</div>
+            <div className="pj-grid">{g.related_projects.map((r: Card) => (<article key={r.slug} className="pj-card"><Link to={`/projects/${r.slug}`} className="pj-card-media ui-zoom" tabIndex={-1} aria-hidden="true"><Cover c={r} /></Link><div className="pj-card-body"><h2><Link to={`/projects/${r.slug}`}>{r.title}</Link></h2><p className="pj-sum">{r.summary}</p></div></article>))}</div>
           </section>
         )}
-        <section className="pj-cta"><div><h2>Need help while you build?</h2><p>Join the free 2-hour live session and ask your questions live.</p></div><a className="btn btn-yellow btn-lg" href="/#register">Join free demo</a></section>
+        <Section id="gd-help" className="pj-cta-band" tone="dark" align="left" badge="Mentor help" title="Need help while you build?" subtitle="Join the free 2-hour live session at Coding Hub and ask your questions live." aside={<a className="ui-btn ui-btn-primary" href="/#register">Join free demo</a>} />
       </article>
     </PageFrame>
   )

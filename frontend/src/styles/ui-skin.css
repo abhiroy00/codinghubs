@@ -1,0 +1,53 @@
+/* Site-wide skin that brings older page markup in line with the shared UI kit (src/components/ui).
+   Selectors start with `html body` so page stylesheets loaded later (/free-session.css) cannot undo them. */
+
+/* ---------- buttons: gradient primary with hover shine, pill shape everywhere ---------- */
+html body .btn{border-radius:999px}
+html body .btn.btn-yellow{position:relative;isolation:isolate;overflow:hidden;border-color:transparent;background-color:var(--ui-primary);background-image:var(--ui-gradient);color:#fff;box-shadow:0 10px 22px -12px rgba(0,98,250,.8);transition:transform var(--ui-dur) var(--ease,ease),box-shadow var(--ui-dur),color var(--ui-dur)}
+html body .btn.btn-yellow::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-120%);transition:transform .7s var(--ease,ease);pointer-events:none}
+html body .btn.btn-yellow:hover{color:#fff;transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(0,98,250,.9)}
+html body .btn.btn-yellow:hover::after{transform:translateX(120%)}
+html body .btn.btn-yellow:active{transform:scale(.97)}
+html body .btn.btn-ghost:not(.jobs-filter-toggle):hover{transform:translateY(-2px)}
+
+/* ---------- section eyebrows become badge pills (like <Section badge>) ---------- */
+html body :is(main .sec, .tutors-section-heading) .eyebrow{display:inline-flex;align-items:center;gap:.5rem;width:auto;margin-bottom:.875rem;padding:.375rem .875rem;border:1px solid #cfe0ff;border-radius:999px;background:#fff;color:var(--ui-primary-strong);font-size:.75rem;letter-spacing:.08em;box-shadow:0 6px 16px -12px rgba(0,98,250,.6)}
+html body :is(main .sec, .tutors-section-heading) .eyebrow::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--ui-gradient);box-shadow:0 0 0 4px rgba(0,98,250,.12)}
+html body main .sec-head.center .eyebrow,html body main .center>.eyebrow{display:flex;width:fit-content;margin-inline:auto}
+html body main .eyebrow{width:fit-content}
+html body .ch-home .hp-copy .eyebrow{letter-spacing:.08em}
+
+/* ---------- hero entrance: staggered slide-up of hero copy (transform only, so LCP is not delayed) ---------- */
+@keyframes ui-hero-in{from{transform:translateY(18px)}}
+html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner)>*,
+html body :is(.ow-hero,.learn-hero,.at-head)>:not(.hv-bg):not(.hv-toggle){animation:ui-hero-in .8s var(--ease,ease) both}
+html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner,.ow-hero,.learn-hero,.at-head)>:nth-child(2){animation-delay:.06s}
+html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner,.ow-hero,.learn-hero,.at-head)>:nth-child(3){animation-delay:.12s}
+html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner,.ow-hero,.learn-hero,.at-head)>:nth-child(4){animation-delay:.18s}
+html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner,.ow-hero,.learn-hero,.at-head)>:nth-child(n+5){animation-delay:.24s}
+
+/* ---------- course detail: section links as pills, brochure as a lifted card ---------- */
+html body .course-section-nav{gap:.5rem}
+html body .course-section-nav a{padding:.375rem 1rem;border:1px solid var(--ui-line);border-radius:999px;background:#fff;text-decoration:none;transition:background var(--ui-dur),color var(--ui-dur),border-color var(--ui-dur),transform var(--ui-dur)}
+html body .course-section-nav a:hover{border-color:transparent;background:var(--ui-gradient);color:#fff;text-decoration:none;transform:translateY(-2px)}
+html body .course-brochure{border-radius:24px;box-shadow:var(--ui-shadow);transition:box-shadow var(--ui-dur),transform var(--ui-dur)}
+html body .course-brochure:hover{box-shadow:var(--ui-shadow-hover);transform:translateY(-4px)}
+
+/* ---------- FAQ page sections on the kit ---------- */
+html body .faq-mentor .learn-kicker{background:var(--ui-primary-soft);border-color:#cfe0ff;color:var(--ui-primary-strong)}
+html body .faq-mentor h3{margin:.5rem 0 .25rem}
+html body .faq-list .learn-faq,html body .faq-team .learn-faq{border-radius:var(--ui-radius)}
+
+/* ---------- dark CTA bands that replaced .pj-cta ---------- */
+html body .pj-cta-band .ui-head{margin:0}
+
+/* ---------- homepage: older rules pin tiles/steps (one is ID-scoped), so kit cards need !important to lift ---------- */
+html body .ch-home .ui-card.ui-card:is(:hover,:focus-within){transform:translateY(-8px)!important}
+html body .ch-home .ui-card.ui-card:active{transform:translateY(-8px) scale(.97)!important}
+
+@media (prefers-reduced-motion:reduce){
+  html body .ch-home .ui-card.ui-card:is(:hover,:focus-within,:active){transform:none!important}
+  html body .btn.btn-yellow,html body .btn.btn-yellow::after,html body .course-section-nav a,html body .course-brochure{transition:none}
+  html body .btn.btn-yellow:hover,html body .btn.btn-ghost:hover,html body .course-section-nav a:hover,html body .course-brochure:hover{transform:none}
+  html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner)>*,html body :is(.ow-hero,.learn-hero,.at-head)>*{animation:none}
+}

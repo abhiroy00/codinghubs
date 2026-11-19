@@ -4,6 +4,7 @@ import { FsIcon } from './icons'
 import { CATEGORY_TABS } from './data'
 import { PROGRAMS } from './programs'
 import { HOME_CHALLENGE, HOME_COURSES, HOME_PROJECT, HOME_ROADMAP, roadmapLevelHref } from './learning-hub'
+import { AnimatedCard } from '../../components/ui'
 
 function Challenge() {
   const id = useId()
@@ -111,7 +112,7 @@ export function HomeCourses({ onDemo }: { onDemo: (course?: string) => void }) {
         </div>
         <ul className="hc-grid">
           {visible.map((course) => (
-            <li key={course.slug} className="hc-card">
+            <AnimatedCard bare as="li" key={course.slug} className="hc-card">
               <p className="hc-cat"><FsIcon id={course.icon} />{course.catLabel}</p>
               <h3><Link to={`/courses/${course.slug}/`}>{course.title}</Link></h3>
               <p>{course.desc}</p>
@@ -122,7 +123,7 @@ export function HomeCourses({ onDemo }: { onDemo: (course?: string) => void }) {
               <button type="button" className="hc-demo" onClick={() => onDemo(course.title)} aria-label={`Book a free demo for ${course.title}`}>
                 Free demo <FsIcon id="i-arrow" />
               </button>
-            </li>
+            </AnimatedCard>
           ))}
         </ul>
         <p className="hc-all"><Link to="/courses/">Browse all courses <span aria-hidden="true">→</span></Link></p>
@@ -132,12 +133,12 @@ export function HomeCourses({ onDemo }: { onDemo: (course?: string) => void }) {
           <ul>
             {PROGRAMS.map((program) => (
               <li key={program.slug}>
-                <Link to={`/program/${program.slug}`}>
+                <AnimatedCard bare as={Link} to={`/program/${program.slug}`}>
                   <span className="hc-days">{program.days.length} days</span>
                   <strong>{program.title}</strong>
                   <small>{program.tagline}</small>
                   <span className="hc-go" aria-hidden="true">→</span>
-                </Link>
+                </AnimatedCard>
               </li>
             ))}
           </ul>

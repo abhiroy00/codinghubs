@@ -74,16 +74,17 @@ test('popular course cards filter by category and open the demo form with the co
   await expect(dialog.locator('select').first()).toHaveValue(/Data Science Pro/)
 })
 
-test('profile section has no boxed panels and keeps its actions', async ({ page }) => {
+test('profile section has no boxed panels and the contact hub keeps its actions', async ({ page }) => {
   await page.goto('/')
   const about = page.locator('#about')
-  for (const selector of ['.trainer', '.contact-card']) {
-    const style = await about.locator(selector).evaluate((el) => ({ bg: getComputedStyle(el).backgroundColor, shadow: getComputedStyle(el).boxShadow }))
-    expect(style.bg).toBe('rgba(0, 0, 0, 0)')
-    expect(style.shadow).toBe('none')
-  }
-  await expect(about.getByRole('link', { name: /Chat on WhatsApp/ })).toHaveAttribute('href', /wa\.me/)
-  await expect(about.getByRole('link', { name: /74640/ })).toHaveAttribute('href', 'tel:+917464099059')
+  const style = await about.locator('.trainer').evaluate((el) => ({ bg: getComputedStyle(el).backgroundColor, shadow: getComputedStyle(el).boxShadow }))
+  expect(style.bg).toBe('rgba(0, 0, 0, 0)')
+  expect(style.shadow).toBe('none')
+  const contact = page.locator('#contact')
+  await expect(contact.getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', /wa\.me/)
+  await expect(contact.getByRole('link', { name: 'Call us' })).toHaveAttribute('href', 'tel:+917464099059')
+  await expect(contact.getByRole('link', { name: /Get Directions/ })).toHaveAttribute('href', /google\.com\/maps\/dir/)
+  await expect(contact.locator('iframe[title*="Google Maps"]')).toHaveCount(1)
 })
 
 test('banner above the footer has one primary action that opens the free demo registration', async ({ page }) => {
