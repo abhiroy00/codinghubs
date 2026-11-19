@@ -1,13 +1,14 @@
-/* Footer in the innovativeais.com style on every page (both footers: FsFooter `.ftr.fx` and the Layout `Footer`):
-   deep navy gradient, white headings with a gold underline, 80%-white links that turn gold, gold contact icons.
+/* Footer in the hero palette on every page (deep navy #071225 with blue/cyan glows, light-cyan accent like the hero
+   highlights). Layout follows the innovativeais.com footer (both footers: FsFooter `.ftr.fx` and the Layout `Footer`):
+   white headings with an accent underline, 80%-white links that turn accent-coloured, accent contact icons.
    The "Book a Free Demo" band above the footer drops its card and shares the same gradient, so the two read as one block.
    `html body` keeps these ahead of page stylesheets that load later (/free-session.css). */
-:root{--ft-navy:#06193c;--ft-top:#062a5a;--ft-mid:#08366e;--ft-bottom:#041e42;--ft-gold:#dcac1c;--ft-text:rgba(255,255,255,.75);--ft-link:rgba(255,255,255,.8);--ft-line:rgba(255,255,255,.1)}
+:root{--ft-navy:#071225;--ft-top:#0b1a33;--ft-mid:#0d2142;--ft-bottom:#050c1a;--ft-gold:#7fd3ff;--ft-text:rgba(255,255,255,.75);--ft-link:rgba(255,255,255,.8);--ft-line:rgba(255,255,255,.1)}
 
 /* ---------- CTA band: a separate rounded navy card with a gap above the footer ---------- */
 html body .ch-band{position:relative;isolation:isolate;margin:0!important;padding:clamp(2rem,5vw,3.5rem) clamp(1rem,4vw,2rem) clamp(2rem,5vw,3rem)!important;border:0!important;background:transparent!important;color:#fff}
 html body .ch-band::before,html body .ch-band::after{display:none!important}
-html body .ch-band .ch-band-card{position:relative;overflow:hidden;max-width:1180px;margin:0 auto!important;padding:clamp(1.75rem,4vw,3rem) clamp(1.25rem,4vw,3rem)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:24px!important;background:radial-gradient(60% 120% at 90% 0%,rgba(34,211,238,.18),transparent 60%),radial-gradient(50% 100% at 0% 0%,rgba(61,139,255,.28),transparent 60%),linear-gradient(135deg,#0a3f7e 0%,var(--ft-top) 55%,var(--ft-bottom) 100%)!important;box-shadow:0 28px 60px -30px rgba(6,25,60,.65)!important}
+html body .ch-band .ch-band-card{position:relative;overflow:hidden;max-width:1180px;margin:0 auto!important;padding:clamp(1.75rem,4vw,3rem) clamp(1.25rem,4vw,3rem)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:24px!important;background:radial-gradient(60% 120% at 90% 0%,rgba(34,211,238,.18),transparent 60%),radial-gradient(50% 100% at 0% 0%,rgba(61,139,255,.28),transparent 60%),linear-gradient(135deg,#0d2142 0%,var(--ft-navy) 55%,var(--ft-bottom) 100%)!important;box-shadow:0 28px 60px -30px rgba(6,25,60,.65)!important}
 html body .ch-band .ch-band-card::before,html body .ch-band .ch-band-card::after{display:none!important}
 html body .ch-band :is(h2,#ch-band-title){color:#fff!important}
 html body .ch-band p{color:var(--ft-text)!important}
@@ -21,7 +22,7 @@ html body .ch-band .ch-band-alt a{color:#fff!important;text-decoration-color:var
 html body .ch-band .ch-band-alt a:hover{color:var(--ft-gold)!important}
 
 /* ---------- footer shell ---------- */
-html body #site-footer{position:relative;isolation:isolate;margin-top:0!important;border-top:0!important;background:linear-gradient(180deg,rgba(6,42,90,.98) 0%,rgba(8,54,110,.96) 50%,rgba(4,30,66,.99) 100%),var(--ft-navy)!important;color:var(--ft-text)!important}
+html body #site-footer{position:relative;isolation:isolate;margin-top:0!important;border-top:0!important;background:radial-gradient(55% 60% at 100% 0%,rgba(34,211,238,.10),transparent 70%),radial-gradient(60% 70% at 0% 0%,rgba(61,139,255,.16),transparent 70%),linear-gradient(180deg,var(--ft-top) 0%,var(--ft-navy) 55%,var(--ft-bottom) 100%)!important;color:var(--ft-text)!important}
 html body #site-footer .fx-blob{width:640px!important;height:640px!important;filter:none!important;opacity:.35!important;background:radial-gradient(closest-side,rgba(31,107,255,.6),transparent)!important}
 html body #site-footer :is(p,li,span,small,address){color:var(--ft-text)!important}
 html body #site-footer strong{color:#fff!important}
@@ -49,7 +50,7 @@ html body #site-footer .fx-loc-regions a{border:1px solid rgba(255,255,255,.18)!
 html body #site-footer .fx-loc-regions a span{color:rgba(255,255,255,.6)!important}
 html body #site-footer .fx-loc-regions a:hover{border-color:var(--ft-gold)!important;color:var(--ft-gold)!important}
 html body #site-footer .fx-loc-regions a.fx-loc-all{border-color:var(--ft-gold)!important;background:var(--ft-gold)!important;color:var(--ft-navy)!important;font-weight:600}
-html body #site-footer .fx-loc-regions a.fx-loc-all:hover{background:#f0c23a!important;color:var(--ft-navy)!important}
+html body #site-footer .fx-loc-regions a.fx-loc-all:hover{background:#b3e6ff!important;color:var(--ft-navy)!important}
 
 /* Social links: white, gold circle on hover */
 html body #site-footer :is(.fx-social-row,.social){border-color:var(--ft-line)!important}

@@ -52,8 +52,6 @@ html body .ch-home .ui-card.ui-card:active{transform:translateY(-8px) scale(.97)
   html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner)>*,html body :is(.ow-hero,.learn-hero,.at-head)>*{animation:none}
 }
 
-/* Off-screen sections (src/lib/offscreen-pause.ts) pause their decorative animations. */
-[data-offscreen],[data-offscreen] *,[data-offscreen] ::before,[data-offscreen] ::after{animation-play-state:paused!important}
 
 /* Below-the-fold homepage sections and the footer: the browser skips their style, layout and paint until they are
    about to scroll into view (big win for start-up main-thread work). `auto` remembers each section's real size once

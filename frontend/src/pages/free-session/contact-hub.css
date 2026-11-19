@@ -73,7 +73,7 @@
 
 /* About section image: floating students photo over a gradient blob. */
 .about-students{position:relative;isolation:isolate;align-self:center;margin:0}
-.about-blob{position:absolute;z-index:-1;inset:12% 6% 0;border-radius:46% 54% 42% 58%/55% 45% 55% 45%;background:var(--ui-gradient);opacity:.22;animation:about-morph 12s ease-in-out infinite alternate}
+.about-blob{position:absolute;z-index:-1;inset:12% 6% 0;border-radius:46% 54% 42% 58%/55% 45% 55% 45%;background:var(--ui-gradient);opacity:.22}
 .about-students img{display:block;width:100%;height:auto;filter:drop-shadow(0 22px 30px rgba(11,18,32,.18));animation:cl-float 7s ease-in-out infinite}
 @keyframes about-morph{to{border-radius:58% 42% 55% 45%/45% 55% 45% 55%;transform:rotate(4deg) scale(1.04)}}
 @media (prefers-reduced-motion:reduce){.about-blob,.about-students img{animation:none}}
