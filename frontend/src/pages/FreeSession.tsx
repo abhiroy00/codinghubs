@@ -14,6 +14,7 @@ import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
 import { HomePathways } from './free-session/HomePathways'
 import { HomeCourses } from './free-session/HomeLearn'
 import { HomeProjects } from './free-session/HomeProjects'
+import { HomeTools } from './free-session/HomeTools'
 import './free-session/home.css'
 import './free-session/home-theme.css'
 import { HomeExplore, LogoWall } from './free-session/HomeExplore'
@@ -161,6 +162,7 @@ export function FreeSession() {
         </section>
 
         <HomeCourses onDemo={goToForm} />
+        <HomeTools />
         <LogoWall />
 
         <section className="sec" id="session" aria-labelledby="session-title">

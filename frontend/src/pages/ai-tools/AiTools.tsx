@@ -1,4 +1,5 @@
 import { useMemo, useState, type CSSProperties } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { FS_CSS } from '../../lib/fs-css'
 import { useScopedStylesheet } from '../../hooks/useScopedStylesheet'
 import { FsHeader } from '../../locations/FsShell'
@@ -67,7 +68,9 @@ function Logo({ tool }: { tool: AiTool }) {
 export function AiTools() {
   useSeo(AI_TOOLS_SEO)
   useScopedStylesheet([FS_CSS])
-  const [category, setCategory] = useState<AiToolCategory | ''>('')
+  const [params] = useSearchParams()
+  const initial = params.get('category')
+  const [category, setCategory] = useState<AiToolCategory | ''>(AI_TOOL_CATEGORIES.find((c) => c === initial) ?? '')
   const [query, setQuery] = useState('')
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase()
