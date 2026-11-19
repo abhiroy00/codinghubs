@@ -35,17 +35,18 @@
 .csx-courses>h2{margin:0;color:#0b1220}
 .csx-sub{margin:.5rem 0 0;color:#4a5568;font-size:1.02rem}
 .csx-chips{display:flex;flex-wrap:wrap;gap:.55rem;margin:1.3rem 0 1.8rem}
-.csx-chips button{padding:.5rem 1.05rem;border:1px solid #cdd6e4;border-radius:999px;background:#fff;color:#334155;font:500 .9rem var(--f-body,Inter,sans-serif);cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.csx-chips button{min-height:44px;padding:.5rem 1.05rem;border:1px solid #cdd6e4;border-radius:999px;background:#fff;color:#334155;font:500 .9rem var(--f-body,Inter,sans-serif);cursor:pointer;transition:background .2s,border-color .2s,color .2s}
 .csx-chips button:hover{border-color:#0062fa;color:#0b1220}
 .csx-chips button span{margin-left:.25rem;opacity:.65;font-size:.8rem}
 .csx-chips button.on{background:#0062fa;border-color:#0062fa;color:#fff;font-weight:600}
 
-.csx-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.25rem;margin:0;padding:0;list-style:none}
+.csx-count{margin:0 0 1rem;color:var(--muted,#4a5568);font:500 .875rem/1.5 var(--f-body,Inter,sans-serif)}
+.csx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem;margin:0;padding:0;list-style:none}
 .csx-grid>li{display:flex;min-width:0;margin:0;list-style:none}
-.csx-card{display:flex;flex-direction:column;min-width:0;width:100%;overflow:hidden;border:1px solid var(--ch-line,#dbe3ef);border-radius:14px;background:#fff;transition:border-color .2s,box-shadow .2s}
-.csx-card:hover,.csx-card:focus-within{border-color:#9cbcff;box-shadow:0 8px 24px -16px #0062fa55}
-.csx-art{--course-accent:#2563eb;position:relative;display:grid;place-items:center;height:112px;flex:none;background:#edf3ff}
-.csx-art::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 48%,#ffffff80 48% 49%,transparent 49% 66%,#ffffff80 66% 67%,transparent 67%)}
+.csx-card{display:flex;flex-direction:column;min-width:0;width:100%;overflow:hidden;border:1px solid var(--ch-line,#dbe3ef);border-radius:14px;background:#fff;transition:border-color .2s,box-shadow .2s,transform .2s}
+.csx-card:hover,.csx-card:focus-within{border-color:#9cbcff;box-shadow:0 12px 28px -20px #0062fa55;transform:translateY(-2px)}
+.csx-art{--course-accent:#2563eb;position:relative;display:grid;place-items:center;aspect-ratio:16/9;overflow:hidden;flex:none;background:#edf3ff}
+.csx-art img{display:block;width:100%;height:100%;aspect-ratio:16/9;object-fit:cover}
 .art-development{--course-accent:#4f46a5;background:#f0effb}
 .art-data{--course-accent:#087d83;background:#e7f5f6}
 .art-cloud{--course-accent:#0369a1;background:#eaf5fc}
@@ -55,19 +56,19 @@
 .art-marketing{--course-accent:#a73874;background:#fcf0f7}
 .csx-glyph{position:relative;display:grid;place-items:center;width:56px;height:56px;border:1px solid #ffffffb3;border-radius:14px;background:#fff;color:var(--course-accent)}
 .csx-glyph .ico{width:28px;height:28px}
-.csx-pbody{display:flex;flex-direction:column;flex:1;min-width:0;padding:1.1rem}
+.csx-pbody{display:flex;flex-direction:column;flex:1;min-width:0;padding:1.25rem}
 .csx-ptop{display:flex;flex-direction:column;gap:.75rem;align-items:flex-start}
-.csx-ptop h3{margin:0;min-height:2.7em;color:#0b1220;font:600 1.0625rem/1.35 var(--f-head,Poppins,sans-serif);overflow-wrap:anywhere}
+.csx-ptop h3{margin:0;min-height:2.7em;color:#0b1220;font:600 1.1875rem/1.4 var(--f-body,Inter,sans-serif);overflow-wrap:anywhere}
 .csx-ptop h3 a{color:inherit;text-decoration:none}
 .csx-ptop h3 a:hover{color:#004bd6}
 .csx-tags{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:.35rem;margin:0;padding:0;list-style:none}
-.csx-tags li{max-width:100%;padding:.18rem .5rem;border:1px solid;border-radius:999px;font:500 .6875rem/1.4 var(--f-body,Inter,sans-serif);overflow-wrap:anywhere}
+.csx-tags li{max-width:100%;padding:.18rem .5rem;border:1px solid;border-radius:999px;font:500 .75rem/1.4 var(--f-body,Inter,sans-serif);overflow-wrap:anywhere}
 .csx-tags .t0{color:#047857;border-color:#6ee7b7;background:#ecfdf5}
 .csx-tags .t1{color:#b91c1c;border-color:#fca5a5;background:#fef2f2}
 .csx-tags .t2{color:#1d4ed8;border-color:#93c5fd;background:#eff6ff}
-.csx-pmeta{display:flex;flex-wrap:wrap;gap:.5rem .75rem;margin:1rem 0 0;padding:0;list-style:none;color:#475569;font:500 .75rem var(--f-body,Inter,sans-serif)}
+.csx-pmeta{display:flex;flex-wrap:wrap;gap:.5rem .75rem;margin:1rem 0 0;padding:0;list-style:none;color:#475569;font:500 .8125rem/1.5 var(--f-body,Inter,sans-serif)}
 .csx-pmeta li{display:inline-flex;align-items:center;gap:.35rem}
-.csx-pdesc{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin:.85rem 0 1rem;color:#4a5568;font-size:.875rem;line-height:1.6}
+.csx-pdesc{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin:.85rem 0 1rem;color:#4a5568;font-size:.9375rem;line-height:1.6}
 .csx-pactions{display:grid;gap:.35rem;margin-top:auto;padding-top:.5rem}
 .csx-start{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:46px;padding:.5rem;border-radius:999px;background:var(--ch-brand,#0062fa);color:#fff;font:600 .9375rem var(--f-body,Inter,sans-serif);text-decoration:none;transition:background .2s}
 .csx-start:hover{background:#004bd6}
@@ -86,7 +87,7 @@
 .csx-cta .csx-pill-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
 .csx-cta .csx-pill-ghost:hover{background:rgba(255,255,255,.1)}
 
-.csx-hero :focus-visible,.csx-courses :focus-visible,.csx-cta :focus-visible{outline:3px solid #0062fa;outline-offset:2px}
+.csx-hero :focus-visible,.csx-courses :focus-visible,.csx-cta :focus-visible{outline:3px solid var(--blue,#0062fa);outline-offset:2px}
 
 @media (max-width:1000px){.csx-features ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:1023px){.csx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -96,4 +97,4 @@
   .csx-features ul{grid-template-columns:1fr}
   .csx-strip{gap:.5rem 1.4rem;font-size:.88rem}
 }
-@media (prefers-reduced-motion:reduce){.csx-aurora span{animation:none}.csx-hero *,.csx-courses *{transition:none!important}}
+@media (prefers-reduced-motion:reduce){.csx-aurora span{animation:none}.csx-hero *,.csx-courses *,.csx-cta *,.csx-features *{transition:none!important}.csx-card:hover,.csx-card:focus-within{transform:none}}

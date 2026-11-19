@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { COURSE_CATALOG, COURSE_CATEGORIES, type CourseDefinition, type CourseTrack } from './catalog'
 import { COURSES } from '../pages/free-session/data'
 import { FsIcon } from '../pages/free-session/icons'
+import thumbnails from './course-thumbnails.json'
 import './course-showcase.css'
 import { HeroVideo } from '../components/HeroVideo'
 
@@ -14,6 +15,21 @@ const TRACK_ICON: Record<CourseTrack, string> = {
 }
 const blurb = (c: CourseDefinition) => FLAGSHIP.get(c.name)?.desc ?? c.introduction.split('. ')[0] + '.'
 const icon = (c: CourseDefinition) => FLAGSHIP.get(c.name)?.icon ?? TRACK_ICON[c.track]
+
+/** Local artwork follows catalogue slugs; failed images retain a track illustration or icon. */
+function CourseThumbnail({ c }: { c: CourseDefinition }) {
+  const [failedSources, setFailedSources] = useState<string[]>([])
+  const primary = (thumbnails as Record<string, string>)[c.slug]
+  const fallback = `/assets/courses/track-${c.track}.webp`
+  const src = [primary, fallback].find(source => source && !failedSources.includes(source))
+  return (
+    <div className={`csx-art art-${c.track}`} aria-hidden="true">
+      {src ? <img src={src} alt="" width={960} height={540} loading="lazy" decoding="async"
+        onError={() => setFailedSources(sources => [...sources, src])} />
+        : <span className="csx-glyph"><FsIcon id={icon(c)} /></span>}
+    </div>
+  )
+}
 
 function Arrow() {
   return (
@@ -87,9 +103,7 @@ function CourseCard({ c }: { c: CourseDefinition }) {
   const tags = [c.category, ...c.tools.slice(0, 2)]
   return (
     <article className="csx-card">
-      <div className={`csx-art art-${c.track}`} aria-hidden="true">
-        <span className="csx-glyph"><FsIcon id={icon(c)} /></span>
-      </div>
+      <CourseThumbnail c={c} />
       <div className="csx-pbody">
         <div className="csx-ptop">
           <h3><Link to={`/courses/${c.slug}/`}>{c.name}</Link></h3>
@@ -129,7 +143,7 @@ export function CoursesShowcase() {
 
   return (
     <section id="catalogue" className="csx-courses" aria-labelledby="csx-courses-title">
-      <h2 id="csx-courses-title">Our Courses</h2>
+      <h2 id="csx-courses-title">All Courses</h2>
       <p className="csx-sub">Explore our courses, compare learning paths and find the right next step for you.</p>
       <div className="csx-chips" role="group" aria-label="Filter by category">
         <button type="button" className={!filter ? 'on' : ''} aria-pressed={!filter} onClick={() => setFilter('')}>
@@ -141,6 +155,8 @@ export function CoursesShowcase() {
           </button>
         ))}
       </div>
+
+      <p className="csx-count" role="status">Showing {visible.length} of {COURSE_CATALOG.length} courses{filter ? ` in ${filter}` : ''}</p>
 
       <ul className="csx-grid" aria-label="Courses">
         {visible.map((c) => <li key={c.slug}><CourseCard c={c} /></li>)}
