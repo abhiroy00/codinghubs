@@ -26,8 +26,14 @@ const ourWorkCss = manifest['src/pages/our-work/OurWork.tsx']?.css ?? []
 if (!ourWorkCss.length) throw new Error('Missing Our Work styles in build manifest')
 const aiToolsCss = manifest['src/pages/ai-tools/AiTools.tsx']?.css ?? []
 if (!aiToolsCss.length) throw new Error('Missing AI Tools styles in build manifest')
+const demoVideosCss = manifest['src/pages/demo-videos/DemoVideosPage.tsx']?.css ?? []
+if (!demoVideosCss.length) throw new Error('Missing Demo Videos styles in build manifest')
 const poppins700 = (await readdir(path.join(dist, 'assets'))).find(name => /^poppins-700-latin-[A-Za-z0-9_-]{8}\.woff2$/.test(name))
 if (!poppins700) throw new Error('Missing self-hosted Poppins 700 font in the build')
+// Headings use Plus Jakarta Sans (src/styles/typography.css). Preloading its latin file (27 KB, variable 500-800) on
+// every page means headings render in it at first paint instead of re-wrapping after the font swap (home CLS 0.08).
+const jakartaLatin = (await readdir(path.join(dist, 'assets'))).find(name => /^plus-jakarta-sans-latin-[A-Za-z0-9_-]{8}\.woff2$/.test(name))
+if (!jakartaLatin) throw new Error('Missing self-hosted Plus Jakarta Sans font in the build')
 // Stylesheets the built app shell (dist/index.html) already links on every page.
 const shellCss = new Set([...template.matchAll(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"/g)].map(m => m[1]))
 // CSS of a lazy chunk and everything it imports, minus what the app shell (index.html) already links.
@@ -131,6 +137,7 @@ function buildHead(page) {
     `<meta name="twitter:image:alt" content="${esc(imageAlt)}" />`,
   )
   if (page.image?.endsWith('/assets/coding-hubs-school-of-ai-logo.jpeg')) tags.push('<meta property="og:image:width" content="1254" />', '<meta property="og:image:height" content="1254" />')
+  tags.push(`<link rel="preload" as="font" type="font/woff2" href="/assets/${jakartaLatin}" crossorigin />`)
   tags.push(...heroPosterPreloads(page.html))
   // Other first-viewport images (home: first hero slide). srcset/sizes come from the component, so they always
   // match the <img> and the preloaded file is the one the page uses.
@@ -158,6 +165,9 @@ function buildHead(page) {
     for (const file of aiToolsCss) tags.push(`<link rel="stylesheet" href="/${file}" />`)
   }
   if (page.path.startsWith('/interview/guides/')) tags.push('<link rel="stylesheet" href="/community.css" />')
+  if (page.path === '/demo-videos') {
+    for (const file of demoVideosCss) tags.push(`<link rel="stylesheet" href="/${file}" />`)
+  }
   if (page.path === '/our-work') {
     for (const file of ourWorkCss) tags.push(`<link rel="stylesheet" href="/${file}" />`)
   }

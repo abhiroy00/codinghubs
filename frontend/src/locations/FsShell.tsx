@@ -100,7 +100,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
             <h2>Explore</h2>
             <ul>
               <li><a href={home ? '#home' : '/'}>Home</a></li>
-              <li><HLink home={home} to={h('#demo-classes')}>Free Demo Classes</HLink></li>
+              <li><HLink home={home} to="/demo-videos">Free Demo Classes</HLink></li>
               <li><Link to="/courses/">All Courses</Link></li>
               <li><Link to="/locations/">AI Course Locations</Link></li>
               <li><Link to="/blog">Blog</Link></li>

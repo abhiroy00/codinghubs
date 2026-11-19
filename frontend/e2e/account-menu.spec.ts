@@ -54,14 +54,16 @@ test("photo replaces Login and account disclosure navigates and closes with keyb
   await expect(panel).toBeVisible();
   await expect(panel).toContainText(user.email);
   await expect(panel.getByRole("link")).toHaveText([
-    "Profile↗",
-    "User Dashboard↗",
+    "My account↗",
+    "Courses & progress↗",
+    "Support↗",
+    "Locations↗",
   ]);
   await page.keyboard.press("Escape");
   await expect(panel).toBeHidden();
   await expect(trigger).toBeFocused();
   await trigger.click();
-  await panel.getByRole("link", { name: "Profile" }).click();
+  await panel.getByRole("link", { name: "My account" }).click();
   await expect(page).toHaveURL(/\/my-account$/);
   await expect(page.getByRole("heading", { name: "My account" })).toBeVisible();
   await expect(panel).toBeHidden();
@@ -233,8 +235,10 @@ test("Store and My Orders are removed from the menu, profile and old routes", as
   await expect(page.getByRole("heading", { name: "My account" })).toBeVisible();
   await page.locator(".sh-account-trigger").click();
   await expect(page.locator(".sh-account-panel").getByRole("link")).toHaveText([
-    "Profile↗",
-    "User Dashboard↗",
+    "My account↗",
+    "Courses & progress↗",
+    "Support↗",
+    "Locations↗",
   ]);
   await expect(
     page.getByRole("navigation", { name: "Store", exact: true }),
@@ -262,4 +266,16 @@ test("Store and My Orders are removed from the menu, profile and old routes", as
     ).toBeVisible();
     await expect(page.locator(".sh-account-trigger")).toBeVisible();
   }
+});
+
+test("Support and Locations live in the account dropdown, not the header", async ({ page }) => {
+  await page.goto("/");
+  const header = page.locator(".site-header");
+  await expect(header.locator(".sh-nav").getByRole("link", { name: "Support", exact: true })).toHaveCount(0);
+  await expect(header.locator(".sh-nav").getByRole("link", { name: "Locations", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Account menu for Asha Sharma" }).click();
+  const panel = page.locator(".sh-account-panel");
+  await expect(panel.getByRole("link", { name: /Support/ })).toHaveAttribute("href", "/#contact");
+  await panel.getByRole("link", { name: /Locations/ }).click();
+  await expect(page).toHaveURL(/\/locations\/$/);
 });

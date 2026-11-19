@@ -1,7 +1,7 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { Reveal } from '../../components/ui'
-import { useRegisterPopup } from '../../lib/register-popup'
+import { useLenisRef } from '../../lib/lenis-context'
 import './career-launch.css'
 
 const LEFT = ['Industry-aligned AI curriculum', 'Hands-on GenAI projects', 'Classroom in Pitampura + live online'] as const
@@ -20,7 +20,20 @@ function Pill({ text, side, i }: { text: string; side: 'l' | 'r'; i: number }) {
 
 /** Centered career CTA: headline, two buttons, floating benefit pills on both sides and the students photo over an arc. */
 export function CareerLaunch() {
-  const { open } = useRegisterPopup()
+  const lenisRef = useLenisRef()
+  // Scroll to the contact section through Lenis (the page's smooth scroller); a native hash jump gets cut short by it.
+  const toContact = (e: MouseEvent<HTMLAnchorElement>) => {
+    const el = document.getElementById('contact')
+    if (!el) return
+    e.preventDefault()
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // Absolute target from the real scroll position, so it is right even if something scrolled the page natively.
+    const y = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 88)
+    const lenis = lenisRef.current
+    if (lenis) { lenis.resize(); lenis.scrollTo(y, { immediate: reduce, force: true }) }
+    else window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' })
+    history.replaceState(null, '', '#contact')
+  }
   return (
     <section className="cl" id="start-career" aria-labelledby="cl-title">
       <span className="cl-glow cl-glow-a" aria-hidden="true" />
@@ -36,8 +49,8 @@ export function CareerLaunch() {
           </h2>
           <p className="cl-sub">AI, Data Science and Generative AI courses in Pitampura, Delhi. Our counsellors help you choose the right path. Get a free career consultation now.</p>
           <div className="cl-actions">
-            <Link className="ui-btn ui-btn-ghost cl-btn" to="/courses">View Courses</Link>
-            <button type="button" className="ui-btn ui-btn-primary cl-btn" aria-haspopup="dialog" onClick={() => open()}>Enquire Now</button>
+            <Link className="ui-btn ui-btn-ghost cl-btn" to="/courses#catalogue">View Courses</Link>
+            <a className="ui-btn ui-btn-primary cl-btn" href="#contact" onClick={toContact}>Enquire Now</a>
           </div>
         </Reveal>
         <ul className="cl-pills cl-pills-r" aria-label="Career support">
@@ -46,7 +59,7 @@ export function CareerLaunch() {
       </div>
       <div className="cl-stage">
         <span className="cl-arc" aria-hidden="true" />
-        <img className="cl-students" src="/img/students.webp" alt="Five smiling Coding Hub students holding laptops and notebooks" width={1400} height={665} loading="lazy" decoding="async" />
+        <img className="cl-students" src="/img/students-1000.webp" srcSet="/img/students-720.webp 720w, /img/students-1000.webp 1000w, /img/students.webp 1400w" sizes="(max-width: 940px) 96vw, 900px" alt="Five smiling Coding Hub students holding laptops and notebooks" width={1400} height={665} loading="lazy" decoding="async" />
       </div>
     </section>
   )

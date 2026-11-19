@@ -42,17 +42,20 @@ test("home content and layout fit phone, tablet and desktop screens", async ({
   expect(errors).toEqual([]);
 });
 
-test("home lists popular courses linking to course pages and Explore courses opens the catalogue", async ({
+test("Join Coding Hub follows the hero, removed sections stay gone and its buttons reach their sections", async ({
   page,
 }) => {
-  // Popular courses (the 13 homepage courses) link to their real course pages; the full catalogue stays on /courses/.
-  const cards = page.locator("#courses .hc-card");
-  await expect(cards).toHaveCount(13);
-  for (const href of await cards.locator("h3 a").evaluateAll((els) => els.map((el) => el.getAttribute("href"))))
-    expect(href).toMatch(/^\/courses\/[a-z0-9-]+\/$/);
-  await expect(page.locator(".cc-card")).toHaveCount(0);
-  await page.getByRole("link", { name: "Explore courses" }).click();
-  await expect(page).toHaveURL(/\/courses\/$/);
+  const ids = await page.locator("main > section, main > nav").evaluateAll((els) => els.map((el) => el.id));
+  expect(ids.slice(0, 2)).toEqual(["home", "start-career"]);
+  for (const id of ["courses", "demo-classes", "why", "reviews"]) await expect(page.locator(`#${id}`)).toHaveCount(0);
+  await expect(page.getByText("Pick a path and try it free")).toHaveCount(0);
+  const career = page.locator("#start-career");
+  await expect(career.locator("img.cl-students")).toBeVisible();
+  await career.getByRole("link", { name: "Enquire Now" }).click();
+  await expect.poll(() => page.locator("#contact").evaluate((el) => Math.round(el.getBoundingClientRect().top))).toBeLessThan(150);
+  await page.goto("/");
+  await page.locator("#start-career").getByRole("link", { name: "View Courses" }).click();
+  await expect(page).toHaveURL(/\/courses#catalogue$/);
   await expect(page.locator("#catalogue .csx-card")).toHaveCount(43);
 });
 
@@ -165,9 +168,10 @@ test("registration validates, reports API failure, retries and sends all collect
   expect(attempts).toBe(2);
 });
 
-test("video playback and carousel controls use the existing demo media", async ({
+test("demo videos page plays the classroom reels and moves the YouTube carousel", async ({
   page,
 }) => {
+  await page.goto("/demo-videos");
   await page
     .getByRole("button", { name: "Play video: AI Challenge: Day 3" })
     .click();
@@ -180,10 +184,18 @@ test("video playback and carousel controls use the existing demo media", async (
         .evaluate((video: HTMLVideoElement) => !video.paused && video.controls),
     )
     .toBe(true);
-  await page.getByRole("button", { name: "Next videos" }).click();
+  await page.locator("#classroom-demos").getByRole("button", { name: "Next videos" }).click();
   await expect
     .poll(() => page.locator("#vlist").evaluate((list) => list.scrollLeft))
     .toBeGreaterThan(0);
+  const yt = page.locator("#youtube-classes .dv-track");
+  await expect(page.locator("#youtube-classes .dv-card")).toHaveCount(9);
+  await page.locator("#youtube-classes").getByRole("button", { name: "Next videos" }).click();
+  await expect.poll(() => yt.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
+  await page.locator("#youtube-classes .dv-title button").first().click();
+  await expect(page.locator(".ui-modal iframe")).toHaveAttribute("src", /youtube-nocookie\.com\/embed\//);
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".ui-modal")).toHaveCount(0);
 });
 
 test("late-loading published content reveals itself with reduced motion", async ({
@@ -195,8 +207,6 @@ test("late-loading published content reveals itself with reduced motion", async 
     await route.fulfill({ json: [{ name: "Riya", course: "Generative AI", text: "Clear, practical classes.", photo: "", rating: 5 }] });
   });
   await page.reload();
-  await expect(page.locator("#reviews .rv-card")).toHaveCount(1);
-  await expect(page.locator("#reviews .reveal")).toHaveClass(/in/);
   await expect(page.locator("#projects")).toHaveCount(0);
   await expect(page.locator("#locations")).toHaveCount(0);
   // Reduced motion: no slider controls and no automatic slide changes.
@@ -273,28 +283,6 @@ test("hero slider supports touch swipe on phones", async ({ browser }) => {
   await swipe(box.x + 30, box.x + box.width - 30);
   await expect(active).toHaveAttribute("aria-label", /^1 of 5:/);
   await context.close();
-});
-
-test("learners can send a review that waits for approval", async ({ page }) => {
-  let posted: Record<string, unknown> | null = null;
-  await page.route("**/api/testimonials/", (route) => route.fulfill({ json: [] }));
-  await page.route("**/api/testimonials/submit/", (route) => {
-    posted = route.request().postDataJSON();
-    return route.fulfill({ status: 201, json: { detail: "Thank you! Your review will appear on the website after our team checks it." } });
-  });
-  await page.reload();
-  const form = page.locator("#reviews form");
-  await expect(page.getByText("Be the first to leave a review")).toBeVisible();
-  await form.getByRole("button", { name: "Submit review" }).click();
-  await expect(form.getByText("Please choose a star rating.")).toBeVisible();
-  expect(posted).toBeNull();
-  await form.getByRole("radio", { name: /^5 stars/ }).check();
-  await form.getByLabel("Your name").fill("Test Learner");
-  await form.getByLabel("Your review").fill("Loved the hands-on approach and clear explanations.");
-  await form.getByRole("checkbox").check();
-  await form.getByRole("button", { name: "Submit review" }).click();
-  await expect(page.getByText("Thank you for your review!")).toBeVisible();
-  expect(posted).toMatchObject({ name: "Test Learner", rating: 5, permission: true });
 });
 
 test("all four learning and career pathways open their working pages", async ({

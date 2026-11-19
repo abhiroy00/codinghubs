@@ -1,5 +1,5 @@
 /**
- * YouTube demo classes shown in the "Demo Videos" grid on the homepage (#demo-classes).
+ * YouTube demo classes shown in the YouTube carousel on the /demo-videos page.
  *
  * To add a video: put its thumbnail in /public/demo/ (e.g. /public/demo/genai-intro.webp, 16:9, ~1280×720)
  * and add a row below. Any YouTube link form works (watch, youtu.be, shorts, embed).

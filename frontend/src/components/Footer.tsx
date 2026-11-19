@@ -65,7 +65,7 @@ export function Footer() {
               <h2>Learn</h2>
               <ul>
                 <li>
-                  <Link to="/#demo-classes">Free Demo Class</Link>
+                  <Link to="/demo-videos">Free Demo Classes</Link>
                 </li>
                 <li>
                   <Link to="/courses/">AI &amp; Data</Link>

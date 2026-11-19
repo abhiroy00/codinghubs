@@ -18,7 +18,7 @@ test('all shells share the requested primary order and existing destinations', a
     await expect(nav.locator(':scope > a:not(.sh-mobile-login), :scope > .sh-res > button')).toHaveText(['Courses', 'Demo Videos', 'Projects', 'Careers', 'Resources'])
     await expect(h.getByRole('button', { name: 'Book Free Demo', exact: true })).toBeVisible()
     await expect(nav.getByRole('link', { name: 'Projects', exact: true })).toHaveAttribute('href', '/our-work')
-    await expect(nav.getByRole('link', { name: 'Demo Videos', exact: true })).toHaveAttribute('href', '/#demo-classes')
+    await expect(nav.getByRole('link', { name: 'Demo Videos', exact: true })).toHaveAttribute('href', '/demo-videos')
     await expect(h.locator('.sh-brand')).toHaveAttribute('href', '/#home')
     for (const [name, links] of Object.entries(menus)) {
       const trigger = nav.getByRole('button', { name, exact: true })
@@ -90,10 +90,11 @@ for (const width of [390, 1024, 1366]) test(`touch navigation uses tap disclosur
   }
   await primary(page).getByRole('link', { name: 'Newsletter', exact: true }).tap()
   await expect(page).toHaveURL(/\/newsletter\/$/); await expect(primary(page)).toBeHidden()
+  // Support and Locations moved to the account dropdown; the primary menu no longer lists them.
   await header(page).getByRole('button', { name: 'Open menu', exact: true }).tap()
-  await expect(primary(page).getByRole('link', { name: 'Support', exact: true })).toBeVisible()
-  await primary(page).getByRole('link', { name: 'Locations', exact: true }).tap()
-  await expect(page).toHaveURL(/\/locations\/$/); await expect(primary(page)).toBeHidden()
+  await expect(primary(page).getByRole('link', { name: 'Support', exact: true })).toHaveCount(0)
+  await primary(page).getByRole('link', { name: 'Demo Videos', exact: true }).tap()
+  await expect(page).toHaveURL(/\/demo-videos$/); await expect(primary(page)).toBeHidden()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   await context.close()
 })
@@ -103,14 +104,10 @@ test('inner-page homepage anchors and project content stay intact', async ({ pag
   await expect(page.locator('.ow-item').first()).toBeVisible()
   const count = await page.locator('.ow-item').count(); expect(count).toBeGreaterThan(0)
   await primary(page).getByRole('link', { name: 'Demo Videos', exact: true }).click()
-  await expect(page).toHaveURL(/\/#demo-classes$/)
-  await expect.poll(() => page.locator('#demo-classes').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(250)
+  await expect(page).toHaveURL(/\/demo-videos$/)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Demo Classes')
+  await expect(page.locator('.dv-card')).toHaveCount(9)
   await expect(page.getByRole('dialog')).toHaveCount(0)
-  await page.mouse.move(20, 500)
-  await page.mouse.wheel(0, -10000)
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(200)
-  await primary(page).getByRole('link', { name: 'Demo Videos', exact: true }).click()
-  await expect.poll(() => page.locator('#demo-classes').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(250)
   await primary(page).getByRole('link', { name: 'Projects', exact: true }).click()
   await expect(page).toHaveURL(/\/our-work$/); await expect(page.locator('.ow-item')).toHaveCount(count)
   await primary(page).getByRole('button', { name: 'Resources', exact: true }).click()
@@ -122,10 +119,9 @@ test('inner-page homepage anchors and project content stay intact', async ({ pag
   await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(200)
   await page.goto('/our-work')
   await page.setViewportSize({ width: 390, height: 844 })
-  await header(page).getByRole('button', { name: 'Open menu' }).click()
-  await primary(page).getByRole('link', { name: 'Support', exact: true }).click()
+  // Support now lives in the account dropdown and the footer.
+  await page.locator('#site-footer').getByRole('link', { name: 'Support', exact: true }).click()
   await expect(page).toHaveURL(/\/#contact$/)
-  await expect(primary(page)).toBeHidden()
   await expect.poll(() => page.locator('#contact').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(250)
 })
 
@@ -161,7 +157,7 @@ test('every dropdown link navigates to its existing page and closes its disclosu
   }
 })
 
-test('header, mobile support links and CTA fit 320px through desktop', async ({ page }) => {
+test('header, mobile menu and CTA fit 320px through desktop', async ({ page }) => {
   await page.goto('/login')
   for (const width of [320, 390, 768, 1024, 1101, 1440]) {
     await page.setViewportSize({ width, height: 900 })
@@ -169,9 +165,8 @@ test('header, mobile support links and CTA fit 320px through desktop', async ({ 
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
     if (width <= 1100) {
       await header(page).getByRole('button', { name: 'Open menu', exact: true }).click()
-      await expect(primary(page).getByRole('link', { name: 'Support', exact: true })).toHaveAttribute('href', '/#contact')
-      await expect(primary(page).getByRole('link', { name: 'Locations', exact: true })).toHaveAttribute('href', '/locations/')
-      await page.locator('main h1').click({ force: true })
+      await expect(primary(page).getByRole('link', { name: 'Demo Videos', exact: true })).toHaveAttribute('href', '/demo-videos')
+      await page.keyboard.press('Escape')
       await expect(primary(page)).toBeHidden()
     }
   }

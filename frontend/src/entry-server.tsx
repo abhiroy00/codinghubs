@@ -7,6 +7,7 @@ import { VisualLab } from './learning/VisualLab'
 import { FAQ_META, Faq } from './pages/Faq'
 import { OUR_WORK_META, OurWork } from './pages/our-work/OurWork'
 import { AI_TOOLS_META, AiTools } from './pages/ai-tools/AiTools'
+import { DEMO_VIDEOS_META, DemoVideosPage } from './pages/demo-videos/DemoVideosPage'
 import type { ReactNode } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
@@ -82,6 +83,10 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
   pages.push({
     ...AI_TOOLS_META, file: 'ai-tools.html', fsDesign: true,
     html: renderToString(<AuthProvider><StaticRouter location="/ai-tools"><LenisProvider><ModalProvider><AiTools /></ModalProvider></LenisProvider></StaticRouter></AuthProvider>),
+  })
+  pages.push({
+    ...DEMO_VIDEOS_META, file: 'demo-videos.html', fsDesign: true,
+    html: renderToString(<AuthProvider><StaticRouter location="/demo-videos"><LenisProvider><ModalProvider><DemoVideosPage /></ModalProvider></LenisProvider></StaticRouter></AuthProvider>),
   })
   pages.push({ ...FAQ_META, file: 'faq.html', fsDesign: false, html: renderLearningPage('/faq', <Faq />, [{ label: 'FAQ' }]) })
   pages.push({file:'visual-lab/index.html',path:'/visual-lab/',title:'Interactive engineering visual lab | Coding Hubs',description:'Explore attention, vector similarity, gradient descent and engineering workflows with step-by-step controls.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderLearningPage('/visual-lab/', <VisualLab />, [{label:'Visual lab'}]),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:'Coding Hubs engineering visual lab',url:`${SITE_URL}/visual-lab/`,learningResourceType:'Interactive simulation'}]}})

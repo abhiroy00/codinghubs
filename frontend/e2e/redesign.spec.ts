@@ -59,21 +59,6 @@ test('homepage showreel replaces the learning block and preserves the portfolio'
   await expect(page.locator('.ow-item')).toHaveCount(14)
 })
 
-test('popular course cards filter by category and open the demo form with the course selected', async ({ page }) => {
-  await blockSubmissions(page)
-  await page.goto('/')
-  const section = page.locator('#courses')
-  const all = await section.locator('.hc-card').count()
-  await section.getByRole('button', { name: 'Data Analytics & BI' }).click()
-  const data = await section.locator('.hc-card').count()
-  expect(data).toBeGreaterThan(0)
-  expect(data).toBeLessThan(all)
-  await section.getByRole('button', { name: 'Book a free demo for Data Science Pro' }).click()
-  const dialog = page.getByRole('dialog')
-  await expect(dialog).toBeVisible()
-  await expect(dialog.locator('select').first()).toHaveValue(/Data Science Pro/)
-})
-
 test('profile section has no boxed panels and the contact hub keeps its actions', async ({ page }) => {
   await page.goto('/')
   const about = page.locator('#about')

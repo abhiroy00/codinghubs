@@ -12,17 +12,14 @@ import { FsIcon } from './free-session/icons'
 import { Header } from '../components/Header'
 import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
 import { HomePathways } from './free-session/HomePathways'
-import { HomeCourses } from './free-session/HomeLearn'
 import { HomeProjects } from './free-session/HomeProjects'
 import { HomeTools } from './free-session/HomeTools'
 import { CareerLaunch } from './free-session/CareerLaunch'
 import { ContactHub } from './free-session/ContactHub'
-import { DemoVideos } from '../components/DemoVideos'
 import './free-session/home.css'
 import './free-session/home-theme.css'
-import { HomeExplore, LogoWall } from './free-session/HomeExplore'
+import { LogoWall } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
-import { VideoReels } from './free-session/VideoReels'
 import { HOME_META, pageSeo } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
 import { AnimatedCard, Reveal } from '../components/ui'
@@ -118,57 +115,12 @@ export function FreeSession() {
 
       <main id="main">
         <JoinHero />
+        <CareerLaunch />
         <HomePathways />
         <HomeProjects />
 
-        <section className="sec videos" id="demo-classes" aria-labelledby="videos-title">
-          <div className="v-deco" aria-hidden="true">
-            <span></span>
-            <span></span>
-          </div>
-          <div className="wrap">
-            <div className="sec-head center reveal">
-              <p className="free-badge">
-                <span className="fb-play" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" fill="currentColor" />
-                  </svg>
-                </span>
-                FREE DEMO CLASSES<span className="fb-shine" aria-hidden="true"></span>
-              </p>
-              <h2 id="videos-title" className="h2">
-                Watch Our Free Demo Classes <span className="marker">Before You Join</span>
-              </h2>
-              <p className="sub">
-                Get a feel for how we teach. <strong>6</strong> short videos from our trainers. Tap any video to watch, no sign-up needed.
-              </p>
-            </div>
-
-            <VideoReels />
-            <DemoVideos />
-
-            <div className="v-cta reveal">
-              <div className="v-cta-text">
-                <span className="v-cta-ico">
-                  <FsIcon id="i-monitor" />
-                </span>
-                <p>
-                  <strong>Liked the class?</strong> Join the <strong>free 2-hour LIVE session</strong> and ask the trainer your questions in real time.
-                </p>
-              </div>
-              <div className="v-cta-btns">
-                <button type="button" className="btn btn-anim btn-yellow" data-cta-location="video_section" onClick={() => goToForm()}>
-                  Join Free Live Session <FsIcon id="i-arrow" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <HomeCourses onDemo={goToForm} />
         <HomeTools />
         <LogoWall />
-        <CareerLaunch />
 
         <section className="sec" id="session" aria-labelledby="session-title">
           <div className="wrap session-grid">
@@ -319,148 +271,6 @@ export function FreeSession() {
           </div>
         </section>
 
-        <section className="sec why-sec" id="why" aria-labelledby="why-title">
-          <div className="why-deco" aria-hidden="true">
-            <span className="wd1"></span>
-            <span className="wd2"></span>
-          </div>
-          <div className="wrap">
-            <div className="sec-head center reveal">
-              <p className="eyebrow">Why join</p>
-              <h2 id="why-title" className="h2 why-h2">
-                Why Join Our <span className="marker">Free</span> Session?
-                <span className="sticker st-1" aria-hidden="true">FREE</span>
-                <span className="sticker st-2" aria-hidden="true">
-                  <span className="live-dot"></span>LIVE
-                </span>
-              </h2>
-              <p className="sub">Try before you decide. Two hours, live and online, to find out whether a course is right for you.</p>
-            </div>
-
-            <div className="bento">
-              <AnimatedCard bare className="tile t-a reveal">
-                <span className="t-num">01</span>
-                <span className="t-ico">
-                  <FsIcon id="i-eye" />
-                </span>
-                <h3>
-                  Understand the course <em>before</em> admission
-                </h3>
-                <p>See what the course is really about before you commit to anything.</p>
-                <ul className="ticks" aria-label="You will find out">
-                  <li>
-                    <FsIcon id="i-check" />What the course covers
-                  </li>
-                  <li>
-                    <FsIcon id="i-check" />How the classes are taught
-                  </li>
-                  <li>
-                    <FsIcon id="i-check" />Whether it suits your goals
-                  </li>
-                  <li>
-                    <FsIcon id="i-check" />Course fee &amp; batch details
-                  </li>
-                  <li>
-                    <FsIcon id="i-check" />What you can do after the course
-                  </li>
-                </ul>
-                <div className="ideal">
-                  <p className="ideal-h">Ideal for</p>
-                  <ul className="ideal-chips">
-                    <li>Students</li>
-                    <li>Fresh graduates</li>
-                    <li>Working professionals</li>
-                    <li>Career switchers</li>
-                  </ul>
-                </div>
-                <div className="try-ticket" aria-hidden="true">
-                  <span>
-                    TRY BEFORE
-                    <br />
-                    YOU DECIDE
-                  </span>
-                  <b>FREE</b>
-                </div>
-              </AnimatedCard>
-
-              <AnimatedCard bare className="tile t-b reveal">
-                <span className="t-num">02</span>
-                <h3>A practical introduction</h3>
-                <p>Get a hands-on introduction to the subject, not just theory.</p>
-                <div className="code-win" aria-hidden="true">
-                  <div className="cw-bar">
-                    <i></i>
-                    <i></i>
-                    <i></i>
-                    <span>demo.py</span>
-                  </div>
-                  <pre>
-                    <span className="c-k">name</span> = <span className="c-s">"You"</span>
-                    {'\n'}
-                    <span className="c-f">print</span>(<span className="c-s">f"Hello, {'{name}'}!"</span>)<span className="typing"></span>
-                    {'\n'}
-                    <span className="c-o">› Hello, You!</span>
-                  </pre>
-                </div>
-              </AnimatedCard>
-
-              <AnimatedCard bare className="tile t-c reveal">
-                <span className="t-num">03</span>
-                <span className="t-ico">
-                  <FsIcon id="i-hand" />
-                </span>
-                <h3>Ask the trainer, live</h3>
-                <p>Interact with the trainer and get your doubts cleared in real time.</p>
-                <div className="bubbles" aria-hidden="true">
-                  <span className="bub">Is this course right for me?</span>
-                  <span className="bub">What will I learn first?</span>
-                  <span className="bub">How is the full course structured?</span>
-                </div>
-              </AnimatedCard>
-
-              <AnimatedCard bare className="tile t-d reveal">
-                <span className="t-num">04</span>
-                <span className="t-ico">
-                  <FsIcon id="i-compass" />
-                </span>
-                <h3>Discover skills &amp; career pathways</h3>
-                <p>Find out which skills matter in the field and the directions they can take you.</p>
-                <div className="path" aria-hidden="true">
-                  <span className="node">
-                    <b>1</b>Basics
-                  </span>
-                  <span className="link"></span>
-                  <span className="node">
-                    <b>2</b>Skills
-                  </span>
-                  <span className="link"></span>
-                  <span className="node">
-                    <b>3</b>Practice
-                  </span>
-                  <span className="link"></span>
-                  <span className="node node-goal">
-                    <b>&#10003;</b>Your path
-                  </span>
-                </div>
-              </AnimatedCard>
-
-              <AnimatedCard bare className="tile t-f reveal">
-                <p className="t-f-big">
-                  2 hours.
-                  <br />
-                  Live.
-                  <br />
-                  <span>Free.</span>
-                </p>
-                <p className="t-f-sub">Pick a course, save your seat, and come see for yourself.</p>
-                <a href="#register" className="btn btn-anim btn-yellow btn-block" data-cta="why-tile">
-                  Reserve My Free Seat <FsIcon id="i-arrow" />
-                </a>
-              </AnimatedCard>
-            </div>
-          </div>
-        </section>
-
         <section className="sec sec-process" id="how" aria-labelledby="how-title">
           <div className="wrap">
             <div className="sec-head center reveal">
@@ -535,14 +345,13 @@ export function FreeSession() {
             </div>
             <figure className="about-students" aria-hidden="true">
               <span className="about-blob" />
-              <img src="/img/students.webp" alt="" width={1400} height={665} loading="lazy" decoding="async" />
+              <img src="/img/students-1000.webp" srcSet="/img/students-720.webp 720w, /img/students-1000.webp 1000w, /img/students.webp 1400w" sizes="(max-width: 900px) 92vw, 620px" alt="" width={1400} height={665} loading="lazy" decoding="async" />
             </figure>
           </div>
         </section>
 
         <ContactHub />
 
-        <HomeExplore />
         <HomeNewsletter />
       </main>
 

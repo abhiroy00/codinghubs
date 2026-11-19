@@ -147,13 +147,11 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
             }}
           >
             <CoursesMenu open={dropdown === 'Courses'} onOpenChange={expanded => changeDropdown('Courses', expanded)} />
-            <Link to="/#demo-classes" className="sh-link">Demo Videos</Link>
+            <NavLink to="/demo-videos" className="sh-link">Demo Videos</NavLink>
             <NavLink to="/our-work" className="sh-link">Projects</NavLink>
             <CareersMenu open={dropdown === 'Careers'} onOpenChange={expanded => changeDropdown('Careers', expanded)} />
             <ResourcesMenu open={dropdown === 'Resources'} onOpenChange={expanded => changeDropdown('Resources', expanded)} />
-            <div className="sh-mobile-utility" aria-label="Support and locations">
-              <Link to="/#contact" className="sh-link">Support</Link>
-              <Link to="/locations/" className="sh-link">Locations</Link>
+            <div className="sh-mobile-utility" aria-label="Account">
               {!auth?.user && !auth?.loading && <Link to="/login" className="sh-link sh-mobile-login">
                 Log in <span aria-hidden="true">↗</span>
               </Link>}

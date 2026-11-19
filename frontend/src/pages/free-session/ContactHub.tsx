@@ -118,7 +118,7 @@ export function ContactHub() {
               <a className="ui-btn ui-btn-ghost" href={WA_HREF} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
             </div>
           </Reveal>
-          <img className="chub-band-img" src="/img/students.webp" alt="" width={1400} height={665} loading="lazy" decoding="async" />
+          <img className="chub-band-img" src="/img/students-1000.webp" srcSet="/img/students-720.webp 720w, /img/students-1000.webp 1000w, /img/students.webp 1400w" sizes="(max-width: 900px) 92vw, 620px" alt="" width={1400} height={665} loading="lazy" decoding="async" />
         </div>
       </section>
     </>

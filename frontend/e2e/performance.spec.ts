@@ -72,7 +72,7 @@ test('a direct homepage anchor stays aligned after deferred page styles finish l
   let ready!: () => void
   const css = new Promise<void>(resolve => { ready = resolve })
   await page.route('**/*.css*', route => css.then(() => route.continue()))
-  await page.goto('/#demo-classes', { waitUntil: 'commit' })
+  await page.goto('/#contact', { waitUntil: 'commit' })
   await expect(page.locator('#home h1')).toBeVisible()
   await expect(page.locator('.sh-account-loading')).toHaveCount(0)
   await page.evaluate(async () => {
@@ -80,7 +80,7 @@ test('a direct homepage anchor stays aligned after deferred page styles finish l
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
   })
   ready()
-  await expect.poll(() => page.locator('#demo-classes').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(250)
+  await expect.poll(() => page.locator('#contact').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(250)
 })
 
 test('homepage retains its complete design when JavaScript is disabled', async ({ browser, baseURL }) => {

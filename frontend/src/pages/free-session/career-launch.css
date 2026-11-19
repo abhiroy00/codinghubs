@@ -21,7 +21,8 @@
 .cl-pill-r{animation-name:cl-in-r,cl-float}
 .cl-check{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
 
-.cl-stage{position:relative;display:flex;justify-content:center;margin-top:clamp(1.5rem,4vw,2.5rem)}
+.cl-stage{position:relative;z-index:0;display:flex;justify-content:center;margin-top:clamp(1.5rem,4vw,2.5rem);pointer-events:none}
+.cl-wrap{z-index:1}
 .cl-arc{position:absolute;bottom:0;left:50%;width:min(1100px,92%);aspect-ratio:2/1;border-radius:50% 50% 0 0;background:radial-gradient(closest-side at 50% 100%,rgba(255,255,255,.75),rgba(255,255,255,.25));transform:translateX(-50%);animation:cl-breathe 7s ease-in-out infinite}
 .cl-students{position:relative;display:block;width:min(900px,96%);height:auto;filter:drop-shadow(0 20px 30px rgba(11,18,32,.18));animation:cl-rise .9s var(--ease,ease) both}
 

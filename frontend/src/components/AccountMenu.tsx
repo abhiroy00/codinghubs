@@ -36,6 +36,8 @@ export function UserAvatar({ user }: { user: User }) {
 const links = [
   ["/my-account", "My account", "person"],
   ["/my-account?section=learning", "Courses & progress", "grid"],
+  ["/#contact", "Support", "help"],
+  ["/locations/", "Locations", "pin"],
 ] as const;
 
 function MenuIcon({ kind }: { kind: string }) {
@@ -44,6 +46,7 @@ function MenuIcon({ kind }: { kind: string }) {
     grid: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
     help: "M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4m0 3h.01M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0",
     logout: "M9 21H4V3h5m6 4 5 5-5 5M8 12h12",
+    pin: "M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12zm0-9.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
   };
   return (
     <svg
