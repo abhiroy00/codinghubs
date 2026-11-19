@@ -3,7 +3,6 @@ import { DemoVideos } from '../../components/DemoVideos'
 import { HeroVideo } from '../../components/HeroVideo'
 import { Section } from '../../components/ui'
 import { DEMO_CHANNEL_URL, DEMO_VIDEOS } from '../../data/demoVideos'
-import { useRegisterPopup } from '../../lib/register-popup'
 import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/site'
 import { useSeo } from '../../seo/useSeo'
 import { VIDEOS } from '../free-session/data'
@@ -36,7 +35,6 @@ const DEMO_VIDEOS_SEO = pageSeo(DEMO_VIDEOS_META)
 /** /demo-videos: the classroom demo reels and the Coding Hub YouTube lessons, moved off the homepage. */
 export function DemoVideosPage() {
   useSeo(DEMO_VIDEOS_SEO)
-  const { open } = useRegisterPopup()
   return (
     <PageFrame wide>
       <section className="bl-hero hv-host"><HeroVideo clip="learn" />
@@ -60,9 +58,6 @@ export function DemoVideosPage() {
           <DemoVideos />
         </Section>
 
-        <Section id="demo-cta" tone="dark" align="left" badge="Free 2-hour live session" title="Liked the classes? Join a live demo"
-          subtitle="Meet a Coding Hub mentor, ask your questions live and get a learning plan for AI, Data Science or GenAI."
-          aside={<button type="button" className="ui-btn ui-btn-primary" aria-haspopup="dialog" onClick={() => open()}>Book Free Demo</button>} />
       </div>
     </PageFrame>
   )

@@ -4,7 +4,7 @@ import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../../seo/si
 import { useSeo } from '../../seo/useSeo'
 import './our-work.css'
 import { HeroVideo } from '../../components/HeroVideo'
-import { AnimatedCard, Reveal, Section } from '../../components/ui'
+import { AnimatedCard, Reveal } from '../../components/ui'
 import { PROJECTS as WORKS, PROJECT_CATEGORIES as CATEGORIES, type Project as Work } from '../../data/projects'
 
 
@@ -96,10 +96,6 @@ export function OurWork() {
       </Reveal>
 
       <p className="ow-note">Screens show each project at delivery. Live websites may have changed since.</p>
-
-      <Section id="ow-cta" className="ow-cta" tone="dark" align="left" badge="Learn by building" title="Want to build projects like these?"
-        subtitle="Join the free 2-hour live session at Coding Hub and see how we plan, build and ship real software."
-        aside={<a className="ui-btn ui-btn-primary" href="/#register">Join free demo <ArrowUpRight /></a>} />
     </PageFrame>
   )
 }

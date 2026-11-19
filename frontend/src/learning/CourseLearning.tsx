@@ -6,7 +6,7 @@ import { useLenisRef } from '../lib/lenis-context'
 import { api } from '../lib/api'
 import { useRegisterPopup } from '../lib/register-popup'
 import { COURSE_CATALOG, COURSE_BY_SLUG, type CourseDefinition } from './catalog'
-import { CoursesCta, CoursesFeatures, CoursesHero, CoursesShowcase } from './CourseShowcase'
+import { CoursesFeatures, CoursesHero, CoursesShowcase } from './CourseShowcase'
 import { CertificateSection, CourseTiles } from './certificates'
 import { CodeEditor } from './CodeEditor'
 import { FsIcon } from '../pages/free-session/icons'
@@ -54,12 +54,6 @@ function EnrollmentButton({ slug }: { slug: string }) {
   return course ? <button type="button" className="ui-btn ui-btn-primary" aria-haspopup="dialog" onClick={() => openEnrollment(course.name)}>Enroll Now <span aria-hidden="true">→</span></button> : null
 }
 
-function EnrollmentButtonGhost({ slug }: { slug: string }) {
-  const { openEnrollment } = useRegisterPopup()
-  const course = COURSE_BY_SLUG.get(slug)
-  return course ? <button type="button" className="ui-btn ui-btn-ghost" aria-haspopup="dialog" onClick={() => openEnrollment(course.name)}>Enroll Now</button> : null
-}
-
 function ProjectCompletion({ slug, project }: { slug: string; project: string }) {
   const { user } = useAuth()
   const [done, setDone] = useState(false)
@@ -82,7 +76,7 @@ function ProjectCompletion({ slug, project }: { slug: string; project: string })
 }
 
 export function CourseDirectory() {
-  return <div className="learn-shell csx-page"><CoursesHero /><CoursesFeatures /><CoursesShowcase /><CoursesCta /></div>
+  return <div className="learn-shell csx-page"><CoursesHero /><CoursesFeatures /><CoursesShowcase /></div>
 }
 
 function LearningDashboard() {
@@ -141,6 +135,7 @@ export function CourseDetails() {
       <Section id="curriculum" titleId="cd-curriculum-title" className="cd-curriculum" tone="soft" align="left" badge={`${course.modules.length} modules · 30 days`} title="Curriculum"
         subtitle="Open a module to see what each week covers.">
         <Reveal stagger className="learn-modules">{course.modules.map((module, i) => <details key={module.title} open={i === 0}><summary><span>Module {i + 1}</span>{module.title}</summary><p>{module.description}</p><ul>{module.topics.map((topic) => <li key={topic}>{topic}</li>)}</ul></details>)}</Reveal>
+        <div className="cd-levels"><CourseLevelLinks slug={course.slug} /></div>
       </Section>
 
       <Section id="course-projects" titleId="cd-projects-title" className="cd-projects" align="left" badge={`${course.projects.length} portfolio projects`} title="Practical projects"
@@ -152,11 +147,6 @@ export function CourseDetails() {
         <Reveal stagger>{course.faqs.map((faq) => <details className="learn-faq" key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</Reveal>
       </Section>
 
-      <Section id="cd-cta" className="cd-cta" tone="dark" align="left" badge="Interview ready" title="Prepare for your next interview"
-        subtitle="Follow the course-specific 30-day roadmap and track your progress in this browser."
-        aside={<div className="cd-cta-actions"><Link className="ui-btn ui-btn-primary" to={`/interview/${course.slug}/`}>Open 30-day plan <span aria-hidden="true">→</span></Link><EnrollmentButtonGhost slug={course.slug} /></div>}>
-        <div className="cd-levels"><CourseLevelLinks slug={course.slug} /></div>
-      </Section>
     </div>
   </div>
 }

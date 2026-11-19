@@ -9,7 +9,7 @@ import { get, initial, rupees, type Card, type Paged } from './api'
 import './projects.css'
 import './shopui.css'
 import { HeroVideo } from '../components/HeroVideo'
-import { AnimatedCard, Reveal, Section } from '../components/ui'
+import { AnimatedCard, Reveal } from '../components/ui'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 9
@@ -150,7 +150,6 @@ export function GuidesPage() {
         {data?.results.map((c, i) => (<GuideCard key={c.slug} c={c} i={i} />))}
       </Reveal>
       {data && <Pager page={page} count={data.count} size={PAGE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
-      <Section id="gd-cta" className="pj-cta-band" tone="dark" align="left" badge="Build next" title="Want a project to follow?" subtitle="Browse real Coding Hub projects with features, tech stack and learning outcomes." aside={<Link className="ui-btn ui-btn-primary" to="/projects">Explore projects</Link>} />
     </PageFrame>
   )
 }
@@ -260,7 +259,6 @@ export function GuidePage() {
             <div className="pj-grid">{g.related_projects.map((r: Card) => (<article key={r.slug} className="pj-card"><Link to={`/projects/${r.slug}`} className="pj-card-media ui-zoom" tabIndex={-1} aria-hidden="true"><Cover c={r} /></Link><div className="pj-card-body"><h2><Link to={`/projects/${r.slug}`}>{r.title}</Link></h2><p className="pj-sum">{r.summary}</p></div></article>))}</div>
           </section>
         )}
-        <Section id="gd-help" className="pj-cta-band" tone="dark" align="left" badge="Mentor help" title="Need help while you build?" subtitle="Join the free 2-hour live session at Coding Hub and ask your questions live." aside={<a className="ui-btn ui-btn-primary" href="/#register">Join free demo</a>} />
       </article>
     </PageFrame>
   )

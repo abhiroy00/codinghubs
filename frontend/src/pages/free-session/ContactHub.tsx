@@ -2,7 +2,6 @@ import { AnimatedCard, Counter, Reveal, Section } from '../../components/ui'
 import { COURSE_CATALOG } from '../../learning/catalog'
 import { PROJECTS } from '../../data/projects'
 import { AI_TOOLS } from '../../data/ai-tools'
-import { useRegisterPopup } from '../../lib/register-popup'
 import { INSTITUTE, WHATSAPP } from './data'
 import { FsIcon } from './icons'
 import './contact-hub.css'
@@ -35,7 +34,6 @@ const SUPPORT = [
 
 /** Location map, support channels, timings, count-up trust stats and the closing CTA band. */
 export function ContactHub() {
-  const { open } = useRegisterPopup()
   return (
     <>
       <Section id="contact" titleId="ch-contact-title" className="chub wrap" tone="soft" badge="Visit or contact us" title={<>Talk to <span className="chub-grad">Coding Hub</span></>}
@@ -106,21 +104,6 @@ export function ContactHub() {
         </Reveal>
       </Section>
 
-      <section className="wrap chub-band-wrap" aria-labelledby="chub-band-title">
-        <div className="chub-band">
-          <span className="chub-band-blob" aria-hidden="true" />
-          <Reveal className="chub-band-copy">
-            <p className="ui-badge chub-band-badge"><span aria-hidden="true" />Admissions open</p>
-            <h2 id="chub-band-title">Start Your AI Career with Coding Hub</h2>
-            <p>Join a free 2-hour live demo, meet a mentor and get a personalised learning plan for AI, Data Science or GenAI.</p>
-            <div className="chub-band-actions ui-on-dark">
-              <button type="button" className="ui-btn ui-btn-primary" aria-haspopup="dialog" onClick={() => open()}>Book Free Demo <FsIcon id="i-arrow" /></button>
-              <a className="ui-btn ui-btn-ghost" href={WA_HREF} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
-            </div>
-          </Reveal>
-          <img className="chub-band-img" src="/img/students-1000.webp" srcSet="/img/students-720.webp 720w, /img/students-1000.webp 1000w, /img/students.webp 1400w" sizes="(max-width: 900px) 92vw, 620px" alt="" width={1400} height={665} loading="lazy" decoding="async" />
-        </div>
-      </section>
     </>
   )
 }

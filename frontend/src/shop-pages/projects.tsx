@@ -7,7 +7,7 @@ import { FileList, Html, useDetail } from './catalog'
 import { errorText, get, initial, rupees, shop, type Card, type Paged } from './api'
 import './projects.css'
 import { HeroVideo } from '../components/HeroVideo'
-import { AnimatedCard, Reveal, Section } from '../components/ui'
+import { AnimatedCard, Reveal } from '../components/ui'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 9
@@ -221,9 +221,6 @@ export function ProjectsPage() {
       </Reveal>
       {data && <Pager page={page} count={data.count} size={PAGE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
 
-      <Section id="pj-cta" className="pj-cta-band" tone="dark" align="left" badge="Mentor help" title="Stuck on a project?"
-        subtitle="Join the free 2-hour live session at Coding Hub and learn how to plan, build and debug with real mentors."
-        aside={<a className="ui-btn ui-btn-primary pj-cta-btn" href="/#register">Join free demo</a>} />
     </PageFrame>
   )
 }
@@ -447,7 +444,6 @@ export function ProjectPage() {
         {p.related_projects?.length > 0 && (
           <section className="pj-more"><h2>More projects</h2><div className="pj-grid">{p.related_projects.map((r: Card, i: number) => (<ProjectCard key={r.slug} c={r} i={i} />))}</div></section>
         )}
-        <Section id="pj-help" className="pj-cta-band" tone="dark" align="left" badge="Mentor help" title="Want to build this with a mentor?" subtitle="Join the free 2-hour live session and get your questions answered live." aside={<a className="ui-btn ui-btn-primary" href="/#register">Join free demo</a>} />
       </article>
       {shot !== null && shots[shot] && <Lightbox shots={shots} index={shot} onClose={() => setShot(null)} onMove={(d) => setShot((i) => (i === null ? i : (i + d + shots.length) % shots.length))} />}
     </PageFrame>

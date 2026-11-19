@@ -41,18 +41,6 @@ function useArticle(kind: Kind) {
   return { article, missing }
 }
 
-function Cta({ kind }: { kind: Kind }) {
-  return (
-    <aside className="bl-cta">
-      <h2>{kind === 'blog' ? 'Learn AI hands-on' : 'Talk to us about your project'}</h2>
-      <p>{kind === 'blog' ? 'Join the free 2-hour live online demo session and see how we teach.' : 'Tell us your goal and a counsellor will get in touch.'}</p>
-      <a className="btn btn-yellow" href={kind === 'blog' ? '/#register' : '/#contact'}>
-        {kind === 'blog' ? 'Register for free' : 'Get in touch'}
-      </a>
-    </aside>
-  )
-}
-
 function Share({ title, url }: { title: string; url: string }) {
   const u = encodeURIComponent(url)
   const t = encodeURIComponent(title)
@@ -138,7 +126,6 @@ export function BlogDetail() {
               </section>
             )}
             <Share title={a.title} url={a.seo.canonical} />
-            <Cta kind="blog" />
             {a.related.length > 0 && (
               <section className="bl-related">
                 <h2>Related articles</h2>
@@ -220,7 +207,6 @@ export function CaseDetail() {
             </ul>
           </section>
         )}
-        <Cta kind="case" />
         {a.related.length > 0 && (
           <section className="bl-related">
             <h2>More case studies</h2>

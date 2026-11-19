@@ -192,14 +192,3 @@ export function CoursesShowcase() {
     </Section>
   )
 }
-
-export function CoursesCta() {
-  return (
-    <Section id="csx-cta" className="csx-cta" tone="dark" align="left" badge="Free demo class" title="Not sure which course fits you?"
-      subtitle="Join a free 2-hour live session at Coding Hub, meet a mentor and get your questions answered before you enrol."
-      aside={<div className="csx-cta-actions">
-        <a className="ui-btn ui-btn-primary" href="/#register">Book free demo <Arrow /></a>
-        <a className="ui-btn ui-btn-ghost" href="/#contact">Talk to a counsellor</a>
-      </div>} />
-  )
-}

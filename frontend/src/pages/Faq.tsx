@@ -1,4 +1,3 @@
-import { ExpertCTA } from '../components/ExpertCTA'
 import { LOGO_URL, organizationNode, pageSeo, type PageMeta } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
 import { HeroVideo } from '../components/HeroVideo'
@@ -76,7 +75,6 @@ export function Faq() {
         </Reveal>
       </Section>
 
-      <ExpertCTA />
     </div>
   )
 }
