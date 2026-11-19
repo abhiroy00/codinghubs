@@ -49,7 +49,7 @@ export function CareerLaunch() {
           </h2>
           <p className="cl-sub">AI, Data Science and Generative AI courses in Pitampura, Delhi. Our counsellors help you choose the right path. Get a free career consultation now.</p>
           <div className="cl-actions">
-            <Link className="ui-btn ui-btn-ghost cl-btn" to="/courses#catalogue">View Courses</Link>
+            <Link className="ui-btn ui-btn-ghost cl-btn" to="/courses/#catalogue">View Courses</Link>
             <a className="ui-btn ui-btn-primary cl-btn" href="#contact" onClick={toContact}>Enquire Now</a>
           </div>
         </Reveal>
