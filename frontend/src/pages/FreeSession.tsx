@@ -15,6 +15,7 @@ import { HomePathways } from './free-session/HomePathways'
 import { HomeProjects } from './free-session/HomeProjects'
 import { HomeTools } from './free-session/HomeTools'
 import { CareerLaunch } from './free-session/CareerLaunch'
+import { InnovativeToolkit } from '../components/InnovativeToolkit'
 import { ContactHub } from './free-session/ContactHub'
 import './free-session/home.css'
 import './free-session/home-theme.css'
@@ -120,6 +121,7 @@ export function FreeSession() {
         <HomeProjects />
 
         <HomeTools />
+        <InnovativeToolkit />
         <LogoWall />
 
         <section className="sec" id="session" aria-labelledby="session-title">

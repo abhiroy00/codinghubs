@@ -131,13 +131,16 @@ test('AI tools search narrows results and offers a reset', async ({ page }) => {
   await expect(page.locator('.at-card').first()).toBeVisible()
 })
 
-test('hero still uses AVIF and is not downloaded twice', async ({ page }) => {
+test('hero banner uses AVIF, the phone-sized file, and is not downloaded twice', async ({ page }) => {
   const images: string[] = []
   page.on('request', (request) => { if (request.resourceType() === 'image') images.push(new URL(request.url()).pathname) })
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/courses/', { waitUntil: 'networkidle' })
-  const posters = images.filter((path) => path.includes('courses-poster'))
-  expect(posters).toEqual(['/assets/hero/video/pages/courses-poster-768.avif'])
+  const banners = images.filter((path) => path.includes('/assets/banners/'))
+  // Inner pages show static banner art (PageBannerArt): the hero is the neural art, the CTA band the network art.
+  expect(banners.filter((path) => path.includes('ai-neural'))).toEqual(['/assets/banners/ai-neural-768.avif'])
+  expect(banners.every((path) => path.endsWith('-768.avif'))).toBe(true)
+  expect(new Set(banners).size).toBe(banners.length)
 })
 
 test('reduced motion stops decorative animation in the new sections', async ({ browser, baseURL }) => {

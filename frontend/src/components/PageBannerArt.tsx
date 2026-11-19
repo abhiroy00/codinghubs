@@ -29,7 +29,10 @@ export function PageBannerArt({ clip }: { clip: HeroClip }) {
   return (
     <div className={`page-banner-art page-banner-art--${visual}`} aria-hidden="true">
       <picture className="pb-media">
-        <source media="(max-width: 767px)" srcSet={`/assets/banners/ai-${visual}-768.webp`} />
+        {/* AVIF first (about half the bytes), WebP fallback; phones get the 768px file. */}
+        <source media="(max-width: 767px)" srcSet={`/assets/banners/ai-${visual}-768.avif`} type="image/avif" />
+        <source media="(max-width: 767px)" srcSet={`/assets/banners/ai-${visual}-768.webp`} type="image/webp" />
+        <source srcSet={`/assets/banners/ai-${visual}-1440.avif`} type="image/avif" />
         <img src={`/assets/banners/ai-${visual}-1440.webp`} width={1440} height={visual === 'neural' ? 960 : 617} alt="" decoding="async" fetchPriority="high" />
       </picture>
       <div className="pb-shade" />

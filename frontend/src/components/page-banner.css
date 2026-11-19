@@ -152,7 +152,7 @@
   border: 1px solid #375c8c !important;
   border-left: 1px solid #375c8c !important;
   border-radius: 10px !important;
-  background: linear-gradient(90deg, #08152a 0%, #08152aee 48%, #08152a66), url('/assets/banners/ai-network-1440.webp') right center / cover !important;
+  background: linear-gradient(90deg, #08152a 0%, #08152aee 48%, #08152a66), image-set(url('/assets/banners/ai-network-1440.avif') type('image/avif'), url('/assets/banners/ai-network-1440.webp') type('image/webp')) right center / cover !important;
   color: #f7faff !important;
   box-shadow: none;
 }
@@ -169,7 +169,7 @@
   padding: clamp(2rem, 4vw, 3.5rem);
   border: 1px solid #263e59;
   border-radius: 12px;
-  background: linear-gradient(90deg, #08152af7 0%, #08152aee 48%, #08152a77), url('/assets/banners/ai-neural-1440.webp') right center / cover;
+  background: linear-gradient(90deg, #08152af7 0%, #08152aee 48%, #08152a77), image-set(url('/assets/banners/ai-neural-1440.avif') type('image/avif'), url('/assets/banners/ai-neural-1440.webp') type('image/webp')) right center / cover;
 }
 .ch-band--editorial .ch-band-card::after {
   content: '';
@@ -198,7 +198,7 @@
   isolation: isolate;
   overflow: hidden;
   border-block: 1px solid #375c8c;
-  background: linear-gradient(90deg, #08152af7 0%, #08152aee 48%, #08152a66), url('/assets/banners/ai-network-1440.webp') right center / cover !important;
+  background: linear-gradient(90deg, #08152af7 0%, #08152aee 48%, #08152a66), image-set(url('/assets/banners/ai-network-1440.avif') type('image/avif'), url('/assets/banners/ai-network-1440.webp') type('image/webp')) right center / cover !important;
   color: #f7faff;
 }
 :is(.lx-cta, .st-closing, .expert-banner)::before { content: ''; position: absolute; z-index: -1; width: 250px; height: 250px; right: -120px; top: -120px; border: 36px solid #90dfff; border-radius: 50%; }
@@ -234,7 +234,9 @@
   .pb-caption { right: 1.25rem; left: 1.25rem; bottom: 1.25rem; font-size: .5rem; letter-spacing: .12em; }
   .pb-caption-line { flex: 1; }
   .hv-host:has(> .page-banner-art):is(.academy-hero, .loc-hero, .st-hero) .pb-media { inset: 0; height: 100%; }
-  .ch-band--editorial .ch-band-card { background-image: linear-gradient(#08152ae6, #08152aee), url('/assets/banners/ai-neural-768.webp'); }
+  /* Phones get the 768px network art for the dark CTA bands (was always the 1440px file). */
+  :is(.csx-cta, .pj-cta, .ow-cta, .learn-cta, .academy-lab-banner, .bl-cta, .lx-cta, .st-closing, .expert-banner) { background-image: linear-gradient(90deg, #08152a 0%, #08152aee 48%, #08152a66), image-set(url('/assets/banners/ai-network-768.avif') type('image/avif'), url('/assets/banners/ai-network-768.webp') type('image/webp')) !important; }
+  .ch-band--editorial .ch-band-card { background-image: linear-gradient(#08152ae6, #08152aee), image-set(url('/assets/banners/ai-neural-768.avif') type('image/avif'), url('/assets/banners/ai-neural-768.webp') type('image/webp')); }
 }
 @media (prefers-reduced-motion: reduce) {
   .hv-host:has(> .page-banner-art).loc-hero .lv-rot { display: inline; min-width: 0; white-space: normal; }
