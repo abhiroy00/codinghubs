@@ -48,13 +48,12 @@ test('mobile menu uses 16px+ items without horizontal overflow', async ({ page }
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360)
 })
 
-test('homepage project showcase replaces the learning block and preserves the portfolio', async ({ page }) => {
+test('homepage showreel replaces the learning block and preserves the portfolio', async ({ page }) => {
   await page.goto('/')
   const block = page.locator('#project-showcase')
   await expect(page.locator('#learn-free')).toHaveCount(0)
-  await expect(block.locator('.hp-slide')).toHaveCount(14)
-  await block.getByRole('combobox', { name: 'Choose a project' }).selectOption('2')
-  await expect(block.locator('.hp-slide.is-active')).toContainText('Shivlal Manpower')
+  await expect(block.getByLabel('Project showreel', { exact: true })).toHaveCount(1)
+  await expect(block.locator('.hp-slide, .hp-picker')).toHaveCount(0)
   await block.getByRole('link', { name: 'View all 14 projects' }).click()
   await expect(page).toHaveURL(/\/our-work$/)
   await expect(page.locator('.ow-item')).toHaveCount(14)
