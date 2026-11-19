@@ -12,7 +12,8 @@ import { FsIcon } from './free-session/icons'
 import { Header } from '../components/Header'
 import { BatchAnnouncement, JoinHero } from './free-session/JoinHero'
 import { HomePathways } from './free-session/HomePathways'
-import { HomeCourses, HomeLearn } from './free-session/HomeLearn'
+import { HomeCourses } from './free-session/HomeLearn'
+import { HomeProjects } from './free-session/HomeProjects'
 import './free-session/home.css'
 import './free-session/home-theme.css'
 import { HomeExplore, LogoWall } from './free-session/HomeExplore'
@@ -114,7 +115,7 @@ export function FreeSession() {
       <main id="main">
         <JoinHero />
         <HomePathways />
-        <HomeLearn />
+        <HomeProjects />
 
         <section className="sec videos" id="demo-classes" aria-labelledby="videos-title">
           <div className="v-deco" aria-hidden="true">

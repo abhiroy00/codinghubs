@@ -48,20 +48,16 @@ test('mobile menu uses 16px+ items without horizontal overflow', async ({ page }
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360)
 })
 
-test('homepage learning block works before sign-up and links to real lessons', async ({ page }) => {
+test('homepage project showcase replaces the learning block and preserves the portfolio', async ({ page }) => {
   await page.goto('/')
-  const block = page.locator('#learn-free')
-  await expect(block.getByRole('heading', { name: 'Generative AI in 30 days' })).toBeVisible()
-  // The challenge: answer with the keyboard, get feedback and the explanation.
-  await block.getByRole('radio', { name: '(4, 4)' }).check()
-  await expect(block.getByRole('status')).toContainText('Not quite')
-  await block.getByRole('radio', { name: '(4, 5)' }).check()
-  await expect(block.getByRole('status')).toContainText('Correct')
-  await expect(block.getByText(/'é' needs two bytes/)).toBeVisible()
-  for (const href of await block.locator('a').evaluateAll((els) => els.map((el) => el.getAttribute('href')))) {
-    const response = await page.request.get(href!)
-    expect(response.status(), href!).toBe(200)
-  }
+  const block = page.locator('#project-showcase')
+  await expect(page.locator('#learn-free')).toHaveCount(0)
+  await expect(block.locator('.hp-slide')).toHaveCount(14)
+  await block.getByRole('combobox', { name: 'Choose a project' }).selectOption('2')
+  await expect(block.locator('.hp-slide.is-active')).toContainText('Shivlal Manpower')
+  await block.getByRole('link', { name: 'View all 14 projects' }).click()
+  await expect(page).toHaveURL(/\/our-work$/)
+  await expect(page.locator('.ow-item')).toHaveCount(14)
 })
 
 test('popular course cards filter by category and open the demo form with the course selected', async ({ page }) => {
