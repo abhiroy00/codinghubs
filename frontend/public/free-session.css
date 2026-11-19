@@ -15,7 +15,7 @@
   --sh:0 10px 30px -12px rgba(10,26,63,.18),0 2px 6px rgba(10,26,63,.05);
   --sh-lg:0 30px 60px -20px rgba(5,14,40,.45);
   --f-head:'Poppins','Poppins Fallback','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --f-body:'Inter','Inter Fallback','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body:'Poppins','Poppins Fallback','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',sans-serif;
   /* Type scale: main heading 32-40px, subheading 24-28px, body 16-18px. */
   --t-h1:clamp(2rem,1.6rem + 1.4vw,2.5rem); --t-h2:clamp(1.5rem,1.35rem + .6vw,1.75rem);
   --hdr-h:68px;
@@ -1631,7 +1631,7 @@ section[id],#register,#contact{scroll-margin-top:calc(var(--hdr-h) + 12px)}
   --bg:#fff;--bg-2:#f4f7fb;--line:#e4e9f2;--line-2:#d2dae8;
   --cyan:#22d3ee;--cyan-2:#06b6d4;--grad:linear-gradient(90deg,#3b6cf7,#22d3ee);
   --blue:#2f6bff;--blue-2:#1d4ed8;--blue-soft:#eaf1ff;
-  --navy:#0b1220;--navy-2:#111b33;--navy-3:#16223f;--ink:#0c1220;--muted:#475569;--faint:#64748b;
+  --navy:#0b1220;--navy-2:#111b33;--navy-3:#16223f;--ink:#0c1220;--muted:#363636;--faint:#64748b;
 }
 body{color:var(--muted)}
 
@@ -1821,7 +1821,7 @@ body:has(.st-bar) .call-float{bottom:152px}
 /* ============ UNIFIED DESIGN LAYER ============
    The /courses/ look on every page: white canvas, light glow heroes with a spaced kicker,
    white bordered cards, pill buttons (ink primary, white ghost) and one blue gradient CTA band. */
-:root{--u-ink:#0b1220;--u-muted:#4a5568;--u-line:#e1e7f0;--u-line-2:#cdd6e4;--u-brand:#0062fa;--u-brand-soft:#e9f1ff;--u-grad:linear-gradient(120deg,#0b1a3a 0%,#123a8f 60%,#0062fa 100%);--u-accent:linear-gradient(90deg,#004bd6,#0062fa 55%,#3d8bff)}
+:root{--u-ink:#0b1220;--u-muted:#363636;--u-line:#e1e7f0;--u-line-2:#cdd6e4;--u-brand:#0062fa;--u-brand-soft:#e9f1ff;--u-grad:linear-gradient(120deg,#0b1a3a 0%,#123a8f 60%,#0062fa 100%);--u-accent:linear-gradient(90deg,#004bd6,#0062fa 55%,#3d8bff)}
 
 /* heroes */
 .fs-page :is(.learn-hero,.bl-hero,.pj-hero,.ow-hero){position:relative;isolation:isolate;overflow:hidden!important;margin:.5rem 0 1.8rem!important;padding:clamp(2.2rem,6vw,3.8rem) clamp(1.2rem,4vw,3rem)!important;border:1px solid var(--u-line);border-radius:20px!important;background:radial-gradient(55% 70% at 8% 0%,rgba(0,98,250,.1),transparent 70%),radial-gradient(45% 70% at 100% 20%,rgba(34,211,238,.1),transparent 70%),#fff!important;color:var(--u-ink)!important;box-shadow:none!important}

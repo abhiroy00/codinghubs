@@ -3,9 +3,9 @@
      navy ink and the blue accent, so account pages no longer render on the old cream theme. */
   --color-bg:#fff;--color-surface:#fff;--color-surface-2:#F4F7FB;--color-soft:#F4F7FB;
   --color-line:#E4E9F2;--color-line-strong:#D2DAE8;--color-ink:#0B1220;--color-ink-deep:#0B1220;
-  --color-muted:#475569;--color-faint:#64748b;--color-brand:#1D4ED8;--color-electric:#111B33;
+  --color-muted:#363636;--color-faint:#64748b;--color-brand:#1D4ED8;--color-electric:#111B33;
   --color-success:#16a34a;--color-lime:#d6f24b;--color-lime-strong:#c6e42d;--color-lime-deep:#4d7c0f;
-  --font-sans:"Inter","Noto Sans Devanagari",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --font-sans:"Poppins","Noto Sans Devanagari",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --font-display:"Poppins","Noto Sans Devanagari",ui-sans-serif,system-ui,sans-serif;
   /* Type scale: main heading 32-40px, subheading 24-28px, body 16-18px. */
   --t-h1:clamp(2rem,1.6rem + 1.4vw,2.5rem);--t-h2:clamp(1.5rem,1.35rem + .6vw,1.75rem);--t-body:clamp(1rem,.96rem + .2vw,1.125rem);
@@ -568,7 +568,7 @@ html[data-fs-loading] #root{visibility:hidden}
 .dd-panel.dd-small{width:13rem;grid-template-columns:1fr;gap:.1rem;padding:.6rem}
 .dd-panel.dd-small a{padding:.5rem .7rem;border-radius:.6rem;font-size:.9rem;color:var(--color-ink)}
 .dd-panel.dd-small a:hover{background:var(--color-line)}
-#mobile .m-head{margin:1rem 0 .1rem;font:600 .7rem var(--font-sans,Inter,sans-serif);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+#mobile .m-head{margin:1rem 0 .1rem;font:600 .7rem var(--font-sans,Poppins,sans-serif);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
 #mobile .sheet a.m.m-sub{padding-left:1.4rem;font-size:1.05rem;font-weight:500}
 
 /* equal space between the items of the main header (laptop and up) */

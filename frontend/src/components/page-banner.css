@@ -3,7 +3,7 @@
 .pb-media { position: absolute; inset: 0; display: block; }
 .pb-media img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
 .pb-shade { position: absolute; inset: 0; background: linear-gradient(90deg, #071225 0%, #071225f5 24%, #071225bd 46%, #07122510 76%), linear-gradient(0deg, #071225b3, transparent 35%); }
-.pb-caption { position: absolute; right: max(1.5rem, calc((100vw - 1180px) / 2)); bottom: 1.75rem; display: flex; align-items: center; gap: .75rem; color: #d2e7ff; font: 600 .625rem/1.4 'Inter', sans-serif; letter-spacing: .18em; }
+.pb-caption { position: absolute; right: max(1.5rem, calc((100vw - 1180px) / 2)); bottom: 1.75rem; display: flex; align-items: center; gap: .75rem; color: #d2e7ff; font: 600 .625rem/1.4 'Poppins', sans-serif; letter-spacing: .18em; }
 .pb-caption-line { width: 3rem; height: 1px; background: #65cfff; }
 .pb-signal { display: flex; align-items: flex-end; gap: 3px; height: 12px; }
 .pb-signal i { width: 3px; height: 6px; background: #65cfff; }
@@ -48,7 +48,7 @@
 .hv-host.hv-host.hv-host:has(> .page-banner-art) :is(.csx-kicker, .learn-kicker, .bl-eyebrow, .pj-eyebrow, .ow-eyebrow, .eyebrow, .academy-eyebrow, .st-eyebrow, .gig-kicker) {
   margin: 0 0 1.25rem;
   color: #90dfff !important;
-  font: 700 .75rem/1.5 'Inter', sans-serif;
+  font: 700 .75rem/1.5 'Poppins', sans-serif;
   letter-spacing: .17em;
   text-transform: uppercase;
 }
@@ -190,7 +190,7 @@
 .ch-band--editorial .ch-band-btn { min-height: 56px; border-radius: 7px; background: #90dfff; color: #071225; border: 1px solid #b5eaff; box-shadow: none; }
 .ch-band--editorial .ch-band-btn:hover { background: #c3efff; }
 .ch-band--editorial .ch-band-alt { font-size: .8125rem; }
-.ch-band-stamp { display: flex; align-items: center; gap: .5rem; margin-bottom: 1.5rem; color: #d5e3ee; font: 500 .6875rem/1.4 'Inter', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+.ch-band-stamp { display: flex; align-items: center; gap: .5rem; margin-bottom: 1.5rem; color: #d5e3ee; font: 500 .6875rem/1.4 'Poppins', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
 .ch-band-stamp svg { width: 26px; height: 26px; color: #90dfff; }
 
 :is(.lx-cta, .st-closing, .expert-banner) {

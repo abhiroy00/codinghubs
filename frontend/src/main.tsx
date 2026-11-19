@@ -5,6 +5,7 @@ import { loadContent } from './locations/content-loader'
 // Self-hosted fonts first (index CSS, so every page has them, including the prerendered ones before JS runs).
 import './styles/fonts.css'
 import './styles/global.css'
+import './styles/typography.css'
 import { loadPrepGuide } from './learning/prep-content'
 import { loadGenAILevel } from './learning/genai-content'
 import { prefetchRoutesWhenIdle } from './lib/prefetch'
