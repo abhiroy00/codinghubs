@@ -11,10 +11,11 @@
 .ui-tone-plain{background:transparent;padding-inline:0}
 .ui-tone-soft{overflow:hidden;background:linear-gradient(180deg,#f7faff 0%,var(--ui-primary-soft) 100%);border:1px solid var(--ui-line)}
 .ui-tone-dark{overflow:hidden;background:radial-gradient(70% 90% at 0% 0%,#123a8a 0%,transparent 60%),linear-gradient(120deg,#0b1424,#0b1f4a);color:#f4f7fb}
-.ui-blob{position:absolute;z-index:-1;border-radius:50%;filter:blur(60px);opacity:.35;pointer-events:none;animation:ui-drift 20s ease-in-out infinite alternate}
+/* Soft static glows: radial gradients instead of blurred, animated blobs (no per-frame repaint). */
+.ui-blob{position:absolute;z-index:-1;border-radius:50%;opacity:.5;pointer-events:none}
 .ui-tone-plain .ui-blob{display:none}
-.ui-blob-a{width:38%;aspect-ratio:1;left:-10%;top:-25%;background:#3d8bff}
-.ui-blob-b{width:30%;aspect-ratio:1;right:-8%;bottom:-25%;background:var(--ui-accent);opacity:.25;animation-delay:-8s}
+.ui-blob-a{width:46%;aspect-ratio:1;left:-14%;top:-30%;background:radial-gradient(closest-side,rgba(61,139,255,.55),transparent)}
+.ui-blob-b{width:38%;aspect-ratio:1;right:-12%;bottom:-30%;background:radial-gradient(closest-side,rgba(34,211,238,.4),transparent)}
 @keyframes ui-drift{to{transform:translate(8%,10%) scale(1.12)}}
 
 .ui-head{display:flex;flex-direction:column;gap:1rem;margin:0 0 clamp(1.5rem,3vw,2.25rem)}

@@ -22,7 +22,7 @@ html body .ch-band .ch-band-alt a:hover{color:var(--ft-gold)!important}
 
 /* ---------- footer shell ---------- */
 html body #site-footer{position:relative;isolation:isolate;margin-top:0!important;border-top:0!important;background:linear-gradient(180deg,rgba(6,42,90,.98) 0%,rgba(8,54,110,.96) 50%,rgba(4,30,66,.99) 100%),var(--ft-navy)!important;color:var(--ft-text)!important}
-html body #site-footer .fx-blob{opacity:.18!important}
+html body #site-footer .fx-blob{width:640px!important;height:640px!important;filter:none!important;opacity:.35!important;background:radial-gradient(closest-side,rgba(31,107,255,.6),transparent)!important}
 html body #site-footer :is(p,li,span,small,address){color:var(--ft-text)!important}
 html body #site-footer strong{color:#fff!important}
 

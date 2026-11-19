@@ -232,14 +232,14 @@
   padding: 0.45rem 0.95rem;
   border: 1px solid var(--ch-line-2);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.97);
   box-shadow: 0 8px 20px -14px rgba(11, 18, 32, 0.4);
   color: var(--ch-ink);
   font: 500 var(--fs-caption)/1.2 var(--f-body);
   white-space: nowrap;
   pointer-events: none;
-  animation: hs-float 6s ease-in-out infinite;
+  /* A few gentle floats, then rest: endless motion in the first screen keeps the page "loading" for speed index. */
+  animation: hs-float 6s ease-in-out 3;
 }
 .hs-tag-1 { left: calc(50% - var(--card-w) / 2 + 18px); top: -16px; }
 .hs-tag-2 { left: calc(50% + var(--card-w) / 2 - 70px); top: 12%; animation-delay: -1.5s; }

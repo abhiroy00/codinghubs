@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
+import { pauseOffscreenAnimations } from './lib/offscreen-pause'
 import { App } from './App'
 import { loadContent } from './locations/content-loader'
 // Self-hosted fonts first (index CSS, so every page has them, including the prerendered ones before JS runs).
@@ -63,6 +64,7 @@ async function start() {
   )
   if (path === '/' && root.hasChildNodes()) hydrateRoot(root, app)
   else createRoot(root).render(app)
+  pauseOffscreenAnimations()
 }
 
 void start()

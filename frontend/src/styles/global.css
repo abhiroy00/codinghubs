@@ -611,9 +611,8 @@ header.site .nav-link{white-space:nowrap;padding-inline:.7rem}
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  animation:
-    text-gradient 5s linear infinite,
-    text-float 3s ease-in-out infinite;
+  /* Two shimmer cycles, then rest: an endless background-position animation repaints the hero every frame. */
+  animation: text-gradient 5s linear 2;
 }
 
 @keyframes text-gradient {

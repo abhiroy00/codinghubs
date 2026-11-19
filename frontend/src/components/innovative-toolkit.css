@@ -1,10 +1,10 @@
 /* Innovative AI Tools showcase (InnovativeToolkit.tsx). Light on the homepage, dark on /ai-tools. */
 .itk{--itk-ink:#0b1220;--itk-text:#363636;--itk-card:#fff;--itk-line:#e1e7f0;position:relative;isolation:isolate;overflow:hidden;padding:clamp(3rem,7vw,5rem) 0;background:linear-gradient(180deg,#f5f9ff 0%,#eaf2ff 100%)}
 .itk-dark{--itk-ink:#f4f7fb;--itk-text:#c9d5e8;--itk-card:#0f1d36;--itk-line:#22385c;background:linear-gradient(180deg,#081325 0%,#0b1a33 100%)}
-.itk-blob{position:absolute;z-index:-1;border-radius:50%;filter:blur(70px);opacity:.4;pointer-events:none;animation:ui-drift 18s ease-in-out infinite alternate}
-.itk-blob-a{width:34rem;aspect-ratio:1;left:-12rem;top:-10rem;background:#7fb0ff}
-.itk-blob-b{width:30rem;aspect-ratio:1;right:-10rem;bottom:-12rem;background:#7ee3f5;animation-delay:-7s}
-.itk-dark .itk-blob{opacity:.22}
+.itk-blob{position:absolute;z-index:-1;border-radius:50%;opacity:.7;pointer-events:none}
+.itk-blob-a{width:42rem;aspect-ratio:1;left:-16rem;top:-14rem;background:radial-gradient(closest-side,rgba(127,176,255,.6),transparent)}
+.itk-blob-b{width:38rem;aspect-ratio:1;right:-14rem;bottom:-16rem;background:radial-gradient(closest-side,rgba(126,227,245,.55),transparent)}
+.itk-dark .itk-blob{opacity:.35}
 .itk-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:center;gap:clamp(2rem,5vw,4.5rem)}
 .itk-copy{min-width:0}
 

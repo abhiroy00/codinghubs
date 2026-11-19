@@ -102,8 +102,8 @@ export function InnovativeToolkit({ id = 'online-tools', tone = 'light', limit =
               </div>
               <div className="itk-view">
                 <img className="itk-shot" src="/assets/innovative-tools/tools-site-960.webp"
-                  srcSet="/assets/innovative-tools/tools-site-640.webp 640w, /assets/innovative-tools/tools-site-960.webp 960w"
-                  sizes="(max-width: 900px) 90vw, 560px" alt="" width={960} height={1950} loading="lazy" decoding="async" />
+                  srcSet="/assets/innovative-tools/tools-site-480.webp 480w, /assets/innovative-tools/tools-site-640.webp 640w, /assets/innovative-tools/tools-site-960.webp 960w"
+                  sizes="(max-width: 640px) calc(100vw - 52px), (max-width: 900px) 560px, 540px" alt="" width={960} height={1950} loading="lazy" decoding="async" />
               </div>
             </div>
             <div className="itk-base" />
