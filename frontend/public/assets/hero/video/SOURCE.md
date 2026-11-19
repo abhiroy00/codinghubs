@@ -1,6 +1,6 @@
 # Hero background videos
 
-Decorative backgrounds for page heroes (`src/components/HeroVideo.tsx`, styles in `src/components/hero-video.css`). The home page uses the clip in this folder; every other public page type has its own clip in `pages/`.
+Decorative backgrounds for page heroes (`src/components/HeroVideo.tsx`, styles in `src/components/hero-video.css`). The home page uses the clip in this folder. Inner pages now use static banner art (`src/components/PageBannerArt.tsx`); only the `pages/` poster stills remain, for the backend-rendered blog, newsletter and case study pages.
 
 All clips are from Pexels under the Pexels License, https://www.pexels.com/license/ (free for commercial use, attribution not required, editing allowed). Each clip page below was checked on 2026-11-16 and is marked "Free".
 
