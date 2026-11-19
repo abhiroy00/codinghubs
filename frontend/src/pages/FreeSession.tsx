@@ -87,9 +87,27 @@ export function FreeSession() {
       stylesheet.addEventListener('load', align, { once: true })
       stylesheet.addEventListener('error', align, { once: true })
     } else align()
+    // Other deferred stylesheets, fonts and images can still change the height of the sections above the target.
+    // For a few seconds, re-align whenever the page height changes, unless the visitor has started scrolling.
+    let userMoved = false
+    const stopFollowing = () => { userMoved = true }
+    const events = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const
+    events.forEach((type) => window.addEventListener(type, stopFollowing, { passive: true, once: true }))
+    let lastHeight = document.documentElement.scrollHeight
+    const follow = new ResizeObserver(() => {
+      const height = document.documentElement.scrollHeight
+      if (userMoved || cancelled || Math.abs(height - lastHeight) < 2) return
+      lastHeight = height
+      align()
+    })
+    follow.observe(document.body)
+    const stopTimer = window.setTimeout(() => follow.disconnect(), 4000)
     return () => {
       cancelled = true
       cancelAnimationFrame(frame)
+      follow.disconnect()
+      window.clearTimeout(stopTimer)
+      events.forEach((type) => window.removeEventListener(type, stopFollowing))
       stylesheet?.removeEventListener('load', align)
       stylesheet?.removeEventListener('error', align)
     }

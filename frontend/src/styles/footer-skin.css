@@ -1,0 +1,67 @@
+/* Footer in the innovativeais.com style on every page (both footers: FsFooter `.ftr.fx` and the Layout `Footer`):
+   deep navy gradient, white headings with a gold underline, 80%-white links that turn gold, gold contact icons.
+   The "Book a Free Demo" band above the footer drops its card and shares the same gradient, so the two read as one block.
+   `html body` keeps these ahead of page stylesheets that load later (/free-session.css). */
+:root{--ft-navy:#06193c;--ft-top:#062a5a;--ft-mid:#08366e;--ft-bottom:#041e42;--ft-gold:#dcac1c;--ft-text:rgba(255,255,255,.75);--ft-link:rgba(255,255,255,.8);--ft-line:rgba(255,255,255,.1)}
+
+/* ---------- CTA band merged into the footer background ---------- */
+html body .ch-band{position:relative;isolation:isolate;margin:0!important;padding:clamp(3rem,7vw,4.5rem) 0 clamp(1.5rem,4vw,2.5rem)!important;border:0!important;background:radial-gradient(60% 120% at 85% 0%,rgba(34,211,238,.16),transparent 60%),radial-gradient(50% 100% at 10% 10%,rgba(61,139,255,.22),transparent 60%),linear-gradient(180deg,#0a3f7e 0%,var(--ft-top) 100%)!important;color:#fff}
+html body .ch-band::before,html body .ch-band::after{display:none!important}
+html body .ch-band .ch-band-card{max-width:1180px;margin:0 auto!important;padding:0 clamp(1rem,4vw,2rem)!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important}
+html body .ch-band .ch-band-card::before,html body .ch-band .ch-band-card::after{display:none!important}
+html body .ch-band :is(h2,#ch-band-title){color:#fff!important}
+html body .ch-band p{color:var(--ft-text)!important}
+html body .ch-band .ch-band-kicker{color:var(--ft-gold)!important}
+html body .ch-band .ch-band-kicker>span{background:var(--ft-gold)!important}
+html body .ch-band .ch-band-stamp{color:#cfe0ff!important}
+html body .ch-band .ch-band-stamp svg{color:var(--ft-gold)!important}
+html body .ch-band .ch-band-btn{border:0!important;border-radius:999px!important;background:#fff!important;color:var(--ft-navy)!important;box-shadow:0 14px 30px -16px rgba(0,0,0,.7)!important;transition:background .25s,color .25s,transform .25s!important}
+html body .ch-band .ch-band-btn:hover{background:var(--ft-gold)!important;color:var(--ft-navy)!important;transform:translateY(-2px)}
+html body .ch-band .ch-band-alt a{color:#fff!important;text-decoration-color:var(--ft-gold)}
+html body .ch-band .ch-band-alt a:hover{color:var(--ft-gold)!important}
+
+/* ---------- footer shell ---------- */
+html body #site-footer{position:relative;isolation:isolate;margin-top:0!important;border-top:0!important;background:linear-gradient(180deg,rgba(6,42,90,.98) 0%,rgba(8,54,110,.96) 50%,rgba(4,30,66,.99) 100%),var(--ft-navy)!important;color:var(--ft-text)!important}
+html body #site-footer .fx-blob{opacity:.18!important}
+html body #site-footer :is(p,li,span,small,address){color:var(--ft-text)!important}
+html body #site-footer strong{color:#fff!important}
+
+/* Logo has dark lettering: give it a white plate like the reference's white logo badge. */
+html body #site-footer .fx-logo{display:inline-flex;align-items:center;padding:.5rem .875rem;border-radius:14px;background:#fff;box-shadow:0 10px 24px -14px rgba(0,0,0,.6)}
+
+/* Headings: white with a short gold underline */
+html body #site-footer :is(h2,h3,h4){position:relative;margin-bottom:1.125rem!important;padding-bottom:.625rem;color:#fff!important}
+html body #site-footer :is(h2,h3,h4)::after{content:"";position:absolute;left:0;bottom:0;width:40px;height:2px;border-radius:2px;background:var(--ft-gold)}
+
+/* Links: soft white, gold on hover, with a gold chevron in the link columns */
+html body #site-footer a{color:var(--ft-link)!important;text-decoration:none;transition:color .25s,padding-left .25s,border-color .25s,background-color .25s}
+html body #site-footer a:hover{color:var(--ft-gold)!important}
+html body #site-footer :is(.fx-col,.f-cols) ul:not(.fx-contact) a::before{content:"›";content:"›" / "";display:inline-block;margin-right:.5rem;color:var(--ft-gold);font-weight:700;transition:transform .25s}
+html body #site-footer :is(.fx-col,.f-cols) ul:not(.fx-contact) a:hover::before{transform:translateX(3px)}
+html body #site-footer a:focus-visible{outline:2px solid var(--ft-gold);outline-offset:3px;border-radius:4px}
+
+/* Contact rows: gold icons on a translucent tile */
+html body #site-footer :is(.fx-ico,.contact-list svg){background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.14)!important;color:var(--ft-gold)!important}
+html body #site-footer .contact-list svg{padding:0;background:none!important}
+
+/* Location chips */
+html body #site-footer .fx-loc-regions a{border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.06)!important;color:#fff!important}
+html body #site-footer .fx-loc-regions a span{color:rgba(255,255,255,.6)!important}
+html body #site-footer .fx-loc-regions a:hover{border-color:var(--ft-gold)!important;color:var(--ft-gold)!important}
+html body #site-footer .fx-loc-regions a.fx-loc-all{border-color:var(--ft-gold)!important;background:var(--ft-gold)!important;color:var(--ft-navy)!important;font-weight:600}
+html body #site-footer .fx-loc-regions a.fx-loc-all:hover{background:#f0c23a!important;color:var(--ft-navy)!important}
+
+/* Social links: white, gold circle on hover */
+html body #site-footer :is(.fx-social-row,.social){border-color:var(--ft-line)!important}
+html body #site-footer :is(.fx-social-row,.social) a{color:#fff!important}
+html body #site-footer :is(.fx-social-row,.social) a:hover{color:var(--ft-gold)!important}
+html body #site-footer .social a{border:1px solid rgba(255,255,255,.25);border-radius:50%;background:rgba(255,255,255,.08)!important}
+html body #site-footer .social a:hover{border-color:var(--ft-gold);background:var(--ft-gold)!important;color:var(--ft-navy)!important}
+
+/* Bottom bar */
+html body #site-footer :is(.fx-bar,.f-bottom){border-top:1px solid var(--ft-line)!important;background:rgba(0,0,0,.18)!important}
+html body #site-footer :is(.fx-bar,.f-bottom,.f-credit) :is(p,span,a){color:rgba(255,255,255,.7)!important}
+html body #site-footer :is(.fx-bar,.f-bottom,.f-credit) a:hover{color:var(--ft-gold)!important}
+html body #site-footer :is(.fx-bar,.f-bottom,.f-credit) strong{color:#fff!important}
+
+@media (prefers-reduced-motion:reduce){html body #site-footer a,html body #site-footer a::before{transition:none}}
