@@ -5,6 +5,8 @@ import { SIZES, SLIDES, src, srcSet, type Slide } from './hero-slides'
 const TAGS = ['live classes', 'mentors', 'real projects', 'community']
 
 const INTERVAL = 3000
+/** The first photo stays longer, so the first screen is not changing while the page is still loading. */
+const FIRST_HOLD = 6000
 
 function SlideImage({ slide, eager, decorative }: { slide: Slide; eager?: boolean; decorative?: boolean }) {
   return (
@@ -108,10 +110,12 @@ export function HeroSlider() {
   }, [])
 
   const running = ready && !reduced && !hovered && !focused && !hidden
+  const rotated = useRef(false)
 
   useEffect(() => {
     if (!running) return
-    const t = window.setTimeout(() => go(index + 1), INTERVAL)
+    const t = window.setTimeout(() => go(index + 1), index === 0 && !rotated.current ? FIRST_HOLD : INTERVAL)
+    rotated.current = rotated.current || index !== 0
     return () => window.clearTimeout(t)
   }, [running, index, go])
 

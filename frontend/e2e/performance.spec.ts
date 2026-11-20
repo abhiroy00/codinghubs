@@ -107,5 +107,6 @@ test('hero autoplay waits for its visible photos, then keeps the existing rotati
   await page.waitForTimeout(3200)
   await expect(active).toHaveAttribute('aria-label', /^1 of 5:/)
   ready()
-  await expect(active).toHaveAttribute('aria-label', /^2 of 5:/, { timeout: 4500 })
+  // The first photo is held for 6 seconds while the page settles, then the 3-second rotation starts.
+  await expect(active).toHaveAttribute('aria-label', /^2 of 5:/, { timeout: 8000 })
 })

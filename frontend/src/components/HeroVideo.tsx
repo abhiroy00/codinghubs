@@ -76,10 +76,17 @@ function HomeHeroVideo() {
         return current ?? `${BASE}-${window.innerWidth >= HD_MIN_WIDTH ? '720p' : '540p'}.mp4`
       })
     }
-    sync()
+    // Start the clip only after the page has loaded (plus a short pause): the poster holds the first screen during
+    // load, the video does not compete for bandwidth, and the first screen settles quickly.
+    let timer: number | undefined
+    const start = () => { timer = window.setTimeout(sync, 2500) }
+    if (document.readyState === 'complete') start()
+    else window.addEventListener('load', start, { once: true })
     reduce.addEventListener('change', sync)
     wide.addEventListener('change', sync)
     return () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('load', start)
       reduce.removeEventListener('change', sync)
       wide.removeEventListener('change', sync)
     }

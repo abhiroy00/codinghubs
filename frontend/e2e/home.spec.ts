@@ -235,9 +235,9 @@ test("hero slider auto-advances through all five photos without controls", async
   await expect(slider.getByRole("button")).toHaveCount(0);
   await expect(slider.locator(".hs-count")).toHaveCount(0);
   await page.mouse.move(5, 5);
-  // Autoplay walks every slide in order every 3 seconds and wraps around.
+  // Autoplay holds the first photo for 6 seconds, then walks every slide every 3 seconds and wraps around.
   for (let i = 0; i < expected.length; i++) {
-    await expect(active).toHaveAttribute("aria-label", new RegExp(`^${i + 1} of 5:`), { timeout: 4500 });
+    await expect(active).toHaveAttribute("aria-label", new RegExp(`^${i + 1} of 5:`), { timeout: i === 1 ? 8000 : 4500 });
     const img = active.locator("> picture img");
     await expect(img).toHaveAttribute("src", `/assets/hero/${expected[i]}.jpg`);
     await expect
