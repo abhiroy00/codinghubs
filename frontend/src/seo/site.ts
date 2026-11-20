@@ -43,6 +43,7 @@ export function organizationNode() {
       '@type': 'PostalAddress',
       streetAddress: HEAD_OFFICE.street,
       addressLocality: HEAD_OFFICE.locality,
+      addressRegion: 'Delhi',
       postalCode: HEAD_OFFICE.postalCode,
       addressCountry: HEAD_OFFICE.country,
     },
@@ -55,9 +56,9 @@ const imageUrl = (p: string) => `${SITE_URL}${encodePath(p)}`
 
 export const HOME_META: PageMeta = {
   path: '/',
-  title: 'Free 2-Hour Live AI Demo Session | Coding Hubs School of AI',
+  title: 'AI Institute in Delhi | Free AI Demo Class | Coding Hubs',
   description:
-    'Join a free 2-hour live online demo of AI, development, data analytics, design and marketing courses at Coding Hubs School of AI, Delhi. Explore before you decide.',
+    'AI training institute in Netaji Subhash Place, Delhi. Join a free 2-hour live online demo of AI, development, data and design courses at Coding Hubs.',
   image: LOGO_URL,
   indexable: true,
   jsonLd: {

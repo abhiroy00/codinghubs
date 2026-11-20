@@ -28,7 +28,7 @@ export function JoinHero() {
         <div className="join-copy">
           <p className="join-kicker"><span aria-hidden="true" />Coding Hubs School of AI</p>
           <h1 id="hero-title">
-            <span className="join-line">Delhi most practical</span>{' '}
+            <span className="join-line">Delhi’s most practical</span>{' '}
             <span className="join-line join-accent">AI learning community.</span>
           </h1>
           <p className="join-sub">Live classes, mentors from the industry and projects you can show. Start with a free 2-hour demo class.</p>

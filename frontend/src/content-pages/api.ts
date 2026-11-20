@@ -86,6 +86,17 @@ export function takeInitial(): Initial | null {
 export const getBlogs = (params: Record<string, string | number>) => api.get<Paged<Card>>('/blogs/', { params }).then((r) => r.data)
 export const getBlogCategories = () => api.get<{ name: string; slug: string; blog_count: number }[]>('/blog-categories/').then((r) => r.data)
 export const getBlog = (slug: string, preview?: string) => api.get<Article>(`/blogs/${slug}/`, { params: preview ? { preview } : {} }).then((r) => r.data)
+/** Counts one view per post per browser session (the server ignores bots and anything not live). Never throws. */
+export function recordView(kind: 'blog' | 'case', slug: string) {
+  const key = `ch_viewed_${kind}_${slug}`
+  try {
+    if (sessionStorage.getItem(key)) return
+    sessionStorage.setItem(key, '1')
+  } catch {
+    return
+  }
+  api.post(`/${kind === 'blog' ? 'blogs' : 'case-studies'}/${slug}/view/`).catch(() => undefined)
+}
 export const getCases = (params: Record<string, string | number>) => api.get<Paged<Card>>('/case-studies/', { params }).then((r) => r.data)
 export const getCase = (slug: string, preview?: string) => api.get<Article>(`/case-studies/${slug}/`, { params: preview ? { preview } : {} }).then((r) => r.data)
 

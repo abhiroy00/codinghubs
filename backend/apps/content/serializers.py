@@ -121,12 +121,13 @@ class BlogAdminSerializer(ContentWriteMixin, serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = (
+            'view_count',
             'id', 'title', 'slug', 'excerpt', 'content', 'featured_image', 'featured_image_alt', 'gallery', 'author_name', 'author_title',
             'category', 'category_name', 'tags', 'tag_names', 'related', 'related_ids', 'is_featured', 'status', 'published_at',
             'reading_time', 'seo_title', 'meta_description', 'focus_keyword', 'secondary_keywords', 'canonical_url', 'og_title',
             'og_description', 'og_image', 'search_intent', 'faq', 'created_at', 'updated_at',
         )
-        read_only_fields = ('reading_time', 'created_at', 'updated_at')
+        read_only_fields = ('reading_time', 'view_count', 'created_at', 'updated_at')
 
     def get_related(self, obj):
         return [{'id': r.id, 'title': r.title} for r in obj.related.all()]
@@ -196,6 +197,7 @@ class CaseStudyAdminSerializer(ContentWriteMixin, serializers.ModelSerializer):
     class Meta:
         model = CaseStudy
         fields = (
+            'view_count',
             'id', 'title', 'slug', 'summary', 'client_name', 'client_permission', 'client_descriptor', 'industry', 'duration',
             'overview', 'background', 'challenge', 'objectives', 'solution', 'implementation', 'results', 'lessons',
             'hidden_sections', 'technologies', 'metrics', 'related_services', 'related', 'related_ids', 'featured_image',
@@ -203,7 +205,7 @@ class CaseStudyAdminSerializer(ContentWriteMixin, serializers.ModelSerializer):
             'reading_time', 'seo_title', 'meta_description', 'focus_keyword', 'secondary_keywords', 'canonical_url', 'og_title',
             'og_description', 'og_image', 'created_at', 'updated_at',
         )
-        read_only_fields = ('reading_time', 'created_at', 'updated_at')
+        read_only_fields = ('reading_time', 'view_count', 'created_at', 'updated_at')
 
     def get_related(self, obj):
         return [{'id': r.id, 'title': r.title} for r in obj.related.all()]

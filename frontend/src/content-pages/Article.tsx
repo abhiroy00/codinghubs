@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
-import { fmtDate, getBlog, getCase, takeInitial, type Article } from './api'
+import { fmtDate, getBlog, getCase, recordView, takeInitial, type Article } from './api'
 import { CardView, PageFrame, useSeo } from './shared'
 import { ArticleToc } from './ArticleToc'
 import './blog.css'
@@ -36,6 +36,11 @@ function useArticle(kind: Kind) {
       live = false
     }
   }, [slug, preview]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const viewedSlug = article && !preview ? article.slug : ''
+  useEffect(() => {
+    if (viewedSlug) recordView(kind, viewedSlug)
+  }, [kind, viewedSlug])
 
   useSeo(article?.seo ?? null)
   return { article, missing }

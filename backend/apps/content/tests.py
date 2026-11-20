@@ -411,6 +411,25 @@ class SeoTests(ContentBase):
         self.assertIn('id="build-a-model"', html)
         self.assertIn('words</span>', html)
 
+    def test_view_counter_counts_live_posts_only_and_keeps_updated_at(self):
+        b = self.make_blog('Counted post')
+        draft = self.make_blog('Uncounted draft')
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        before = Blog.objects.get(pk=b['id']).updated_at
+        anon = self.as_user(None)
+        browser = {'HTTP_USER_AGENT': 'Mozilla/5.0 (iPhone) Safari/604.1'}
+        self.assertEqual(anon.post(f'/api/blogs/{b["slug"]}/view/', **browser).status_code, 204)
+        anon.post(f'/api/blogs/{b["slug"]}/view/', **browser)
+        anon.post(f'/api/blogs/{b["slug"]}/view/', HTTP_USER_AGENT='Mozilla/5.0 (compatible; Googlebot/2.1)')
+        anon.post(f'/api/blogs/{draft["slug"]}/view/', **browser)
+        anon.post('/api/blogs/missing-post/view/', **browser)
+        live = Blog.objects.get(pk=b['id'])
+        self.assertEqual(live.view_count, 2)
+        self.assertEqual(live.updated_at, before)
+        self.assertEqual(Blog.objects.get(pk=draft['id']).view_count, 0)
+        rows = self.api.get('/api/admin/blogs/?ordering=-views').json()['results']
+        self.assertEqual((rows[0]['slug'], rows[0]['view_count']), (b['slug'], 2))
+
     def test_team_byline_is_the_organization_not_a_person(self):
         b = self.make_blog('Team article', author_name='Coding Hubs Team')
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')

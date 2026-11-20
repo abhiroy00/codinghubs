@@ -13,6 +13,7 @@ export interface Row {
   industry?: string
   is_featured: boolean
   reading_time: number
+  view_count?: number
 }
 
 export interface Taxon {

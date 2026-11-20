@@ -1,3 +1,4 @@
+import re
 import logging
 import uuid
 from io import BytesIO
@@ -5,7 +6,7 @@ from io import BytesIO
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from django.db.models import Count, Q
+from django.db.models import F, Count, Q
 from django.http import Http404, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -264,7 +265,7 @@ class AdminListMixin:
     pagination_class = AdminPage
     permission_classes = [ContentPermission]
 
-    ORDERING = {'date': 'published_at', 'updated': 'updated_at', 'title': 'title', 'status': 'status', 'created': 'created_at'}
+    ORDERING = {'date': 'published_at', 'updated': 'updated_at', 'title': 'title', 'status': 'status', 'created': 'created_at', 'views': 'view_count'}
 
     def filter_common(self, qs):
         p = self.request.query_params
@@ -516,3 +517,26 @@ class SubmitReview(generics.GenericAPIView):
                 permission_confirmed=True, is_published=False, submitted_by_user=True,
             )
         return Response({'detail': 'Thank you! Your review will appear on the website after our team checks it.'}, status=201)
+
+
+class ViewThrottle(AnonRateThrottle):
+    scope = 'content_view'
+    rate = '60/min'
+
+
+BOT_UA = re.compile(r'bot|crawl|spider|slurp|preview|lighthouse|headless|python-requests|curl|wget', re.I)
+
+
+class RecordView(APIView):
+    """POST by the public article page, once per browser session: counts a view of a live post or case study.
+    Bots and unknown slugs are ignored; the count uses update() so updated_at and sitemap dates do not change."""
+
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+    throttle_classes = [ViewThrottle]
+    model_class = None
+
+    def post(self, request, slug):
+        if not BOT_UA.search(request.META.get('HTTP_USER_AGENT', '')):
+            self.model_class.objects.public().filter(slug=slug).update(view_count=F('view_count') + 1)
+        return Response(status=204)

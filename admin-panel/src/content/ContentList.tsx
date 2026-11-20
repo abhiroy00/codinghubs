@@ -13,6 +13,7 @@ const SORTS = [
   ['date', 'Oldest published'],
   ['title', 'Title A–Z'],
   ['status', 'Status'],
+  ['-views', 'Most viewed'],
 ] as const
 
 export function ContentList({ kind }: { kind: Kind }) {
@@ -151,6 +152,7 @@ export function ContentList({ kind }: { kind: Kind }) {
                 <th>{kind === 'blogs' ? 'Category' : 'Industry'}</th>
                 <th>Status</th>
                 <th>Featured</th>
+                <th>Views</th>
                 <th>Date</th>
                 <th>Actions</th>
               </tr>
@@ -170,6 +172,7 @@ export function ContentList({ kind }: { kind: Kind }) {
                     <td>{(kind === 'blogs' ? r.category_name : r.industry) || '—'}</td>
                     <td><span className={`ad-pill st-${r.status}`}>{r.status === 'published' && <Icon name="check" />}{r.status}</span></td>
                     <td>{r.is_featured ? <span className="ad-star" title="Featured"><Icon name="star" /></span> : <span className="ad-muted">—</span>}</td>
+                    <td className="ad-views" title="Article page views, one per visitor session (bots excluded)">{(r.view_count ?? 0).toLocaleString('en-IN')}</td>
                     <td className="nowrap">{fmtDate(r.published_at || r.updated_at)}</td>
                     <td>
                       <div className="ad-row-actions">

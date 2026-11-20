@@ -146,6 +146,7 @@ class Blog(SeoMixin, PublishMixin):
     related = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='+')
     is_featured = models.BooleanField(default=False)
     reading_time = models.PositiveSmallIntegerField(default=1)
+    view_count = models.PositiveIntegerField(default=0, editable=False)  # public page views counted by the article page (bots excluded)
     # authoring aids (not shown publicly)
     search_intent = models.CharField(max_length=200, blank=True)
     faq = models.JSONField(default=list, blank=True)  # [{"q": "...", "a": "..."}], shown + FAQPage JSON-LD when present
@@ -207,6 +208,7 @@ class CaseStudy(SeoMixin, PublishMixin):
     author_name = models.CharField(max_length=100, blank=True)
     author_title = models.CharField(max_length=120, blank=True)
     is_featured = models.BooleanField(default=False)
+    view_count = models.PositiveIntegerField(default=0, editable=False)  # public page views counted by the article page (bots excluded)
     reading_time = models.PositiveSmallIntegerField(default=1)
 
     objects = PublicQuerySet.as_manager()
