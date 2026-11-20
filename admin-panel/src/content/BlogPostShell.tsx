@@ -1,4 +1,6 @@
 import { useState, type ReactNode } from 'react'
+import { LiveUrlField } from './LiveActions'
+import { isLiveNow } from './liveUrl'
 import { Link } from 'react-router-dom'
 import { ConfirmDelete } from './EditorShell'
 import { Field } from './fields'
@@ -41,6 +43,7 @@ export function BlogPostShell({ api, children, uploading = false }: { api: BlogA
         <button type="button" className="ad-link" onClick={api.dropDraft}>Discard</button>
       </div>}
       {notice && <div className={`ad-notice ${notice.type}`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.text}</div>}
+      {form.slug && isLiveNow(form.status, form.published_at) && <LiveUrlField base="/blog" slug={form.slug} />}
       <div className="ad-post-card"><div className="ad-post-body">{children}</div></div>
       <section className="ad-section ad-blog-date">
         <Field
@@ -82,7 +85,7 @@ export function BlogPostShell({ api, children, uploading = false }: { api: BlogA
         <span className="ad-muted" role="status">{uploading ? 'Uploading image…' : busy ? 'Saving…' : dirty ? 'Unsaved changes' : form.id ? 'All changes saved' : 'Your new post starts as a draft'}</span>
         <div>
           <button type="submit" className="ad-btn" disabled={disabled}>{live ? 'Save changes' : 'Save draft'}</button>
-          <button type="button" className="ad-btn" disabled={disabled} onClick={() => void api.preview()}>Preview</button>
+          <button type="button" className="ad-btn" disabled={disabled} onClick={() => void api.preview()}>{isLiveNow(form.status, form.published_at) ? 'View live post' : 'Preview'}</button>
           <button type="button" className="ad-btn ad-btn-primary" disabled={disabled} onClick={() => { if (hasDate()) void api.publish(form.published_at) }}>{future ? 'Schedule post' : live ? 'Update post' : 'Publish post'}</button>
         </div>
       </footer>

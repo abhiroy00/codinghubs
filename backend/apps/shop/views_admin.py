@@ -1,3 +1,4 @@
+from django.conf import settings
 import logging
 from datetime import datetime, time
 from decimal import Decimal, InvalidOperation
@@ -182,6 +183,8 @@ class ActionView(Base, APIView):
         obj = get_object_or_404(self.model_class, pk=pk)
         kind, base = PREVIEW[self.model_class.__name__]
         if self.action == 'preview':
+            if self.model_class.objects.public().filter(pk=obj.pk).exists():
+                return Response({'url': f'{settings.SITE_URL}{base}/{obj.slug}', 'live': True})
             token = content_services.make_preview_token(kind, obj.pk)
             return Response({'url': f'{base}/{obj.slug}?preview={token}', 'expires_in': content_services.PREVIEW_MAX_AGE})
         if self.action == 'publish':

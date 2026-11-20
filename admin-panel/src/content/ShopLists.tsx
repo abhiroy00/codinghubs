@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
+import { LiveActions } from './LiveActions'
+import { PUBLIC_BASE } from './liveUrl'
 import { Link } from 'react-router-dom'
 import { adminApi, type Paged } from '../api'
 import { ConfirmDelete } from './EditorShell'
@@ -123,7 +125,7 @@ export function ShopList({ kind }: { kind: Kind }) {
                     <td>{fmtDate(r.updated_at)}</td>
                     <td className="ad-actions">
                       <Link className="ad-link" to={`/${kind}/edit/${r.id}`}>Edit</Link>
-                      <button type="button" className="ad-link" onClick={() => void preview(r)}>Preview</button>
+                      <LiveActions base={PUBLIC_BASE[kind]} slug={r.slug} status={r.status} publishedAt={r.published_at} onPreview={() => void preview(r)} />
                       <button type="button" className="ad-link" onClick={() => void act(r, live ? 'unpublish' : 'publish')}>{live ? 'Unpublish' : 'Publish'}</button>
                       <button type="button" className="ad-link ad-danger" onClick={() => setDel(r)}>Delete</button>
                     </td>

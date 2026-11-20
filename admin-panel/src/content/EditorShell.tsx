@@ -1,4 +1,6 @@
 import { useState, type ReactNode } from 'react'
+import { LiveUrlField } from './LiveActions'
+import { isLiveNow, PUBLIC_BASE } from './liveUrl'
 import { Link } from 'react-router-dom'
 import { fmtDate } from './format'
 import { Field } from './fields'
@@ -84,12 +86,13 @@ export function EditorShell<T extends Common>({ kind, api, noun, children, side,
               <Field label="Publish date and time" htmlFor="published_at" error={api.errors.published_at} hint="Leave empty to publish now. A future time schedules it; it goes live by itself, no one needs to be logged in.">
                 <input id="published_at" type="datetime-local" className="ad-input" value={form.published_at} onChange={(e) => api.set('published_at' as keyof T, e.target.value as T[keyof T])} />
               </Field>
+              {form.slug && isLiveNow(form.status, form.published_at) && <LiveUrlField base={PUBLIC_BASE[kind]} slug={form.slug} />}
               <div className="ad-publish-actions">
                 <button type="submit" className="ad-btn" disabled={busy}>
                   {busy ? 'Working…' : form.status === 'draft' ? 'Save draft' : 'Save changes'}
                 </button>
                 <button type="button" className="ad-btn" disabled={busy} onClick={() => void api.preview()}>
-                  Preview
+                  {isLiveNow(form.status, form.published_at) ? 'View live page' : 'Preview'}
                 </button>
                 {(!live || form.status === 'archived') && (
                   <button type="button" className="ad-btn ad-btn-primary" disabled={busy} onClick={() => void api.publish(form.published_at || undefined)}>
@@ -220,10 +223,11 @@ function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children, pub
             <button type="button" className="ad-btn ad-btn-blue" disabled={busy || (!!publishBlock && !live)} title={publishBlock} onClick={() => void api.publish(form.published_at || undefined)}>
               ➤ {live ? (future ? 'Reschedule' : 'Update Live Page') : future ? 'Schedule' : 'Publish Now'}
             </button>
-            <button type="button" className="ad-btn" disabled={busy} onClick={() => void api.preview()}>Preview</button>
+            <button type="button" className="ad-btn" disabled={busy} onClick={() => void api.preview()}>{isLiveNow(form.status, form.published_at) ? 'View live page' : 'Preview'}</button>
             {live && <button type="button" className="ad-btn" disabled={busy} onClick={() => void api.action('unpublish', 'Unpublished. It is no longer on the website.')}>Unpublish</button>}
             {form.id && <button type="button" className="ad-link ad-danger" onClick={() => setConfirm(true)}>Delete…</button>}
             {dirty && <span className="ad-unsaved">Unsaved changes</span>}
+            {form.slug && isLiveNow(form.status, form.published_at) && <LiveUrlField base={PUBLIC_BASE[kind]} slug={form.slug} />}
           </div>
           {publishBlock && !live && <p className="ad-hint">{publishBlock}</p>}
           {revisions.length > 0 && <Revisions list={revisions} onRestore={(id) => void api.restoreRevision(id)} />}

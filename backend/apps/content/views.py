@@ -126,6 +126,8 @@ def load_public_or_preview(model, request, slug, qs):
     token = (getattr(request, 'query_params', None) or request.GET).get('preview')
     if token:
         obj = model.objects.filter(slug=slug).first()
+        if obj and qs.filter(pk=obj.pk).exists():
+            return obj, False  # already live: its preview is the public page (callers drop the token from the URL)
         if obj and services.check_preview_token(token, model.KIND, obj.pk):
             return obj, True
         raise Http404
@@ -324,6 +326,9 @@ class ActionView(APIView):
         obj = get_object_or_404(self.model_class, pk=pk)
         kind = self.model_class.KIND
         if self.action == 'preview':
+            if self.model_class.objects.public().filter(pk=obj.pk).exists():
+                # A live item has nothing to preview; opening the public URL keeps a noindex preview link from being shared.
+                return Response({'url': f'{settings.SITE_URL}{services.BASE_PATH[kind]}/{obj.slug}', 'live': True})
             token = services.make_preview_token(kind, obj.pk)
             return Response({'url': f'{services.BASE_PATH[kind]}/{obj.slug}?preview={token}', 'expires_in': services.PREVIEW_MAX_AGE})
         if self.action == 'publish':

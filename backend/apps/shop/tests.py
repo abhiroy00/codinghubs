@@ -324,6 +324,16 @@ class ProjectGuideTests(ShopBase):
         self.assertEqual(r.status_code, 200)
         self.assertIn('noindex', r['X-Robots-Tag'])
 
+    def test_live_guide_preview_is_its_public_url(self):
+        g = self.new_guide()
+        draft_url = self.api.post(f'/api/admin/project-guides/{g["id"]}/preview/').json()['url']
+        self.api.post(f'/api/admin/project-guides/{g["id"]}/publish/')
+        live = self.api.post(f'/api/admin/project-guides/{g["id"]}/preview/').json()
+        self.assertEqual(live['url'], f'https://codinghubs.in/project-guides/{g["slug"]}')
+        old = self.anon.get(draft_url)
+        self.assertEqual(old.status_code, 301)
+        self.assertEqual(old['Location'], f'/project-guides/{g["slug"]}')
+
 
 # ====================== inventory / coupons / settings / stats ======================
 

@@ -320,6 +320,22 @@ class SecurityTests(ContentBase):
         self.assertEqual(html.status_code, 200)
         self.assertIn('noindex', html['X-Robots-Tag'])
 
+    def test_preview_of_a_live_post_is_the_public_url(self):
+        b = self.make_blog('Live preview')
+        draft_url = self.api.post(f'/api/admin/blogs/{b["id"]}/preview/').json()['url']
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        r = self.api.post(f'/api/admin/blogs/{b["id"]}/preview/').json()
+        self.assertEqual(r['url'], f'https://codinghubs.in/blog/{b["slug"]}')  # no noindex preview link for a published post
+        self.assertTrue(r['live'])
+        pub = self.as_user(None)
+        old = pub.get(draft_url)  # a preview link copied before publishing now leads to the indexable page
+        self.assertEqual(old.status_code, 301)
+        self.assertEqual(old['Location'], f'/blog/{b["slug"]}')
+        self.assertEqual(pub.get(f'/blog/{b["slug"]}?preview=anything').status_code, 301)
+        api = pub.get(f'/api/blogs/{b["slug"]}/?preview=anything')
+        self.assertEqual(api.status_code, 200)
+        self.assertFalse(api.json()['preview'])
+
 
 class CaseStudyTests(ContentBase):
     def make_case(self, title='Logistics rollout', **kw):

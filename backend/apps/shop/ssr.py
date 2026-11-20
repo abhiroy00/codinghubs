@@ -5,7 +5,7 @@ from html import escape
 from django.conf import settings
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count, Q
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_GET
 
@@ -84,6 +84,8 @@ def store_detail(request, slug):
         obj, preview = load_published_or_preview(Product, request, slug, payloads.public_products())
     except Http404:
         return not_found('Product not found')
+    if not preview and 'preview' in request.GET:  # preview link to a live item: use the clean, indexable URL
+        return HttpResponsePermanentRedirect(f'/store/{obj.slug}')
     data = payloads.product_detail(obj, preview)
     html = render_to_string('shop/store_detail.html', {'a': data, 'preview': preview})
     return respond(data['seo'], html, preview=preview, data={'kind': 'product', 'slug': obj.slug, 'article': data})
@@ -115,6 +117,8 @@ def project_detail(request, slug):
         obj, preview = load_published_or_preview(Project, request, slug, payloads.public_projects())
     except Http404:
         return not_found('Project not found')
+    if not preview and 'preview' in request.GET:  # preview link to a live item: use the clean, indexable URL
+        return HttpResponsePermanentRedirect(f'/projects/{obj.slug}')
     # the HTML is the same for everyone (public data only); the browser app re-fetches the per-user view
     data = payloads.project_detail(obj, None, preview)
     html = render_to_string('shop/project_detail.html', {'a': data, 'preview': preview})
@@ -143,6 +147,8 @@ def guide_detail(request, slug):
         obj, preview = load_published_or_preview(ProjectGuide, request, slug, payloads.public_guides())
     except Http404:
         return not_found('Guide not found')
+    if not preview and 'preview' in request.GET:  # preview link to a live item: use the clean, indexable URL
+        return HttpResponsePermanentRedirect(f'/project-guides/{obj.slug}')
     data = payloads.guide_detail(obj, None, preview)  # anonymous view: locked sections are empty, so nothing paid reaches the HTML
     html = render_to_string('shop/guide_detail.html', {'a': data, 'date': fmt_date(obj.published_at), 'preview': preview})
     return respond(data['seo'], html, preview=preview, data={'kind': 'guide', 'slug': obj.slug, 'article': data})

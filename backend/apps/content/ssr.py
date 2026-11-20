@@ -198,6 +198,8 @@ def blog_detail(request, slug):
         return not_found('Article not found')
     if isinstance(obj, str):
         return HttpResponsePermanentRedirect(f'/blog/{obj}')
+    if not preview and 'preview' in request.GET:  # a preview link to a live item: send people and crawlers to the clean URL
+        return HttpResponsePermanentRedirect(f'/blog/{obj.slug}')
     data = blog_detail_payload(obj, preview)
     seo = data['seo']
     html = render_to_string('content/blog_detail.html', {'a': data, 'date': fmt_date(obj.published_at), 'preview': preview})
@@ -242,6 +244,8 @@ def case_detail(request, slug):
         return not_found('Case study not found')
     if isinstance(obj, str):
         return HttpResponsePermanentRedirect(f'/case-studies/{obj}')
+    if not preview and 'preview' in request.GET:  # a preview link to a live item: send people and crawlers to the clean URL
+        return HttpResponsePermanentRedirect(f'/case-studies/{obj.slug}')
     data = case_detail_payload(obj, preview)
     html = render_to_string('content/case_detail.html', {'a': data, 'date': fmt_date(obj.published_at), 'preview': preview})
     return respond(data['seo'], html, preview=preview, data={'kind': 'case', 'slug': obj.slug, 'article': data})

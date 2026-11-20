@@ -118,6 +118,8 @@ def load_published_or_preview(model, request, slug, qs):
     token = request.query_params.get('preview') if hasattr(request, 'query_params') else request.GET.get('preview')
     if token:
         obj = model.objects.filter(slug=slug).first()
+        if obj and qs.filter(pk=obj.pk).exists():
+            return obj, False  # already live: its preview is the public page (SSR drops the token with a redirect)
         kind = {'Product': 'product', 'Project': 'project', 'ProjectGuide': 'guide'}[model.__name__]
         if obj and content_services.check_preview_token(token, kind, obj.pk):
             return obj, True
