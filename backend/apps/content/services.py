@@ -154,6 +154,12 @@ def organization_ref() -> dict:
     return {'@type': 'EducationalOrganization', '@id': ORG_ID, 'name': 'Coding Hubs School of AI', 'url': f'{settings.SITE_URL}/', 'logo': LOGO_URL}
 
 
+def is_organization_author(name: str) -> bool:
+    """A byline such as "Coding Hubs Team" names the institute, not a person, so it must not become a schema.org Person."""
+    lowered = name.strip().lower()
+    return 'coding hubs' in lowered or lowered == 'team' or lowered.endswith(' team')
+
+
 def article_json_ld(obj, kind, canonical, description, image) -> dict:
     node = {
         '@type': 'BlogPosting' if kind == 'blog' else 'Article',
@@ -170,7 +176,7 @@ def article_json_ld(obj, kind, canonical, description, image) -> dict:
     node['dateModified'] = (obj.updated_at or obj.published_at).isoformat() if (obj.updated_at or obj.published_at) else None
     if not node['dateModified']:
         del node['dateModified']
-    if obj.author_name:
+    if obj.author_name and not is_organization_author(obj.author_name):
         node['author'] = {'@type': 'Person', 'name': obj.author_name, **({'jobTitle': obj.author_title} if obj.author_title else {})}
     else:
         node['author'] = {'@id': ORG_ID, '@type': 'EducationalOrganization', 'name': 'Coding Hubs School of AI'}

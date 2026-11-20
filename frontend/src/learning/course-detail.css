@@ -50,3 +50,6 @@
 
 @media (max-width:900px){.cd-trio{grid-template-columns:1fr}.cd-projects .learn-project-grid{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.cd-curriculum .learn-modules details,.cd-curriculum .learn-modules details:hover{transition:none;transform:none}}
+.cd-guide-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,16rem),1fr));gap:.75rem;margin:0;padding:0;list-style:none}
+.cd-guide-list a{display:block;height:100%;padding:.9rem 1rem;border:1px solid var(--ui-border,#d8dee9);border-radius:var(--ui-radius);color:inherit;font-weight:600;text-decoration:none;transition:border-color .2s,box-shadow .2s}
+.cd-guide-list a:hover,.cd-guide-list a:focus-visible{border-color:var(--ui-primary);box-shadow:var(--ui-shadow-hover)}

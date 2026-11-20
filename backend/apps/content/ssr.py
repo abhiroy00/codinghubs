@@ -8,6 +8,7 @@ import logging
 import time
 import urllib.request
 from html import escape
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.core.paginator import EmptyPage, Paginator
@@ -122,16 +123,22 @@ def card_ctx(items, base):
     return [{**i, 'url': f'{base}/{i["slug"]}', 'date': fmt_date(i.get('published_at'))} for i in items]
 
 
-def listing_seo(kind, page, extra_qs, indexable):
-    label, path = ('Blog', '/blog') if kind == 'blog' else ('Case Studies', '/case-studies')
+def listing_seo(kind, page, filters, indexable, topic=''):
+    """`filters` is an ordered list of (key, value) pairs kept in the canonical; page 1 never carries `page=`."""
+    path = '/blog' if kind == 'blog' else '/case-studies'
+    suffix = '' if page == 1 else f', page {page}'
     if kind == 'blog':
-        title = 'AI & Coding Blog | Coding Hubs School of AI' if page == 1 else f'AI & Coding Blog, page {page} | Coding Hubs School of AI'
-        desc = 'Guides, tutorials and career advice on AI, programming and data from the team at Coding Hubs School of AI, Delhi.'
+        if topic:
+            title = f'{topic} Articles{suffix} | Coding Hubs Blog'
+            desc = f'{topic} guides, tutorials and career advice from Coding Hubs School of AI, Delhi.'
+        else:
+            title = f'AI & Coding Blog{suffix} | Coding Hubs School of AI'
+            desc = 'Guides, tutorials and career advice on AI, programming and data from the team at Coding Hubs School of AI, Delhi.'
     else:
-        title = 'Case Studies | Coding Hubs School of AI'
+        title = f'Case Studies{suffix} | Coding Hubs School of AI'
         desc = 'Real learning and project stories from Coding Hubs School of AI, with only the details the people involved have verified.'
-    qs = extra_qs + (f'page={page}' if page > 1 else '')
-    canonical = f'{settings.SITE_URL}{path}' + (f'?{qs}' if qs else '')
+    params = [(k, v) for k, v in filters if v] + ([('page', page)] if page > 1 else [])
+    canonical = f'{settings.SITE_URL}{path}' + (f'?{urlencode(params)}' if params else '')
     return {
         'title': title, 'description': desc, 'robots': 'index, follow, max-image-preview:large' if indexable else 'noindex, follow',
         'canonical': canonical,
@@ -139,7 +146,7 @@ def listing_seo(kind, page, extra_qs, indexable):
         'json_ld': {
             '@context': 'https://schema.org',
             '@graph': [
-                {'@type': 'CollectionPage', '@id': f'{settings.SITE_URL}{path}#webpage', 'url': f'{settings.SITE_URL}{path}', 'name': title, 'description': desc, 'inLanguage': 'en-IN', 'isPartOf': {'@id': f'{settings.SITE_URL}/#website'}},
+                {'@type': 'CollectionPage', '@id': f'{canonical}#webpage', 'url': canonical, 'name': title, 'description': desc, 'inLanguage': 'en-IN', 'isPartOf': {'@id': f'{settings.SITE_URL}/#website'}},
             ],
         },
     }
@@ -152,26 +159,33 @@ def blog_list(request):
     qs = public_blog_qs()
     cat = p.get('category', '')
     query = p.get('q', '').strip()[:100]
+    from .models import BlogCategory
+
+    topic = ''
     if cat:
-        qs = qs.filter(category__slug=cat)
+        category = BlogCategory.objects.filter(slug=cat).first()
+        if category is None:
+            return not_found('Category not found')
+        topic = category.name
+        qs = qs.filter(category=category)
     if query:
         qs = qs.filter(title__icontains=query)
     paginator = Paginator(qs.order_by('-published_at'), 9)
     try:
         pg = paginator.page(page)
     except EmptyPage:
-        pg = paginator.page(paginator.num_pages)
-        page = pg.number
+        if query:  # a search past its last page still shows the last results; it is noindex anyway
+            pg = paginator.page(paginator.num_pages)
+            page = pg.number
+        else:  # a listing page that does not exist is a real 404, not a copy of the last page
+            return not_found('Page not found')
     from .serializers import BlogCardSerializer
 
     items = BlogCardSerializer(pg.object_list, many=True).data
-    extra = f'category={cat}&' if cat else ''
-    seo = listing_seo('blog', page, extra, indexable=not query)
-    html = render_to_string('content/blog_list.html', {'items': card_ctx(items, '/blog'), 'page': pg, 'cat': cat, 'query': query})
-    from .models import BlogCategory
-
+    seo = listing_seo('blog', page, [('category', cat)], indexable=not query and paginator.count > 0, topic=topic)
     public = Blog.objects.public().values('pk')
-    cats = [{'name': c.name, 'slug': c.slug, 'blog_count': c.n} for c in BlogCategory.objects.annotate(n=Count('blogs', filter=Q(blogs__pk__in=public))).filter(n__gt=0)]
+    cats = [{'name': c.name, 'slug': c.slug, 'blog_count': c.n} for c in BlogCategory.objects.annotate(n=Count('blogs', filter=Q(blogs__pk__in=public))).filter(n__gt=0).order_by('name')]
+    html = render_to_string('content/blog_list.html', {'items': card_ctx(items, '/blog'), 'page': pg, 'cat': cat, 'topic': topic, 'categories': cats, 'query': query})
     data = {'kind': 'blog-list', 'page': page, 'category': cat, 'q': query, 'results': items, 'count': paginator.count, 'categories': cats}
     return respond(seo, html, data=data)
 
@@ -205,13 +219,15 @@ def case_list(request):
     try:
         pg = paginator.page(page)
     except EmptyPage:
-        pg = paginator.page(paginator.num_pages)
-        page = pg.number
+        if query:
+            pg = paginator.page(paginator.num_pages)
+            page = pg.number
+        else:
+            return not_found('Page not found')
     from .serializers import CaseCardSerializer
 
     items = CaseCardSerializer(pg.object_list, many=True).data
-    extra = f'industry={industry}&' if industry else ''
-    seo = listing_seo('case', page, extra, indexable=not query)
+    seo = listing_seo('case', page, [('industry', industry)], indexable=not query and paginator.count > 0)
     html = render_to_string('content/case_list.html', {'items': card_ctx(items, '/case-studies'), 'page': pg, 'query': query})
     industries = sorted(set(public_case_qs().exclude(industry='').values_list('industry', flat=True)))
     data = {'kind': 'case-list', 'page': page, 'industry': industry, 'q': query, 'results': items, 'count': paginator.count, 'industries': industries}

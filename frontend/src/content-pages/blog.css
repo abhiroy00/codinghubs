@@ -24,9 +24,9 @@
 .bl-stats span{font-size:.8rem;color:rgba(255,255,255,.72);text-transform:uppercase;letter-spacing:.08em}
 
 .bl-main>.bl-chips{margin:0 0 1.6rem}
-.bl-chips button{cursor:pointer;transition:all .2s}
-.bl-chips button:active{transform:scale(.95)}
-.bl-chips button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.bl-chips button,.bl-chips a{cursor:pointer;transition:all .2s}
+.bl-chips button:active,.bl-chips a:active{transform:scale(.95)}
+.bl-chips button.on,.bl-chips a.on{background:var(--navy);border-color:var(--navy);color:#fff}
 
 .bl-in{animation:blUp .55s both;animation-delay:calc(var(--i,0) * 70ms)}
 .bl-card{position:relative}

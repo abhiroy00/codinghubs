@@ -194,6 +194,22 @@ if (urls.some((u) => u.endsWith('/404'))) fail('404 page is in the sitemap')
 const shell = await read('index.html')
 if (!/<meta name="robots" content="noindex/.test(shell)) fail('SPA shell index.html must be noindex')
 
+// ---------- course "Related guides" point at seeded blog posts ----------
+{
+  const seedDir = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../../backend/apps/content/seed_data/blog_posts')
+  if (existsSync(seedDir)) {
+    const seeded = new Set()
+    for (const f of readdirSync(seedDir).filter((n) => n.endsWith('.html'))) {
+      const m = /^slug:\s*(\S+)/m.exec(await readFile(path.join(seedDir, f), 'utf8'))
+      if (m) seeded.add(m[1])
+    }
+    const related = await readFile(path.resolve(path.dirname(new URL(import.meta.url).pathname), '../src/learning/relatedArticles.ts'), 'utf8')
+    for (const [, slug] of related.matchAll(/slug: '([a-z0-9-]+)'/g)) {
+      if (!seeded.has(slug)) fail(`relatedArticles.ts links /blog/${slug}, which is not a seeded blog post`)
+    }
+  }
+}
+
 // ---------- report ----------
 console.log(`checked ${pages.length} indexable pages from sitemap.xml`)
 console.log(`sitemap URLs: ${urls.length}; robots Disallow rules: ${disallows.length}`)

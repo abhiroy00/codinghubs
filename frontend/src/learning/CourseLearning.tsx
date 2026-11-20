@@ -1,6 +1,7 @@
 import { CourseBrochureSection } from './CourseBrochureSection'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { relatedArticlesFor } from './relatedArticles'
 import { useAuth } from '../lib/auth-context'
 import { useLenisRef } from '../lib/lenis-context'
 import { api } from '../lib/api'
@@ -142,6 +143,11 @@ export function CourseDetails() {
         subtitle="Build real, reviewable work you can show in interviews.">
         <Reveal stagger className="learn-project-grid">{course.projects.map((project, i) => <AnimatedCard key={project.name} className="cd-project"><p className="cd-project-num">Project {String(i + 1).padStart(2, '0')}</p><h3>{project.name}</h3><p>{project.description}</p><div className="cd-chips">{project.skills.map((skill) => <span key={skill} className="ui-chip">{skill}</span>)}</div><h4>Objectives</h4><ul>{project.objectives.map((item) => <li key={item}>{item}</li>)}</ul><h4>Suggested steps</h4><ol>{project.steps.map((item) => <li key={item}>{item}</li>)}</ol><p className="cd-outcome"><b>Outcome:</b> {project.outcome}</p><ProjectCompletion slug={course.slug} project={project.name}/></AnimatedCard>)}</Reveal>
       </Section>
+
+      {relatedArticlesFor(course.slug).length > 0 && <Section id="cd-guides" className="cd-guides" align="left" badge="Free guides" title="Related guides"
+        subtitle={<>Answers to common questions about {course.name}, from roadmaps to interview preparation.</>}>
+        <ul className="cd-guide-list">{relatedArticlesFor(course.slug).map((article) => <li key={article.slug}><Link to={`/blog/${article.slug}`}>{article.title}</Link></li>)}</ul>
+      </Section>}
 
       <Section id="cd-faq" className="cd-faq" align="left" badge="FAQ" title="Frequently asked questions">
         <Reveal stagger>{course.faqs.map((faq) => <details className="learn-faq" key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</Reveal>

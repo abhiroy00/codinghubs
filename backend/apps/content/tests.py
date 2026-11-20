@@ -395,6 +395,36 @@ class SeoTests(ContentBase):
         self.assertIn('id="build-a-model"', html)
         self.assertIn('words</span>', html)
 
+    def test_team_byline_is_the_organization_not_a_person(self):
+        b = self.make_blog('Team article', author_name='Coding Hubs Team')
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        html = self.as_user(None).get(f'/blog/{b["slug"]}').content.decode()
+        ld = json.loads(html.split('<script type="application/ld+json">')[1].split('</script>')[0])
+        author = ld['@graph'][0]['author']
+        self.assertEqual(author['@type'], 'EducationalOrganization')
+        self.assertEqual(author['@id'], 'https://codinghubs.in/#organization')
+
+    def test_blog_listing_canonicals_categories_and_out_of_range_pages(self):
+        cat = BlogCategory.objects.create(name='Python', slug='python')
+        for i in range(10):
+            b = self.make_blog(f'Python post {i}')
+            Blog.objects.filter(pk=b['id']).update(category=cat)
+            self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        anon = self.as_user(None)
+        html = anon.get('/blog?category=python').content.decode()
+        self.assertIn('<link rel="canonical" href="https://codinghubs.in/blog?category=python">', html)
+        self.assertIn('<title>Python Articles | Coding Hubs Blog</title>', html)
+        self.assertIn('<h1>Python Articles</h1>', html)
+        self.assertIn('href="/blog?category=python"', html)  # crawlable category link
+        self.assertIn('href="/blog?category=python&amp;page=2"', html)
+        page2 = anon.get('/blog?category=python&page=2').content.decode()
+        self.assertIn('href="https://codinghubs.in/blog?category=python&amp;page=2"', page2)
+        self.assertIn('rel="prev" href="/blog?category=python"', page2)  # page 1 has no page parameter
+        self.assertEqual(anon.get('/blog?page=2').status_code, 200)
+        self.assertIn('rel="prev" href="/blog"', anon.get('/blog?page=2').content.decode())
+        self.assertEqual(anon.get('/blog?page=99').status_code, 404)
+        self.assertEqual(anon.get('/blog?category=no-such-topic').status_code, 404)
+
     def test_canonical_override_and_unique_titles(self):
         b = self.make_blog('Override', canonical_url='https://example.org/original', seo_title='Custom title', meta_description='Custom description.')
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')

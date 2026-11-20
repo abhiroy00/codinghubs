@@ -66,20 +66,27 @@ export function CardView({ c, base, index = 0 }: { c: Card; base: string; index?
   )
 }
 
-export function Pager({ page, count, size, onPage }: { page: number; count: number; size: number; onPage: (p: number) => void }) {
+export function Pager({ page, count, size, onPage, hrefFor }: { page: number; count: number; size: number; onPage: (p: number) => void; hrefFor?: (p: number) => string }) {
   const pages = Math.max(1, Math.ceil(count / size))
   if (pages <= 1) return null
+  // With hrefFor, neighbouring pages are real links, so crawlers that render the page can still reach every listed item.
+  const step = (target: number, label: string, rel: 'prev' | 'next', enabled: boolean) =>
+    enabled && hrefFor ? (
+      <Link to={hrefFor(target)} rel={rel}>
+        {label}
+      </Link>
+    ) : (
+      <button type="button" disabled={!enabled} onClick={() => onPage(target)}>
+        {label}
+      </button>
+    )
   return (
     <nav className="bl-pager" aria-label="Pagination">
-      <button type="button" disabled={page <= 1} onClick={() => onPage(page - 1)}>
-        Previous
-      </button>
+      {step(page - 1, 'Previous', 'prev', page > 1)}
       <span>
         Page {page} of {pages}
       </span>
-      <button type="button" disabled={page >= pages} onClick={() => onPage(page + 1)}>
-        Next
-      </button>
+      {step(page + 1, 'Next', 'next', page < pages)}
     </nav>
   )
 }

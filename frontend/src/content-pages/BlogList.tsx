@@ -1,13 +1,48 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { getBlogCategories, getBlogs, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
-import { CardView, PageFrame, Pager, SearchIcon } from './shared'
+import { CardView, PageFrame, Pager, SearchIcon, useSeo } from './shared'
+import { LOGO_URL, SITE_ID } from '../seo/site'
+import { SITE_URL } from '../locations/registry'
+import type { Seo } from './api'
 import './blog.css'
 import { HeroVideo } from '../components/HeroVideo'
 import { Reveal } from '../components/ui'
 
 type Cats = { name: string; slug: string; blog_count: number }[]
 const initial = typeof document === 'undefined' ? null : takeInitial()
+
+/** Canonical-style list URL: no empty parameters and no `page=1`, matching the server-rendered links and canonicals. */
+function listHref({ category, q, page = 1 }: { category: string; q: string; page?: number }) {
+  const next = new URLSearchParams()
+  if (category) next.set('category', category)
+  if (q) next.set('q', q)
+  if (page > 1) next.set('page', String(page))
+  const query = next.toString()
+  return query ? `/blog?${query}` : '/blog'
+}
+
+/** Mirrors listing_seo() in backend/apps/content/ssr.py so in-app filter and page changes keep the head consistent. */
+function listSeo(category: string, topic: string, q: string, page: number, count: number | null): Seo {
+  const suffix = page > 1 ? `, page ${page}` : ''
+  const title = topic ? `${topic} Articles${suffix} | Coding Hubs Blog` : `AI & Coding Blog${suffix} | Coding Hubs School of AI`
+  const description = topic
+    ? `${topic} guides, tutorials and career advice from Coding Hubs School of AI, Delhi.`
+    : 'Guides, tutorials and career advice on AI, programming and data from the team at Coding Hubs School of AI, Delhi.'
+  const canonical = SITE_URL + listHref({ category, q: '', page })
+  const indexable = !q && count !== 0
+  return {
+    title,
+    description,
+    canonical,
+    robots: indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow',
+    og: { type: 'website', title, description, image: LOGO_URL, url: canonical },
+    json_ld: {
+      '@context': 'https://schema.org',
+      '@graph': [{ '@type': 'CollectionPage', '@id': `${canonical}#webpage`, url: canonical, name: title, description, inLanguage: 'en-IN', isPartOf: { '@id': SITE_ID } }],
+    },
+  }
+}
 
 export function BlogList() {
   const [params, setParams] = useSearchParams()
@@ -68,6 +103,9 @@ export function BlogList() {
     setParams(next)
   }
 
+  const topic = cats.find((c) => c.slug === category)?.name ?? ''
+  const seo = useMemo(() => (category && !topic ? null : listSeo(category, topic, q, page, data ? data.count : null)), [category, topic, q, page, data])
+  useSeo(seo)
   const featured = useMemo(() => (page === 1 && !category && !q ? data?.results.find((c) => c.is_featured) : undefined), [data, page, category, q])
   const rest = data?.results.filter((c) => c !== featured) ?? []
 
@@ -80,7 +118,15 @@ export function BlogList() {
         <div className="bl-hero-in">
           <p className="bl-eyebrow">Learn · Blog</p>
           <h1>
-            AI &amp; Coding <span>Blog</span>
+            {topic ? (
+              <>
+                {topic} <span>Articles</span>
+              </>
+            ) : (
+              <>
+                AI &amp; Coding <span>Blog</span>
+              </>
+            )}
           </h1>
           <p className="bl-lead">Guides, tutorials and career advice on AI, programming and data from Coding Hubs School of AI.</p>
           <label className="bl-search">
@@ -103,16 +149,16 @@ export function BlogList() {
       </section>
 
       {cats.length > 0 && (
-        <div className="bl-chips" role="group" aria-label="Categories">
-          <button type="button" className={!category ? 'on' : ''} aria-pressed={!category} onClick={() => go({ category: null })}>
+        <nav className="bl-chips" aria-label="Blog categories">
+          <Link to={listHref({ category: '', q })} className={!category ? 'on' : ''} aria-current={!category ? 'page' : undefined}>
             All
-          </button>
+          </Link>
           {cats.map((c) => (
-            <button key={c.slug} type="button" className={category === c.slug ? 'on' : ''} aria-pressed={category === c.slug} onClick={() => go({ category: c.slug })}>
+            <Link key={c.slug} to={listHref({ category: c.slug, q })} className={category === c.slug ? 'on' : ''} aria-current={category === c.slug ? 'page' : undefined}>
               {c.name} <span>({c.blog_count})</span>
-            </button>
+            </Link>
           ))}
-        </div>
+        </nav>
       )}
 
       {error && <p className="bl-state" role="alert">We could not load the articles. Please refresh the page.</p>}
@@ -133,7 +179,7 @@ export function BlogList() {
           <CardView key={c.slug} c={c} base="/blog" index={i} />
         ))}
       </Reveal>
-      {data && <Pager page={page} count={data.count} size={PAGE_SIZE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
+      {data && <Pager page={page} count={data.count} size={PAGE_SIZE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} hrefFor={(p) => listHref({ category, q, page: p })} />}
     </PageFrame>
   )
 }
