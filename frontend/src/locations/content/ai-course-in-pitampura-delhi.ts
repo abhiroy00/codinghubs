@@ -2,10 +2,10 @@ import type { LocationContent } from '../types'
 
 const content: LocationContent = {
   slug: 'ai-course-in-pitampura-delhi',
-  metaTitle: 'AI Course in Pitampura Delhi | Coding Hubs School of AI',
+  metaTitle: 'AI & Coding Courses near Pitampura, Delhi | Coding Hubs',
   metaDescription:
-    'Looking for AI training in Pitampura, Delhi? Explore AI learning pathways, curriculum topics, project ideas and enquiry options at Coding Hubs School of AI.',
-  h1: 'AI Course in Pitampura, Delhi',
+    'Python, web development, data analytics and AI courses for Pitampura learners, with our head office in nearby Netaji Subhash Place and a free online demo.',
+  h1: 'AI and Coding Courses near Pitampura, Delhi',
   hero: [
     'Pitampura is one of the busiest residential neighbourhoods of north-west Delhi, with families, schools, coaching classes, offices and markets packed into a few kilometres. If you live or study here and have started searching for an AI course in Pitampura, you are probably asking the same set of questions as many other learners: what should I actually learn, how long will it take, will it be too difficult for me, and where do I go to get honest answers?',
     'This page is written to help with exactly those questions. Coding Hubs School of AI is an institute that teaches practical skills in artificial intelligence, software development and data. Our official head office is at 904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi – 110034, which is in the same north-west part of the city as Pitampura. We have not set up a separate classroom in Pitampura, and we will not pretend otherwise; instead, this guide explains how a learner from your area can explore AI training and reach us.',
@@ -170,6 +170,18 @@ const content: LocationContent = {
     { q: 'Can parents join the first conversation?', a: 'Yes, parents and guardians are welcome, whether by phone, on the demo session or at the office. Hearing the syllabus, time commitment and terms together helps families decide with confidence.' },
     { q: 'Do you promise placement?', a: 'No. Nobody can honestly promise a job. Ask what career support your course includes, what it involves and what it does not promise, and treat any guarantee you hear anywhere with caution.' },
     { q: 'What should I verify before enrolling?', a: 'Check the syllabus, the format and timings, the fee and refund terms, the projects and the certificate. Also be honest about how many hours you can give each week so that the plan is realistic.' },
+  ],
+  courseLinks: [
+    { label: 'Python Training Course', href: '/courses/python-training-course/' },
+    { label: 'Python Full Stack Course', href: '/courses/python-full-stack/' },
+    { label: 'React Full Stack Course', href: '/courses/react-full-stack/' },
+    { label: 'MERN Stack Course', href: '/courses/mern-stack/' },
+    { label: 'Java Full Stack + Gen AI Course', href: '/courses/java-full-stack-developer-gen-ai/' },
+    { label: 'Data Analytics Course', href: '/courses/data-analytics/' },
+    { label: 'Data Analytics Using Python Course', href: '/courses/data-analytics-using-python/' },
+    { label: 'Generative AI Course', href: '/courses/generative-ai/' },
+    { label: 'Agentic AI Course', href: '/courses/agentic-ai/' },
+    { label: 'All courses', href: '/courses/' },
   ],
   conclusion: [
     'AI is a useful skill for students, professionals and business owners in Pitampura because it combines programming, data thinking and careful judgement. You do not need to become a researcher to benefit. A steady, honest approach, starting from the foundations and building small projects, is enough to make real progress.',

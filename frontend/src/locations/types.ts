@@ -35,4 +35,6 @@ export interface LocationContent {
   sections: ContentSection[]
   faqs: Faq[]
   conclusion: string[]
+  /** Real course pages relevant to searches from this area (shown as links before the FAQs). */
+  courseLinks?: { label: string; href: string }[]
 }

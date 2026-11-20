@@ -253,7 +253,9 @@ def case_detail(request, slug):
 
 @require_GET
 def content_sitemap(request):
-    rows = [(f'{settings.SITE_URL}/blog', None), (f'{settings.SITE_URL}/case-studies', None), (f'{settings.SITE_URL}/newsletter/', None), (f'{settings.SITE_URL}/brochures/', None)]
+    rows = [(f'{settings.SITE_URL}/newsletter/', None), (f'{settings.SITE_URL}/brochures/', None)]
+    # A listing with nothing published is served noindex (listing_seo), so it stays out of the sitemap until it has items.
+    rows += [(f'{settings.SITE_URL}{path}', None) for path, qs in (('/blog', public_blog_qs()), ('/case-studies', public_case_qs())) if qs.exists()]
     from apps.newsletter.models import Issue
     rows += [(f'{settings.SITE_URL}/newsletter/issues/{slug}/', modified) for slug, modified in Issue.objects.filter(published=True).values_list('slug', 'updated_at')]
     rows += list(services.canonical_sitemap_rows(public_blog_qs(), '/blog'))

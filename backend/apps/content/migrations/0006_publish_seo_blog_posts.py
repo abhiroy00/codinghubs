@@ -41,16 +41,21 @@ def parse(text):
 def publish_posts(apps, schema_editor):
     if getattr(settings, 'TESTING', False):
         return
+    seed_dir = Path(__file__).resolve().parent.parent / 'seed_data' / 'blog_posts'
+    publish_files(apps, schema_editor, sorted(seed_dir.glob('*.html')))
+
+
+def publish_files(apps, schema_editor, paths):
+    """Creates each seeded post whose slug does not exist yet (also used by later migrations)."""
     from apps.content.sanitize import sanitize_html
 
     Blog = apps.get_model('content', 'Blog')
     BlogCategory = apps.get_model('content', 'BlogCategory')
     BlogTag = apps.get_model('content', 'BlogTag')
     db = schema_editor.connection.alias
-    seed_dir = Path(__file__).resolve().parent.parent / 'seed_data' / 'blog_posts'
     now = timezone.now()
 
-    for index, path in enumerate(sorted(seed_dir.glob('*.html'))):
+    for index, path in enumerate(paths):
         post = parse(path.read_text(encoding='utf-8'))
         if Blog.objects.using(db).filter(slug=post['slug']).exists():
             continue

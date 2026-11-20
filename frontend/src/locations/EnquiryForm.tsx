@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { trackLead } from '../lib/analytics'
 import { api } from '../lib/api'
 import { COURSE_OPTIONS, EDUCATION_OPTIONS, WHATSAPP } from '../pages/free-session/data'
 import { FsIcon } from '../pages/free-session/icons'
@@ -50,6 +51,7 @@ export function EnquiryForm({ locality, sourcePage }: { locality: string; source
         source_page: sourcePage,
       })
       setDone({ firstName, course })
+      trackLead('location_enquiry', course)
     } catch {
       setStatus({ msg: 'Something went wrong and your request was not sent. Please try again, or call us on the number shown on this page.', type: 'error' })
     } finally {

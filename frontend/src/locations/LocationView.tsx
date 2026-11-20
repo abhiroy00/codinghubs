@@ -181,6 +181,20 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
                 </section>
               ))}
 
+              {content.courseLinks && content.courseLinks.length > 0 && (
+                <section id="courses" className="loc-sec" aria-labelledby="courses-h">
+                  <h2 id="courses-h">
+                    <span className="lv-h2t">Coding, data and AI courses to ask about</span>
+                  </h2>
+                  <p>Each course page lists the curriculum, practical projects and frequently asked questions. Ask the head office team about the current batch format, schedule and fees.</p>
+                  <ul className="loc-course-links">
+                    {content.courseLinks.map((c) => (
+                      <li key={c.href}><a href={c.href}>{c.label}</a></li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
               <section id="faqs" className="loc-sec" aria-labelledby="faqs-h">
                 <p className="lv-kicker">
                   <FsIcon id="i-ticket" />

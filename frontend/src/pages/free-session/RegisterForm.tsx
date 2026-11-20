@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { trackLead } from '../../lib/analytics'
 import { api } from '../../lib/api'
 import { COURSE_OPTIONS, EDUCATION_OPTIONS, WHATSAPP } from './data'
 import { FsIcon } from './icons'
@@ -118,6 +119,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
         // The server accepted the lead even when local storage is unavailable.
       }
       setThanks({ firstName: name.trim().split(' ')[0], course })
+      trackLead(enrollment ? 'enquiry' : 'demo', course)
     } catch {
       setStatus({ msg: enrollment ? 'Your enquiry could not be sent. Please try again.' : 'Something went wrong and your registration was not submitted. Please try again.', type: 'error' })
     } finally {

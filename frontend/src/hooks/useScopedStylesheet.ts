@@ -25,8 +25,9 @@ export function useScopedStylesheet(hrefs: string[], { preserveFirstPaint = fals
       if (existing && existing.sheet) continue // already in the page and loaded
       // The prerendered homepage already has its first-viewport styles inline. Its
       // preload will attach the full sheet; duplicating it here would hide a painted page.
-      if (preserveFirstPaint && document.querySelector('style[data-home-critical]') &&
-        document.querySelector(`link[rel="preload"][as="style"][href="${href}"]`)) continue
+      // Prerendered course pages do the same for every component (data-page-critical).
+      const critical = document.querySelector('style[data-page-critical]') || (preserveFirstPaint && document.querySelector('style[data-home-critical]'))
+      if (critical && document.querySelector(`link[rel="preload"][as="style"][href="${href}"]`)) continue
 
       const link = document.createElement('link')
       link.rel = 'stylesheet'

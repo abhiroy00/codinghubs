@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { App } from './App'
 import { loadContent } from './locations/content-loader'
+import { trackContactClicks } from './lib/analytics'
 // Self-hosted fonts first (index CSS, so every page has them, including the prerendered ones before JS runs).
 import './styles/fonts.css'
 import './styles/global.css'
@@ -61,6 +62,7 @@ async function start() {
       <App />
     </StrictMode>
   )
+  trackContactClicks()
   if (path === '/' && root.hasChildNodes()) hydrateRoot(root, app)
   else createRoot(root).render(app)
 }

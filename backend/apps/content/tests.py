@@ -430,6 +430,15 @@ class SeoTests(ContentBase):
         rows = self.api.get('/api/admin/blogs/?ordering=-views').json()['results']
         self.assertEqual((rows[0]['slug'], rows[0]['view_count']), (b['slug'], 2))
 
+    def test_empty_listing_is_noindex_and_left_out_of_the_sitemap(self):
+        anon = self.as_user(None)
+        self.assertIn('noindex', anon.get('/case-studies').content.decode())
+        self.assertNotIn('/case-studies</loc>', anon.get('/sitemap-content.xml').content.decode())
+        c = self.api.post('/api/admin/case-studies/', {'title': 'First case', 'overview': '<p>x</p>'}, format='json').json()
+        self.api.post(f'/api/admin/case-studies/{c["id"]}/publish/')
+        self.assertIn('/case-studies</loc>', anon.get('/sitemap-content.xml').content.decode())
+        self.assertIn('index, follow', anon.get('/case-studies').content.decode())
+
     def test_team_byline_is_the_organization_not_a_person(self):
         b = self.make_blog('Team article', author_name='Coding Hubs Team')
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')

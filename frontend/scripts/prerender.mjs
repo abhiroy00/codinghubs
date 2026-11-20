@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto'
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { inlineHomeCriticalCss } from './home-critical-css.mjs'
+import { inlineCourseCriticalCss, inlineHomeCriticalCss } from './home-critical-css.mjs'
 
 const root = path.resolve(import.meta.dirname, '..')
 const dist = path.join(root, 'dist')
@@ -224,7 +224,8 @@ for (const page of pages) {
   const file = path.join(dist, page.file)
   await mkdir(path.dirname(file), { recursive: true })
   const html = render(page)
-  await writeFile(file, page.path === '/' ? await inlineHomeCriticalCss(html, dist) : html)
+  const courseDetail = /^\/courses\/[^/]+\/$/.test(page.path)
+  await writeFile(file, page.path === '/' ? await inlineHomeCriticalCss(html, dist) : courseDetail ? await inlineCourseCriticalCss(html, dist) : html)
 }
 
 // sitemap: indexable canonical URLs only; no <lastmod> (we do not track real content-change dates)

@@ -1905,3 +1905,6 @@ body{background:var(--u-wash) fixed}
 .lx-dot-online{background:#16a34a;box-shadow:0 0 0 3px #16a34a26}
 .lx-dot-office{background:#1554d6;box-shadow:0 0 0 3px #1554d626}
 .lx-card .lx-mode{position:relative;z-index:1;display:block;color:#475569;font-size:.82rem;font-weight:600}
+.loc-course-links{display:flex;flex-wrap:wrap;gap:.5rem;padding:0;margin:1rem 0 0;list-style:none}
+.loc-course-links a{display:inline-block;padding:.45rem .9rem;border:1px solid var(--line-2);border-radius:8px;background:#fff;color:var(--navy);font-weight:600;text-decoration:none}
+.loc-course-links a:hover{border-color:var(--yellow-2);background:var(--yellow-soft)}

@@ -26,11 +26,14 @@ export function learningMeta(kind: 'courses' | 'interview', slug?: string): Seo 
   const indexable = (!slug || !!course) && (!prep || !course || (source?.availableDays ?? 0) >= 3)
   const description = course
     ? prep ? 'Prepare for ' + course.name + ' interviews with topic-wise answers, practical examples and ' + (source?.complete ? 'a 30-day study roadmap.' : 'available subject-specific lessons.')
-      : 'Explore ' + course.name + ': learning topics, tools, project ideas and related interviewaration resources from Coding Hubs.'
+      : 'Explore ' + course.name + ': learning topics, tools, project ideas and related interview preparation resources from Coding Hubs School of AI, Delhi.'
     : prep ? 'Browse subject-specific interview guides, questions, worked examples and available study lessons. Read without an account and save progress optionally.'
       : 'Explore Coding Hubs courses in AI, full-stack development, data, cloud, security and design, with learning paths and related interview preparation.'
-  const title = course ? shortName + (prep ? ': Interview' : ' Course') + ' | Coding Hubs'
-    : prep ? 'Interview Guides & Practice Topics | Coding Hubs' : 'Courses & Learning Paths | Coding Hubs'
+  const courseLabel = /\bcourse$/i.test(shortName) ? shortName : shortName + ' Course'
+  // The institute is in Delhi; the title names its location without claiming where each course is taught.
+  const courseTitle = [`${courseLabel} | Coding Hubs School of AI, Delhi`, `${courseLabel} | Coding Hubs, Delhi`, `${courseLabel} | Coding Hubs`].find(t => t.length <= 65) ?? `${courseLabel} | Coding Hubs`
+  const title = course ? (prep ? shortName + ': Interview | Coding Hubs' : courseTitle)
+    : prep ? 'Interview Guides & Practice Topics | Coding Hubs' : 'AI, Coding & Data Courses | Coding Hubs School of AI, Delhi'
   const trail = [['Home', '/'], [prep ? 'Interview' : 'Courses', '/' + kind + '/'], ...(course ? [[name, path]] : [])]
   const graph: Record<string, unknown>[] = [organizationNode(),
     { '@type':'WebPage', '@id':canonical + '#webpage', url:canonical, name:title, description, inLanguage:'en-IN', about:{ '@id':ORG_ID } },

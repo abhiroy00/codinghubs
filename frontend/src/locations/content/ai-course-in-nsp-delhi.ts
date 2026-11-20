@@ -2,10 +2,10 @@ import type { LocationContent } from '../types'
 
 const content: LocationContent = {
   slug: 'ai-course-in-nsp-delhi',
-  metaTitle: 'AI Course in NSP Delhi | Coding Hubs School of AI',
+  metaTitle: 'AI & Coding Institute in NSP, Delhi | Coding Hubs School of AI',
   metaDescription:
-    'Explore AI learning options for students and professionals in NSP, Delhi: AI course topics, practical project ideas and enquiry details at Coding Hubs School of AI.',
-  h1: 'AI Course in NSP (Netaji Subhash Place), Delhi',
+    'Coding Hubs School of AI has its head office in Netaji Subhash Place (NSP), Delhi. Explore AI, Python, web development and data analytics courses.',
+  h1: 'AI and Coding Institute in NSP (Netaji Subhash Place), Delhi',
   hero: [
     'If you are searching for an AI course in NSP, Delhi, you are looking at the neighbourhood where Coding Hubs School of AI has its official head office. Our address is 904, 9th Floor, Pearls Best Heights-I, Netaji Subhash Place, Delhi – 110034. That makes this page a little different from the other location guides on our website: for learners in and around NSP, the head office is the place where enquiries are answered, questions about the syllabus are discussed and, where it suits you, a conversation about your goals can happen face to face.',
     'Coding Hubs School of AI teaches practical skills in Artificial Intelligence, software development, data analytics, design and digital marketing. Our public course list includes Generative AI, Agentic AI, AI Engineering, Vibe Coding, Python, Data Analytics Using Python and Data Science Pro, along with a free two-hour live online demo session and short fifteen-day programs that are delivered online. This page is a long, plain-language guide. It explains what artificial intelligence is, what a sensible AI learning path looks like, who can follow it, what careers it can lead towards, which projects are worth building, and how to enquire without wasting your time.',
@@ -173,6 +173,18 @@ const content: LocationContent = {
     { q: 'Will you help me find a job after the course?', a: 'No institute can honestly guarantee a job, and we do not. Ask the counsellor what career support your course includes, how it is delivered and what it cannot promise, so that your expectations are realistic.' },
     { q: 'What should I prepare before I come in for a discussion?', a: 'Write down your education or work background, any programming you have done, your goal and the hours you can study weekly. Add your questions about syllabus, format, fee, projects and certificate. It makes the meeting short and useful.' },
     { q: 'Can I enquire without visiting?', a: 'Yes. You can use the form on this page, call, email or message on WhatsApp. Many learners start that way and visit the head office only if they want a face-to-face discussion afterwards.' },
+  ],
+  courseLinks: [
+    { label: 'Python Training Course', href: '/courses/python-training-course/' },
+    { label: 'Python Full Stack Course', href: '/courses/python-full-stack/' },
+    { label: 'React Full Stack Course', href: '/courses/react-full-stack/' },
+    { label: 'MERN Stack Course', href: '/courses/mern-stack/' },
+    { label: 'Java Full Stack + Gen AI Course', href: '/courses/java-full-stack-developer-gen-ai/' },
+    { label: 'Data Analytics Course', href: '/courses/data-analytics/' },
+    { label: 'Data Analytics Using Python Course', href: '/courses/data-analytics-using-python/' },
+    { label: 'Generative AI Course', href: '/courses/generative-ai/' },
+    { label: 'Agentic AI Course', href: '/courses/agentic-ai/' },
+    { label: 'All courses', href: '/courses/' },
   ],
   conclusion: [
     'Learning AI is a practical decision, not a fashion statement. The skills you build, from Python and data handling to retrieval and evaluation, are useful across many roles, and the best way to find out whether they suit you is to try, ask questions and look at real syllabus details.',

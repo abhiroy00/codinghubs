@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { trackLead } from '../lib/analytics'
 import { api } from '../lib/api'
 import { WA } from '../lib/icons'
 import { useLenisRef } from '../lib/lenis-context'
@@ -68,6 +69,7 @@ export function LeadModal() {
         mode: demo ? 'demo' : 'expert',
         source_page: location.pathname,
       })
+      trackLead(demo ? 'demo' : 'enquiry', course === 'Not sure yet' ? '' : course)
     } catch {
       // backend lead storage is best-effort; the WhatsApp handoff below is the real conversion path
     } finally {

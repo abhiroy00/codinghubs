@@ -5,10 +5,19 @@ import { transform } from 'lightningcss'
 
 /** Extract first-viewport rules from the actual home markup, preserving the original CSS cascade. */
 export async function inlineHomeCriticalCss(html, dist) {
+  // Keep the header, announcement, hero, their ancestors and floating contact controls.
+  return inlineCriticalCss(html, dist, { remove: 'main > :not(#home), #site-footer, .ch-band', marker: 'data-home-critical' })
+}
+
+/** Course detail pages: the header, course hero and section navigation are the first viewport. */
+export async function inlineCourseCriticalCss(html, dist) {
+  return inlineCriticalCss(html, dist, { remove: '.learn-detail > :not(.learn-hero):not(.course-section-nav), #site-footer, .ch-band', marker: 'data-page-critical' })
+}
+
+async function inlineCriticalCss(html, dist, { remove, marker }) {
   const dom = new JSDOM(html)
   const document = dom.window.document
-  // Keep the header, announcement, hero, their ancestors and floating contact controls.
-  document.querySelectorAll('main > :not(#home), #site-footer, .ch-band').forEach(el => el.remove())
+  document.querySelectorAll(remove).forEach(el => el.remove())
   const classes = new Set(), ids = new Set(), tags = new Set(['strong', 'small'])
   for (const element of document.querySelectorAll('*')) {
     element.classList.forEach(name => classes.add(name))
@@ -46,5 +55,5 @@ export async function inlineHomeCriticalCss(html, dist) {
     // noscript retains the complete design for visitors without JavaScript.
     html = html.replace(link, `${link.replace('rel="stylesheet"', 'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"')}<noscript>${link}</noscript>`)
   }
-  return html.replace('</head>', `<style data-home-critical>${rules.join('\n').replace(/<\/style/gi, '<\\/style')}</style></head>`)
+  return html.replace('</head>', `<style ${marker}>${rules.join('\n').replace(/<\/style/gi, '<\\/style')}</style></head>`)
 }
