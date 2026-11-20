@@ -1,0 +1,122 @@
+title: How to Build Your First AI Chatbot with an LLM API
+slug: build-ai-chatbot
+excerpt: Build your first AI chatbot step by step: choose an LLM API, keep your key secure, manage conversation history, write a system prompt, add a web interface and deploy safely.
+category: Artificial Intelligence
+tags: Generative AI, Chatbot, LLM, Python, AI Projects
+seo_title: How to Build an AI Chatbot with an LLM API (Beginner Guide)
+meta_description: Learn to build an AI chatbot: pick an LLM API, secure your key, handle conversation history, write a system prompt, add guardrails and deploy.
+focus_keyword: build ai chatbot
+search_intent: Learn how to build a chatbot using a large language model API.
+---
+<p>Building a chatbot is one of the best first projects in generative AI. It teaches you how large language model APIs work, how conversations are managed, and how to turn an AI model into a useful product. In this guide you will <strong>build an AI chatbot</strong> for a coding institute's FAQ, step by step, with Python. The same approach works for customer support, study helpers and internal tools.</p>
+
+<h2>How an LLM chatbot works</h2>
+<ol>
+<li>The user types a message in a chat interface.</li>
+<li>Your back end sends the conversation (instructions plus previous messages plus the new message) to an LLM API.</li>
+<li>The model returns a reply.</li>
+<li>Your back end sends the reply to the interface and stores it in the conversation history.</li>
+</ol>
+<p>The model itself does not remember previous turns between API calls. Your application provides the memory by sending the relevant history each time.</p>
+
+<h2>Step 1: Choose an LLM API</h2>
+<p>Several companies provide LLM APIs with official Python and JavaScript SDKs. Compare them on answer quality for your use case, speed, cost per token, context window size, data and privacy policies, and the languages your users speak. Most offer a free or low-cost way to experiment. Read the provider's current documentation for exact model names and SDK syntax, as these change regularly.</p>
+
+<h2>Step 2: Keep your API key secret</h2>
+<ul>
+<li>Store the key in an environment variable or a <code>.env</code> file that is listed in <code>.gitignore</code>.</li>
+<li>Never put the key in front-end JavaScript; anyone can read code that runs in the browser.</li>
+<li>Call the API only from your back end.</li>
+<li>Set usage limits or budgets in the provider dashboard.</li>
+</ul>
+<pre><code class="language-bash">pip install python-dotenv fastapi uvicorn
+# plus your provider's official SDK</code></pre>
+
+<h2>Step 3: Write a system prompt</h2>
+<p>The system prompt defines the chatbot's job, tone and limits:</p>
+<pre><code class="language-text">You are the help assistant for a coding institute.
+Answer questions about courses, schedules and admissions using only the
+information provided below. Be friendly, concise and use simple English.
+If a question is not covered, say you are not sure and suggest contacting
+the admissions team. Never invent fees, dates or placement numbers.
+
+Information:
+...course details, timings and policies...</code></pre>
+<p>Clear limits ("never invent fees") are what make a chatbot trustworthy.</p>
+
+<h2>Step 4: Send a conversation to the API</h2>
+<p>The exact function names depend on your provider's SDK, but the structure is similar everywhere:</p>
+<pre><code class="language-python">import os
+from dotenv import load_dotenv
+
+load_dotenv()
+SYSTEM_PROMPT = open("system_prompt.txt", encoding="utf-8").read()
+
+def ask_model(history, user_message, client):
+    messages = history + [{"role": "user", "content": user_message}]
+    # Replace with your provider's chat/messages call:
+    reply = client.chat(system=SYSTEM_PROMPT, messages=messages, max_tokens=500)
+    history.append({"role": "user", "content": user_message})
+    history.append({"role": "assistant", "content": reply})
+    return reply</code></pre>
+
+<h2>Step 5: Manage conversation history</h2>
+<p>Every token you send costs money and uses the context window. Common strategies:</p>
+<ul>
+<li>Keep only the last few exchanges.</li>
+<li>Summarise older parts of the conversation into a short note.</li>
+<li>Store history per user session in a database or cache, keyed by a session ID.</li>
+</ul>
+
+<h2>Step 6: Build a simple API with FastAPI</h2>
+<pre><code class="language-python">from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+sessions = {}   # use a database or cache in production
+
+class ChatIn(BaseModel):
+    session_id: str
+    message: str
+
+@app.post("/api/chat")
+def chat(body: ChatIn):
+    history = sessions.setdefault(body.session_id, [])
+    reply = ask_model(history[-10:], body.message, client)
+    return {"reply": reply}</code></pre>
+
+<h2>Step 7: Add a chat interface</h2>
+<p>Create a simple web page or React component with a message list, an input box and a send button. Show a "typing…" indicator while waiting, disable the button during the request, and display friendly errors. For a better experience, use your provider's streaming option so the reply appears word by word.</p>
+
+<h2>Step 8: Add guardrails</h2>
+<ul>
+<li><strong>Input limits:</strong> cap message length and requests per user to control cost and abuse.</li>
+<li><strong>Topic limits:</strong> tell the model to stay on its subject and politely decline unrelated requests.</li>
+<li><strong>Prompt injection:</strong> users may type "ignore your instructions". Keep sensitive data out of prompts, and never let the model perform actions without checks in your code.</li>
+<li><strong>Human handoff:</strong> offer a way to contact a real person.</li>
+<li><strong>Logging:</strong> record conversations (with user consent and privacy in mind) to find mistakes.</li>
+</ul>
+
+<h2>Step 9: Test with real questions</h2>
+<p>Write 20–30 questions real users would ask, including tricky ones: questions with no answer in your information, ambiguous questions, and attempts to make the bot go off-topic. Check every answer. Update the system prompt and information, and test again. This simple evaluation loop is what separates demo chatbots from reliable ones.</p>
+
+<h2>Step 10: Deploy</h2>
+<p>Deploy the FastAPI back end to a cloud platform with your API key set as an environment variable, deploy the front end to a static host, and restrict CORS to your domain. Monitor usage and costs in the provider dashboard.</p>
+
+<h2>Ideas to extend your chatbot</h2>
+<ul>
+<li>Answer from long documents using <a href="/blog/what-is-rag">retrieval-augmented generation (RAG)</a>.</li>
+<li>Let the bot call tools, such as checking batch timings from a database, which turns it into an <a href="/blog/ai-agents-explained">AI agent</a>.</li>
+<li>Support Hindi and other Indian languages.</li>
+<li>Add voice input and output.</li>
+</ul>
+<p>Learn to build AI applications with mentors in the <a href="/courses">Coding Hubs Generative AI courses</a>.</p>
+===FAQ===
+Q: Can I build an AI chatbot without machine learning knowledge?
+A: Yes. With an LLM API, you mainly need programming skills, usually Python or JavaScript, plus good prompt design. You do not need to train a model yourself.
+Q: How much does it cost to run an AI chatbot?
+A: Costs depend on the provider, the model, the number of users and how much text is sent per conversation. Limiting history length and message size helps control costs.
+Q: Why does my chatbot give wrong answers?
+A: LLMs can hallucinate when they lack information. Provide accurate source information, instruct the bot to say when it does not know, and test with real questions.
+Q: Should I call the LLM API from the front end?
+A: No. Call it from your back end so your API key stays secret and you can add limits, logging and validation.

@@ -1,0 +1,122 @@
+title: Top 35 React Interview Questions and Answers (Freshers and Experienced)
+slug: react-interview-questions
+excerpt: Thirty-five React interview questions with clear answers: JSX, components, props and state, hooks, rendering, keys, performance, state management, routing and testing.
+category: Interview Preparation
+tags: React, Interview Questions, JavaScript, Front-End Development, Interview Preparation
+seo_title: Top 35 React Interview Questions and Answers (2026)
+meta_description: 35 React interview questions and answers: virtual DOM, JSX, props vs state, hooks, useEffect, keys, memoization, context, routing and performance.
+focus_keyword: react interview questions
+search_intent: Prepare for React developer interviews.
+---
+<p>React is the most requested front-end skill in many job listings, so React questions appear in front-end, full stack and MERN interviews. Interviewers want to know whether you understand how React works, not just its syntax. These 35 <strong>React interview questions</strong> cover fundamentals for freshers and deeper topics often asked of experienced candidates.</p>
+
+<h2>Fundamentals</h2>
+<h4>1. What is React?</h4>
+<p>React is an open-source JavaScript library for building user interfaces from reusable components. It updates the UI efficiently when data changes.</p>
+<h4>2. What is JSX?</h4>
+<p>JSX is a syntax extension that lets you write HTML-like markup in JavaScript. Build tools compile it into regular JavaScript function calls that create React elements.</p>
+<h4>3. What is the virtual DOM?</h4>
+<p>A lightweight in-memory representation of the UI. When state changes, React creates a new tree, compares it with the previous one (reconciliation) and applies only the necessary changes to the real DOM.</p>
+<h4>4. What is the difference between a component and an element?</h4>
+<p>A component is a function (or class) that returns UI. An element is the plain object describing what to render, produced when you write JSX like <code>&lt;Button /&gt;</code>.</p>
+<h4>5. What is the difference between props and state?</h4>
+<p>Props are inputs passed from a parent and are read-only inside the component. State is data owned and managed by the component that can change over time and triggers re-renders.</p>
+<h4>6. What are controlled and uncontrolled components?</h4>
+<p>In a controlled component, form input values are stored in React state and updated via <code>onChange</code>. In an uncontrolled component, the DOM holds the value, which you read with a ref.</p>
+<h4>7. Why are keys important in lists?</h4>
+<p>Keys help React identify which items changed, were added or removed. They should be stable and unique, such as database IDs. Using array indexes as keys can cause bugs when items are reordered.</p>
+<h4>8. What is a fragment?</h4>
+<p>A wrapper (<code>&lt;&gt;...&lt;/&gt;</code> or <code>&lt;React.Fragment&gt;</code>) that groups elements without adding an extra DOM node.</p>
+<h4>9. What is conditional rendering?</h4>
+<p>Showing different UI based on conditions, using <code>if</code> statements, the ternary operator or <code>&amp;&amp;</code>.</p>
+<h4>10. What is lifting state up?</h4>
+<p>Moving shared state to the closest common parent so that sibling components can access and update it through props.</p>
+
+<h2>Hooks</h2>
+<h4>11. What are hooks?</h4>
+<p>Functions such as <code>useState</code> and <code>useEffect</code> that let function components use state, side effects and other React features.</p>
+<h4>12. What are the rules of hooks?</h4>
+<p>Call hooks only at the top level of a component or custom hook (not in loops, conditions or nested functions), and only from React function components or custom hooks.</p>
+<h4>13. How does <code>useState</code> work?</h4>
+<p>It returns the current state value and a setter function. Calling the setter schedules a re-render with the new value. Use the updater form <code>setCount(c =&gt; c + 1)</code> when the new state depends on the previous state.</p>
+<h4>14. What is <code>useEffect</code> used for?</h4>
+<p>Synchronising a component with external systems: fetching data, subscriptions, timers or manually changing the DOM. It runs after render.</p>
+<h4>15. Explain the <code>useEffect</code> dependency array.</h4>
+<p>No array: runs after every render. Empty array: runs after the first render (and again in development when Strict Mode intentionally re-runs effects). With dependencies: runs when any listed value changes. Return a cleanup function to undo the effect.</p>
+<pre><code class="language-javascript">useEffect(() =&gt; {
+  const id = setInterval(() =&gt; setSeconds((s) =&gt; s + 1), 1000);
+  return () =&gt; clearInterval(id);   // cleanup
+}, []);</code></pre>
+<h4>16. What is <code>useRef</code>?</h4>
+<p>It returns a mutable object whose <code>.current</code> value persists across renders without causing re-renders. Used for DOM references and storing values like timer IDs.</p>
+<h4>17. What is the difference between <code>useMemo</code> and <code>useCallback</code>?</h4>
+<p><code>useMemo</code> memoises a computed value; <code>useCallback</code> memoises a function. Both recompute only when dependencies change and are useful for performance optimisation.</p>
+<h4>18. What is <code>useContext</code>?</h4>
+<p>A hook that reads a value from React Context, avoiding passing props through many layers (prop drilling).</p>
+<h4>19. What is <code>useReducer</code>?</h4>
+<p>An alternative to <code>useState</code> for complex state logic, using a reducer function <code>(state, action) =&gt; newState</code>.</p>
+<h4>20. What is a custom hook?</h4>
+<p>A function starting with <code>use</code> that combines other hooks to reuse stateful logic, such as <code>useFetch</code> or <code>useLocalStorage</code>.</p>
+
+<h2>Rendering and performance</h2>
+<h4>21. When does a React component re-render?</h4>
+<p>When its state changes, when its parent re-renders, or when a context it uses changes.</p>
+<h4>22. What is <code>React.memo</code>?</h4>
+<p>A higher-order component that skips re-rendering a component when its props have not changed (shallow comparison).</p>
+<h4>23. How do you optimise React performance?</h4>
+<p>Avoid unnecessary state, keep state close to where it is used, memoise expensive calculations and components where profiling shows a benefit, virtualise long lists, lazy-load routes and components, and reduce bundle size.</p>
+<h4>24. What is code splitting?</h4>
+<p>Splitting the JavaScript bundle so parts load only when needed, using <code>React.lazy</code> and <code>Suspense</code> or route-based splitting.</p>
+<h4>25. What is Strict Mode?</h4>
+<p>A development-only tool that highlights potential problems, for example by intentionally running some functions and effects twice to reveal side effects that are not cleaned up correctly.</p>
+<h4>26. Why should you not mutate state directly?</h4>
+<p>React detects changes by comparing references. Mutating an object or array in place may not trigger a re-render and leads to bugs. Always create new objects and arrays.</p>
+
+<h2>Architecture and ecosystem</h2>
+<h4>27. What is prop drilling and how do you avoid it?</h4>
+<p>Passing props through many intermediate components that do not need them. Avoid it with Context, composition (passing components as children) or a state management library.</p>
+<h4>28. When would you use Redux or another state library?</h4>
+<p>When many unrelated components share complex, frequently updated state. Redux Toolkit, Zustand and similar libraries provide predictable updates and good developer tools. For server data, tools like TanStack Query handle caching and refetching.</p>
+<h4>29. How does routing work in React apps?</h4>
+<p>Libraries like React Router map URLs to components on the client side, so navigation does not reload the page. Frameworks like Next.js provide file-based routing.</p>
+<h4>30. What is the difference between client-side rendering and server-side rendering?</h4>
+<p>With client-side rendering, the browser downloads JavaScript and builds the page. With server-side rendering, the server sends ready HTML, improving first load and SEO, and React then hydrates it to add interactivity.</p>
+<h4>31. What are React Server Components?</h4>
+<p>Components that run only on the server (supported by frameworks such as Next.js), fetch data close to the source and send rendered output to the client, reducing the JavaScript shipped to the browser.</p>
+<h4>32. What are error boundaries?</h4>
+<p>Components that catch rendering errors in their child tree and display a fallback UI instead of crashing the whole app.</p>
+
+<h2>Testing and practical questions</h2>
+<h4>33. How do you test React components?</h4>
+<p>With a test runner such as Jest or Vitest and React Testing Library, testing behaviour from the user's perspective: rendering, clicking, typing and checking what appears on screen.</p>
+<h4>34. How do you fetch data in React?</h4>
+<p>In <code>useEffect</code> with <code>fetch</code> or a client library, handling loading and error states and cancelling stale requests, or with a data-fetching library such as TanStack Query, or through server components and loaders in a framework.</p>
+<h4>35. Build a counter that cannot go below zero.</h4>
+<pre><code class="language-javascript">function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setCount((c) =&gt; Math.max(0, c - 1))}&gt;-&lt;/button&gt;
+      &lt;span&gt;{count}&lt;/span&gt;
+      &lt;button onClick={() =&gt; setCount((c) =&gt; c + 1)}&gt;+&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<h2>How to prepare</h2>
+<ul>
+<li>Revise <a href="/blog/javascript-concepts-before-react">JavaScript fundamentals</a>: closures, promises, the event loop and array methods are asked alongside React.</li>
+<li>Build small components live: a to-do list, a search filter, a modal, a fetch-and-display list.</li>
+<li>Be able to explain why your code re-renders and how you would optimise it.</li>
+<li>Prepare to walk through a React project you built.</li>
+</ul>
+<p>Practise more with <a href="/interview-prep">Coding Hubs interview preparation</a>, or revisit <a href="/blog/react-js-for-beginners">React JS for beginners</a>.</p>
+===FAQ===
+Q: What React topics are asked most in interviews?
+A: Props vs state, hooks (especially useState and useEffect), keys, the virtual DOM, re-rendering, performance optimisation, context and state management.
+Q: Do React interviews include JavaScript questions?
+A: Yes. Most React interviews include JavaScript fundamentals such as closures, promises, async/await, the event loop, this, and array methods.
+Q: Are class components still asked about in interviews?
+A: Occasionally, for maintaining older code. Most modern interviews focus on function components and hooks.
+Q: How can I practise React for interviews?
+A: Build small components from scratch without tutorials, time yourself, and explain your decisions aloud as you would in a live coding round.

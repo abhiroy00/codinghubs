@@ -1,0 +1,168 @@
+title: React JS for Beginners: Components, Props, State and Hooks Explained
+slug: react-js-for-beginners
+excerpt: Learn React JS from scratch: what React is, setting up a project with Vite, JSX, components, props, state, events, lists, forms, useEffect and fetching data.
+category: Web Development
+tags: React, JavaScript, Front-End Development, Beginners, Tutorial
+seo_title: React JS for Beginners: Components, Props, State and Hooks
+meta_description: A beginner React JS tutorial: set up with Vite, then learn JSX, components, props, state, events, lists, forms, useEffect and fetching data.
+focus_keyword: react js for beginners
+search_intent: Learn the fundamentals of React as a beginner.
+---
+<p>React is a JavaScript library for building user interfaces, and it is one of the most requested front-end skills in job listings. It lets you build pages from small, reusable pieces called components, and it updates the screen efficiently when your data changes. This <strong>React JS for beginners</strong> guide explains the core ideas with simple examples you can run today.</p>
+
+<h2>What you should know first</h2>
+<p>React is JavaScript, so you should be comfortable with variables, functions, arrow functions, arrays and objects, array methods like <code>map</code> and <code>filter</code>, destructuring, modules (<code>import</code>/<code>export</code>) and promises. If these feel shaky, read <a href="/blog/javascript-concepts-before-react">JavaScript concepts to learn before React</a> first.</p>
+
+<h2>Set up a React project</h2>
+<p>Install Node.js (LTS version), then create a project with Vite, a fast build tool:</p>
+<pre><code class="language-bash">npm create vite@latest my-app -- --template react
+cd my-app
+npm install
+npm run dev</code></pre>
+<p>Open the address shown in the terminal. Edit <code>src/App.jsx</code> and the page updates instantly.</p>
+
+<h2>JSX: HTML-like syntax in JavaScript</h2>
+<p>JSX lets you write markup inside JavaScript:</p>
+<pre><code class="language-javascript">function App() {
+  const name = 'Coding Hubs';
+  return &lt;h1&gt;Welcome to {name}&lt;/h1&gt;;
+}</code></pre>
+<p>A few rules: use <code>className</code> instead of <code>class</code>, close every tag (<code>&lt;img /&gt;</code>), return a single parent element (or a fragment <code>&lt;&gt;...&lt;/&gt;</code>), and put JavaScript expressions inside curly braces.</p>
+
+<h2>Components</h2>
+<p>A component is a function that returns JSX. Component names start with a capital letter.</p>
+<pre><code class="language-javascript">function CourseCard() {
+  return (
+    &lt;div className="card"&gt;
+      &lt;h2&gt;Python Programming&lt;/h2&gt;
+      &lt;p&gt;Learn Python from scratch.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default function App() {
+  return (
+    &lt;main&gt;
+      &lt;CourseCard /&gt;
+      &lt;CourseCard /&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+
+<h2>Props: passing data to components</h2>
+<p>Props are inputs to a component, like function arguments:</p>
+<pre><code class="language-javascript">function CourseCard({ title, weeks }) {
+  return (
+    &lt;div className="card"&gt;
+      &lt;h2&gt;{title}&lt;/h2&gt;
+      &lt;p&gt;{weeks} weeks&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+&lt;CourseCard title="React Full Stack" weeks={20} /&gt;</code></pre>
+<p>Props are read-only. A component should never change its own props.</p>
+
+<h2>State with useState</h2>
+<p>State is data that changes over time and causes the component to re-render:</p>
+<pre><code class="language-javascript">import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+      Clicked {count} times
+    &lt;/button&gt;
+  );
+}</code></pre>
+<p>Always update state with the setter function, never by changing the variable directly. When the new value depends on the old one, use the updater form: <code>setCount((c) =&gt; c + 1)</code>.</p>
+
+<h2>Handling events</h2>
+<p>React events use camelCase names like <code>onClick</code>, <code>onChange</code> and <code>onSubmit</code>, and you pass a function, not a string. For forms, call <code>event.preventDefault()</code> to stop the page from reloading.</p>
+
+<h2>Rendering lists</h2>
+<pre><code class="language-javascript">const courses = [
+  { id: 1, title: 'Python' },
+  { id: 2, title: 'Java Full Stack' },
+  { id: 3, title: 'MERN with Gen AI' },
+];
+
+function CourseList() {
+  return (
+    &lt;ul&gt;
+      {courses.map((c) =&gt; &lt;li key={c.id}&gt;{c.title}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+}</code></pre>
+<p>Each item needs a stable, unique <code>key</code> so React can track it efficiently. Avoid using the array index as a key when the list can change order.</p>
+
+<h2>Conditional rendering</h2>
+<pre><code class="language-javascript">{isLoggedIn ? &lt;Dashboard /&gt; : &lt;LoginButton /&gt;}
+{cart.length &gt; 0 &amp;&amp; &lt;CheckoutButton /&gt;}</code></pre>
+
+<h2>Controlled forms</h2>
+<pre><code class="language-javascript">function SignupForm() {
+  const [email, setEmail] = useState('');
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log('Submitting', email);
+  }
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;label htmlFor="email"&gt;Email&lt;/label&gt;
+      &lt;input id="email" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;
+      &lt;button type="submit"&gt;Sign up&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+<h2>Side effects with useEffect</h2>
+<p><code>useEffect</code> runs code after rendering, for example fetching data:</p>
+<pre><code class="language-javascript">import { useEffect, useState } from 'react';
+
+function Users() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((r) =&gt; r.json())
+      .then((data) =&gt; setUsers(data))
+      .finally(() =&gt; setLoading(false));
+  }, []);   // empty array: run once after the first render
+
+  if (loading) return &lt;p&gt;Loading…&lt;/p&gt;;
+  return &lt;ul&gt;{users.map((u) =&gt; &lt;li key={u.id}&gt;{u.name}&lt;/li&gt;)}&lt;/ul&gt;;
+}</code></pre>
+<p>The dependency array controls when the effect runs again. Return a cleanup function to cancel timers or subscriptions.</p>
+
+<h2>Lifting state up</h2>
+<p>When two components need the same data, move the state to their closest common parent and pass it down as props. For data needed in many places (such as the logged-in user or theme), use Context or a state library later.</p>
+
+<h2>What to learn next</h2>
+<ul>
+<li>React Router for multiple pages.</li>
+<li>More hooks: <code>useRef</code>, <code>useMemo</code>, <code>useCallback</code>, <code>useContext</code>, custom hooks.</li>
+<li>State management with Redux Toolkit or Zustand.</li>
+<li>TypeScript with React.</li>
+<li>Next.js for server rendering and SEO.</li>
+<li>Testing with React Testing Library.</li>
+</ul>
+
+<h2>Beginner React project ideas</h2>
+<ol>
+<li>A to-do app with filters (all, active, completed).</li>
+<li>A movie search app using a public API.</li>
+<li>A shopping cart with totals and quantity controls.</li>
+<li>A quiz app with a timer and score.</li>
+</ol>
+<p>Ready for a full path? Follow the <a href="/blog/mern-stack-developer-roadmap">MERN stack roadmap</a>, practise <a href="/blog/react-interview-questions">React interview questions</a>, or join the <a href="/courses">Coding Hubs React Full Stack course</a>.</p>
+===FAQ===
+Q: Is React easy for beginners?
+A: React is approachable if you already know JavaScript basics. Its core ideas, components, props and state, are few, but you need solid JavaScript to use them comfortably.
+Q: Is React a framework or a library?
+A: React is a library for building user interfaces. Frameworks such as Next.js build on React to add routing, server rendering and other features.
+Q: How long does it take to learn React?
+A: With good JavaScript knowledge, most learners understand React fundamentals in three to six weeks and become comfortable building projects in two to three months.
+Q: Should I learn JavaScript before React?
+A: Yes. Learning JavaScript fundamentals first makes React much easier, because most React problems are actually JavaScript problems.

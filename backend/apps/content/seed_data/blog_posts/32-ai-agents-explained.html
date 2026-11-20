@@ -1,0 +1,118 @@
+title: AI Agents Explained: What They Are and How to Build One
+slug: ai-agents-explained
+excerpt: AI agents explained simply: how they differ from chatbots, the agent loop, tools and function calling, memory, planning, guardrails, evaluation and how to build a simple agent.
+category: Artificial Intelligence
+tags: AI Agents, Generative AI, LLM, AI Engineering, Automation
+seo_title: AI Agents Explained: What They Are and How to Build One
+meta_description: Learn what AI agents are, how they differ from chatbots, how tools and function calling work, the agent loop, guardrails and how to build one.
+focus_keyword: ai agents
+search_intent: Understand AI agents and how to build them.
+---
+<p>A chatbot answers your question. An AI agent can take action to complete your goal: look up information, call software tools, check the result and decide what to do next. <strong>AI agents</strong> are one of the most talked-about areas of generative AI, and skills in building them are increasingly requested in AI engineering roles. This guide explains how agents work and how to build a simple one safely.</p>
+
+<h2>Chatbot vs AI agent</h2>
+<table>
+<thead><tr><th></th><th>Chatbot</th><th>AI agent</th></tr></thead>
+<tbody>
+<tr><td>Main job</td><td>Respond to messages</td><td>Achieve a goal through steps</td></tr>
+<tr><td>Actions</td><td>Generates text</td><td>Calls tools: search, databases, APIs, code</td></tr>
+<tr><td>Control flow</td><td>One request, one reply</td><td>A loop: think, act, observe, repeat</td></tr>
+<tr><td>Example</td><td>"What are the batch timings?"</td><td>"Find a weekend batch with free seats and book a demo for me."</td></tr>
+</tbody>
+</table>
+
+<h2>The agent loop</h2>
+<p>Most agents follow a simple loop:</p>
+<ol>
+<li><strong>Goal:</strong> the user describes what they want.</li>
+<li><strong>Decide:</strong> the LLM chooses the next step, either a tool call or a final answer.</li>
+<li><strong>Act:</strong> your code runs the chosen tool with the arguments the model provided.</li>
+<li><strong>Observe:</strong> the tool's result is added to the conversation.</li>
+<li><strong>Repeat</strong> until the goal is achieved, a step limit is reached, or human approval is needed.</li>
+</ol>
+<p>The model never runs tools itself. It requests them, and your code decides whether and how to execute them. That separation is what keeps agents controllable.</p>
+
+<h2>Tools and function calling</h2>
+<p>Most LLM APIs support <strong>tool use</strong> (also called function calling). You describe each tool with a name, a description and a schema for its inputs. The model can respond with a structured request to call a tool instead of plain text.</p>
+<pre><code class="language-json">{
+  "name": "find_batches",
+  "description": "Find upcoming batches for a course, optionally by weekday or weekend.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "course": { "type": "string" },
+      "schedule": { "type": "string", "enum": ["weekday", "weekend"] }
+    },
+    "required": ["course"]
+  }
+}</code></pre>
+<p>Clear tool names and descriptions matter as much as the prompt: the model chooses tools based on them.</p>
+
+<h2>A simple agent loop in Python</h2>
+<pre><code class="language-python">TOOLS = {
+    "find_batches": find_batches,      # your own Python functions
+    "check_seats": check_seats,
+}
+
+def run_agent(goal, llm, max_steps=6):
+    messages = [{"role": "user", "content": goal}]
+    for _ in range(max_steps):
+        step = llm(messages, tools=TOOL_SCHEMAS)   # provider-specific call
+        if step.type == "final_answer":
+            return step.text
+        tool = TOOLS.get(step.tool_name)
+        if tool is None:
+            result = {"error": "Unknown tool"}
+        else:
+            result = tool(**step.arguments)        # validate arguments first!
+        messages.append(step.as_message())
+        messages.append({"role": "tool", "name": step.tool_name, "content": str(result)})
+    return "I could not finish this within the step limit."</code></pre>
+<p>Real SDKs use slightly different structures, but the pattern is the same.</p>
+
+<h2>Memory</h2>
+<ul>
+<li><strong>Short-term memory:</strong> the messages and tool results in the current task.</li>
+<li><strong>Long-term memory:</strong> facts saved across sessions, such as user preferences, stored in a database and retrieved when relevant (often with the same techniques as <a href="/blog/what-is-rag">RAG</a>).</li>
+</ul>
+
+<h2>Planning</h2>
+<p>For multi-step goals, agents can be asked to write a short plan first, then execute it step by step, revising when a tool result is unexpected. For predictable business processes, a fixed workflow (step 1, then step 2, then step 3) with the LLM handling only specific steps is often more reliable than a fully autonomous agent.</p>
+
+<h2>Guardrails: the most important part</h2>
+<p>Agents can take real actions, so mistakes have real consequences. Good guardrails include:</p>
+<ul>
+<li><strong>Least privilege:</strong> give the agent only the tools it needs, with read-only access where possible.</li>
+<li><strong>Validate every tool call:</strong> check arguments in code, not just in the prompt.</li>
+<li><strong>Human approval</strong> before irreversible or costly actions: payments, deleting data, sending emails to customers.</li>
+<li><strong>Step and cost limits</strong> to stop runaway loops.</li>
+<li><strong>Prompt injection defence:</strong> treat text from web pages, emails and documents as data, never as instructions.</li>
+<li><strong>Logging:</strong> record every step so you can audit what happened.</li>
+</ul>
+
+<h2>Evaluating agents</h2>
+<p>Create a set of realistic tasks with known correct outcomes. Measure the task success rate, the number of steps taken, cost per task, and whether the agent ever attempted an unsafe action. Review logs of failures to improve tool descriptions, prompts and guardrails.</p>
+
+<h2>Where agents are useful</h2>
+<ul>
+<li>Customer support that can check order status and create tickets.</li>
+<li>Research assistants that search, read and summarise sources.</li>
+<li>Coding assistants that read files, run tests and propose fixes.</li>
+<li>Internal operations: generating reports from several systems, scheduling, data entry with review.</li>
+</ul>
+
+<h2>Beginner project: a study planner agent</h2>
+<p>Give an agent three tools: <code>get_syllabus(course)</code>, <code>get_calendar(student)</code> and <code>create_study_plan(items)</code> (which saves a draft only). Ask it to "create a two-week revision plan for my Java exam around my existing classes." Log every step, limit it to eight steps, and require the student to confirm before the plan is saved.</p>
+
+<h2>Skills you need</h2>
+<p>Python or JavaScript, LLM APIs, prompt design, JSON schemas, back-end development, and solid testing habits. Start with a <a href="/blog/build-ai-chatbot">simple chatbot</a>, add retrieval, then add tools.</p>
+<p>Learn to build agents with mentors in the <a href="/courses">Coding Hubs Generative AI courses</a>.</p>
+===FAQ===
+Q: What is an AI agent in simple words?
+A: An AI agent is a system that uses a language model to decide on steps toward a goal and can call tools such as search, databases or APIs to carry out those steps.
+Q: How is an AI agent different from a chatbot?
+A: A chatbot mainly replies with text. An agent can take actions through tools, observe results and continue working in a loop until a task is complete.
+Q: Are AI agents safe?
+A: They can be used safely with guardrails: limited permissions, validation of tool calls, human approval for important actions, step limits and detailed logging.
+Q: Which language is best for building AI agents?
+A: Python is the most common, and JavaScript or TypeScript are also widely used. Both have official SDKs from major LLM providers.

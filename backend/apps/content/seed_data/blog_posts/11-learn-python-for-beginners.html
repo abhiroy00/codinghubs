@@ -1,0 +1,131 @@
+title: Learn Python for Beginners: A 30-Day Plan with Examples
+slug: learn-python-for-beginners
+excerpt: Learn Python from scratch with a simple 30-day plan: installation, variables, conditions, loops, functions, lists, dictionaries, files and your first mini projects.
+category: Python
+tags: Python, Programming Basics, Beginners, Learn to Code, Python Projects
+seo_title: Learn Python for Beginners: 30-Day Plan with Examples
+meta_description: Learn Python for beginners with this 30-day plan. Clear explanations and examples for variables, loops, functions, lists, dictionaries, files and first projects.
+focus_keyword: learn python for beginners
+search_intent: Start learning Python from zero with a structured plan.
+---
+<p>Python is often the first language people learn, and it is easy to see why. The code is short and readable, mistakes are easy to understand, and you can do useful things within days. If you want to <strong>learn Python for beginners</strong> style, starting from absolutely nothing, this 30-day plan gives you one clear goal per stage, with examples you can type and run yourself.</p>
+
+<h2>Before you start</h2>
+<p>You need a computer (Windows, macOS or Linux), an internet connection, and about one hour a day. Install Python 3 from python.org (on Windows, tick "Add Python to PATH" during installation) and a code editor such as VS Code with the Python extension. Check the installation in a terminal:</p>
+<pre><code class="language-bash">python --version</code></pre>
+<p>If you see a version number starting with 3, you are ready.</p>
+
+<h2>Days 1–3: Your first programs</h2>
+<p>Create a file called <code>hello.py</code> and run it with <code>python hello.py</code>:</p>
+<pre><code class="language-python">print("Hello, World!")
+name = input("What is your name? ")
+print(f"Welcome to Python, {name}!")</code></pre>
+<p>Learn what <code>print</code> and <code>input</code> do, and how f-strings put variables inside text. Then learn comments (lines starting with <code>#</code>) to explain your code.</p>
+
+<h2>Days 4–6: Variables and data types</h2>
+<p>A variable is a name that refers to a value. Python works out the type automatically:</p>
+<pre><code class="language-python">age = 21            # int
+price = 499.99      # float
+city = "Delhi"      # str
+is_student = True   # bool
+
+print(type(price))  # &lt;class 'float'&gt;</code></pre>
+<p>Practise converting between types with <code>int()</code>, <code>float()</code> and <code>str()</code>. Remember that <code>input()</code> always returns text, so convert it before doing maths.</p>
+
+<h2>Days 7–9: Operators and conditions</h2>
+<p>Learn arithmetic operators (<code>+ - * / // % **</code>), comparison operators (<code>== != &lt; &gt; &lt;= &gt;=</code>) and logical operators (<code>and</code>, <code>or</code>, <code>not</code>). Then make decisions with <code>if</code>:</p>
+<pre><code class="language-python">marks = int(input("Enter your marks: "))
+if marks &gt;= 90:
+    print("Grade A")
+elif marks &gt;= 75:
+    print("Grade B")
+else:
+    print("Keep practising!")</code></pre>
+<p>Notice the indentation. Python uses spaces (normally four) to show which lines belong inside a block.</p>
+
+<h2>Days 10–12: Loops</h2>
+<p>Loops repeat work. Use <code>for</code> when you know how many times, and <code>while</code> when you repeat until something changes:</p>
+<pre><code class="language-python">for i in range(1, 6):
+    print(i, "x 7 =", i * 7)
+
+password = ""
+while password != "python123":
+    password = input("Password: ")
+print("Access granted")</code></pre>
+<p>Learn <code>break</code> and <code>continue</code>, and practise by printing patterns, multiplication tables and sums of numbers.</p>
+
+<h2>Days 13–15: Functions</h2>
+<p>Functions package code you want to reuse:</p>
+<pre><code class="language-python">def is_even(number):
+    return number % 2 == 0
+
+print(is_even(10))  # True</code></pre>
+<p>Learn parameters, return values, default arguments and the difference between local and global variables. Rewrite earlier exercises using functions.</p>
+
+<h2>Days 16–19: Lists and tuples</h2>
+<p>Lists store ordered collections that can change:</p>
+<pre><code class="language-python">fruits = ["apple", "banana", "mango"]
+fruits.append("orange")
+print(fruits[0])      # apple
+print(fruits[-1])     # orange
+print(len(fruits))    # 4
+
+squares = [n * n for n in range(1, 6)]   # list comprehension</code></pre>
+<p>Learn indexing, slicing, sorting, looping through lists and list comprehensions. Tuples are like lists but cannot be changed, which makes them useful for fixed data such as coordinates.</p>
+
+<h2>Days 20–22: Dictionaries and sets</h2>
+<p>Dictionaries store key–value pairs, perfect for looking things up:</p>
+<pre><code class="language-python">student = {"name": "Riya", "course": "Python", "marks": 88}
+print(student["name"])
+student["marks"] = 92
+
+for key, value in student.items():
+    print(key, ":", value)</code></pre>
+<p>Sets store unique values and are great for removing duplicates: <code>set([1, 2, 2, 3])</code> gives <code>{1, 2, 3}</code>.</p>
+
+<h2>Days 23–25: Strings and error handling</h2>
+<p>Practise string methods such as <code>upper()</code>, <code>lower()</code>, <code>strip()</code>, <code>split()</code>, <code>replace()</code> and <code>join()</code>. Then learn to handle errors so your program does not crash:</p>
+<pre><code class="language-python">try:
+    number = int(input("Enter a number: "))
+    print(100 / number)
+except ValueError:
+    print("That is not a number.")
+except ZeroDivisionError:
+    print("You cannot divide by zero.")</code></pre>
+
+<h2>Days 26–27: Files and modules</h2>
+<p>Read and write files with <code>with open(...)</code>, which closes the file automatically. Then import modules from the standard library, such as <code>random</code>, <code>math</code> and <code>datetime</code>, and install a third-party package with <code>pip</code>.</p>
+<pre><code class="language-python">with open("notes.txt", "a") as file:
+    file.write("Learned file handling today\n")</code></pre>
+
+<h2>Days 28–30: Mini projects</h2>
+<p>Put everything together. Choose two or three:</p>
+<ul>
+<li><strong>Number guessing game</strong> using <code>random</code> and loops.</li>
+<li><strong>Simple calculator</strong> with functions and error handling.</li>
+<li><strong>To-do list</strong> that saves tasks to a file.</li>
+<li><strong>Student marks report</strong> using dictionaries and averages.</li>
+<li><strong>Password generator</strong> using <code>random</code> and strings.</li>
+</ul>
+<p>Push your projects to GitHub so you can see your progress and share it later.</p>
+
+<h2>Tips that make learning stick</h2>
+<ul>
+<li>Type the code yourself instead of copying and pasting.</li>
+<li>Change examples and predict the output before running them.</li>
+<li>When you get an error, read the last line first; it usually names the problem.</li>
+<li>Explain what you learned each day in two or three sentences.</li>
+</ul>
+
+<h2>What to learn after 30 days</h2>
+<p>Next, learn object-oriented programming, then choose a direction: web development with Django or FastAPI, data analysis with pandas, automation, or AI. Read our <a href="/blog/python-developer-roadmap">Python developer roadmap</a> for the full path, or try some <a href="/blog/python-projects-for-beginners">Python projects for beginners</a>.</p>
+<p>Prefer learning with a mentor? Explore the <a href="/courses">Coding Hubs Python course</a>.</p>
+===FAQ===
+Q: Can I learn Python in 30 days?
+A: You can learn Python basics in 30 days with about an hour of practice daily. Becoming job-ready takes longer, because you also need projects, a specialisation and problem-solving practice.
+Q: Is Python easy for complete beginners?
+A: Yes. Python has simple, readable syntax and clear error messages, which makes it one of the easiest programming languages to start with.
+Q: Do I need a powerful laptop to learn Python?
+A: No. Any modern laptop or desktop that can run a web browser and a code editor is enough to learn Python.
+Q: What should I build after learning Python basics?
+A: Start with small projects such as a calculator, to-do app or quiz game, then move to web apps, automation scripts or data analysis projects.

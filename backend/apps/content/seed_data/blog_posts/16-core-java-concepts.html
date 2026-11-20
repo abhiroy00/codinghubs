@@ -1,0 +1,136 @@
+title: Core Java Concepts Every Fresher Must Know (With Examples)
+slug: core-java-concepts
+excerpt: The core Java concepts every fresher must know: JVM, JDK and JRE, data types, OOP, strings, exceptions, collections, multithreading and Java 8 features, with examples.
+category: Java
+tags: Java, Core Java, Programming Basics, Freshers, Interview Preparation
+seo_title: Core Java Concepts for Freshers: Complete Guide with Examples
+meta_description: Learn the core Java concepts every fresher needs: JVM vs JDK vs JRE, data types, OOP, strings, exceptions, collections, multithreading and Java 8 features.
+focus_keyword: core java concepts
+search_intent: Learn the essential Core Java topics for exams, jobs and interviews.
+---
+<p>Whether you want to become a Java developer, a Java full stack developer or an Android developer, everything rests on Core Java. These are also the topics that appear again and again in fresher interviews. This guide covers the essential <strong>core Java concepts</strong> with short explanations and examples you can run.</p>
+
+<h2>1. JDK, JRE and JVM</h2>
+<ul>
+<li><strong>JVM (Java Virtual Machine):</strong> runs Java bytecode. It is why Java is "write once, run anywhere": the same bytecode runs on any operating system with a JVM.</li>
+<li><strong>JRE (Java Runtime Environment):</strong> the JVM plus the core libraries needed to run Java programs.</li>
+<li><strong>JDK (Java Development Kit):</strong> the JRE plus development tools such as the compiler <code>javac</code>. Developers install the JDK.</li>
+</ul>
+<p>When you compile <code>Main.java</code>, <code>javac</code> produces <code>Main.class</code> (bytecode), which the JVM executes.</p>
+
+<h2>2. Data types and variables</h2>
+<p>Java has eight primitive types: <code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code>, <code>float</code>, <code>double</code>, <code>char</code> and <code>boolean</code>. Everything else is a reference type, such as <code>String</code>, arrays and objects. Each primitive has a wrapper class (<code>Integer</code>, <code>Double</code> and so on), and Java converts between them automatically through autoboxing and unboxing.</p>
+<pre><code class="language-java">int age = 22;
+double fee = 15999.50;
+char grade = 'A';
+boolean placed = true;
+Integer boxed = age;   // autoboxing</code></pre>
+
+<h2>3. Control flow</h2>
+<p>Learn <code>if-else</code>, <code>switch</code> (including the newer switch expressions), <code>for</code>, enhanced <code>for</code>, <code>while</code> and <code>do-while</code> loops, and <code>break</code> and <code>continue</code>. These are the building blocks of every program.</p>
+
+<h2>4. Classes and objects</h2>
+<p>A class is a blueprint; an object is an instance of that blueprint.</p>
+<pre><code class="language-java">class Student {
+    private String name;
+    private int marks;
+
+    Student(String name, int marks) {
+        this.name = name;
+        this.marks = marks;
+    }
+
+    boolean hasPassed() {
+        return marks &gt;= 40;
+    }
+}
+
+Student s = new Student("Aman", 72);
+System.out.println(s.hasPassed());   // true</code></pre>
+<p>Understand constructors, the <code>this</code> keyword, constructor overloading and how objects live on the heap while references live on the stack.</p>
+
+<h2>5. The four pillars of OOP</h2>
+<ul>
+<li><strong>Encapsulation:</strong> hide data with <code>private</code> fields and expose controlled access through methods.</li>
+<li><strong>Inheritance:</strong> a class reuses another with <code>extends</code>. Java supports single inheritance of classes.</li>
+<li><strong>Polymorphism:</strong> overloading (same method name, different parameters, decided at compile time) and overriding (a subclass redefines a parent method, decided at run time).</li>
+<li><strong>Abstraction:</strong> expose what an object does, not how, using abstract classes and interfaces.</li>
+</ul>
+<p>Read our detailed guide on <a href="/blog/oops-concepts-in-java">OOP concepts in Java</a> for examples of each.</p>
+
+<h2>6. Important keywords</h2>
+<ul>
+<li><code>static</code>: belongs to the class rather than an object.</li>
+<li><code>final</code>: a final variable cannot be reassigned, a final method cannot be overridden, a final class cannot be extended.</li>
+<li><code>super</code>: refers to the parent class.</li>
+<li>Access modifiers: <code>private</code>, default (package-private), <code>protected</code>, <code>public</code>.</li>
+</ul>
+
+<h2>7. Strings</h2>
+<p><code>String</code> objects are immutable: once created, they cannot change. Operations like concatenation create new strings. For building strings in loops, use <code>StringBuilder</code>, which is mutable and much more efficient.</p>
+<pre><code class="language-java">StringBuilder sb = new StringBuilder();
+for (int i = 1; i &lt;= 5; i++) {
+    sb.append(i).append(" ");
+}
+System.out.println(sb.toString().trim());   // 1 2 3 4 5</code></pre>
+<p>Also know the difference between <code>==</code> (compares references) and <code>.equals()</code> (compares content), and how the string constant pool works.</p>
+
+<h2>8. Exception handling</h2>
+<p>Exceptions handle errors without crashing your program.</p>
+<ul>
+<li><strong>Checked exceptions</strong> (such as <code>IOException</code>) must be handled or declared with <code>throws</code>.</li>
+<li><strong>Unchecked exceptions</strong> (such as <code>NullPointerException</code> and <code>ArithmeticException</code>) extend <code>RuntimeException</code>.</li>
+<li><code>try</code>, <code>catch</code>, <code>finally</code>, and try-with-resources for automatically closing files and connections.</li>
+</ul>
+<pre><code class="language-java">try {
+    int result = 10 / 0;
+} catch (ArithmeticException e) {
+    System.out.println("Cannot divide by zero");
+} finally {
+    System.out.println("Always runs");
+}</code></pre>
+
+<h2>9. Arrays and the Collections Framework</h2>
+<p>Arrays have a fixed size. The Collections Framework provides flexible data structures: <code>List</code> (<code>ArrayList</code>, <code>LinkedList</code>), <code>Set</code> (<code>HashSet</code>, <code>TreeSet</code>) and <code>Map</code> (<code>HashMap</code>, <code>TreeMap</code>). Learn when to use each; this is one of the most asked interview areas. See our full guide to the <a href="/blog/java-collections-framework">Java Collections Framework</a>.</p>
+
+<h2>10. Generics</h2>
+<p>Generics make code type-safe and reusable: <code>List&lt;String&gt;</code> can only hold strings, so errors are caught at compile time instead of run time.</p>
+
+<h2>11. Multithreading basics</h2>
+<p>Threads let a program do multiple things at once. Learn to create threads by extending <code>Thread</code> or implementing <code>Runnable</code>, use <code>ExecutorService</code> for thread pools, and protect shared data with <code>synchronized</code>. Understand common problems such as race conditions and deadlocks at a conceptual level.</p>
+
+<h2>12. Java 8 and modern features</h2>
+<ul>
+<li><strong>Lambda expressions:</strong> short, anonymous functions.</li>
+<li><strong>Functional interfaces:</strong> interfaces with a single abstract method, such as <code>Predicate</code> and <code>Function</code>.</li>
+<li><strong>Stream API:</strong> process collections declaratively.</li>
+<li><strong>Optional:</strong> represent values that may be absent.</li>
+<li><strong>Newer additions:</strong> <code>var</code>, records, text blocks and switch expressions in later versions.</li>
+</ul>
+<pre><code class="language-java">List&lt;Integer&gt; marks = List.of(45, 82, 67, 91, 38);
+List&lt;Integer&gt; passed = marks.stream()
+        .filter(m -&gt; m &gt;= 40)
+        .sorted()
+        .toList();
+System.out.println(passed);   // [45, 67, 82, 91]</code></pre>
+
+<h2>13. Memory management and garbage collection</h2>
+<p>Java manages memory automatically. Objects without references are cleaned up by the garbage collector. Know the difference between stack memory (method calls and local variables) and heap memory (objects).</p>
+
+<h2>How to study these concepts</h2>
+<ol>
+<li>Learn one concept a day and write three small programs using it.</li>
+<li>Explain each concept aloud, as if in an interview.</li>
+<li>Build a small project, such as a library management console app, that uses OOP, collections and exceptions together.</li>
+<li>Practise with <a href="/blog/java-interview-questions">Java interview questions</a>.</li>
+</ol>
+<p>Want guided practice? Explore the <a href="/courses">Coding Hubs Java Full Stack course</a>.</p>
+===FAQ===
+Q: What are the most important Core Java topics for interviews?
+A: OOP principles, strings, exception handling, the Collections Framework, multithreading basics, Java 8 features such as streams and lambdas, and the difference between JDK, JRE and JVM.
+Q: How long does it take to learn Core Java?
+A: Most beginners need about six to ten weeks of regular practice to become comfortable with Core Java concepts.
+Q: Is Core Java enough to get a job?
+A: Core Java is the foundation, but most jobs also require SQL, a framework such as Spring Boot, Git and, for full stack roles, front-end skills.
+Q: What is the difference between == and equals() in Java?
+A: The == operator compares whether two references point to the same object, while equals() compares the content of objects when the class overrides it, as String does.

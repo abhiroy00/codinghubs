@@ -1,0 +1,137 @@
+title: JavaScript Concepts You Must Know Before Learning React
+slug: javascript-concepts-before-react
+excerpt: The JavaScript concepts you must know before learning React: let and const, arrow functions, destructuring, spread, array methods, modules, closures, promises and async/await.
+category: Web Development
+tags: JavaScript, React, Front-End Development, Programming Basics, Beginners
+seo_title: JavaScript Concepts to Learn Before React (With Examples)
+meta_description: Learn the JavaScript concepts you need before React: arrow functions, destructuring, spread, map and filter, modules, closures, this, promises, async/await and more.
+focus_keyword: javascript concepts before react
+search_intent: Know which JavaScript topics to master before starting React.
+---
+<p>Many beginners jump into React and soon feel lost. The reason is usually not React itself; it is JavaScript. React code is full of arrow functions, destructuring, array methods and promises. If you understand the <strong>JavaScript concepts before React</strong> covered here, React becomes far easier to learn.</p>
+
+<h2>1. let, const and block scope</h2>
+<p>Use <code>const</code> by default and <code>let</code> when a value needs to change. Avoid <code>var</code>, whose function scope causes confusing bugs.</p>
+<pre><code class="language-javascript">const course = 'React';
+let lessonsDone = 3;
+lessonsDone += 1;</code></pre>
+<p>Note that <code>const</code> prevents reassignment, not mutation: you can still change the contents of a <code>const</code> array or object.</p>
+
+<h2>2. Arrow functions</h2>
+<pre><code class="language-javascript">const double = (n) =&gt; n * 2;
+const greet = (name) =&gt; {
+  const message = `Hello, ${name}`;
+  return message;
+};</code></pre>
+<p>React components and event handlers use arrow functions constantly. Know the implicit return (no braces) and that arrow functions do not have their own <code>this</code>.</p>
+
+<h2>3. Template literals</h2>
+<p>Backticks let you embed variables: <code>`Welcome, ${user.name}!`</code>. You will use them for class names, URLs and messages.</p>
+
+<h2>4. Objects and arrays</h2>
+<p>Be comfortable creating, reading and updating nested objects and arrays, because React state is usually made of them.</p>
+<pre><code class="language-javascript">const student = { name: 'Riya', skills: ['HTML', 'CSS'], address: { city: 'Delhi' } };
+console.log(student.address.city);</code></pre>
+
+<h2>5. Destructuring</h2>
+<pre><code class="language-javascript">const { name, address: { city } } = student;
+const [first, second] = ['React', 'Node'];
+
+// in React
+function Profile({ name, city }) { /* ... */ }
+const [count, setCount] = useState(0);</code></pre>
+<p>Props and hooks rely on destructuring, so this one is essential.</p>
+
+<h2>6. Spread and rest operators</h2>
+<p>The spread operator <code>...</code> copies arrays and objects, which is how you update React state without mutating it:</p>
+<pre><code class="language-javascript">const updated = { ...student, name: 'Riya Sharma' };
+const moreSkills = [...student.skills, 'JavaScript'];
+
+function sum(...numbers) {
+  return numbers.reduce((total, n) =&gt; total + n, 0);
+}</code></pre>
+
+<h2>7. Array methods: map, filter, reduce, find</h2>
+<pre><code class="language-javascript">const courses = [
+  { title: 'Python', price: 15000, live: true },
+  { title: 'Java', price: 18000, live: false },
+  { title: 'React', price: 16000, live: true },
+];
+
+const titles = courses.map((c) =&gt; c.title);
+const liveCourses = courses.filter((c) =&gt; c.live);
+const total = courses.reduce((sum, c) =&gt; sum + c.price, 0);
+const java = courses.find((c) =&gt; c.title === 'Java');</code></pre>
+<p>In React, <code>map</code> renders lists and <code>filter</code> removes items from state. You will use these every day.</p>
+
+<h2>8. Truthy, falsy and short-circuiting</h2>
+<p>Values like <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code> and <code>NaN</code> are falsy. React uses <code>&amp;&amp;</code> and the ternary operator for conditional rendering:</p>
+<pre><code class="language-javascript">{isLoggedIn &amp;&amp; &lt;Dashboard /&gt;}
+{items.length &gt; 0 ? &lt;List /&gt; : &lt;EmptyState /&gt;}</code></pre>
+<p>Be careful: <code>{items.length &amp;&amp; &lt;List /&gt;}</code> renders <code>0</code> when the list is empty. Compare explicitly instead.</p>
+
+<h2>9. Optional chaining and nullish coalescing</h2>
+<pre><code class="language-javascript">const city = user?.address?.city ?? 'Not provided';</code></pre>
+<p>These prevent crashes when data has not loaded yet, which happens often with API calls.</p>
+
+<h2>10. Modules: import and export</h2>
+<pre><code class="language-javascript">// utils.js
+export const formatPrice = (n) =&gt; `₹${n.toLocaleString('en-IN')}`;
+export default function slugify(text) { /* ... */ }
+
+// App.jsx
+import slugify, { formatPrice } from './utils.js';</code></pre>
+<p>Every React file imports and exports components, so understand default versus named exports.</p>
+
+<h2>11. Closures and scope</h2>
+<p>A closure is a function that remembers variables from where it was created. React hooks and event handlers depend on closures, and "stale closures" are a common source of bugs.</p>
+<pre><code class="language-javascript">function makeCounter() {
+  let count = 0;
+  return () =&gt; ++count;
+}
+const next = makeCounter();
+next(); // 1
+next(); // 2</code></pre>
+
+<h2>12. The this keyword (briefly)</h2>
+<p>Modern React uses function components, so you rarely deal with <code>this</code>. Still, understand how it works in regular functions, methods and arrow functions, because interviews ask about it and older codebases use class components.</p>
+
+<h2>13. Asynchronous JavaScript</h2>
+<p>Data fetching in React depends on promises and <code>async/await</code>:</p>
+<pre><code class="language-javascript">async function loadCourses() {
+  try {
+    const res = await fetch('/api/courses');
+    if (!res.ok) throw new Error('Failed to load');
+    return await res.json();
+  } catch (error) {
+    console.error(error.message);
+    return [];
+  }
+}</code></pre>
+<p>Also understand the event loop at a basic level: why code after <code>await</code> runs later, and why <code>setTimeout</code> does not run immediately.</p>
+
+<h2>14. Immutability</h2>
+<p>React decides whether to re-render by checking if state changed. If you mutate an array with <code>push</code> and set the same array back, React may not notice. Always create new arrays and objects:</p>
+<pre><code class="language-javascript">setTodos([...todos, newTodo]);                      // add
+setTodos(todos.filter((t) =&gt; t.id !== id));        // remove
+setTodos(todos.map((t) =&gt; t.id === id ? { ...t, done: true } : t));   // update</code></pre>
+
+<h2>15. DOM and events basics</h2>
+<p>React abstracts the DOM, but knowing how events, forms and <code>preventDefault()</code> work in plain JavaScript helps you understand what React does for you.</p>
+
+<h2>How to practise</h2>
+<ol>
+<li>Build a to-do list in plain JavaScript using array methods and immutable updates.</li>
+<li>Fetch data from a public API and display it with <code>map</code>.</li>
+<li>Rewrite the same app in React and notice how familiar it feels.</li>
+</ol>
+<p>When you are ready, start with <a href="/blog/react-js-for-beginners">React JS for beginners</a>, or learn with mentors in the <a href="/courses">Coding Hubs React Full Stack course</a>.</p>
+===FAQ===
+Q: How much JavaScript should I know before React?
+A: You should be comfortable with functions, arrow functions, arrays and objects, destructuring, spread, array methods, modules and async/await. You do not need to master every advanced topic.
+Q: Can I learn JavaScript and React at the same time?
+A: You can, but it is harder. Spending a few weeks on JavaScript fundamentals first usually makes learning React faster overall.
+Q: Which JavaScript array methods are used most in React?
+A: map is used to render lists, filter to remove items, find to locate an item, and reduce occasionally for totals.
+Q: Do I need to learn classes before React?
+A: Not necessarily. Modern React uses function components and hooks, but understanding classes helps when reading older code.

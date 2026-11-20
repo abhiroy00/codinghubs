@@ -1,0 +1,145 @@
+title: OOPs Concepts in Java with Real-Life Examples
+slug: oops-concepts-in-java
+excerpt: OOPs concepts in Java explained with real-life examples and code: classes, objects, encapsulation, inheritance, polymorphism, abstraction, interfaces and common interview questions.
+category: Java
+tags: Java, OOP, Core Java, Programming Basics, Interview Preparation
+seo_title: OOPs Concepts in Java with Real-Life Examples and Code
+meta_description: Learn OOPs concepts in Java with real-life examples: class, object, encapsulation, inheritance, polymorphism, abstraction and interfaces.
+focus_keyword: oops concepts in java
+search_intent: Understand object-oriented programming concepts in Java.
+---
+<p>Object-oriented programming (OOP) is a way of organising code around "objects" that combine data and behaviour, much like things in the real world. Java is built around OOP, so understanding it well is essential for writing good Java code and for clearing interviews. This guide explains <strong>OOPs concepts in Java</strong> with everyday examples and simple code.</p>
+
+<h2>Class and object</h2>
+<p>A <strong>class</strong> is a blueprint. An <strong>object</strong> is a real thing built from that blueprint. Think of a car design (class) and the individual cars on the road (objects). Each car has its own colour and speed, but all follow the same design.</p>
+<pre><code class="language-java">class Car {
+    String colour;
+    int speed;
+
+    void accelerate(int amount) {
+        speed += amount;
+    }
+}
+
+Car myCar = new Car();
+myCar.colour = "Red";
+myCar.accelerate(40);</code></pre>
+
+<h2>1. Encapsulation</h2>
+<p><strong>Real-life example:</strong> an ATM. You can withdraw money through the machine's buttons, but you cannot reach in and change your balance directly. The bank controls access.</p>
+<p>In Java, encapsulation means keeping fields <code>private</code> and exposing controlled methods:</p>
+<pre><code class="language-java">class BankAccount {
+    private double balance;
+
+    public void deposit(double amount) {
+        if (amount &lt;= 0) throw new IllegalArgumentException("Invalid amount");
+        balance += amount;
+    }
+
+    public boolean withdraw(double amount) {
+        if (amount &gt; balance) return false;
+        balance -= amount;
+        return true;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+}</code></pre>
+<p><strong>Benefit:</strong> data stays valid, because every change goes through rules you control.</p>
+
+<h2>2. Inheritance</h2>
+<p><strong>Real-life example:</strong> every smartphone is a phone. It can make calls like any phone, and it adds extra features.</p>
+<p>In Java, a child class inherits fields and methods from a parent class with <code>extends</code>:</p>
+<pre><code class="language-java">class Employee {
+    String name;
+    double baseSalary;
+
+    double salary() {
+        return baseSalary;
+    }
+}
+
+class Manager extends Employee {
+    double bonus;
+
+    @Override
+    double salary() {
+        return baseSalary + bonus;
+    }
+}</code></pre>
+<p>Java supports single inheritance for classes (a class extends only one class) but a class can implement many interfaces. Inheritance represents an "is-a" relationship: a Manager <em>is an</em> Employee.</p>
+
+<h2>3. Polymorphism</h2>
+<p><strong>Real-life example:</strong> a person behaves differently in different roles: as a student in class, a customer in a shop, a player on the field. Same person, different behaviour depending on context.</p>
+<h3>Compile-time polymorphism (method overloading)</h3>
+<p>Same method name, different parameters:</p>
+<pre><code class="language-java">class Calculator {
+    int add(int a, int b) { return a + b; }
+    double add(double a, double b) { return a + b; }
+    int add(int a, int b, int c) { return a + b + c; }
+}</code></pre>
+<h3>Run-time polymorphism (method overriding)</h3>
+<p>A parent reference can point to a child object, and Java calls the child's version of the method at run time:</p>
+<pre><code class="language-java">Employee e = new Manager();
+System.out.println(e.salary());   // calls Manager's salary()</code></pre>
+<p>This is what makes code flexible: a payroll system can process a list of <code>Employee</code> objects without knowing which are managers, interns or contractors.</p>
+
+<h2>4. Abstraction</h2>
+<p><strong>Real-life example:</strong> you drive a car using a steering wheel, pedals and gears without knowing how the engine works inside. The complex details are hidden.</p>
+<p>Java achieves abstraction with abstract classes and interfaces:</p>
+<pre><code class="language-java">interface PaymentMethod {
+    void pay(double amount);
+}
+
+class UpiPayment implements PaymentMethod {
+    public void pay(double amount) {
+        System.out.println("Paid " + amount + " via UPI");
+    }
+}
+
+class CardPayment implements PaymentMethod {
+    public void pay(double amount) {
+        System.out.println("Paid " + amount + " by card");
+    }
+}
+
+PaymentMethod method = new UpiPayment();
+method.pay(499);</code></pre>
+<p>The checkout code only knows about <code>PaymentMethod</code>. Adding a new payment type does not require changing it.</p>
+
+<h2>Abstract class vs interface</h2>
+<table>
+<thead><tr><th></th><th>Abstract class</th><th>Interface</th></tr></thead>
+<tbody>
+<tr><td>Methods</td><td>Abstract and concrete methods</td><td>Abstract methods, plus default and static methods (Java 8+)</td></tr>
+<tr><td>Fields</td><td>Any fields, including instance state</td><td>Only constants (<code>public static final</code>)</td></tr>
+<tr><td>Constructors</td><td>Yes</td><td>No</td></tr>
+<tr><td>Inheritance</td><td>A class extends one abstract class</td><td>A class can implement many interfaces</td></tr>
+<tr><td>Use when</td><td>Related classes share state and code</td><td>Defining a capability that many unrelated classes can have</td></tr>
+</tbody>
+</table>
+
+<h2>Other important OOP ideas</h2>
+<ul>
+<li><strong>Composition ("has-a"):</strong> a Car <em>has an</em> Engine. Composition is often preferred over inheritance because it is more flexible.</li>
+<li><strong>Association, aggregation and composition:</strong> different strengths of relationships between objects.</li>
+<li><strong>Constructors and <code>this</code>/<code>super</code>:</strong> initialising objects and calling parent constructors.</li>
+<li><strong>The <code>Object</code> class:</strong> every class inherits <code>toString()</code>, <code>equals()</code> and <code>hashCode()</code>.</li>
+</ul>
+
+<h2>Why OOP matters in real projects</h2>
+<p>OOP helps teams build large systems that are easier to understand, test and extend. Frameworks such as Spring Boot rely heavily on interfaces and polymorphism: you write against an interface, and Spring supplies the implementation. Good OOP design is the foundation of clean, maintainable code.</p>
+
+<h2>Practice exercise</h2>
+<p>Build a small library system: an abstract class <code>Item</code> with subclasses <code>Book</code> and <code>Magazine</code>, an interface <code>Borrowable</code>, and a <code>Library</code> class that uses a list of items. This single exercise uses all four pillars.</p>
+<p>Continue with the <a href="/blog/core-java-concepts">core Java concepts guide</a> and practise <a href="/blog/java-interview-questions">Java interview questions</a>.</p>
+===FAQ===
+Q: What are the four pillars of OOP in Java?
+A: Encapsulation, inheritance, polymorphism and abstraction.
+Q: Does Java support multiple inheritance?
+A: Java does not support multiple inheritance of classes, to avoid ambiguity, but a class can implement multiple interfaces.
+Q: What is the difference between overloading and overriding?
+A: Overloading means methods with the same name but different parameters in the same class, resolved at compile time. Overriding means a subclass provides its own version of a parent method, resolved at run time.
+Q: Is Java a pure object-oriented language?
+A: No. Java uses primitive types such as int and boolean, which are not objects, so it is not considered purely object-oriented.

@@ -1,0 +1,140 @@
+title: How to Build a Full Stack MERN Project Step by Step
+slug: build-mern-stack-project
+excerpt: Build a complete MERN stack project step by step: plan the app, set up Express and MongoDB, create REST APIs, add authentication, build the React front end and deploy it.
+category: Web Development
+tags: MERN Stack, Full Stack Development, React, Node.js, MongoDB
+seo_title: How to Build a MERN Stack Project Step by Step (Beginner Guide)
+meta_description: Build a full stack MERN project from scratch: project structure, Express API, MongoDB with Mongoose, JWT login, React front end, connecting both and deployment.
+focus_keyword: mern stack project
+search_intent: Learn how to build a complete MERN application.
+---
+<p>Tutorials teach individual tools, but employers want to see that you can put them together. Building a complete <strong>MERN stack project</strong> is the best way to prove it. In this guide, we will plan and build a "Course Bookmarks" app where users sign up, log in, and save courses with notes. The same structure works for almost any MERN application.</p>
+
+<h2>Step 1: Plan before you code</h2>
+<p>Write down the features and data first:</p>
+<ul>
+<li><strong>Features:</strong> register, log in, log out; add, list, edit and delete bookmarks; each user sees only their own bookmarks.</li>
+<li><strong>Data:</strong> a <code>User</code> (name, email, password hash) and a <code>Bookmark</code> (title, url, notes, owner).</li>
+<li><strong>API endpoints:</strong> <code>POST /api/auth/register</code>, <code>POST /api/auth/login</code>, <code>GET/POST /api/bookmarks</code>, <code>PUT/DELETE /api/bookmarks/:id</code>.</li>
+</ul>
+<p>Ten minutes of planning saves hours of rewriting.</p>
+
+<h2>Step 2: Project structure</h2>
+<pre><code class="language-text">course-bookmarks/
+  server/
+    src/
+      models/        User.js, Bookmark.js
+      routes/        auth.js, bookmarks.js
+      middleware/    requireAuth.js
+      index.js
+    .env
+  client/            (React app created with Vite)</code></pre>
+
+<h2>Step 3: Set up the Express server</h2>
+<pre><code class="language-bash">mkdir server &amp;&amp; cd server
+npm init -y
+npm install express mongoose dotenv bcrypt jsonwebtoken cors</code></pre>
+<p>Add <code>"type": "module"</code> to <code>package.json</code> to use <code>import</code> syntax, then create <code>src/index.js</code>:</p>
+<pre><code class="language-javascript">import 'dotenv/config';
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import authRoutes from './routes/auth.js';
+import bookmarkRoutes from './routes/bookmarks.js';
+
+const app = express();
+app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(express.json());
+app.use('/api/auth', authRoutes);
+app.use('/api/bookmarks', bookmarkRoutes);
+
+await mongoose.connect(process.env.MONGODB_URI);
+app.listen(process.env.PORT || 5000, () =&gt; console.log('API ready'));</code></pre>
+<p>Your <code>.env</code> file holds <code>MONGODB_URI</code>, <code>JWT_SECRET</code> and <code>CLIENT_URL</code>. Add <code>.env</code> to <code>.gitignore</code> so secrets never reach GitHub.</p>
+
+<h2>Step 4: Define models with Mongoose</h2>
+<pre><code class="language-javascript">// models/Bookmark.js
+import mongoose from 'mongoose';
+
+const bookmarkSchema = new mongoose.Schema({
+  title: { type: String, required: true, trim: true },
+  url: { type: String, required: true },
+  notes: String,
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+}, { timestamps: true });
+
+export default mongoose.model('Bookmark', bookmarkSchema);</code></pre>
+<p>The <code>User</code> model is similar, with a unique <code>email</code> and a <code>passwordHash</code> field.</p>
+
+<h2>Step 5: Authentication routes</h2>
+<pre><code class="language-javascript">// routes/auth.js (login handler)
+router.post('/login', async (req, res) =&gt; {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  const valid = user &amp;&amp; await bcrypt.compare(password, user.passwordHash);
+  if (!valid) return res.status(401).json({ error: 'Invalid email or password' });
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  res.json({ token, name: user.name });
+});</code></pre>
+<p>The register route hashes the password with <code>bcrypt.hash(password, 12)</code> before saving. Never store plain-text passwords.</p>
+
+<h2>Step 6: Protect routes with middleware</h2>
+<pre><code class="language-javascript">// middleware/requireAuth.js
+export function requireAuth(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  try {
+    req.userId = jwt.verify(token, process.env.JWT_SECRET).id;
+    next();
+  } catch {
+    res.status(401).json({ error: 'Please log in' });
+  }
+}</code></pre>
+<p>In the bookmark routes, always filter by owner: <code>Bookmark.find({ owner: req.userId })</code>. This is what stops one user from seeing another user's data, and it is the most common security mistake in beginner projects.</p>
+
+<h2>Step 7: Test the API</h2>
+<p>Use Postman or a similar tool to register, log in, copy the token and call the bookmark endpoints with an <code>Authorization: Bearer &lt;token&gt;</code> header. Make sure invalid input returns helpful 400 errors and missing tokens return 401.</p>
+
+<h2>Step 8: Build the React front end</h2>
+<pre><code class="language-bash">npm create vite@latest client -- --template react
+cd client &amp;&amp; npm install react-router-dom</code></pre>
+<p>Create pages for Register, Login and Bookmarks. Store the token after login, and send it with each request:</p>
+<pre><code class="language-javascript">async function api(path, options = {}) {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${import.meta.env.VITE_API_URL}${path}`, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...options.headers },
+  });
+  if (!res.ok) throw new Error((await res.json()).error || 'Request failed');
+  return res.json();
+}</code></pre>
+<p>Show loading and error states, disable the submit button while saving, and redirect to login when the API returns 401. (For production apps, HTTP-only cookies are often preferred over local storage for tokens; learn the trade-offs as you advance.)</p>
+
+<h2>Step 9: Polish the user experience</h2>
+<ul>
+<li>Responsive layout that works on phones.</li>
+<li>Form validation with clear messages.</li>
+<li>Confirmation before deleting.</li>
+<li>Search or filter bookmarks.</li>
+<li>Accessible labels on every input.</li>
+</ul>
+
+<h2>Step 10: Deploy</h2>
+<ol>
+<li>Create a free cluster on a managed MongoDB service and copy the connection string.</li>
+<li>Deploy the Express server to a Node.js hosting platform and set environment variables there.</li>
+<li>Deploy the React app to a static host and set <code>VITE_API_URL</code> to your API address.</li>
+<li>Update <code>CLIENT_URL</code> on the server so CORS allows your live front end.</li>
+</ol>
+
+<h2>Step 11: Make it portfolio-ready</h2>
+<p>Write a README with screenshots, a live link, features, tech stack, setup steps and what you would improve next. Then extend the project: add tags, sharing, image previews or an AI feature that summarises the bookmarked page.</p>
+<p>See more ideas on the <a href="/projects">projects page</a>, follow the <a href="/blog/mern-stack-developer-roadmap">MERN stack developer roadmap</a>, or build alongside mentors in the <a href="/courses">MERN Stack with Gen AI course</a>.</p>
+===FAQ===
+Q: What is a good first MERN stack project?
+A: A to-do app, bookmark manager, blog or expense tracker with user login is a good first MERN project because it covers CRUD operations, authentication and deployment.
+Q: How long does it take to build a MERN project?
+A: A simple MERN project with authentication can take one to three weeks for a beginner, depending on features and experience.
+Q: Where can I deploy a MERN app for free?
+A: Many platforms offer free tiers for static front ends, Node.js back ends and managed MongoDB databases. Check each provider's current limits before choosing.
+Q: Should I use JWT or sessions in MERN apps?
+A: Both work. JWT is common in tutorials and APIs, while secure HTTP-only cookie sessions can be simpler to protect in browser-based apps. Understand the trade-offs before choosing.

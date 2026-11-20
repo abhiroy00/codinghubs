@@ -1,0 +1,143 @@
+title: Top 40 Java Interview Questions and Answers for Freshers
+slug: java-interview-questions
+excerpt: Forty commonly asked Java interview questions with clear answers: Core Java basics, OOP, strings, exceptions, collections, multithreading, Java 8 and coding questions.
+category: Interview Preparation
+tags: Java, Interview Questions, Freshers, Core Java, Interview Preparation
+seo_title: Top 40 Java Interview Questions and Answers for Freshers
+meta_description: 40 common Java interview questions for freshers: JVM, OOP, String vs StringBuilder, exceptions, HashMap, collections, threads and Java 8 streams.
+focus_keyword: java interview questions
+search_intent: Prepare for Java interviews with common questions and answers.
+---
+<p>Java remains one of the most common languages in fresher hiring, especially at IT services and enterprise companies. Interviews usually start with Core Java and OOP, then move to strings, collections, exceptions and a few coding problems. Here are 40 frequently asked <strong>Java interview questions</strong> with concise answers to help you prepare.</p>
+
+<h2>Java basics</h2>
+<h4>1. What are the main features of Java?</h4>
+<p>Object-oriented, platform-independent through bytecode and the JVM, strongly and statically typed, automatic memory management, built-in multithreading, and a rich standard library.</p>
+<h4>2. What is the difference between JDK, JRE and JVM?</h4>
+<p>The JVM runs bytecode. The JRE contains the JVM plus core libraries to run programs. The JDK contains the JRE plus development tools such as the compiler.</p>
+<h4>3. Why is Java platform-independent?</h4>
+<p>Java source code compiles to bytecode, which runs on any device with a compatible JVM, regardless of operating system.</p>
+<h4>4. Why is the <code>main</code> method <code>public static void</code>?</h4>
+<p><code>public</code> so the JVM can call it, <code>static</code> so it can run without creating an object, and <code>void</code> because it returns nothing to the JVM.</p>
+<h4>5. What are primitive data types in Java?</h4>
+<p><code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code>, <code>float</code>, <code>double</code>, <code>char</code> and <code>boolean</code>.</p>
+<h4>6. What are wrapper classes and autoboxing?</h4>
+<p>Wrapper classes (<code>Integer</code>, <code>Double</code>, etc.) represent primitives as objects. Autoboxing converts primitives to wrappers automatically; unboxing does the reverse.</p>
+<h4>7. Is Java pass-by-value or pass-by-reference?</h4>
+<p>Java is always pass-by-value. For objects, the value passed is a copy of the reference, so a method can modify the object's contents but cannot make the caller's variable point to a different object.</p>
+
+<h2>Object-oriented programming</h2>
+<h4>8. What are the four pillars of OOP?</h4>
+<p>Encapsulation, inheritance, polymorphism and abstraction. See <a href="/blog/oops-concepts-in-java">OOP concepts in Java</a> for detailed examples.</p>
+<h4>9. What is the difference between method overloading and overriding?</h4>
+<p>Overloading: same method name, different parameter lists, in the same class, resolved at compile time. Overriding: a subclass redefines a parent method with the same signature, resolved at run time.</p>
+<h4>10. What is the difference between an abstract class and an interface?</h4>
+<p>An abstract class can have state, constructors and both abstract and concrete methods; a class can extend only one. An interface defines a contract with abstract, default and static methods and constants; a class can implement many.</p>
+<h4>11. Why doesn't Java support multiple inheritance of classes?</h4>
+<p>To avoid ambiguity such as the "diamond problem", where two parent classes provide different implementations of the same method. Multiple interfaces are allowed instead.</p>
+<h4>12. What is a constructor? Can it be private?</h4>
+<p>A constructor initialises a new object and has the same name as the class with no return type. It can be private, for example in the Singleton pattern or utility classes.</p>
+<h4>13. What does the <code>static</code> keyword mean?</h4>
+<p>Static members belong to the class rather than to any instance. Static methods cannot access instance variables directly.</p>
+<h4>14. What does <code>final</code> mean for variables, methods and classes?</h4>
+<p>A final variable cannot be reassigned, a final method cannot be overridden, and a final class cannot be extended.</p>
+<h4>15. What is the difference between <code>this</code> and <code>super</code>?</h4>
+<p><code>this</code> refers to the current object; <code>super</code> refers to the parent class and is used to call parent constructors or methods.</p>
+
+<h2>Strings</h2>
+<h4>16. Why are strings immutable in Java?</h4>
+<p>For security, thread safety, caching of hash codes and the string constant pool, which lets identical literals share memory safely.</p>
+<h4>17. What is the difference between String, StringBuilder and StringBuffer?</h4>
+<p><code>String</code> is immutable. <code>StringBuilder</code> is mutable and fast but not thread-safe. <code>StringBuffer</code> is mutable and synchronised (thread-safe) but slower.</p>
+<h4>18. What is the difference between <code>==</code> and <code>equals()</code>?</h4>
+<p><code>==</code> compares references for objects; <code>equals()</code> compares logical content when overridden, as in <code>String</code>.</p>
+<h4>19. What is the string constant pool?</h4>
+<p>A special memory area where string literals are stored so that identical literals share a single object.</p>
+
+<h2>Exceptions</h2>
+<h4>20. What is the difference between checked and unchecked exceptions?</h4>
+<p>Checked exceptions (such as <code>IOException</code>) must be caught or declared. Unchecked exceptions (subclasses of <code>RuntimeException</code>, such as <code>NullPointerException</code>) need not be.</p>
+<h4>21. What is the difference between <code>throw</code> and <code>throws</code>?</h4>
+<p><code>throw</code> actually throws an exception object. <code>throws</code> in a method signature declares exceptions the method might throw.</p>
+<h4>22. Does <code>finally</code> always execute?</h4>
+<p>Almost always, even when an exception occurs or a <code>return</code> is reached. It does not run if the JVM exits (for example with <code>System.exit()</code>) or crashes.</p>
+<h4>23. What is try-with-resources?</h4>
+<p>A <code>try</code> statement that automatically closes resources implementing <code>AutoCloseable</code>, such as files and database connections.</p>
+
+<h2>Collections</h2>
+<h4>24. What is the difference between ArrayList and LinkedList?</h4>
+<p>ArrayList uses a resizable array with fast index access. LinkedList uses a doubly linked list with efficient insertions and removals at the ends but slow index access.</p>
+<h4>25. How does HashMap work internally?</h4>
+<p>It hashes the key to choose a bucket, stores entries there, uses <code>equals()</code> to resolve collisions, converts large buckets to balanced trees (Java 8+), and resizes when the load factor is exceeded. Details are in our <a href="/blog/java-collections-framework">Java Collections Framework guide</a>.</p>
+<h4>26. What is the difference between HashMap and ConcurrentHashMap?</h4>
+<p>HashMap is not thread-safe. ConcurrentHashMap supports safe concurrent access with fine-grained locking and is preferred for shared maps in multithreaded code.</p>
+<h4>27. What is the difference between HashSet and TreeSet?</h4>
+<p>HashSet offers fast operations with no ordering. TreeSet keeps elements sorted with O(log n) operations.</p>
+<h4>28. What is the difference between Comparable and Comparator?</h4>
+<p><code>Comparable</code> defines a class's natural ordering through <code>compareTo()</code>. <code>Comparator</code> defines separate, custom orderings through <code>compare()</code>.</p>
+<h4>29. What is a fail-fast iterator?</h4>
+<p>An iterator that throws <code>ConcurrentModificationException</code> if the collection is structurally modified during iteration, except through the iterator's own <code>remove()</code>.</p>
+
+<h2>Multithreading</h2>
+<h4>30. How can you create a thread in Java?</h4>
+<p>By extending <code>Thread</code>, implementing <code>Runnable</code> or <code>Callable</code>, or, preferably, submitting tasks to an <code>ExecutorService</code>. Modern Java also offers virtual threads for large numbers of concurrent tasks.</p>
+<h4>31. What is synchronisation?</h4>
+<p>A mechanism (the <code>synchronized</code> keyword or locks) that allows only one thread at a time to access a critical section, preventing race conditions.</p>
+<h4>32. What is a deadlock?</h4>
+<p>A situation where two or more threads wait forever for locks held by each other. Avoid it by acquiring locks in a consistent order and using timeouts.</p>
+<h4>33. What is the <code>volatile</code> keyword?</h4>
+<p>It guarantees that reads and writes of a variable go to main memory, so changes made by one thread are visible to others. It does not make compound operations atomic.</p>
+
+<h2>Java 8 and modern Java</h2>
+<h4>34. What are lambda expressions?</h4>
+<p>Concise anonymous functions, such as <code>(a, b) -&gt; a + b</code>, used to implement functional interfaces.</p>
+<h4>35. What is a functional interface?</h4>
+<p>An interface with exactly one abstract method, such as <code>Runnable</code>, <code>Predicate</code> or <code>Function</code>, optionally marked <code>@FunctionalInterface</code>.</p>
+<h4>36. What is the Stream API?</h4>
+<p>An API for processing collections declaratively with operations like <code>filter</code>, <code>map</code>, <code>sorted</code> and <code>collect</code>.</p>
+<h4>37. What is <code>Optional</code>?</h4>
+<p>A container that may or may not hold a value, used to avoid <code>null</code> checks and <code>NullPointerException</code>.</p>
+
+<h2>Coding questions</h2>
+<h4>38. Reverse a string without using <code>reverse()</code>.</h4>
+<pre><code class="language-java">static String reverse(String s) {
+    char[] chars = s.toCharArray();
+    for (int i = 0, j = chars.length - 1; i &lt; j; i++, j--) {
+        char tmp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = tmp;
+    }
+    return new String(chars);
+}</code></pre>
+<h4>39. Count character occurrences in a string.</h4>
+<pre><code class="language-java">Map&lt;Character, Integer&gt; counts = new HashMap&lt;&gt;();
+for (char c : "programming".toCharArray()) {
+    counts.merge(c, 1, Integer::sum);
+}</code></pre>
+<h4>40. Find duplicate elements in an array.</h4>
+<pre><code class="language-java">static Set&lt;Integer&gt; duplicates(int[] nums) {
+    Set&lt;Integer&gt; seen = new HashSet&lt;&gt;();
+    Set&lt;Integer&gt; dups = new HashSet&lt;&gt;();
+    for (int n : nums) {
+        if (!seen.add(n)) dups.add(n);
+    }
+    return dups;
+}</code></pre>
+
+<h2>Preparation tips</h2>
+<ul>
+<li>Revise <a href="/blog/core-java-concepts">core Java concepts</a> and explain them with examples.</li>
+<li>Practise coding questions by hand and in an editor without auto-complete.</li>
+<li>Know your projects: architecture, challenges and what you would improve.</li>
+<li>For full stack roles, also prepare SQL, Spring Boot and front-end basics.</li>
+</ul>
+<p>Practise more with <a href="/interview-prep">Coding Hubs interview preparation</a> and the <a href="/ai/mock-interview">AI mock interview</a>.</p>
+===FAQ===
+Q: What Java topics are most important for fresher interviews?
+A: OOP principles, strings, exception handling, collections (especially HashMap), multithreading basics, Java 8 features and simple coding problems.
+Q: How many days are needed to prepare for a Java interview?
+A: If your fundamentals are already in place, two to four weeks of focused revision and coding practice is usually enough. Beginners need longer.
+Q: Are Spring Boot questions asked in fresher Java interviews?
+A: For Java developer and full stack roles, basic Spring Boot questions about annotations, REST controllers, dependency injection and JPA are common.
+Q: Should I learn data structures for Java interviews?
+A: Yes. Most interviews include coding problems on arrays, strings, hash maps and sometimes linked lists, stacks and trees.

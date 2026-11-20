@@ -1,0 +1,129 @@
+title: Java Collections Framework Explained with Examples
+slug: java-collections-framework
+excerpt: The Java Collections Framework explained simply: List, Set, Queue and Map, ArrayList vs LinkedList, HashMap internals, sorting, iteration and interview tips.
+category: Java
+tags: Java, Collections, Data Structures, Core Java, Interview Preparation
+seo_title: Java Collections Framework Explained (With Examples)
+meta_description: Understand the Java Collections Framework: List, Set, Queue, Map, ArrayList vs LinkedList, how HashMap works, sorting and interview tips.
+focus_keyword: java collections framework
+search_intent: Understand Java collections and when to use each type.
+---
+<p>Almost every Java program stores groups of objects: a list of students, a set of unique email addresses, a map from product IDs to prices. The <strong>Java Collections Framework</strong> provides ready-made, well-tested data structures for all of these. It is also one of the most frequently tested topics in Java interviews. This guide explains each part with examples and tells you when to use what.</p>
+
+<h2>The big picture</h2>
+<p>The framework is built around a few core interfaces:</p>
+<ul>
+<li><strong>Collection</strong>: the root interface for groups of elements.</li>
+<li><strong>List</strong>: ordered, allows duplicates, accessed by index.</li>
+<li><strong>Set</strong>: no duplicates.</li>
+<li><strong>Queue / Deque</strong>: elements processed in a specific order (FIFO, LIFO or priority).</li>
+<li><strong>Map</strong>: key–value pairs. Map is part of the framework but does not extend <code>Collection</code>.</li>
+</ul>
+<p>A good habit is to declare variables using the interface and choose the implementation on the right: <code>List&lt;String&gt; names = new ArrayList&lt;&gt;();</code>. That way you can change the implementation later without changing the rest of the code.</p>
+
+<h2>List: ArrayList vs LinkedList</h2>
+<pre><code class="language-java">List&lt;String&gt; cities = new ArrayList&lt;&gt;();
+cities.add("Delhi");
+cities.add("Noida");
+cities.add("Delhi");          // duplicates allowed
+System.out.println(cities.get(1));   // Noida</code></pre>
+<table>
+<thead><tr><th></th><th>ArrayList</th><th>LinkedList</th></tr></thead>
+<tbody>
+<tr><td>Internal structure</td><td>Resizable array</td><td>Doubly linked list</td></tr>
+<tr><td>Get by index</td><td>Fast, O(1)</td><td>Slow, O(n)</td></tr>
+<tr><td>Insert/remove in the middle</td><td>Slower, elements shift</td><td>Fast once the position is found</td></tr>
+<tr><td>Memory</td><td>Compact</td><td>Extra memory for node links</td></tr>
+<tr><td>Use when</td><td>Most cases, frequent reads</td><td>Frequent insertions/removals at the ends, or as a queue</td></tr>
+</tbody>
+</table>
+<p>In practice, <code>ArrayList</code> is the right default for most programs.</p>
+
+<h2>Set: HashSet, LinkedHashSet and TreeSet</h2>
+<ul>
+<li><strong>HashSet:</strong> fastest, no guaranteed order.</li>
+<li><strong>LinkedHashSet:</strong> keeps insertion order.</li>
+<li><strong>TreeSet:</strong> keeps elements sorted; operations are O(log n).</li>
+</ul>
+<pre><code class="language-java">Set&lt;String&gt; emails = new HashSet&lt;&gt;();
+emails.add("a@example.com");
+emails.add("a@example.com");     // ignored, already present
+System.out.println(emails.size()); // 1</code></pre>
+<p>Sets rely on <code>equals()</code> and <code>hashCode()</code> (or comparison for <code>TreeSet</code>) to detect duplicates, so your own classes must implement these correctly.</p>
+
+<h2>Map: HashMap, LinkedHashMap and TreeMap</h2>
+<pre><code class="language-java">Map&lt;String, Integer&gt; stock = new HashMap&lt;&gt;();
+stock.put("laptop", 12);
+stock.put("mouse", 40);
+stock.merge("mouse", 5, Integer::sum);   // 45
+System.out.println(stock.getOrDefault("keyboard", 0));   // 0
+
+for (Map.Entry&lt;String, Integer&gt; e : stock.entrySet()) {
+    System.out.println(e.getKey() + " = " + e.getValue());
+}</code></pre>
+<ul>
+<li><strong>HashMap:</strong> fast average O(1) lookups, no order, allows one null key.</li>
+<li><strong>LinkedHashMap:</strong> keeps insertion order (or access order, useful for LRU caches).</li>
+<li><strong>TreeMap:</strong> sorted by key, O(log n), useful for range queries.</li>
+</ul>
+
+<h2>How HashMap works internally</h2>
+<p>This is a favourite interview question. In short:</p>
+<ol>
+<li>When you call <code>put(key, value)</code>, Java computes the key's <code>hashCode()</code> and uses it to choose a bucket in an internal array.</li>
+<li>If the bucket is empty, the entry is stored there.</li>
+<li>If other keys are already in that bucket (a collision), Java compares keys with <code>equals()</code>. If a matching key exists, its value is replaced; otherwise the new entry is added to the bucket.</li>
+<li>When a single bucket grows large, Java 8 and later convert it from a linked list into a balanced tree to keep lookups fast.</li>
+<li>When the map becomes too full (based on the load factor, 0.75 by default), the internal array is resized and entries are redistributed.</li>
+</ol>
+<p>This is why keys should be immutable and must implement <code>equals()</code> and <code>hashCode()</code> consistently.</p>
+
+<h2>Queue and Deque</h2>
+<ul>
+<li><strong>ArrayDeque:</strong> a fast double-ended queue, the recommended choice for stacks and queues.</li>
+<li><strong>PriorityQueue:</strong> always returns the smallest (or highest-priority) element first, useful in scheduling and algorithms like Dijkstra's.</li>
+</ul>
+<pre><code class="language-java">Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;();
+stack.push(1);
+stack.push(2);
+System.out.println(stack.pop());   // 2</code></pre>
+
+<h2>Sorting collections</h2>
+<p>Use <code>Comparable</code> for a class's natural order and <code>Comparator</code> for custom orders:</p>
+<pre><code class="language-java">record Student(String name, int marks) {}
+
+List&lt;Student&gt; list = new ArrayList&lt;&gt;(List.of(
+    new Student("Riya", 88), new Student("Kabir", 75), new Student("Meera", 92)));
+
+list.sort(Comparator.comparingInt(Student::marks).reversed());</code></pre>
+
+<h2>Iterating safely</h2>
+<p>Removing elements from a list inside a for-each loop throws <code>ConcurrentModificationException</code>. Use an <code>Iterator</code> with <code>iterator.remove()</code>, or <code>list.removeIf(...)</code>.</p>
+
+<h2>Thread-safe collections</h2>
+<p>Standard collections are not thread-safe. For concurrent code, use classes from <code>java.util.concurrent</code> such as <code>ConcurrentHashMap</code> and <code>CopyOnWriteArrayList</code>.</p>
+
+<h2>Quick decision guide</h2>
+<table>
+<thead><tr><th>You need…</th><th>Use</th></tr></thead>
+<tbody>
+<tr><td>An ordered list with index access</td><td>ArrayList</td></tr>
+<tr><td>Unique items, order not important</td><td>HashSet</td></tr>
+<tr><td>Unique items, sorted</td><td>TreeSet</td></tr>
+<tr><td>Fast key lookups</td><td>HashMap</td></tr>
+<tr><td>Keys in insertion order</td><td>LinkedHashMap</td></tr>
+<tr><td>A stack or queue</td><td>ArrayDeque</td></tr>
+<tr><td>Process by priority</td><td>PriorityQueue</td></tr>
+<tr><td>A shared map across threads</td><td>ConcurrentHashMap</td></tr>
+</tbody>
+</table>
+<p>Practise more in our <a href="/blog/java-interview-questions">Java interview questions</a> guide, or review the <a href="/blog/core-java-concepts">core Java concepts</a>.</p>
+===FAQ===
+Q: What is the difference between List and Set in Java?
+A: A List keeps elements in order and allows duplicates, while a Set does not allow duplicate elements and may or may not keep order depending on the implementation.
+Q: What is the difference between HashMap and Hashtable?
+A: HashMap is not synchronised and allows one null key and null values. Hashtable is a legacy synchronised class that does not allow null keys or values. For thread safety, ConcurrentHashMap is preferred today.
+Q: Why should I override equals() and hashCode() together?
+A: Hash-based collections use hashCode() to find a bucket and equals() to compare keys. If they are inconsistent, lookups and duplicate detection will not work correctly.
+Q: Which Java collection is fastest?
+A: It depends on the operation. ArrayList is fastest for index access, while HashMap and HashSet offer average constant-time lookups.

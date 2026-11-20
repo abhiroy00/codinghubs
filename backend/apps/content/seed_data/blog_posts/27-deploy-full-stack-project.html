@@ -1,0 +1,112 @@
+title: How to Deploy a Full Stack Project: A Beginner's Guide
+slug: deploy-full-stack-project
+excerpt: Learn how to deploy a full stack project: hosting options, deploying the front end, back end and database, environment variables, domains, HTTPS, Docker and common errors.
+category: Web Development
+tags: Deployment, Full Stack Development, DevOps, Cloud Computing, Portfolio
+seo_title: How to Deploy a Full Stack Project (Beginner's Guide 2026)
+meta_description: Deploy your full stack project step by step: choose hosting, deploy the front end, back end and database, set environment variables, domain and HTTPS.
+focus_keyword: deploy full stack project
+search_intent: Learn how to put a full stack application online.
+---
+<p>A project that only runs on your laptop is hard for anyone else to see. A live link on your resume lets recruiters try your work in seconds, and the process of deploying teaches you skills that every company uses. This guide explains how to <strong>deploy a full stack project</strong> step by step, from choosing hosting to fixing the most common errors.</p>
+
+<h2>The three parts you are deploying</h2>
+<ol>
+<li><strong>Front end:</strong> your React, Angular or Vue app. After building, it is just static files: HTML, CSS, JavaScript and images.</li>
+<li><strong>Back end:</strong> your Node.js, Django, FastAPI or Spring Boot server, which must run continuously.</li>
+<li><strong>Database:</strong> PostgreSQL, MySQL or MongoDB, which must be reachable from the back end and protected from everyone else.</li>
+</ol>
+<p>You can host all three in one place, or use a separate specialised service for each.</p>
+
+<h2>Hosting options</h2>
+<table>
+<thead><tr><th>Option</th><th>Good for</th><th>Trade-offs</th></tr></thead>
+<tbody>
+<tr><td>Static hosting / front-end platforms</td><td>React, Vue, Angular builds and Next.js apps</td><td>Not for long-running custom back ends</td></tr>
+<tr><td>Platform-as-a-service (PaaS)</td><td>Back ends in Node, Python or Java with minimal setup</td><td>Free tiers may sleep or have limits</td></tr>
+<tr><td>Managed databases</td><td>PostgreSQL, MySQL or MongoDB without managing servers</td><td>Free tiers have storage limits</td></tr>
+<tr><td>Virtual private server (VPS) or cloud VM</td><td>Full control, learning Linux and DevOps</td><td>You handle security, updates and setup</td></tr>
+<tr><td>Containers (Docker)</td><td>Consistent deployments anywhere</td><td>Extra concepts to learn</td></tr>
+</tbody>
+</table>
+<p>For a first deployment, a front-end platform plus a PaaS and a managed database is the easiest path. Check each provider's current free-tier limits, as they change over time.</p>
+
+<h2>Step 1: Prepare your code</h2>
+<ul>
+<li>Push your project to GitHub. Most platforms deploy directly from a repository.</li>
+<li>Move every secret (database URLs, API keys, JWT secrets) into environment variables. Never commit <code>.env</code> files.</li>
+<li>Make the server port configurable: <code>const PORT = process.env.PORT || 5000;</code></li>
+<li>Make the API URL configurable in the front end, for example <code>import.meta.env.VITE_API_URL</code> in a Vite app.</li>
+<li>Add a start script to your back end (for example <code>"start": "node src/index.js"</code>).</li>
+</ul>
+
+<h2>Step 2: Deploy the database</h2>
+<p>Create a database on a managed service, then:</p>
+<ol>
+<li>Create a database user with a strong password.</li>
+<li>Restrict network access to your back end where possible.</li>
+<li>Copy the connection string into your back end's environment variables.</li>
+<li>Run migrations (for SQL databases) to create tables.</li>
+</ol>
+
+<h2>Step 3: Deploy the back end</h2>
+<ol>
+<li>Create a new web service on your hosting platform and connect your GitHub repository.</li>
+<li>Set the build command (for example <code>npm install</code>) and start command (for example <code>npm start</code>).</li>
+<li>Add environment variables: database URL, secrets and the allowed front-end origin for CORS.</li>
+<li>Deploy, then open a health endpoint such as <code>/api/health</code> to confirm it works.</li>
+</ol>
+<p>For Django, use a production server such as Gunicorn, set <code>DEBUG=False</code>, configure <code>ALLOWED_HOSTS</code> and collect static files. For Spring Boot, build a JAR with Maven or Gradle and run it with <code>java -jar</code>.</p>
+
+<h2>Step 4: Deploy the front end</h2>
+<ol>
+<li>Create a new project on a front-end hosting platform and connect the repository.</li>
+<li>Set the build command (often <code>npm run build</code>) and output folder (<code>dist</code> for Vite, <code>build</code> for Create React App).</li>
+<li>Set <code>VITE_API_URL</code> (or equivalent) to your live back-end URL.</li>
+<li>For single-page apps with client-side routing, configure a rewrite so every path serves <code>index.html</code>; otherwise refreshing a page like <code>/dashboard</code> returns 404.</li>
+</ol>
+
+<h2>Step 5: Connect a custom domain and HTTPS</h2>
+<p>Buy a domain from a registrar, then add the DNS records your hosting provider gives you (usually an A record or CNAME). Most platforms issue free HTTPS certificates automatically. A custom domain such as <code>yourname.dev</code> looks professional on a resume.</p>
+
+<h2>Deploying with Docker (next level)</h2>
+<p>Docker packages your app with everything it needs, so it runs the same on your laptop and on the server:</p>
+<pre><code class="language-dockerfile">FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY . .
+EXPOSE 5000
+CMD ["node", "src/index.js"]</code></pre>
+<p>With Docker Compose, you can run the front end, back end and database together locally and deploy the same setup to a VPS.</p>
+
+<h2>Common deployment errors and fixes</h2>
+<table>
+<thead><tr><th>Problem</th><th>Likely cause</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>CORS error in the browser</td><td>Back end does not allow the front-end origin</td><td>Set the CORS origin to your live front-end URL</td></tr>
+<tr><td>API calls go to localhost</td><td>Hard-coded URL in the front end</td><td>Use an environment variable and rebuild</td></tr>
+<tr><td>404 when refreshing a page</td><td>No SPA rewrite rule</td><td>Rewrite all routes to <code>index.html</code></td></tr>
+<tr><td>App crashes on start</td><td>Missing environment variable or wrong start command</td><td>Check logs and the platform's environment settings</td></tr>
+<tr><td>Database connection refused</td><td>Wrong URL, password or network rule</td><td>Verify the connection string and allowed IPs</td></tr>
+<tr><td>Mixed content warning</td><td>HTTPS front end calling an HTTP API</td><td>Serve the API over HTTPS</td></tr>
+</tbody>
+</table>
+
+<h2>After deployment</h2>
+<ul>
+<li>Test the full flow on mobile and desktop.</li>
+<li>Check logs regularly and set up basic uptime monitoring.</li>
+<li>Back up your database.</li>
+<li>Automate deployment with a CI/CD pipeline such as GitHub Actions so every push to the main branch deploys after tests pass.</li>
+</ul>
+<p>Need a project to deploy? Follow <a href="/blog/build-mern-stack-project">how to build a MERN stack project</a>, browse <a href="/projects">project ideas</a>, or join the <a href="/courses">Coding Hubs full stack courses</a>.</p>
+===FAQ===
+Q: Can I deploy a full stack project for free?
+A: Yes. Many platforms offer free tiers for front ends, back ends and databases. Free tiers often have limits, such as servers sleeping when idle, so check current terms.
+Q: What is the easiest way to deploy a React app?
+A: Connect your GitHub repository to a front-end hosting platform, set the build command and output folder, and add any environment variables. The platform builds and deploys automatically.
+Q: Why does my deployed app show a CORS error?
+A: The back end is not allowing requests from your front-end domain. Add your live front-end URL to the back end's CORS configuration.
+Q: Do I need Docker to deploy my project?
+A: No. Many platforms deploy directly from your code. Docker is useful for consistency and for deploying to your own servers, and it is a valuable skill to learn later.

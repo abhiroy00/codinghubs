@@ -1,0 +1,107 @@
+title: How to Build a GitHub Profile That Recruiters Notice
+slug: github-profile-for-developers
+excerpt: Turn your GitHub into a portfolio recruiters notice: profile README, pinned repositories, great project READMEs, clean commit history, contributions and common mistakes.
+category: Career Guides
+tags: GitHub, Portfolio, Git, Job Search, Freshers
+seo_title: How to Build a GitHub Profile That Recruiters Notice
+meta_description: Build a strong GitHub profile: write a profile README, pin your best projects, write great project READMEs, keep clean commits and avoid mistakes.
+focus_keyword: github profile
+search_intent: Improve a GitHub profile to impress recruiters.
+---
+<p>For developers, especially freshers, a <strong>GitHub profile</strong> is often the first proof of skill a recruiter or interviewer sees. A well-organised profile shows that you write real code, finish projects and communicate clearly. A messy one with forked tutorials and empty repositories can hurt more than help. Here is how to make yours work for you.</p>
+
+<h2>Step 1: Complete the basics</h2>
+<ul>
+<li><strong>Professional username:</strong> ideally your name or a close variation.</li>
+<li><strong>Clear profile photo:</strong> a friendly headshot or a simple, professional avatar.</li>
+<li><strong>Bio:</strong> one line with your role and stack, such as "Full stack developer | React, Node.js, PostgreSQL".</li>
+<li><strong>Location, website and LinkedIn:</strong> fill them in so people can contact you.</li>
+</ul>
+
+<h2>Step 2: Create a profile README</h2>
+<p>Create a public repository with the same name as your username, and add a <code>README.md</code>. It appears at the top of your profile. Keep it short and useful:</p>
+<pre><code class="language-markdown"># Hi, I'm Riya 👋
+
+Full stack developer from Delhi building web apps with React, Node.js and PostgreSQL.
+
+## Featured projects
+- **Course Bookmarks** – save and organise courses with notes (React, Express, MongoDB) · [Live](https://example.com)
+- **AI Study Helper** – turns notes into quizzes using an LLM API (FastAPI, React)
+
+## Currently learning
+TypeScript, Docker and system design
+
+## Contact
+LinkedIn: linkedin.com/in/riya · Email: riya@example.com</code></pre>
+<p>Avoid cluttering it with dozens of badges, animated banners or statistics widgets; recruiters care about projects.</p>
+
+<h2>Step 3: Pin your best four to six repositories</h2>
+<p>Pinned repositories are the first projects visitors see. Pin your strongest, most complete work, ideally showing a range of skills that matches the jobs you want, such as one full stack app, one API project and one AI or data project. Remove or archive half-finished experiments from the spotlight.</p>
+
+<h2>Step 4: Write an excellent README for every project</h2>
+<p>Most visitors read the README rather than the code. A strong README includes:</p>
+<ol>
+<li><strong>Project name and one-line description.</strong></li>
+<li><strong>Live demo link and screenshots or a short GIF.</strong></li>
+<li><strong>Features</strong> in a short list.</li>
+<li><strong>Tech stack.</strong></li>
+<li><strong>Architecture overview</strong>, even a simple diagram or a few sentences.</li>
+<li><strong>How to run it locally</strong>, including environment variables (with example values, never real secrets).</li>
+<li><strong>What you learned and what you would improve.</strong></li>
+</ol>
+<p>A recruiter should understand the project within a minute without running it.</p>
+
+<h2>Step 5: Keep code and history clean</h2>
+<ul>
+<li>Use a sensible folder structure and consistent naming.</li>
+<li>Write meaningful commit messages: "Add JWT login and protected routes" rather than "update" or "final final".</li>
+<li>Commit regularly in small, logical steps.</li>
+<li>Include a <code>.gitignore</code> so <code>node_modules</code>, build folders and <code>.env</code> files are not committed.</li>
+<li>Add a licence if you want others to reuse your code.</li>
+</ul>
+
+<h2>Step 6: Never commit secrets</h2>
+<p>API keys, database passwords and tokens in a public repository can be found and misused within minutes. Use environment variables and <code>.env</code> files listed in <code>.gitignore</code>. If you accidentally commit a secret, revoke or rotate it immediately; deleting the commit is not enough because it remains in history and may already have been copied.</p>
+
+<h2>Step 7: Show consistent activity</h2>
+<p>The contribution graph shows how often you commit. Regular activity suggests steady learning, but do not fake it with meaningless commits; experienced reviewers notice. Focus on genuine progress: practise problems, small tools, project improvements and documentation.</p>
+
+<h2>Step 8: Contribute to open source</h2>
+<p>Open-source contributions show that you can read other people's code, follow guidelines and collaborate. Start small:</p>
+<ul>
+<li>Fix typos or improve documentation.</li>
+<li>Look for issues labelled "good first issue" in projects you use.</li>
+<li>Write tests for untested code.</li>
+<li>Follow the project's contribution guide and be patient with reviews.</li>
+</ul>
+
+<h2>Step 9: Use GitHub features professionally</h2>
+<ul>
+<li><strong>Issues:</strong> track features and bugs in your own projects; it shows planning.</li>
+<li><strong>Pull requests:</strong> even when working alone, use branches and PRs for bigger changes.</li>
+<li><strong>GitHub Actions:</strong> run tests or linting automatically on each push.</li>
+<li><strong>Releases and tags:</strong> mark project milestones.</li>
+</ul>
+
+<h2>Common mistakes</h2>
+<ul>
+<li>Dozens of forked repositories with no changes.</li>
+<li>Tutorial projects presented as original work.</li>
+<li>Repositories without READMEs or with default template READMEs.</li>
+<li>Broken live links.</li>
+<li>Committed secrets or <code>node_modules</code> folders.</li>
+<li>Only private repositories, so visitors see nothing.</li>
+</ul>
+
+<h2>Link it everywhere</h2>
+<p>Add your GitHub to your resume header, LinkedIn profile, portfolio site and email signature. Mention specific repositories in cover letters when they relate to the job.</p>
+<p>Need projects to showcase? Browse <a href="/projects">Coding Hubs projects</a>, then make sure your <a href="/blog/developer-resume-for-freshers">developer resume</a> highlights them.</p>
+===FAQ===
+Q: Do recruiters really check GitHub profiles?
+A: Many technical recruiters and interviewers check GitHub, especially for freshers, to see real code, project quality and documentation.
+Q: How many projects should I have on GitHub?
+A: Quality matters more than quantity. Four to six well-documented, complete projects pinned on your profile are usually enough.
+Q: Should I make my college projects public on GitHub?
+A: Yes, if they are your own work, contain no confidential data and are well documented. Follow your college's rules about sharing assignments.
+Q: What should I do if I accidentally pushed an API key?
+A: Revoke or rotate the key immediately with the provider, then remove it from the code and history. Assume the exposed key has already been seen.

@@ -1,0 +1,102 @@
+title: What Is RAG (Retrieval-Augmented Generation)? Explained Simply
+slug: what-is-rag
+excerpt: Retrieval-augmented generation (RAG) explained simply: why LLMs need it, how embeddings and vector search work, the RAG pipeline step by step, evaluation and common mistakes.
+category: Artificial Intelligence
+tags: RAG, Generative AI, LLM, Vector Database, AI Engineering
+seo_title: What Is RAG? Retrieval-Augmented Generation Explained Simply
+meta_description: Understand RAG (retrieval-augmented generation): why LLMs need it, embeddings, chunking, vector databases, the full pipeline and evaluation.
+focus_keyword: what is rag
+search_intent: Understand retrieval-augmented generation and how it works.
+---
+<p>Large language models are impressive, but they have two big limits: they do not know your private data, and their built-in knowledge stops at their training date. Retrieval-augmented generation, or RAG, solves both. If you have wondered <strong>what is RAG</strong> and why every AI job description mentions it, this guide explains the idea and the full pipeline in simple terms.</p>
+
+<h2>The problem RAG solves</h2>
+<p>Imagine asking a chatbot, "What is the refund policy for the Java course?" A general LLM has never seen your institute's policy, so it might guess, and a confident guess is worse than no answer. You could paste the whole policy document into every prompt, but real organisations have thousands of documents, far too many to include every time.</p>
+<p>RAG works like an open-book exam: before answering, the system <em>retrieves</em> the most relevant passages from your documents and gives them to the model, which then <em>generates</em> an answer grounded in that material.</p>
+
+<h2>RAG in one picture</h2>
+<ol>
+<li><strong>Question:</strong> "What is the refund policy for the Java course?"</li>
+<li><strong>Retrieve:</strong> search your documents and find the three most relevant passages.</li>
+<li><strong>Augment:</strong> add those passages to the prompt with instructions.</li>
+<li><strong>Generate:</strong> the LLM answers using only the provided passages, ideally citing them.</li>
+</ol>
+
+<h2>Key concept: embeddings</h2>
+<p>An <strong>embedding</strong> is a list of numbers that represents the meaning of a piece of text. Texts with similar meanings have embeddings that are close together, even if they use different words. "How do I get my money back?" and "refund policy" end up near each other, which keyword search would miss.</p>
+<p>Embedding models are available through AI APIs and as open-source models. You convert both your documents and the user's question into embeddings, then find the document chunks closest to the question.</p>
+
+<h2>The RAG pipeline step by step</h2>
+<h3>Phase 1: Indexing (done in advance)</h3>
+<ol>
+<li><strong>Load documents:</strong> PDFs, web pages, policies, help articles, database records.</li>
+<li><strong>Clean the text:</strong> remove navigation menus, headers, footers and duplicate content.</li>
+<li><strong>Chunk:</strong> split documents into passages, often a few hundred words each, with a small overlap so ideas are not cut in half. Splitting at headings and paragraphs usually works better than fixed character counts.</li>
+<li><strong>Embed:</strong> create an embedding for each chunk.</li>
+<li><strong>Store:</strong> save chunks, embeddings and metadata (source, title, date, access rights) in a vector database or a database with vector search.</li>
+</ol>
+<h3>Phase 2: Answering (for every question)</h3>
+<ol>
+<li><strong>Embed the question.</strong></li>
+<li><strong>Search:</strong> find the most similar chunks, optionally filtered by metadata such as course or date.</li>
+<li><strong>Rerank (optional):</strong> use a reranking model to reorder results by relevance.</li>
+<li><strong>Build the prompt:</strong> instructions plus retrieved chunks plus the question.</li>
+<li><strong>Generate:</strong> the LLM writes the answer and cites the sources.</li>
+</ol>
+
+<h2>A simplified example in Python</h2>
+<pre><code class="language-python">def answer(question, store, embed, llm):
+    query_vector = embed(question)
+    chunks = store.search(query_vector, top_k=4)
+
+    context = "\n\n".join(f"[{i + 1}] {c.text}" for i, c in enumerate(chunks))
+    prompt = (
+        "Answer the question using only the sources below. "
+        "Cite sources like [1]. If the answer is not in the sources, "
+        "say you do not know.\n\n"
+        f"Sources:\n{context}\n\nQuestion: {question}"
+    )
+    return llm(prompt), chunks</code></pre>
+<p>Here <code>embed</code>, <code>store</code> and <code>llm</code> stand for your embedding model, vector store and LLM client.</p>
+
+<h2>Vector databases</h2>
+<p>A vector database stores embeddings and finds the nearest ones quickly. Options include dedicated vector databases, PostgreSQL with the pgvector extension, and vector search features in many existing databases and search engines. For learning and small projects, pgvector or a lightweight local library is often enough.</p>
+
+<h2>Hybrid search</h2>
+<p>Embedding search understands meaning but can miss exact terms such as course codes, error messages or names. Many production systems combine vector search with traditional keyword search (hybrid search) to get the best of both.</p>
+
+<h2>Evaluating a RAG system</h2>
+<p>A RAG demo is easy; a reliable RAG system needs measurement. Create a test set of real questions with expected answers and check:</p>
+<ul>
+<li><strong>Retrieval quality:</strong> did the search return the passages containing the answer?</li>
+<li><strong>Faithfulness:</strong> does the answer stick to the retrieved sources without inventing details?</li>
+<li><strong>Answer quality:</strong> is it correct, complete and clear?</li>
+<li><strong>Refusals:</strong> does it say "I do not know" when the answer is not in the documents?</li>
+</ul>
+<p>Run the test set every time you change chunking, embeddings, prompts or models.</p>
+
+<h2>Common mistakes</h2>
+<ul>
+<li>Chunks that are too large (irrelevant text dilutes the answer) or too small (context is lost).</li>
+<li>Indexing messy text full of menus and boilerplate.</li>
+<li>No metadata, so you cannot filter by date, product or permissions.</li>
+<li>Ignoring access control, so users can retrieve documents they should not see.</li>
+<li>Never re-indexing when documents change.</li>
+<li>No evaluation, so quality problems go unnoticed.</li>
+</ul>
+
+<h2>RAG vs fine-tuning</h2>
+<p>Fine-tuning changes a model's behaviour or style by training it further on examples. RAG gives a model access to knowledge at question time. For "answer from our documents", RAG is usually the better first choice: it is cheaper, easier to update and can cite sources. Fine-tuning is better for teaching a consistent format, tone or specialised task.</p>
+
+<h2>Project idea</h2>
+<p>Build a "College Handbook Assistant": index your college's rules, syllabus and FAQs, then answer questions with citations. Add a test set of 30 questions and measure accuracy before and after improving your chunking. It is a portfolio project that shows real AI engineering skill.</p>
+<p>Next, learn about <a href="/blog/ai-agents-explained">AI agents</a>, or build RAG systems with mentors in the <a href="/courses">Coding Hubs Generative AI courses</a>.</p>
+===FAQ===
+Q: What is RAG in AI?
+A: RAG, or retrieval-augmented generation, is a technique where an AI system first retrieves relevant information from a knowledge source and then uses it to generate a grounded answer.
+Q: Why is RAG important?
+A: RAG lets language models answer from private or recent information without retraining, reduces hallucinations, and allows answers to cite their sources.
+Q: Do I need a vector database for RAG?
+A: You need some way to search embeddings. That can be a dedicated vector database, PostgreSQL with pgvector, a search engine with vector support or, for small projects, an in-memory library.
+Q: Is RAG better than fine-tuning?
+A: For answering questions from changing documents, RAG is usually better and cheaper. Fine-tuning is more suitable for teaching a model a specific style, format or task.

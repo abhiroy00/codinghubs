@@ -1,0 +1,109 @@
+title: Automate Boring Tasks with Python: 10 Practical Scripts
+slug: python-automation-scripts
+excerpt: Ten practical Python automation scripts for everyday tasks: organising files, renaming in bulk, Excel reports, emails, PDFs, web data and scheduled jobs.
+category: Python
+tags: Python, Automation, Scripting, Productivity, Python Projects
+seo_title: Python Automation: 10 Practical Scripts for Everyday Tasks
+meta_description: Learn Python automation with 10 practical scripts: organise files, bulk rename, generate Excel reports, send emails, merge PDFs, scrape data and schedule jobs.
+focus_keyword: python automation
+search_intent: Learn how to automate repetitive tasks with Python scripts.
+---
+<p>If you repeat the same task on a computer every day or every week, Python can probably do it for you. <strong>Python automation</strong> is one of the most practical uses of the language: a few lines of code can save hours of copying, renaming, formatting and clicking. Here are ten useful scripts, each with the idea, the key libraries and a short example.</p>
+
+<h2>Before you start</h2>
+<p>Use Python 3 and create a virtual environment for your automation scripts. Always test scripts on a copy of your files first, and keep backups. Automation is powerful, which means mistakes are fast too.</p>
+
+<h2>1. Organise your Downloads folder</h2>
+<p>Move files into folders based on their extension.</p>
+<pre><code class="language-python">from pathlib import Path
+import shutil
+
+downloads = Path.home() / "Downloads"
+groups = {"Images": [".jpg", ".png", ".webp"], "Docs": [".pdf", ".docx", ".xlsx"], "Videos": [".mp4", ".mov"]}
+
+for file in downloads.iterdir():
+    if file.is_file():
+        for folder, extensions in groups.items():
+            if file.suffix.lower() in extensions:
+                target = downloads / folder
+                target.mkdir(exist_ok=True)
+                shutil.move(str(file), target / file.name)</code></pre>
+
+<h2>2. Rename files in bulk</h2>
+<p>Rename hundreds of photos or documents with a consistent pattern, such as <code>invoice-001.pdf</code>, <code>invoice-002.pdf</code>.</p>
+<pre><code class="language-python">from pathlib import Path
+
+folder = Path("invoices")
+for i, file in enumerate(sorted(folder.glob("*.pdf")), start=1):
+    file.rename(folder / f"invoice-{i:03}.pdf")</code></pre>
+
+<h2>3. Generate Excel reports automatically</h2>
+<p>Combine several CSV or Excel files, calculate totals and save a formatted report with pandas.</p>
+<pre><code class="language-python">import pandas as pd
+from pathlib import Path
+
+frames = [pd.read_csv(f) for f in Path("sales").glob("*.csv")]
+sales = pd.concat(frames)
+summary = sales.groupby("region")["amount"].sum().reset_index()
+summary.to_excel("monthly_summary.xlsx", index=False)</code></pre>
+<p>You will need <code>pandas</code> and <code>openpyxl</code> installed.</p>
+
+<h2>4. Send emails automatically</h2>
+<p>Send reports or reminders using Python's built-in <code>smtplib</code> and <code>email</code> modules. Store your email password or app password in an environment variable, never in the script itself. Many email providers require an app-specific password for this.</p>
+
+<h2>5. Merge or split PDFs</h2>
+<p>Combine monthly statements into one file, or extract specific pages, using the <code>pypdf</code> library.</p>
+<pre><code class="language-python">from pypdf import PdfWriter
+
+writer = PdfWriter()
+for name in ["jan.pdf", "feb.pdf", "mar.pdf"]:
+    writer.append(name)
+writer.write("q1_statements.pdf")</code></pre>
+
+<h2>6. Resize and compress images</h2>
+<p>Use the Pillow library to resize product photos, convert formats or create thumbnails for a website. This is especially useful for making web pages load faster.</p>
+
+<h2>7. Collect data from websites</h2>
+<p>Use <code>requests</code> and BeautifulSoup to collect information such as product prices or public notices, then save it to a spreadsheet. Respect each website's terms of use and <code>robots.txt</code>, and prefer official APIs when they exist.</p>
+
+<h2>8. Automate browser tasks</h2>
+<p>Tools like Playwright and Selenium control a real browser: logging in, filling forms, downloading reports and taking screenshots. They are widely used for testing and for repetitive web tasks inside companies.</p>
+
+<h2>9. Back up important folders</h2>
+<p>Create a dated zip archive of a folder every day.</p>
+<pre><code class="language-python">import shutil
+from datetime import date
+
+shutil.make_archive(f"backup-{date.today()}", "zip", "important_files")</code></pre>
+
+<h2>10. Summarise documents with AI</h2>
+<p>Combine automation with a large language model API to summarise long reports, extract key points from emails, or draft replies. Read files with Python, send the text to the model with clear instructions, and save the result. Always review AI output before sharing it, and never send confidential data to an external service without permission.</p>
+
+<h2>Schedule your scripts</h2>
+<p>Automation is most useful when it runs without you:</p>
+<ul>
+<li><strong>Windows:</strong> use Task Scheduler to run <code>python script.py</code> at set times.</li>
+<li><strong>macOS and Linux:</strong> use <code>cron</code>, for example running a backup every night.</li>
+<li><strong>In Python:</strong> the <code>schedule</code> library works for simple, always-running scripts.</li>
+</ul>
+
+<h2>Best practices for automation scripts</h2>
+<ul>
+<li>Log what the script does, so you can check it later.</li>
+<li>Add a "dry run" mode that prints planned actions without making changes.</li>
+<li>Handle errors gracefully and skip problem files instead of crashing.</li>
+<li>Keep passwords and API keys in environment variables.</li>
+<li>Store scripts in Git so you can track changes.</li>
+</ul>
+
+<h2>Turn automation into a career skill</h2>
+<p>Automation skills are valued in operations, finance, marketing, testing and IT support, not just in developer roles. A portfolio of scripts that save real time is a strong talking point in interviews. Explore more <a href="/blog/python-projects-for-beginners">Python projects for beginners</a> or join the <a href="/courses">Coding Hubs Python course</a> to go further.</p>
+===FAQ===
+Q: What can I automate with Python?
+A: You can automate file organisation, renaming, Excel and CSV reports, emails, PDF handling, image processing, web data collection, browser tasks, backups and many other repetitive computer tasks.
+Q: Is Python good for automation?
+A: Yes. Python's simple syntax and large library ecosystem make it one of the most popular languages for automation and scripting.
+Q: Do I need to be an expert to automate tasks with Python?
+A: No. Basic Python knowledge such as variables, loops, functions and file handling is enough to write many useful automation scripts.
+Q: Is web scraping legal?
+A: It depends on the website's terms, the data being collected and local laws. Check terms of use and robots.txt, avoid personal data, and prefer official APIs.

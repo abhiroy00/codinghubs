@@ -1,0 +1,146 @@
+title: Node.js and Express Tutorial: Build a REST API from Scratch
+slug: node-js-express-rest-api
+excerpt: Build a REST API with Node.js and Express from scratch: setup, routes, middleware, validation, error handling, connecting a database, project structure and security basics.
+category: Web Development
+tags: Node.js, Express, REST API, Back-End Development, JavaScript
+seo_title: Node.js Express REST API Tutorial for Beginners (Step by Step)
+meta_description: Learn to build a REST API with Node.js and Express: routes, HTTP methods, middleware, validation, error handling, database connection, structure and security basics.
+focus_keyword: node js rest api
+search_intent: Learn to build REST APIs with Node.js and Express.
+---
+<p>Node.js lets you run JavaScript on a server, and Express is the most popular framework for building web servers and APIs with it. Together they are the "E" and "N" in the MERN stack. In this tutorial you will build a <strong>Node.js REST API</strong> for managing tasks and learn the patterns used in real back-end projects.</p>
+
+<h2>What is a REST API?</h2>
+<p>A REST API lets clients (a React app, a mobile app or another server) work with data over HTTP using standard methods:</p>
+<table>
+<thead><tr><th>Method</th><th>Endpoint</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td>GET</td><td>/api/tasks</td><td>List tasks</td></tr>
+<tr><td>GET</td><td>/api/tasks/:id</td><td>Get one task</td></tr>
+<tr><td>POST</td><td>/api/tasks</td><td>Create a task</td></tr>
+<tr><td>PATCH</td><td>/api/tasks/:id</td><td>Update part of a task</td></tr>
+<tr><td>DELETE</td><td>/api/tasks/:id</td><td>Delete a task</td></tr>
+</tbody>
+</table>
+<p>Responses use JSON and meaningful status codes: 200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauthorized, 404 Not Found and 500 Internal Server Error.</p>
+
+<h2>Step 1: Set up the project</h2>
+<pre><code class="language-bash">mkdir tasks-api &amp;&amp; cd tasks-api
+npm init -y
+npm install express
+npm install --save-dev nodemon</code></pre>
+<p>In <code>package.json</code>, add <code>"type": "module"</code> and a script <code>"dev": "nodemon src/index.js"</code>. Nodemon restarts the server when you save a file.</p>
+
+<h2>Step 2: Your first server</h2>
+<pre><code class="language-javascript">// src/index.js
+import express from 'express';
+
+const app = express();
+app.use(express.json());   // parse JSON request bodies
+
+app.get('/api/health', (req, res) =&gt; {
+  res.json({ status: 'ok' });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =&gt; console.log(`Server running on port ${PORT}`));</code></pre>
+<p>Run <code>npm run dev</code> and open <code>http://localhost:5000/api/health</code>.</p>
+
+<h2>Step 3: CRUD routes</h2>
+<p>Start with an in-memory array to focus on Express itself:</p>
+<pre><code class="language-javascript">let tasks = [];
+let nextId = 1;
+
+app.get('/api/tasks', (req, res) =&gt; {
+  const { done } = req.query;   // e.g. /api/tasks?done=true
+  const result = done === undefined ? tasks : tasks.filter((t) =&gt; String(t.done) === done);
+  res.json(result);
+});
+
+app.post('/api/tasks', (req, res) =&gt; {
+  const { title } = req.body;
+  if (!title || !title.trim()) {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+  const task = { id: nextId++, title: title.trim(), done: false };
+  tasks.push(task);
+  res.status(201).json(task);
+});
+
+app.patch('/api/tasks/:id', (req, res) =&gt; {
+  const task = tasks.find((t) =&gt; t.id === Number(req.params.id));
+  if (!task) return res.status(404).json({ error: 'Task not found' });
+  if (typeof req.body.done === 'boolean') task.done = req.body.done;
+  if (req.body.title) task.title = req.body.title.trim();
+  res.json(task);
+});
+
+app.delete('/api/tasks/:id', (req, res) =&gt; {
+  const before = tasks.length;
+  tasks = tasks.filter((t) =&gt; t.id !== Number(req.params.id));
+  if (tasks.length === before) return res.status(404).json({ error: 'Task not found' });
+  res.status(204).end();
+});</code></pre>
+<p>Test every route with Postman or a similar tool. Notice the difference between route parameters (<code>req.params</code>), query strings (<code>req.query</code>) and the body (<code>req.body</code>).</p>
+
+<h2>Step 4: Understand middleware</h2>
+<p>Middleware functions run between the request arriving and the response being sent. They can read or change the request, end the response, or call <code>next()</code> to continue.</p>
+<pre><code class="language-javascript">function logger(req, res, next) {
+  const start = Date.now();
+  res.on('finish', () =&gt; {
+    console.log(`${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now() - start}ms`);
+  });
+  next();
+}
+app.use(logger);</code></pre>
+<p>Authentication, logging, CORS, rate limiting and body parsing are all middleware.</p>
+
+<h2>Step 5: Central error handling</h2>
+<pre><code class="language-javascript">// after all routes
+app.use((req, res) =&gt; res.status(404).json({ error: 'Route not found' }));
+
+app.use((err, req, res, next) =&gt; {
+  console.error(err);
+  res.status(err.status || 500).json({ error: err.status ? err.message : 'Something went wrong' });
+});</code></pre>
+<p>In Express 5, errors thrown inside <code>async</code> route handlers are passed to this handler automatically. In Express 4, wrap async handlers or call <code>next(err)</code> yourself. Never send internal error details to clients in production.</p>
+
+<h2>Step 6: Organise the project</h2>
+<pre><code class="language-text">src/
+  index.js            app setup
+  routes/tasks.js     express.Router() with the task routes
+  controllers/        request handling functions
+  services/           business logic
+  models/             database models
+  middleware/         auth, validation, errors</code></pre>
+<p>Use <code>express.Router()</code> to group related routes and mount them with <code>app.use('/api/tasks', taskRouter)</code>.</p>
+
+<h2>Step 7: Connect a database</h2>
+<p>Replace the in-memory array with a real database. With MongoDB, use Mongoose models; with PostgreSQL or MySQL, use a query builder or ORM such as Prisma, Drizzle, Sequelize or Knex. Keep the connection string in an environment variable loaded from a <code>.env</code> file that is never committed.</p>
+
+<h2>Step 8: Validate input</h2>
+<p>Never trust client data. Libraries such as Zod, Joi or express-validator check types, required fields and formats before data reaches your database, and return clear 400 errors.</p>
+
+<h2>Step 9: Security basics</h2>
+<ul>
+<li>Hash passwords with bcrypt and use JWT or secure sessions for login.</li>
+<li>Configure CORS to allow only your front-end domain.</li>
+<li>Add security headers with Helmet and rate limiting on login routes.</li>
+<li>Filter every query by the logged-in user where data is private.</li>
+<li>Keep dependencies updated and run <code>npm audit</code>.</li>
+</ul>
+
+<h2>Step 10: Test and deploy</h2>
+<p>Write API tests with a test runner and Supertest, then deploy to a Node.js hosting platform or a cloud server. Set environment variables in the hosting dashboard, and check logs after deployment.</p>
+
+<h2>Next steps</h2>
+<p>Connect this API to a React front end to build a full stack application. Follow our guide to <a href="/blog/build-mern-stack-project">building a MERN stack project</a>, or learn with mentors in the <a href="/courses">MERN Stack with Gen AI course</a>.</p>
+===FAQ===
+Q: Is Node.js good for building APIs?
+A: Yes. Node.js handles many simultaneous connections efficiently, and Express makes building REST APIs simple, which is why they are widely used for web and mobile back ends.
+Q: What is middleware in Express?
+A: Middleware is a function that runs during the request-response cycle. It can modify the request or response, end the request, or pass control to the next function with next().
+Q: Should I use Express or another Node.js framework?
+A: Express is the most common choice and great for learning. Alternatives such as Fastify and NestJS are popular for performance or more structured, larger projects.
+Q: Which database is best with Node.js?
+A: MongoDB is common in MERN projects, while PostgreSQL and MySQL are popular for relational data. Choose based on your data and the job roles you are targeting.

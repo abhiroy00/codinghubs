@@ -1,0 +1,189 @@
+title: Top 50 Python Interview Questions and Answers for Freshers
+slug: python-interview-questions
+excerpt: The top 50 Python interview questions for freshers with clear answers and examples: basics, data types, functions, OOP, exceptions, modules, advanced concepts and coding questions.
+category: Interview Preparation
+tags: Python, Interview Questions, Freshers, Interview Preparation, Programming Basics
+seo_title: Top 50 Python Interview Questions and Answers for Freshers
+meta_description: Top 50 Python interview questions and answers for freshers: data types, lists vs tuples, decorators, generators, OOP, exceptions and coding problems.
+focus_keyword: python interview questions
+search_intent: Prepare for Python interviews with common questions and answers.
+---
+<p>Python is one of the most popular languages in fresher interviews for developer, data and AI roles. Interviewers usually test fundamentals first, then move to functions, OOP and a few coding problems. These 50 <strong>Python interview questions</strong> cover the topics asked most often, with short answers you can understand and explain in your own words.</p>
+
+<h2>Python basics</h2>
+<h4>1. What is Python?</h4>
+<p>Python is a high-level, interpreted, general-purpose programming language known for readable syntax. It supports procedural, object-oriented and functional programming and is used in web development, automation, data science and AI.</p>
+<h4>2. What are the key features of Python?</h4>
+<p>Simple syntax, dynamic typing, automatic memory management, a large standard library, cross-platform support, and a huge ecosystem of third-party packages.</p>
+<h4>3. Is Python compiled or interpreted?</h4>
+<p>The standard implementation, CPython, compiles source code to bytecode, which is then executed by the Python virtual machine. It is usually described as interpreted because there is no separate compile step for the programmer.</p>
+<h4>4. What is PEP 8?</h4>
+<p>PEP 8 is the official style guide for Python code. It covers naming, indentation (four spaces), line length, imports and spacing to keep code consistent and readable.</p>
+<h4>5. What is dynamic typing?</h4>
+<p>Variable types are determined at run time, not declared in advance. The same name can refer to an integer and later to a string. Type hints can be added for readability and tooling, but Python does not enforce them at run time.</p>
+<h4>6. How is indentation used in Python?</h4>
+<p>Indentation defines code blocks (in loops, functions, classes and conditionals) instead of braces. Incorrect indentation causes an <code>IndentationError</code>.</p>
+<h4>7. What are Python's built-in data types?</h4>
+<p>Numbers (<code>int</code>, <code>float</code>, <code>complex</code>), <code>str</code>, <code>bool</code>, sequences (<code>list</code>, <code>tuple</code>, <code>range</code>), mappings (<code>dict</code>), sets (<code>set</code>, <code>frozenset</code>), <code>bytes</code> and <code>NoneType</code>.</p>
+<h4>8. What is the difference between mutable and immutable types?</h4>
+<p>Mutable objects can be changed after creation (<code>list</code>, <code>dict</code>, <code>set</code>). Immutable objects cannot (<code>int</code>, <code>float</code>, <code>str</code>, <code>tuple</code>, <code>frozenset</code>). "Changing" an immutable object actually creates a new one.</p>
+
+<h2>Data structures</h2>
+<h4>9. What is the difference between a list and a tuple?</h4>
+<p>Lists are mutable and use square brackets; tuples are immutable and use parentheses. Tuples can be used as dictionary keys (if their contents are hashable), and they communicate that data should not change.</p>
+<h4>10. How do you remove duplicates from a list?</h4>
+<p><code>list(set(items))</code> removes duplicates but loses order. To keep order: <code>list(dict.fromkeys(items))</code>.</p>
+<h4>11. What is a dictionary? How do you access values safely?</h4>
+<p>A dictionary stores key–value pairs with fast lookups. Use <code>d.get(key, default)</code> to avoid a <code>KeyError</code> when the key may be missing.</p>
+<h4>12. What are list comprehensions?</h4>
+<p>A concise way to build lists: <code>[x * x for x in range(10) if x % 2 == 0]</code>. Similar syntax exists for dictionaries and sets.</p>
+<h4>13. What is slicing?</h4>
+<p>Extracting part of a sequence with <code>seq[start:stop:step]</code>. For example, <code>s[::-1]</code> reverses a string or list.</p>
+<h4>14. What is the difference between a set and a list?</h4>
+<p>A set stores unique, unordered elements and offers fast membership tests. A list is ordered, allows duplicates and supports indexing.</p>
+<h4>15. What is the difference between <code>append()</code> and <code>extend()</code>?</h4>
+<p><code>append(x)</code> adds <code>x</code> as one element. <code>extend(iterable)</code> adds each element of the iterable.</p>
+
+<h2>Functions</h2>
+<h4>16. What are <code>*args</code> and <code>**kwargs</code>?</h4>
+<p><code>*args</code> collects extra positional arguments into a tuple; <code>**kwargs</code> collects extra keyword arguments into a dictionary.</p>
+<pre><code class="language-python">def show(*args, **kwargs):
+    print(args, kwargs)
+
+show(1, 2, course="Python")   # (1, 2) {'course': 'Python'}</code></pre>
+<h4>17. What is a lambda function?</h4>
+<p>A small anonymous function written in one expression: <code>square = lambda x: x * x</code>. Often used with <code>sorted</code>, <code>map</code> and <code>filter</code>.</p>
+<h4>18. What is the problem with mutable default arguments?</h4>
+<p>Default values are evaluated once, when the function is defined. A mutable default like <code>def add(item, items=[])</code> is shared between calls. Use <code>items=None</code> and create a new list inside the function.</p>
+<h4>19. Explain <code>map()</code>, <code>filter()</code> and <code>reduce()</code>.</h4>
+<p><code>map</code> applies a function to every item, <code>filter</code> keeps items for which a function returns true, and <code>functools.reduce</code> combines items into a single value.</p>
+<h4>20. What is the scope of a variable? What is the LEGB rule?</h4>
+<p>Python looks up names in this order: Local, Enclosing, Global, Built-in. Use <code>global</code> or <code>nonlocal</code> to assign to outer variables.</p>
+<h4>21. What is a decorator?</h4>
+<p>A function that takes another function and extends its behaviour without changing its code.</p>
+<pre><code class="language-python">import time
+from functools import wraps
+
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} took {time.perf_counter() - start:.3f}s")
+        return result
+    return wrapper
+
+@timer
+def slow():
+    time.sleep(0.5)</code></pre>
+<h4>22. What is a closure?</h4>
+<p>A nested function that remembers variables from its enclosing function even after the outer function has returned.</p>
+
+<h2>Iterators and generators</h2>
+<h4>23. What is the difference between an iterable and an iterator?</h4>
+<p>An iterable can be looped over (it has <code>__iter__</code>). An iterator produces values one at a time with <code>__next__</code> and remembers its position.</p>
+<h4>24. What is a generator?</h4>
+<p>A function that uses <code>yield</code> to produce values lazily, one at a time, saving memory.</p>
+<pre><code class="language-python">def countdown(n):
+    while n &gt; 0:
+        yield n
+        n -= 1
+
+for x in countdown(3):
+    print(x)   # 3, 2, 1</code></pre>
+<h4>25. What is the difference between <code>return</code> and <code>yield</code>?</h4>
+<p><code>return</code> ends the function and sends back one value. <code>yield</code> pauses the function, produces a value and resumes from the same point on the next request.</p>
+
+<h2>Object-oriented programming</h2>
+<h4>26. What is <code>__init__</code>?</h4>
+<p>The initialiser method that runs when an object is created, used to set initial attributes.</p>
+<h4>27. What is <code>self</code>?</h4>
+<p>A reference to the current instance, passed automatically as the first argument to instance methods.</p>
+<h4>28. Explain inheritance in Python.</h4>
+<p>A class can inherit attributes and methods from another: <code>class Manager(Employee):</code>. Python supports multiple inheritance and resolves method lookup using the Method Resolution Order (MRO).</p>
+<h4>29. What is the difference between <code>@staticmethod</code> and <code>@classmethod</code>?</h4>
+<p>A static method receives no automatic first argument and behaves like a normal function inside the class. A class method receives the class (<code>cls</code>) and is often used for alternative constructors.</p>
+<h4>30. What are dunder (magic) methods?</h4>
+<p>Special methods with double underscores, such as <code>__str__</code>, <code>__repr__</code>, <code>__len__</code>, <code>__eq__</code> and <code>__add__</code>, that let objects work with built-in functions and operators.</p>
+<h4>31. What is the difference between <code>__str__</code> and <code>__repr__</code>?</h4>
+<p><code>__str__</code> returns a readable string for users; <code>__repr__</code> returns an unambiguous representation for developers, ideally one that could recreate the object.</p>
+<h4>32. How does Python support encapsulation?</h4>
+<p>By convention: a single underscore (<code>_balance</code>) signals "internal use", and a double underscore (<code>__balance</code>) triggers name mangling. Properties (<code>@property</code>) provide controlled access.</p>
+
+<h2>Exceptions and files</h2>
+<h4>33. How does exception handling work?</h4>
+<p>Code that may fail goes in <code>try</code>; specific errors are handled in <code>except</code>; <code>else</code> runs if no error occurred; <code>finally</code> always runs.</p>
+<h4>34. How do you raise a custom exception?</h4>
+<pre><code class="language-python">class InsufficientBalance(Exception):
+    pass
+
+raise InsufficientBalance("Balance too low")</code></pre>
+<h4>35. What is a context manager?</h4>
+<p>An object used with <code>with</code> that sets up and cleans up resources automatically, such as closing files: <code>with open("data.txt") as f:</code>.</p>
+
+<h2>Modules and memory</h2>
+<h4>36. What is the difference between a module and a package?</h4>
+<p>A module is a single <code>.py</code> file. A package is a directory of modules (traditionally with an <code>__init__.py</code> file).</p>
+<h4>37. What does <code>if __name__ == "__main__":</code> do?</h4>
+<p>It runs the block only when the file is executed directly, not when it is imported as a module.</p>
+<h4>38. How is memory managed in Python?</h4>
+<p>CPython uses reference counting plus a cyclic garbage collector to free objects that are no longer used. Memory is managed in a private heap.</p>
+<h4>39. What is the difference between shallow copy and deep copy?</h4>
+<p>A shallow copy (<code>copy.copy</code>) copies the outer object but shares nested objects. A deep copy (<code>copy.deepcopy</code>) recursively copies everything.</p>
+<h4>40. What is the difference between <code>is</code> and <code>==</code>?</h4>
+<p><code>==</code> compares values; <code>is</code> checks whether two names refer to the same object. Use <code>is</code> for <code>None</code> checks: <code>if x is None</code>.</p>
+
+<h2>Advanced concepts</h2>
+<h4>41. What is the GIL?</h4>
+<p>The Global Interpreter Lock in CPython allows only one thread to execute Python bytecode at a time. Threads still help with I/O-bound work; for CPU-bound work, use multiprocessing or libraries that release the GIL. Recent Python versions also offer an experimental free-threaded build.</p>
+<h4>42. What is the difference between multithreading and multiprocessing?</h4>
+<p>Threads share memory within one process and suit I/O-bound tasks. Processes have separate memory, can run on multiple CPU cores in parallel, and suit CPU-bound tasks.</p>
+<h4>43. What is <code>async</code>/<code>await</code>?</h4>
+<p>Syntax for asynchronous programming with <code>asyncio</code>, letting one thread handle many I/O operations (such as network requests) concurrently.</p>
+<h4>44. What are virtual environments?</h4>
+<p>Isolated environments (created with <code>python -m venv</code>) that keep each project's dependencies separate.</p>
+<h4>45. What are type hints?</h4>
+<p>Optional annotations like <code>def add(a: int, b: int) -&gt; int:</code> that improve readability and allow static checkers to find bugs.</p>
+
+<h2>Coding questions</h2>
+<h4>46. Reverse a string.</h4>
+<pre><code class="language-python">def reverse(s):
+    return s[::-1]</code></pre>
+<h4>47. Check whether a string is a palindrome.</h4>
+<pre><code class="language-python">def is_palindrome(s):
+    cleaned = "".join(ch.lower() for ch in s if ch.isalnum())
+    return cleaned == cleaned[::-1]</code></pre>
+<h4>48. Count the frequency of each character.</h4>
+<pre><code class="language-python">from collections import Counter
+print(Counter("programming"))</code></pre>
+<h4>49. Find the second largest number in a list.</h4>
+<pre><code class="language-python">def second_largest(nums):
+    unique = sorted(set(nums))
+    return unique[-2] if len(unique) &gt;= 2 else None</code></pre>
+<h4>50. Find two numbers in a list that add up to a target.</h4>
+<pre><code class="language-python">def two_sum(nums, target):
+    seen = {}
+    for i, n in enumerate(nums):
+        if target - n in seen:
+            return seen[target - n], i
+        seen[n] = i
+    return None</code></pre>
+<p>This runs in O(n) time using a dictionary, a solution interviewers love to see, compared with the O(n²) nested-loop approach.</p>
+
+<h2>How to prepare</h2>
+<ul>
+<li>Explain each answer aloud in your own words, with an example.</li>
+<li>Write the coding solutions without looking, then test them.</li>
+<li>Be ready to discuss your Python projects in detail.</li>
+<li>Practise easy and medium problems on arrays, strings and dictionaries.</li>
+</ul>
+<p>Practise further with <a href="/interview-prep">Coding Hubs interview preparation</a> and the <a href="/ai/mock-interview">AI mock interview</a>, or revise with <a href="/blog/learn-python-for-beginners">Python for beginners</a>.</p>
+===FAQ===
+Q: What Python topics are asked in fresher interviews?
+A: Data types, lists vs tuples, dictionaries, functions, *args and **kwargs, decorators, generators, OOP, exception handling, and simple coding problems on strings and lists.
+Q: How should I prepare for a Python interview?
+A: Revise core concepts, practise explaining them aloud, solve easy and medium coding problems daily, and prepare to discuss your projects in depth.
+Q: Is Python enough to crack a developer interview?
+A: Python fundamentals are essential, but most interviews also include data structures, SQL, and questions on the framework or domain of the role, such as Django or data analysis.
+Q: Are Python interviews easier than Java interviews?
+A: Not necessarily. The language syntax is simpler, but interviewers still test problem-solving, fundamentals and project understanding in depth.

@@ -1,0 +1,155 @@
+title: Spring Boot Tutorial for Beginners: Build Your First REST API
+slug: spring-boot-rest-api-tutorial
+excerpt: A beginner-friendly Spring Boot tutorial: create a project, build a REST API with controllers, services and repositories, connect a database, validate input and handle errors.
+category: Java
+tags: Java, Spring Boot, REST API, Back-End Development, Tutorial
+seo_title: Spring Boot Tutorial for Beginners: Build a REST API Step by Step
+meta_description: Learn Spring Boot step by step: create a project, build REST endpoints, use Spring Data JPA with a database, validate requests and handle errors in your first API.
+focus_keyword: spring boot tutorial
+search_intent: Learn Spring Boot by building a REST API.
+---
+<p>Spring Boot is the most popular framework for building back-end applications in Java. It removes most of the configuration that older Spring projects needed, so you can build a production-style REST API quickly. In this <strong>Spring Boot tutorial</strong>, you will build a simple course catalogue API step by step and learn the structure used in real projects.</p>
+
+<h2>What you need</h2>
+<ul>
+<li>A recent JDK (version 17 or later is a good choice).</li>
+<li>An IDE such as IntelliJ IDEA Community Edition, Eclipse or VS Code with Java extensions.</li>
+<li>Basic Core Java and OOP knowledge.</li>
+<li>Postman or a similar tool to test APIs.</li>
+</ul>
+
+<h2>Step 1: Create the project</h2>
+<p>Go to Spring Initializr (start.spring.io) and choose:</p>
+<ul>
+<li>Project: Maven, Language: Java.</li>
+<li>Dependencies: <strong>Spring Web</strong>, <strong>Spring Data JPA</strong>, <strong>Validation</strong> and <strong>H2 Database</strong> (an in-memory database, good for learning).</li>
+</ul>
+<p>Download the project, unzip it and open it in your IDE. The main class has the <code>@SpringBootApplication</code> annotation, which enables auto-configuration and component scanning. Run it, and an embedded web server starts on port 8080.</p>
+
+<h2>Step 2: Understand the layered structure</h2>
+<table>
+<thead><tr><th>Layer</th><th>Responsibility</th><th>Annotation</th></tr></thead>
+<tbody>
+<tr><td>Controller</td><td>Handles HTTP requests and responses</td><td><code>@RestController</code></td></tr>
+<tr><td>Service</td><td>Business logic</td><td><code>@Service</code></td></tr>
+<tr><td>Repository</td><td>Database access</td><td><code>@Repository</code> (or a Spring Data interface)</td></tr>
+<tr><td>Entity</td><td>Maps a Java class to a database table</td><td><code>@Entity</code></td></tr>
+</tbody>
+</table>
+<p>Keeping these layers separate makes code easier to test and change.</p>
+
+<h2>Step 3: Create an entity</h2>
+<pre><code class="language-java">@Entity
+public class Course {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank
+    private String title;
+
+    @Min(1)
+    private int durationWeeks;
+
+    // getters and setters
+}</code></pre>
+<p>JPA (through Hibernate) creates a <code>course</code> table from this class. The validation annotations come from the Validation starter.</p>
+
+<h2>Step 4: Create a repository</h2>
+<pre><code class="language-java">public interface CourseRepository extends JpaRepository&lt;Course, Long&gt; {
+    List&lt;Course&gt; findByTitleContainingIgnoreCase(String keyword);
+}</code></pre>
+<p>Spring Data JPA generates the implementation for you, including <code>save</code>, <code>findById</code>, <code>findAll</code> and <code>deleteById</code>. It even creates queries from method names like <code>findByTitleContainingIgnoreCase</code>.</p>
+
+<h2>Step 5: Add a service</h2>
+<pre><code class="language-java">@Service
+public class CourseService {
+    private final CourseRepository repository;
+
+    public CourseService(CourseRepository repository) {
+        this.repository = repository;
+    }
+
+    public List&lt;Course&gt; findAll() {
+        return repository.findAll();
+    }
+
+    public Course findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -&gt; new CourseNotFoundException(id));
+    }
+
+    public Course create(Course course) {
+        return repository.save(course);
+    }
+}</code></pre>
+<p>Notice constructor injection: Spring creates the repository and passes it in. This is called dependency injection and is a core Spring idea.</p>
+
+<h2>Step 6: Build the REST controller</h2>
+<pre><code class="language-java">@RestController
+@RequestMapping("/api/courses")
+public class CourseController {
+    private final CourseService service;
+
+    public CourseController(CourseService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public List&lt;Course&gt; all() {
+        return service.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Course one(@PathVariable Long id) {
+        return service.findById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Course create(@Valid @RequestBody Course course) {
+        return service.create(course);
+    }
+}</code></pre>
+<p>Run the application and test it in Postman: send <code>POST /api/courses</code> with a JSON body such as <code>{"title": "Java Full Stack", "durationWeeks": 24}</code>, then <code>GET /api/courses</code>.</p>
+
+<h2>Step 7: Handle errors properly</h2>
+<p>Create a custom exception and a global handler so clients receive clear error responses:</p>
+<pre><code class="language-java">@RestControllerAdvice
+public class ApiErrors {
+    @ExceptionHandler(CourseNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map&lt;String, String&gt; notFound(CourseNotFoundException e) {
+        return Map.of("error", e.getMessage());
+    }
+}</code></pre>
+<p>Invalid input (for example an empty title) automatically returns a 400 Bad Request because of <code>@Valid</code>. You can add another handler to format those messages nicely.</p>
+
+<h2>Step 8: Configure the application</h2>
+<p>Settings live in <code>application.properties</code> or <code>application.yml</code>. For example, change the port or enable the H2 console:</p>
+<pre><code class="language-properties">server.port=8081
+spring.h2.console.enabled=true</code></pre>
+<p>When you move to MySQL or PostgreSQL, you add the database driver and set the connection URL, username and password, ideally from environment variables.</p>
+
+<h2>Step 9: Write a test</h2>
+<p>Spring Boot includes JUnit and Mockito. Test the service layer with mocks, and use <code>@WebMvcTest</code> with <code>MockMvc</code> to test controllers without starting a full server. Tests give you confidence to change code later.</p>
+
+<h2>Next steps</h2>
+<ol>
+<li>Switch from H2 to MySQL or PostgreSQL.</li>
+<li>Use DTOs instead of exposing entities directly.</li>
+<li>Add pagination and sorting with <code>Pageable</code>.</li>
+<li>Secure the API with Spring Security and JWT.</li>
+<li>Package the app with Docker and deploy it.</li>
+<li>Connect a React front end to build a full stack application.</li>
+</ol>
+<p>Follow the complete <a href="/blog/java-full-stack-developer-roadmap">Java full stack developer roadmap</a>, or learn with mentors in the <a href="/courses">Coding Hubs Java Full Stack course</a>.</p>
+===FAQ===
+Q: What is Spring Boot used for?
+A: Spring Boot is used to build Java back-end applications such as REST APIs, web applications and microservices quickly, with sensible defaults and minimal configuration.
+Q: Is Spring Boot hard for beginners?
+A: It is approachable if you already understand Core Java, OOP and basic SQL. Most difficulties come from weak fundamentals rather than Spring Boot itself.
+Q: What is the difference between Spring and Spring Boot?
+A: Spring is the broader framework. Spring Boot builds on it with auto-configuration, starter dependencies and an embedded server, so you can create applications with far less setup.
+Q: Which database should I use with Spring Boot?
+A: H2 is convenient for learning. MySQL and PostgreSQL are common choices for real projects.

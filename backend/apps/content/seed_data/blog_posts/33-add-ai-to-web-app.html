@@ -1,0 +1,119 @@
+title: How to Add AI Features to a Full Stack Web App
+slug: add-ai-to-web-app
+excerpt: A practical guide to adding AI features to a full stack web app: choosing the right feature, architecture, prompts, structured output, streaming, cost control, privacy and testing.
+category: Artificial Intelligence
+tags: Generative AI, Full Stack Development, LLM, Web Development, AI Projects
+seo_title: How to Add AI Features to a Full Stack Web App
+meta_description: Add AI features to your full stack app: pick useful features, call LLM APIs from the back end, use structured output, streaming, caching and tests.
+focus_keyword: add ai to web app
+search_intent: Learn how to integrate AI features into a web application.
+---
+<p>Many job descriptions for full stack developers now ask for experience integrating AI. Adding a smart feature to a web app is also one of the best ways to make your portfolio stand out. This guide shows you how to <strong>add AI to a web app</strong> properly: which features are worth building, how to structure the code, and how to keep it fast, affordable and safe.</p>
+
+<h2>Step 1: Choose a feature that solves a real problem</h2>
+<p>Good AI features save users time on a specific task. Examples:</p>
+<ul>
+<li><strong>Summarise:</strong> long reviews, documents, support tickets or meeting notes.</li>
+<li><strong>Generate drafts:</strong> product descriptions, email replies, job descriptions.</li>
+<li><strong>Extract:</strong> pull names, dates and amounts from invoices or resumes into form fields.</li>
+<li><strong>Classify:</strong> route support messages, tag content, detect sentiment.</li>
+<li><strong>Search in natural language:</strong> "show me weekend Python batches near Noida".</li>
+<li><strong>Answer questions</strong> from your app's help content with <a href="/blog/what-is-rag">RAG</a>.</li>
+</ul>
+<p>Avoid adding a generic chatbot just because it is possible. A focused "Summarise" button that works well is more valuable than a chat box that does everything poorly.</p>
+
+<h2>Step 2: The right architecture</h2>
+<ol>
+<li>The front end sends the user's request to <strong>your back end</strong>.</li>
+<li>The back end checks authentication, validates input and applies rate limits.</li>
+<li>The back end builds the prompt (instructions plus user data) and calls the LLM API with a secret key.</li>
+<li>The back end validates the model's output and returns it to the front end.</li>
+</ol>
+<p>Never call the LLM API directly from browser code: your API key would be exposed, and you would lose control over cost and abuse.</p>
+
+<h2>Step 3: Design the prompt as code</h2>
+<pre><code class="language-javascript">// server/ai/summarise.js
+const SYSTEM = `You summarise customer reviews for an online course store.
+Write three bullet points: what customers like, what they dislike,
+and one suggestion. Use only the reviews provided. Be neutral.`;
+
+export function buildSummaryRequest(reviews) {
+  const text = reviews.map((r, i) =&gt; `Review ${i + 1}: ${r.body}`).join('\n');
+  return { system: SYSTEM, user: `&lt;reviews&gt;\n${text}\n&lt;/reviews&gt;` };
+}</code></pre>
+<p>Keep prompts in their own files, version them in Git, and change them deliberately like any other code.</p>
+
+<h2>Step 4: Use structured output</h2>
+<p>When your code needs to use the result, ask for JSON and validate it:</p>
+<pre><code class="language-javascript">import { z } from 'zod';
+
+const ResumeFields = z.object({
+  name: z.string(),
+  email: z.string().email().optional(),
+  skills: z.array(z.string()).max(30),
+  yearsOfExperience: z.number().min(0).max(50).optional(),
+});
+
+const parsed = ResumeFields.safeParse(JSON.parse(modelOutput));
+if (!parsed.success) {
+  // retry once, or show the user a manual form
+}</code></pre>
+<p>Many LLM APIs offer a structured output or JSON mode that makes this more reliable. Always validate anyway.</p>
+
+<h2>Step 5: Stream long responses</h2>
+<p>LLM responses can take several seconds. Streaming sends text to the user as it is generated, which feels much faster. Most SDKs support streaming; forward the chunks to the browser using server-sent events or a streaming fetch response, and render them as they arrive.</p>
+
+<h2>Step 6: Control cost and speed</h2>
+<ul>
+<li>Use a smaller, faster model for simple tasks such as classification, and a more capable model only when needed.</li>
+<li>Limit input length and maximum output tokens.</li>
+<li>Cache results for identical requests, such as the summary of the same set of reviews.</li>
+<li>Rate-limit per user and set a monthly budget in the provider dashboard.</li>
+<li>Run non-urgent tasks (like tagging thousands of products) in background jobs.</li>
+</ul>
+
+<h2>Step 7: Design the user experience</h2>
+<ul>
+<li>Make it clear that content is AI-generated and may contain mistakes.</li>
+<li>Let users edit AI drafts before saving or sending.</li>
+<li>Show loading states and friendly error messages.</li>
+<li>Provide a fallback when the AI service is unavailable, so the core app still works.</li>
+<li>Ask for quick feedback (helpful / not helpful) to measure quality.</li>
+</ul>
+
+<h2>Step 8: Privacy and security</h2>
+<ul>
+<li>Send only the data the feature needs; remove personal details where possible.</li>
+<li>Review the AI provider's data usage and retention terms.</li>
+<li>Tell users how their data is used in your privacy policy.</li>
+<li>Treat user-provided text as data in prompts, and protect against prompt injection.</li>
+<li>Never let model output run as code or SQL without strict checks.</li>
+<li>Escape AI-generated text before inserting it into HTML.</li>
+</ul>
+
+<h2>Step 9: Test AI features</h2>
+<p>AI output varies, so tests look a little different:</p>
+<ul>
+<li>Unit-test your prompt builders and output validators like normal functions.</li>
+<li>Mock the LLM API in automated tests so they are fast and free.</li>
+<li>Keep an evaluation set of real inputs and expected properties, and run it when you change prompts or models.</li>
+<li>Monitor production: error rates, latency, cost and user feedback.</li>
+</ul>
+
+<h2>Portfolio project ideas</h2>
+<ol>
+<li><strong>Job portal with AI:</strong> extract skills from resumes and match them to job descriptions.</li>
+<li><strong>E-commerce with AI:</strong> generate product descriptions and summarise reviews.</li>
+<li><strong>Learning platform with AI:</strong> generate practice quizzes from lesson content.</li>
+<li><strong>Help centre with AI:</strong> answer questions from documentation with citations.</li>
+</ol>
+<p>Try the <a href="/ai/job-matcher">AI job matcher</a> and <a href="/ai/resume-analyzer">resume analyzer</a> to see these ideas in action, then learn to build them in the <a href="/courses">AI-Integrated Full Stack course</a>.</p>
+===FAQ===
+Q: Do I need to train my own model to add AI to my app?
+A: No. Most AI features use existing models through APIs. Your work is designing the feature, prompts, validation, user experience and safety.
+Q: Which AI features are easiest to add?
+A: Summarisation, text generation, classification and extraction are the easiest to start with because they need only a prompt and an API call.
+Q: How do I keep AI API costs low?
+A: Use smaller models for simple tasks, limit input and output length, cache repeated results, rate-limit users and set budget alerts.
+Q: Is it safe to send user data to an AI API?
+A: It can be, if you send only necessary data, review the provider's data policies, inform users in your privacy policy and follow applicable laws.
