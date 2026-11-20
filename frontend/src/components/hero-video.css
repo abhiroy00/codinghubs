@@ -63,26 +63,6 @@
     radial-gradient(70% 55% at 50% 22%, rgba(0, 98, 250, 0.22) 0%, rgba(0, 98, 250, 0) 70%),
     linear-gradient(180deg, rgba(6, 11, 22, 0.8) 0%, rgba(6, 11, 22, 0.72) 42%, rgba(6, 11, 22, 0.88) 100%);
 }
-.hv-toggle {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 3;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 10px;
-  border: 1px solid #ffffff70;
-  border-radius: 50%;
-  background: #071923cc;
-  color: #fff;
-  cursor: pointer;
-}
-.hv-toggle svg { width: 20px; height: 20px; fill: currentColor; }
-.hv-toggle:hover { background: #071923; }
-.hv-toggle:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
-
 @media (prefers-reduced-motion: reduce) {
   .hv-video { transition: none; }
 }

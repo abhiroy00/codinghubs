@@ -60,7 +60,6 @@ function HomeHeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [src, setSrc] = useState<string | null>(null)
   const [playing, setPlaying] = useState(false)
-  const [userPaused, setUserPaused] = useState(false)
   const [visible, setVisible] = useState(true)
   const [failed, setFailed] = useState(false)
 
@@ -117,67 +116,39 @@ function HomeHeroVideo() {
     if (!src || !video) return
     // React does not reliably reflect `muted` as an attribute; browsers need it set before play().
     video.muted = true
-    if (userPaused || !visible) {
+    if (!visible) {
       video.pause()
       return
     }
     const attempt = video.play()
-    // Autoplay can be refused (power saving, browser policy). The poster stays visible and the
-    // control offers "Play", so nothing breaks.
+    // Autoplay can be refused (power saving, browser policy). The poster stays visible, so nothing breaks.
     attempt?.catch(() => setPlaying(false))
-  }, [src, userPaused, visible])
-
-  function toggle() {
-    const video = videoRef.current
-    if (!video) return
-    if (playing) {
-      setUserPaused(true)
-      return
-    }
-    setUserPaused(false)
-    // Called inside the click so it counts as a user gesture if autoplay was blocked earlier.
-    video.muted = true
-    video.play()?.catch(() => setPlaying(false))
-  }
+  }, [src, visible])
 
   if (!src || failed) {
     return <div className="hv-bg" aria-hidden="true">{still}</div>
   }
 
   return (
-    <>
-      <div className={`hv-bg${playing ? ' is-playing' : ''}`} aria-hidden="true">
-        {still}
-        <video
-          ref={videoRef}
-          className="hv-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          tabIndex={-1}
-          disablePictureInPicture
-          disableRemotePlayback
-          onPlaying={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
-        >
-          {/* A missing or undecodable file falls back to the still background. */}
-          <source src={src} type="video/mp4" onError={() => setFailed(true)} />
-        </video>
-      </div>
-      <button
-        type="button"
-        className="hv-toggle"
-        aria-label={playing ? 'Pause background video' : 'Play background video'}
-        onClick={toggle}
+    <div className={`hv-bg${playing ? ' is-playing' : ''}`} aria-hidden="true">
+      {still}
+      <video
+        ref={videoRef}
+        className="hv-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        tabIndex={-1}
+        disablePictureInPicture
+        disableRemotePlayback
+        onPlaying={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
       >
-        {playing ? (
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z" /></svg>
-        ) : (
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
-        )}
-      </button>
-    </>
+        {/* A missing or undecodable file falls back to the still background. */}
+        <source src={src} type="video/mp4" onError={() => setFailed(true)} />
+      </video>
+    </div>
   )
 }

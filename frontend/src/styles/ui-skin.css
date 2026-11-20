@@ -20,7 +20,7 @@ html body .ch-home .hp-copy .eyebrow{letter-spacing:.08em}
 /* ---------- hero entrance: staggered slide-up of hero copy (transform only, so LCP is not delayed) ---------- */
 @keyframes ui-hero-in{from{transform:translateY(18px)}}
 html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner)>*,
-html body :is(.ow-hero,.learn-hero,.at-head)>:not(.hv-bg):not(.hv-toggle){animation:ui-hero-in .8s var(--ease,ease) both}
+html body :is(.ow-hero,.learn-hero,.at-head)>:not(.hv-bg){animation:ui-hero-in .8s var(--ease,ease) both}
 html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner,.ow-hero,.learn-hero,.at-head)>:nth-child(2){animation-delay:.06s}
 html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner,.ow-hero,.learn-hero,.at-head)>:nth-child(3){animation-delay:.12s}
 html body :is(.bl-hero-in,.pj-hero-in,.pj-dhero-in,.lx-hero-in,.tutors-hero-inner,.ow-hero,.learn-hero,.at-head)>:nth-child(4){animation-delay:.18s}

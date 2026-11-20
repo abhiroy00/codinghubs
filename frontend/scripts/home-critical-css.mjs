@@ -17,7 +17,7 @@ export async function inlineHomeCriticalCss(html, dist) {
   }
   dom.window.close()
 
-  const states = new Set(['is-open', 'has-account', 'hs-still', 'hv-video', 'hv-toggle', 'is-playing'])
+  const states = new Set(['is-open', 'has-account', 'hs-still', 'hv-video', 'is-playing'])
   const possible = selector => selector.every(token => {
     // Header/account and hero controls must work while the complete CSS is still loading.
     if (token.type === 'class') return classes.has(token.name) || token.name.startsWith('sh-') || states.has(token.name)
