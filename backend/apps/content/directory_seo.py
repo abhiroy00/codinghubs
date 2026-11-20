@@ -18,7 +18,7 @@ def tutor_seo(tutor):
 
 
 def job_seo(job):
-    return page_seo(f'/latest-jobs/{job.slug}/', f'{job.title} at {job.company_name} | Coding Hubs School of AI', ' '.join(job.description.split())[:160], indexable=job.is_open)
+    return page_seo(f'/latest-jobs/{job.slug}/', f'{job.title} at {job.company_name} | Coding Hubs School of AI', ' '.join(job.description.split())[:160], indexable=job.is_open and not job.is_imported)
 
 
 def directory_seo(kind):

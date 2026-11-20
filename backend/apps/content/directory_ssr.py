@@ -48,7 +48,8 @@ def directory_page(request, kind, key=None):
 @require_GET
 def directory_sitemap(request):
     paths = [f'/book-a-tutor/{pk}' for pk in Tutor.objects.filter(is_active=True).values_list('pk', flat=True)]
-    paths += [f'/latest-jobs/{slug}/' for slug in Job.open_listings().values_list('slug', flat=True)]
+    # Imported listings are copies of jobs published elsewhere: shown to visitors, kept out of the sitemap (noindex).
+    paths += [f'/latest-jobs/{slug}/' for slug in Job.open_listings().filter(source=Job.SOURCE_MANUAL).values_list('slug', flat=True)]
     xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
     xml += ''.join(f'<url><loc>{escape(settings.SITE_URL + p)}</loc></url>' for p in paths) + '</urlset>'
     return HttpResponse(xml, content_type='application/xml; charset=utf-8')

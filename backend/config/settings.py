@@ -274,3 +274,25 @@ EMAIL_TIMEOUT = config("EMAIL_TIMEOUT", default=15, cast=int)
 TECH_FEED_TTL = config('TECH_FEED_TTL', default=1800, cast=int)
 TECH_FEED_TIMEOUT = config('TECH_FEED_TIMEOUT', default=6, cast=float)
 TECH_FEED_REFRESH_ON_REQUEST = config('TECH_FEED_REFRESH_ON_REQUEST', default=not TESTING, cast=bool)
+
+# --- Job importer (apps.jobs, `manage.py import_jobs`) ---
+# Official job APIs and public company career-page feeds only; no scraping. Adzuna / Jooble switch on when keys exist
+# (free keys from developer.adzuna.com and jooble.org/api/about). Lists are comma-separated; values come from the env
+# (backend/.env locally, SSM Parameter Store /codinghubs/prod in production).
+JOBS_SOURCES = config('JOBS_SOURCES', default='greenhouse,lever,remotive,arbeitnow,adzuna,jooble', cast=Csv())
+JOBS_AUTO_PUBLISH = config('JOBS_AUTO_PUBLISH', default=True, cast=bool)
+JOBS_INCLUDE_SENIOR = config('JOBS_INCLUDE_SENIOR', default=False, cast=bool)  # site audience: students and early-career
+JOBS_MAX_PER_SOURCE = config('JOBS_MAX_PER_SOURCE', default=40, cast=int)  # newest matching listings kept per source per run
+JOBS_MAX_PER_COMPANY = config('JOBS_MAX_PER_COMPANY', default=6, cast=int)  # variety: one big employer cannot fill the page
+JOBS_MAX_OPEN_IMPORTED = config('JOBS_MAX_OPEN_IMPORTED', default=200, cast=int)  # keeps /latest-jobs light
+JOBS_MAX_AGE_DAYS = config('JOBS_MAX_AGE_DAYS', default=30, cast=int)
+JOBS_STALE_DAYS = config('JOBS_STALE_DAYS', default=3, cast=int)  # gone from its source this long -> expired
+JOBS_KEYWORDS = config('JOBS_KEYWORDS', default='software,developer,engineer,engineering,sde,programmer,data analyst,data scientist,data science,data engineer,analytics,business analyst,machine learning,ml,ai,artificial intelligence,genai,llm,python,java,javascript,full stack,fullstack,frontend,front end,backend,back end,react,node,devops,cloud,cyber security,cybersecurity,security engineer,qa,automation,ui/ux,ux designer,ui designer,product designer', cast=Csv())
+JOBS_GREENHOUSE_BOARDS = config('JOBS_GREENHOUSE_BOARDS', default='razorpaysoftwareprivatelimited:Razorpay,groww:Groww,inmobi:InMobi,hackerrank:HackerRank,druva:Druva,okta:Okta,zscaler:Zscaler,databricks:Databricks,mongodb:MongoDB,stripe:Stripe,rubrik:Rubrik,gitlab:GitLab,twilio:Twilio,elastic:Elastic,coinbase:Coinbase,datadog:Datadog,turing:Turing', cast=Csv())
+JOBS_LEVER_COMPANIES = config('JOBS_LEVER_COMPANIES', default='paytm:Paytm,meesho:Meesho,zeta:Zeta,mindtickle:MindTickle,fampay:FamPay,cred:CRED', cast=Csv())
+ADZUNA_APP_ID = config('ADZUNA_APP_ID', default='')
+ADZUNA_APP_KEY = config('ADZUNA_APP_KEY', default='')
+ADZUNA_WHERE = config('ADZUNA_WHERE', default='Delhi')
+JOOBLE_API_KEY = config('JOOBLE_API_KEY', default='')
+JOOBLE_LOCATION = config('JOOBLE_LOCATION', default='Delhi')
+JOBS_SEARCH_TERMS = config('JOBS_SEARCH_TERMS', default='python developer,data analyst,machine learning,software engineer intern,full stack developer', cast=Csv())

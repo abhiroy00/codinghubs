@@ -16,6 +16,8 @@ class JobSerializer(serializers.ModelSerializer):
     work_mode_label = serializers.CharField(source='get_work_mode_display', read_only=True)
     job_type_label = serializers.CharField(source='get_job_type_display', read_only=True)
     experience_level_label = serializers.CharField(source='get_experience_level_display', read_only=True)
+    source_label = serializers.CharField(source='get_source_display', read_only=True)
+    is_imported = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Job
@@ -25,6 +27,7 @@ class JobSerializer(serializers.ModelSerializer):
             'experience_level_label', 'experience', 'salary', 'description', 'responsibilities',
             'skills', 'qualifications', 'benefits', 'how_to_apply', 'application_url',
             'application_email', 'application_deadline', 'published_at', 'is_open', 'seo',
+            'source', 'source_label', 'is_imported',
         )
 
 

@@ -74,6 +74,7 @@ $COMPOSE exec -T backend python manage.py seed_academy
 $COMPOSE exec -T backend python manage.py seed_genai_lessons
 $COMPOSE exec -T backend python manage.py seed_genai_pilot
 $COMPOSE --profile learning up -d learning-worker
+$COMPOSE --profile jobs up -d jobs-worker
 
 
 echo "deployed $SHA"

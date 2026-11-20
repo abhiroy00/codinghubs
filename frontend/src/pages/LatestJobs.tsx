@@ -41,6 +41,64 @@ interface Job {
   application_deadline: string | null
   published_at: string | null
   is_open: boolean
+  /** "manual" for jobs posted by Coding Hub; otherwise the API or careers page it was imported from. */
+  source?: string
+  source_label?: string
+  is_imported?: boolean
+}
+
+const enc = encodeURIComponent
+/** Live searches on job sites that do not offer a public jobs API: always their newest listings, opened on their site. */
+const EXTERNAL_SEARCHES = [
+  {
+    site: 'Naukri', note: 'Latest jobs in Delhi NCR',
+    links: [
+      ['Python developer', 'https://www.naukri.com/python-developer-jobs-in-delhi-ncr'],
+      ['Data analyst', 'https://www.naukri.com/data-analyst-jobs-in-delhi-ncr'],
+      ['AI / ML engineer', 'https://www.naukri.com/machine-learning-engineer-jobs-in-delhi-ncr'],
+      ['Internships', 'https://www.naukri.com/internship-jobs-in-delhi-ncr'],
+    ],
+  },
+  {
+    site: 'LinkedIn', note: 'Posted in the last 24 hours, newest first',
+    links: [
+      ['Python developer', `https://www.linkedin.com/jobs/search/?keywords=${enc('Python Developer')}&location=${enc('Delhi, India')}&f_TPR=r86400&sortBy=DD`],
+      ['Data analyst', `https://www.linkedin.com/jobs/search/?keywords=${enc('Data Analyst')}&location=${enc('Delhi, India')}&f_TPR=r86400&sortBy=DD`],
+      ['AI / ML engineer', `https://www.linkedin.com/jobs/search/?keywords=${enc('Machine Learning Engineer')}&location=India&f_TPR=r86400&sortBy=DD`],
+      ['Internships', `https://www.linkedin.com/jobs/search/?keywords=${enc('Software Intern')}&location=India&f_E=1&f_TPR=r86400&sortBy=DD`],
+    ],
+  },
+  {
+    site: 'Internshala', note: 'Internships in Delhi',
+    links: [
+      ['Python', 'https://internshala.com/internships/python-django-internship-in-delhi/'],
+      ['Data science', 'https://internshala.com/internships/data-science-internship-in-delhi/'],
+      ['Machine learning', 'https://internshala.com/internships/machine-learning-internship-in-delhi/'],
+      ['Web development', 'https://internshala.com/internships/web-development-internship-in-delhi/'],
+    ],
+  },
+] as const
+
+function ExternalJobSearch() {
+  return (
+    <section className="jobs-external" aria-labelledby="jobs-external-title">
+      <h2 id="jobs-external-title">More jobs &amp; internships, updated live</h2>
+      <p>Open the newest listings on India’s biggest job sites. Each link opens a live search on that site.</p>
+      <div className="jobs-external-grid">
+        {EXTERNAL_SEARCHES.map((group) => (
+          <div className="jobs-external-card" key={group.site}>
+            <h3>{group.site}</h3>
+            <p>{group.note}</p>
+            <ul>
+              {group.links.map(([label, href]) => (
+                <li key={label}><a href={href} target="_blank" rel="noopener noreferrer">{label}<span className="sr-only"> on {group.site} (opens in a new tab)</span> <span aria-hidden="true">↗</span></a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
 }
 
 type Filters = { q: string; company: string; location: string; mode: string; type: string; level: string; sort: 'latest' | 'oldest' }
@@ -227,7 +285,7 @@ function JobListing() {
                     <li>{job.experience || job.experience_level_label}</li>
                   </ul>
                   {job.salary && <p className="job-salary">{job.salary}</p>}
-                  {job.published_at && <p className="job-posted">Posted {formatDate(job.published_at)}</p>}
+                  {job.published_at && <p className="job-posted">Posted {formatDate(job.published_at)}{job.is_imported && job.source_label ? <span className="job-source"> · via {job.source_label}</span> : null}</p>}
                   <div className="tutor-actions">
                     <Link className="btn btn-ghost" to={`/latest-jobs/${job.slug}/`}>View Details</Link>
                     <ApplyButton job={job} />
@@ -236,6 +294,7 @@ function JobListing() {
               ))}
             </Reveal>
           )}
+          <ExternalJobSearch />
         </div>
       </section>
     </>
@@ -304,6 +363,7 @@ function JobDetail({ slug }: { slug: string }) {
               <section className="tutor-detail-about">
                 <h2>How to apply</h2>
                 {job.how_to_apply && <p className="job-text">{job.how_to_apply}</p>}
+                {job.is_imported && job.source_label && <p className="job-source-note">This listing comes from {job.source_label === 'Company careers page' ? `${job.company_name}’s careers page` : job.source_label}. Details can change, so check the original listing before you apply.</p>}
                 <p>
                   {job.application_url && <>Apply on the employer’s website using the Apply Now button.</>}
                   {job.application_url && job.application_email && ' '}

@@ -31,6 +31,19 @@ class Job(models.Model):
         ('senior', 'Senior (5+ years)'),
     )
 
+    # Where the listing came from. "manual" jobs are posted by the team in the admin panel; the others are imported
+    # daily by `manage.py import_jobs` from official job APIs and public company career-page feeds.
+    SOURCE_MANUAL = 'manual'
+    SOURCE_CHOICES = (
+        (SOURCE_MANUAL, 'Coding Hub'),
+        ('adzuna', 'Adzuna'),
+        ('jooble', 'Jooble'),
+        ('greenhouse', 'Company careers page'),
+        ('lever', 'Company careers page'),
+        ('arbeitnow', 'Arbeitnow'),
+        ('remotive', 'Remotive'),
+    )
+
     slug = models.SlugField(max_length=220, unique=True, editable=False)
     title = models.CharField(max_length=160)
     company_name = models.CharField(max_length=160)
@@ -51,6 +64,9 @@ class Job(models.Model):
     application_url = models.URLField(max_length=500, blank=True)
     application_email = models.EmailField(blank=True)
     application_deadline = models.DateField(null=True, blank=True)
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default=SOURCE_MANUAL, db_index=True)
+    external_id = models.CharField(max_length=200, blank=True, help_text='ID of the listing at its source (imported jobs only).')
+    last_seen_at = models.DateTimeField(null=True, blank=True, help_text='Last time the importer found this listing at its source.')
     is_published = models.BooleanField(default=False)
     is_expired = models.BooleanField(default=False)
     published_at = models.DateTimeField(null=True, blank=True)
@@ -59,6 +75,11 @@ class Job(models.Model):
 
     class Meta:
         ordering = ['-published_at', '-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['source', 'external_id'], condition=~models.Q(external_id=''), name='unique_imported_job',
+            ),
+        ]
 
     def __str__(self):
         return f'{self.title} — {self.company_name}'
@@ -79,6 +100,10 @@ class Job(models.Model):
         if self.is_published and not self.published_at:
             self.published_at = timezone.now()
         super().save(*args, **kwargs)
+
+    @property
+    def is_imported(self):
+        return self.source != self.SOURCE_MANUAL
 
     @classmethod
     def open_listings(cls):

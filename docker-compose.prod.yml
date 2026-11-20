@@ -60,6 +60,31 @@ services:
       db:
         condition: service_healthy
 
+  jobs-worker:
+    profiles: ['jobs']
+    image: ${BACKEND_IMAGE:-codinghubs-backend}
+    build: ./backend
+    restart: unless-stopped
+    # Imports the latest tech jobs and internships twice a day (official job APIs and company career-page feeds).
+    entrypoint: ['python', 'manage.py', 'import_jobs', '--watch']
+    healthcheck:
+      disable: true
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-codinghubs}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-codinghubs}
+      PYTHONDONTWRITEBYTECODE: '1'
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m
+    mem_limit: 192m
+    cpus: 0.25
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    depends_on:
+      db:
+        condition: service_healthy
+
   learning-worker:
     profiles: ['learning']
     image: ${BACKEND_IMAGE:-codinghubs-backend}
