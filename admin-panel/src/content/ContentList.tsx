@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { LiveActions } from './LiveActions'
-import { PUBLIC_BASE } from './liveUrl'
-import { Link, useNavigate } from 'react-router-dom'
+import { isLiveNow, PUBLIC_BASE, publicUrl } from './liveUrl'
+import { Link } from 'react-router-dom'
 import { adminApi, type Paged } from '../api'
 import { ConfirmDelete } from './EditorShell'
 import { fmtDate } from './format'
@@ -18,7 +17,6 @@ const SORTS = [
 
 export function ContentList({ kind }: { kind: Kind }) {
   const noun = kind === 'blogs' ? 'blog post' : 'case study'
-  const navigate = useNavigate()
   const [q, setQ] = useState('')
   const [dq, setDq] = useState('')
   const [status, setStatus] = useState('')
@@ -62,6 +60,20 @@ export function ContentList({ kind }: { kind: Kind }) {
     } catch (err) {
       const msg = (err as { response?: { data?: Record<string, string[]> } })?.response?.data
       setError(msg ? Object.values(msg).flat().join(' ') : 'That did not work. Please try again.')
+    } finally {
+      setBusyId(null)
+    }
+  }
+  const toggleFeatured = async (row: Row) => {
+    setBusyId(row.id)
+    setNotice('')
+    setError('')
+    try {
+      await adminApi.patch(`/${kind}/${row.id}/`, { is_featured: !row.is_featured })
+      setNotice(row.is_featured ? `“${row.title}” is no longer featured.` : `“${row.title}” is now featured.`)
+      load()
+    } catch {
+      setError('Could not change the featured setting. You may not have permission.')
     } finally {
       setBusyId(null)
     }
@@ -131,41 +143,50 @@ export function ContentList({ kind }: { kind: Kind }) {
       )}
       {data && data.results.length > 0 && (
         <div className="ad-tablewrap">
-          <table className="ad-table">
+          <table className="ad-table ad-ctable">
             <thead>
               <tr>
+                <th className="ad-num">#</th>
                 <th>Title</th>
-                <th>Status</th>
                 <th>{kind === 'blogs' ? 'Category' : 'Industry'}</th>
-                <th>Published</th>
-                <th>Updated</th>
-                <th><span className="sr-only">Actions</span></th>
+                <th>Status</th>
+                <th>Featured</th>
+                <th>Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {data.results.map((r) => {
+              {data.results.map((r, i) => {
                 const live = r.status === 'published' || r.status === 'scheduled'
+                const liveNow = isLiveNow(r.status, r.published_at)
+                const busy = busyId === r.id
                 return (
                   <tr key={r.id}>
-                    <td>
+                    <td className="ad-num">{(page - 1) * 20 + i + 1}</td>
+                    <td className="ad-ctitle">
                       <Link to={`/${kind}/edit/${r.id}`}><strong>{r.title}</strong></Link>
-                      {r.is_featured && <span className="ad-badge tone-pin"> Featured</span>}
-                      <br />
-                      <small className="ad-muted">/{kind === 'blogs' ? 'blog' : 'case-studies'}/{r.slug}</small>
+                      <small className="ad-muted">{PUBLIC_BASE[kind]}/{r.slug}</small>
                     </td>
-                    <td><span className={`ad-badge st-${r.status}`}>{r.status}</span></td>
                     <td>{(kind === 'blogs' ? r.category_name : r.industry) || '—'}</td>
-                    <td>{fmtDate(r.published_at)}</td>
-                    <td>{fmtDate(r.updated_at)}</td>
-                    <td className="ad-actions">
-                      <button type="button" className="ad-link" onClick={() => navigate(`/${kind}/edit/${r.id}`)}>Edit</button>
-                      <LiveActions base={PUBLIC_BASE[kind]} slug={r.slug} status={r.status} publishedAt={r.published_at} onPreview={() => void preview(r)} />
-                      {live ? (
-                        <button type="button" className="ad-link" disabled={busyId === r.id} onClick={() => void act(r, 'unpublish')}>Unpublish</button>
-                      ) : (
-                        <button type="button" className="ad-link" disabled={busyId === r.id} onClick={() => void act(r, 'publish')}>Publish</button>
-                      )}
-                      <button type="button" className="ad-link ad-danger" onClick={() => setDel(r)}>Delete</button>
+                    <td><span className={`ad-pill st-${r.status}`}>{r.status === 'published' && <Icon name="check" />}{r.status}</span></td>
+                    <td>{r.is_featured ? <span className="ad-star" title="Featured"><Icon name="star" /></span> : <span className="ad-muted">—</span>}</td>
+                    <td className="nowrap">{fmtDate(r.published_at || r.updated_at)}</td>
+                    <td>
+                      <div className="ad-row-actions">
+                        <Link className="ad-act act-edit" to={`/${kind}/edit/${r.id}`}><Icon name="edit" />Edit</Link>
+                        {live ? (
+                          <button type="button" className="ad-act act-draft" disabled={busy} onClick={() => void act(r, 'unpublish')}><Icon name="pause" />Draft</button>
+                        ) : (
+                          <button type="button" className="ad-act act-publish" disabled={busy} onClick={() => void act(r, 'publish')}><Icon name="send" />Publish</button>
+                        )}
+                        <button type="button" className="ad-act act-feature" disabled={busy} aria-pressed={r.is_featured} onClick={() => void toggleFeatured(r)}><Icon name="star" />{r.is_featured ? 'Unfeature' : 'Feature'}</button>
+                        {liveNow ? (
+                          <a className="ad-act act-view" href={publicUrl(PUBLIC_BASE[kind], r.slug)} target="_blank" rel="noopener noreferrer" title={publicUrl(PUBLIC_BASE[kind], r.slug)}><Icon name="eye" />View</a>
+                        ) : (
+                          <button type="button" className="ad-act act-preview" onClick={() => void preview(r)} title="Private preview (not indexed)"><Icon name="eye" />Preview</button>
+                        )}
+                        <button type="button" className="ad-act act-delete" onClick={() => setDel(r)}><Icon name="trash" />Delete</button>
+                      </div>
                     </td>
                   </tr>
                 )
@@ -183,5 +204,24 @@ export function ContentList({ kind }: { kind: Kind }) {
       )}
       {del && <ConfirmDelete title={del.title} onCancel={() => setDel(null)} onConfirm={() => void remove()} />}
     </>
+  )
+}
+
+const ICONS = {
+  edit: 'M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4',
+  pause: 'M8 5v14M16 5v14',
+  send: 'M4 12l16-8-6 16-3-7-7-1z',
+  star: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z',
+  eye: 'M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12zM12 15a3 3 0 100-6 3 3 0 000 6z',
+  trash: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13',
+  check: 'M5 12.5l4.5 4.5L19 7.5',
+} as const
+
+function Icon({ name }: { name: keyof typeof ICONS }) {
+  const filled = name === 'star'
+  return (
+    <svg className="ad-ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={filled ? 0 : 2.2} strokeLinecap="round" strokeLinejoin="round">
+      <path d={ICONS[name]} />
+    </svg>
   )
 }

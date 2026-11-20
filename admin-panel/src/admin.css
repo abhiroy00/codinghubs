@@ -318,3 +318,27 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 
 /* Compact button inside table cells (e.g. Publish a draft brochure from the course list). */
 .ad-btn.ad-btn-sm{height:30px;padding:0 .7rem;font-size:.8rem;border-radius:8px;vertical-align:middle}
+
+/* Blog / case-study list: numbered rows, status pills and coloured action buttons */
+.ad-ctable td{vertical-align:middle;padding:1rem .9rem}
+.ad-ctable .ad-num{width:2.5rem;color:var(--mut);text-align:left}
+.ad-ctitle{min-width:16rem;max-width:30rem}
+.ad-ctitle strong{font-size:.98rem;line-height:1.45;color:#0f172a}
+.ad-ctitle small{margin-top:.2rem;font-size:.76rem;word-break:break-all}
+.ad-pill{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .75rem;border-radius:99px;font:700 .78rem/1 inherit;text-transform:capitalize;white-space:nowrap}
+.ad-pill .ad-ico{width:14px;height:14px}
+.ad-star{color:#f59e0b;display:inline-flex}
+.ad-row-actions{display:grid;grid-template-columns:repeat(2,max-content);gap:.45rem}
+.ad-act{display:inline-flex;align-items:center;gap:.35rem;padding:.42rem .8rem;border:1px solid;border-radius:8px;font:600 .82rem/1 inherit;cursor:pointer;text-decoration:none!important;white-space:nowrap;transition:filter .15s,transform .15s}
+.ad-act:hover:not(:disabled){filter:brightness(.96);transform:translateY(-1px)}
+.ad-act:disabled{opacity:.55;cursor:wait}
+.ad-act:focus-visible{outline:2px solid #1554d6;outline-offset:2px}
+.act-edit{background:#eef4ff;border-color:#c7d8fb;color:#1d4ed8!important}
+.act-draft{background:#fff8e6;border-color:#f6dfa4;color:#b45309}
+.act-publish{background:#e8f8ef;border-color:#b9e8cd;color:#0d7a49}
+.act-feature{background:#f3edff;border-color:#ddd0fb;color:#6d28d9}
+.act-feature[aria-pressed=true]{background:#6d28d9;border-color:#6d28d9;color:#fff}
+.act-view{background:#ecfbf2;border-color:#bfe9cf;color:#15803d!important}
+.act-preview{background:#f1f5f9;border-color:#d9e1ec;color:#44506b}
+.act-delete{background:#fff1f1;border-color:#f7cccc;color:#c62828}
+@media (max-width:720px){.ad-row-actions{grid-template-columns:max-content}}
