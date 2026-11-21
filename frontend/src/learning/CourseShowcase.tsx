@@ -8,6 +8,7 @@ import './course-showcase.css'
 import { HeroVideo } from '../components/HeroVideo'
 import { AnimatedCard, Reveal, Section } from '../components/ui'
 import { useRegisterPopup } from '../lib/register-popup'
+import { useCustomCourses } from './customCourses'
 
 /** Hand-written blurbs and icons for the flagship courses shown on the homepage. */
 const FLAGSHIP = new Map(COURSES.map((c) => [c.title, c]))
@@ -148,7 +149,7 @@ function CourseCard({ c, rating }: { c: CourseDefinition; rating?: Rating }) {
       <div className="csx-badges">
         <span className="csx-cat">{c.category}</span>
         {c.level && <span className="ui-chip ui-chip-brand">{c.level}</span>}
-        <span className="ui-chip">30 days</span>
+        {c.custom ? c.duration && <span className="ui-chip">{c.duration}</span> : <span className="ui-chip">30 days</span>}
         <span className="ui-chip">{c.modules.length} modules</span>
       </div>
       <h3 className="csx-title"><Link to={`/courses/${c.slug}/`}>{c.name}</Link></h3>
@@ -168,23 +169,28 @@ function CourseCard({ c, rating }: { c: CourseDefinition; rating?: Rating }) {
 export function CoursesShowcase() {
   const [filter, setFilter] = useState('')
   const ratings = useCourseRatings()
-  const visible = filter ? COURSE_CATALOG.filter((c) => c.category === filter) : COURSE_CATALOG
+  const custom = useCustomCourses()
+  const all = [...COURSE_CATALOG, ...custom]
+  const categories = [...COURSE_CATEGORIES.map((cat) => ({ name: cat.name, count: all.filter((c) => c.category === cat.name).length })),
+    ...[...new Set(custom.map((c) => c.category))].filter((name) => !COURSE_CATEGORIES.some((cat) => cat.name === name))
+      .map((name) => ({ name, count: custom.filter((c) => c.category === name).length }))]
+  const visible = filter ? all.filter((c) => c.category === filter) : all
 
   return (
-    <Section id="catalogue" titleId="csx-courses-title" className="csx-courses" align="left" badge={`${COURSE_CATALOG.length}+ courses`} title="All Courses"
+    <Section id="catalogue" titleId="csx-courses-title" className="csx-courses" align="left" badge={`${all.length}+ courses`} title="All Courses"
       subtitle="Explore Coding Hub courses in AI, data science, GenAI, development and more. Compare paths and find the right next step for you.">
       <div className="csx-chips" role="group" aria-label="Filter by category">
         <button type="button" className={!filter ? 'on' : ''} aria-pressed={!filter} onClick={() => setFilter('')}>
-          All <span>{COURSE_CATALOG.length}</span>
+          All <span>{all.length}</span>
         </button>
-        {COURSE_CATEGORIES.map((cat) => (
+        {categories.map((cat) => (
           <button key={cat.name} type="button" className={filter === cat.name ? 'on' : ''} aria-pressed={filter === cat.name} onClick={() => setFilter(cat.name)}>
-            {cat.name} <span>{cat.courses.length}</span>
+            {cat.name} <span>{cat.count}</span>
           </button>
         ))}
       </div>
 
-      <p className="csx-count" role="status">Showing {visible.length} of {COURSE_CATALOG.length} courses{filter ? ` in ${filter}` : ''}</p>
+      <p className="csx-count" role="status">Showing {visible.length} of {all.length} courses{filter ? ` in ${filter}` : ''}</p>
 
       <Reveal as="ul" stagger key={filter} className="csx-grid" aria-label="Courses">
         {visible.map((c) => <li key={c.slug}><CourseCard c={c} rating={ratings.get(c.name.trim().toLowerCase())} /></li>)}

@@ -7,6 +7,7 @@ from apps.newsletter import ssr as newsletter_ssr
 from apps.newsletter.urls import admin_urlpatterns as newsletter_admin_urls
 from apps.learning.ssr import academy_page, learning_page, sitemap as learning_sitemap
 from apps.content.directory_ssr import directory_page, directory_sitemap
+from apps.courses import pages as course_pages
 
 urlpatterns = [
     path('newsletter/', newsletter_ssr.newsletter),
@@ -49,6 +50,7 @@ urlpatterns = [
     path('api/', include('apps.shop.urls')),
     path('api/', include('apps.content.urls')),
     path('', include('apps.content.ssr_urls')),
+    path('courses/<slug:slug>/', course_pages.course_page),
     path('', include('apps.shop.ssr_urls')),
     path('', include('apps.gigs.ssr_urls')),
 ]

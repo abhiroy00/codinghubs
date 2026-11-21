@@ -42,7 +42,9 @@ export function LearnFrame({
   const kind = parts[0] === 'interview' ? 'interview' : 'courses'
   const slug = parts[1]
   const seo = useMemo(
-    () => (learning ? learningMeta(kind, slug) : title && description ? pageMeta(pathname, title, description) : null),
+    // Courses added in the admin panel are not in the catalogue: their page sets its own metadata (CustomCourseDetails).
+    () => (kind === 'courses' && slug && !COURSE_BY_SLUG.has(slug) ? null
+      : learning ? learningMeta(kind, slug) : title && description ? pageMeta(pathname, title, description) : null),
     [learning, kind, slug, pathname, title, description],
   )
   useSeo(seo)

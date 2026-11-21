@@ -8,6 +8,7 @@ from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 from django.utils.dateparse import parse_date
 from django.utils import timezone
+from django.utils.text import slugify
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
@@ -17,7 +18,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.tokens import revoke_all_tokens
-from apps.courses.models import Course, CourseQuestion
+from apps.courses.models import Course, CourseCategory, CourseQuestion
 from apps.enrollments.models import Enrollment
 from apps.leads.models import Lead
 from apps.payments.models import Order
@@ -293,8 +294,8 @@ class CourseRowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'category', 'duration_display', 'is_active', 'brochure_status', 'brochure_cover_url')
-        read_only_fields = ('id', 'name', 'category', 'duration_display', 'brochure_status', 'brochure_cover_url')
+        fields = ('id', 'name', 'slug', 'category', 'duration_display', 'is_active', 'is_custom', 'brochure_status', 'brochure_cover_url')
+        read_only_fields = ('id', 'name', 'slug', 'category', 'duration_display', 'is_custom', 'brochure_status', 'brochure_cover_url')
 
     def get_brochure_cover_url(self, obj):
         brochure = getattr(obj, 'brochure', None)
@@ -308,17 +309,99 @@ class CourseRowSerializer(serializers.ModelSerializer):
         return 'published' if brochure.is_published else 'draft'
 
 
-class CourseListView(generics.ListAPIView):
+class AdminCourseSerializer(serializers.ModelSerializer):
+    """Full editor for admin-created courses. Catalogue courses only accept is_active here (their content is in the frontend)."""
+
+    category_name = serializers.CharField(write_only=True, required=False, allow_blank=True, max_length=80)
+    category = serializers.PrimaryKeyRelatedField(queryset=CourseCategory.objects.all(), required=False)
+
+    class Meta:
+        model = Course
+        fields = ('id', 'name', 'slug', 'category', 'category_name', 'duration_display', 'level', 'is_active', 'summary',
+                  'introduction', 'tools', 'skills', 'careers', 'modules', 'projects', 'faqs', 'seo_title', 'meta_description',
+                  'is_custom', 'order')
+        read_only_fields = ('id', 'is_custom')
+
+    def validate_slug(self, value):
+        from apps.courses.pages import CATALOGUE_SLUGS
+        if value in CATALOGUE_SLUGS:
+            raise serializers.ValidationError('This URL belongs to an existing catalogue course. Choose another.')
+        return value
+
+    def validate_level(self, value):
+        if value and value not in ('Beginner', 'Intermediate', 'Advanced'):
+            raise serializers.ValidationError('Use Beginner, Intermediate or Advanced.')
+        return value
+
+    def _list(self, value, field, keys=None, max_items=30):
+        if not isinstance(value, list) or len(value) > max_items:
+            raise serializers.ValidationError({field: f'Up to {max_items} items.'})
+        if keys is None:
+            return [str(v).strip()[:120] for v in value if str(v).strip()]
+        clean = []
+        for item in value:
+            if not isinstance(item, dict):
+                raise serializers.ValidationError({field: 'Each item must be an object.'})
+            row = {k: (item.get(k) or ([] if k in ('topics', 'skills') else '')) for k in keys}
+            for k in keys:
+                row[k] = [str(t).strip()[:120] for t in row[k] if str(t).strip()][:12] if isinstance(row[k], list) else str(row[k]).strip()[:1200]
+            if any(row.values()):
+                clean.append(row)
+        return clean
+
+    def validate(self, attrs):
+        for field in ('tools', 'skills', 'careers'):
+            if field in attrs:
+                attrs[field] = self._list(attrs[field], field)
+        if 'modules' in attrs:
+            attrs['modules'] = self._list(attrs['modules'], 'modules', ('title', 'description', 'topics'), 20)
+        if 'projects' in attrs:
+            attrs['projects'] = self._list(attrs['projects'], 'projects', ('name', 'description', 'skills'), 12)
+        if 'faqs' in attrs:
+            attrs['faqs'] = self._list(attrs['faqs'], 'faqs', ('question', 'answer'), 20)
+        name = (attrs.pop('category_name', '') or '').strip()
+        if name and not attrs.get('category'):
+            attrs['category'] = CourseCategory.objects.filter(name__iexact=name).first() or CourseCategory.objects.create(
+                name=name, slug=slugify(name)[:50] or 'courses')
+        if not self.instance and not attrs.get('category'):
+            raise serializers.ValidationError({'category': 'Choose a category or type a new one.'})
+        return attrs
+
+    def create(self, validated):
+        # Fees and outcomes are never invented: price/placement stay neutral until set elsewhere by the team.
+        return Course.objects.create(is_custom=True, placement_rate=0, **validated)
+
+    def update(self, instance, validated):
+        if not instance.is_custom:
+            validated = {k: v for k, v in validated.items() if k == 'is_active'}
+        return super().update(instance, validated)
+
+
+class CourseListView(generics.ListCreateAPIView):
     permission_classes = [IsStaff]
-    serializer_class = CourseRowSerializer
     queryset = Course.objects.select_related('category', 'brochure').order_by('category__order', 'order')
 
+    def get_serializer_class(self):
+        return AdminCourseSerializer if self.request.method == 'POST' else CourseRowSerializer
 
-class CourseDetailView(generics.UpdateAPIView):
+
+class CourseDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsStaff]
-    serializer_class = CourseRowSerializer
-    queryset = Course.objects.all()
-    http_method_names = ['patch', 'options']
+    queryset = Course.objects.select_related('category')
+    http_method_names = ['get', 'patch', 'options']
+
+    def get_serializer_class(self):
+        if self.request.method == 'PATCH' and set(self.request.data) <= {'is_active'}:
+            return CourseRowSerializer
+        return AdminCourseSerializer
+
+
+class CourseCategoryListView(generics.ListAPIView):
+    permission_classes = [IsStaff]
+    queryset = CourseCategory.objects.order_by('order', 'name')
+
+    def list(self, request, *args, **kwargs):
+        return Response([{'id': c.id, 'name': c.name} for c in self.get_queryset()])
 
 
 class TutorBookingListView(generics.ListAPIView):

@@ -504,6 +504,8 @@ export function DataPage({
 interface CourseRow {
   id: number
   name: string
+  slug: string
+  is_custom: boolean
   category: string
   duration_display: string
   is_active: boolean
@@ -544,8 +546,11 @@ export function CoursesPage() {
 
   return (
     <>
-      <h1 className="ad-h1">Courses</h1>
-      <p className="ad-muted">Switch a course off to hide it from the website catalogue and checkout.</p>
+      <div className="ad-head">
+        <h1 className="ad-h1">Courses</h1>
+        <Link className="ad-btn ad-btn-primary" to="/courses/new">+ Add course</Link>
+      </div>
+      <p className="ad-muted">Switch a course off to hide it from the website catalogue and checkout. Courses you add here get their own page; catalogue courses keep their content in the website code.</p>
       {error && <p className="ad-error">{error}</p>}
       <div className="ad-tablewrap">
         <table className="ad-table">
@@ -563,6 +568,10 @@ export function CoursesPage() {
               <tr key={c.id}>
                 <td>
                   <strong>{c.name}</strong>
+                  {c.is_custom && <span className="ad-badge st-scheduled"> Added in admin</span>}
+                  <br />
+                  {c.is_custom && <><Link to={`/courses/${c.id}/edit`}>Edit content</Link> · </>}
+                  {c.slug && <a href={`https://codinghubs.in/courses/${c.slug}/`} target="_blank" rel="noopener noreferrer">View page</a>}
                 </td>
                 <td>
                   <Link className="ad-course-cover-link" to={`/courses/${c.id}/brochure#brochure-cover-h`} aria-label={`${c.brochure_cover_url ? 'Change' : 'Add'} card image for ${c.name}`}>

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.exceptions import ValidationError as ModelValidationError
 from django.test import RequestFactory, TestCase, override_settings
 from django.utils import timezone
@@ -12,6 +13,7 @@ from .models import Gig, GigReport, Proposal
 @override_settings(GIGS_ENABLED=True)
 class GigsTests(TestCase):
     def setUp(self):
+        cache.clear()  # the anonymous API throttle is cache-backed; earlier test modules must not use up this test's quota
         User = get_user_model()
         self.owner = User.objects.create_user('client', email='private-client@example.test', password='test-pass')
         self.applicant = User.objects.create_user('learner', email='private-learner@example.test', password='test-pass')

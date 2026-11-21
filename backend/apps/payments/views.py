@@ -27,7 +27,8 @@ class CreateOrderView(APIView):
     def post(self, request):
         serializer = CreateOrderSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        course = Course.objects.filter(pk=serializer.validated_data['course_id'], is_active=True).first()
+        # Courses added in the admin panel have no confirmed online fee: learners enquire instead of paying here.
+        course = Course.objects.filter(pk=serializer.validated_data['course_id'], is_active=True, is_custom=False).first()
         if not course:
             return Response({'detail': 'Course not found.'}, status=status.HTTP_404_NOT_FOUND)
 

@@ -21,6 +21,7 @@ import { StudioAdmin } from './StudioAdmin'
 import './admin.css'
 
 const NewsletterAdmin = lazy(() => import('./CommunityAdmin').then(m=>({default:m.NewsletterAdmin})))
+const CourseEditor = lazy(() => import('./CourseEditor').then(m=>({default:m.CourseEditor})))
 const BrochureAdmin = lazy(() => import('./CommunityAdmin').then(m=>({default:m.BrochureAdmin})))
 
 const NAV: { heading: string; items: { to: string; label: string; icon: string; end?: boolean; count?: 'blogs' | 'cases' }[] }[] = [
@@ -289,6 +290,8 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
               }
             />
             <Route path="courses" element={<CoursesPage />} />
+            <Route path="courses/new" element={<CourseEditor key="new" />} />
+            <Route path="courses/:id/edit" element={<CourseEditor key={location.pathname} />} />
             <Route path="courses/:id/brochure" element={<BrochureAdmin key={location.pathname} />} />
             <Route path="newsletter" element={<NewsletterAdmin />} />
             <Route path="questions" element={<QuestionManager />} />

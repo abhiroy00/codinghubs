@@ -34,6 +34,23 @@ class Course(models.Model):
     is_active = models.BooleanField(default=True)
     order = models.PositiveSmallIntegerField(default=0)
 
+    # Courses created in the admin panel carry their own public page content (rendered by apps/courses/pages.py).
+    # The original catalogue courses keep their content in the frontend and leave these fields empty.
+    is_custom = models.BooleanField(default=False)
+    level = models.CharField(max_length=20, blank=True, help_text='Beginner, Intermediate or Advanced')
+    summary = models.CharField(max_length=300, blank=True)
+    introduction = models.TextField(blank=True)
+    tools = models.JSONField(default=list, blank=True)
+    skills = models.JSONField(default=list, blank=True)
+    careers = models.JSONField(default=list, blank=True)
+    modules = models.JSONField(default=list, blank=True)  # [{"title", "description", "topics": [..]}]
+    projects = models.JSONField(default=list, blank=True)  # [{"name", "description", "skills": [..]}]
+    faqs = models.JSONField(default=list, blank=True)  # [{"question", "answer"}]
+    seo_title = models.CharField(max_length=70, blank=True)
+    meta_description = models.CharField(max_length=170, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
     class Meta:
         ordering = ['order']
 

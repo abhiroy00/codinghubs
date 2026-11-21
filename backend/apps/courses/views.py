@@ -17,7 +17,8 @@ class CourseCategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CourseViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Course.objects.filter(is_active=True).select_related('category')
+    # Admin-created courses have no confirmed fee, so they stay out of this priced list (see apps/courses/pages.py).
+    queryset = Course.objects.filter(is_active=True, is_custom=False).select_related('category')
     serializer_class = CourseSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = 'slug'

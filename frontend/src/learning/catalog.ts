@@ -18,6 +18,9 @@ export interface CourseDefinition {
   hasCoding: boolean
   /** Optional difficulty shown as a badge on course cards (e.g. 'Beginner'). Leave unset if unknown. */
   level?: 'Beginner' | 'Intermediate' | 'Advanced'
+  /** Created in the admin panel: no 30-day roadmap or interview guide. */
+  custom?: boolean
+  duration?: string
 }
 
 const TRACKS: Record<CourseTrack, { modules: string[]; topics: string[]; tools: string[]; skills: string[]; careers: string[] }> = {

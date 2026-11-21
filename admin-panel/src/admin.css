@@ -380,3 +380,14 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .ad-act{padding:.35rem .65rem}
 .ad-side nav a{padding:.5rem .75rem}
 .ad-ctable .ad-ctitle{min-width:14rem}
+
+/* Course editor */
+.ad-ce{display:grid;gap:1rem;max-width:1100px}
+.ad-ce-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;display:grid;gap:.75rem}
+.ad-ce-card h2{margin:0}
+.ad-ce-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:.75rem}
+.ad-ce-grid-3{grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr))}
+.ad-ce-field{display:grid;gap:.3rem}
+.ad-ce-field>span{font-weight:600;color:var(--navy)}
+.ad-ce-field textarea,.ad-ce-field input,.ad-ce-field select{width:100%}
+.ad-ce .ad-row-card{border:1px dashed #cfd8e8;border-radius:12px;padding:.8rem;display:grid;gap:.6rem}

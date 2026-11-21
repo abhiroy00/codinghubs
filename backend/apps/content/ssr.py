@@ -260,6 +260,8 @@ def content_sitemap(request):
     rows += [(f'{settings.SITE_URL}/newsletter/issues/{slug}/', modified) for slug, modified in Issue.objects.filter(published=True).values_list('slug', 'updated_at')]
     rows += list(services.canonical_sitemap_rows(public_blog_qs(), '/blog'))
     rows += list(services.canonical_sitemap_rows(public_case_qs(), '/case-studies'))
+    from apps.courses.pages import sitemap_rows as course_rows
+    rows += course_rows()  # courses created in the admin panel (the prerendered ones are in sitemap.xml)
     out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for loc, mod in rows:
         out.append(f'  <url><loc>{escape(loc)}</loc>' + (f'<lastmod>{mod.date().isoformat()}</lastmod>' if mod else '') + '</url>')

@@ -2,6 +2,9 @@ import { CourseBrochureSection } from './CourseBrochureSection'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { relatedArticlesFor } from './relatedArticles'
+import { getCustomCourse, initialCustomCourse, type CustomCourse } from './customCourses'
+import { useSeo } from '../seo/useSeo'
+import { NotFound } from '../pages/NotFound'
 import { useAuth } from '../lib/auth-context'
 import { useLenisRef } from '../lib/lenis-context'
 import { api } from '../lib/api'
@@ -105,10 +108,60 @@ function LearningDashboard() {
   return <div className="learn-shell"><header className="learn-hero hv-host"><HeroVideo clip="interview-prep" /><p className="learn-kicker">YOUR LEARNING SPACE</p><h1>Interview guides</h1><p>Choose a course roadmap or continue your saved preparation.</p></header><div className="learn-directory"><CourseTiles /><section className="learn-prep-intro"><h2>My progress</h2>{active.length ? <div className="learn-course-grid">{active.map((course) => { const data = saved[course.slug]; const average = Object.values(data.scores).length ? Math.round(Object.values(data.scores).reduce((a, b) => a + b, 0) / Object.values(data.scores).length) : 0; return <article className="learn-course-card" key={course.slug}><span>{course.category}</span><h2>{course.name}</h2><p>Current day {data.currentDay || 1} · {data.done.length}/30 complete · {Math.round(data.done.length / 30 * 100)}%</p><p>Quiz average {average}/5 · {data.questions.length} questions · {data.challenge.length} challenges · {data.projects.length} projects</p><p>Last learning date: {data.lastLearningDate || 'Not started'}</p><div className="learn-card-actions"><Link className="learn-button" to={`/interview/${course.slug}/`}>Continue roadmap</Link><Link className="learn-button learn-button-quiet" to={`/interview/${course.slug}/#certificate`}>{data.done.length === 30 ? 'View certificate' : `Certificate locked · ${data.done.length}/30 days`}</Link></div></article>})}</div> : <p className="learn-muted">No saved course progress yet. Start a roadmap above to track your learning.</p>}</section></div></div>
 }
 
+/** A course created in the admin panel: same layout as catalogue courses, without the 30-day roadmap and interview guide. */
+function CustomCourseDetails({ slug }: { slug: string }) {
+  const [course, setCourse] = useState<CustomCourse | null>(() => initialCustomCourse(slug))
+  const [missing, setMissing] = useState(false)
+  const { openEnrollment } = useRegisterPopup()
+  useEffect(() => {
+    if (course) return
+    getCustomCourse(slug).then(setCourse).catch(() => setMissing(true))
+  }, [slug]) // eslint-disable-line react-hooks/exhaustive-deps
+  useSeo(course?.seo ?? null)
+  if (missing) return <NotFound />
+  if (!course) return <div className="learn-shell"><p role="status" className="learn-muted">Loading course…</p></div>
+  const lists = ([['What you will learn', 'i-spark', course.skills], ['Tools and technologies', 'i-code', course.tools], ['Career directions', 'i-brief', course.careers]] as const).filter(([, , items]) => items.length)
+  return <div className="learn-shell learn-detail"><header className="learn-hero course-programme-hero hv-host"><HeroVideo clip="course-detail" /><p className="learn-kicker">Coding Hub School of AI · {course.category}</p><h1>Build practical skills in <em>{course.name}</em></h1><p>{course.summary}</p>
+    <dl className="course-facts" aria-label={`${course.name} at a glance`}>
+      {course.level && <div><dt>Level</dt><dd>{course.level}</dd></div>}
+      {course.duration && <div><dt>Duration</dt><dd>{course.duration}</dd></div>}
+      <div><dt>Curriculum modules</dt><dd>{course.modules.length}</dd></div>
+      <div><dt>Practical projects</dt><dd>{course.projects.length}</dd></div>
+    </dl>
+    <div className="learn-hero-actions"><button type="button" className="ui-btn ui-btn-primary" aria-haspopup="dialog" onClick={() => openEnrollment(course.name)}>Enroll Now <span aria-hidden="true">→</span></button><Link className="ui-btn ui-btn-ghost" to="/#register">Book a free demo</Link></div><p className="course-hero-note">Ask our team about live batch schedules and fees.</p></header>
+    <nav className="course-section-nav" aria-label="Course sections">{course.modules.length > 0 && <a href="#curriculum">Curriculum</a>}{course.projects.length > 0 && <a href="#course-projects">Projects</a>}{course.faqs.length > 0 && <a href="#cd-faq">FAQ</a>}<Link to="/courses/">All courses</Link></nav>
+    <div className="learn-content cd-content">
+      {(course.introduction || lists.length > 0) && <Section id="cd-overview" className="cd-overview" align="left" badge="Course overview" title={<>About {course.name} at Coding Hub</>}
+        subtitle={<>{course.introduction.split('\n').filter(Boolean).map((p) => <span key={p} className="cd-para">{p} </span>)}</>}>
+        <Reveal stagger className="cd-trio">
+          {lists.map(([title, icon, items]) => (
+            <AnimatedCard key={title} as="div" className="cd-trio-card">
+              <span className="cd-icon" aria-hidden="true"><FsIcon id={icon} /></span>
+              <h3>{title}</h3>
+              <div className="learn-pills">{items.map((item) => <span key={item}>{item}</span>)}</div>
+            </AnimatedCard>
+          ))}
+        </Reveal>
+      </Section>}
+      {course.modules.length > 0 && <Section id="curriculum" titleId="cd-curriculum-title" className="cd-curriculum" tone="soft" align="left" badge={`${course.modules.length} modules`} title="Curriculum"
+        subtitle="Open a module to see what it covers.">
+        <Reveal stagger className="learn-modules">{course.modules.map((module, i) => <details key={module.title + i} open={i === 0}><summary><span>Module {i + 1}</span>{module.title}</summary>{module.description && <p>{module.description}</p>}{module.topics.length > 0 && <ul>{module.topics.map((topic) => <li key={topic}>{topic}</li>)}</ul>}</details>)}</Reveal>
+      </Section>}
+      {course.projects.length > 0 && <Section id="course-projects" titleId="cd-projects-title" className="cd-projects" align="left" badge={`${course.projects.length} portfolio projects`} title="Practical projects"
+        subtitle="Build real, reviewable work you can show in interviews.">
+        <Reveal stagger className="learn-project-grid">{course.projects.map((project, i) => <AnimatedCard key={project.name + i} className="cd-project"><p className="cd-project-num">Project {String(i + 1).padStart(2, '0')}</p><h3>{project.name}</h3><p>{project.description}</p>{project.skills.length > 0 && <div className="cd-chips">{project.skills.map((skill) => <span key={skill} className="ui-chip">{skill}</span>)}</div>}</AnimatedCard>)}</Reveal>
+      </Section>}
+      {course.faqs.length > 0 && <Section id="cd-faq" className="cd-faq" align="left" badge="FAQ" title="Frequently asked questions">
+        <Reveal stagger>{course.faqs.map((faq) => <details className="learn-faq" key={faq.question}><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</Reveal>
+      </Section>}
+    </div>
+  </div>
+}
+
 export function CourseDetails() {
   const { slug = '' } = useParams()
   const course = COURSE_BY_SLUG.get(slug)
-  if (!course) return <div className="learn-shell"><h1>Course not found</h1><Link to="/courses/">Browse all courses</Link></div>
+  if (!course) return <CustomCourseDetails key={slug} slug={slug} />
   return <div className="learn-shell learn-detail"><header className="learn-hero course-programme-hero hv-host"><HeroVideo clip="course-detail" /><p className="learn-kicker">Coding Hub School of AI · {course.category}</p><h1>Build practical skills in <em>{course.name}</em></h1><p>{course.introduction}</p>
     <dl className="course-facts" aria-label={`${course.name} at a glance`}>
       <div><dt>Learning roadmap</dt><dd>30 days</dd></div>

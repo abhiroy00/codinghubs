@@ -19,7 +19,11 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class CourseCategorySerializer(serializers.ModelSerializer):
-    courses = CourseSerializer(many=True, read_only=True)
+    courses = serializers.SerializerMethodField()
+
+    def get_courses(self, obj):
+        # Priced catalogue courses only; admin-created courses are listed by /api/courses/custom/ without a fee.
+        return CourseSerializer([c for c in obj.courses.all() if c.is_active and not c.is_custom], many=True, context=self.context).data
 
     class Meta:
         model = CourseCategory

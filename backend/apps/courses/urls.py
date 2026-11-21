@@ -3,6 +3,7 @@ from django.urls import path
 from .roadmap import RoadmapProgressView
 from . import brochures
 from .progress_import import ImportGuestProgress
+from . import pages
 
 from .views import CourseCategoryViewSet, CourseCertificateListView, CourseQuestionListView, CourseViewSet, LearningProgressListView, LearningProgressView, PrepCurriculumView, PrepLessonView, QuizAttemptView
 
@@ -11,6 +12,8 @@ router.register('categories', CourseCategoryViewSet, basename='course-category')
 router.register('', CourseViewSet, basename='course')
 
 urlpatterns = [
+    path('custom/', pages.CustomCourseList.as_view(), name='custom-courses'),
+    path('custom/<slug:slug>/', pages.CustomCourseDetail.as_view(), name='custom-course'),
     path('learning/progress/<slug:slug>/import/', ImportGuestProgress.as_view()),
     path('brochures/', brochures.PublicBrochures.as_view()),
     path('brochures/<slug:slug>/', brochures.PublicBrochure.as_view()),
