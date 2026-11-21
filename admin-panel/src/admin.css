@@ -369,3 +369,14 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .gsc-yes{background:#dcf5e8;color:#0d7a49}
 .gsc-no{background:#fff4e0;color:#b45309}
 .gsc-unknown{background:#eef2f8;color:#5b6580}
+
+/* ---- Compact text: every admin text at 12px (page headings stay slightly larger for hierarchy) ---- */
+.ad-shell,.ad-login{font-size:12px}
+.ad-shell *:not(h1):not(h2):not(h1 *):not(h2 *),.ad-login *:not(h1):not(h1 *){font-size:12px!important}
+.ad-shell h1,.ad-shell .ad-h1,.ad-login h1{font-size:18px!important}
+.ad-shell h2{font-size:15px!important}
+.ad-table td{padding:.7rem .8rem}
+.ad-table th{padding:.7rem .8rem}
+.ad-act{padding:.35rem .65rem}
+.ad-side nav a{padding:.5rem .75rem}
+.ad-ctable .ad-ctitle{min-width:14rem}
