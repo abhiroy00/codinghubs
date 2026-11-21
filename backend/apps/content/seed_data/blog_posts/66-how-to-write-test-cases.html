@@ -1,0 +1,90 @@
+title: How to Write Test Cases: Format, Examples and Best Practices
+slug: how-to-write-test-cases
+excerpt: Learn how to write clear test cases: the standard format, a worked login example, test design techniques like boundary values, best practices and turning test cases into automation.
+category: Software Testing
+tags: Test Cases, Software Testing, Manual Testing, QA, Automation Testing
+seo_title: How to Write Test Cases: Format, Examples and Tips
+meta_description: Write clear test cases with the standard format, a login example, boundary value and equivalence techniques, and tips to turn them into automation.
+focus_keyword: how to write test cases
+search_intent: Learn how to write good software test cases.
+---
+<p>Good testing starts long before any script runs. A well-written test case tells anyone exactly what to check, how to check it and what result proves the feature works. This guide shows <strong>how to write test cases</strong> with a standard format, a complete example and the techniques testers use to choose what to test.</p>
+
+<h2>What is a test case?</h2>
+<p>A test case is a set of conditions, steps and expected results used to verify one specific behaviour of an application. Test cases are grouped into test suites, linked to requirements or user stories, and executed manually or by automation.</p>
+
+<h2>Standard test case format</h2>
+<table>
+<thead><tr><th>Field</th><th>What to write</th></tr></thead>
+<tbody>
+<tr><td>Test case ID</td><td>A unique reference, e.g. TC_LOGIN_001</td></tr>
+<tr><td>Title</td><td>Short and specific: "Login succeeds with valid email and password"</td></tr>
+<tr><td>Requirement / story</td><td>The feature or story it verifies</td></tr>
+<tr><td>Preconditions</td><td>What must be true first: a registered user exists</td></tr>
+<tr><td>Test data</td><td>Exact inputs to use</td></tr>
+<tr><td>Steps</td><td>Numbered, one action per step</td></tr>
+<tr><td>Expected result</td><td>The observable outcome that means pass</td></tr>
+<tr><td>Actual result and status</td><td>Filled in during execution: pass, fail or blocked</td></tr>
+<tr><td>Priority</td><td>High, medium or low</td></tr>
+</tbody>
+</table>
+
+<h2>Worked example: login</h2>
+<p><strong>TC_LOGIN_001: Login succeeds with valid credentials</strong></p>
+<ul>
+<li><strong>Preconditions:</strong> user student@example.com exists with password Secret@123.</li>
+<li><strong>Steps:</strong>
+<ol>
+<li>Open the login page.</li>
+<li>Enter student@example.com in Email.</li>
+<li>Enter Secret@123 in Password.</li>
+<li>Click Log in.</li>
+</ol>
+</li>
+<li><strong>Expected result:</strong> the dashboard opens and shows "Welcome, Student".</li>
+<li><strong>Priority:</strong> High.</li>
+</ul>
+<p>Related negative cases for the same feature:</p>
+<ul>
+<li>TC_LOGIN_002: wrong password shows "Invalid email or password" and does not log in.</li>
+<li>TC_LOGIN_003: empty email shows a required-field message.</li>
+<li>TC_LOGIN_004: invalid email format is rejected.</li>
+<li>TC_LOGIN_005: account is temporarily locked after the configured number of failed attempts (if the requirement says so).</li>
+</ul>
+
+<h2>Techniques for choosing test cases</h2>
+<h3>Equivalence partitioning</h3>
+<p>Divide inputs into groups that should behave the same, and test one value from each. For an age field accepting 18–60: one valid value (30), one below (10) and one above (70).</p>
+<h3>Boundary value analysis</h3>
+<p>Bugs cluster at edges. For 18–60, test 17, 18, 19, 59, 60 and 61.</p>
+<h3>Decision tables</h3>
+<p>When results depend on combinations of conditions (for example, discount rules by membership and order value), list each combination and its expected outcome.</p>
+<h3>State transitions</h3>
+<p>For features with states, such as an order moving from placed to shipped to delivered, test valid and invalid transitions.</p>
+
+<h2>Best practices</h2>
+<ul>
+<li><strong>One behaviour per test case.</strong> Small cases are easier to run, automate and debug.</li>
+<li><strong>Write expected results precisely.</strong> "Works correctly" is not testable; "shows order number and status Placed" is.</li>
+<li><strong>Include negative and edge cases</strong>, not only the happy path.</li>
+<li><strong>Use clear, simple language</strong> so a new team member can execute it.</li>
+<li><strong>Keep test data explicit</strong> and reusable.</li>
+<li><strong>Link to requirements</strong> so coverage gaps are visible.</li>
+<li><strong>Review test cases</strong> with developers and business analysts.</li>
+</ul>
+
+<h2>Writing a good bug report</h2>
+<p>When a test fails, report it with a clear title, environment, exact steps, expected versus actual result, screenshots or logs, and severity. A reproducible bug report saves hours of back-and-forth.</p>
+
+<h2>From test cases to automation</h2>
+<p>Stable, high-priority and frequently repeated test cases are the best candidates for automation. Each step maps to a page-object method and each expected result to an assertion. Read <a href="/blog/manual-vs-automation-testing">manual vs automation testing</a>, then start automating with the <a href="/blog/selenium-tutorial-for-beginners">Selenium tutorial</a> and the <a href="/blog/page-object-model">Page Object Model</a>.</p>
+<p>Learn test design and automation together in the <a href="/courses/automation-testing/">Automation Testing course</a>, or plan your path with the <a href="/blog/automation-testing-roadmap">automation tester roadmap</a>.</p>
+===FAQ===
+Q: What should a test case contain?
+A: A unique ID, a clear title, preconditions, test data, numbered steps, an expected result, priority, and fields for the actual result and status during execution.
+Q: What is the difference between a test case and a test scenario?
+A: A test scenario is a high-level description of what to test, such as "user login". Test cases are the detailed steps and expected results that cover that scenario.
+Q: How many test cases should one feature have?
+A: Enough to cover the main positive path, important negative cases and boundaries. Techniques such as equivalence partitioning and boundary value analysis keep the number manageable.
+Q: Which tools are used to manage test cases?
+A: Teams use spreadsheets for small projects and test management tools such as Jira with test plugins, TestRail or Azure Test Plans for larger ones.

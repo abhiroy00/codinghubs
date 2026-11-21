@@ -1,0 +1,113 @@
+title: Page Object Model (POM) in Selenium Explained with Examples
+slug: page-object-model
+excerpt: The Page Object Model explained: why it makes test automation maintainable, how to structure page classes, a Selenium example in Python, best practices and common mistakes.
+category: Software Testing
+tags: Page Object Model, Selenium, Automation Testing, Test Framework, Python
+seo_title: Page Object Model in Selenium Explained with Examples
+meta_description: Learn the Page Object Model: why it keeps automated tests maintainable, how to write page classes, a Selenium and pytest example, and best practices.
+focus_keyword: page object model
+search_intent: Understand and implement the Page Object Model in test automation.
+---
+<p>When you write your first few automated tests, it is natural to put locators and clicks directly inside each test. After fifty tests, a single change to the login page can break dozens of them. The <strong>Page Object Model</strong> (POM) solves this by giving every page or component its own class that knows how to interact with it, so tests describe <em>what</em> the user does and page classes handle <em>how</em>.</p>
+
+<h2>The problem POM solves</h2>
+<pre><code class="language-python"># Without POM: locators repeated in every test
+driver.find_element(By.ID, "email").send_keys("a@example.com")
+driver.find_element(By.ID, "password").send_keys("secret123")
+driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()</code></pre>
+<p>If the button's selector changes, you have to update it everywhere. With POM, you update it in one place.</p>
+
+<h2>A page class example (Python + Selenium)</h2>
+<pre><code class="language-python"># pages/login_page.py
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
+
+class LoginPage:
+    EMAIL = (By.ID, "email")
+    PASSWORD = (By.ID, "password")
+    SUBMIT = (By.CSS_SELECTOR, "button[type='submit']")
+    ERROR = (By.CSS_SELECTOR, "[role='alert']")
+
+    def __init__(self, driver, base_url):
+        self.driver = driver
+        self.base_url = base_url
+        self.wait = WebDriverWait(driver, 10)
+
+    def open(self):
+        self.driver.get(f"{self.base_url}/login")
+        return self
+
+    def login(self, email, password):
+        self.wait.until(EC.visibility_of_element_located(self.EMAIL)).send_keys(email)
+        self.driver.find_element(*self.PASSWORD).send_keys(password)
+        self.driver.find_element(*self.SUBMIT).click()
+        return DashboardPage(self.driver)
+
+    def error_message(self):
+        return self.wait.until(EC.visibility_of_element_located(self.ERROR)).text
+
+
+class DashboardPage:
+    HEADING = (By.TAG_NAME, "h1")
+
+    def __init__(self, driver):
+        self.driver = driver
+
+    def heading(self):
+        return WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.HEADING)).text</code></pre>
+
+<h2>Tests become short and readable</h2>
+<pre><code class="language-python"># tests/test_login.py
+from pages.login_page import LoginPage
+
+
+def test_valid_login(driver, base_url):
+    dashboard = LoginPage(driver, base_url).open().login("student@example.com", "secret123")
+    assert dashboard.heading() == "Dashboard"
+
+
+def test_wrong_password_shows_error(driver, base_url):
+    page = LoginPage(driver, base_url).open()
+    page.login("student@example.com", "wrong")
+    assert "Invalid" in page.error_message()</code></pre>
+
+<h2>Best practices</h2>
+<ul>
+<li><strong>Keep assertions in tests, not in page classes.</strong> Page methods return data or other pages; tests decide what is correct.</li>
+<li><strong>Name methods after user actions:</strong> <code>login()</code>, <code>add_to_cart()</code>, not <code>click_button_3()</code>.</li>
+<li><strong>Return the next page object</strong> from navigation methods, as <code>login()</code> returns <code>DashboardPage</code>.</li>
+<li><strong>Put waits inside page methods</strong> so tests do not repeat synchronisation logic.</li>
+<li><strong>Use components</strong> for parts shared across pages, such as headers or modals.</li>
+<li><strong>Prefer stable locators</strong> such as IDs or <code>data-testid</code> attributes.</li>
+</ul>
+
+<h2>Common mistakes</h2>
+<ul>
+<li>Huge "god" page classes containing everything.</li>
+<li>Exposing raw locators to tests instead of meaningful methods.</li>
+<li>Assertions hidden inside page methods, which makes failures confusing.</li>
+<li>Copying the same helper code into every page instead of a base page class.</li>
+</ul>
+
+<h2>A typical folder structure</h2>
+<pre><code class="language-text">automation/
+  pages/        login_page.py, dashboard_page.py, base_page.py
+  tests/        test_login.py, test_cart.py
+  utils/        config.py, data.py
+  conftest.py   driver and base_url fixtures
+  pytest.ini</code></pre>
+<p>The same pattern works in Java with TestNG, and in Playwright, where page classes wrap <code>page.get_by_role()</code> locators.</p>
+
+<h2>Next steps</h2>
+<p>Combine POM with configuration, reporting and CI to build a complete framework: read <a href="/blog/test-automation-framework">how to build a test automation framework</a>. New to Selenium? Start with the <a href="/blog/selenium-tutorial-for-beginners">Selenium tutorial</a>. POM is a favourite interview topic; see <a href="/blog/selenium-interview-questions">Selenium interview questions</a> or join the <a href="/courses/automation-testing/">Automation Testing course</a>.</p>
+===FAQ===
+Q: What is the Page Object Model?
+A: The Page Object Model is a test automation design pattern where each page or component has a class containing its locators and actions, keeping tests readable and easy to maintain.
+Q: Should assertions be inside page objects?
+A: Generally no. Page objects should perform actions and return information; tests should contain the assertions that decide pass or fail.
+Q: Is POM only for Selenium?
+A: No. The pattern works with Playwright, Cypress, Appium and other UI automation tools.
+Q: What is Page Factory?
+A: Page Factory is a Java Selenium helper that initialises page elements using annotations. It is optional; many teams use plain page classes with By locators instead.

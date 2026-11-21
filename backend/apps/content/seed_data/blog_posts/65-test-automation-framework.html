@@ -1,0 +1,158 @@
+title: How to Build a Test Automation Framework and Run It in CI
+slug: test-automation-framework
+excerpt: Build a practical test automation framework step by step: structure, configuration, fixtures, Page Object Model, test data, reporting, parallel runs and a GitHub Actions pipeline.
+category: Software Testing
+tags: Test Framework, Automation Testing, CI/CD, pytest, GitHub Actions
+seo_title: How to Build a Test Automation Framework (with CI Pipeline)
+meta_description: Build a test automation framework step by step: structure, config, fixtures, Page Object Model, test data, reports, parallel runs and GitHub Actions CI.
+focus_keyword: test automation framework
+search_intent: Learn how to structure a test automation framework and run it in CI.
+---
+<p>Scripts become a <strong>test automation framework</strong> when they are organised, configurable, reliable and easy for the whole team to run. This guide builds a practical framework with Python, pytest, Playwright and the Page Object Model, then runs it automatically on every code change. The same structure works in Java with Selenium and TestNG.</p>
+
+<h2>What a good framework provides</h2>
+<ul>
+<li>A clear folder structure so anyone can find tests and pages.</li>
+<li>Configuration per environment (local, staging) without code changes.</li>
+<li>Reusable setup and teardown (fixtures).</li>
+<li>Maintainable locators through page objects.</li>
+<li>Independent test data.</li>
+<li>Readable reports with screenshots or traces on failure.</li>
+<li>Fast, parallel runs in CI.</li>
+</ul>
+
+<h2>Step 1: Folder structure</h2>
+<pre><code class="language-text">qa-framework/
+  pages/            base_page.py, login_page.py, cart_page.py
+  tests/
+    ui/             test_login.py, test_checkout.py
+    api/            test_orders_api.py
+  data/             users.json
+  conftest.py       fixtures: config, browser page, API client
+  pytest.ini        markers and default options
+  requirements.txt
+  .github/workflows/tests.yml</code></pre>
+
+<h2>Step 2: Install and configure</h2>
+<pre><code class="language-bash">pip install pytest pytest-playwright pytest-xdist pytest-html requests
+playwright install --with-deps chromium</code></pre>
+<pre><code class="language-ini"># pytest.ini
+[pytest]
+addopts = -v --html=report.html --self-contained-html
+markers =
+    smoke: quick checks for every commit
+    regression: full suite</code></pre>
+
+<h2>Step 3: Configuration through environment variables</h2>
+<pre><code class="language-python"># conftest.py
+import os
+import pytest
+import requests
+
+
+@pytest.fixture(scope="session")
+def base_url():
+    return os.environ.get("BASE_URL", "http://localhost:3000")
+
+
+@pytest.fixture(scope="session")
+def api(base_url):
+    session = requests.Session()
+    session.headers["Authorization"] = f"Bearer {os.environ.get('API_TOKEN', '')}"
+    session.base_url = base_url
+    return session</code></pre>
+<p>Secrets such as tokens and passwords come from environment variables or the CI secret store, never from the repository.</p>
+
+<h2>Step 4: Page objects</h2>
+<pre><code class="language-python"># pages/login_page.py
+from playwright.sync_api import Page
+
+
+class LoginPage:
+    def __init__(self, page: Page, base_url: str):
+        self.page = page
+        self.base_url = base_url
+
+    def open(self):
+        self.page.goto(f"{self.base_url}/login")
+        return self
+
+    def login(self, email: str, password: str):
+        self.page.get_by_label("Email").fill(email)
+        self.page.get_by_label("Password").fill(password)
+        self.page.get_by_role("button", name="Log in").click()</code></pre>
+<p>Read the full pattern in the <a href="/blog/page-object-model">Page Object Model guide</a>.</p>
+
+<h2>Step 5: Tests with markers</h2>
+<pre><code class="language-python"># tests/ui/test_login.py
+import pytest
+from playwright.sync_api import Page, expect
+from pages.login_page import LoginPage
+
+
+@pytest.mark.smoke
+def test_valid_login(page: Page, base_url):
+    LoginPage(page, base_url).open().login("student@example.com", "secret123")
+    expect(page.get_by_role("heading", name="Dashboard")).to_be_visible()</code></pre>
+<p>Run only quick checks with <code>pytest -m smoke</code>, or everything with <code>pytest</code>.</p>
+
+<h2>Step 6: Independent test data</h2>
+<ul>
+<li>Create the data each test needs (ideally through the API) and clean it up afterwards.</li>
+<li>Use unique values, such as an email with a timestamp, so parallel tests do not collide.</li>
+<li>Never depend on another test having run first.</li>
+</ul>
+
+<h2>Step 7: Reports, traces and parallel runs</h2>
+<ul>
+<li><code>pytest-html</code> produces a shareable HTML report.</li>
+<li>Playwright can record traces and screenshots on failure (<code>--tracing retain-on-failure --screenshot only-on-failure</code>).</li>
+<li><code>pytest-xdist</code> runs tests in parallel: <code>pytest -n auto</code>.</li>
+</ul>
+
+<h2>Step 8: Run in CI with GitHub Actions</h2>
+<pre><code class="language-yaml"># .github/workflows/tests.yml
+name: tests
+on: [push, pull_request]
+jobs:
+  ui-and-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: playwright install --with-deps chromium
+      - run: pytest -n auto --tracing retain-on-failure
+        env:
+          BASE_URL: ${{ secrets.STAGING_URL }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-report
+          path: |
+            report.html
+            test-results/</code></pre>
+<p>Every push now runs the suite, and the report and failure traces are downloadable from the workflow run. Jenkins and GitLab CI follow the same steps.</p>
+
+<h2>Keeping the framework healthy</h2>
+<ul>
+<li>Fix or quarantine flaky tests quickly; do not hide them with endless retries.</li>
+<li>Review test code like production code.</li>
+<li>Keep the smoke suite fast so developers get feedback in minutes.</li>
+<li>Delete tests that no longer add value.</li>
+</ul>
+
+<h2>Show it in interviews</h2>
+<p>A framework like this, on GitHub with a README explaining the structure and how to run it, is one of the strongest portfolio pieces for QA roles. Interviewers often ask you to explain it; see <a href="/blog/selenium-interview-questions">automation testing interview questions</a>. Plan your learning with the <a href="/blog/automation-testing-roadmap">automation tester roadmap</a>, or build it with mentors in the <a href="/courses/automation-testing/">Automation Testing course</a>.</p>
+===FAQ===
+Q: What is a test automation framework?
+A: A test automation framework is an organised set of code, conventions and tools, such as page objects, configuration, test data, reporting and CI, that makes automated tests reliable and easy to maintain.
+Q: Which framework type is best: data-driven, keyword-driven or hybrid?
+A: Most teams use a hybrid approach: Page Object Model for structure, data-driven tests where useful, and shared utilities, configuration and reporting.
+Q: Can I build a framework with Selenium and Java instead?
+A: Yes. The same structure applies with Selenium, TestNG or JUnit, Maven or Gradle, and a CI tool such as Jenkins or GitHub Actions.
+Q: How do I run automated tests in CI?
+A: Configure a pipeline to install dependencies and browsers, run tests headlessly on each push or pull request, and publish reports and failure screenshots as artifacts.

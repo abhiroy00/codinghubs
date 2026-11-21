@@ -1,0 +1,82 @@
+title: What Is Automation Testing? Types, Tools and When to Use It
+slug: what-is-automation-testing
+excerpt: Automation testing explained simply: what it is, how it works, the main types and tools, its benefits and limits, and when automating a test is worth it.
+category: Software Testing
+tags: Automation Testing, Software Testing, Selenium, QA, Beginners
+seo_title: What Is Automation Testing? Types, Tools and Examples
+meta_description: Learn what automation testing is, how it works, the main types (UI, API, unit, regression), popular tools like Selenium and Playwright, and when to automate.
+focus_keyword: what is automation testing
+search_intent: Understand what automation testing is and how it is used.
+---
+<p><strong>Automation testing</strong> is the practice of using code and tools to check that software works, instead of a person clicking through every screen by hand. A test script opens the application, performs actions such as logging in or adding an item to a cart, and checks that the result is exactly what was expected. If something breaks, the test fails and tells the team immediately.</p>
+
+<h2>How automation testing works</h2>
+<ol>
+<li><strong>Pick a scenario</strong> worth checking repeatedly, such as "a registered user can log in".</li>
+<li><strong>Write a test script</strong> using a tool or framework (for example Selenium, Playwright or an API testing library).</li>
+<li><strong>Add assertions</strong>: the checks that decide pass or fail, such as "the dashboard heading is visible".</li>
+<li><strong>Run the tests</strong> locally or automatically on every code change in a CI pipeline.</li>
+<li><strong>Read the report</strong> and fix either the bug or the test.</li>
+</ol>
+
+<p>A tiny example in Python with Playwright:</p>
+<pre><code class="language-python">from playwright.sync_api import sync_playwright, expect
+
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    page = browser.new_page()
+    page.goto("https://example.com")
+    expect(page.get_by_role("heading", name="Example Domain")).to_be_visible()
+    browser.close()</code></pre>
+
+<h2>Types of automated tests</h2>
+<table>
+<thead><tr><th>Type</th><th>What it checks</th><th>Typical tools</th></tr></thead>
+<tbody>
+<tr><td>Unit tests</td><td>Small pieces of code, such as one function</td><td>pytest, JUnit, Jest</td></tr>
+<tr><td>API tests</td><td>Services and endpoints, without a browser</td><td>Postman, REST Assured, requests + pytest</td></tr>
+<tr><td>UI / end-to-end tests</td><td>Real user journeys in a browser</td><td>Selenium, Playwright, Cypress</td></tr>
+<tr><td>Regression tests</td><td>That old features still work after changes</td><td>Any of the above, run regularly</td></tr>
+<tr><td>Performance tests</td><td>Speed and behaviour under load</td><td>JMeter, k6</td></tr>
+</tbody>
+</table>
+<p>Many teams follow the <strong>test pyramid</strong>: lots of fast unit tests, fewer API tests, and a smaller number of slower UI tests for the most important journeys.</p>
+
+<h2>Benefits of automation testing</h2>
+<ul>
+<li><strong>Speed:</strong> hundreds of checks run in minutes.</li>
+<li><strong>Consistency:</strong> scripts do not get tired or skip steps.</li>
+<li><strong>Early feedback:</strong> tests run on every change, so bugs are caught before release.</li>
+<li><strong>Confidence to change code:</strong> developers can refactor knowing the tests will catch regressions.</li>
+</ul>
+
+<h2>Limits you should know</h2>
+<ul>
+<li>Automation costs time to write and maintain; badly written tests break often ("flaky tests").</li>
+<li>It checks what you tell it to check. Exploratory testing by humans still finds issues scripts miss.</li>
+<li>Usability, look-and-feel and one-off checks are usually better done manually.</li>
+</ul>
+
+<h2>When should you automate a test?</h2>
+<p>Automate when a test is <strong>repeated often</strong>, <strong>stable</strong> (the feature is not changing every day), <strong>important</strong> (login, payments, core workflows) and <strong>deterministic</strong> (the expected result is clear). Keep one-time checks and rapidly changing designs manual for now. Read <a href="/blog/manual-vs-automation-testing">manual vs automation testing</a> for a detailed comparison.</p>
+
+<h2>Popular automation testing tools</h2>
+<ul>
+<li><strong>Selenium WebDriver:</strong> the long-established standard for browser automation, with many languages. Start with our <a href="/blog/selenium-tutorial-for-beginners">Selenium tutorial</a>.</li>
+<li><strong>Playwright:</strong> a modern framework with auto-waiting and fast parallel runs.</li>
+<li><strong>Cypress:</strong> popular with JavaScript front-end teams.</li>
+<li><strong>Postman and REST Assured:</strong> for API testing; see the <a href="/blog/api-testing-tutorial">API testing tutorial</a>.</li>
+</ul>
+<p>Compare them in <a href="/blog/playwright-vs-selenium">Playwright vs Selenium vs Cypress</a>.</p>
+
+<h2>Is automation testing a good career?</h2>
+<p>Yes, for people who like both programming and quality. Roles include QA engineer, automation test engineer and SDET (software development engineer in test). Follow the <a href="/blog/automation-testing-roadmap">automation tester roadmap</a> to plan your learning, or explore the <a href="/courses/automation-testing/">Automation Testing course</a> at Coding Hubs School of AI.</p>
+===FAQ===
+Q: What is automation testing in simple words?
+A: Automation testing means using scripts and tools to check that software works, instead of testing every step manually. The scripts perform actions and verify the results automatically.
+Q: Does automation testing replace manual testing?
+A: No. Automation handles repetitive, stable checks quickly, while manual and exploratory testing still find usability problems and unexpected bugs.
+Q: Which language is best for automation testing?
+A: Java and Python are the most common. JavaScript and TypeScript are popular with Playwright and Cypress. Choose the language your team or target employers use.
+Q: Do I need coding for automation testing?
+A: Yes, basic programming is needed to write maintainable tests. Many learners start with Python or Java fundamentals before learning tools like Selenium.

@@ -1,0 +1,112 @@
+title: Top 35 Selenium and Automation Testing Interview Questions and Answers
+slug: selenium-interview-questions
+excerpt: Thirty-five Selenium and automation testing interview questions with clear answers: WebDriver, locators, waits, frameworks, Page Object Model, TestNG, API testing and CI.
+category: Software Testing
+tags: Selenium, Interview Questions, Automation Testing, QA, Interview Preparation
+seo_title: Top 35 Selenium Interview Questions and Answers (2026)
+meta_description: Prepare with 35 Selenium and automation testing interview questions: WebDriver, locators, waits, POM, TestNG, frameworks, API testing and CI.
+focus_keyword: selenium interview questions
+search_intent: Prepare for Selenium and automation testing interviews.
+---
+<p>Automation testing interviews usually combine testing fundamentals, Selenium concepts, programming basics and questions about the framework you built. These 35 <strong>Selenium interview questions</strong> cover what freshers and experienced testers are asked most often, with short answers you can explain in your own words.</p>
+
+<h2>Testing fundamentals</h2>
+<h4>1. What is automation testing?</h4>
+<p>Using scripts and tools to execute tests and compare actual results with expected results, instead of testing manually. See <a href="/blog/what-is-automation-testing">what is automation testing</a>.</p>
+<h4>2. Which tests should be automated?</h4>
+<p>Repeated, stable, important and deterministic tests: regression, smoke, data-driven and API tests. Exploratory and usability testing stay manual.</p>
+<h4>3. What is regression testing?</h4>
+<p>Re-running tests after changes to confirm that existing features still work.</p>
+<h4>4. What is the difference between smoke and sanity testing?</h4>
+<p>Smoke testing checks that a build is stable enough for further testing by covering critical paths broadly. Sanity testing is a narrow check that a specific fix or change works.</p>
+<h4>5. What is the test pyramid?</h4>
+<p>A guideline to have many fast unit tests, fewer API/integration tests and a small number of slower UI end-to-end tests.</p>
+
+<h2>Selenium basics</h2>
+<h4>6. What is Selenium WebDriver?</h4>
+<p>A tool and W3C standard API that controls real browsers from code to automate web application testing.</p>
+<h4>7. What are the components of the Selenium suite?</h4>
+<p>Selenium WebDriver (browser automation), Selenium IDE (record and playback browser extension) and Selenium Grid (running tests on multiple machines and browsers in parallel).</p>
+<h4>8. Which locators does Selenium support?</h4>
+<p>ID, name, class name, tag name, link text, partial link text, CSS selector and XPath.</p>
+<h4>9. Which locator should you prefer?</h4>
+<p>A stable unique ID or a dedicated test attribute such as <code>data-testid</code>, then concise CSS selectors. Avoid long absolute XPaths.</p>
+<h4>10. What is the difference between absolute and relative XPath?</h4>
+<p>Absolute XPath starts from the root (<code>/html/body/...</code>) and breaks easily. Relative XPath starts with <code>//</code> and targets elements by attributes or text, so it is more robust.</p>
+<h4>11. What is the difference between <code>findElement</code> and <code>findElements</code>?</h4>
+<p><code>findElement</code> returns the first matching element or throws <code>NoSuchElementException</code>. <code>findElements</code> returns a list, which is empty if nothing matches.</p>
+<h4>12. What is the difference between <code>close()</code> and <code>quit()</code>?</h4>
+<p><code>close()</code> closes the current window; <code>quit()</code> closes all windows and ends the WebDriver session.</p>
+<h4>13. How do you handle dropdowns?</h4>
+<p>For <code>&lt;select&gt;</code> elements, use the <code>Select</code> class with <code>selectByVisibleText</code>, <code>selectByValue</code> or <code>selectByIndex</code>. Custom dropdowns are clicked like normal elements.</p>
+<h4>14. How do you handle alerts, frames and windows?</h4>
+<p>Use <code>switchTo().alert()</code> to accept or dismiss alerts, <code>switchTo().frame()</code> for iframes (and <code>defaultContent()</code> to return), and <code>switchTo().window(handle)</code> using window handles for tabs and windows.</p>
+
+<h2>Waits and synchronisation</h2>
+<h4>15. What types of waits are there?</h4>
+<p>Implicit wait (a global timeout for finding elements), explicit wait (<code>WebDriverWait</code> with a condition) and fluent wait (explicit wait with custom polling and ignored exceptions).</p>
+<h4>16. Why avoid <code>Thread.sleep()</code> or <code>time.sleep()</code>?</h4>
+<p>Fixed sleeps either wait too long (slow tests) or not long enough (flaky tests). Explicit waits continue as soon as the condition is met.</p>
+<h4>17. Should you mix implicit and explicit waits?</h4>
+<p>No. Mixing them can cause unpredictable wait times. Prefer explicit waits.</p>
+<h4>18. What causes <code>StaleElementReferenceException</code>?</h4>
+<p>The element was found, but the page re-rendered or the DOM changed, so the reference is no longer valid. Find the element again, ideally inside a wait.</p>
+
+<h2>Frameworks and design</h2>
+<h4>19. What is the Page Object Model?</h4>
+<p>A design pattern where each page or component is represented by a class containing its locators and actions, so tests stay readable and locators are maintained in one place. See the <a href="/blog/page-object-model">Page Object Model guide</a>.</p>
+<h4>20. What is a data-driven framework?</h4>
+<p>Tests read input and expected data from external sources (CSV, Excel, JSON) or test parameters, running the same flow with many data sets.</p>
+<h4>21. What is a hybrid framework?</h4>
+<p>A combination of approaches, typically Page Object Model, data-driven tests and reusable utilities, plus reporting and configuration.</p>
+<h4>22. Explain the framework you built.</h4>
+<p>Describe the language and test runner, folder structure (pages, tests, utilities, test data, config), how you handle waits and configuration, reporting, how tests run in CI and one problem you solved. Read <a href="/blog/test-automation-framework">how to build a test automation framework</a>.</p>
+<h4>23. What are TestNG annotations?</h4>
+<p>Annotations such as <code>@Test</code>, <code>@BeforeMethod</code>, <code>@AfterMethod</code>, <code>@BeforeClass</code> and <code>@DataProvider</code> control test execution, setup, teardown and data.</p>
+<h4>24. How do you run tests in parallel?</h4>
+<p>Through the test runner (TestNG parallel settings, pytest-xdist) and Selenium Grid or a cloud grid, keeping tests independent with their own data and driver instances.</p>
+<h4>25. How do you take a screenshot on failure?</h4>
+<p>Use a listener or hook (for example a TestNG listener or a pytest hook) that calls the screenshot method when a test fails and attaches the file to the report.</p>
+
+<h2>Flakiness and maintenance</h2>
+<h4>26. What is a flaky test?</h4>
+<p>A test that sometimes passes and sometimes fails without code changes.</p>
+<h4>27. How do you reduce flaky tests?</h4>
+<p>Use stable locators and explicit waits, make tests independent, control test data, avoid relying on test order, and investigate root causes before adding retries.</p>
+<h4>28. How do you handle dynamic elements?</h4>
+<p>Use locators based on stable attributes or text, partial matching (<code>contains()</code>), and waits for the expected state.</p>
+
+<h2>API testing and CI</h2>
+<h4>29. Why test APIs as well as the UI?</h4>
+<p>API tests are faster and more stable, and they find problems in business logic before the UI is involved. See the <a href="/blog/api-testing-tutorial">API testing tutorial</a>.</p>
+<h4>30. Which status codes should you know?</h4>
+<p>200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict and 500 Internal Server Error.</p>
+<h4>31. What is REST Assured?</h4>
+<p>A Java library for writing readable API tests in a given/when/then style.</p>
+<h4>32. How do you run automation in CI/CD?</h4>
+<p>Configure a pipeline (GitHub Actions, Jenkins or GitLab CI) to install dependencies, run tests in headless browsers on every push or pull request, and publish reports and screenshots.</p>
+<h4>33. What is headless testing?</h4>
+<p>Running a browser without a visible window, used on servers and CI where there is no display.</p>
+
+<h2>Scenario questions</h2>
+<h4>34. A test passes locally but fails in CI. What do you check?</h4>
+<p>Timing and waits, screen size and headless differences, test data and environment configuration, browser versions, and parallel tests sharing data. Check screenshots, logs and traces from the CI run.</p>
+<h4>35. How would you automate login for many test cases?</h4>
+<p>Create a reusable login step or page object, or log in through an API and reuse the session or cookies so that UI tests focus on the feature under test.</p>
+
+<h2>How to prepare</h2>
+<ul>
+<li>Build a small framework and be ready to explain every folder and design choice.</li>
+<li>Practise core Java or Python; see <a href="/blog/java-interview-questions">Java interview questions</a> and <a href="/blog/python-interview-questions">Python interview questions</a>.</li>
+<li>Revise testing fundamentals and <a href="/blog/how-to-write-test-cases">test case design</a>.</li>
+</ul>
+<p>Practise with mentors in the <a href="/courses/automation-testing/">Automation Testing course</a> or the <a href="/ai/mock-interview">AI mock interview</a>.</p>
+===FAQ===
+Q: What Selenium topics are asked most in interviews?
+A: Locators, waits, handling alerts, frames and windows, common exceptions, the Page Object Model, TestNG or pytest, framework design, parallel execution and CI.
+Q: How should a fresher prepare for an automation testing interview?
+A: Learn testing fundamentals, one programming language, Selenium basics and a framework, build a small project, and practise explaining it clearly.
+Q: Are coding questions asked in automation testing interviews?
+A: Yes. Expect basic programming questions such as string and array problems in Java or Python, plus writing small Selenium or API test snippets.
+Q: Should I learn Playwright for interviews?
+A: Selenium remains common in interviews, but Playwright knowledge is increasingly valued. Knowing the concepts of both is an advantage.

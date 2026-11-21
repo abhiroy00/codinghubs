@@ -1,0 +1,110 @@
+title: Selenium Tutorial for Beginners: Write Your First Automated Test
+slug: selenium-tutorial-for-beginners
+excerpt: A beginner Selenium WebDriver tutorial with Python: setup, locators, actions, explicit waits, assertions with pytest and the mistakes that make tests flaky.
+category: Software Testing
+tags: Selenium, Automation Testing, Python, Tutorial, Beginners
+seo_title: Selenium Tutorial for Beginners: Your First Automated Test
+meta_description: Learn Selenium WebDriver step by step with Python: install, locators, clicks and typing, explicit waits, assertions with pytest, and how to avoid flaky tests.
+focus_keyword: selenium tutorial for beginners
+search_intent: Learn Selenium WebDriver from scratch.
+---
+<p>Selenium WebDriver controls a real browser from code: it opens pages, clicks buttons, types into forms and reads what appears. It has been the standard tool for browser automation for many years and appears in a large number of QA job descriptions. This <strong>Selenium tutorial for beginners</strong> uses Python, because its syntax is short and easy to read; the same ideas apply in Java.</p>
+
+<h2>Step 1: Install Selenium</h2>
+<p>You need Python 3 and a browser such as Chrome. Create a virtual environment and install Selenium and pytest:</p>
+<pre><code class="language-bash">python -m venv venv
+source venv/bin/activate      # Windows: venv\Scripts\activate
+pip install selenium pytest</code></pre>
+<p>Recent Selenium 4 versions include <strong>Selenium Manager</strong>, which downloads the matching browser driver automatically, so you usually do not need to install ChromeDriver yourself.</p>
+
+<h2>Step 2: Open a browser</h2>
+<pre><code class="language-python">from selenium import webdriver
+
+driver = webdriver.Chrome()
+driver.get("https://example.com")
+print(driver.title)
+driver.quit()</code></pre>
+<p>Always call <code>driver.quit()</code> at the end, otherwise browser processes keep running in the background.</p>
+
+<h2>Step 3: Find elements with locators</h2>
+<p>Selenium finds elements using <strong>locators</strong>:</p>
+<table>
+<thead><tr><th>Locator</th><th>Example</th><th>Use when</th></tr></thead>
+<tbody>
+<tr><td>ID</td><td><code>By.ID, "email"</code></td><td>The element has a stable, unique id (best choice)</td></tr>
+<tr><td>Name</td><td><code>By.NAME, "q"</code></td><td>Form fields with a name attribute</td></tr>
+<tr><td>CSS selector</td><td><code>By.CSS_SELECTOR, "button[type='submit']"</code></td><td>Flexible and fast; preferred over XPath for most cases</td></tr>
+<tr><td>XPath</td><td><code>By.XPATH, "//button[text()='Login']"</code></td><td>Matching by text or complex structure</td></tr>
+<tr><td>Link text</td><td><code>By.LINK_TEXT, "Sign up"</code></td><td>Links with fixed text</td></tr>
+</tbody>
+</table>
+<p>Avoid long, fragile XPaths copied from browser tools, such as <code>/html/body/div[3]/div/form/button</code>; they break whenever the layout changes. Ask developers to add stable attributes like <code>data-testid</code>.</p>
+
+<h2>Step 4: Interact with the page</h2>
+<pre><code class="language-python">from selenium.webdriver.common.by import By
+
+driver.find_element(By.ID, "email").send_keys("student@example.com")
+driver.find_element(By.ID, "password").send_keys("secret123")
+driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()</code></pre>
+
+<h2>Step 5: Wait correctly</h2>
+<p>Modern pages load content asynchronously. If your script looks for an element before it appears, the test fails. Never fix this with <code>time.sleep()</code>; use an <strong>explicit wait</strong> that waits only as long as needed:</p>
+<pre><code class="language-python">from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+heading = WebDriverWait(driver, 10).until(
+    EC.visibility_of_element_located((By.TAG_NAME, "h1"))
+)</code></pre>
+
+<h2>Step 6: Turn it into a real test with pytest</h2>
+<pre><code class="language-python"># test_example.py
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+
+@pytest.fixture
+def driver():
+    d = webdriver.Chrome()
+    yield d
+    d.quit()
+
+
+def test_home_page_heading(driver):
+    driver.get("https://example.com")
+    heading = driver.find_element(By.TAG_NAME, "h1").text
+    assert heading == "Example Domain"</code></pre>
+<p>Run it with <code>pytest -v</code>. The fixture opens a fresh browser for each test and always closes it, even if the test fails.</p>
+
+<h2>Step 7: Run headless</h2>
+<p>On servers and CI pipelines there is no screen, so run Chrome in headless mode:</p>
+<pre><code class="language-python">options = webdriver.ChromeOptions()
+options.add_argument("--headless=new")
+driver = webdriver.Chrome(options=options)</code></pre>
+
+<h2>Common beginner mistakes</h2>
+<ul>
+<li>Using <code>time.sleep()</code> instead of explicit waits.</li>
+<li>Fragile absolute XPaths.</li>
+<li>Tests that depend on each other or on a fixed order.</li>
+<li>No assertions, so the test "passes" without checking anything.</li>
+<li>Repeating locators in every test instead of using the <a href="/blog/page-object-model">Page Object Model</a>.</li>
+</ul>
+
+<h2>What to learn next</h2>
+<ol>
+<li>Organise tests with the <a href="/blog/page-object-model">Page Object Model</a>.</li>
+<li>Build a <a href="/blog/test-automation-framework">test automation framework</a> and run it in CI.</li>
+<li>Compare Selenium with newer tools in <a href="/blog/playwright-vs-selenium">Playwright vs Selenium vs Cypress</a>.</li>
+<li>Prepare with <a href="/blog/selenium-interview-questions">Selenium interview questions</a>.</li>
+</ol>
+<p>Want guided practice with projects? See the <a href="/courses/automation-testing/">Automation Testing course</a>.</p>
+===FAQ===
+Q: Is Selenium easy for beginners?
+A: Selenium is approachable once you know basic programming. The main skills to practise are choosing stable locators and using explicit waits correctly.
+Q: Should I learn Selenium with Java or Python?
+A: Both are widely used. Java is common in enterprise QA teams; Python is shorter and easier to start with. Check job listings for your target companies.
+Q: Do I still need to download ChromeDriver?
+A: Usually not. Recent Selenium 4 versions include Selenium Manager, which finds or downloads a matching driver automatically.
+Q: Why do my Selenium tests fail randomly?
+A: The most common causes are missing explicit waits, fragile locators and tests that depend on shared data or order. Fix those before adding retries.

@@ -1,0 +1,114 @@
+title: API Testing Tutorial for Beginners: Postman and Automated Tests
+slug: api-testing-tutorial
+excerpt: Learn API testing from scratch: HTTP basics, what to check, testing with Postman, automated API tests in Python and Java, authentication, and common mistakes.
+category: Software Testing
+tags: API Testing, Postman, REST API, Automation Testing, Tutorial
+seo_title: API Testing Tutorial for Beginners: Postman and Automation
+meta_description: A beginner API testing tutorial: HTTP methods and status codes, what to test, Postman collections, automated tests in Python and Java, and auth.
+focus_keyword: api testing tutorial
+search_intent: Learn how to test REST APIs manually and automatically.
+---
+<p>Most applications are built on APIs: the mobile app, the website and partner systems all talk to the same back-end services. Testing those APIs directly is faster and more reliable than testing everything through the user interface. This <strong>API testing tutorial</strong> covers the basics, manual testing with Postman and automated API tests in code.</p>
+
+<h2>API basics you need</h2>
+<p>A REST API receives an HTTP request and returns a response, usually JSON.</p>
+<table>
+<thead><tr><th>Method</th><th>Purpose</th><th>Typical success code</th></tr></thead>
+<tbody>
+<tr><td>GET</td><td>Read data</td><td>200 OK</td></tr>
+<tr><td>POST</td><td>Create something</td><td>201 Created</td></tr>
+<tr><td>PUT / PATCH</td><td>Replace or update</td><td>200 OK</td></tr>
+<tr><td>DELETE</td><td>Remove</td><td>204 No Content</td></tr>
+</tbody>
+</table>
+<p>Errors matter just as much: 400 (bad input), 401 (not logged in), 403 (not allowed), 404 (not found), 409 (conflict) and 500 (server error).</p>
+
+<h2>What to check in an API test</h2>
+<ul>
+<li><strong>Status code</strong> is correct for the scenario.</li>
+<li><strong>Response body</strong> has the right fields, types and values.</li>
+<li><strong>Schema</strong> matches the contract (no missing or renamed fields).</li>
+<li><strong>Headers</strong>, such as content type.</li>
+<li><strong>Negative cases:</strong> missing fields, invalid values, wrong types.</li>
+<li><strong>Security:</strong> unauthenticated or unauthorised requests are rejected, and users cannot read other users' data.</li>
+<li><strong>Response time</strong> is acceptable.</li>
+</ul>
+
+<h2>Step 1: Explore with Postman</h2>
+<ol>
+<li>Create a request: choose the method, enter the URL, add headers and a JSON body.</li>
+<li>Send it and inspect the status, body and time.</li>
+<li>Save requests in a <strong>collection</strong> and use <strong>environment variables</strong> for base URLs and tokens.</li>
+<li>Add tests in the Tests tab, for example checking the status code.</li>
+</ol>
+<pre><code class="language-javascript">pm.test("status is 200", () =&gt; pm.response.to.have.status(200));
+pm.test("returns a list", () =&gt; pm.expect(pm.response.json()).to.be.an("array"));</code></pre>
+<p>Collections can be run automatically from the command line with Newman, which is handy for CI.</p>
+
+<h2>Step 2: Automate with Python (requests + pytest)</h2>
+<pre><code class="language-python">import requests
+
+BASE = "https://jsonplaceholder.typicode.com"
+
+
+def test_get_post():
+    r = requests.get(f"{BASE}/posts/1", timeout=10)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["id"] == 1
+    assert isinstance(body["title"], str)
+
+
+def test_create_post():
+    payload = {"title": "Hello", "body": "API testing", "userId": 1}
+    r = requests.post(f"{BASE}/posts", json=payload, timeout=10)
+    assert r.status_code == 201
+    assert r.json()["title"] == "Hello"</code></pre>
+<p>JSONPlaceholder is a free public fake API for practice; it does not really save data.</p>
+
+<h2>Step 3: Automate with Java (REST Assured)</h2>
+<pre><code class="language-java">import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+
+@Test
+public void getPostReturnsTitle() {
+    given()
+        .baseUri("https://jsonplaceholder.typicode.com")
+    .when()
+        .get("/posts/1")
+    .then()
+        .statusCode(200)
+        .body("id", equalTo(1));
+}</code></pre>
+
+<h2>Step 4: Handle authentication</h2>
+<p>Most real APIs need a token. A common pattern: call the login endpoint once in a fixture or setup method, store the token, and send it as <code>Authorization: Bearer &lt;token&gt;</code> in later requests. Keep credentials in environment variables, never in the code repository.</p>
+
+<h2>Step 5: Organise and run in CI</h2>
+<ul>
+<li>Put the base URL and credentials in configuration per environment (local, staging).</li>
+<li>Create test data through the API and clean it up afterwards, so tests are independent.</li>
+<li>Run the suite in CI on every change; see <a href="/blog/test-automation-framework">building a test automation framework</a>.</li>
+</ul>
+
+<h2>Common mistakes</h2>
+<ul>
+<li>Checking only the status code and not the body.</li>
+<li>Testing only the happy path.</li>
+<li>Tests that depend on data created by another test.</li>
+<li>Hard-coded tokens that expire.</li>
+<li>Running destructive tests against production.</li>
+</ul>
+
+<h2>API testing vs UI testing</h2>
+<p>API tests are faster, less flaky and pinpoint back-end problems. UI tests confirm the whole user journey. A healthy suite has more API tests than UI tests, following the test pyramid described in <a href="/blog/what-is-automation-testing">what is automation testing</a>.</p>
+<p>Learn API and UI automation with projects in the <a href="/courses/automation-testing/">Automation Testing course</a>, and revise API questions in our <a href="/blog/selenium-interview-questions">automation testing interview questions</a>.</p>
+===FAQ===
+Q: What is API testing?
+A: API testing checks that an application's APIs return the correct status codes, data, errors and security behaviour, by sending requests directly instead of using the user interface.
+Q: Is Postman enough for API testing?
+A: Postman is excellent for exploring and building collections, and Newman can run them automatically. Many teams also write API tests in code for better version control and reuse.
+Q: Which language is best for API test automation?
+A: Python with requests and pytest, and Java with REST Assured, are both popular. JavaScript is also common with Playwright's API testing features.
+Q: Do I need coding knowledge for API testing?
+A: Manual API testing with Postman needs little coding. Automated API testing needs basic programming in Python, Java or JavaScript.

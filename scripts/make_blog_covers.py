@@ -22,10 +22,11 @@ ACCENT = {  # one accent per category, all readable on navy
     'Artificial Intelligence': (167, 139, 250),
     'Interview Preparation': (74, 222, 128),
     'Learning to Code': (244, 114, 182),
+    'Software Testing': (56, 189, 248),
 }
 GLYPH = {
     'Career Guides': '↗', 'Python': '>>>', 'Java': '{ }', 'Web Development': '</>',
-    'Artificial Intelligence': 'AI', 'Interview Preparation': 'Q&A', 'Learning to Code': '01',
+    'Artificial Intelligence': 'AI', 'Interview Preparation': 'Q&A', 'Learning to Code': '01', 'Software Testing': 'QA',
 }
 
 
