@@ -101,7 +101,7 @@ class PublicBlogList(generics.ListAPIView):
             qs = qs.filter(tags__slug=t)
         if p.get('featured') in ('1', 'true'):
             qs = qs.filter(is_featured=True)
-        return qs.order_by('-published_at')
+        return qs.order_by('-published_at', '-created_at', '-id')
 
     def list(self, request, *args, **kwargs):
         return public_cache(super().list(request, *args, **kwargs))
@@ -197,7 +197,7 @@ class PublicCaseList(generics.ListAPIView):
             qs = qs.filter(industry__iexact=i)
         if t := p.get('technology'):
             qs = qs.filter(technologies__icontains=t)
-        return qs.order_by('-published_at')
+        return qs.order_by('-published_at', '-created_at', '-id')
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
@@ -273,7 +273,7 @@ class AdminListMixin:
             qs = qs.filter(Q(title__icontains=q) | Q(slug__icontains=q))
         if s := p.get('status'):
             qs = qs.filter(status=s)
-        order = p.get('ordering', '-updated')
+        order = p.get('ordering', '-created')
         field = self.ORDERING.get(order.lstrip('-'), 'updated_at')
         return qs.order_by(('-' if order.startswith('-') else '') + field, '-id')
 

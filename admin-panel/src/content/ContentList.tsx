@@ -8,6 +8,7 @@ import type { Kind, Row, Status, Taxon } from './types'
 
 const STATUSES: Status[] = ['draft', 'scheduled', 'published', 'archived']
 const SORTS = [
+  ['-created', 'Newest first'],
   ['-updated', 'Recently updated'],
   ['-date', 'Newest published'],
   ['date', 'Oldest published'],
@@ -24,7 +25,7 @@ export function ContentList({ kind }: { kind: Kind }) {
   const [dq, setDq] = useState('')
   const [status, setStatus] = useState('')
   const [category, setCategory] = useState('')
-  const [ordering, setOrdering] = useState('-updated')
+  const [ordering, setOrdering] = useState('-created')
   const [page, setPage] = useState(1)
   const [data, setData] = useState<Paged<Row> | null>(null)
   const [cats, setCats] = useState<Taxon[]>([])

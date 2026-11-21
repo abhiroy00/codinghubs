@@ -170,7 +170,7 @@ def blog_list(request):
         qs = qs.filter(category=category)
     if query:
         qs = qs.filter(title__icontains=query)
-    paginator = Paginator(qs.order_by('-published_at'), 9)
+    paginator = Paginator(qs.order_by('-published_at', '-created_at', '-id'), 9)
     try:
         pg = paginator.page(page)
     except EmptyPage:
@@ -217,7 +217,7 @@ def case_list(request):
         qs = qs.filter(industry__iexact=industry)
     if query:
         qs = qs.filter(title__icontains=query)
-    paginator = Paginator(qs.order_by('-published_at'), 9)
+    paginator = Paginator(qs.order_by('-published_at', '-created_at', '-id'), 9)
     try:
         pg = paginator.page(page)
     except EmptyPage:

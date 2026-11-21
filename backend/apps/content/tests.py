@@ -476,6 +476,29 @@ class SeoTests(ContentBase):
             self.assertFalse(self.api.get('/api/admin/blogs/search-console/').json()['configured'])
             self.assertEqual(self.api.post('/api/admin/blogs/search-console/').status_code, 400)
 
+    def test_newest_post_is_listed_first_in_admin_and_on_the_blog(self):
+        older = self.make_blog('Older post')
+        self.api.post(f'/api/admin/blogs/{older["id"]}/publish/')
+        newer = self.make_blog('Newer post')
+        self.api.post(f'/api/admin/blogs/{newer["id"]}/publish/')
+        self.api.patch(f'/api/admin/blogs/{older["id"]}/', {'excerpt': 'Edited later.'}, format='json')  # editing must not reorder
+        self.assertEqual(self.api.get('/api/admin/blogs/').json()['results'][0]['slug'], newer['slug'])
+        self.assertEqual(self.as_user(None).get('/api/blogs/').json()['results'][0]['slug'], newer['slug'])
+        html = self.as_user(None).get('/blog').content.decode()
+        self.assertLess(html.index(f'/blog/{newer["slug"]}'), html.index(f'/blog/{older["slug"]}'))
+
+    def test_publish_dates_the_post_today_and_updates_keep_the_date(self):
+        from apps.content.models import Blog as BlogModel
+        old_draft = self.make_blog('Written last week')
+        BlogModel.objects.filter(pk=old_draft['id']).update(published_at=timezone.now() - timedelta(days=7))
+        week_ago = (timezone.now() - timedelta(days=7)).isoformat()
+        self.api.post(f'/api/admin/blogs/{old_draft["id"]}/publish/', {'published_at': week_ago}, format='json')
+        first = BlogModel.objects.get(pk=old_draft['id'])
+        self.assertEqual(first.status, 'published')
+        self.assertLess(timezone.now() - first.published_at, timedelta(minutes=1))  # dated the day it went live
+        self.api.post(f'/api/admin/blogs/{old_draft["id"]}/publish/', {'published_at': week_ago}, format='json')  # "Update post"
+        self.assertEqual(BlogModel.objects.get(pk=old_draft['id']).published_at, first.published_at)
+
     def test_team_byline_is_the_organization_not_a_person(self):
         b = self.make_blog('Team article', author_name='Coding Hubs Team')
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')

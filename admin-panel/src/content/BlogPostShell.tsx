@@ -50,7 +50,7 @@ export function BlogPostShell({ api, children, uploading = false }: { api: BlogA
           label="Publish date"
           htmlFor="published_at"
           error={errors.published_at || dateError}
-          hint="Required. Already set to today — change it to schedule the post for a future date."
+          hint="Publishing uses today’s date and puts the post first on the blog. Choose a future date only to schedule it."
         >
           <input
             id="published_at"

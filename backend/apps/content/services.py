@@ -74,15 +74,22 @@ def resolve_redirect(kind: str, slug: str):
 # ---------- workflow ----------
 @transaction.atomic
 def publish(obj, published_at=None):
-    """Publish now, or schedule when the chosen time is in the future."""
+    """Publish now, or schedule when the chosen time is in the future.
+
+    The publish date is the day the item actually goes live: a first publication is dated now (a date saved with an
+    older draft is replaced), so the newest post is always first in date-ordered lists. An item that is already live
+    keeps its date when it is updated, so editing an old post does not move it to the top.
+    """
     now = timezone.now()
-    if published_at:
+    already_live = obj.status == STATUS_PUBLISHED or (obj.status == STATUS_SCHEDULED and obj.published_at and obj.published_at <= now)
+    if published_at and published_at > now:
         obj.published_at = published_at
-    if obj.published_at and obj.published_at > now:
         obj.status = STATUS_SCHEDULED
+    elif already_live and obj.published_at:
+        obj.status = STATUS_PUBLISHED
     else:
         obj.status = STATUS_PUBLISHED
-        obj.published_at = obj.published_at or now
+        obj.published_at = now
     obj.full_clean(exclude=['slug'])
     obj.save()
     return obj
