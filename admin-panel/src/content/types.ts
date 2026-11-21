@@ -14,6 +14,11 @@ export interface Row {
   is_featured: boolean
   reading_time: number
   view_count?: number
+  gsc_status?: '' | 'indexed' | 'not_indexed'
+  gsc_coverage?: string
+  gsc_clicks?: number
+  gsc_impressions?: number
+  gsc_checked_at?: string | null
 }
 
 export interface Taxon {

@@ -265,7 +265,7 @@ class AdminListMixin:
     pagination_class = AdminPage
     permission_classes = [ContentPermission]
 
-    ORDERING = {'date': 'published_at', 'updated': 'updated_at', 'title': 'title', 'status': 'status', 'created': 'created_at', 'views': 'view_count'}
+    ORDERING = {'date': 'published_at', 'updated': 'updated_at', 'title': 'title', 'status': 'status', 'created': 'created_at', 'views': 'view_count', 'clicks': 'gsc_clicks', 'impressions': 'gsc_impressions'}
 
     def filter_common(self, qs):
         p = self.request.query_params
@@ -540,3 +540,26 @@ class RecordView(APIView):
         if not BOT_UA.search(request.META.get('HTTP_USER_AGENT', '')):
             self.model_class.objects.public().filter(slug=slug).update(view_count=F('view_count') + 1)
         return Response(status=204)
+
+
+class SearchConsoleSync(APIView):
+    """GET: whether Search Console is connected. POST: refresh clicks/impressions and check the index status of a batch of posts."""
+
+    permission_classes = [ContentPermission]
+    perm_action = 'change'
+    model_class = Blog
+
+    def get(self, request):
+        from . import search_console
+        return Response({'configured': search_console.is_configured(), 'property': search_console.property_url()})
+
+    def post(self, request):
+        from . import search_console
+        if not search_console.is_configured():
+            return Response({'detail': 'Search Console is not connected. Add GSC_SERVICE_ACCOUNT_B64 on the server.'}, status=400)
+        try:
+            result = search_console.sync_blogs()
+        except Exception as exc:  # noqa: BLE001 - surface Google API errors to the admin instead of a 500
+            logger.warning('Search Console sync failed: %s', exc)
+            return Response({'detail': 'Google Search Console did not respond. Check that the service account is a user of the property.'}, status=502)
+        return Response(result)

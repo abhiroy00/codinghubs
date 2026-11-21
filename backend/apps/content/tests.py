@@ -439,6 +439,43 @@ class SeoTests(ContentBase):
         self.assertIn('/case-studies</loc>', anon.get('/sitemap-content.xml').content.decode())
         self.assertIn('index, follow', anon.get('/case-studies').content.decode())
 
+    def test_search_console_sync_stores_index_status_and_clicks(self):
+        from unittest import mock
+
+        from . import search_console
+        a = self.make_blog('Indexed post')
+        b = self.make_blog('Waiting post')
+        for x in (a, b):
+            self.api.post(f'/api/admin/blogs/{x["id"]}/publish/')
+
+        class Resp:
+            def __init__(self, data):
+                self.data = data
+
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return self.data
+
+        class FakeSession:
+            def post(self, url, json, timeout):
+                if 'urlInspection' in url:
+                    ok = json['inspectionUrl'].endswith(a['slug'])
+                    return Resp({'inspectionResult': {'indexStatusResult': {'verdict': 'PASS' if ok else 'NEUTRAL',
+                                 'coverageState': 'Submitted and indexed' if ok else 'Discovered - currently not indexed'}}})
+                return Resp({'rows': [{'keys': [f'https://codinghubs.in/blog/{a["slug"]}'], 'clicks': 3, 'impressions': 40}]})
+
+        result = search_console.sync_blogs(session=FakeSession())
+        self.assertEqual(result['inspected'], 2)
+        rows = {r['slug']: r for r in self.api.get('/api/admin/blogs/').json()['results']}
+        self.assertEqual((rows[a['slug']]['gsc_status'], rows[a['slug']]['gsc_clicks'], rows[a['slug']]['gsc_impressions']), ('indexed', 3, 40))
+        self.assertEqual(rows[b['slug']]['gsc_status'], 'not_indexed')
+        self.assertIn('not indexed', rows[b['slug']]['gsc_coverage'])
+        with mock.patch.object(search_console, 'is_configured', return_value=False):
+            self.assertFalse(self.api.get('/api/admin/blogs/search-console/').json()['configured'])
+            self.assertEqual(self.api.post('/api/admin/blogs/search-console/').status_code, 400)
+
     def test_team_byline_is_the_organization_not_a_person(self):
         b = self.make_blog('Team article', author_name='Coding Hubs Team')
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')

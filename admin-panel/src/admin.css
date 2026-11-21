@@ -343,3 +343,29 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .act-delete{background:#fff1f1;border-color:#f7cccc;color:#c62828}
 @media (max-width:720px){.ad-row-actions{grid-template-columns:max-content}}
 .ad-ctable .ad-views{color:#1554d6;font-weight:700;font-size:.95rem}
+
+/* ---- Typography: Poppins across the whole panel, larger and easier to read ---- */
+@font-face{font-family:Poppins;font-style:normal;font-weight:400;font-display:swap;src:url(./assets/fonts/poppins-400-latin.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-style:normal;font-weight:500;font-display:swap;src:url(./assets/fonts/poppins-500-latin.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-style:normal;font-weight:600;font-display:swap;src:url(./assets/fonts/poppins-600-latin.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-style:normal;font-weight:700;font-display:swap;src:url(./assets/fonts/poppins-700-latin.woff2) format('woff2')}
+.ad-shell,.ad-login{font-size:15.5px;line-height:1.55}
+.ad-shell,.ad-login,.ad-shell :not(pre):not(code):not(kbd):not(.ad-code):not(.ad-code *),.ad-login *{font-family:Poppins,system-ui,-apple-system,'Segoe UI',sans-serif!important}
+.ad-side nav a{font-size:1.02rem}
+.ad-nav-head{font-size:.78rem;letter-spacing:.08em}
+.ad-h1{font-size:1.6rem}
+.ad-table{font-size:.98rem}
+.ad-table th{font-size:.8rem;letter-spacing:.07em;padding:.95rem .9rem}
+.ad-table td{padding:1rem .9rem}
+.ad-ctitle strong{font-size:1.02rem;line-height:1.5}
+.ad-pill{font-size:.85rem}
+.ad-act{font-size:.92rem;padding:.48rem .85rem}
+.ad-btn{font-size:.95rem}
+.ad-filters input,.ad-filters select{font-size:.95rem}
+.ad-muted{font-size:.9rem}
+.ad-ctable .ad-ctitle{min-width:22rem}
+.ad-ctitle strong{font-weight:600;color:#0f172a}
+.ad-gsc small{display:block;margin-top:.3rem;font-size:.78rem;white-space:nowrap}
+.gsc-yes{background:#dcf5e8;color:#0d7a49}
+.gsc-no{background:#fff4e0;color:#b45309}
+.gsc-unknown{background:#eef2f8;color:#5b6580}

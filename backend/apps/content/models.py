@@ -147,6 +147,12 @@ class Blog(SeoMixin, PublishMixin):
     is_featured = models.BooleanField(default=False)
     reading_time = models.PositiveSmallIntegerField(default=1)
     view_count = models.PositiveIntegerField(default=0, editable=False)  # public page views counted by the article page (bots excluded)
+    # Google Search Console snapshot, refreshed from the admin panel (search_console.sync_blogs); never edited by hand
+    gsc_status = models.CharField(max_length=12, blank=True, editable=False)  # '', 'indexed' or 'not_indexed'
+    gsc_coverage = models.CharField(max_length=200, blank=True, editable=False)
+    gsc_clicks = models.PositiveIntegerField(default=0, editable=False)
+    gsc_impressions = models.PositiveIntegerField(default=0, editable=False)
+    gsc_checked_at = models.DateTimeField(null=True, blank=True, editable=False)
     # authoring aids (not shown publicly)
     search_intent = models.CharField(max_length=200, blank=True)
     faq = models.JSONField(default=list, blank=True)  # [{"q": "...", "a": "..."}], shown + FAQPage JSON-LD when present

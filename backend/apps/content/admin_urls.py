@@ -24,6 +24,7 @@ urlpatterns = [
     path('content/stats/', views.ContentStats.as_view()),
     path('media/', views.MediaUpload.as_view()),
     path('blogs/', views.AdminBlogList.as_view()),
+    path('blogs/search-console/', views.SearchConsoleSync.as_view()),
     path('blogs/<int:pk>/', views.AdminBlogDetail.as_view()),
     path('blog-categories/', views.AdminCategoryList.as_view()),
     path('case-studies/', views.AdminCaseList.as_view()),
