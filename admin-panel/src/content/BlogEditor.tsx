@@ -143,7 +143,30 @@ export function BlogEditor() {
             </div>
             <div className="wp-field">
               <Label htmlFor="focus_keyword" note="(primary)">Focus keyword</Label>
-              <input id="focus_keyword" className="wp-input" placeholder="e.g. python course in Delhi" value={form.focus_keyword} onChange={(e) => set('focus_keyword', e.target.value)} />
+              <input
+                id="focus_keyword"
+                className="wp-input"
+                maxLength={400}
+                placeholder="e.g. python course in Delhi"
+                value={form.focus_keyword}
+                onChange={(e) => set('focus_keyword', e.target.value)}
+                onBlur={() => {
+                  // One main phrase only; extra comma-separated phrases move to Meta keywords.
+                  const [first = '', ...rest] = list(form.focus_keyword)
+                  if (!rest.length && first.length <= 120) return
+                  set('focus_keyword', first.slice(0, 120))
+                  const seen = new Set<string>()
+                  const merged = [...form.secondary_keywords, ...rest].filter((k) => {
+                    const key = k.toLowerCase()
+                    if (seen.has(key) || key === first.toLowerCase()) return false
+                    seen.add(key)
+                    return true
+                  })
+                  set('secondary_keywords', merged.slice(0, 10))
+                }}
+              />
+              <span className="wp-hint">One main phrase. Extra phrases after a comma move to Meta keywords.</span>
+              {errors.focus_keyword && <p className="wp-error" role="alert">{errors.focus_keyword}</p>}
             </div>
           </div>
 
