@@ -130,10 +130,8 @@ export function ContentList({ kind }: { kind: Kind }) {
     <>
       <div className="ad-head">
         <h1 className="ad-h1">{kind === 'blogs' ? 'Blogs' : 'Case studies'}</h1>
-        {kind === 'blogs' && gsc && (
-          gsc.configured
-            ? <button type="button" className="ad-btn" disabled={gscBusy} onClick={() => void refreshGoogle()}>{gscBusy ? 'Checking Google…' : 'Refresh Google status'}</button>
-            : <span className="ad-muted" title="Add GSC_SERVICE_ACCOUNT_B64 on the server (see docs/seo/search-console-api.md)">Google Search Console: not connected</span>
+        {kind === 'blogs' && gsc?.configured && (
+          <button type="button" className="ad-btn" disabled={gscBusy} onClick={() => void refreshGoogle()}>{gscBusy ? 'Checking Google…' : 'Refresh Google status'}</button>
         )}
         <Link className="ad-btn ad-btn-primary" to={`/${kind}/create`}>
           + New {noun}

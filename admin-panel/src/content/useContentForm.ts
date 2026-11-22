@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { adminApi } from '../api'
 import { fromApi, slugify, toApi, type Common, type Kind, type Revision } from './types'
 
@@ -36,12 +36,16 @@ function readErrors(err: unknown): { fields: Errors; message: string } {
 export function useContentForm<T extends Common>(kind: Kind, blank: T) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
   const [form, setForm] = useState<T>(blank)
   const [saved, setSaved] = useState(JSON.stringify(blank))
   const [loading, setLoading] = useState(!!id)
   const [busy, setBusy] = useState(false)
   const [errors, setErrors] = useState<Errors>({})
-  const [notice, setNotice] = useState<{ type: 'ok' | 'error'; text: string } | null>(null)
+  // A message passed through navigation survives the new-post → edit-post route change.
+  const [notice, setNotice] = useState<{ type: 'ok' | 'error'; text: string } | null>(
+    () => ((location.state as { flash?: string } | null)?.flash ? { type: 'ok', text: (location.state as { flash: string }).flash } : null),
+  )
   const [recover, setRecover] = useState<T | null>(null)
   const [revisions, setRevisions] = useState<Revision[]>([])
   const slugTouched = useRef(false)
@@ -168,13 +172,13 @@ export function useContentForm<T extends Common>(kind: Kind, blank: T) {
     }
   }
 
-  const save = async (override?: Partial<T>, message = 'Saved.') => {
+  const save = async (override?: Partial<T>, message = 'Saved.', stay = false) => {
     const payload = toApi({ ...form, ...override } as Common)
     const data = (await run(async () => (form.id ? (await adminApi.patch(`/${kind}/${form.id}/`, payload)).data : (await adminApi.post(`/${kind}/`, payload)).data), message)) as { id: number } | null
     if (!data) return null
     adopt(data)
     clearDraft()
-    if (!form.id) navigate(`/${kind}/edit/${data.id}`, { replace: true })
+    if (!form.id && !stay) navigate(`/${kind}/edit/${data.id}`, { replace: true, state: { flash: message || 'Saved.' } })
     return data
   }
 
@@ -185,15 +189,18 @@ export function useContentForm<T extends Common>(kind: Kind, blank: T) {
   }
 
   const publish = async (when?: string) => {
-    const saved = await save(undefined, '')
+    const isNew = !form.id
+    const saved = await save(undefined, '', true)
     if (!saved) return
     const id2 = (saved as { id: number }).id
     setBusy(true)
     try {
       const { data } = await adminApi.post(`/${kind}/${id2}/publish/`, when ? { published_at: new Date(when).toISOString() } : {})
       adopt(data)
-      setNotice({ type: 'ok', text: data.status === 'scheduled' ? 'Scheduled. It goes live automatically at the chosen time.' : 'Published. It is now live on the website.' })
+      const text = data.status === 'scheduled' ? 'Scheduled. It goes live automatically at the chosen time.' : 'Published. It is now live on the website.'
+      setNotice({ type: 'ok', text })
       setErrors({})
+      if (isNew) navigate(`/${kind}/edit/${id2}`, { replace: true, state: { flash: text } })
     } catch (err) {
       const { fields, message } = readErrors(err)
       setErrors(fields)

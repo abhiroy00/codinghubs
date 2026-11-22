@@ -237,6 +237,7 @@ export function BlogEditor() {
             </div>
           </div>
 
+          {notice && <div className={`ad-notice ${notice.type} wp-action-notice`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.type === 'ok' ? '✅ ' : '⚠️ '}{notice.text}</div>}
           <div className="wp-actions">
             <button type="button" className="wp-btn-light" disabled={disabled} onClick={() => void saveDraft()}>💾 Save as Draft</button>
             {intent !== 'draft' && <button type="submit" className="wp-btn-primary" disabled={disabled}>➤ {primaryLabel}</button>}
