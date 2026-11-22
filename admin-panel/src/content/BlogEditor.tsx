@@ -1,33 +1,67 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { adminApi } from '../api'
-import { BlogPostShell } from './BlogPostShell'
-import { BlogCover } from './BlogCover'
-import { Chips, Field, RowsEditor, Text, ThumbnailField } from './fields'
-import { SeoSection } from './SeoSection'
-import { blogChecks } from './seoTools'
+import { ConfirmDelete } from './EditorShell'
+import { RowsEditor, ThumbnailField } from './fields'
+import { fmtDate } from './format'
+import { isLiveNow } from './liveUrl'
 import { parsePlannerPost } from './plannerImport'
+import { uploadImage } from './RichEditor'
 import { blankBlog, MAX_BLOG_WORDS, readingMinutes, toLocalInput, wordCount, type Taxon } from './types'
 import { useContentForm } from './useContentForm'
 
 const BlogBodyEditor = lazy(() => import('./BlogBodyEditor').then((m) => ({ default: m.BlogBodyEditor })))
+const SITE = 'codinghubs.in'
+const plain = (html: string) => (new DOMParser().parseFromString(html || '', 'text/html').body.textContent ?? '').replace(/\s+/g, ' ').trim()
+const clip = (t: string, n: number) => (t.length <= n ? t : t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…')
+const list = (v: string) => v.split(',').map((s) => s.trim()).filter(Boolean)
 
+function Label({ htmlFor, children, required, note }: { htmlFor?: string; children: ReactNode; required?: boolean; note?: string }) {
+  return <label className="wp-label" htmlFor={htmlFor}>{children}{required && <span className="wp-req"> *</span>}{note && <span className="wp-note"> {note}</span>}</label>
+}
+
+/** Single-page blog form: title, URL, SEO, category, image, excerpt, article, status. */
 export function BlogEditor() {
-  // Every post is dated the moment it is written; the admin can still change or schedule it.
+  // Every post is dated the moment it is written; publishing a draft uses the day it goes live.
   const blank = useMemo(() => ({ ...blankBlog, published_at: toLocalInput(new Date().toISOString()) }), [])
   const api = useContentForm('blogs', blank)
-  const { form, set, errors } = api
+  const { form, set, errors, busy, dirty, loading, notice, recover, revisions } = api
   const [cats, setCats] = useState<Taxon[]>([])
-  const [uploadingCover, setUploadingCover] = useState(false)
-  const [uploadingBody, setUploadingBody] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [imageTab, setImageTab] = useState<'upload' | 'url'>('upload')
+  const [imageError, setImageError] = useState('')
+  const [tagsText, setTagsText] = useState<string | null>(null)
+  const [keywordsText, setKeywordsText] = useState<string | null>(null)
   const [plannerText, setPlannerText] = useState('')
   const [importNotes, setImportNotes] = useState<string[] | null>(null)
   const [plannerOpen, setPlannerOpen] = useState(!api.id)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const fileInput = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     adminApi.get<Taxon[]>('/blog-categories/').then((r) => setCats(r.data)).catch(() => undefined)
   }, [])
+
+  const live = form.status === 'published' || form.status === 'scheduled'
+  const liveNow = isLiveNow(form.status, form.published_at)
+  const future = !!form.published_at && new Date(form.published_at).getTime() > Date.now()
+  const [intent, setIntent] = useState<'draft' | 'publish' | 'schedule'>('draft')
+  useEffect(() => { setIntent(form.status === 'scheduled' && future ? 'schedule' : live ? 'publish' : 'draft') }, [form.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const words = wordCount(form.content)
-  const optionalError = ['slug', 'category', 'author_name', 'tag_names', 'gallery'].some((key) => !!errors[key])
-  const updateImage = (i: number, patch: Partial<BlogFormImage>) => set('gallery', form.gallery.map((g, n) => n === i ? { ...g, ...patch } : g))
+  const disabled = busy || uploading
+
+  // What search engines get when the optional SEO fields are left empty (mirrors backend services.seo_for).
+  const seoTitle = form.seo_title || (form.title ? `${form.title} | Coding Hubs School of AI` : '')
+  const seoDescription = form.meta_description || clip(form.excerpt || plain(form.content), 158)
+
+  const upload = async (file?: File) => {
+    if (!file) return
+    setUploading(true)
+    setImageError('')
+    try { set('featured_image', await uploadImage(file, file.name)) }
+    catch { setImageError('Could not upload the image. Choose a JPG, PNG, WebP or GIF under 5 MB.') }
+    finally { setUploading(false) }
+  }
 
   const importPlanner = () => {
     const p = parsePlannerPost(plannerText)
@@ -40,66 +74,243 @@ export function BlogEditor() {
     }
     for (const [k, v] of Object.entries(fields)) if (v !== '' && v !== undefined) set(k as keyof typeof form, v as never)
     if (p.slug) api.setSlug(p.slug)
+    setTagsText(null)
+    setKeywordsText(null)
     const notes = [...p.warnings]
-    if (p.category && !category) notes.unshift(`Category "${p.category}" does not exist yet: choose one under Post details.`)
-    notes.push('Upload a cover image (the planner gives a prompt, not an image), check the headings in the editor, then save.')
+    if (p.category && !category) notes.unshift(`Category "${p.category}" does not exist yet: choose one below.`)
+    notes.push('Add a thumbnail image (the planner gives a prompt, not an image), check the article, then publish.')
     setImportNotes(notes)
   }
 
+  const saveDraft = async () => {
+    if (liveNow && !window.confirm('Save as draft will take this post off the website. Continue?')) return
+    const saved = await api.save(undefined, 'Saved as draft.')
+    if (saved && live) await api.action('unpublish', 'Saved as draft. The post is no longer on the website.')
+  }
+  const primary = () => {
+    if (intent === 'draft') return void saveDraft()
+    if (intent === 'schedule') {
+      if (!future) { api.setNotice({ type: 'error', text: 'Choose a future date and time to schedule the post.' }); return }
+      return void api.publish(form.published_at)
+    }
+    return void api.publish()
+  }
+  const primaryLabel = intent === 'schedule' ? 'Schedule Post' : intent === 'draft' ? 'Save as Draft' : live ? 'Update Post' : 'Publish Now'
+
+  if (loading) return <p role="status">Loading post…</p>
   return (
-    <BlogPostShell api={api} uploading={uploadingCover || uploadingBody}>
-      <details className="ad-section ad-planner" open={plannerOpen} onToggle={(e) => setPlannerOpen(e.currentTarget.open)}>
-        <summary>Import from SEO planner <span className="ad-muted">Paste the full planner output</span></summary>
-        <div className="ad-section-body">
-          <textarea className="ad-input ad-code" rows={8} aria-label="SEO planner output" placeholder={'Title\nURL SLUG\n...\nSEO PREVIEW\nMeta Title: ...\n...\nBLOG CONTENT\n...\nFrequently Asked Questions\n1. ...?'} value={plannerText} onChange={(e) => setPlannerText(e.target.value)} />
-          <p className="ad-hint">Fills the title, URL, SEO fields, category, author, keywords, tags, excerpt, image text, article and FAQ. Other company names are replaced with Coding Hubs School of AI, and the contact, author-bio and hashtag sections are left out.</p>
-          <button type="button" className="ad-btn ad-btn-primary" disabled={!plannerText.trim()} onClick={importPlanner}>Import into this post</button>
-          {importNotes && <div className="ad-notice" role="status"><strong>Imported. Please check:</strong><ul>{importNotes.map((n) => <li key={n}>{n}</li>)}</ul></div>}
-        </div>
-      </details>
-      <Text id="title" label="Title" required value={form.title} onChange={(v) => set('title', v)} error={errors.title} max={200} placeholder="Give your article a clear, useful title" />
-      <Text id="excerpt" label="Short description" textarea rows={3} value={form.excerpt} onChange={(v) => set('excerpt', v)} max={400} error={errors.excerpt} placeholder="Tell readers what they will learn." hint="Shown below the title and on blog cards." />
-      <BlogCover src={form.featured_image} alt={form.featured_image_alt} onSrc={(v) => set('featured_image', v)} onAlt={(v) => set('featured_image_alt', v)} onBusy={setUploadingCover} error={errors.featured_image} altError={errors.featured_image_alt} />
-      <Text id="featured_image_caption" label="Image caption" value={form.featured_image_caption} onChange={(v) => set('featured_image_caption', v)} max={300} hint="Optional. Shown under the cover image." />
-      <Text id="featured_image_prompt" label="Image prompt (not public)" textarea rows={2} value={form.featured_image_prompt} onChange={(v) => set('featured_image_prompt', v)} hint="Notes for designing or generating the cover. Never shown on the website." />
-      <Suspense fallback={<p role="status">Loading article editor…</p>}>
-        <BlogBodyEditor value={form.content} onChange={(v) => set('content', v)} onBusy={setUploadingBody} />
-      </Suspense>
-      {(errors.content || words > MAX_BLOG_WORDS) && <p className="ad-field-error" role="alert">{errors.content || `Keep the article under ${MAX_BLOG_WORDS.toLocaleString()} words.`}</p>}
-      <p className="ad-blog-wordcount">{words.toLocaleString()} / {MAX_BLOG_WORDS.toLocaleString()} words · {readingMinutes(form.content)} min read</p>
-      <details className="ad-section" open={optionalError}>
-        <summary>Post details &amp; extra images <span className="ad-muted">Optional</span></summary>
-        <div className="ad-section-body">
-          <div className="ad-two">
-            <Field label="Category" htmlFor="category" error={errors.category}>
-              <select id="category" className="ad-input" value={form.category} onChange={(e) => set('category', e.target.value ? Number(e.target.value) : '')}>
+    <form className="wp" noValidate onSubmit={(e) => { e.preventDefault(); if (!disabled) primary() }}>
+      <div className="wp-card">
+        <header className="wp-card-head">
+          <h1><span className="wp-plus" aria-hidden="true">+</span>{form.id ? 'Edit Blog Post' : 'Write New Blog Post'}</h1>
+          <div className="wp-head-actions">
+            {form.id && liveNow && <a className="wp-btn-outline" href={`https://${SITE}/blog/${form.slug}`} target="_blank" rel="noopener noreferrer">View live post</a>}
+            <Link className="wp-btn-outline" to="/blogs">← All Posts</Link>
+          </div>
+        </header>
+
+        <div className="wp-body">
+          {recover && <div className="ad-banner" role="status"><span>You have an unsaved draft from an earlier session.</span>
+            <button type="button" className="ad-btn" onClick={api.acceptDraft}>Restore draft</button>
+            <button type="button" className="ad-link" onClick={api.dropDraft}>Discard</button></div>}
+          {notice && <div className={`ad-notice ${notice.type}`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.text}</div>}
+
+          <details className="wp-planner" open={plannerOpen} onToggle={(e) => setPlannerOpen(e.currentTarget.open)}>
+            <summary>Paste from SEO planner <span className="wp-note">(optional — fills every field below)</span></summary>
+            <textarea className="wp-input wp-mono" rows={7} aria-label="SEO planner output" placeholder="Paste the full planner output here…" value={plannerText} onChange={(e) => setPlannerText(e.target.value)} />
+            <p className="wp-hint">Other company names are replaced with Coding Hubs School of AI; contact, author-bio and hashtag sections are left out.</p>
+            <button type="button" className="wp-btn-primary" disabled={!plannerText.trim()} onClick={importPlanner}>Import into this post</button>
+            {importNotes && <div className="ad-notice" role="status"><strong>Imported. Please check:</strong><ul>{importNotes.map((n) => <li key={n}>{n}</li>)}</ul></div>}
+          </details>
+
+          <div className="wp-field">
+            <Label htmlFor="title" required>Post title</Label>
+            <input id="title" className="wp-input" required maxLength={200} placeholder="e.g. Python Developer Roadmap for Beginners" value={form.title} onChange={(e) => set('title', e.target.value)} />
+            {errors.title && <p className="wp-error" role="alert">{errors.title}</p>}
+          </div>
+
+          <div className="wp-field">
+            <Label htmlFor="slug" note="(auto-generated)">URL slug</Label>
+            <input id="slug" className="wp-input" placeholder="python-developer-roadmap" value={form.slug} onChange={(e) => api.setSlug(e.target.value)} />
+            <span className="wp-urlpill">🔗 {SITE}/blog/{form.slug || 'your-post-slug'}</span>
+            {errors.slug && <p className="wp-error" role="alert">{errors.slug}</p>}
+          </div>
+
+          <section className="wp-seo-preview" aria-label="SEO preview">
+            <h2>✎ SEO Preview (Auto-Generated)</h2>
+            <p><strong>Meta Title:</strong> {seoTitle || '–'}</p>
+            <p><strong>Meta Description:</strong> {seoDescription || '–'}</p>
+            <p><strong>Focus Keyword:</strong> {form.focus_keyword || '–'}</p>
+            <p className="wp-hint">These are filled automatically from the title, excerpt and article. You can change them below.</p>
+          </section>
+
+          <hr className="wp-rule" />
+
+          <div className="wp-grid-3">
+            <div className="wp-field">
+              <Label htmlFor="category">Category</Label>
+              <select id="category" className="wp-input" value={form.category} onChange={(e) => set('category', e.target.value ? Number(e.target.value) : '')}>
                 <option value="">No category</option>
                 {cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
-            </Field>
-            <Text id="author_name" label="Author" value={form.author_name} onChange={(v) => set('author_name', v)} error={errors.author_name} />
-            <Text id="author_title" label="Author title" value={form.author_title} onChange={(v) => set('author_title', v)} hint="e.g. Senior Trainer, Coding Hubs School of AI" />
+            </div>
+            <div className="wp-field">
+              <Label htmlFor="author_name">Author name</Label>
+              <input id="author_name" className="wp-input" placeholder="Coding Hubs Team" value={form.author_name} onChange={(e) => set('author_name', e.target.value)} />
+            </div>
+            <div className="wp-field">
+              <Label htmlFor="read_time">Read time</Label>
+              <input id="read_time" className="wp-input" readOnly value={`${readingMinutes(form.content)} min`} aria-describedby="read-time-hint" />
+              <span id="read-time-hint" className="wp-hint">{words.toLocaleString()} words · calculated automatically</span>
+            </div>
           </div>
-          <Text id="slug" label="Post URL" value={form.slug} onChange={api.setSlug} error={errors.slug} hint="Created automatically from your title. Changing a published URL creates a redirect." />
-          <p className="ad-hint">codinghubs.in/blog/{form.slug || 'your-post-title'}</p>
-          <Chips id="tags" label="Tags" value={form.tag_names} onChange={(v) => set('tag_names', v)} />
-          {form.gallery.map((g, i) => <div key={i} className="ad-row-card">
-            <ThumbnailField id={`g-${i}`} label={`Extra image ${i + 1}`} src={g.src} alt={g.alt} onSrc={(v) => updateImage(i, { src: v })} onAlt={(v) => updateImage(i, { alt: v })} />
-            <button type="button" className="ad-link ad-danger" onClick={() => set('gallery', form.gallery.filter((_, n) => n !== i))}>Remove image</button>
-          </div>)}
-          {form.gallery.length < 5 && <button type="button" className="ad-btn" onClick={() => set('gallery', [...form.gallery, { src: '', alt: '' }])}>Add an extra image</button>}
-          {errors.gallery && <p className="ad-field-error" role="alert">{errors.gallery}</p>}
+
+          <div className="wp-field">
+            <Label htmlFor="tags">Tags (comma separated)</Label>
+            <input id="tags" className="wp-input" placeholder="Python, career, interview" value={tagsText ?? form.tag_names.join(', ')} onChange={(e) => setTagsText(e.target.value)} onBlur={() => { if (tagsText !== null) { set('tag_names', list(tagsText).slice(0, 15)); setTagsText(null) } }} />
+          </div>
+
+          <div className="wp-grid-2">
+            <div className="wp-field">
+              <Label htmlFor="seo_title" note="(optional)">Meta title</Label>
+              <input id="seo_title" className="wp-input" maxLength={70} placeholder="Leave empty to use the post title" value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} />
+              <span className="wp-hint">{form.seo_title.length}/60 characters</span>
+            </div>
+            <div className="wp-field">
+              <Label htmlFor="focus_keyword" note="(primary)">Focus keyword</Label>
+              <input id="focus_keyword" className="wp-input" placeholder="e.g. python course in Delhi" value={form.focus_keyword} onChange={(e) => set('focus_keyword', e.target.value)} />
+            </div>
+          </div>
+
+          <div className="wp-field">
+            <Label htmlFor="meta_description" note="(optional — auto from excerpt or content if empty)">Meta description</Label>
+            <textarea id="meta_description" className="wp-input" rows={3} maxLength={320} placeholder="150–160 characters that make people want to click…" value={form.meta_description} onChange={(e) => set('meta_description', e.target.value)} />
+            <span className="wp-hint">ⓘ If left empty, the excerpt (or the start of the article) is used. {form.meta_description.length}/160</span>
+            {errors.meta_description && <p className="wp-error" role="alert">{errors.meta_description}</p>}
+          </div>
+
+          <div className="wp-field">
+            <Label htmlFor="secondary_keywords" note="(optional)">Meta keywords</Label>
+            <input id="secondary_keywords" className="wp-input" placeholder="python roadmap, learn python, python projects" value={keywordsText ?? form.secondary_keywords.join(', ')} onChange={(e) => setKeywordsText(e.target.value)} onBlur={() => { if (keywordsText !== null) { set('secondary_keywords', list(keywordsText).slice(0, 10)); setKeywordsText(null) } }} />
+            <span className="wp-hint">Up to 10 related phrases, separated by commas.</span>
+          </div>
+
+          <hr className="wp-rule" />
+
+          <div className="wp-field">
+            <Label>Thumbnail image</Label>
+            <div className="wp-tabs" role="tablist">
+              <button type="button" role="tab" aria-selected={imageTab === 'upload'} className={imageTab === 'upload' ? 'on' : ''} onClick={() => setImageTab('upload')}>⇪ Upload from Computer</button>
+              <button type="button" role="tab" aria-selected={imageTab === 'url'} className={imageTab === 'url' ? 'on' : ''} onClick={() => setImageTab('url')}>🔗 Paste URL</button>
+            </div>
+            {imageTab === 'upload' ? (
+              <div className="wp-drop" role="button" tabIndex={0} onClick={() => fileInput.current?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.current?.click() } }}
+                onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); void upload(e.dataTransfer.files?.[0]) }}>
+                {form.featured_image ? <img src={form.featured_image} alt="" className="wp-drop-preview" /> : <span className="wp-drop-icon" aria-hidden="true">☁</span>}
+                <strong>{uploading ? 'Uploading…' : form.featured_image ? 'Click to replace image' : 'Click to choose image'}</strong>
+                <small>JPG, PNG, WEBP, GIF — max 5 MB · 1200 × 630 recommended</small>
+                <input ref={fileInput} type="file" hidden accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Thumbnail image file" onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = '' }} />
+              </div>
+            ) : (
+              <>
+                <input className="wp-input" type="url" placeholder="https://… or /media/…" value={form.featured_image} onChange={(e) => set('featured_image', e.target.value)} aria-label="Thumbnail image URL" />
+                {form.featured_image && <img src={form.featured_image} alt="" className="wp-drop-preview wp-url-preview" />}
+              </>
+            )}
+            {(imageError || errors.featured_image) && <p className="wp-error" role="alert">{imageError || errors.featured_image}</p>}
+            {form.featured_image && (
+              <div className="wp-grid-2 wp-image-text">
+                <div className="wp-field">
+                  <Label htmlFor="featured_image_alt">Image alt text</Label>
+                  <input id="featured_image_alt" className="wp-input" maxLength={200} placeholder="Describe the image for people who cannot see it" value={form.featured_image_alt} onChange={(e) => set('featured_image_alt', e.target.value)} />
+                  {errors.featured_image_alt && <p className="wp-error" role="alert">{errors.featured_image_alt}</p>}
+                </div>
+                <div className="wp-field">
+                  <Label htmlFor="featured_image_caption" note="(optional)">Image caption</Label>
+                  <input id="featured_image_caption" className="wp-input" maxLength={300} placeholder="Shown under the image" value={form.featured_image_caption} onChange={(e) => set('featured_image_caption', e.target.value)} />
+                </div>
+                <button type="button" className="ad-link ad-danger" onClick={() => set('featured_image', '')}>Remove image</button>
+              </div>
+            )}
+          </div>
+
+          <div className="wp-field">
+            <Label htmlFor="excerpt" required>Excerpt (short description)</Label>
+            <textarea id="excerpt" className="wp-input" rows={3} maxLength={400} placeholder="Two or three sentences that tell readers what they will learn…" value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} />
+            <span className="wp-hint">📈 Important for SEO — include the focus keyword naturally. {form.excerpt.length}/400</span>
+            {errors.excerpt && <p className="wp-error" role="alert">{errors.excerpt}</p>}
+          </div>
+
+          <hr className="wp-rule" />
+
+          <div className="wp-field">
+            <Label required>Blog content</Label>
+            <div className="wp-tip"><strong>Pasting from Google Docs or Word?</strong> Paste into the editor below; headings, lists and tables are kept and unsafe code is removed when you save. Use Heading 2 / Heading 3 for sections — they become the article's contents list.</div>
+            <Suspense fallback={<p role="status">Loading article editor…</p>}>
+              <BlogBodyEditor value={form.content} onChange={(v) => set('content', v)} onBusy={setUploading} />
+            </Suspense>
+            {(errors.content || words > MAX_BLOG_WORDS) && <p className="wp-error" role="alert">{errors.content || `Keep the article under ${MAX_BLOG_WORDS.toLocaleString()} words.`}</p>}
+          </div>
+
+          <details className="wp-more" open={form.faq.length > 0}>
+            <summary>FAQ <span className="wp-note">(shown at the end of the article and marked up for Google)</span></summary>
+            <RowsEditor id="faq" rows={form.faq} onChange={(rows) => set('faq', rows)} fields={[{ key: 'q', label: 'Question' }, { key: 'a', label: 'Answer', type: 'textarea' }]} addLabel="Add a question" max={15} error={errors.faq} />
+          </details>
+
+          <details className="wp-more">
+            <summary>More options <span className="wp-note">(author title, extra images, image prompt, history)</span></summary>
+            <div className="wp-grid-2">
+              <div className="wp-field">
+                <Label htmlFor="author_title">Author title</Label>
+                <input id="author_title" className="wp-input" placeholder="e.g. Senior Trainer" value={form.author_title} onChange={(e) => set('author_title', e.target.value)} />
+              </div>
+              <div className="wp-field">
+                <Label htmlFor="featured_image_prompt">Image prompt (not public)</Label>
+                <textarea id="featured_image_prompt" className="wp-input" rows={2} value={form.featured_image_prompt} onChange={(e) => set('featured_image_prompt', e.target.value)} />
+              </div>
+            </div>
+            {form.gallery.map((g, i) => <div key={i} className="ad-row-card">
+              <ThumbnailField id={`g-${i}`} label={`Extra image ${i + 1}`} src={g.src} alt={g.alt} onSrc={(v) => set('gallery', form.gallery.map((x, n) => n === i ? { ...x, src: v } : x))} onAlt={(v) => set('gallery', form.gallery.map((x, n) => n === i ? { ...x, alt: v } : x))} />
+              <button type="button" className="ad-link ad-danger" onClick={() => set('gallery', form.gallery.filter((_, n) => n !== i))}>Remove image</button>
+            </div>)}
+            {form.gallery.length < 5 && <button type="button" className="ad-btn" onClick={() => set('gallery', [...form.gallery, { src: '', alt: '' }])}>Add an extra image</button>}
+            {revisions.length > 0 && <>
+              <h3 className="wp-label">Version history</h3>
+              <ul className="ad-revs">{revisions.slice(0, 8).map((r) => <li key={r.id}>
+                <span>{fmtDate(r.created_at, true)}</span>
+                <button type="button" className="ad-link" disabled={disabled} onClick={() => window.confirm('Restore this version? Your current saved version will be kept in history.') && void api.restoreRevision(r.id)}>Restore</button>
+              </li>)}</ul>
+            </>}
+            {form.id && <button type="button" className="ad-link ad-danger" disabled={disabled} onClick={() => setConfirmDelete(true)}>Delete this post</button>}
+          </details>
+
+          <hr className="wp-rule" />
+
+          <div className="wp-grid-2">
+            <div className="wp-field">
+              <Label htmlFor="status">Status</Label>
+              <select id="status" className="wp-input" value={intent} onChange={(e) => setIntent(e.target.value as typeof intent)}>
+                <option value="draft">📝 Draft — save, don't publish yet</option>
+                <option value="publish">✅ {live ? 'Published — live on the website' : 'Publish — goes live now'}</option>
+                <option value="schedule">🕒 Scheduled — publish at a later time</option>
+              </select>
+              {intent === 'schedule' && <input id="published_at" type="datetime-local" className="wp-input wp-gap" value={form.published_at} onChange={(e) => set('published_at', e.target.value)} aria-label="Publish date and time" />}
+              {errors.published_at && <p className="wp-error" role="alert">{errors.published_at}</p>}
+            </div>
+            <div className="wp-field">
+              <Label>Featured post?</Label>
+              <label className="wp-check"><input type="checkbox" checked={form.is_featured} onChange={(e) => set('is_featured', e.target.checked)} /> ⭐ Show this post in the featured spot on the blog page</label>
+            </div>
+          </div>
+
+          <div className="wp-actions">
+            <button type="button" className="wp-btn-light" disabled={disabled} onClick={() => void saveDraft()}>💾 Save as Draft</button>
+            {intent !== 'draft' && <button type="submit" className="wp-btn-primary" disabled={disabled}>➤ {primaryLabel}</button>}
+            <span className="wp-hint" role="status">{uploading ? 'Uploading image…' : busy ? 'Saving…' : dirty ? 'Unsaved changes' : form.id ? 'All changes saved' : ''}</span>
+          </div>
         </div>
-      </details>
-      <SeoSection form={form} set={set} errors={errors} base="/blog" checks={blogChecks(form)} />
-      <details className="ad-section" open={form.faq.length > 0}>
-        <summary>FAQ <span className="ad-muted">Shown at the end of the article and marked up for search engines</span></summary>
-        <div className="ad-section-body">
-          <RowsEditor id="faq" rows={form.faq} onChange={(rows) => set('faq', rows)} fields={[{ key: 'q', label: 'Question' }, { key: 'a', label: 'Answer', type: 'textarea' }]} addLabel="Add a question" max={15} error={errors.faq} />
-        </div>
-      </details>
-    </BlogPostShell>
+      </div>
+      {confirmDelete && <ConfirmDelete title={form.title} onCancel={() => setConfirmDelete(false)} onConfirm={() => void api.remove()} />}
+    </form>
   )
 }
-
-type BlogFormImage = { src: string; alt: string }
