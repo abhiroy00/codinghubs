@@ -6,7 +6,7 @@
     <h1>{{ a.title }}</h1>
     {% if a.excerpt %}<p class="bl-deck">{{ a.excerpt }}</p>{% endif %}
     <p class="bl-meta">{% if a.author_name %}<span>By {{ a.author_name }}{% if a.author_title %}, {{ a.author_title }}{% endif %}</span>{% endif %}<time datetime="{{ a.published_at }}">{{ date }}</time><span>{{ a.reading_time }} min read</span><span>{{ a.word_count }} words</span></p>
-    {% if a.featured_image %}<img class="bl-reader-cover" src="{{ a.featured_image }}" alt="{{ a.featured_image_alt }}" width="1200" height="630" decoding="async" fetchpriority="high">{% endif %}
+    {% if a.featured_image %}<figure class="bl-reader-figure"><img class="bl-reader-cover" src="{{ a.featured_image }}" alt="{{ a.featured_image_alt }}" width="1200" height="630" decoding="async" fetchpriority="high">{% if a.featured_image_caption %}<figcaption class="bl-reader-caption">{{ a.featured_image_caption }}</figcaption>{% endif %}</figure>{% endif %}
   </div></header>
   <div class="bl-reader-layout{% if not a.toc %} bl-reader-no-toc{% endif %}">
     {% if a.toc %}<nav class="bl-reader-toc" aria-label="On this page"><h2>On this page</h2><ol>{% for t in a.toc %}<li class="l{{ t.level }}"><a href="#{{ t.id }}"{% if forloop.first %} aria-current="location"{% endif %}>{{ t.text }}</a></li>{% endfor %}</ol></nav>{% endif %}

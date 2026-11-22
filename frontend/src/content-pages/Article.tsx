@@ -101,7 +101,7 @@ export function BlogDetail() {
               {typeof a.word_count === 'number' && <span>{a.word_count.toLocaleString()} words</span>}
               {a.updated_at && new Date(a.updated_at).getTime() - new Date(a.published_at).getTime() > 86400000 && <span>Updated {fmtDate(a.updated_at)}</span>}
             </p>
-            {a.featured_image && <img className="bl-reader-cover" src={a.featured_image} alt={a.featured_image_alt} width={1200} height={630} decoding="async" fetchPriority="high" />}
+            {a.featured_image && <figure className="bl-reader-figure"><img className="bl-reader-cover" src={a.featured_image} alt={a.featured_image_alt} width={1200} height={630} decoding="async" fetchPriority="high" />{a.featured_image_caption && <figcaption className="bl-reader-caption">{a.featured_image_caption}</figcaption>}</figure>}
           </div>
         </header>
         <div className={`bl-reader-layout${a.toc.length ? '' : ' bl-reader-no-toc'}`}>

@@ -36,6 +36,7 @@ export interface Paged<T> {
 }
 
 export interface Article extends Card {
+  featured_image_caption?: string
   content_html?: string
   toc: { id: string; text: string; level: number }[]
   author_title?: string

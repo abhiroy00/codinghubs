@@ -138,6 +138,8 @@ class Blog(SeoMixin, PublishMixin):
     content = models.TextField(blank=True)
     featured_image = models.CharField(max_length=300, blank=True, validators=[validate_media_or_https_url])
     featured_image_alt = models.CharField(max_length=200, blank=True)
+    featured_image_caption = models.CharField(max_length=300, blank=True)  # shown under the cover on the article
+    featured_image_prompt = models.TextField(blank=True)  # admin note: the prompt used to create the cover; never public
     gallery = models.JSONField(default=list, blank=True)  # [{"src": "...", "alt": "..."}] up to five images for article visuals
     author_name = models.CharField(max_length=100, blank=True)
     author_title = models.CharField(max_length=120, blank=True)

@@ -76,6 +76,8 @@ export interface Common extends SeoFields {
 
 export interface BlogForm extends Common {
   excerpt: string
+  featured_image_caption: string
+  featured_image_prompt: string
   content: string
   category: number | ''
   tag_names: string[]
@@ -113,7 +115,7 @@ const commonBlank: Common = {
   title: '', slug: '', featured_image: '', featured_image_alt: '', author_name: '', author_title: '', is_featured: false, status: 'draft',
   published_at: '', related_ids: [], related_titles: [], ...seoBlank,
 }
-export const blankBlog: BlogForm = { ...commonBlank, excerpt: '', content: '', category: '', tag_names: [], gallery: [], search_intent: '', faq: [] }
+export const blankBlog: BlogForm = { ...commonBlank, excerpt: '', featured_image_caption: '', featured_image_prompt: '', content: '', category: '', tag_names: [], gallery: [], search_intent: '', faq: [] }
 export const blankCase: CaseForm = {
   ...commonBlank, summary: '', client_name: '', client_permission: false, client_descriptor: '', industry: '', duration: '', overview: '', background: '',
   challenge: '', objectives: '', solution: '', implementation: '', results: '', lessons: '', hidden_sections: [], technologies: [], metrics: [],

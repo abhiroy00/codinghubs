@@ -148,6 +148,7 @@ def blog_detail_payload(obj, preview=False):
     if not related and obj.category_id:
         related = list(public_blog_qs().filter(category_id=obj.category_id).exclude(pk=obj.pk)[:3])
     data = BlogCardSerializer(obj).data | {
+        'featured_image_caption': obj.featured_image_caption,
         'content_html': body,
         'toc': toc if len(toc) >= 3 else [],
         'author_title': obj.author_title,

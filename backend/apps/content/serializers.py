@@ -121,6 +121,7 @@ class BlogAdminSerializer(ContentWriteMixin, serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = (
+            'featured_image_caption', 'featured_image_prompt',
             'gsc_status', 'gsc_coverage', 'gsc_clicks', 'gsc_impressions', 'gsc_checked_at',
             'view_count',
             'id', 'title', 'slug', 'excerpt', 'content', 'featured_image', 'featured_image_alt', 'gallery', 'author_name', 'author_title',
