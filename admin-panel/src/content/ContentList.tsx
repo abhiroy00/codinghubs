@@ -15,8 +15,6 @@ const SORTS = [
   ['title', 'Title A–Z'],
   ['status', 'Status'],
   ['-views', 'Most viewed'],
-  ['-clicks', 'Most Google clicks'],
-  ['-impressions', 'Most Google impressions'],
 ] as const
 
 export function ContentList({ kind }: { kind: Kind }) {
@@ -179,7 +177,6 @@ export function ContentList({ kind }: { kind: Kind }) {
                 <th>Status</th>
                 <th>Featured</th>
                 <th>Views</th>
-                {kind === 'blogs' && <th>Google</th>}
                 <th>Date</th>
                 <th>Actions</th>
               </tr>
@@ -200,14 +197,6 @@ export function ContentList({ kind }: { kind: Kind }) {
                     <td><span className={`ad-pill st-${r.status}`}>{r.status === 'published' && <Icon name="check" />}{r.status}</span></td>
                     <td>{r.is_featured ? <span className="ad-star" title="Featured"><Icon name="star" /></span> : <span className="ad-muted">—</span>}</td>
                     <td className="ad-views" title="Article page views, one per visitor session (bots excluded)">{(r.view_count ?? 0).toLocaleString('en-IN')}</td>
-                    {kind === 'blogs' && (
-                      <td className="ad-gsc" title={r.gsc_coverage || undefined}>
-                        {r.gsc_status === 'indexed' ? <span className="ad-pill gsc-yes"><Icon name="check" />Indexed</span>
-                          : r.gsc_status === 'not_indexed' ? <span className="ad-pill gsc-no">Not indexed</span>
-                          : <span className="ad-pill gsc-unknown">Not checked</span>}
-                        {(r.gsc_impressions ?? 0) > 0 && <small className="ad-muted">{r.gsc_clicks ?? 0} clicks · {(r.gsc_impressions ?? 0).toLocaleString('en-IN')} impr.</small>}
-                      </td>
-                    )}
                     <td className="nowrap">{fmtDate(r.published_at || r.updated_at)}</td>
                     <td>
                       <div className="ad-row-actions">

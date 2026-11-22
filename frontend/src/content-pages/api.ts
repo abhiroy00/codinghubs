@@ -17,6 +17,7 @@ export interface Card {
   published_at: string
   reading_time?: number
   is_featured: boolean
+  view_count?: number
 }
 
 export interface Seo {

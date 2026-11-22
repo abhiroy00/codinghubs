@@ -98,6 +98,7 @@ export function BlogDetail() {
               {a.author_name && <span>By {a.author_name}{a.author_title ? `, ${a.author_title}` : ''}</span>}
               {a.published_at && <time dateTime={a.published_at}>{fmtDate(a.published_at)}</time>}
               <span>{a.reading_time} min read</span>
+              {(a.view_count ?? 0) > 0 && <span>{a.view_count!.toLocaleString('en-IN')} {a.view_count === 1 ? 'view' : 'views'}</span>}
               {typeof a.word_count === 'number' && <span>{a.word_count.toLocaleString()} words</span>}
               {a.updated_at && new Date(a.updated_at).getTime() - new Date(a.published_at).getTime() > 86400000 && <span>Updated {fmtDate(a.updated_at)}</span>}
             </p>

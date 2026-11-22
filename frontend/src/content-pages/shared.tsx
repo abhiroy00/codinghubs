@@ -57,6 +57,7 @@ export function CardView({ c, base, index = 0 }: { c: Card; base: string; index?
           {c.author_name ? `${c.author_name} · ` : ''}
           {fmtDate(c.published_at)}
           {c.reading_time ? ` · ${c.reading_time} min read` : ''}
+          {(c.view_count ?? 0) > 0 ? ` · ${c.view_count!.toLocaleString('en-IN')} ${c.view_count === 1 ? 'view' : 'views'}` : ''}
         </p>
         <Link to={`${base}/${c.slug}`} className="bl-more" aria-label={`Read ${c.title}`}>
           Read more <span aria-hidden="true">→</span>

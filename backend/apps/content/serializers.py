@@ -267,7 +267,7 @@ class BlogCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = ('title', 'slug', 'excerpt', 'featured_image', 'featured_image_alt', 'author_name', 'category', 'tags',
-                  'published_at', 'reading_time', 'is_featured')
+                  'published_at', 'reading_time', 'is_featured', 'view_count')
 
     def get_category(self, obj):
         return {'name': obj.category.name, 'slug': obj.category.slug} if obj.category else None
