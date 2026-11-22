@@ -5,14 +5,14 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_GET
 
-from apps.content.ssr import respond
+from apps.content.ssr import not_found, respond
 from .models import Gig
 
 
 @require_GET
 def public_page(request, slug=None):
     if not settings.GIGS_ENABLED:
-        raise Http404()
+        return not_found()  # site-styled 404, not Django's bare page
     brief = get_object_or_404(Gig.public(), slug=slug) if slug else None
     qs = Gig.public()
     query = request.GET.get('q', '').strip()[:100]
