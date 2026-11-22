@@ -26,7 +26,6 @@ export function BlogEditor() {
   const [uploading, setUploading] = useState(false)
   const [imageTab, setImageTab] = useState<'upload' | 'url'>('upload')
   const [imageError, setImageError] = useState('')
-  const [tagsText, setTagsText] = useState<string | null>(null)
   const [keywordsText, setKeywordsText] = useState<string | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
 
@@ -130,11 +129,6 @@ export function BlogEditor() {
             </div>
           </div>
 
-          <div className="wp-field">
-            <Label htmlFor="tags">Tags (comma separated)</Label>
-            <input id="tags" className="wp-input" placeholder="Python, career, interview" value={tagsText ?? form.tag_names.join(', ')} onChange={(e) => setTagsText(e.target.value)} onBlur={() => { if (tagsText !== null) { set('tag_names', list(tagsText).slice(0, 15)); setTagsText(null) } }} />
-          </div>
-
           <div className="wp-grid-2">
             <div className="wp-field">
               <Label htmlFor="seo_title" note="(optional)">Meta title</Label>
@@ -207,16 +201,7 @@ export function BlogEditor() {
             )}
             {(imageError || errors.featured_image) && <p className="wp-error" role="alert">{imageError || errors.featured_image}</p>}
             {form.featured_image && (
-              <div className="wp-grid-2 wp-image-text">
-                <div className="wp-field">
-                  <Label htmlFor="featured_image_alt">Image alt text</Label>
-                  <input id="featured_image_alt" className="wp-input" maxLength={200} placeholder="Describe the image for people who cannot see it" value={form.featured_image_alt} onChange={(e) => set('featured_image_alt', e.target.value)} />
-                  {errors.featured_image_alt && <p className="wp-error" role="alert">{errors.featured_image_alt}</p>}
-                </div>
-                <div className="wp-field">
-                  <Label htmlFor="featured_image_caption" note="(optional)">Image caption</Label>
-                  <input id="featured_image_caption" className="wp-input" maxLength={300} placeholder="Shown under the image" value={form.featured_image_caption} onChange={(e) => set('featured_image_caption', e.target.value)} />
-                </div>
+              <div className="wp-image-text">
                 <button type="button" className="ad-link ad-danger" onClick={() => set('featured_image', '')}>Remove image</button>
               </div>
             )}

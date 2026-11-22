@@ -173,7 +173,10 @@ export function useContentForm<T extends Common>(kind: Kind, blank: T) {
   }
 
   const save = async (override?: Partial<T>, message = 'Saved.', stay = false) => {
-    const payload = toApi({ ...form, ...override } as Common)
+    const merged = { ...form, ...override } as Common
+    // The cover's alt text falls back to the title, so images stay described without a separate field.
+    if (merged.featured_image && !merged.featured_image_alt.trim()) merged.featured_image_alt = merged.title.slice(0, 200)
+    const payload = toApi(merged)
     const data = (await run(async () => (form.id ? (await adminApi.patch(`/${kind}/${form.id}/`, payload)).data : (await adminApi.post(`/${kind}/`, payload)).data), message)) as { id: number } | null
     if (!data) return null
     adopt(data)
