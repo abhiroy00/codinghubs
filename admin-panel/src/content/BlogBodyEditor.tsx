@@ -22,7 +22,15 @@ export function BlogBodyEditor({ value, onChange, onBusy }: { value: string; onC
     extensions,
     content: value,
     immediatelyRender: false,
-    editorProps: { attributes: { role: 'textbox', 'aria-label': 'Article', 'aria-multiline': 'true', id: 'content' } },
+    editorProps: {
+      attributes: { role: 'textbox', 'aria-label': 'Article', 'aria-multiline': 'true', id: 'content' },
+      // Pasted pages/docs: drop header, nav, footer, scripts and forms before they reach the article.
+      transformPastedHTML: (html) => {
+        const doc = new DOMParser().parseFromString(html, 'text/html')
+        doc.querySelectorAll('header,nav,footer,aside,script,style,noscript,template,form,button,select,textarea,iframe,object,svg,[role=navigation],[role=banner],[role=contentinfo]').forEach((el) => el.remove())
+        return doc.body.innerHTML
+      },
+    },
     onUpdate: ({ editor }) => onChange(editor.isEmpty ? '' : editor.getHTML()),
   })
   const state = useEditorState({ editor, selector: ({ editor }) => editor ? {

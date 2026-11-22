@@ -89,6 +89,12 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
   },
 ]
 
+
+/** A fresh, empty editor every time the create page is opened, including right after Publish Now. */
+function NewBlog() {
+  return <BlogEditor key={useLocation().key} />
+}
+
 export function AdminApp() {
   const [authed, setAuthed] = useState(() => !!adminTokens.access())
   const [name, setName] = useState(() => localStorage.getItem('ch_admin_name') ?? '')
@@ -299,7 +305,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route path="interview-studio" element={<StudioAdmin />} />
             <Route path="content" element={<ContentDashboard />} />
             <Route path="blogs" element={<ContentList kind="blogs" />} />
-            <Route path="blogs/create" element={<BlogEditor key="new-blog" />} />
+            <Route path="blogs/create" element={<NewBlog />} />
             <Route path="blogs/edit/:id" element={<BlogEditor />} />
             <Route path="case-studies" element={<ContentList kind="case-studies" />} />
             <Route path="case-studies/create" element={<CaseEditor key="new-case" />} />

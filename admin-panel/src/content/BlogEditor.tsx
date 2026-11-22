@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { adminApi } from '../api'
 import { isLiveNow } from './liveUrl'
 import { uploadImage } from './RichEditor'
@@ -36,6 +36,7 @@ export function BlogEditor() {
   const live = form.status === 'published' || form.status === 'scheduled'
   const liveNow = isLiveNow(form.status, form.published_at)
   const future = !!form.published_at && new Date(form.published_at).getTime() > Date.now()
+  const navigate = useNavigate()
   const [intent, setIntent] = useState<'draft' | 'publish' | 'schedule'>('draft')
   useEffect(() => { setIntent(form.status === 'scheduled' && future ? 'schedule' : live ? 'publish' : 'draft') }, [form.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const words = wordCount(form.content)
@@ -63,11 +64,20 @@ export function BlogEditor() {
     if (intent === 'draft') return void saveDraft()
     if (intent === 'schedule') {
       if (!future) { api.setNotice({ type: 'error', text: 'Choose a future date and time to schedule the post.' }); return }
-      return void api.publish(form.published_at)
+      return void publishAndNext(form.published_at)
     }
-    return void api.publish()
+    return void publishAndNext()
   }
-  const primaryLabel = intent === 'schedule' ? 'Schedule Post' : intent === 'draft' ? 'Save as Draft' : live ? 'Update Post' : 'Publish Now'
+  // Publish Now: go live, then open a fresh, empty form for the next post (updates to a live post stay on the page).
+  const publishAndNext = async (when?: string) => {
+    const wasLive = live
+    const data = await api.publish(when, { stay: !wasLive })
+    if (!data || wasLive) return
+    const text = data.status === 'scheduled' ? `Scheduled: “${data.title}”. It goes live automatically at the chosen time.` : `Published: “${data.title}” is now live on the website. Write your next post below.`
+    navigate('/blogs/create', { state: { flash: text, at: Date.now() } })
+    window.scrollTo({ top: 0 })
+  }
+  const primaryLabel = intent === 'schedule' ? 'Schedule Post' : live ? 'Update Post' : 'Publish Now'
 
   if (loading) return <p role="status">Loading post…</p>
   return (
@@ -218,10 +228,11 @@ export function BlogEditor() {
 
           <div className="wp-field">
             <Label required>Blog content</Label>
-            <div className="wp-tip"><strong>Pasting from Google Docs or Word?</strong> Paste into the editor below; headings, lists and tables are kept and unsafe code is removed when you save. Use Heading 2 / Heading 3 for sections — they become the article's contents list.</div>
+            <div className="wp-tip"><span aria-hidden="true">ⓘ </span><strong>Google Docs/Word se paste kar rahe ho?</strong> Ctrl+Shift+V (plain paste) ya neeche editor mein paste karo — header/footer/nav automatically remove ho jayega. Server-side cleaning bhi lagti hai.</div>
             <Suspense fallback={<p role="status">Loading article editor…</p>}>
               <BlogBodyEditor value={form.content} onChange={(v) => set('content', v)} onBusy={setUploading} />
             </Suspense>
+            <p className="wp-hint">🛡 <strong>Note:</strong> Extra HTML wrappers (header, nav, footer, scripts) apne aap remove ho jayenge save hone par.</p>
             <p className={`wp-count${words > MAX_BLOG_WORDS ? ' over' : words > MAX_BLOG_WORDS * 0.9 ? ' near' : ''}`} role="status">{words.toLocaleString()} / {MAX_BLOG_WORDS.toLocaleString()} words · {readingMinutes(form.content)} min read</p>
             {(errors.content || words > MAX_BLOG_WORDS) && <p className="wp-error" role="alert">{errors.content || `The article can have up to ${MAX_BLOG_WORDS.toLocaleString()} words. Remove ${(words - MAX_BLOG_WORDS).toLocaleString()} words to save.`}</p>}
           </div>
@@ -248,7 +259,7 @@ export function BlogEditor() {
           {notice && <div className={`ad-notice ${notice.type} wp-action-notice`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.type === 'ok' ? '✅ ' : '⚠️ '}{notice.text}</div>}
           <div className="wp-actions">
             <button type="button" className="wp-btn-light" disabled={disabled} onClick={() => void saveDraft()}>💾 Save as Draft</button>
-            {intent !== 'draft' && <button type="submit" className="wp-btn-primary" disabled={disabled}>➤ {primaryLabel}</button>}
+            <button type="button" className="wp-btn-primary" disabled={disabled} onClick={() => (intent === 'schedule' ? primary() : void publishAndNext())}>➤ {primaryLabel}</button>
             <span className="wp-hint" role="status">{uploading ? 'Uploading image…' : busy ? 'Saving…' : dirty ? 'Unsaved changes' : form.id ? 'All changes saved' : ''}</span>
           </div>
         </div>

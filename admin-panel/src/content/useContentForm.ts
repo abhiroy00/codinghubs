@@ -191,10 +191,10 @@ export function useContentForm<T extends Common>(kind: Kind, blank: T) {
     if (data) adopt(data)
   }
 
-  const publish = async (when?: string) => {
+  const publish = async (when?: string, opts: { stay?: boolean } = {}): Promise<{ status: string; title: string } | null> => {
     const isNew = !form.id
     const saved = await save(undefined, '', true)
-    if (!saved) return
+    if (!saved) return null
     const id2 = (saved as { id: number }).id
     setBusy(true)
     try {
@@ -203,11 +203,13 @@ export function useContentForm<T extends Common>(kind: Kind, blank: T) {
       const text = data.status === 'scheduled' ? 'Scheduled. It goes live automatically at the chosen time.' : 'Published. It is now live on the website.'
       setNotice({ type: 'ok', text })
       setErrors({})
-      if (isNew) navigate(`/${kind}/edit/${id2}`, { replace: true, state: { flash: text } })
+      if (isNew && !opts.stay) navigate(`/${kind}/edit/${id2}`, { replace: true, state: { flash: text } })
+      return data
     } catch (err) {
       const { fields, message } = readErrors(err)
       setErrors(fields)
       setNotice({ type: 'error', text: message })
+      return null
     } finally {
       setBusy(false)
     }

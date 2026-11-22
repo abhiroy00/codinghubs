@@ -24,6 +24,8 @@ ALLOWED_ATTRIBUTES = {
     'pre': {'class'},
 }
 ALLOWED_SCHEMES = {'http', 'https', 'mailto', 'tel'}
+# Page chrome pasted from Docs/Word/websites is removed with its text, not just unwrapped.
+DROP_WITH_CONTENT = {'script', 'style', 'noscript', 'template', 'header', 'nav', 'footer', 'aside', 'form', 'button', 'select', 'textarea', 'iframe', 'object', 'svg'}
 # `class` on code/pre only for syntax-highlighting names like language-python.
 _LANG = re.compile(r'^language-[a-z0-9+#-]{1,20}$')
 
@@ -47,6 +49,7 @@ def sanitize_html(value: str) -> str:
     cleaned = nh3.clean(
         value,
         tags=ALLOWED_TAGS,
+        clean_content_tags=DROP_WITH_CONTENT,
         attributes=ALLOWED_ATTRIBUTES,
         attribute_filter=attr_filter,
         url_schemes=ALLOWED_SCHEMES,
