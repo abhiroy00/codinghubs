@@ -446,3 +446,6 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .ad-shell .wp .ad-blog-visual .ProseMirror,.ad-shell .wp .ad-blog-visual .ProseMirror *{font-size:14px!important}
 .ad-shell .wp .ad-blog-visual .ProseMirror h2{font-size:18px!important}
 .ad-shell .wp .ad-blog-visual .ProseMirror h3{font-size:16px!important}
+.wp-count{margin:0;color:var(--mut);font-weight:600}
+.wp-count.near{color:#b45309}
+.wp-count.over{color:var(--err)}

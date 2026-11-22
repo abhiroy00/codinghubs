@@ -1,11 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { adminApi } from '../api'
-import { ConfirmDelete } from './EditorShell'
-import { RowsEditor, ThumbnailField } from './fields'
-import { fmtDate } from './format'
 import { isLiveNow } from './liveUrl'
-import { parsePlannerPost } from './plannerImport'
 import { uploadImage } from './RichEditor'
 import { blankBlog, MAX_BLOG_WORDS, readingMinutes, toLocalInput, wordCount, type Taxon } from './types'
 import { useContentForm } from './useContentForm'
@@ -25,17 +21,13 @@ export function BlogEditor() {
   // Every post is dated the moment it is written; publishing a draft uses the day it goes live.
   const blank = useMemo(() => ({ ...blankBlog, published_at: toLocalInput(new Date().toISOString()) }), [])
   const api = useContentForm('blogs', blank)
-  const { form, set, errors, busy, dirty, loading, notice, recover, revisions } = api
+  const { form, set, errors, busy, dirty, loading, notice, recover } = api
   const [cats, setCats] = useState<Taxon[]>([])
   const [uploading, setUploading] = useState(false)
   const [imageTab, setImageTab] = useState<'upload' | 'url'>('upload')
   const [imageError, setImageError] = useState('')
   const [tagsText, setTagsText] = useState<string | null>(null)
   const [keywordsText, setKeywordsText] = useState<string | null>(null)
-  const [plannerText, setPlannerText] = useState('')
-  const [importNotes, setImportNotes] = useState<string[] | null>(null)
-  const [plannerOpen, setPlannerOpen] = useState(!api.id)
-  const [confirmDelete, setConfirmDelete] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -61,25 +53,6 @@ export function BlogEditor() {
     try { set('featured_image', await uploadImage(file, file.name)) }
     catch { setImageError('Could not upload the image. Choose a JPG, PNG, WebP or GIF under 5 MB.') }
     finally { setUploading(false) }
-  }
-
-  const importPlanner = () => {
-    const p = parsePlannerPost(plannerText)
-    const category = cats.find((c) => c.name.toLowerCase() === p.category.toLowerCase())
-    const fields: Partial<typeof form> = {
-      title: p.title, excerpt: p.excerpt, content: p.content, seo_title: p.seo_title, meta_description: p.meta_description,
-      focus_keyword: p.focus_keyword, secondary_keywords: p.secondary_keywords, tag_names: p.tag_names, author_name: p.author_name,
-      author_title: p.author_title, featured_image_alt: p.featured_image_alt, featured_image_caption: p.featured_image_caption,
-      featured_image_prompt: p.featured_image_prompt, faq: p.faq, ...(category ? { category: category.id } : {}),
-    }
-    for (const [k, v] of Object.entries(fields)) if (v !== '' && v !== undefined) set(k as keyof typeof form, v as never)
-    if (p.slug) api.setSlug(p.slug)
-    setTagsText(null)
-    setKeywordsText(null)
-    const notes = [...p.warnings]
-    if (p.category && !category) notes.unshift(`Category "${p.category}" does not exist yet: choose one below.`)
-    notes.push('Add a thumbnail image (the planner gives a prompt, not an image), check the article, then publish.')
-    setImportNotes(notes)
   }
 
   const saveDraft = async () => {
@@ -114,14 +87,6 @@ export function BlogEditor() {
             <button type="button" className="ad-btn" onClick={api.acceptDraft}>Restore draft</button>
             <button type="button" className="ad-link" onClick={api.dropDraft}>Discard</button></div>}
           {notice && <div className={`ad-notice ${notice.type}`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.text}</div>}
-
-          <details className="wp-planner" open={plannerOpen} onToggle={(e) => setPlannerOpen(e.currentTarget.open)}>
-            <summary>Paste from SEO planner <span className="wp-note">(optional — fills every field below)</span></summary>
-            <textarea className="wp-input wp-mono" rows={7} aria-label="SEO planner output" placeholder="Paste the full planner output here…" value={plannerText} onChange={(e) => setPlannerText(e.target.value)} />
-            <p className="wp-hint">Other company names are replaced with Coding Hubs School of AI; contact, author-bio and hashtag sections are left out.</p>
-            <button type="button" className="wp-btn-primary" disabled={!plannerText.trim()} onClick={importPlanner}>Import into this post</button>
-            {importNotes && <div className="ad-notice" role="status"><strong>Imported. Please check:</strong><ul>{importNotes.map((n) => <li key={n}>{n}</li>)}</ul></div>}
-          </details>
 
           <div className="wp-field">
             <Label htmlFor="title" required>Post title</Label>
@@ -249,40 +214,9 @@ export function BlogEditor() {
             <Suspense fallback={<p role="status">Loading article editor…</p>}>
               <BlogBodyEditor value={form.content} onChange={(v) => set('content', v)} onBusy={setUploading} />
             </Suspense>
-            {(errors.content || words > MAX_BLOG_WORDS) && <p className="wp-error" role="alert">{errors.content || `Keep the article under ${MAX_BLOG_WORDS.toLocaleString()} words.`}</p>}
+            <p className={`wp-count${words > MAX_BLOG_WORDS ? ' over' : words > MAX_BLOG_WORDS * 0.9 ? ' near' : ''}`} role="status">{words.toLocaleString()} / {MAX_BLOG_WORDS.toLocaleString()} words · {readingMinutes(form.content)} min read</p>
+            {(errors.content || words > MAX_BLOG_WORDS) && <p className="wp-error" role="alert">{errors.content || `The article can have up to ${MAX_BLOG_WORDS.toLocaleString()} words. Remove ${(words - MAX_BLOG_WORDS).toLocaleString()} words to save.`}</p>}
           </div>
-
-          <details className="wp-more" open={form.faq.length > 0}>
-            <summary>FAQ <span className="wp-note">(shown at the end of the article and marked up for Google)</span></summary>
-            <RowsEditor id="faq" rows={form.faq} onChange={(rows) => set('faq', rows)} fields={[{ key: 'q', label: 'Question' }, { key: 'a', label: 'Answer', type: 'textarea' }]} addLabel="Add a question" max={15} error={errors.faq} />
-          </details>
-
-          <details className="wp-more">
-            <summary>More options <span className="wp-note">(author title, extra images, image prompt, history)</span></summary>
-            <div className="wp-grid-2">
-              <div className="wp-field">
-                <Label htmlFor="author_title">Author title</Label>
-                <input id="author_title" className="wp-input" placeholder="e.g. Senior Trainer" value={form.author_title} onChange={(e) => set('author_title', e.target.value)} />
-              </div>
-              <div className="wp-field">
-                <Label htmlFor="featured_image_prompt">Image prompt (not public)</Label>
-                <textarea id="featured_image_prompt" className="wp-input" rows={2} value={form.featured_image_prompt} onChange={(e) => set('featured_image_prompt', e.target.value)} />
-              </div>
-            </div>
-            {form.gallery.map((g, i) => <div key={i} className="ad-row-card">
-              <ThumbnailField id={`g-${i}`} label={`Extra image ${i + 1}`} src={g.src} alt={g.alt} onSrc={(v) => set('gallery', form.gallery.map((x, n) => n === i ? { ...x, src: v } : x))} onAlt={(v) => set('gallery', form.gallery.map((x, n) => n === i ? { ...x, alt: v } : x))} />
-              <button type="button" className="ad-link ad-danger" onClick={() => set('gallery', form.gallery.filter((_, n) => n !== i))}>Remove image</button>
-            </div>)}
-            {form.gallery.length < 5 && <button type="button" className="ad-btn" onClick={() => set('gallery', [...form.gallery, { src: '', alt: '' }])}>Add an extra image</button>}
-            {revisions.length > 0 && <>
-              <h3 className="wp-label">Version history</h3>
-              <ul className="ad-revs">{revisions.slice(0, 8).map((r) => <li key={r.id}>
-                <span>{fmtDate(r.created_at, true)}</span>
-                <button type="button" className="ad-link" disabled={disabled} onClick={() => window.confirm('Restore this version? Your current saved version will be kept in history.') && void api.restoreRevision(r.id)}>Restore</button>
-              </li>)}</ul>
-            </>}
-            {form.id && <button type="button" className="ad-link ad-danger" disabled={disabled} onClick={() => setConfirmDelete(true)}>Delete this post</button>}
-          </details>
 
           <hr className="wp-rule" />
 
@@ -310,7 +244,6 @@ export function BlogEditor() {
           </div>
         </div>
       </div>
-      {confirmDelete && <ConfirmDelete title={form.title} onCancel={() => setConfirmDelete(false)} onConfirm={() => void api.remove()} />}
     </form>
   )
 }
