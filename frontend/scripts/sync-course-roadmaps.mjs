@@ -45,6 +45,8 @@ for(const course of COURSE_CATALOG.filter(c=>c.slug!=='generative-ai')){
   const file=content&&path.join(content,`day-${String(day).padStart(2,'0')}.json`)
   if(!file||!fs.existsSync(file))continue
   const lesson=JSON.parse(fs.readFileSync(file,'utf8'))
+  // A draft must never be published, even if it is copied into the source folder by mistake.
+  if(lesson._status)continue
   const text=[lesson.title,lesson.definition,...lesson.interview.map(q=>q.answer),...lesson.quiz.flatMap(q=>q.options)].join(' ')
   // Only COMPLETE lessons are published as articles; everything else stays a study brief.
   if(!markers.some(m=>text.includes(m))&&lessonStatus(evidence(lesson))==='COMPLETE')lessons.push(lesson)
