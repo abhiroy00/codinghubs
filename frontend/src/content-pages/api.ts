@@ -88,16 +88,28 @@ export function takeInitial(): Initial | null {
 export const getBlogs = (params: Record<string, string | number>) => api.get<Paged<Card>>('/blogs/', { params }).then((r) => r.data)
 export const getBlogCategories = () => api.get<{ name: string; slug: string; blog_count: number }[]>('/blog-categories/').then((r) => r.data)
 export const getBlog = (slug: string, preview?: string) => api.get<Article>(`/blogs/${slug}/`, { params: preview ? { preview } : {} }).then((r) => r.data)
-/** Counts one view per post per browser session (the server ignores bots and anything not live). Never throws. */
-export function recordView(kind: 'blog' | 'case', slug: string) {
-  const key = `ch_viewed_${kind}_${slug}`
+/** A repeat visit to the same post from the same browser counts again after this long (refreshes in between do not). */
+export const VIEW_WINDOW_MS = 30 * 60 * 1000
+
+/**
+ * Counts a view of a live post: once per browser per post within VIEW_WINDOW_MS, like an analytics session.
+ * The server ignores bots and anything not live. Resolves true when this call recorded a view. Never throws.
+ */
+export async function recordView(kind: 'blog' | 'case', slug: string, now = Date.now()): Promise<boolean> {
+  const key = `ch_view_${kind}_${slug}`
   try {
-    if (sessionStorage.getItem(key)) return
-    sessionStorage.setItem(key, '1')
+    const last = Number(localStorage.getItem(key) ?? 0)
+    if (last && now - last < VIEW_WINDOW_MS) return false
+    localStorage.setItem(key, String(now))
   } catch {
-    return
+    // Storage blocked (private mode, strict settings): still count, the server throttle limits abuse.
   }
-  api.post(`/${kind === 'blog' ? 'blogs' : 'case-studies'}/${slug}/view/`).catch(() => undefined)
+  try {
+    await api.post(`/${kind === 'blog' ? 'blogs' : 'case-studies'}/${slug}/view/`)
+    return true
+  } catch {
+    return false
+  }
 }
 export const getCases = (params: Record<string, string | number>) => api.get<Paged<Card>>('/case-studies/', { params }).then((r) => r.data)
 export const getCase = (slug: string, preview?: string) => api.get<Article>(`/case-studies/${slug}/`, { params: preview ? { preview } : {} }).then((r) => r.data)

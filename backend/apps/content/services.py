@@ -32,7 +32,8 @@ def canonical_sitemap_rows(queryset, base):
         if not canonical or canonical == url:
             yield url, modified
 
-SNAPSHOT_SKIP = {'id', 'created_at', 'updated_at', 'created_by', 'tags', 'related'}
+# Counters (views, Search Console) are analytics, not content: revisions neither store nor restore them.
+SNAPSHOT_SKIP = {'id', 'created_at', 'updated_at', 'created_by', 'tags', 'related', 'view_count', 'gsc_status', 'gsc_coverage', 'gsc_clicks', 'gsc_impressions', 'gsc_checked_at'}
 
 
 # ---------- slugs & revisions ----------

@@ -529,8 +529,9 @@ BOT_UA = re.compile(r'bot|crawl|spider|slurp|preview|lighthouse|headless|python-
 
 
 class RecordView(APIView):
-    """POST by the public article page, once per browser session: counts a view of a live post or case study.
-    Bots and unknown slugs are ignored; the count uses update() so updated_at and sitemap dates do not change."""
+    """POST by the public article page, at most once per browser per post every 30 minutes: counts a view of a live
+    post or case study. Bots and unknown slugs are ignored; the count uses update() so updated_at and sitemap dates do
+    not change, and full saves never write view_count back (models.without_counters)."""
 
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
