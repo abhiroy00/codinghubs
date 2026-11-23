@@ -1313,6 +1313,7 @@
           "id": "vibe-coding:assignment:1",
           "title": "What Vibe Coding Is: Promise, Workflow and Risks",
           "available": true,
+          "article": "day-1",
           "focus": "Vibe coding is a style of building software where you describe what you want in natural language and let an AI assistant write most of the code, judging progress mainly by whether the result runs and looks right. The term was popularised by Andrej Karpathy in early 2025. In professional settings it is a starting point: engineers still own the code, so they read, test and review what the AI produces before it ships.",
           "objectives": [
             "Define vibe coding and distinguish it from disciplined AI-assisted engineering.",
@@ -1342,6 +1343,7 @@
           "id": "vibe-coding:assignment:2",
           "title": "How AI Coding Assistants Work: Tokens, Context and Prediction",
           "available": true,
+          "article": "day-2",
           "focus": "An AI coding assistant is an application built on a large language model (LLM), a neural network trained on huge amounts of text and code to predict the next token given the tokens before it. The assistant collects relevant context (your prompt, open files, project rules, search results), sends it to the model, and turns the predicted tokens into suggestions, chat answers or file edits. The model has no live view of your project beyond what fits in that context.",
           "objectives": [
             "Explain that a large language model generates code by predicting the next token.",
@@ -1371,6 +1373,7 @@
           "id": "vibe-coding:assignment:3",
           "title": "HTML Semantics and Document Structure",
           "available": true,
+          "article": "day-3",
           "focus": "Semantic HTML means choosing elements for what content is, not how it looks: a navigation menu goes in nav, the primary content in main, a clickable action in button, and section titles in h1–h6. Browsers, search engines and assistive technologies such as screen readers use these meanings to understand and navigate the page. Styling is applied separately with CSS.",
           "objectives": [
             "Explain what semantic HTML is and why it matters for accessibility, SEO and maintenance.",
@@ -1400,6 +1403,7 @@
           "id": "vibe-coding:assignment:4",
           "title": "CSS Layout: Box Model, Flexbox and Grid",
           "available": true,
+          "article": "day-4",
           "focus": "CSS layout is how the browser sizes and positions boxes. Every element is a box made of content, padding, border and margin (the box model). Flexbox arranges items along a single axis (a row or a column) and distributes spare space between them, while CSS grid places items into rows and columns at the same time. Together they replace older float- and table-based layouts.",
           "objectives": [
             "Explain the CSS box model and why box-sizing: border-box is the common default.",

@@ -1319,6 +1319,7 @@
           "id": "mean-stack:assignment:1",
           "title": "How the Web Works: HTTP, Browsers and the MEAN Architecture",
           "available": true,
+          "article": "day-1",
           "focus": "The web is a client-server system in which a browser (the client) sends HTTP requests to a server and receives HTTP responses containing HTML, JSON, images or other resources. The MEAN stack is a JavaScript-everywhere architecture for such systems: Angular runs in the browser, Node.js with Express handles HTTP on the server, and MongoDB stores data as JSON-like documents.",
           "objectives": [
             "Explain what happens between typing a URL and seeing a rendered page.",
@@ -1348,6 +1349,7 @@
           "id": "mean-stack:assignment:2",
           "title": "JavaScript Core: Types, Scope, Hoisting and Closures",
           "available": true,
+          "article": "day-2",
           "focus": "JavaScript is a dynamically typed language with seven primitive types (string, number, bigint, boolean, undefined, null, symbol) and objects, which are passed around by reference. Scope decides where a variable is visible; a closure is a function together with the variables from its surrounding scope that it keeps alive after that scope has finished executing.",
           "objectives": [
             "Distinguish primitive and reference types and predict copying and comparison behaviour.",
@@ -1376,6 +1378,7 @@
           "id": "mean-stack:assignment:3",
           "title": "Modern JavaScript (ES6+): Destructuring, Spread, Modules and Array Methods",
           "available": true,
+          "article": "day-3",
           "focus": "ES6 (ECMAScript 2015) and the yearly releases after it added the syntax modern JavaScript and TypeScript code relies on: let/const, arrow functions, classes, template literals, destructuring, spread/rest, modules, Map/Set, promises and later async/await, optional chaining and nullish coalescing. Angular, Express and Mongoose code is written almost entirely in this style.",
           "objectives": [
             "Use destructuring with defaults and renaming for objects, arrays and function parameters.",
@@ -1404,6 +1407,7 @@
           "id": "mean-stack:assignment:4",
           "title": "Asynchronous JavaScript and the Event Loop",
           "available": true,
+          "article": "day-4",
           "focus": "The event loop is the mechanism that lets single-threaded JavaScript perform non-blocking work. Synchronous code runs on the call stack; slow operations (timers, network, file I/O) are handed to the host environment, and their callbacks are queued. Whenever the stack is empty, the loop first drains the microtask queue (promise reactions, queueMicrotask) and then takes the next task (macrotask) such as a timer callback or an I/O event.",
           "objectives": [
             "Explain why JavaScript needs an event loop despite running on a single thread.",

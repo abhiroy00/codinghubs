@@ -1,7 +1,17 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import ts from 'typescript'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
+// The same rule that writes the robots tag (src/seo/robots.ts) rates every article.
+const rules = ts.transpileModule(fs.readFileSync(path.join(root, 'frontend/src/seo/robots.ts'), 'utf8'), { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
+const { lessonStatus, placeholderPhrases } = await import('data:text/javascript;base64,' + Buffer.from(rules).toString('base64'))
+const wordCount = (...texts) => texts.join(' ').split(/\s+/).filter(Boolean).length
+const articleStatus = unit => lessonStatus({
+  words: wordCount(unit.concept, unit.mechanism, unit.boundary, unit.example, unit.application, unit.code, unit.expected, ...unit.angles.map(a => a.answer)),
+  questions: unit.angles.filter(a => a.question?.trim() && a.answer?.trim()).length,
+  placeholder: placeholderPhrases(JSON.stringify(unit)).length > 0,
+})
 const input = path.join(root, 'backend/apps/courses/roadmap_content')
 const output = path.join(root, 'frontend/src/learning/genai-generated')
 fs.mkdirSync(output, { recursive: true })
@@ -35,7 +45,7 @@ for (let n=1;n<=4;n++) {
       sources:[...unit.sources,...companies.map(c=>c.source)], reviewed_at:registry.reviewed_at,
     }
   }))
-  const articles=units.map(unit=>({ id:`genai-${unit.slug}`, ...unit, angles:undefined }))
+  const articles=units.map(unit=>({ id:`genai-${unit.slug}`, ...unit, angles:undefined, status:articleStatus(unit) }))
   const [start,end]=ranges[n-1]
   let cursor=0
   const days=Array.from({length:end-start+1},(_,i)=>{
@@ -50,7 +60,9 @@ for (let n=1;n<=4;n++) {
   })
   const data={level:n,title:titles[n-1],start,end,categories,articles,questions,days,...registry}
   const summary={level:n,title:titles[n-1],start,end,articleCount:articles.length,questionCount:questions.length,
-    articleSlugs:articles.map(a=>({slug:a.slug,title:a.title,id:a.id,summary:a.concept,sources:a.sources.map(id=>registry.sources[id].url)})),days:days.map(d=>({day:d.day,title:d.title,id:d.id})),
+    articleSlugs:articles.map(a=>({slug:a.slug,title:a.title,id:a.id,summary:a.concept,status:a.status,sources:a.sources.map(id=>registry.sources[id].url)})),
+    // Each day is served by its first article (days/<n>/ 301s there); the article page carries the day's assignment.
+    days:days.map(d=>({day:d.day,title:d.title,id:d.id,article:d.articles[0]})),
     progressIds:{articles:articles.map(a=>a.id),questions:questions.map(q=>q.id),coding:articles.map(a=>a.id),assignments:days.map(d=>d.id)}}
   manifest.push(summary)
   write(`level-${n}.json`, data)

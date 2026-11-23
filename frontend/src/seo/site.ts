@@ -2,6 +2,7 @@ import { INSTITUTE } from '../pages/free-session/data'
 import { PROGRAMS, type Program } from '../pages/free-session/programs'
 import { HEAD_OFFICE, SITE_URL } from '../locations/registry'
 import type { Seo } from '../content-pages/api'
+import { getRobotsDirective } from './robots'
 
 export const LOGO_URL = `${SITE_URL}/assets/coding-hubs-school-of-ai-logo.jpeg`
 export const ORG_ID = `${SITE_URL}/#organization`
@@ -23,7 +24,8 @@ export function pageSeo(meta: PageMeta): Seo {
   const canonical = meta.indexable ? `${SITE_URL}${meta.path}` : ''
   return {
     title: meta.title, description: meta.description, canonical,
-    robots: meta.indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow',
+    // `indexable` is the editorial decision for a static page (e.g. the FAQ awaits business review).
+    robots: getRobotsDirective({ kind: 'content', status: meta.indexable ? 'COMPLETE' : 'THIN' }),
     og: { type: 'website', title: meta.title, description: meta.description, image: meta.image, url: canonical },
     json_ld: meta.jsonLd ?? null,
   }

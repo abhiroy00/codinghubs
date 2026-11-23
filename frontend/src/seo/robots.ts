@@ -1,7 +1,7 @@
 /**
  * The single indexing rule for every public page.
  *
- * A page is indexed only when it is COMPLETE and its canonical is itself. Everything else is
+ * A page is indexed only when it is COMPLETE. Everything else is
  * `noindex, follow` (crawlers may still follow its links); private application screens are
  * `noindex, nofollow`. This module has no imports so build scripts (sync exporters, the content
  * audit) can load it directly and apply exactly the same thresholds as the rendered pages.
@@ -82,13 +82,17 @@ export interface RobotsInput {
   /** `private`: account, login, studio and other application screens. */
   kind: 'private' | 'content'
   status?: ContentStatus
-  /** Whether the page's canonical URL is the page itself (not an alias pointing elsewhere). */
-  selfCanonical?: boolean
 }
 
+/**
+ * Index only COMPLETE content. Duplicates are handled by URLs, not by this directive: a duplicate that
+ * can be removed is 301-redirected; one that must stay reachable (an alias course that keeps its learners'
+ * saved progress) points rel=canonical at the preferred URL, as Google recommends, and only self-canonical
+ * URLs are listed in sitemaps (scripts/prerender.mjs enforces this).
+ */
 export function getRobotsDirective(page: RobotsInput): string {
   if (page.kind === 'private') return PRIVATE
-  return page.status === 'COMPLETE' && page.selfCanonical !== false ? INDEX : NOINDEX
+  return page.status === 'COMPLETE' ? INDEX : NOINDEX
 }
 
 export const isIndexable = (robots: string) => /^index\b/.test(robots.trim())

@@ -1013,6 +1013,7 @@
           "id": "prompt-engineering:assignment:1",
           "title": "What Prompt Engineering Is and How LLMs Read Prompts",
           "available": true,
+          "article": "day-1",
           "focus": "Prompt engineering is the practice of designing, testing and refining the input given to a large language model (LLM) so that it reliably produces useful, correct and well-formatted output. An LLM never sees words directly: the prompt is split into tokens, converted to numbers, and the model predicts the most suitable next token again and again, each time conditioned on the prompt and everything generated so far.",
           "objectives": [
             "Define prompt engineering and explain why it matters for products built on LLMs.",
@@ -1042,6 +1043,7 @@
           "id": "prompt-engineering:assignment:2",
           "title": "Context Windows, Token Budgets and Conversation Memory",
           "available": true,
+          "article": "day-2",
           "focus": "A context window is the maximum number of tokens a model can consider in one request, counting the system prompt, conversation history, any documents or examples, and the tokens it generates in reply. Anything outside the window is invisible to the model, so applications must decide what to include, what to compress and what to leave out.",
           "objectives": [
             "Explain what a context window is and how input and output share it.",
@@ -1071,6 +1073,7 @@
           "id": "prompt-engineering:assignment:3",
           "title": "Sampling Controls: Temperature, Top-k and Top-p",
           "available": true,
+          "article": "day-3",
           "focus": "Sampling controls decide how a model picks the next token from its predicted probability distribution. Temperature sharpens or flattens the distribution, top-k keeps only the k most likely tokens, and top-p (nucleus sampling) keeps the smallest set of tokens whose probabilities add up to p. Together with the prompt, these settings determine how focused or varied the output is.",
           "objectives": [
             "Explain how logits become a probability distribution with softmax.",

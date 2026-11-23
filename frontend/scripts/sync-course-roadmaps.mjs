@@ -9,6 +9,13 @@ const output=path.join(learning,'course-roadmaps')
 const catalogText=fs.readFileSync(path.join(learning,'catalog.ts'),'utf8')
 const js=ts.transpileModule(catalogText,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText
 const {COURSE_CATALOG}=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'))
+const loadTs=file=>import('data:text/javascript;base64,'+Buffer.from(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText).toString('base64'))
+// The same rule that writes the robots tag (src/seo/robots.ts) decides which lessons are COMPLETE.
+const {lessonStatus,placeholderPhrases}=await loadTs(path.join(root,'frontend/src/seo/robots.ts'))
+const textWords=o=>typeof o==='string'?o.split(/\s+/).filter(Boolean).length:Array.isArray(o)?o.reduce((n,v)=>n+textWords(v),0):o&&typeof o==='object'?Object.values(o).reduce((n,v)=>n+textWords(v),0):0
+/** Teaching words (explanation, example, Q&A, practice) and answered questions in a source lesson. */
+const evidence=lesson=>({words:['definition','theory','example','use_cases','demonstration','takeaways','interview','practice'].reduce((n,k)=>n+textWords(lesson[k]),0),
+ questions:lesson.interview.filter(q=>q.question?.trim()&&q.answer?.trim()).length,placeholder:placeholderPhrases(JSON.stringify(lesson)).length>0})
 const sources=JSON.parse(fs.readFileSync(path.join(learning,'prep-generated/manifest.json'),'utf8'))
 const schema=fs.readFileSync(path.join(root,'backend/apps/courses/prep_schema.py'),'utf8')
 const markers=[...schema.match(/PLACEHOLDER_MARKERS = \(([^\n]+)\)/)[1].matchAll(/'([^']+)'/g)].map(m=>m[1])
@@ -39,7 +46,8 @@ for(const course of COURSE_CATALOG.filter(c=>c.slug!=='generative-ai')){
   if(!file||!fs.existsSync(file))continue
   const lesson=JSON.parse(fs.readFileSync(file,'utf8'))
   const text=[lesson.title,lesson.definition,...lesson.interview.map(q=>q.answer),...lesson.quiz.flatMap(q=>q.options)].join(' ')
-  if(!markers.some(m=>text.includes(m)))lessons.push(lesson)
+  // Only COMPLETE lessons are published as articles; everything else stays a study brief.
+  if(!markers.some(m=>text.includes(m))&&lessonStatus(evidence(lesson))==='COMPLETE')lessons.push(lesson)
  }
  const levels=ranges.map(([start,end],index)=>{
   const articles=lessons.filter(l=>l.day>=start&&l.day<=end).map(lesson=>({id:`${course.slug}:article:${lesson.day}`,slug:`day-${lesson.day}`,lesson}))
@@ -48,7 +56,8 @@ for(const course of COURSE_CATALOG.filter(c=>c.slug!=='generative-ai')){
    const day=start+i
    const lesson=lessons.find(l=>l.day===day)
    const topic=course.days[day-1]
-   return {day,id:`${course.slug}:assignment:${day}`,title:lesson?.title??topic.title,available:!!lesson,
+   // A day with a published lesson is served by its article URL; days/<n>/ redirects there.
+   return {day,id:`${course.slug}:assignment:${day}`,title:lesson?.title??topic.title,available:!!lesson,...(lesson?{article:`day-${day}`}:{}),
     focus:lesson?.definition??topic.focus,
     objectives:lesson?.objectives??[`Explain ${topic.title.toLowerCase()} in the context of ${course.focus}`,`Create a reviewable example using the relevant ${course.tools.slice(0,3).join(', ')} tools`],
     assignment:lesson?.practice.statement??`Create a small ${course.focus} case study focused on ${topic.title.toLowerCase()}. State the input, expected outcome and assumptions. Document one normal case, one boundary case and one failure case. Capture your observations, compare one alternative and explain what you would change next.`,
@@ -61,7 +70,7 @@ for(const course of COURSE_CATALOG.filter(c=>c.slug!=='generative-ai')){
  })
  const data={slug:course.slug,name:course.name,focus:course.focus,track:course.track,tools:course.tools,projects:course.projects,hasCoding:course.hasCoding,primary:mapping?.primary??course.slug,levels}
  manifest[course.slug]={slug:course.slug,name:course.name,primary:data.primary,availableLessons:lessons.length,levels:levels.map(l=>({level:l.level,title:l.title,start:l.start,end:l.end,articleCount:l.articles.length,questionCount:l.questions.length,
-  articles:l.articles.map(a=>({slug:a.slug,id:a.id,title:a.lesson.title,description:a.lesson.definition})),days:l.days.map(d=>({day:d.day,id:d.id,title:d.title,available:d.available})),progressIds:l.progressIds}))}
+  articles:l.articles.map(a=>({slug:a.slug,id:a.id,title:a.lesson.title,description:a.lesson.definition})),days:l.days.map(d=>({day:d.day,id:d.id,title:d.title,available:d.available,...(d.article?{article:d.article}:{})})),progressIds:l.progressIds}))}
  write(path.join(output,`${course.slug}.json`),data)
 }
 write(path.join(output,'manifest.json'),manifest)

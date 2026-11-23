@@ -129,7 +129,29 @@ class LearningTests(TestCase):
         self.assertContains(response, 'rel="canonical"')
         self.assertContains(response, '&lt;script&gt;')
         self.assertNotContains(response, '<script>alert(1)</script>')
-        self.assertIn('cosine/', self.client.get('/sitemap-learning.xml').content.decode())
+        sitemap = self.client.get('/sitemap-learning.xml').content.decode()
+        self.assertIn('cosine/', sitemap)
+        self.assertNotIn('<lastmod>', sitemap)  # no published revision recorded, so no date is claimed
+        self.assertIn('content="index, follow, max-image-preview:large"', response.content.decode())
+
+    def test_learning_path_is_indexed_only_once_a_concept_is_published(self):
+        from .models import LearningCourse
+        LearningCourse.objects.get_or_create(slug='ai-engineering', defaults={'title': 'AI Engineering', 'summary': 'Path', 'is_active': True})
+        LearningCourse.objects.filter(slug='ai-engineering').update(is_active=True)
+        self.concept.chapter.module.course = LearningCourse.objects.get(slug='ai-engineering')
+        self.concept.chapter.module.save()
+        hub = self.client.get('/learn/ai-engineering/')
+        self.assertContains(hub, 'content="noindex, follow"')
+        self.assertNotContains(hub, 'rel="canonical"')
+        self.publish_fixture()
+        from .models import Revision
+        Revision.objects.create(concept=self.concept, version=1, snapshot=self.concept.published)
+        hub = self.client.get('/learn/ai-engineering/')
+        self.assertContains(hub, 'content="index, follow, max-image-preview:large"')
+        self.assertContains(hub, '<link rel="canonical" href="https://codinghubs.in/learn/ai-engineering/">')
+        sitemap = self.client.get('/sitemap-learning.xml').content.decode()
+        self.assertIn('/learn/ai-engineering/</loc><lastmod>', sitemap)
+        self.assertIn('/learn/ai-engineering/cosine/</loc><lastmod>', sitemap)
 
     def test_publication_creates_immutable_history(self):
         self.concept.status = 'approved'

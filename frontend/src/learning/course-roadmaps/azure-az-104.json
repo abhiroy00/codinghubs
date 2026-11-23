@@ -1290,6 +1290,7 @@
           "id": "azure-az-104:assignment:1",
           "title": "Cloud Computing and Azure Global Infrastructure",
           "available": true,
+          "article": "day-1",
           "focus": "Cloud computing is the on-demand delivery of compute, storage, networking and software over the internet with pay-as-you-go pricing. Microsoft Azure is Microsoft's public cloud: a global network of datacentres grouped into regions, on which you create resources through a single management layer instead of buying and racking your own hardware.",
           "objectives": [
             "Explain cloud computing and the CapEx-to-OpEx shift in plain terms.",
@@ -1319,6 +1320,7 @@
           "id": "azure-az-104:assignment:2",
           "title": "Azure Resource Manager: Management Groups, Subscriptions and Resource Groups",
           "available": true,
+          "article": "day-2",
           "focus": "Azure Resource Manager (ARM) is the deployment and management service for Azure: every request from the portal, CLI, PowerShell, SDKs or templates is authenticated, authorised and then sent by ARM to the right resource provider. ARM organises resources in a hierarchy of management groups, subscriptions, resource groups and resources, and access control, policy and budgets applied at one level are inherited by everything beneath it.",
           "objectives": [
             "Explain what Azure Resource Manager (ARM) is and why every tool goes through it.",
@@ -1348,6 +1350,7 @@
           "id": "azure-az-104:assignment:3",
           "title": "Tags and Resource Locks for Organising and Protecting Resources",
           "available": true,
+          "article": "day-3",
           "focus": "Tags are name-value pairs attached to Azure resources, resource groups and subscriptions to add metadata such as cost centre, environment or owner. Resource locks are management-plane safeguards that prevent accidental deletion (CanNotDelete) or any change (ReadOnly) to a scope and everything beneath it, regardless of the user's RBAC role.",
           "objectives": [
             "Design a tagging strategy for cost reporting, ownership and automation.",
@@ -1377,6 +1380,7 @@
           "id": "azure-az-104:assignment:4",
           "title": "Azure Management Tools: Portal, Cloud Shell, Azure CLI and PowerShell",
           "available": true,
+          "article": "day-4",
           "focus": "Azure offers several front ends to the same Azure Resource Manager API: the web-based Azure portal, the cross-platform Azure CLI (az commands), the Azure PowerShell Az module (Verb-AzNoun cmdlets) and Azure Cloud Shell, a browser-based shell with both tools pre-installed and already signed in. Because they all call ARM, anything created with one can be managed with another.",
           "objectives": [
             "Compare the Azure portal, Cloud Shell, Azure CLI and Azure PowerShell and know when to use each.",

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useSeo } from './useSeo'
+import { getRobotsDirective } from './robots'
 
 /** Private app URLs must not inherit indexable metadata after SPA navigation. */
 export function PrivateRouteMeta() {
@@ -11,7 +12,7 @@ export function PrivateRouteMeta() {
     if (!names[section]) return null
     const title = names[section] + ' | Coding Hubs'
     const description = 'Your Coding Hubs account and application workspace.'
-    return { title, description, canonical:'', robots:'noindex, nofollow', og:{ type:'website', title, description, image:'https://codinghubs.in/assets/coding-hubs-school-of-ai-logo.jpeg', url:'https://codinghubs.in' + pathname }, json_ld:null }
+    return { title, description, canonical:'', robots:getRobotsDirective({ kind:'private' }), og:{ type:'website', title, description, image:'https://codinghubs.in/assets/coding-hubs-school-of-ai-logo.jpeg', url:'https://codinghubs.in' + pathname }, json_ld:null }
   }, [pathname])
   useSeo(seo)
   return null

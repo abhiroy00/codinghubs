@@ -1292,6 +1292,7 @@
           "id": "data-analytics-using-python:assignment:1",
           "title": "Python Data Types and Core Structures for Analysts",
           "available": true,
+          "article": "day-1",
           "focus": "Python data types describe what kind of value a variable holds and which operations are allowed on it. Analysts work mostly with numbers (int, float), text (str), true/false flags (bool), the missing marker None, and four containers: list (ordered, changeable), tuple (ordered, fixed), dict (key to value lookup) and set (unique items). pandas and NumPy are built on top of these ideas, so understanding them explains much of how those libraries behave.",
           "objectives": [
             "Explain Python's built-in scalar types (int, float, str, bool, None) and when an analyst meets each one.",
@@ -1321,6 +1322,7 @@
           "id": "data-analytics-using-python:assignment:2",
           "title": "Lists, Dictionaries and Comprehensions for Data Wrangling",
           "available": true,
+          "article": "day-2",
           "focus": "A comprehension is a compact Python expression that builds a new list, dict or set by looping over an iterable, optionally filtering items with a condition. Combined with dictionaries for grouping and counting, comprehensions let an analyst reshape small datasets in a few readable lines, which is exactly what pandas later does at scale.",
           "objectives": [
             "Build and transform lists with slicing, sorting and list comprehensions.",
@@ -1350,6 +1352,7 @@
           "id": "data-analytics-using-python:assignment:3",
           "title": "Functions, Lambdas and Reusable Analysis Code",
           "available": true,
+          "article": "day-3",
           "focus": "A function is a named, reusable block of code that takes inputs (parameters), performs a task and returns a result. A lambda is a small anonymous function written in one expression, typically passed to another function such as sorted or DataFrame.apply. Packaging analysis steps as functions makes notebooks reproducible and lets the same logic run on new data.",
           "objectives": [
             "Write functions with positional, keyword and default parameters and clear return values.",
@@ -1379,6 +1382,7 @@
           "id": "data-analytics-using-python:assignment:4",
           "title": "File Handling: Reading and Writing CSV and JSON",
           "available": true,
+          "article": "day-4",
           "focus": "File handling is reading data from and writing data to files on disk. CSV (comma-separated values) stores a table as plain text, one row per line, while JSON (JavaScript Object Notation) stores nested objects and arrays. Python's built-in csv and json modules parse these formats correctly, and pandas wraps them in read_csv, read_json, to_csv and to_json for table-shaped data.",
           "objectives": [
             "Open files safely with context managers and the right encoding.",

@@ -36,7 +36,8 @@
         "residuals",
         "feed-forward",
         "normalization"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-qkv-attention",
@@ -57,7 +58,8 @@
         "QKV",
         "softmax",
         "scaling"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-heads-masks-kv",
@@ -80,7 +82,8 @@
         "GQA",
         "causal masks",
         "KV cache"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-positions-rope",
@@ -101,7 +104,8 @@
         "positional encoding",
         "RoPE",
         "relative positions"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-encoder-decoder-families",
@@ -125,7 +129,8 @@
         "T5",
         "encoder",
         "decoder"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-context-prefill-decode",
@@ -147,7 +152,8 @@
         "prefill",
         "decode",
         "token budgets"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-sampling-temperature",
@@ -168,7 +174,8 @@
         "top-k",
         "top-p",
         "sampling"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-prompting-reasoning",
@@ -191,7 +198,8 @@
         "few-shot",
         "reasoning",
         "prompt injection"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-structured-tools",
@@ -213,7 +221,8 @@
         "structured outputs",
         "function calling",
         "authorization"
-      ]
+      ],
+      "status": "THIN"
     },
     {
       "id": "genai-model-comparison",
@@ -236,7 +245,8 @@
         "open weights",
         "licensing",
         "benchmarks"
-      ]
+      ],
+      "status": "THIN"
     }
   ],
   "questions": [

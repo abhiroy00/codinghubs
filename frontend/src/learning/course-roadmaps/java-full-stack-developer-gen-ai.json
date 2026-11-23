@@ -430,6 +430,7 @@
           "id": "java-full-stack-developer-gen-ai:assignment:1",
           "title": "JVM, JRE and JDK: How Java Runs and Manages Memory",
           "available": true,
+          "article": "day-1",
           "focus": "The Java Virtual Machine (JVM) is the runtime engine that loads compiled bytecode (.class files), verifies it and executes it, translating it to native machine code. The JRE (Java Runtime Environment) is the JVM plus the core class libraries needed to run programs, and the JDK (Java Development Kit) is the JRE plus development tools such as the javac compiler, jshell, javadoc and jdb. The JVM also manages memory automatically: objects live on a shared heap and are reclaimed by the garbage collector when nothing can reach them.",
           "objectives": [
             "Distinguish the JDK, JRE and JVM and explain what each one contains.",

@@ -47,7 +47,6 @@ const sitemapXml = await read('sitemap.xml')
 if (!sitemapXml.startsWith('<?xml') || !sitemapXml.includes('<urlset') || !sitemapXml.trim().endsWith('</urlset>')) fail('sitemap.xml is not a well-formed urlset')
 const urls = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])
 if (new Set(urls).size !== urls.length) fail('sitemap.xml contains duplicate URLs')
-if (/<lastmod>/.test(sitemapXml)) warn('sitemap.xml has <lastmod>; only keep it if it reflects real content changes')
 
 // ---------- robots.txt ----------
 const robots = await read('robots.txt')
@@ -169,14 +168,17 @@ for (const pg of pages) if (!reach.has(pg.urlPath)) fail(`orphan (not reachable 
 
 // ---------- source-backed prep coverage and preserved non-indexable routes ----------
 const sources = JSON.parse(await readFile(path.resolve(import.meta.dirname, '../src/learning/prep-generated/manifest.json'), 'utf8'))
+const summary = JSON.parse(await readFile(path.resolve(import.meta.dirname, '../src/seo/roadmap-summary.json'), 'utf8'))
+const genaiComplete = JSON.parse(await readFile(path.resolve(import.meta.dirname, '../src/learning/genai-generated/manifest.json'), 'utf8')).flatMap(l => l.articleSlugs).filter(a => a.status === 'COMPLETE').length
 const catalog = await readFile(path.resolve(import.meta.dirname, '../src/learning/catalog.ts'), 'utf8')
 const courseSlugs = [...catalog.matchAll(/^  \['([^']+)',/gm)].map(m => m[1])
 for (const slug of courseSlugs) {
   const p = '/interview/' + slug + '/'
   const html = await read('interview/' + slug + '/index.html')
   const source = sources[slug]
-  const ready = (source?.availableDays ?? 0) > 0
-  const indexed = ready && source.primary === slug
+  // Same rule as src/seo/learning.ts: a hub is ready once it has a COMPLETE lesson.
+  const ready = (slug === 'generative-ai' ? genaiComplete : summary[slug]?.completeLessons ?? 0) > 0
+  const indexed = ready && (source?.primary ?? slug) === slug
   if (urls.includes(SITE + p) !== indexed) fail('Prep source/sitemap mismatch: ' + p)
   if (indexed) {
     for (const id of ['prep-outcomes', 'prep-answers', 'prep-roadmap']) if (!html.includes('id="' + id + '"')) fail(p + ' missing readable guide section ' + id)
@@ -185,13 +187,22 @@ for (const slug of courseSlugs) {
       if (!html.includes(sample.interview[0].question.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;'))) fail(p + ' missing source-backed answer ' + sample.day)
     }
   } else if (!ready && !/<meta name="robots" content="noindex, follow"/.test(html)) fail(p + ' should remain noindex until distinct content is available')
-  if (ready && source.primary !== slug && /<meta name="robots" content="noindex/.test(html)) fail(p + ' should use canonical consolidation without noindex')
+  if (ready && source && source.primary !== slug && /<meta name="robots" content="noindex/.test(html)) fail(p + ' should use canonical consolidation without noindex')
   if (/is a core concept in|It improves reliability, maintainability and clarity|An unrelated concept/.test(html) && source) fail(p + ' exposes source template placeholders')
   const expected = SITE + '/interview/' + (source?.primary ?? slug) + '/'
   if (!html.includes('<link rel="canonical" href="' + expected + '"')) fail(p + ' canonical differs from source mapping')
 }
 if (urls.some(u => /\/gigs(?:\/|$)/.test(u))) fail('Staged marketplace must stay outside the sitemap')
-if (/<lastmod>/.test(sitemapXml)) fail('Static sitemap has lastmod without a tracked content timestamp')
+// <lastmod> only from the content ledger, and only while the page's content still matches it.
+{
+  const ledger = JSON.parse(await readFile(path.resolve(import.meta.dirname, '../src/seo/lastmod.json'), 'utf8'))
+  const hashes = JSON.parse(await readFile(path.resolve(import.meta.dirname, '../dist-nginx/content-hashes.json'), 'utf8'))
+  for (const [, loc, mod] of sitemapXml.matchAll(/<loc>([^<]+)<\/loc>(?:<lastmod>([^<]+)<\/lastmod>)?/g)) {
+    const p = loc.slice(SITE.length), entry = ledger[p]
+    if (mod && (!entry || entry.date !== mod || entry.hash !== hashes[p])) fail('Static sitemap lastmod not backed by the content ledger: ' + p)
+    if (mod && !/^\d{4}-\d{2}-\d{2}$/.test(mod)) fail('Invalid lastmod: ' + p)
+  }
+}
 for (const p of ['/login', '/register', '/dashboard', '/checkout', '/my-account', '/gigs']) {
   if (disallows.some(d => p.startsWith(d))) fail(p + ' must be crawlable so noindex can be read')
 }

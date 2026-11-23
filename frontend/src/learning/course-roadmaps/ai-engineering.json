@@ -1338,6 +1338,7 @@
           "id": "ai-engineering:assignment:1",
           "title": "Python for AI: Data Structures, NumPy Thinking and Clean Data Code",
           "available": true,
+          "article": "day-1",
           "focus": "Python for AI is the subset of Python skills an AI engineer uses every day: core data structures, functions and generators, and the scientific stack (NumPy, pandas) that stores numbers in contiguous typed arrays and runs operations in compiled code. The goal is code that is readable, correct with messy data and fast enough because heavy numeric work is pushed into vectorised libraries instead of Python loops.",
           "objectives": [
             "Explain why Python dominates AI engineering and where its performance limits are.",
@@ -1367,6 +1368,7 @@
           "id": "ai-engineering:assignment:2",
           "title": "Linear Algebra Essentials: Vectors, Matrices and the Dot Product",
           "available": true,
+          "article": "day-2",
           "focus": "Linear algebra is the mathematics of vectors (ordered lists of numbers) and matrices (rectangular grids of numbers) and the linear operations on them. In AI, a data point is a vector of features, a dataset is a matrix, a neural-network layer is a matrix multiplication followed by a non-linearity, and an embedding is a vector whose direction encodes meaning.",
           "objectives": [
             "Represent data, model weights and embeddings as vectors and matrices.",
@@ -1396,6 +1398,7 @@
           "id": "ai-engineering:assignment:3",
           "title": "Probability and Statistics for Machine Learning",
           "available": true,
+          "article": "day-3",
           "focus": "Probability is the mathematics of uncertainty: it assigns numbers between 0 and 1 to events and describes how likely different outcomes are. Statistics uses data to estimate those probabilities and the parameters of distributions. Machine learning models are statistical models: a classifier outputs a probability distribution over classes and training chooses the parameters that make the observed data most likely.",
           "objectives": [
             "Explain random variables, distributions, expectation and variance in plain terms.",
@@ -1425,6 +1428,7 @@
           "id": "ai-engineering:assignment:4",
           "title": "The Machine Learning Workflow: From Problem Framing to Baselines",
           "available": true,
+          "article": "day-4",
           "focus": "The machine learning workflow is the repeatable sequence of steps used to turn a business problem into a working model: frame the problem, collect and understand data, prepare features, split the data, establish a baseline, train and tune models, evaluate on held-out data, deploy and monitor. Each step has typical failure modes, and most real-world ML failures come from data and process mistakes rather than from the choice of algorithm.",
           "objectives": [
             "Describe the end-to-end ML lifecycle from problem framing to monitoring.",

@@ -4,16 +4,14 @@ import { COMPLETENESS, INDEX, NOINDEX, PRIVATE, cleanCanonical, getRobotsDirecti
 const lesson = { words: COMPLETENESS.lessonMinWords, questions: COMPLETENESS.lessonMinQuestions, placeholder: false }
 
 describe('getRobotsDirective', () => {
-  it('indexes only COMPLETE self-canonical content', () => {
-    expect(getRobotsDirective({ kind: 'content', status: 'COMPLETE', selfCanonical: true })).toBe(INDEX)
+  it('indexes only COMPLETE content', () => {
     expect(getRobotsDirective({ kind: 'content', status: 'COMPLETE' })).toBe(INDEX)
-    expect(getRobotsDirective({ kind: 'content', status: 'COMPLETE', selfCanonical: false })).toBe(NOINDEX)
-    expect(getRobotsDirective({ kind: 'content', status: 'THIN', selfCanonical: true })).toBe(NOINDEX)
-    expect(getRobotsDirective({ kind: 'content', status: 'PLACEHOLDER', selfCanonical: true })).toBe(NOINDEX)
+    expect(getRobotsDirective({ kind: 'content', status: 'THIN' })).toBe(NOINDEX)
+    expect(getRobotsDirective({ kind: 'content', status: 'PLACEHOLDER' })).toBe(NOINDEX)
     expect(getRobotsDirective({ kind: 'content' })).toBe(NOINDEX)
   })
   it('keeps application screens out of the index whatever their status', () => {
-    expect(getRobotsDirective({ kind: 'private', status: 'COMPLETE', selfCanonical: true })).toBe(PRIVATE)
+    expect(getRobotsDirective({ kind: 'private', status: 'COMPLETE' })).toBe(PRIVATE)
   })
   it('emits real directive strings', () => {
     expect(INDEX).toBe('index, follow, max-image-preview:large')

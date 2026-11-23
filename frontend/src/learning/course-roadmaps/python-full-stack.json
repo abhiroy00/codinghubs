@@ -1318,6 +1318,7 @@
           "id": "python-full-stack:assignment:1",
           "title": "Python Fundamentals: Types, Variables and Control Flow",
           "available": true,
+          "article": "day-1",
           "focus": "Python is a dynamically typed, strongly typed, interpreted language. A variable is a name that refers to an object; the object, not the name, carries the type. Control flow statements (if, for, while) decide which code runs and how many times, using indentation to mark blocks.",
           "objectives": [
             "Explain how Python variables work as names bound to objects.",
@@ -1347,6 +1348,7 @@
           "id": "python-full-stack:assignment:2",
           "title": "Functions, Arguments, Scope and Closures",
           "available": true,
+          "article": "day-2",
           "focus": "A function is a named, reusable block of code defined with def that takes parameters and returns a value (None if no return runs). In Python functions are first-class objects, so they can be assigned to variables, passed as arguments and returned from other functions; a closure is a nested function that remembers variables from the scope in which it was created.",
           "objectives": [
             "Define functions with positional, keyword, default, *args and **kwargs parameters.",
@@ -1376,6 +1378,7 @@
           "id": "python-full-stack:assignment:3",
           "title": "Built-in Data Structures and Comprehensions",
           "available": true,
+          "article": "day-3",
           "focus": "Python's built-in data structures are list (ordered, mutable sequence), tuple (ordered, immutable sequence), dict (insertion-ordered mapping of hashable keys to values, backed by a hash table) and set (unordered collection of unique hashable items). Comprehensions are concise expressions that build these collections from an iterable with optional filtering.",
           "objectives": [
             "Choose between list, tuple, dict and set based on behaviour and time complexity.",
@@ -1405,6 +1408,7 @@
           "id": "python-full-stack:assignment:4",
           "title": "Object-Oriented Python: Classes, Inheritance and Dunder Methods",
           "available": true,
+          "article": "day-4",
           "focus": "Object-oriented programming (OOP) organises code around objects that bundle data (attributes) with behaviour (methods). In Python a class is a blueprint created with the class keyword, an object is an instance of that class, and special 'dunder' (double underscore) methods let your objects plug into built-in syntax such as printing, comparison, len() and +.",
           "objectives": [
             "Define classes with instance attributes, class attributes, methods and properties.",

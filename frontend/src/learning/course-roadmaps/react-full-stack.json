@@ -1327,6 +1327,7 @@
           "id": "react-full-stack:assignment:1",
           "title": "Scope, Closures and Functions: The JavaScript Behind React",
           "available": true,
+          "article": "day-1",
           "focus": "Scope decides where a variable can be read. JavaScript uses lexical scope: a function can see the variables that existed where it was written, not where it is called. A closure is a function together with the variables from its surrounding scope that it keeps alive, so it can still read and update them after the outer function has finished running.",
           "objectives": [
             "Explain lexical scope and the difference between var, let and const.",
@@ -1356,6 +1357,7 @@
           "id": "react-full-stack:assignment:2",
           "title": "Immutability, Spread and Destructuring",
           "available": true,
+          "article": "day-2",
           "focus": "Immutability means that once a value is created it is never changed in place; to 'update' it you create a new value that contains the change. In JavaScript, primitives are already immutable, but objects and arrays are mutable, so React code treats them as immutable by convention, building new copies with spread syntax, array methods that return new arrays, or helpers such as Immer.",
           "objectives": [
             "Explain the difference between primitive values and object references.",
@@ -1385,6 +1387,7 @@
           "id": "react-full-stack:assignment:3",
           "title": "Array Methods: map, filter, reduce and Friends",
           "available": true,
+          "article": "day-3",
           "focus": "Array methods are built-in functions on Array.prototype that process each element through a callback. Methods such as map, filter and reduce return new values instead of changing the original array, which lets you describe what result you want (declarative style) and fits React's rule of never mutating state.",
           "objectives": [
             "Use map, filter, reduce, find, some and every to transform data declaratively.",
@@ -1414,6 +1417,7 @@
           "id": "react-full-stack:assignment:4",
           "title": "ES Modules, Promises, async/await and the Event Loop",
           "available": true,
+          "article": "day-4",
           "focus": "ES modules (import/export) are JavaScript's standard way to split code into files with explicit dependencies. Asynchronous JavaScript lets a single-threaded program start slow work, such as a network request, and continue running; the result arrives later through a promise, and the event loop schedules the callback when the call stack is empty. async/await is syntax on top of promises that makes asynchronous code read like synchronous code.",
           "objectives": [
             "Use named and default ES module exports and explain how bundlers use them for tree shaking.",

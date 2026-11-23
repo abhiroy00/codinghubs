@@ -2226,6 +2226,7 @@
           "id": "agentic-ai:assignment:1",
           "title": "LLM Recap for Agent Builders: Tokens, Context Windows and Sampling",
           "available": true,
+          "article": "day-1",
           "focus": "A large language model (LLM) is a neural network, usually a transformer, trained to predict the next token in a sequence. At inference time it repeatedly turns the text so far into a probability distribution over its vocabulary, picks a token, appends it and repeats. Every agent in this course uses an LLM as its reasoning engine, so its limits (context size, cost per token, randomness and lack of memory) shape every design decision.",
           "objectives": [
             "Explain how a large language model generates text one token at a time.",
@@ -2255,6 +2256,7 @@
           "id": "agentic-ai:assignment:2",
           "title": "What Makes a System Agentic: Autonomy, Goals and the Agency Spectrum",
           "available": true,
+          "article": "day-2",
           "focus": "An agentic system is software in which a language model decides, at run time, what to do next in order to reach a goal: which tool to call, which path to take and when the task is finished. The more of the control flow the model owns, the more agentic the system is. A workflow follows steps written by a developer; an agent chooses its own steps inside the boundaries the developer sets.",
           "objectives": [
             "Define an AI agent and distinguish it from a chatbot, a workflow and a plain program.",
@@ -2284,6 +2286,7 @@
           "id": "agentic-ai:assignment:3",
           "title": "The Agent Loop: Perceive, Reason, Act",
           "available": true,
+          "article": "day-3",
           "focus": "The agent loop is the repeating cycle at the heart of every agent: perceive the current state of the environment, reason about what to do next given the goal, act by calling a tool or producing output, then observe the result and repeat. The loop ends when the goal is met or a safety condition such as a step limit, budget or error stops it.",
           "objectives": [
             "Describe the perceive–reason–act cycle and map it to LLM agent code.",
@@ -2313,6 +2316,7 @@
           "id": "agentic-ai:assignment:4",
           "title": "ReAct: Interleaving Reasoning and Acting",
           "available": true,
+          "article": "day-4",
           "focus": "ReAct (Reason + Act) is a prompting and control pattern in which the model alternates between a short natural-language reasoning trace, called a thought, and an action such as a tool call. After each action the environment returns an observation, which becomes the next input, and the cycle repeats until the model emits a final answer. The thought helps the model plan and track state, while the action grounds the next thought in real feedback so the agent corrects course instead of hallucinating a result.",
           "objectives": [
             "Explain how the ReAct pattern interleaves thoughts, actions and observations.",
@@ -2342,6 +2346,7 @@
           "id": "agentic-ai:assignment:5",
           "title": "Tool and Function Calling: Giving the Model Hands",
           "available": true,
+          "article": "day-5",
           "focus": "Tool calling, also called function calling, is a mechanism in which the model is given a list of tools described by schemas and can respond not with prose but with a structured request to invoke one of them. The application executes the tool, returns the result as a message, and the model continues. It is the bridge between reasoning and action: the model decides what to call and with which arguments, while ordinary code performs the call and enforces the rules.",
           "objectives": [
             "Explain how function calling turns model output into structured tool invocations.",
@@ -2371,6 +2376,7 @@
           "id": "agentic-ai:assignment:6",
           "title": "Planning and Task Decomposition",
           "available": true,
+          "article": "day-6",
           "focus": "Planning is the agent skill of breaking a goal into smaller sub-tasks and deciding the order in which to do them before or while acting. Task decomposition produces the sub-tasks; a plan records their sequence and dependencies. A good plan makes progress visible, exposes parallelism and gives the agent checkpoints, but it must stay revisable because real environments return surprises that invalidate the original plan.",
           "objectives": [
             "Explain how planning turns a high-level goal into an ordered set of sub-tasks.",
@@ -2400,6 +2406,7 @@
           "id": "agentic-ai:assignment:7",
           "title": "Agent Memory: Short-Term Context and Long-Term Stores",
           "available": true,
+          "article": "day-7",
           "focus": "Agent memory is the information an agent can use beyond the current model call. Short-term memory is the working context of the current task: the messages, tool results and notes inside the context window. Long-term memory is anything stored outside the model, such as a vector database, key-value store or file, and read back when relevant. Memory lets an agent act consistently across many steps and many sessions, which a stateless model cannot do on its own.",
           "objectives": [
             "Distinguish short-term working memory from long-term memory in an agent.",
@@ -2811,6 +2818,7 @@
           "id": "agentic-ai:assignment:8",
           "title": "Reflection and Self-Critique: Learning From the Last Attempt",
           "available": true,
+          "article": "day-8",
           "focus": "Reflection is an agent technique in which, after an attempt, the agent critiques its own output or trajectory, records the critique as feedback, and uses it to improve the next attempt. It usually runs as an actor-evaluator-reflection loop: the actor produces an answer or action, an evaluator scores it, and a reflection step writes what went wrong and how to fix it. The feedback is stored in memory so a later attempt does not repeat the same mistake.",
           "objectives": [
             "Explain what reflection adds after a failed or imperfect attempt.",

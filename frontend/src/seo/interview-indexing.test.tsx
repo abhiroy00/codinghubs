@@ -5,6 +5,7 @@ import { learningMeta } from './learning'
 import { LearnFrame } from '../learning/LearnFrame'
 import { InterviewGuide } from '../interview/InterviewGuide'
 import guides from '../interview/guides.json'
+import { GENAI_LEVELS } from '../learning/genai-content'
 
 vi.mock('../lib/fs-css', () => ({ FS_CSS: '/free-session.css' }))
 vi.mock('../locations/FsShell', () => ({ FsHeader: () => null }))
@@ -16,13 +17,22 @@ beforeEach(() => {
 })
 
 describe('published interview indexing', () => {
-  for (const slug of ['data-science', 'aws-developer-associate', 'aws-certified-solutions-architect', 'java-full-stack-developer-gen-ai', 'mern-stack', 'agentic-ai', 'generative-ai']) {
-    it(`indexes the published ${slug} guide regardless of lesson count`, () => {
+  for (const slug of ['data-science', 'aws-developer-associate', 'aws-certified-solutions-architect', 'java-full-stack-developer-gen-ai', 'mern-stack', 'agentic-ai']) {
+    it(`indexes the ${slug} guide, which has a COMPLETE lesson`, () => {
       const seo = learningMeta('interview', slug)
       expect(seo.robots).not.toContain('noindex')
       expect(seo.canonical).toBe(`https://codinghubs.in/interview/${slug}/`)
     })
   }
+  it('indexes the generative-ai guide only once one of its articles is COMPLETE', () => {
+    const complete = GENAI_LEVELS.flatMap(l => l.articleSlugs).some(a => a.status === 'COMPLETE')
+    const seo = learningMeta('interview', 'generative-ai')
+    expect(seo.robots).toBe(complete ? 'index, follow, max-image-preview:large' : 'noindex, follow')
+    expect(seo.canonical).toBe('https://codinghubs.in/interview/generative-ai/')
+  })
+  it('keeps a course without any COMPLETE lesson out of the index', () => {
+    expect(learningMeta('interview', 'cissp').robots).toBe('noindex, follow')
+  })
   it('consolidates the Data Science alias on its published primary', () => {
     const seo = learningMeta('interview', 'data-science-pro')
     expect(seo.robots).not.toContain('noindex')
