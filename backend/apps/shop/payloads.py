@@ -1,82 +1,16 @@
-"""Public (and SSR) representations. Only published data; file URLs and gated content never appear here."""
 from django.conf import settings
-
 from apps.content import services as content_services
 from apps.content.sanitize import add_heading_ids, sanitize_html
-
 from . import access
-from .models import Product, Project, ProjectGuide, StoreSettings
-
-
-def public_products():
-    return Product.objects.public().select_related('category').prefetch_related('images', 'assets')
+from .models import Project, ProjectGuide
 
 
 def public_projects():
-    return Project.objects.public().select_related('product')
+    return Project.objects.public()
 
 
 def public_guides():
-    return ProjectGuide.objects.public().select_related('project', 'product')
-
-
-def stock_label(p: Product) -> str:
-    if not p.tracks_stock:
-        return 'Instant digital delivery' if p.product_type == 'digital' else 'Available'
-    if p.stock_quantity <= 0:
-        return 'Out of stock'
-    return f'Only {p.stock_quantity} left' if p.stock_quantity <= p.low_stock_threshold else 'In stock'
-
-
-def product_card(p: Product) -> dict:
-    img = next(iter(p.images.all()), None)
-    return {
-        'id': p.id, 'title': p.title, 'slug': p.slug, 'short_description': p.short_description, 'price': str(p.price),
-        'original_price': str(p.original_price) if p.original_price and p.original_price > p.price else None, 'currency': p.currency,
-        'product_type': p.product_type, 'item_kind': p.item_kind, 'format': p.format, 'author': p.author,
-        'category': {'name': p.category.name, 'slug': p.category.slug} if p.category else None,
-        'image': {'src': img.src, 'alt': img.alt} if img else None, 'in_stock': p.in_stock, 'stock_label': stock_label(p),
-        'is_featured': p.is_featured, 'is_free': p.price <= 0, 'has_download': p.is_digital and p.assets.exists(), 'published_at': p.published_at,
-    }
-
-
-def product_detail(p: Product, preview=False) -> dict:
-    body, toc = add_heading_ids(sanitize_html(p.description))
-    cfg = StoreSettings.load()
-    related = [r for r in p.related_products.all() if preview or Product.objects.public().filter(pk=r.pk).exists()][:4]
-    guides = [g for g in p.guides.all() if ProjectGuide.objects.public().filter(pk=g.pk).exists()][:3]
-    data = product_card(p) | {
-        'description_html': body, 'toc': toc if len(toc) >= 3 else [], 'included_materials': p.included_materials,
-        'publisher': p.publisher, 'isbn': p.isbn, 'language': p.language, 'edition': p.edition, 'publication_year': p.publication_year,
-        'pages': p.pages, 'topics': p.topics, 'images': [{'src': i.src, 'alt': i.alt} for i in p.images.all()], 'sku': p.sku,
-        'weight_grams': p.weight_grams, 'dimensions': p.dimensions, 'tracks_stock': p.tracks_stock, 'is_physical': p.is_physical, 'is_digital': p.is_digital,
-        'files': [{'id': a.id, 'label': a.label, 'size': a.size, 'type': a.content_type} for a in p.assets.all()] if p.is_digital else [],
-        'delivery': delivery_note(p, cfg), 'tax_note': tax_note(cfg), 'shipping_flat': str(cfg.shipping_flat) if p.is_physical else None,
-        'free_shipping_over': str(cfg.free_shipping_over) if p.is_physical and cfg.free_shipping_over is not None else None,
-        'related': [product_card(r) for r in related], 'guides': [guide_card(g) for g in guides],
-        'seo': product_seo(p, preview), 'preview': preview,
-    }
-    return data
-
-
-def delivery_note(p, cfg):
-    parts = []
-    if p.is_digital:
-        if p.price <= 0:
-            parts.append('Submit your details on the product page to download this free digital resource directly.')
-        else:
-            parts.append('Digital files are available to download from your account (or the order link) as soon as payment is confirmed.')
-    if p.is_physical:
-        parts.append('Printed items are shipped to your address after payment; you receive tracking details by email.')
-    return ' '.join(parts)
-
-
-def tax_note(cfg):
-    if cfg.tax_mode == StoreSettings.TAX_EXCLUSIVE:
-        return 'Taxes are added at checkout.'
-    if cfg.tax_mode == StoreSettings.TAX_INCLUSIVE:
-        return 'Prices include applicable taxes.'
-    return ''
+    return ProjectGuide.objects.public().select_related('project')
 
 
 def fill_description(desc: str, title: str, what: str) -> str:
@@ -88,32 +22,6 @@ def fill_description(desc: str, title: str, what: str) -> str:
     return (lead + f'{what} from Coding Hubs School of AI, Netaji Subhash Place, Delhi.')[:158]
 
 
-def product_seo(p: Product, preview=False) -> dict:
-    url = f'{settings.SITE_URL}/store/{p.slug}'
-    canonical = p.canonical_url or url
-    title = p.seo_title or f'{p.title} | Coding Hubs Store'
-    desc = p.meta_description or fill_description((p.short_description or content_services.plain_text(p.description))[:158], p.title, 'Study notes and learning material')
-    image = next(iter(p.images.all()), None)
-    img_url = content_services.absolute(p.og_image or (image.src if image else '')) or content_services.LOGO_URL
-    availability = 'https://schema.org/InStock' if p.in_stock else 'https://schema.org/OutOfStock'
-    product_node = {
-        '@type': 'Product', '@id': f'{url}#product', 'name': p.title, 'description': desc, 'sku': p.sku, 'image': [img_url],
-        'url': canonical,
-        'offers': {'@type': 'Offer', 'url': canonical, 'price': str(p.price), 'priceCurrency': p.currency, 'availability': availability,
-                   'seller': {'@id': content_services.ORG_ID, '@type': 'EducationalOrganization', 'name': 'Coding Hubs School of AI'}},
-    }
-    if p.author:
-        product_node['author'] = {'@type': 'Person', 'name': p.author}
-    graph = [product_node]
-    return {
-        'title': title, 'description': desc, 'canonical': canonical,
-        'robots': 'noindex, nofollow' if preview else 'index, follow, max-image-preview:large',
-        'og': {'type': 'product', 'title': p.og_title or p.seo_title or p.title, 'description': p.og_description or desc, 'image': img_url, 'url': canonical},
-        'json_ld': {'@context': 'https://schema.org', '@graph': graph},
-    }
-
-
-# ---------- projects ----------
 def guides_by_project(project_ids) -> dict:
     """First public guide of each project (one query), shown next to the project everywhere it is listed."""
     out = {}
@@ -126,8 +34,7 @@ def project_card(p: Project, guide=None) -> dict:
     return {
         'title': p.title, 'slug': p.slug, 'summary': p.summary, 'category': p.category, 'difficulty': p.difficulty, 'technologies': p.technologies,
         'featured_image': p.featured_image, 'featured_image_alt': p.featured_image_alt, 'estimated_time': p.estimated_time,
-        'is_featured': p.is_featured, 'is_paid': p.is_paid, 'files_restricted': p.files_restricted, 'price': str(p.product.price) if p.is_paid else None,
-        'currency': p.product.currency if p.is_paid else None, 'published_at': p.published_at, 'guide': guide,
+        'is_featured': p.is_featured, 'files_restricted': p.files_restricted, 'published_at': p.published_at, 'guide': guide,
     }
 
 
@@ -143,7 +50,6 @@ def project_detail(p: Project, user=None, preview=False) -> dict:
         'learning_outcomes': p.learning_outcomes, 'architecture_html': html(p.architecture), 'database_html': html(p.database_requirements),
         'setup_html': html(p.setup_overview), 'screenshots': p.screenshots, 'languages': p.languages, 'tools': p.tools,
         'demo_url': p.demo_url, 'repo_url': p.repo_url if p.repo_public else '', 'author_name': p.author_name, 'author_title': p.author_title,
-        'product': {'slug': p.product.slug, 'title': p.product.title, 'price': str(p.product.price)} if p.product_id and Product.objects.public().filter(pk=p.product_id).exists() else None,
         'unlocked': unlocked,
         'files': [{'id': a.id, 'label': a.label, 'size': a.size, 'type': a.content_type} for a in p.assets.all()] if unlocked else [],
         'locked_files': 0 if unlocked else p.assets.count(),
@@ -159,13 +65,11 @@ def project_detail(p: Project, user=None, preview=False) -> dict:
     }
 
 
-# ---------- guides ----------
 def guide_card(g: ProjectGuide) -> dict:
     return {
         'title': g.title, 'slug': g.slug, 'summary': g.summary, 'category': g.category, 'difficulty': g.difficulty, 'technologies': g.technologies,
         'featured_image': g.featured_image, 'featured_image_alt': g.featured_image_alt, 'estimated_time': g.estimated_time,
         'access_type': g.access_type, 'is_featured': g.is_featured, 'reading_time': g.reading_time, 'published_at': g.published_at,
-        'price': str(g.product.price) if g.product_id and g.access_type == 'paid' else None,
         'project': {'title': g.project.title, 'slug': g.project.slug} if g.project_id else None,
     }
 
@@ -200,11 +104,10 @@ def unlock_info(g: ProjectGuide):
         return None
     if g.access_type == ProjectGuide.ACCESS_ACCOUNT:
         return {'type': 'account', 'message': 'Create a free account or log in to read the full guide.'}
-    prod = g.product if g.product_id and Product.objects.public().filter(pk=g.product_id).exists() else None
     return {
-        'type': g.access_type, 'product': {'slug': prod.slug, 'title': prod.title, 'price': str(prod.price)} if prod else None,
+        'type': g.access_type,
         'courses': [{'name': c.name, 'slug': c.slug} for c in g.included_courses.filter(is_active=True)],
-        'message': 'Contact Coding Hubs for access to this restricted guide.' if g.access_type == 'paid' else 'This guide is included with an eligible course enrollment.',
+        'message': 'Contact Coding Hubs for access to this restricted guide.' if g.access_type == ProjectGuide.ACCESS_RESTRICTED else 'This guide is included with an eligible course enrollment.',
     }
 
 

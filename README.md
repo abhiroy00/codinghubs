@@ -126,9 +126,9 @@ Managed from the admin panel; published content appears at `/blog` and `/case-st
 See "Blog and case studies (CMS)" in [DEPLOY.md](DEPLOY.md) for setup (TinyMCE key, images, scheduling, deployment).
 
 
-## Projects, project guides and store
+## Projects and project guides
 
-Projects, step-by-step guides (free, account-only, paid or included with a course) and a store for notes, books, project files and printed material, with cart, coupons, Razorpay checkout, private downloads, orders and inventory. All managed from `/admin-panel/`. Setup, payment testing and the launch checklist are in [DEPLOY.md](DEPLOY.md).
+Projects and step-by-step guides are managed from `/admin-panel/` and published at `/projects` and `/project-guides` with server-rendered HTML. Private files use authorized, expiring resource links. Store, cart, checkout and store order history are retired; course enrollment payments remain available. See [Store retirement](docs/store-retirement.md) and [DEPLOY.md](DEPLOY.md).
 
 
 ## Accounts, sessions and personal data
@@ -141,12 +141,8 @@ Projects, step-by-step guides (free, account-only, paid or included with a cours
   `POST /api/auth/password-reset/confirm/` sets the new password. The UI is at `/forgot-password` and `/reset-password`.
   Links use `SITE_URL`; without SMTP configured the email is printed to the backend log.
 - **Data export and deletion.** `GET /api/auth/me/export/` returns the signed-in customer's profile, enrolments, learning
-  progress, certificates, AI history and store orders as JSON (the "Download my data" button on `/my-account`).
+  progress, certificates and AI history as JSON (the "Download my data" button on `/my-account`).
   `POST /api/auth/me/delete/` with `{password}` permanently deletes the account, learning data, AI history and resumes.
   Orders are retained without personal identifiers for accounting, as the UI and privacy policy explain.
 - **Throttling.** DRF throttles use the `CACHES` backend. Production uses a file cache (default `backend/.cache`) so all
   Gunicorn workers share counters; tests use `LocMemCache`. On a multi-host deployment point `CACHE_BACKEND` at Redis.
-
-**Auditing store orders.** `python manage.py audit_store_orders` lists orders whose status says paid but that have no
-gateway payment attached (the signature of a pre-fix payment bypass). It is read-only and exits non-zero when it finds any;
-use `--csv > orders.csv` for a spreadsheet. Run it once after deploying the payment fix.

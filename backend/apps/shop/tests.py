@@ -1,11 +1,8 @@
 import json
 import shutil
 import tempfile
-from datetime import timedelta
-from decimal import Decimal
 from io import BytesIO
 from zipfile import ZipFile
-
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.core.cache import cache
@@ -13,13 +10,12 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from rest_framework.test import APIClient
-
 from apps.courses.models import Course, CourseCategory
 from apps.enrollments.models import Enrollment
-
 from .models import (
-    Product, Project, ProjectGuide, ProjectQuestion,
+    Project, ProjectGuide, ProjectQuestion,
 )
+
 
 User = get_user_model()
 NO_THROTTLE = {
@@ -72,13 +68,6 @@ class ShopBase(TestCase):
             c.force_authenticate(user)
         return c
 
-    def product(self, title='Python Notes', ptype='digital', price='199.00', stock=0, **kw):
-        defaults = dict(title=title, slug=title.lower().replace(' ', '-'), sku=None, product_type=ptype, price=Decimal(price), status='published',
-                        published_at=timezone.now() - timedelta(minutes=1), stock_quantity=stock, track_stock=ptype != 'digital')
-        defaults.update(kw)
-        p = Product(**defaults)
-        p.save()
-        return p
 
 
 # ====================== auth & permissions ======================
@@ -288,10 +277,10 @@ class ProjectGuideTests(ShopBase):
         self.assertIn('SECRET STEPS', self.as_user(self.alice).get(f'/api/project-guides/{g["slug"]}/').content.decode())
 
 
-    def test_paid_guide_requires_a_product(self):
+    def test_retired_paid_mode_cannot_be_created(self):
         r = self.api.post('/api/admin/project-guides/', {'title': 'x', 'access_type': 'paid'}, format='json')
         self.assertEqual(r.status_code, 400)
-        self.assertIn('product', r.json())
+        self.assertIn('access_type', r.json())
 
     def test_guide_included_with_a_course(self):
         cat = CourseCategory.objects.create(name='AI', slug='ai')
@@ -312,7 +301,7 @@ class ProjectGuideTests(ShopBase):
         self.assertEqual(r.status_code, 200)
         self.assertTrue(r.json()['url'].startswith('/api/resources/download/'))
         self.assertEqual(b''.join(self.as_user(self.alice).get(r.json()['url']).streaming_content), pdf_bytes())
-        ProjectGuide.objects.filter(pk=g['id']).update(access_type='paid')
+        ProjectGuide.objects.filter(pk=g['id']).update(access_type='restricted')
         self.assertEqual(self.anon.get(r.json()['url']).status_code, 404)
         self.assertEqual(self.as_user(self.alice).post(link, {}, format='json').status_code, 403)
 
@@ -345,22 +334,15 @@ class SeoTests(ShopBase):
 
 
     def test_unknown_and_draft_pages_are_real_404s(self):
-        d = self.product('Draft thing', status='draft')
-        for u in ('/store/nope', f'/store/{d.slug}', '/projects/nope', '/project-guides/nope'):
+        for u in ('/store/nope', '/projects/nope', '/project-guides/nope'):
             r = self.anon.get(u)
             self.assertEqual(r.status_code, 404, u)
             self.assertIn('noindex', r['X-Robots-Tag'])
 
 
-    def test_sitemap_excludes_products_projects_and_guides_canonicalized_elsewhere(self):
-        product = self.product('Syndicated notes')
-        own_url = f'https://codinghubs.in/store/{product.slug}'
-        product.canonical_url = own_url
-        product.save()
-        # The store is retired, so its catalogue is no longer advertised in the shop sitemap.
+    def test_sitemap_excludes_retired_store_and_noncanonical_resources(self):
+        own_url = 'https://codinghubs.in/store/retired-notes'
         self.assertNotIn(own_url, self.anon.get('/sitemap-shop.xml').content.decode())
-        product.canonical_url = 'https://example.org/original-notes'
-        product.save()
         project = Project.objects.create(title='Syndicated project', slug='syndicated-project', status='published', published_at=timezone.now(), canonical_url='https://codinghubs.in/projects/primary-project')
         guide = ProjectGuide.objects.create(title='Syndicated guide', slug='syndicated-guide', status='published', published_at=timezone.now(), canonical_url='https://example.org/original-guide')
         xml = self.anon.get('/sitemap-shop.xml').content.decode()
@@ -376,9 +358,8 @@ class SeoTests(ShopBase):
         self.assertEqual(html.count('<h1'), 1)
         self.assertIn(f'href="https://codinghubs.in/projects/{pr["slug"]}"', html)
 
-    def test_paid_guide_structured_data_says_not_free(self):
-        prod = self.product('Pack')
-        g = self.api.post('/api/admin/project-guides/', {'title': 'Paid guide', 'access_type': 'paid', 'product': prod.id}, format='json').json()
+    def test_restricted_guide_structured_data_says_not_free(self):
+        g = self.api.post('/api/admin/project-guides/', {'title': 'Restricted guide', 'access_type': 'restricted'}, format='json').json()
         self.api.post(f'/api/admin/project-guides/{g["id"]}/publish/')
         node = self.ld(self.anon.get(f'/project-guides/{g["slug"]}').content.decode())['@graph'][0]
         self.assertFalse(node['isAccessibleForFree'])

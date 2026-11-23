@@ -8,12 +8,11 @@ from django.conf import settings
 from django.core import signing
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import F
 from django.http import FileResponse, Http404
 
 from . import access
 from .audit import client_prefix
-from .models import DigitalAsset, DownloadEvent, DownloadPermission, Project, ProjectGuide
+from .models import DigitalAsset, DownloadEvent, Project, ProjectGuide
 
 MAX_ASSET_BYTES = 100 * 1024 * 1024
 SALT = 'shop-download'
@@ -97,17 +96,11 @@ def make_token(kind: str, obj_id: int, user=None) -> str:
 
 def read_token(token: str) -> dict:
     try:
-        return signing.loads(token, salt=SALT, max_age=settings.STORE_DOWNLOAD_LINK_TTL)
+        return signing.loads(token, salt=SALT, max_age=settings.RESOURCE_DOWNLOAD_LINK_TTL)
     except signing.SignatureExpired:
         raise Http404('This download link has expired. Request a new one.')
     except signing.BadSignature:
         raise Http404
-
-
-def link_for_permission(perm: DownloadPermission, user=None) -> str:
-    if not perm.active:
-        raise PermissionError('This download is no longer available.')
-    return f'/api/store/download/{make_token("perm", perm.id, user)}/'
 
 
 def link_for_guide_asset(user, asset: DigitalAsset) -> str:
@@ -128,15 +121,8 @@ def serve(request, token: str):
 
     user = get_user_model().objects.filter(pk=data['u'], is_active=True).first() if data.get('u') else None
     kind = data['k']
-    order = None
     with transaction.atomic():
-        if kind == 'perm':
-            perm = DownloadPermission.objects.select_for_update().select_related('asset', 'order').filter(pk=data['id']).first()
-            if not perm or not perm.active or not perm.order.is_paid:
-                raise Http404
-            asset, order = perm.asset, perm.order
-            DownloadPermission.objects.filter(pk=perm.pk).update(download_count=F('download_count') + 1)
-        elif kind == 'guide':
+        if kind == 'guide':
             asset = DigitalAsset.objects.select_related('guide').filter(pk=data['id'], guide__isnull=False).first()
             if not asset or not ProjectGuide.objects.public().filter(pk=asset.guide_id).exists() and not (user and user.is_staff):
                 raise Http404
@@ -150,7 +136,7 @@ def serve(request, token: str):
                 raise Http404
         else:
             raise Http404
-        DownloadEvent.objects.create(asset=asset, user=user, order=order, source=kind if kind != 'perm' else 'order', ip_prefix=client_prefix(request))
+        DownloadEvent.objects.create(asset=asset, user=user, source=kind, ip_prefix=client_prefix(request))
     try:
         fh = asset.file.open('rb')
     except FileNotFoundError:

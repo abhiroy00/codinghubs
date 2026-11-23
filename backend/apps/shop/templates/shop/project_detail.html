@@ -2,7 +2,7 @@
 <main id="main" class="wrap bl-main"><article class="bl-article">
   {% if preview %}<p class="bl-preview" role="status">Preview. This page is not public.</p>{% endif %}
   <header class="bl-head"><p class="bl-cat">{{ a.difficulty }}{% if a.category %} · {{ a.category }}{% endif %}</p><h1>{{ a.title }}</h1>
-    <p class="bl-meta">{% if a.estimated_time %}{{ a.estimated_time }} · {% endif %}{% if a.is_paid %}Paid project · ₹{{ a.price }}{% else %}Free project{% endif %}</p></header>
+    <p class="bl-meta">{% if a.estimated_time %}{{ a.estimated_time }} · {% endif %}{% if a.files_restricted %}Restricted files{% else %}Public resource{% endif %}</p></header>
   {% if a.featured_image %}<img class="bl-cover" src="{{ a.featured_image }}" alt="{{ a.featured_image_alt }}" width="1200" height="630" decoding="async">{% endif %}
   <p>{{ a.summary }}</p>
   {% if a.overview_html %}<section class="bl-body"><h2>Overview</h2>{{ a.overview_html|safe }}</section>{% endif %}

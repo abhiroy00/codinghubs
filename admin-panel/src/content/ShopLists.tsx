@@ -20,8 +20,8 @@ interface Cfg {
   filter?: { name: string; label: string; options: [string, string][] }
 }
 const CFG: Partial<Record<Kind, Cfg>> = {
-  projects: { title: 'Projects', noun: 'project', path: 'projects', extraHead: 'Difficulty', extra: (r) => `${r.difficulty ?? ''}${r.product ? ' · paid' : ''}`, filter: { name: 'difficulty', label: 'All difficulties', options: [['beginner', 'Beginner'], ['intermediate', 'Intermediate'], ['advanced', 'Advanced']] } },
-  'project-guides': { title: 'Project guides', noun: 'project guide', path: 'project-guides', extraHead: 'Access', extra: (r) => r.access_type, filter: { name: 'access', label: 'Any access', options: [['free', 'Free'], ['account', 'Account'], ['paid', 'Paid'], ['included', 'Included']] } },
+  projects: { title: 'Projects', noun: 'project', path: 'projects', extraHead: 'Difficulty', extra: (r) => `${r.difficulty ?? ''}${r.files_restricted ? ' · restricted files' : ''}`, filter: { name: 'difficulty', label: 'All difficulties', options: [['beginner', 'Beginner'], ['intermediate', 'Intermediate'], ['advanced', 'Advanced']] } },
+  'project-guides': { title: 'Project guides', noun: 'project guide', path: 'project-guides', extraHead: 'Access', extra: (r) => r.access_type, filter: { name: 'access', label: 'Any access', options: [['free', 'Free'], ['account', 'Account'], ['restricted', 'Restricted'], ['included', 'Included']] } },
 }
 
 export function ShopList({ kind }: { kind: Kind }) {

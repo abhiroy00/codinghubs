@@ -7,7 +7,6 @@ export const SITE_URL = 'https://codinghubs.in'
 export const PUBLIC_BASE = {
   blogs: '/blog',
   'case-studies': '/case-studies',
-  products: '/store',
   projects: '/projects',
   'project-guides': '/project-guides',
 } as const

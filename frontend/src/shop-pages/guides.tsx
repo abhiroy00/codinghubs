@@ -5,7 +5,7 @@ import { BackLink } from '../components/BackLink'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { CodeEnhancedHtml, FileList, Html, useDetail } from './catalog'
 import { Arrow, Clock, Cover, cap } from './projects'
-import { get, initial, rupees, type Card, type Paged } from './api'
+import { get, initial, type Card, type Paged } from './api'
 import './projects.css'
 import './shopui.css'
 import { HeroVideo } from '../components/HeroVideo'
@@ -13,10 +13,9 @@ import { AnimatedCard, Reveal } from '../components/ui'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PAGE = 9
-const ACCESS: Record<string, string> = { free: 'Free', account: 'Free with account', paid: 'Paid', included: 'Included' }
+const ACCESS: Record<string, string> = { free: 'Free', account: 'Free with account', restricted: 'Restricted', included: 'Included' }
 
 function accessLabel(c: Card) {
-  if (c.access_type === 'paid') return c.price ? rupees(c.price) : 'Paid'
   return ACCESS[c.access_type ?? 'free'] ?? 'Free'
 }
 
@@ -27,7 +26,7 @@ export function GuideCard({ c, i = 0, featured = false }: { c: Card; i?: number;
       <Link to={`/project-guides/${c.slug}`} className="pj-card-media ui-zoom" tabIndex={-1} aria-hidden="true">
         <Cover c={c} />
         <span className={`pj-lvl pj-${c.difficulty}`}>{cap(c.difficulty)}</span>
-        <span className={`pj-price${c.access_type === 'paid' ? ' paid' : ''}`}>{accessLabel(c)}</span>
+        <span className={`pj-price${c.access_type === 'restricted' ? ' paid' : ''}`}>{accessLabel(c)}</span>
       </Link>
       <div className="pj-card-body">
         {c.category && typeof c.category === 'string' && <p className="pj-cat">{c.category}</p>}
@@ -136,7 +135,7 @@ export function GuidesPage() {
             <option value="">Any level</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option>
           </select>
           <select aria-label="Access" value={access} onChange={(e) => go({ access: e.target.value || null })}>
-            <option value="">Any access</option><option value="free">Free</option><option value="account">Free with account</option><option value="paid">Paid</option><option value="included">Included</option>
+            <option value="">Any access</option><option value="free">Free</option><option value="account">Free with account</option><option value="restricted">Restricted</option><option value="included">Included</option>
           </select>
           {active > 0 && <button type="button" className="pj-clear" onClick={reset}>Clear filters ({active})</button>}
         </div>
@@ -181,7 +180,7 @@ export function GuidePage() {
             <div className="pj-badges">
               <span className={`pj-lvl pj-${g.difficulty}`}>{cap(g.difficulty)}</span>
               {g.category && <span className="pj-pill">{g.category}</span>}
-              <span className={`pj-pill ${g.access_type === 'paid' ? 'paid' : 'free'}`}>{accessLabel(g)}</span>
+              <span className={`pj-pill ${g.access_type === 'restricted' ? 'paid' : 'free'}`}>{accessLabel(g)}</span>
             </div>
             <h1>{g.title}</h1>
             {g.summary && <p className="pj-dlead">{g.summary}</p>}

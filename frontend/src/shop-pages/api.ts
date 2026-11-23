@@ -14,30 +14,13 @@ shop.interceptors.request.use((c) => {
 
 installSessionRecovery(shop)
 
-export interface Money {
-  price: string
-  original_price?: string | null
-  currency?: string
-}
-export const rupees = (v: string | number | null | undefined) => `₹${Number(v ?? 0).toLocaleString('en-IN', { minimumFractionDigits: Number(v) % 1 ? 2 : 0, maximumFractionDigits: 2 })}`
 export const fmtSize = (n: number) => (n > 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`)
 
 export interface Card {
   id?: number
   title: string
   slug: string
-  short_description?: string
   summary?: string
-  price?: string | null
-  original_price?: string | null
-  is_free?: boolean
-  has_download?: boolean
-  is_paid?: boolean
-  product_type?: string
-  stock_label?: string
-  in_stock?: boolean
-  format?: string
-  author?: string
   category?: { name: string; slug: string } | string | null
   image?: { src: string; alt: string } | null
   featured_image?: string
@@ -45,6 +28,7 @@ export interface Card {
   difficulty?: string
   technologies?: string[]
   estimated_time?: string
+  files_restricted?: boolean
   access_type?: string
   reading_time?: number
   is_featured?: boolean

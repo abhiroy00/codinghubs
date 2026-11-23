@@ -50,6 +50,28 @@ AWS_REGION="$REGION" ./fetch-env.sh
 aws ecr get-login-password --region "$REGION" | docker login --username AWS --password-stdin "$REGISTRY"
 
 $COMPOSE pull
+# A verified, private database archive must exist before startup can run schema migrations.
+# Keep it on the host independently of container replacement or image pruning.
+DB_ID=$($COMPOSE ps -q db)
+RETAINED_BASELINE=''
+if [ -n "$DB_ID" ]; then
+  umask 077
+  BACKUP_DIR=/opt/codinghubs/backups
+  mkdir -p "$BACKUP_DIR"
+  BACKUP_FILE="$BACKUP_DIR/before-$SHA-$(date -u +%Y%m%dT%H%M%SZ).dump"
+  $COMPOSE exec -T db sh -ec 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" --format=custom' > "$BACKUP_FILE.partial"
+  test -s "$BACKUP_FILE.partial"
+  $COMPOSE exec -T db pg_restore --list < "$BACKUP_FILE.partial" > /dev/null
+  mv "$BACKUP_FILE.partial" "$BACKUP_FILE"
+  echo "Verified pre-migration database backup: $BACKUP_FILE"
+  sha256sum "$BACKUP_FILE"
+  if [ -n "$($COMPOSE ps -q backend)" ]; then
+    RETAINED_BASELINE=$($COMPOSE exec -T backend python manage.py shell -v 0 -c 'import json; from django.apps import apps; names = [("accounts", "User"), ("courses", "Course"), ("enrollments", "Enrollment"), ("payments", "Order"), ("shop", "Project"), ("shop", "ProjectGuide"), ("shop", "DigitalAsset")]; print(json.dumps({a + "." + m: apps.get_model(a, m).objects.count() for a, m in names}))')
+    echo "Retained record baseline: $RETAINED_BASELINE"
+  fi
+else
+  echo 'Initial database setup: no existing database container to back up.'
+fi
 $COMPOSE up -d --remove-orphans
 # The entrypoint migrates before starting Gunicorn. A Django `check` can finish
 # while those migrations are still running, so wait for the HTTP health check.
@@ -65,6 +87,11 @@ done
 if [ "$BACKEND_READY" != true ]; then
   echo 'Backend did not become healthy after startup migrations.'
   exit 1
+fi
+if [ -n "$RETAINED_BASELINE" ]; then
+  $COMPOSE exec -T backend python manage.py verify_store_retirement --baseline-json "$RETAINED_BASELINE"
+else
+  $COMPOSE exec -T backend python manage.py verify_store_retirement
 fi
 # Creates/updates the admin-panel login from ADMIN_EMAIL / ADMIN_PASSWORD (SSM params); no-op when they are unset.
 $COMPOSE exec -T backend python manage.py ensure_admin

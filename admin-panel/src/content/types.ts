@@ -1,4 +1,4 @@
-export type Kind = 'blogs' | 'case-studies' | 'projects' | 'project-guides' | 'products'
+export type Kind = 'blogs' | 'case-studies' | 'projects' | 'project-guides'
 export type Status = 'draft' | 'scheduled' | 'published' | 'archived'
 export const MAX_BLOG_WORDS = 10_000
 
@@ -146,7 +146,7 @@ export function fromApi<T extends Common>(blank: T, data: any): T {
   return out as T
 }
 
-const NULLABLE = ['category', 'product', 'project', 'original_price', 'tax_rate', 'publication_year', 'pages', 'weight_grams', 'download_limit']
+const NULLABLE = ['category', 'project']
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function toApi(form: Common): Record<string, any> {

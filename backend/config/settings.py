@@ -225,8 +225,7 @@ FRONTEND_SHELL_URL = config('FRONTEND_SHELL_URL', default='')
 
 # --- Projects, guides and store ---
 PRIVATE_MEDIA_ROOT = config('PRIVATE_MEDIA_ROOT', default=str(BASE_DIR / 'private_media'))
-STORE_DOWNLOAD_LINK_TTL = config('STORE_DOWNLOAD_LINK_TTL', default=600, cast=int)  # seconds a download link stays valid
-STORE_PENDING_ORDER_MINUTES = config('STORE_PENDING_ORDER_MINUTES', default=30, cast=int)  # unpaid orders release stock after this
+RESOURCE_DOWNLOAD_LINK_TTL = config('RESOURCE_DOWNLOAD_LINK_TTL', default=config('STORE_DOWNLOAD_LINK_TTL', default=600, cast=int), cast=int)
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = config('EMAIL_HOST', default='')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)

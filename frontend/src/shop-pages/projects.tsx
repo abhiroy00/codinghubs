@@ -4,7 +4,7 @@ import { NotFound } from '../pages/NotFound'
 import { BackLink } from '../components/BackLink'
 import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
 import { FileList, Html, useDetail } from './catalog'
-import { errorText, get, initial, rupees, shop, type Card, type Paged } from './api'
+import { errorText, get, initial, shop, type Card, type Paged } from './api'
 import './projects.css'
 import { HeroVideo } from '../components/HeroVideo'
 import { AnimatedCard, Reveal } from '../components/ui'
@@ -49,7 +49,7 @@ export function ProjectCard({ c, i = 0, featured = false }: { c: Card; i?: numbe
       <Link to={`/projects/${c.slug}`} className="pj-card-media ui-zoom" tabIndex={-1} aria-hidden="true">
         <Cover c={c} />
         <span className={`pj-lvl pj-${c.difficulty}`}>{cap(c.difficulty)}</span>
-        <span className={`pj-price${c.is_paid ? ' paid' : ''}`}>{c.is_paid ? rupees(c.price) : 'Free'}</span>
+        <span className={`pj-price${c.files_restricted ? ' paid' : ''}`}>{c.files_restricted ? 'Restricted files' : 'Free'}</span>
       </Link>
       <div className="pj-card-body">
         {c.category && typeof c.category === 'string' && <p className="pj-cat">{c.category}</p>}
@@ -84,7 +84,6 @@ export function ProjectsPage() {
   const category = params.get('category') ?? ''
   const difficulty = params.get('difficulty') ?? ''
   const tech = params.get('technology') ?? ''
-  const price = params.get('price') ?? ''
   const ordering = params.get('ordering') ?? ''
   const q = params.get('q') ?? ''
   const seedRef = useRef<Record<string, any> | null>(null)
@@ -108,7 +107,7 @@ export function ProjectsPage() {
 
   useEffect(() => {
     const s = seedRef.current!
-    const unfiltered = !category && !difficulty && !tech && !price && !ordering && !q
+    const unfiltered = !category && !difficulty && !tech && !ordering && !q
     if (!used.current && s.results && s.page === page && unfiltered) {
       used.current = true
       get<Paged<Card>>('/projects/', { page_size: 1 }).then((d) => { setCats(d.categories ?? []); setTechs(d.technologies ?? []) }).catch(() => undefined)
@@ -117,7 +116,7 @@ export function ProjectsPage() {
     used.current = true
     let live = true
     setError(false)
-    get<Paged<Card>>('/projects/', { page, page_size: PAGE, ...(category ? { category } : {}), ...(difficulty ? { difficulty } : {}), ...(tech ? { technology: tech } : {}), ...(price ? { [price]: 1 } : {}), ...(q ? { q } : {}), ...(ordering ? { ordering } : {}) })
+    get<Paged<Card>>('/projects/', { page, page_size: PAGE, ...(category ? { category } : {}), ...(difficulty ? { difficulty } : {}), ...(tech ? { technology: tech } : {}), ...(q ? { q } : {}), ...(ordering ? { ordering } : {}) })
       .then((d) => {
         if (!live) return
         setData(d)
@@ -127,7 +126,7 @@ export function ProjectsPage() {
       })
       .catch(() => live && setError(true))
     return () => { live = false }
-  }, [page, category, difficulty, tech, price, ordering, q])
+  }, [page, category, difficulty, tech, ordering, q])
 
   useEffect(() => {
     if (text === q) return
@@ -150,7 +149,7 @@ export function ProjectsPage() {
     if (!('page' in patch)) next.delete('page')
     setParams(next)
   }
-  const active = [category, difficulty, tech, price, q].filter(Boolean).length
+  const active = [category, difficulty, tech, q].filter(Boolean).length
   const featured = useMemo(() => (page === 1 && !active ? data?.results.find((c) => c.is_featured) : undefined), [data, page, active])
   const rest = data?.results.filter((c) => c !== featured) ?? []
 
@@ -190,9 +189,7 @@ export function ProjectsPage() {
               {techs.map((t) => (<option key={t} value={t}>{t}</option>))}
             </select>
           )}
-          <select aria-label="Free or paid" value={price} onChange={(e) => go({ price: e.target.value || null })}>
-            <option value="">Free and paid</option><option value="free">Free only</option><option value="paid">Paid only</option>
-          </select>
+
           <select aria-label="Sort" value={ordering} onChange={(e) => go({ ordering: e.target.value || null })}>
             <option value="">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option>
           </select>
@@ -216,7 +213,7 @@ export function ProjectsPage() {
       {featured && (
         <div className="pj-featured"><p className="pj-feat-label">Featured project</p><ProjectCard c={featured} featured /></div>
       )}
-      <Reveal stagger className="pj-grid" key={`${page}-${category}-${difficulty}-${tech}-${price}-${q}-${ordering}`}>
+      <Reveal stagger className="pj-grid" key={`${page}-${category}-${difficulty}-${tech}-${q}-${ordering}`}>
         {rest.map((c, i) => (<ProjectCard key={c.slug} c={c} i={i} />))}
       </Reveal>
       {data && <Pager page={page} count={data.count} size={PAGE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
@@ -313,7 +310,7 @@ export function ProjectPage() {
             <div className="pj-badges">
               <span className={`pj-lvl pj-${p.difficulty}`}>{cap(p.difficulty)}</span>
               {p.category && <span className="pj-pill">{p.category}</span>}
-              <span className={`pj-pill ${p.is_paid ? 'paid' : 'free'}`}>{p.is_paid ? `Paid · ${rupees(p.price)}` : 'Free'}</span>
+              <span className={`pj-pill ${p.files_restricted ? 'paid' : 'free'}`}>{p.files_restricted ? 'Restricted files' : 'Free'}</span>
             </div>
             <h1>{p.title}</h1>
             {p.summary && <p className="pj-dlead">{p.summary}</p>}
@@ -326,8 +323,8 @@ export function ProjectPage() {
               {p.guides?.length > 0 && <Link className="btn btn-yellow" to={`/project-guides/${p.guides[0].slug}`}>Read the project guide <Arrow /></Link>}
               {p.demo_url && <a className="btn btn-yellow" href={p.demo_url} target="_blank" rel="noopener noreferrer">Live demo <Arrow /></a>}
               {p.repo_url && <a className="btn pj-btn-ghost" href={p.repo_url} target="_blank" rel="noopener noreferrer">Source code</a>}
-              {p.product && !p.unlocked && <Link className="btn btn-yellow" to="/#contact">Request project access</Link>}
-              {!p.demo_url && !p.repo_url && !p.product && <a className="btn btn-yellow" href="/#register">Build it with us — free demo</a>}
+              {p.files_restricted && !p.unlocked && <Link className="btn btn-yellow" to="/#contact">Request project access</Link>}
+              {!p.demo_url && !p.repo_url && !p.files_restricted && <a className="btn btn-yellow" href="/#register">Build it with us — free demo</a>}
             </div>
           </div>
         </header>
@@ -427,12 +424,12 @@ export function ProjectPage() {
               <dl>
                 <dt>Level</dt><dd><span className={`pj-lvl pj-${p.difficulty}`}>{cap(p.difficulty)}</span></dd>
                 {p.estimated_time && <><dt>Time</dt><dd>{p.estimated_time}</dd></>}
-                <dt>Price</dt><dd>{p.is_paid ? rupees(p.price) : 'Free'}</dd>
+                <dt>File access</dt><dd>{p.files_restricted ? 'Restricted files' : 'Free'}</dd>
                 {p.category && <><dt>Category</dt><dd>{p.category}</dd></>}
               </dl>
               {stack.length > 0 && <ul className="pj-tags">{stack.slice(0, 8).map((t) => (<li key={t}>{t}</li>))}</ul>}
               {p.demo_url && <a className="btn btn-yellow btn-block" href={p.demo_url} target="_blank" rel="noopener noreferrer">Live demo</a>}
-              {p.product && !p.unlocked && <Link className="btn btn-yellow btn-block" to="/#contact">Request project access</Link>}
+              {p.files_restricted && !p.unlocked && <Link className="btn btn-yellow btn-block" to="/#contact">Request project access</Link>}
               <a className="pj-ask" href="/#contact">Need help? Talk to us</a>
             </div>
             {sections.length > 1 && (

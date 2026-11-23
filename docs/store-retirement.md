@@ -14,10 +14,13 @@ and guide content, their assets/audit entries, users, courses, enrollments and c
 payment records remain. Previously paid project files stay restricted after their
 Product link is removed; private guide access rules also remain in force.
 
-The purge is intentionally irreversible; data rollback requires an existing database
-backup. It deletes store records, rather than dropping the historical shared tables.
-Shared model definitions remain because projects/guides and migration history still
-reference them; no public/admin Store API can repopulate them. Private resource
+The earlier data purge is intentionally irreversible; data rollback requires an existing database
+backup. Schema rollback of `0009` restores empty Store tables and the legacy access
+label; restoring old Store records or removed permissions requires the backup.
+`shop.0009` now detaches resources from the retired product/order schema and drops
+16 empty Store models plus three join tables. Historical migrations stay intact.
+Unexpected Store rows stop this migration for reconciliation; stale Store content
+types and permissions are removed within the same migration. Private resource
 links now use `/api/resources/download/`.
 
 Deployment runs `manage.py migrate --noinput` in the new backend container before
@@ -26,3 +29,11 @@ backend container before migration; do not run this purge alongside an old backe
 that lacks the new project file access guard. Historical commerce endpoint tests are
 retired alongside their routes; project/guide access, upload/download, publishing,
 SEO and new Store removal/purge tests remain.
+
+
+The 23 November cleanup removes the remaining commerce implementation, serializers,
+Store templates, obsolete order audit command, product admin form types, and price
+filters. Restricted projects/guides, private downloads, brochures/resumes, users,
+courses, enrollments and course payments remain. Local SQLite migration was verified
+on a backup copy first. Production deployment creates and validates a PostgreSQL
+archive before startup migrations and verifies retained-record counts afterward.

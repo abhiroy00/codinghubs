@@ -1,28 +1,26 @@
-"""Server-rendered HTML for /projects, /project-guides, /store (+ detail pages) and /sitemap-shop.xml. Same approach as the blog:
-real HTML with metadata for crawlers, then the React app takes over. Locked guide / project content is never put in the HTML."""
 from html import escape
-
 from django.conf import settings
 from django.core.paginator import EmptyPage, Paginator
-from django.db.models import Count, Q
 from django.http import Http404, HttpResponse, HttpResponsePermanentRedirect
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_GET
-
 from apps.content.ssr import fmt_date, not_found, respond
 from apps.content import services as content_services
-
 from . import payloads
-from .models import Product, ProductCategory, Project, ProjectGuide
+from .models import Project, ProjectGuide
 from .views_public import load_published_or_preview
 
+
 PAGE = 12
+
+
 TITLES = {
-    'store': ('Store: Notes, Books and Project Material | Coding Hubs', 'Study notes, books, project reports and source code from Coding Hubs School of AI, as instant downloads or printed copies.'),
     'projects': ('AI & Coding Projects for Students | Coding Hubs', 'Real project ideas with objectives, features, technology stack and learning outcomes, from the team at Coding Hubs School of AI.'),
     'guides': ('Project Guides: Step-by-Step Tutorials | Coding Hubs', 'Step-by-step project guides with setup, code, testing and deployment, from Coding Hubs School of AI.'),
 }
-BASES = {'store': ('/store', 'Store'), 'projects': ('/projects', 'Projects'), 'guides': ('/project-guides', 'Project Guides')}
+
+
+BASES = {'projects': ('/projects', 'Projects'), 'guides': ('/project-guides', 'Project Guides')}
 
 
 def listing_seo(kind, page, extra_qs, indexable):
@@ -59,36 +57,6 @@ def paginate(qs, page):
         return pg.page(page), pg
     except EmptyPage:
         return pg.page(pg.num_pages), pg
-
-
-@require_GET
-def store_list(request):
-    qs = payloads.public_products()
-    cat, query = request.GET.get('category', ''), request.GET.get('q', '').strip()[:100]
-    if cat:
-        qs = qs.filter(category__slug=cat)
-    if query:
-        qs = qs.filter(title__icontains=query)
-    pg, pager = paginate(qs.order_by('-published_at', '-id'), page_number(request))
-    cards = with_urls([payloads.product_card(p) for p in pg.object_list], '/store')
-    public = Product.objects.public().values('pk')
-    cats = [{'name': c.name, 'slug': c.slug, 'count': c.n} for c in ProductCategory.objects.annotate(n=Count('products', filter=Q(products__pk__in=public))).filter(n__gt=0)]
-    seo = listing_seo('store', pg.number, f'category={cat}&' if cat else '', indexable=not query)
-    html = render_to_string('shop/store_list.html', {'items': cards, 'page': pg, 'cat': cat, 'cats': cats, 'query': query})
-    return respond(seo, html, data={'kind': 'store-list', 'page': pg.number, 'category': cat, 'q': query, 'results': cards, 'count': pager.count, 'categories': cats})
-
-
-@require_GET
-def store_detail(request, slug):
-    try:
-        obj, preview = load_published_or_preview(Product, request, slug, payloads.public_products())
-    except Http404:
-        return not_found('Product not found')
-    if not preview and 'preview' in request.GET:  # preview link to a live item: use the clean, indexable URL
-        return HttpResponsePermanentRedirect(f'/store/{obj.slug}')
-    data = payloads.product_detail(obj, preview)
-    html = render_to_string('shop/store_detail.html', {'a': data, 'preview': preview})
-    return respond(data['seo'], html, preview=preview, data={'kind': 'product', 'slug': obj.slug, 'article': data})
 
 
 @require_GET

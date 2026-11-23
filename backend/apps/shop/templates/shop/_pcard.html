@@ -5,6 +5,5 @@
     {% if c.category.name %}<p class="bl-cat">{{ c.category.name }}</p>{% elif c.difficulty %}<p class="bl-cat">{{ c.difficulty }}</p>{% endif %}
     <h2><a href="{{ c.url }}">{{ c.title }}</a></h2>
     <p>{% firstof c.short_description c.summary %}</p>
-    {% if c.price %}<p class="bl-meta"><strong>{% if c.is_free %}Free{% else %}₹{{ c.price }}{% endif %}</strong>{% if c.original_price %} <s>₹{{ c.original_price }}</s>{% endif %}{% if c.stock_label %} · {{ c.stock_label }}{% endif %}</p>{% endif %}
   </div>
 </article>

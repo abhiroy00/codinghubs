@@ -9,7 +9,7 @@ import type { useContentForm } from './useContentForm'
 
 type Api<T extends Common> = ReturnType<typeof useContentForm<T>>
 
-export const KIND_LABEL: Record<Kind, string> = { blogs: 'Blogs', 'case-studies': 'Case studies', projects: 'Projects', 'project-guides': 'Project guides', products: 'Products' }
+export const KIND_LABEL: Record<Kind, string> = { blogs: 'Blogs', 'case-studies': 'Case studies', projects: 'Projects', 'project-guides': 'Project guides' }
 const STATUS_LABEL: Record<string, string> = { draft: 'Draft', scheduled: 'Scheduled', published: 'Published', archived: 'Archived' }
 
 export function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; onCancel: () => void; onConfirm: () => void }) {
@@ -180,7 +180,7 @@ function SinglePost<T extends Common>({ kind, api, noun, onSubmit, children, pub
   const future = !!form.published_at && new Date(form.published_at).getTime() > Date.now()
   const live = form.status === 'published' || form.status === 'scheduled'
   const heading = form.id ? `Edit ${noun}` : `Write New ${noun.replace(/\b\w/g, (c) => c.toUpperCase())}`
-  const back = kind === 'blogs' ? 'All Posts' : kind === 'products' ? 'All Products' : 'All Case Studies'
+  const back = kind === 'blogs' ? 'All Posts' : 'All Case Studies'
   return (
     <form className="ad-post" onSubmit={onSubmit} noValidate>
       <div className="ad-post-card">
