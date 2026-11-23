@@ -171,7 +171,11 @@ export function Header({ mainId = "main" }: { mainId?: string }) {
                 onOpen={() => { setOpen(false); setDropdown(null); }}
                 closeForNavigation={dropdown !== null}
               />
-            ) : null}
+            ) : (
+              <Link to="/login" className="sh-login">
+                Log in <span aria-hidden="true">↗</span>
+              </Link>
+            )}
 
             <button type="button" className="sh-demo" onClick={bookDemo}>
               Book Free Demo
