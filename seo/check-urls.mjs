@@ -72,7 +72,8 @@ const expectations = [
   { from: '/interview/data-science', to: '/interview/data-science/' },
   { from: '/certificates/data-science', to: '/interview/data-science/' },
 ]
-const mustNotExist = ['/interview/no-such-course/', '/interview/cissp/levels/9/', '/interview/cissp/levels/1/days/99/', '/interview/python-training-course/levels/1/articles/day-99/', '/interview/guides/no-such-guide/', '/learn/no-such-path/', '/this-page-does-not-exist', '/store/', '/cart']
+const mustNotExist = ['/interview/no-such-course/', '/interview/cissp/levels/9/', '/interview/cissp/levels/1/days/99/', '/interview/python-training-course/levels/1/articles/day-99/', '/interview/guides/no-such-guide/', '/learn/no-such-path/', '/this-page-does-not-exist']
+const gonePages = ['/store', '/store/', '/store/old-product/', '/cart', '/checkout', '/payment/success', '/my-account/orders', '/my-account/downloads']
 const privatePages = ['/login', '/login?next=%2Finterview%2Fdata-science%2F', '/register', '/forgot-password', '/my-account/', '/interview-studio/practice']
 
 // ---------- Run ----------
@@ -102,6 +103,11 @@ const missingRows = await pool(mustNotExist, 4, async p => {
   if (r.status === 200) flag('200-on-missing', p, r.final)
   return { ...r, group: 'must-404' }
 })
+const goneRows = await pool(gonePages, 4, async p => {
+  const r = await check(p)
+  if (r.first !== 410 || r.hops) flag('retired-not-410', p, `HTTP ${r.first}${r.hops ? ' via redirect' : ''}`)
+  return { ...r, group: 'must-410' }
+})
 const privateRows = await pool(privatePages, 4, async p => {
   const r = await check(p)
   if (r.status === 200 && !noindex(r.robots)) flag('private-page-indexable', p, r.robots || '(no directive)')
@@ -109,7 +115,7 @@ const privateRows = await pool(privatePages, 4, async p => {
 })
 
 // ---------- Report ----------
-const rows = [...sitemapRows, ...redirectRows, ...missingRows, ...privateRows]
+const rows = [...sitemapRows, ...redirectRows, ...missingRows, ...goneRows, ...privateRows]
 const cell = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s }
 fs.writeFileSync(path.join(root, 'seo/check-urls-report.csv'), [['group', 'url', 'first_status', 'hops', 'final_url', 'final_status', 'robots', 'canonical'],
   ...rows.map(r => [r.group, r.url, r.first, r.hops, r.final, r.status, r.robots, r.canonical])].map(r => r.map(cell).join(',')).join('\n') + '\n')
@@ -120,9 +126,10 @@ console.log(`  sitemap-index children: ${children.length} (${children.map(c => c
 console.log(`  sitemap URLs: ${sitemapRows.length} — ${bySitemap.map(([k, v]) => `${k} ${v}`).join(', ')}`)
 console.log(`  redirects: ${redirectRows.length} (single-hop 301: ${redirectRows.filter(r => r.first === 301 && r.hops === 1).length})`)
 console.log(`  must-404 probes: ${missingRows.length} (404: ${missingRows.filter(r => r.status === 404).length})`)
+console.log(`  retired store (410 Gone): ${goneRows.length} (410: ${goneRows.filter(r => r.first === 410 && !r.hops).length})`)
 console.log(`  private pages: ${privateRows.length} (${privateRows.map(r => `${r.url} ${r.status} [${r.robots || '-'}]`).join('; ')})`)
 const counts = flags.reduce((a, f) => (a[f.kind] = (a[f.kind] ?? 0) + 1, a), {})
-console.log(flags.length ? `\nFLAGS (${flags.length}): ${JSON.stringify(counts)}` : '\nNo flags: every sitemap URL is 200, indexable and self-canonical; every redirect is one 301 hop to the right URL; missing pages 404; private pages are noindex.')
+console.log(flags.length ? `\nFLAGS (${flags.length}): ${JSON.stringify(counts)}` : '\nNo flags: every sitemap URL is 200, indexable and self-canonical; every redirect is one 301 hop to the right URL; missing pages 404; retired store pages 410; private pages are noindex.')
 for (const f of flags.slice(0, 40)) console.log(`  [${f.kind}] ${f.url} ${f.detail}`)
 console.log('\nFull rows: seo/check-urls-report.csv')
 process.exit(flags.length ? 1 : 0)

@@ -162,6 +162,15 @@ export const STUDIO_META: PageMeta = {
   }] },
 }
 
+/** Served with HTTP 410 for the retired online store (nginx.conf): removed for good, no replacement. */
+export const GONE_META: PageMeta = {
+  path: '/410',
+  title: 'Page removed | Coding Hubs School of AI',
+  description: 'This page has been permanently removed. The Coding Hubs online store has closed; explore our courses instead.',
+  image: LOGO_URL,
+  indexable: false,
+}
+
 export const NOT_FOUND_META: PageMeta = {
   path: '/404',
   title: 'Page not found | Coding Hubs School of AI',
