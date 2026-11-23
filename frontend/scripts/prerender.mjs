@@ -19,7 +19,12 @@ const { renderAll, renderContentChrome, lessonDayRedirects } = await import(path
 const template = await readFile(path.join(dist, 'index.html'), 'utf8')
 // Same hash as vite.config.ts (from the source file; the built copy is minified).
 const cssVersion = createHash('md5').update(await readFile(path.join(root, 'public', 'free-session.css'))).digest('hex').slice(0, 8)
-const learningStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(genai-roadmap|learning)-.*\.css$/.test(name))
+// Chosen by content, not chunk name: Rollup names a shared CSS chunk after whichever module it groups with.
+const cssFiles = (await readdir(path.join(dist, 'assets'))).filter(name => name.endsWith('.css'))
+const learningStyles = []
+for (const name of cssFiles) {
+  if (/^learning-.*\.css$/.test(name) || (await readFile(path.join(dist, 'assets', name), 'utf8')).includes('.genai-roadmap{')) learningStyles.push(name)
+}
 const visualStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(Academy|DiagramPlayer|VisualLab)-.*\.css$/.test(name))
 const manifest = JSON.parse(await readFile(path.join(dist, '.vite/manifest.json'), 'utf8'))
 const studioCss = manifest['src/studio/Studio.tsx']?.css ?? []

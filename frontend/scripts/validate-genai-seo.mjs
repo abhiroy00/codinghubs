@@ -8,6 +8,7 @@ const sitemap = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
 const redirects = fs.readFileSync(path.join(root, 'dist-nginx/lesson-days.map'), 'utf8')
 const site = 'https://codinghubs.in'
 const assert = (ok, message) => { if (!ok) throw new Error(message) }
+const roadmapCss = fs.readdirSync(path.join(dist, 'assets')).filter(n => n.endsWith('.css') && fs.readFileSync(path.join(dist, 'assets', n), 'utf8').includes('.genai-roadmap{'))
 const seen = new Set()
 let pages = 0, answers = 0, indexedPages = 0
 const graph = html => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap(m => JSON.parse(m[1])['@graph'] ?? [])
@@ -30,7 +31,7 @@ for (const level of manifest) {
     assert(sitemap.includes(`<loc>${site + url}</loc>`) === indexed, 'Sitemap gate mismatch: ' + url)
     if (indexed) indexedPages++
     assert((html.match(/<main\b/g) ?? []).length === 1, 'Nested main landmarks: ' + url)
-    assert(/\/assets\/genai-roadmap-[^" ]+\.css/.test(html), 'Missing first-paint roadmap CSS: ' + url)
+    assert(roadmapCss.some(n => html.includes(`/assets/${n}`)), 'Missing first-paint roadmap CSS: ' + url)
     const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1]
     assert(description && !seen.has(description), 'Duplicate or missing description: ' + url)
     seen.add(description)
