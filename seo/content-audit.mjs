@@ -126,7 +126,9 @@ for (const p of pages) {
   // Nested blocks repeat their children's text; count each word sequence once.
   const text = unique.filter((b, i) => !unique.some((o, j) => j !== i && o.length > b.length && o.includes(b))).join(' ')
   p.uniqueText = text
-  p.words = words(text).length
+  // Count each sentence once per page: repeating a paragraph inside every answer adds no content.
+  const sentences = [...new Set(text.split(/(?<=[.!?])\s+/).map(x => x.trim().toLowerCase()).filter(Boolean))]
+  p.words = words(sentences.join(' ')).length
   p.sh = shingles(text)
   const qs = questionsOf(p.main)
   p.questions = qs.length
@@ -185,7 +187,6 @@ for (const p of pages) {
     p.status = R.hubStatus(n)
     p.issues.push(`${n} complete lessons`)
   } else p.status = p.words >= 300 ? 'COMPLETE' : 'THIN'
-  if (p.issues.some(i => i.startsWith('alias of')) && p.status === 'COMPLETE') p.status = 'THIN'
 }
 
 // ---------- Output ----------
@@ -195,7 +196,9 @@ const header = ['url', 'canonical_url', 'course', 'level', 'day', 'word_count', 
 const rows = pages.map(p => {
   const indexed = R.isIndexable(p.robots)
   // Rule agreement: indexed pages must be COMPLETE; COMPLETE primaries should be indexed.
-  const agrees = indexed ? p.status === 'COMPLETE' : p.status !== 'COMPLETE' || p.type === 'course-page'
+  // Alias pages stay reachable for their learners and consolidate via rel=canonical to the primary URL.
+  const alias = p.issues.some(i => i.startsWith('alias of'))
+  const agrees = (indexed ? p.status === 'COMPLETE' : p.status !== 'COMPLETE' || p.type === 'course-page') && (!alias || !indexed || p.canonical !== p.url)
   p.agrees = agrees
   return [p.url, p.canonical, p.course, p.level, p.day, p.words, p.status, p.issues.join('; '), p.robots, p.type, p.subjectQuestions || '', p.sim ? p.sim.toFixed(2) : '', p.simTo ? SITE + p.simTo : '', agrees ? 'yes' : 'NO']
 })
@@ -239,7 +242,8 @@ Generated ${new Date().toISOString().slice(0, 10)} from \`frontend/dist\`${learn
 
 - **Lesson (article/day/learn concept) COMPLETE**: at least ${R.COMPLETENESS.lessonMinWords} unique words, at least ${R.COMPLETENESS.lessonMinQuestions} subject-specific answered questions, no placeholder phrases, and not a ≥${R.COMPLETENESS.maxDuplicateContainment * 100}% copy of a preferred URL.
 - **Guide COMPLETE**: at least ${R.COMPLETENESS.guideMinWords} unique words and no placeholder phrases.
-- **Hub / level COMPLETE**: at least ${R.COMPLETENESS.hubMinCompleteLessons} COMPLETE lesson beneath it. Alias URLs are never COMPLETE (their canonical is the primary course).
+- **Hub / level COMPLETE**: at least ${R.COMPLETENESS.hubMinCompleteLessons} COMPLETE lesson beneath it. Alias courses (separate catalog courses sharing a curriculum) keep their status but must canonicalize to the primary course and stay out of sitemaps.
+- The build rates lessons from their authored source (scripts/sync-course-roadmaps.mjs and sync-genai-content.mjs); this audit measures the rendered page, so a page near a threshold can differ.
 - **PLACEHOLDER**: placeholder phrases (${R.PLACEHOLDER_PHRASES.map(p => `"${p}"`).join(', ')}) or no complete lessons. **THIN**: the rest.
 - Unique words exclude navigation, forms, buttons and any text block that appears in 3+ courses or on 6+ pages of one course (template text). "Generic answers" are question answers whose text appears in 3+ courses.
 
