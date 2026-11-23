@@ -39,6 +39,7 @@ import { CourseRoadmapLearning } from './learning/CourseRoadmapLearning'
 import { COURSE_ROADMAPS,courseLevelPath,type CourseRoadmapData } from './learning/course-roadmap-content'
 import { courseRoadmapMeta } from './learning/course-roadmap-seo'
 import { genaiMeta } from './learning/genai-seo'
+import { isIndexable } from './seo/robots'
 import { GENAI_LEVELS,genaiPath,type GenAILevel } from './learning/genai-content'
 import type { LocationContent } from './locations/types'
 import { HOME_META, LOGO_URL, NOT_FOUND_META, STUDIO_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
@@ -75,6 +76,28 @@ export interface PrerenderedPage {
   preloadImages?: { imagesrcset: string; imagesizes: string }[]
 }
 
+/**
+ * Day URLs whose lesson is published as an article: one 301 per URL variant (with/without the trailing
+ * slash, and the legacy /interview-prep/ prefix) straight to the article, so every redirect is a single hop.
+ */
+export function lessonDayRedirects(): [string, string][] {
+  const pairs: [string, string][] = []
+  const add = (day: string, article: string) => {
+    for (const prefix of ['/interview/', '/interview-prep/']) {
+      const from = prefix + day.slice('/interview/'.length)
+      pairs.push([from, article], [from.replace(/\/$/, ''), article])
+    }
+  }
+  for (const course of Object.values(COURSE_ROADMAPS)) for (const level of course.levels) for (const d of level.days)
+    if (d.article) add(courseLevelPath(course.slug, level.level) + `days/${d.day}/`, courseLevelPath(course.slug, level.level) + `articles/${d.article}/`)
+  for (const level of GENAI_LEVELS) for (const d of level.days)
+    if (d.article) add(genaiPath(level.level) + `days/${d.day}/`, genaiPath(level.level) + `articles/${d.article}/`)
+  return pairs
+}
+
+/** A sitemap lists a page only when the shared rule indexes it and its canonical is itself. */
+const sitemapEligible = (seo: { robots: string; canonical: string }, path: string) => isIndexable(seo.robots) && seo.canonical === SITE_URL + path
+
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
   const pages: PrerenderedPage[] = []
   pages.push({
@@ -94,24 +117,24 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
   for(const course of Object.values(COURSE_ROADMAPS)) {
     const data=courseRoadmapModules[`./learning/course-roadmaps/${course.slug}.json`].default
     for(const level of course.levels) {
-      const routes=[{suffix:'',article:undefined as string|undefined,day:undefined as number|undefined},...level.articles.map(a=>({suffix:`articles/${a.slug}/`,article:a.slug,day:undefined})),...level.days.map(d=>({suffix:`days/${d.day}/`,article:undefined,day:d.day}))]
+      const routes=[{suffix:'',article:undefined as string|undefined,day:undefined as number|undefined},...level.articles.map(a=>({suffix:`articles/${a.slug}/`,article:a.slug,day:undefined})),...level.days.filter(d=>!d.article).map(d=>({suffix:`days/${d.day}/`,article:undefined,day:d.day}))]
       for(const route of routes) {
         const path=courseLevelPath(course.slug,level.level)+route.suffix
         const seo=courseRoadmapMeta(course.slug,level.level,route.article,route.day)
         const pattern='/interview/:slug/levels/:level/'+(route.article?'articles/:article/':route.day?'days/:day/':'')
-        pages.push({file:path.slice(1)+'index.html',path,title:seo.title,description:seo.description,image:LOGO_URL,indexable:seo.robots.startsWith('index'),canonical:seo.canonical,robots:seo.robots,fsDesign:true,jsonLd:seo.json_ld,
+        pages.push({file:path.slice(1)+'index.html',path,title:seo.title,description:seo.description,image:LOGO_URL,indexable:sitemapEligible(seo,path),canonical:seo.canonical,robots:seo.robots,fsDesign:true,jsonLd:seo.json_ld,
           html:renderToString(<AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<CourseRoadmapLearning initialData={data}/>}/></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
       }
     }
   }
   for(const level of GENAI_LEVELS) {
     const data=genaiModules[`./learning/genai-generated/level-${level.level}.json`].default
-    const routes=[{suffix:'',article:undefined as string|undefined,day:undefined as number|undefined},...level.articleSlugs.map(a=>({suffix:`articles/${a.slug}/`,article:a.slug,day:undefined})),...level.days.map(d=>({suffix:`days/${d.day}/`,article:undefined,day:d.day}))]
+    const routes=[{suffix:'',article:undefined as string|undefined,day:undefined as number|undefined},...level.articleSlugs.map(a=>({suffix:`articles/${a.slug}/`,article:a.slug,day:undefined})),...level.days.filter(d=>!d.article).map(d=>({suffix:`days/${d.day}/`,article:undefined,day:d.day}))]
     for(const route of routes) {
       const path=genaiPath(level.level)+route.suffix
       const seo=genaiMeta(level.level,route.article,route.day)
       const pattern='/interview/generative-ai/levels/:level/'+(route.article?'articles/:article/':route.day?'days/:day/':'')
-      pages.push({file:path.slice(1)+'index.html',path,title:seo.title,description:seo.description,image:LOGO_URL,indexable:true,canonical:seo.canonical,robots:seo.robots,fsDesign:true,jsonLd:seo.json_ld,
+      pages.push({file:path.slice(1)+'index.html',path,title:seo.title,description:seo.description,image:LOGO_URL,indexable:sitemapEligible(seo,path),canonical:seo.canonical,robots:seo.robots,fsDesign:true,jsonLd:seo.json_ld,
         html:renderToString(<AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<GenAILearning initialData={data}/>}/></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
     }
   }
@@ -156,7 +179,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     const pagePath = '/' + item.kind + '/' + (item.slug ? item.slug + '/' : '')
     pages.push({
       file:pagePath.slice(1) + 'index.html', path:pagePath, title:seo.title, description:seo.description,
-      image:seo.og.image, canonical:seo.canonical, robots:seo.robots, indexable:seo.robots.startsWith('index') && seo.canonical === SITE_URL + pagePath, fsDesign:true,
+      image:seo.og.image, canonical:seo.canonical, robots:seo.robots, indexable:sitemapEligible(seo,pagePath), fsDesign:true,
       html:renderLearningPage(pagePath, item.element), jsonLd:seo.json_ld,
     })
   }
@@ -164,7 +187,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
   for (const guide of interviewGuides) {
     const path = `/interview/guides/${guide.slug}/`
     const seo = interviewGuideMeta(guide)
-    pages.push({ file:path.slice(1)+'index.html', path, title:seo.title, description:seo.description, image:LOGO_URL, canonical:seo.canonical, robots:seo.robots, indexable:true, fsDesign:true,
+    pages.push({ file:path.slice(1)+'index.html', path, title:seo.title, description:seo.description, image:LOGO_URL, canonical:seo.canonical, robots:seo.robots, indexable:sitemapEligible(seo,path), fsDesign:true,
       html:renderToString(<AuthProvider><StaticRouter location={path}><Routes><Route path="/interview/guides/:slug/" element={<InterviewGuide/>}/></Routes></StaticRouter></AuthProvider>),
       jsonLd:seo.json_ld,
     })

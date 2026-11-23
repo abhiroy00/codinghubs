@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { COURSE_ROADMAPS,courseLevelPath } from './course-roadmap-content'
 import { levelProgress,useRoadmapProgress } from './useRoadmapProgress'
 import { GenAIRoadmap } from './GenAIRoadmap'
+import { useAuth } from '../lib/auth-context'
+import { courseLessons } from './LessonNav'
 import './genai-roadmap.css'
 export function CourseRoadmap({slug}:{slug:string}) {
   return slug==='generative-ai'?<GenAIRoadmap/>:<SubjectRoadmap key={slug} slug={slug}/>
@@ -17,9 +19,13 @@ export function CourseLevelLinks({slug}:{slug:string}) {
 function SubjectRoadmap({slug}:{slug:string}) {
  const course=COURSE_ROADMAPS[slug]
  const {value}=useRoadmapProgress(slug)
+ // Levels without a published lesson are not linked publicly; signed-in learners keep their study-brief workspace.
+ const {user}=useAuth()
+ // Direct links keep every published lesson within three clicks of the home page.
+ const lessons=courseLessons(slug)
  if(!course)return null
  return <section className="genai-roadmap" aria-label={`30-day ${course.name} learning roadmap`}><ol className="genai-path">{course.levels.map(level=>{
   const progress=levelProgress(level.level,value,slug)
-  return <li key={level.level} className={`genai-step genai-color-${level.level}`}><article className="genai-card"><div className="genai-card-top"><div><span className="genai-eyebrow">LEVEL {level.level} · DAYS {level.start}–{level.end}</span><h2>{level.title}</h2></div><div className="genai-sculpture" aria-hidden="true"><i/><i/><i/><b>{['◇','⌘','⌁','✦'][level.level-1]}</b></div></div><div className="genai-card-bottom"><dl><div><dt>Articles</dt><dd>{level.articleCount}</dd></div><div><dt>Questions</dt><dd>{level.questionCount}</dd></div></dl><Link className="genai-arrow" to={courseLevelPath(slug,level.level)} aria-label={`Open ${course.name} Level ${level.level}: ${level.title}`}>↗</Link></div><div className="genai-card-progress"><span>{progress.percent}% complete</span><progress value={progress.done} max={progress.total} aria-label={`Level ${level.level} progress`}/></div>{!level.articleCount&&<p className="course-roadmap-status">Study plan available · detailed lessons pending</p>}</article></li>
- })}</ol></section>
+  return <li key={level.level} className={`genai-step genai-color-${level.level}`}><article className="genai-card"><div className="genai-card-top"><div><span className="genai-eyebrow">LEVEL {level.level} · DAYS {level.start}–{level.end}</span><h2>{level.title}</h2></div><div className="genai-sculpture" aria-hidden="true"><i/><i/><i/><b>{['◇','⌘','⌁','✦'][level.level-1]}</b></div></div><div className="genai-card-bottom"><dl><div><dt>Articles</dt><dd>{level.articleCount}</dd></div><div><dt>Questions</dt><dd>{level.questionCount}</dd></div></dl>{level.articleCount||user?<Link className="genai-arrow" to={courseLevelPath(slug,level.level)} aria-label={`Open ${course.name} Level ${level.level}: ${level.title}`}>↗</Link>:null}</div><div className="genai-card-progress"><span>{progress.percent}% complete</span><progress value={progress.done} max={progress.total} aria-label={`Level ${level.level} progress`}/></div>{!level.articleCount&&<p className="course-roadmap-status">Lessons coming soon</p>}</article></li>
+ })}</ol>{lessons.length>0&&<nav className="course-roadmap-lessons" aria-label={`Published ${course.name} lessons`}><h2>Published lessons</h2><ul className="genai-reading-list">{lessons.map(l=><li key={l.to}><Link to={l.to}>{l.title} →</Link></li>)}</ul></nav>}</section>
 }

@@ -2228,6 +2228,7 @@
           "id": "python-training-course:assignment:1",
           "title": "Python Overview and the Execution Model",
           "available": true,
+          "article": "day-1",
           "focus": "Python is a high-level, general-purpose, dynamically typed programming language that emphasises readability. The standard implementation, CPython, first compiles a source file into bytecode (a low-level, platform-independent instruction set) and then executes that bytecode on the Python Virtual Machine, an interpreter loop written in C.",
           "objectives": [
             "Describe what Python is and why it is popular for back-end, automation and data work.",
@@ -2257,6 +2258,7 @@
           "id": "python-training-course:assignment:2",
           "title": "Variables, Dynamic Typing and Object References",
           "available": true,
+          "article": "day-2",
           "focus": "In Python a variable is a name that refers to an object stored in memory. Assignment binds a name to an object; it never copies the object. Python is dynamically typed, meaning the type belongs to the object and is checked at run time, so the same name can refer to an int now and a string later.",
           "objectives": [
             "Explain that Python variables are names bound to objects, not boxes holding values.",
@@ -2286,6 +2288,7 @@
           "id": "python-training-course:assignment:3",
           "title": "Numbers and Strings: Slicing, Formatting and Methods",
           "available": true,
+          "article": "day-3",
           "focus": "Python's numeric types are int (arbitrary precision integers), float (64-bit IEEE 754 binary floating point) and complex, with Decimal and Fraction available in the standard library for exact arithmetic. A str is an immutable sequence of Unicode characters that supports indexing, slicing, a rich set of methods and formatted string literals (f-strings).",
           "objectives": [
             "Use int, float, complex and Decimal appropriately and explain floating-point error.",
@@ -2315,6 +2318,7 @@
           "id": "python-training-course:assignment:4",
           "title": "Operators, Expressions and Precedence",
           "available": true,
+          "article": "day-4",
           "focus": "An operator is a symbol or keyword that combines values (operands) into an expression that Python evaluates to a single object. Python groups operators into arithmetic, comparison, logical, bitwise, identity, membership and assignment operators, and evaluates them according to fixed precedence and associativity rules.",
           "objectives": [
             "Use arithmetic operators correctly, including floor division and modulo with negative numbers.",
@@ -2344,6 +2348,7 @@
           "id": "python-training-course:assignment:5",
           "title": "Control Flow: Conditionals, Loops and Loop Control",
           "available": true,
+          "article": "day-5",
           "focus": "Control flow is the order in which a program's statements run. Python selects a branch with the conditional statement if/elif/else, which tests truthiness, and repeats work with two loops: for, which visits each item of an iterable in turn, and while, which repeats as long as a condition stays true. break, continue and the optional else clause attached to a loop give fine-grained control over how iteration ends.",
           "objectives": [
             "Write if/elif/else chains that choose between mutually exclusive branches.",
@@ -2372,6 +2377,7 @@
           "id": "python-training-course:assignment:6",
           "title": "Functions: Parameters, Arguments and Return Values",
           "available": true,
+          "article": "day-6",
           "focus": "A function is a named block of code that performs a task and can be called repeatedly with different inputs. A parameter is a name listed in the function definition; an argument is the actual object supplied at the call site. Parameters can be positional, keyword, defaulted, collected into *args and **kwargs, or restricted to positional-only or keyword-only, and a function may return one value, several values packed in a tuple, or None.",
           "objectives": [
             "Define functions with def and explain the difference between parameters and arguments.",
@@ -2401,6 +2407,7 @@
           "id": "python-training-course:assignment:7",
           "title": "Scope, Namespaces and Closures",
           "available": true,
+          "article": "day-7",
           "focus": "A namespace is a mapping from names to objects; a scope is the region of code where a name is visible. When Python resolves a name it searches, in order, the local scope, any enclosing function scopes, the module global scope and finally the built-ins. The global and nonlocal statements let a function rebind a name in an outer namespace instead of creating a new local one, and a nested function that references a variable from its enclosing scope forms a closure.",
           "objectives": [
             "Explain the LEGB rule for resolving names: local, enclosing, global and built-in.",
@@ -3116,6 +3123,7 @@
           "id": "python-training-course:assignment:8",
           "title": "Built-in Data Structures: Lists, Tuples, Sets and Dictionaries",
           "available": true,
+          "article": "day-8",
           "focus": "Python's four built-in collections cover most everyday needs. A list is an ordered, mutable sequence; a tuple is an ordered, immutable sequence that can be hashed and used as a dictionary key; a set is an unordered collection of unique hashable objects with fast membership tests; and a dict is a mapping of unique hashable keys to values that preserves insertion order. Each trades off ordering, mutability and lookup speed differently.",
           "objectives": [
             "Choose between list, tuple, set and dict based on ordering, mutability and lookup needs.",
@@ -3145,6 +3153,7 @@
           "id": "python-training-course:assignment:9",
           "title": "Strings, Formatting and Regular Expressions",
           "available": true,
+          "article": "day-9",
           "focus": "Text data in Python is handled with the immutable str type, which stores Unicode code points and is formatted with f-strings and the format mini-language. Complex matching and transformation is done with the re module, whose patterns combine literal characters, character classes, quantifiers, anchors and groups. Bytes, a separate bytes type produced by encode, are used for raw binary data and decoded back to str with a chosen encoding such as UTF-8.",
           "objectives": [
             "Master the f-string and format mini-language for alignment, precision and custom formatting.",

@@ -2,6 +2,7 @@ import { GENAI_LEVELS, genaiPath } from './genai-content'
 import { SITE_URL } from '../locations/registry'
 import { LOGO_URL, ORG_ID, organizationNode } from '../seo/site'
 import type { Seo } from '../content-pages/api'
+import { getRobotsDirective, hubStatus, type ContentStatus } from '../seo/robots'
 
 function snippet(text: string) {
   return text.length <= 165 ? text : text.slice(0, 162).replace(/\s+\S*$/, '') + '…'
@@ -18,7 +19,13 @@ export function genaiMeta(level: number, article?: string, day?: number): Seo {
     : daily ? `Day ${daily.day}: GenAI Learning & Practice | Coding Hubs`
       : `GenAI Level ${level}: ${['Foundations', 'Transformers', 'RAG & Agents', 'Production & Interviews'][level - 1] ?? 'Unavailable'} | Coding Hubs`
   const path = genaiPath(level) + (article ? `articles/${article}/` : day !== undefined ? `days/${day}/` : '')
-  const canonical = SITE_URL + path
+  // Each day is served by its first article (days/<n>/ 301s there), so the article is the one canonical URL.
+  const canonical = SITE_URL + (daily?.article ? genaiPath(level) + `articles/${daily.article}/` : path)
+  // Article status is computed from the authored source by scripts/sync-genai-content.mjs with the shared rule.
+  const status: ContentStatus = !valid ? 'PLACEHOLDER' : reading ? reading.status as ContentStatus : daily ? 'THIN'
+    : hubStatus(entry?.articleSlugs.filter(a => a.status === 'COMPLETE').length ?? 0)
+  const robots = getRobotsDirective({ kind: 'content', status })
+  const indexable = robots.startsWith('index')
   const description = snippet(reading ? reading.summary
     : daily ? `Day ${daily.day}: study ${daily.title.toLowerCase()}. Explore worked Python examples, interview answers, a practical assignment and revision checklist.`
       : `Study ${entry?.title.toLowerCase() ?? 'GenAI'} with ${entry?.articleCount ?? 0} articles, ${entry?.questionCount ?? 0} original interview questions, Python exercises and a daily learning plan.`)
@@ -26,11 +33,11 @@ export function genaiMeta(level: number, article?: string, day?: number): Seo {
   const resourceId = canonical + '#learning-resource'
   const graph: Record<string, unknown>[] = [organizationNode(), {
     '@type': 'WebPage', '@id': canonical + '#webpage', url: canonical, name: title, description,
-    inLanguage: 'en-IN', about: { '@id': ORG_ID }, ...(valid ? { mainEntity: { '@id': resourceId } } : {}),
+    inLanguage: 'en-IN', about: { '@id': ORG_ID }, ...(indexable ? { mainEntity: { '@id': resourceId } } : {}),
   }, {
     '@type': 'BreadcrumbList', itemListElement: trail.map(([name, url], i) => ({ '@type': 'ListItem', position: i + 1, name, item: SITE_URL + url })),
   }]
-  if (valid && entry) {
+  if (indexable && entry) {
     graph.push({
       '@type': 'LearningResource', '@id': resourceId, url: canonical, name, description,
       inLanguage: 'en-IN', publisher: { '@id': ORG_ID },
@@ -47,7 +54,7 @@ export function genaiMeta(level: number, article?: string, day?: number): Seo {
       itemListElement: entry.articleSlugs.map((a, i) => ({ '@type': 'ListItem', position: i + 1, name: a.title, url: SITE_URL + genaiPath(level) + `articles/${a.slug}/` })),
     })
   }
-  return { title, description, canonical, robots: valid ? 'index, follow, max-image-preview:large' : 'noindex, follow',
+  return { title, description, canonical, robots,
     og: { title, description, type: 'website', image: LOGO_URL, url: canonical, alt: 'Coding Hubs School of AI' },
     json_ld: { '@context': 'https://schema.org', '@graph': graph } }
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useAcademySeo } from './useAcademySeo'
+import { hubStatus } from '../seo/robots'
 import './academy.css'
 import { HeroVideo } from '../components/HeroVideo'
 
@@ -13,9 +14,11 @@ export interface AcademyCourse {
 }
 
 export function Academy() {
-  useAcademySeo('Engineering courses & visual learning | Coding Hubs','Explore self-paced engineering roadmaps, interactive diagrams and original hands-on learning.','/learn/')
   const [courses, setCourses] = useState<AcademyCourse[]>([])
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading')
+  // Same rule as backend/apps/learning/ssr.py: the directory is indexed once some path has a published concept.
+  useAcademySeo('Engineering courses & visual learning | Coding Hubs','Explore self-paced engineering roadmaps, interactive diagrams and original hands-on learning.','/learn/',
+    state === 'ready' ? hubStatus(courses.reduce((n, c) => n + c.published_count, 0)) : 'PLACEHOLDER')
   const [params, setParams] = useSearchParams()
   const [retry, setRetry] = useState(0)
   const search = params.get('q') || ''

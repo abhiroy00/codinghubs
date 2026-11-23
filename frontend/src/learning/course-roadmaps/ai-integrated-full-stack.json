@@ -1026,6 +1026,7 @@
           "id": "ai-integrated-full-stack:assignment:1",
           "title": "How the Web Works: HTTP, DNS and Client-Server Architecture",
           "available": true,
+          "article": "day-1",
           "focus": "The web is a client-server system: a client such as a browser sends an HTTP request to a server, and the server returns an HTTP response. HTTP is a stateless, text-based application protocol (binary-framed in HTTP/2 and HTTP/3) that runs over TCP or QUIC, usually wrapped in TLS as HTTPS. DNS translates a human-readable domain name into the IP address the client connects to.",
           "objectives": [
             "Explain what happens between typing a URL and seeing a rendered page.",
@@ -1055,6 +1056,7 @@
           "id": "ai-integrated-full-stack:assignment:2",
           "title": "Modern JavaScript (ES6+): Scope, Closures and Array Methods",
           "available": true,
+          "article": "day-2",
           "focus": "ES6 (ECMAScript 2015) and later versions added block-scoped variables, arrow functions, classes, modules, destructuring, spread syntax, promises and many array and object helpers to JavaScript. A closure is a function bundled with the variables of the scope it was created in, so it can read and update those variables even after the outer function has returned.",
           "objectives": [
             "Explain the differences between var, let and const, including hoisting and the temporal dead zone.",
@@ -1084,6 +1086,7 @@
           "id": "ai-integrated-full-stack:assignment:3",
           "title": "Asynchronous JavaScript: Event Loop, Promises and async/await",
           "available": true,
+          "article": "day-3",
           "focus": "JavaScript runs your code on a single thread, so long operations such as network requests, timers and file reads are handed to the environment (the browser or Node.js) and their results come back later as queued callbacks. The event loop runs those callbacks when the call stack is empty. A Promise represents a value that will be available in the future, and async/await is syntax that lets you write promise-based code in a readable, top-to-bottom style.",
           "objectives": [
             "Explain how a single-threaded JavaScript runtime handles slow I/O without blocking.",

@@ -19,6 +19,7 @@ from django.utils.dateparse import parse_datetime
 from django.views.decorators.http import require_GET
 
 from . import services
+from .robots import clean_canonical
 from .models import Blog, CaseStudy
 from .views import blog_detail_payload, case_detail_payload, load_public_or_preview, public_blog_qs, public_case_qs
 
@@ -68,7 +69,7 @@ def head_tags(seo: dict, with_og=True) -> str:
     tags.extend(f'<link rel="stylesheet" href="{escape(url)}">' for url in seo.get('styles', []))
     tags.extend(f'<link rel="preload" as="image" type="{"image/avif" if url.endswith(".avif") else "image/webp"}" href="{escape(url)}" media="{escape(media)}" fetchpriority="high">' for url, media in seo.get('preload_images', []))
     if seo['robots'].startswith('index'):
-        tags.append(f'<link rel="canonical" href="{escape(seo["canonical"])}">')
+        tags.append(f'<link rel="canonical" href="{escape(clean_canonical(seo["canonical"]))}">')
     og = seo.get('og')
     if og and with_og:
         tags += [

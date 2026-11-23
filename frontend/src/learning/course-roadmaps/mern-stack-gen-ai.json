@@ -1034,6 +1034,7 @@
           "id": "mern-stack-gen-ai:assignment:1",
           "title": "JavaScript Scope, Hoisting and Closures",
           "available": true,
+          "article": "day-1",
           "focus": "Scope is the set of rules that decides where a variable can be accessed. JavaScript uses lexical scope: a function can see the variables of the place where it was written, not where it is called. A closure is a function bundled with references to the variables of its surrounding scope, so it can keep reading and updating them even after the outer function has returned.",
           "objectives": [
             "Explain global, function and block scope and how the scope chain resolves a variable.",
@@ -1063,6 +1064,7 @@
           "id": "mern-stack-gen-ai:assignment:2",
           "title": "The this Keyword, Prototypes and ES6 Classes",
           "available": true,
+          "article": "day-2",
           "focus": "this is a special value set when a function is called; it usually refers to the object the function was called on. Every JavaScript object also has an internal link to another object, its prototype, and property lookups that fail on the object continue along this prototype chain. ES6 classes are cleaner syntax over the same prototype mechanism.",
           "objectives": [
             "Apply the four binding rules that decide the value of this, plus the arrow-function exception.",
@@ -1092,6 +1094,7 @@
           "id": "mern-stack-gen-ai:assignment:3",
           "title": "Promises, async/await and Promise Combinators",
           "available": true,
+          "article": "day-3",
           "focus": "A Promise is an object representing the eventual result of an asynchronous operation. It starts pending and settles exactly once, either fulfilled with a value or rejected with a reason. async functions always return a promise, and await pauses the async function until a promise settles, letting asynchronous code read like synchronous code.",
           "objectives": [
             "Explain the three promise states and how then/catch/finally chains pass values and errors.",

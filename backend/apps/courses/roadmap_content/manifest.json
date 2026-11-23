@@ -12,6 +12,7 @@
         "title": "AI, machine learning and deep learning",
         "id": "genai-ai-ml-deep-learning",
         "summary": "AI is the broad task-oriented field; machine learning fits patterns from data, and deep learning uses multilayer neural networks. Rules, classifiers and generators can coexist inside one product. The correct choice follows the decision and its error costs, not a fashionable model label.",
+        "status": "THIN",
         "sources": [
           "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html",
           "https://huggingface.co/docs/transformers/llm_tutorial"
@@ -22,6 +23,7 @@
         "title": "Generative versus discriminative models",
         "id": "genai-generative-discriminative",
         "summary": "A classifier predicts a defined label from features; a generator models and emits data conditioned on context. Token-sequence probability is not a calibrated probability that a real-world claim is true. A product can use both kinds of model without confusing their evaluation contracts.",
+        "status": "THIN",
         "sources": [
           "https://huggingface.co/docs/transformers/llm_tutorial"
         ]
@@ -31,6 +33,7 @@
         "title": "Data splits and leakage",
         "id": "genai-data-splits-leakage",
         "summary": "Leakage lets information unavailable at prediction time influence training or evaluation. Duplicate document revisions, future labels and transformations fitted on all data can produce optimistic results. The evaluation partition must represent the deployment boundary rather than an arbitrary set of rows.",
+        "status": "THIN",
         "sources": [
           "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html",
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide"
@@ -41,6 +44,7 @@
         "title": "Neurons, perceptrons and MLPs",
         "id": "genai-neurons-and-mlp",
         "summary": "A neuron combines a weighted sum, a bias and usually an activation. A perceptron expresses a linear boundary; an MLP composes layers to learn intermediate representations. These numerical functions do not imply human-like understanding or explainability by themselves.",
+        "status": "THIN",
         "sources": [
           "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html"
         ]
@@ -50,6 +54,7 @@
         "title": "Activation functions and saturation",
         "id": "genai-activation-functions",
         "summary": "Activations introduce nonlinearity into a neural network. Sigmoid, tanh, ReLU and GELU differ in range and gradient behavior. Their effects depend on the architecture, objective and input distribution; naming an activation does not establish a universal accuracy or performance advantage.",
+        "status": "THIN",
         "sources": [
           "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html"
         ]
@@ -59,6 +64,7 @@
         "title": "Gradients and backpropagation",
         "id": "genai-gradients-backprop",
         "summary": "Backpropagation computes loss derivatives through a computation graph using the chain rule. An optimizer uses those derivatives and its own state to update parameters. Automatic differentiation does not select a valid objective, fix data leakage or prove a model will generalize.",
+        "status": "THIN",
         "sources": [
           "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html"
         ]
@@ -68,6 +74,7 @@
         "title": "NLP, tokens and tokenization",
         "id": "genai-nlp-tokenization",
         "summary": "Tokenizers encode text into model-specific discrete units. A token is not necessarily a word, character or fixed byte count. Subword boundaries vary with vocabulary, script, punctuation and tokenizer version. The tokenizer is part of the model contract, not an interchangeable display utility.",
+        "status": "THIN",
         "sources": [
           "https://huggingface.co/docs/transformers/llm_tutorial"
         ]
@@ -77,6 +84,7 @@
         "title": "Embeddings and vector representations",
         "id": "genai-embeddings-vectors",
         "summary": "Embeddings represent items as numeric vectors learned for a task. Similarity can propose retrieval candidates, but it does not certify truth, permission or equivalence. Meaningful scores depend on model compatibility, preprocessing, normalization and the chosen distance function.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://huggingface.co/docs/transformers/llm_tutorial"
@@ -87,6 +95,7 @@
         "title": "Probability and next-token prediction",
         "id": "genai-probability-next-token",
         "summary": "An autoregressive language model predicts a distribution over the next token given context. Training loss and the later decoding policy are distinct. A likely token continuation can be fluent while its resulting claim remains unsupported by the permitted evidence.",
+        "status": "THIN",
         "sources": [
           "https://huggingface.co/docs/transformers/llm_tutorial",
           "https://research.google/pubs/attention-is-all-you-need/"
@@ -97,6 +106,7 @@
         "title": "GPT-style models, hallucinations and limits",
         "id": "genai-hallucinations-and-limits",
         "summary": "GPT-style generation can produce unsupported or incorrect content that remains persuasive. Grounding, validation and abstention reduce particular failure modes but do not guarantee universal correctness. A citation must correspond to accessible evidence that actually supports the relevant claim.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://huggingface.co/docs/transformers/llm_tutorial",
@@ -108,37 +118,44 @@
       {
         "day": 1,
         "title": "AI, machine learning and deep learning + Generative versus discriminative models",
-        "id": "genai-day-01"
+        "id": "genai-day-01",
+        "article": "ai-ml-deep-learning"
       },
       {
         "day": 2,
         "title": "Data splits and leakage + Neurons, perceptrons and MLPs",
-        "id": "genai-day-02"
+        "id": "genai-day-02",
+        "article": "data-splits-leakage"
       },
       {
         "day": 3,
         "title": "Activation functions and saturation + Gradients and backpropagation",
-        "id": "genai-day-03"
+        "id": "genai-day-03",
+        "article": "activation-functions"
       },
       {
         "day": 4,
         "title": "NLP, tokens and tokenization",
-        "id": "genai-day-04"
+        "id": "genai-day-04",
+        "article": "nlp-tokenization"
       },
       {
         "day": 5,
         "title": "Embeddings and vector representations",
-        "id": "genai-day-05"
+        "id": "genai-day-05",
+        "article": "embeddings-vectors"
       },
       {
         "day": 6,
         "title": "Probability and next-token prediction",
-        "id": "genai-day-06"
+        "id": "genai-day-06",
+        "article": "probability-next-token"
       },
       {
         "day": 7,
         "title": "GPT-style models, hallucinations and limits",
-        "id": "genai-day-07"
+        "id": "genai-day-07",
+        "article": "hallucinations-and-limits"
       }
     ],
     "progressIds": {
@@ -292,6 +309,7 @@
         "title": "Transformer blocks and residual streams",
         "id": "genai-transformer-blocks",
         "summary": "A transformer combines attention, position information, feed-forward transformations and normalization. Residual connections carry representations between sublayers. A decoder used for autoregressive generation applies causal constraints so a position cannot use future tokens during next-token prediction.",
+        "status": "THIN",
         "sources": [
           "https://research.google/pubs/attention-is-all-you-need/",
           "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
@@ -302,6 +320,7 @@
         "title": "Query, key, value and scaled attention",
         "id": "genai-qkv-attention",
         "summary": "Queries represent what a position seeks; keys support matching; values provide content to combine. Scaled dot-product attention turns query-key compatibility into normalized weights and uses them to aggregate values. Attention weights are contextual computation, not a universal explanation of model decisions.",
+        "status": "THIN",
         "sources": [
           "https://research.google/pubs/attention-is-all-you-need/"
         ]
@@ -311,6 +330,7 @@
         "title": "Attention heads, causal masks and KV sharing",
         "id": "genai-heads-masks-kv",
         "summary": "Multi-head attention uses several learned projections to represent different interaction patterns. Causal masks prevent a decoder position from reading future positions. Multi-query and grouped-query variants share key/value representations across query heads in different ways to reduce cache and bandwidth requirements.",
+        "status": "THIN",
         "sources": [
           "https://research.google/pubs/attention-is-all-you-need/",
           "https://ai.meta.com/research/publications/the-llama-3-herd-of-models",
@@ -322,6 +342,7 @@
         "title": "Position information and RoPE",
         "id": "genai-positions-rope",
         "summary": "Attention without position information does not inherently encode the order of input tokens. Transformers add or otherwise incorporate position signals. Rotary position embeddings apply position-dependent rotations to query/key components, making relative position differences influence their dot products.",
+        "status": "THIN",
         "sources": [
           "https://research.google/pubs/attention-is-all-you-need/",
           "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
@@ -332,6 +353,7 @@
         "title": "Encoder, decoder, BERT, GPT and T5",
         "id": "genai-encoder-decoder-families",
         "summary": "Encoder-only, decoder-only and encoder-decoder families organize attention and training objectives differently. BERT-style encoders are commonly associated with masked-token representation learning; GPT-style decoders use autoregressive prediction; T5-style systems frame tasks as text-to-text sequence transformation.",
+        "status": "THIN",
         "sources": [
           "https://research.google/pubs/attention-is-all-you-need/",
           "https://huggingface.co/docs/transformers/llm_tutorial",
@@ -343,6 +365,7 @@
         "title": "Context windows, prefill and decoding",
         "id": "genai-context-prefill-decode",
         "summary": "A context window limits the tokens a model can attend to in a request, subject to model and service constraints. Prefill processes the supplied prefix; decoding extends it. KV caching avoids recomputing some prior representations but does not make long prompts or long outputs costless.",
+        "status": "THIN",
         "sources": [
           "https://huggingface.co/docs/transformers/llm_tutorial",
           "https://docs.nvidia.com/nim/benchmarking/llm/metrics"
@@ -353,6 +376,7 @@
         "title": "Temperature, top-k and top-p sampling",
         "id": "genai-sampling-temperature",
         "summary": "Decoding transforms a model distribution into output choices. Temperature rescales logits, top-k limits a fixed number of candidates and top-p retains a probability-mass nucleus. These are sampling controls, not mechanisms that supply missing factual knowledge or guarantee valid output.",
+        "status": "THIN",
         "sources": [
           "https://huggingface.co/docs/transformers/llm_tutorial"
         ]
@@ -362,6 +386,7 @@
         "title": "Prompt engineering, examples and reasoning",
         "id": "genai-prompting-reasoning",
         "summary": "Prompts specify a task, context and output contract, but they do not replace system permissions or evaluation. Zero-shot instructions and few-shot examples differ in the demonstrations supplied. A useful explanation can show a concise rationale or verifiable calculation without requiring disclosure of private internal chain-of-thought.",
+        "status": "THIN",
         "sources": [
           "https://huggingface.co/docs/transformers/llm_tutorial",
           "https://www.anthropic.com/research/building-effective-agents",
@@ -373,6 +398,7 @@
         "title": "Structured outputs and function calling",
         "id": "genai-structured-tools",
         "summary": "Structured outputs target a declared response shape; tool calling proposes an application operation with arguments. Neither valid JSON nor a tool name grants authorization. The host must validate types, business rules, user permissions and side effects before executing a model-proposed action.",
+        "status": "THIN",
         "sources": [
           "https://www.anthropic.com/research/building-effective-agents",
           "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture",
@@ -384,6 +410,7 @@
         "title": "Model comparison, LLaMA and deployment choices",
         "id": "genai-model-comparison",
         "summary": "Model selection balances measured task capability, license terms, data handling, hardware, latency and operating cost. Open-weight availability is not identical to unrestricted open-source licensing. A hosted proprietary API and a self-hosted checkpoint expose different operational responsibilities and control surfaces.",
+        "status": "THIN",
         "sources": [
           "https://ai.meta.com/research/publications/the-llama-3-herd-of-models",
           "https://huggingface.co/docs/transformers/llm_tutorial",
@@ -395,37 +422,44 @@
       {
         "day": 8,
         "title": "Transformer blocks and residual streams + Query, key, value and scaled attention",
-        "id": "genai-day-08"
+        "id": "genai-day-08",
+        "article": "transformer-blocks"
       },
       {
         "day": 9,
         "title": "Attention heads, causal masks and KV sharing + Position information and RoPE",
-        "id": "genai-day-09"
+        "id": "genai-day-09",
+        "article": "heads-masks-kv"
       },
       {
         "day": 10,
         "title": "Encoder, decoder, BERT, GPT and T5 + Context windows, prefill and decoding",
-        "id": "genai-day-10"
+        "id": "genai-day-10",
+        "article": "encoder-decoder-families"
       },
       {
         "day": 11,
         "title": "Temperature, top-k and top-p sampling",
-        "id": "genai-day-11"
+        "id": "genai-day-11",
+        "article": "sampling-temperature"
       },
       {
         "day": 12,
         "title": "Prompt engineering, examples and reasoning",
-        "id": "genai-day-12"
+        "id": "genai-day-12",
+        "article": "prompting-reasoning"
       },
       {
         "day": 13,
         "title": "Structured outputs and function calling",
-        "id": "genai-day-13"
+        "id": "genai-day-13",
+        "article": "structured-tools"
       },
       {
         "day": 14,
         "title": "Model comparison, LLaMA and deployment choices",
-        "id": "genai-day-14"
+        "id": "genai-day-14",
+        "article": "model-comparison"
       }
     ],
     "progressIds": {
@@ -579,6 +613,7 @@
         "title": "RAG pipeline and evidence contracts",
         "id": "genai-rag-pipeline",
         "summary": "Retrieval-augmented generation conditions a language model on retrieved evidence. Retrieval supplies information; it does not train the generator or prove that an answer is true.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
@@ -590,6 +625,7 @@
         "title": "Document loading, chunking and metadata",
         "id": "genai-chunking-metadata",
         "summary": "Chunking turns documents into retrievable units while preserving enough context to answer questions. Chunk size is a tradeoff between semantic completeness and retrieval specificity.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
@@ -600,6 +636,7 @@
         "title": "Vector databases and similarity search",
         "id": "genai-vector-indexes",
         "summary": "A vector index finds nearby embeddings under a chosen similarity metric. Approximate nearest-neighbor search trades some exact recall for speed and memory efficiency.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
@@ -610,6 +647,7 @@
         "title": "Hybrid retrieval and reranking",
         "id": "genai-hybrid-reranking",
         "summary": "Hybrid search combines lexical and semantic retrieval. A reranker then scores a smaller candidate set with more expensive query-document interaction.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
@@ -620,6 +658,7 @@
         "title": "Advanced RAG and retrieval evaluation",
         "id": "genai-advanced-rag-evaluation",
         "summary": "Advanced RAG adds selective query rewriting, decomposition, or iterative retrieval when a single lookup cannot supply sufficient evidence. Extra steps must justify their complexity.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://docs.ragas.io/en/stable/concepts/metrics/",
@@ -631,6 +670,7 @@
         "title": "Fine-tuning, LoRA, QLoRA and PEFT",
         "id": "genai-lora-qlora-peft",
         "summary": "Parameter-efficient fine-tuning adapts selected trainable parameters while keeping most pretrained weights frozen. LoRA expresses weight updates through two low-rank matrices.",
+        "status": "THIN",
         "sources": [
           "https://huggingface.co/docs/peft/main/en/conceptual_guides/lora",
           "https://huggingface.co/docs/transformers/llm_tutorial"
@@ -641,6 +681,7 @@
         "title": "Quantization and precision tradeoffs",
         "id": "genai-quantization",
         "summary": "Quantization represents numbers with a smaller set of discrete values. Scale and zero point map values between integer storage and an approximate floating-point representation.",
+        "status": "THIN",
         "sources": [
           "https://huggingface.co/docs/peft/main/en/conceptual_guides/lora",
           "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
@@ -652,6 +693,7 @@
         "title": "LangChain, LangGraph and durable state",
         "id": "genai-langchain-langgraph",
         "summary": "Workflow orchestration connects model calls, retrieval, and tools. A state graph makes transitions explicit and can support checkpoints and controlled resumptions.",
+        "status": "THIN",
         "sources": [
           "https://docs.langchain.com/oss/python/langgraph/overview",
           "https://www.anthropic.com/research/building-effective-agents"
@@ -662,6 +704,7 @@
         "title": "MCP, tools, memory and multi-agent systems",
         "id": "genai-mcp-tools-multiagent",
         "summary": "MCP standardizes communication between AI applications and external capabilities. Tool availability does not imply that an agent is authorized to execute every exposed operation.",
+        "status": "THIN",
         "sources": [
           "https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture",
           "https://www.anthropic.com/research/building-effective-agents",
@@ -673,6 +716,7 @@
         "title": "Building a grounded GenAI application",
         "id": "genai-grounded-app-integration",
         "summary": "A complete application combines ingestion, retrieval, generation, user identity, and a usable evidence display. Correctness depends on the boundaries between these components.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
@@ -684,42 +728,50 @@
       {
         "day": 15,
         "title": "RAG pipeline and evidence contracts + Document loading, chunking and metadata",
-        "id": "genai-day-15"
+        "id": "genai-day-15",
+        "article": "rag-pipeline"
       },
       {
         "day": 16,
         "title": "Vector databases and similarity search + Hybrid retrieval and reranking",
-        "id": "genai-day-16"
+        "id": "genai-day-16",
+        "article": "vector-indexes"
       },
       {
         "day": 17,
         "title": "Advanced RAG and retrieval evaluation",
-        "id": "genai-day-17"
+        "id": "genai-day-17",
+        "article": "advanced-rag-evaluation"
       },
       {
         "day": 18,
         "title": "Fine-tuning, LoRA, QLoRA and PEFT",
-        "id": "genai-day-18"
+        "id": "genai-day-18",
+        "article": "lora-qlora-peft"
       },
       {
         "day": 19,
         "title": "Quantization and precision tradeoffs",
-        "id": "genai-day-19"
+        "id": "genai-day-19",
+        "article": "quantization"
       },
       {
         "day": 20,
         "title": "LangChain, LangGraph and durable state",
-        "id": "genai-day-20"
+        "id": "genai-day-20",
+        "article": "langchain-langgraph"
       },
       {
         "day": 21,
         "title": "MCP, tools, memory and multi-agent systems",
-        "id": "genai-day-21"
+        "id": "genai-day-21",
+        "article": "mcp-tools-multiagent"
       },
       {
         "day": 22,
         "title": "Building a grounded GenAI application",
-        "id": "genai-day-22"
+        "id": "genai-day-22",
+        "article": "grounded-app-integration"
       }
     ],
     "progressIds": {
@@ -874,6 +926,7 @@
         "title": "Production APIs and FastAPI concurrency",
         "id": "genai-production-api",
         "summary": "A production model API coordinates authentication, validation, model access, deadlines, and response delivery. Asynchronous handlers improve concurrency only when blocking work is managed correctly.",
+        "status": "THIN",
         "sources": [
           "https://fastapi.tiangolo.com/async/",
           "https://docs.nvidia.com/nim/benchmarking/llm/metrics"
@@ -884,6 +937,7 @@
         "title": "Scalable RAG system design",
         "id": "genai-rag-system-design",
         "summary": "Scalable RAG separates ingestion throughput from interactive retrieval and generation latency. Consistency, tenant isolation, and freshness are architectural concerns rather than prompt settings.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
@@ -895,6 +949,7 @@
         "title": "LLM evaluation, RAGAS and model judges",
         "id": "genai-evaluation-judges",
         "summary": "Evaluation measures behavior against a defined task and evidence standard. Retrieval metrics, answer correctness, faithfulness, and user outcomes describe different properties.",
+        "status": "THIN",
         "sources": [
           "https://docs.ragas.io/en/stable/concepts/metrics/",
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide"
@@ -905,6 +960,7 @@
         "title": "Guardrails, prompt injection and AI security",
         "id": "genai-guardrails-injection",
         "summary": "Prompt injection occurs when untrusted content attempts to redirect application behavior. It is a trust-boundary problem, including indirect instructions hidden in retrieved documents or tool results.",
+        "status": "THIN",
         "sources": [
           "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/",
           "https://www.anthropic.com/research/building-effective-agents",
@@ -916,6 +972,7 @@
         "title": "Responsible AI, privacy and human oversight",
         "id": "genai-responsible-ai-privacy",
         "summary": "Responsible deployment requires understanding affected users, sensitive data, failure consequences, and appropriate human control. Average quality metrics can hide unequal or harmful outcomes.",
+        "status": "THIN",
         "sources": [
           "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/",
           "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
@@ -926,6 +983,7 @@
         "title": "LLMOps, observability and controlled releases",
         "id": "genai-llmops-monitoring",
         "summary": "LLMOps manages the versions and operational behavior of model-powered applications. Model, prompt, retriever, corpus, and tool changes can each alter outcomes.",
+        "status": "THIN",
         "sources": [
           "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
           "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
@@ -937,6 +995,7 @@
         "title": "Latency, token cost and caching",
         "id": "genai-latency-token-cost",
         "summary": "GenAI cost and latency depend on prompt length, generated length, model choice, concurrency, and caching. Optimize against an explicit quality target rather than minimizing one metric in isolation.",
+        "status": "THIN",
         "sources": [
           "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
           "https://huggingface.co/docs/transformers/llm_tutorial"
@@ -947,6 +1006,7 @@
         "title": "GPU inference, batching and KV memory",
         "id": "genai-gpu-inference",
         "summary": "GPU inference performance depends on model weights, activations, KV cache, memory bandwidth, and scheduling. Different request phases stress hardware differently.",
+        "status": "THIN",
         "sources": [
           "https://docs.nvidia.com/nim/benchmarking/llm/metrics",
           "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
@@ -957,6 +1017,7 @@
         "title": "Docker, Kubernetes and cloud deployment",
         "id": "genai-docker-k8s-cloud",
         "summary": "Containers package an application runtime, while orchestration manages replicas, networking, rollout, and recovery. Successful deployment also requires model readiness, secrets, and external dependencies.",
+        "status": "THIN",
         "sources": [
           "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
           "https://fastapi.tiangolo.com/async/",
@@ -968,6 +1029,7 @@
         "title": "Production debugging and MNC mock interviews",
         "id": "genai-incident-response-projects",
         "summary": "Production debugging starts with a reproducible symptom, bounded impact, and evidence. Interview preparation should demonstrate reasoning and truthful engineering ownership rather than memorized claims.",
+        "status": "THIN",
         "sources": [
           "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
           "https://docs.ragas.io/en/stable/concepts/metrics/",
@@ -980,42 +1042,50 @@
       {
         "day": 23,
         "title": "Production APIs and FastAPI concurrency + Scalable RAG system design",
-        "id": "genai-day-23"
+        "id": "genai-day-23",
+        "article": "production-api"
       },
       {
         "day": 24,
         "title": "LLM evaluation, RAGAS and model judges + Guardrails, prompt injection and AI security",
-        "id": "genai-day-24"
+        "id": "genai-day-24",
+        "article": "evaluation-judges"
       },
       {
         "day": 25,
         "title": "Responsible AI, privacy and human oversight",
-        "id": "genai-day-25"
+        "id": "genai-day-25",
+        "article": "responsible-ai-privacy"
       },
       {
         "day": 26,
         "title": "LLMOps, observability and controlled releases",
-        "id": "genai-day-26"
+        "id": "genai-day-26",
+        "article": "llmops-monitoring"
       },
       {
         "day": 27,
         "title": "Latency, token cost and caching",
-        "id": "genai-day-27"
+        "id": "genai-day-27",
+        "article": "latency-token-cost"
       },
       {
         "day": 28,
         "title": "GPU inference, batching and KV memory",
-        "id": "genai-day-28"
+        "id": "genai-day-28",
+        "article": "gpu-inference"
       },
       {
         "day": 29,
         "title": "Docker, Kubernetes and cloud deployment",
-        "id": "genai-day-29"
+        "id": "genai-day-29",
+        "article": "docker-k8s-cloud"
       },
       {
         "day": 30,
         "title": "Production debugging and MNC mock interviews",
-        "id": "genai-day-30"
+        "id": "genai-day-30",
+        "article": "incident-response-projects"
       }
     ],
     "progressIds": {

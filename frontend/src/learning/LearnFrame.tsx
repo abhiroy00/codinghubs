@@ -6,6 +6,7 @@ import { learningMeta } from '../seo/learning'
 import { LOGO_URL } from '../seo/site'
 import { SITE_URL } from '../locations/registry'
 import type { Seo } from '../content-pages/api'
+import { getRobotsDirective } from '../seo/robots'
 import './learning.css'
 import './prep-shell.css'
 import '../pages/free-session/home-theme.css'
@@ -15,7 +16,8 @@ export type Crumb = { label: string; to?: string }
 function pageMeta(path: string, title: string, description: string): Seo {
   const canonical = SITE_URL + path
   return {
-    title, description, canonical, robots: 'index, follow, max-image-preview:large',
+    // Editorial landing pages (visual lab, studio overview) are complete by review.
+    title, description, canonical, robots: getRobotsDirective({ kind: 'content', status: 'COMPLETE' }),
     og: { type: 'website', title, description, image: LOGO_URL, url: canonical, alt: 'Coding Hubs School of AI' },
     json_ld: null,
   }

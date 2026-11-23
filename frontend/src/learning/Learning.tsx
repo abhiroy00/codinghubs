@@ -10,6 +10,7 @@ import { LearningSummary } from './LearningSummary'
 import type { AcademyCourse } from './Academy'
 import { LessonDiagram } from './DiagramPlayer'
 import { useAcademySeo } from './useAcademySeo'
+import { hubStatus } from '../seo/robots'
 
 
 function CodeEditor({ block }: { block: Block }) {
@@ -26,7 +27,9 @@ export function Learning() {
   const { user } = useAuth()
   const [modules, setModules] = useState<Module[]>([])
   const [lesson, setLesson] = useState<Lesson | null>(null)
-  useAcademySeo(`${lesson?.title ?? courseInfo?.title ?? 'Learning path'} | Coding Hubs`,lesson?.seo_description ?? courseInfo?.summary ?? 'Explore the engineering learning roadmap.',`${base}${slug ? `${slug}/` : ''}`,!!lesson && !lesson.preview)
+  useAcademySeo(`${lesson?.title ?? courseInfo?.title ?? 'Learning path'} | Coding Hubs`,lesson?.seo_description ?? courseInfo?.summary ?? 'Explore the engineering learning roadmap.',`${base}${slug ? `${slug}/` : ''}`,
+    // Published concepts passed the editorial gates in apps/learning/quality.py; a path is COMPLETE once one is published.
+    slug ? (lesson && !lesson.preview ? 'COMPLETE' : 'PLACEHOLDER') : hubStatus(modules.flatMap(m => m.chapters.flatMap(c => c.concepts)).filter(c => c.available).length))
   const [progress, setProgress] = useState<Progress[]>([])
   const [progressReady, setProgressReady] = useState(false)
   const [part, setPart] = useState<Part>('concept')

@@ -15,11 +15,16 @@ const SITE = 'https://codinghubs.in'
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-const { renderAll, renderContentChrome } = await import(pathToFileURL(path.join(root, 'dist-ssr', 'entry-server.js')).href)
+const { renderAll, renderContentChrome, lessonDayRedirects } = await import(pathToFileURL(path.join(root, 'dist-ssr', 'entry-server.js')).href)
 const template = await readFile(path.join(dist, 'index.html'), 'utf8')
 // Same hash as vite.config.ts (from the source file; the built copy is minified).
 const cssVersion = createHash('md5').update(await readFile(path.join(root, 'public', 'free-session.css'))).digest('hex').slice(0, 8)
-const learningStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(genai-roadmap|learning)-.*\.css$/.test(name))
+// Chosen by content, not chunk name: Rollup names a shared CSS chunk after whichever module it groups with.
+const cssFiles = (await readdir(path.join(dist, 'assets'))).filter(name => name.endsWith('.css'))
+const learningStyles = []
+for (const name of cssFiles) {
+  if (/^learning-.*\.css$/.test(name) || (await readFile(path.join(dist, 'assets', name), 'utf8')).includes('.genai-roadmap{')) learningStyles.push(name)
+}
 const visualStyles = (await readdir(path.join(dist, 'assets'))).filter(name => /^(Academy|DiagramPlayer|VisualLab)-.*\.css$/.test(name))
 const manifest = JSON.parse(await readFile(path.join(dist, '.vite/manifest.json'), 'utf8'))
 const studioCss = manifest['src/studio/Studio.tsx']?.css ?? []
@@ -110,8 +115,16 @@ function heroPosterPreloads(html) {
     `<link rel="preload" as="image" type="${type(lg)}" href="${esc(lg)}" media="(min-width: 768px)" fetchpriority="high" />`,
   ]
 }
+const TRACKING = /^(utm_[a-z_]+|gclid|fbclid|msclkid|dclid|yclid|mc_[a-z]+|_ga|_gl|ref|igshid|si|next|review)$/i
+function stripTracking(url) {
+  const u = new URL(url)
+  for (const key of [...u.searchParams.keys()]) if (TRACKING.test(key)) u.searchParams.delete(key)
+  u.hash = ''
+  return u.toString()
+}
 function buildHead(page) {
-  const canonical = page.canonical ?? `${SITE}${page.path}`
+  // Canonicals are built from paths; strip tracking/session parameters defensively all the same.
+  const canonical = stripTracking(page.canonical ?? `${SITE}${page.path}`)
   const imageAlt = page.image?.endsWith('/assets/coding-hubs-school-of-ai-logo.jpeg') ? 'Coding Hubs School of AI logo' : page.title
   const tags = [
     `<title>${esc(page.title)}</title>`,
@@ -221,6 +234,18 @@ await writeFile(path.join(dist, 'content-shell.html'), render({ fsDesign: true, 
   .replace('</body>', `<!--CHROME_TOP-->${chrome.top}<!--/CHROME_TOP--><!--CHROME_BOTTOM-->${chrome.bottom}<!--/CHROME_BOTTOM-->\n</body>`))
 
 const pages = renderAll({ skipMissing: process.env.ALLOW_MISSING_LOCATIONS === '1' })
+// Canonical hygiene: a noindex page must not name another noindex page as its canonical; it then has none.
+const robotsByUrl = new Map(pages.map(p => [`${SITE}${p.path}`, p.robots ?? (p.indexable ? 'index' : 'noindex')]))
+for (const page of pages) {
+  const target = page.canonical
+  if (!target || target === `${SITE}${page.path}` || !/^noindex/.test(page.robots ?? '')) continue
+  if (/^noindex/.test(robotsByUrl.get(target) ?? 'noindex')) { page.canonical = undefined; page.indexable = false }
+}
+// Content fingerprints for <lastmod>: the ledger (src/seo/lastmod.json, maintained by `npm run seo:lastmod`)
+// records when each page's main content last changed. A page whose content no longer matches gets no date.
+const ledger = JSON.parse(await readFile(path.join(root, 'src/seo/lastmod.json'), 'utf8').catch(() => '{}'))
+const contentHash = html => createHash('sha256').update((html.match(/<main[^>]*>([\s\S]*)<\/main>/)?.[1] ?? html.replace(/^[\s\S]*?<body[^>]*>/, '')).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()).digest('hex').slice(0, 16)
+const hashes = {}
 for (const page of pages) {
   const file = path.join(dist, page.file)
   await mkdir(path.dirname(file), { recursive: true })
@@ -231,19 +256,36 @@ for (const page of pages) {
       throw new Error('Sitemap candidate has conflicting indexing metadata: ' + page.path)
     }
   }
+  if (page.indexable) hashes[page.path] = contentHash(html)
   const courseDetail = /^\/courses\/[^/]+\/$/.test(page.path)
   await writeFile(file, page.path === '/' ? await inlineHomeCriticalCss(html, dist) : courseDetail ? await inlineCourseCriticalCss(html, dist) : html)
 }
 
-// sitemap: indexable canonical URLs only; no <lastmod> (we do not track real content-change dates)
+// sitemap: indexable self-canonical URLs only; <lastmod> only where the ledger matches the current content
 const urls = pages.filter((p) => p.indexable).map((p) => `${SITE}${p.path}`)
 if (new Set(urls).size !== urls.length) throw new Error('Duplicate sitemap URLs')
 for (const page of pages.filter(p => p.indexable)) {
   if (page.canonical && page.canonical !== `${SITE}${page.path}`) throw new Error('Noncanonical page in sitemap: ' + page.path)
 }
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
-  .map((u) => `  <url><loc>${u}</loc></url>`)
+  .map((u) => { const p = u.slice(SITE.length), entry = ledger[p]; return `  <url><loc>${u}</loc>${entry?.date && entry.hash === hashes[p] ? `<lastmod>${entry.date}</lastmod>` : ''}</url>` })
   .join('\n')}\n</urlset>\n`
 await writeFile(path.join(dist, 'sitemap.xml'), sitemap)
 
+// nginx map of duplicate day URLs → their article (frontend/nginx.conf includes it; Dockerfile copies it).
+// Written outside dist/ so it is never served as a public file.
+const redirects = lessonDayRedirects()
+const built = new Set(pages.map(p => p.path))
+for (const [from, to] of redirects) {
+  if (!built.has(to)) throw new Error(`Redirect target is not a built page: ${from} → ${to}`)
+  if (built.has(from.endsWith('/') ? from : from + '/')) throw new Error(`Redirected URL is still prerendered: ${from}`)
+}
+const nginxDir = path.join(root, 'dist-nginx')
+await mkdir(nginxDir, { recursive: true })
+await writeFile(path.join(nginxDir, 'content-hashes.json'), JSON.stringify(hashes, null, 1) + '\n')
+const stale = Object.keys(hashes).filter(p => ledger[p]?.hash !== hashes[p])
+if (stale.length) console.warn(`lastmod: ${stale.length} sitemap pages changed or are new; run \`npm run seo:lastmod\` to date them (first: ${stale[0]})`)
+await writeFile(path.join(nginxDir, 'lesson-days.map'), '# Generated by scripts/prerender.mjs — day URLs whose lesson is published as an article.\n' + redirects.map(([from, to]) => `${from} ${to};`).join('\n') + '\n')
+
 console.log(`prerendered ${pages.length} pages and wrote sitemap.xml (${urls.length} URLs)`)
+console.log(`wrote dist-nginx/lesson-days.map (${redirects.length} redirect rules)`)

@@ -39,8 +39,10 @@ class InterviewTests(TestCase):
         self.assertNotIn('search', response.data['results'][0])
         none = self.api.get('/api/interview/resources/?q=nonexistentzzzzzzzz')
         self.assertEqual(none.data['count'], 0)
-        self.assertGreater(len(catalog()), 200)
+        self.assertGreater(len(catalog()), 150)
         self.assertEqual(sum(r['kind'] == 'guide' for r in catalog()), 8)
+        # Day URLs 301 to their article, so search lists the article only.
+        self.assertFalse([r['url'] for r in catalog() if '/days/' in r['url']])
 
     def test_new_published_database_questions_are_searchable_with_a_direct_practice_link(self):
         from apps.courses.models import CourseQuestion

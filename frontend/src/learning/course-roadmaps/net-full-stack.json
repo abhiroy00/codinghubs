@@ -1029,6 +1029,7 @@
           "id": "net-full-stack:assignment:1",
           "title": "The .NET Platform: CLR, CTS, Managed Code and .NET vs .NET Framework",
           "available": true,
+          "article": "day-1",
           "focus": ".NET is a free, open-source, cross-platform developer platform from Microsoft for building web, desktop, mobile, cloud and console applications. Code written in C#, F# or VB.NET is compiled into Intermediate Language (IL) and executed by the Common Language Runtime (CLR), which manages memory, type safety and security for it. Code that runs under the CLR's control is called managed code.",
           "objectives": [
             "Explain what .NET is and how C# source code becomes running machine code.",
@@ -1058,6 +1059,7 @@
           "id": "net-full-stack:assignment:2",
           "title": "C# Types: Value vs Reference, Boxing and Nullable Types",
           "available": true,
+          "article": "day-2",
           "focus": "Every C# type is either a value type or a reference type. A variable of a value type (int, double, bool, struct, enum) holds the data itself, so assignment copies the data. A variable of a reference type (class, string, array, interface, delegate, record class) holds a reference to an object on the managed heap, so assignment copies only the reference and both variables then point to the same object.",
           "objectives": [
             "Explain the difference between value types and reference types and how assignment behaves for each.",
@@ -1087,6 +1089,7 @@
           "id": "net-full-stack:assignment:3",
           "title": "Strings, StringBuilder and Method Parameters (ref, out, in, params)",
           "available": true,
+          "article": "day-3",
           "focus": "A C# string is an immutable sequence of UTF-16 characters: every operation that seems to change it (ToUpper, Replace, +) returns a new string. StringBuilder is a mutable buffer for building text efficiently in loops. Method parameters are passed by value by default; the ref, out and in modifiers pass a variable by reference, and params lets a method accept a variable number of arguments.",
           "objectives": [
             "Explain why strings are immutable and what that means for performance.",
