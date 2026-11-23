@@ -44,7 +44,7 @@ const lessons = (slug: string) => PREP_SOURCES[slug]?.availableDays;
 
 function RoleRoadmaps() {
   const [role, setRole] = useState("");
-  const groups = ROLES.map((r) => ({ ...r, courses: COURSE_CATALOG.filter((c) => r.tracks.includes(c.track)) }))
+  const groups = ROLES.map((r) => ({ ...r, courses: COURSE_CATALOG.filter((c) => r.tracks.includes(c.track) && (!PREP_SOURCES[c.slug] || PREP_SOURCES[c.slug].primary === c.slug)) }))
     .filter((g) => g.courses.length && (!role || g.id === role));
   return (
     <Section className="ih-section" titleId="existing-roadmaps" align="left" badge="Roadmaps" title="Roadmaps by role" subtitle="Pick the role you are preparing for. Each roadmap is a 30-day plan with lessons, questions and practice; lesson counts show what is published today.">

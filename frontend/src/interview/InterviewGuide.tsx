@@ -1,4 +1,6 @@
 import { Link, useParams } from "react-router-dom";
+import { useMemo } from 'react';
+import { interviewGuideMeta } from '../seo/interview-guide';
 import { LearnFrame } from "../learning/LearnFrame";
 import { NotFound } from "../pages/NotFound";
 import { ResourceActions } from "./ResourceActions";
@@ -7,6 +9,7 @@ import "../community/public.css";
 export function InterviewGuide() {
   const { slug } = useParams();
   const guide = guides.find((g) => g.slug === slug);
+  const metadata = useMemo(() => guide ? interviewGuideMeta(guide) : undefined, [guide]);
   if (!guide) return <NotFound />;
   return (
     <LearnFrame
@@ -14,12 +17,7 @@ export function InterviewGuide() {
         { label: "Interview", to: "/interview/" },
         { label: guide.title },
       ]}
-      title={
-        guide.title.length > 47
-          ? guide.title.slice(0, 44) + "… | Coding Hubs"
-          : guide.title + " | Coding Hubs"
-      }
-      description={guide.summary}
+      metadata={metadata}
     >
       <div className="interview-guide-layout">
         <aside className="interview-topic-nav">

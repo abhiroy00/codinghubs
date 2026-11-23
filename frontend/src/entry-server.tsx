@@ -28,6 +28,7 @@ import { LocationView } from './locations/LocationView'
 import { INDEX_DESCRIPTION, INDEX_TITLE, indexJsonLd, locationJsonLd } from './locations/seo'
 import { LOCATIONS, SITE_URL, locationPath } from './locations/registry'
 import { learningMeta } from './seo/learning'
+import { interviewGuideMeta } from './seo/interview-guide'
 import { PREP_SOURCES } from './learning/prep-content'
 import type { PrepGuide } from './learning/prep-content'
 import { COURSE_CATALOG } from './learning/catalog'
@@ -162,11 +163,10 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
 
   for (const guide of interviewGuides) {
     const path = `/interview/guides/${guide.slug}/`
-    const title = guide.title.length > 47 ? guide.title.slice(0,44) + '… | Coding Hubs' : guide.title + ' | Coding Hubs'
-    const canonical = SITE_URL + path
-    pages.push({ file:path.slice(1)+'index.html', path, title, description:guide.summary, image:LOGO_URL, indexable:true, fsDesign:true,
+    const seo = interviewGuideMeta(guide)
+    pages.push({ file:path.slice(1)+'index.html', path, title:seo.title, description:seo.description, image:LOGO_URL, canonical:seo.canonical, robots:seo.robots, indexable:true, fsDesign:true,
       html:renderToString(<AuthProvider><StaticRouter location={path}><Routes><Route path="/interview/guides/:slug/" element={<InterviewGuide/>}/></Routes></StaticRouter></AuthProvider>),
-      jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:guide.title,url:canonical,description:guide.summary,inLanguage:'en-IN',isAccessibleForFree:true}]},
+      jsonLd:seo.json_ld,
     })
   }
 

@@ -7,6 +7,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { inlineCourseCriticalCss, inlineHomeCriticalCss } from './home-critical-css.mjs'
+import { inspectSeoHtml } from './seo-html.mjs'
 
 const root = path.resolve(import.meta.dirname, '..')
 const dist = path.join(root, 'dist')
@@ -224,6 +225,12 @@ for (const page of pages) {
   const file = path.join(dist, page.file)
   await mkdir(path.dirname(file), { recursive: true })
   const html = render(page)
+  if (page.indexable) {
+    const seo = inspectSeoHtml(html)
+    if (seo.noindex || seo.canonicals.length !== 1 || seo.canonicals[0] !== `${SITE}${page.path}`) {
+      throw new Error('Sitemap candidate has conflicting indexing metadata: ' + page.path)
+    }
+  }
   const courseDetail = /^\/courses\/[^/]+\/$/.test(page.path)
   await writeFile(file, page.path === '/' ? await inlineHomeCriticalCss(html, dist) : courseDetail ? await inlineCourseCriticalCss(html, dist) : html)
 }

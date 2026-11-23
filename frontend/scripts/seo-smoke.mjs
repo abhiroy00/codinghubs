@@ -1,5 +1,6 @@
 // Live/staging SEO smoke test (read-only HTTP). Usage: node scripts/seo-smoke.mjs [baseUrl]   (default https://codinghubs.in)
 // Build-time checks live in validate-seo.mjs / validate-locations.mjs; this verifies what a crawler actually receives.
+import { excludesIndexing, inspectSeoHtml } from './seo-html.mjs'
 const base = (process.argv[2] || 'https://codinghubs.in').replace(/\/$/, '')
 const problems = []
 const fail = (m) => problems.push(m)
@@ -59,8 +60,9 @@ for (const u of urls) {
   if (r.status !== 200) { fail(`${u}: HTTP ${r.status}`); continue }
   const html = await r.text()
   const one = (re) => (html.match(re) || [])[1] || ''
-  if (one(/<link rel="canonical" href="([^"]*)"/) !== u) fail(`${u}: canonical is not self`)
-  if (/noindex/i.test(one(/<meta name="robots" content="([^"]*)"/)) || /noindex/i.test(r.headers.get('x-robots-tag') || '')) fail(`${u}: noindex but in sitemap`)
+  const seo = inspectSeoHtml(html)
+  if (seo.canonicals.length !== 1 || seo.canonicals[0] !== u) fail(`${u}: canonical is not uniquely self`)
+  if (seo.noindex || excludesIndexing(r.headers.get('x-robots-tag') || '')) fail(`${u}: noindex but in sitemap`)
   const title = one(/<title>([^<]*)<\/title>/)
   if (!title) fail(`${u}: missing title`)
   else if (titles.has(title)) fail(`${u}: duplicate title with ${titles.get(title)}`)

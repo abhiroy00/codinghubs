@@ -3,6 +3,7 @@
 import { existsSync, readdirSync, statSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { inspectSeoHtml } from './seo-html.mjs'
 
 const dist = path.resolve(import.meta.dirname, '..', 'dist')
 const SITE = 'https://codinghubs.in'
@@ -18,15 +19,17 @@ const read = (f) => readFile(path.join(dist, f), 'utf8')
 
 /** Mirrors nginx.conf: where a clean URL is served from. */
 function resolveUrl(urlPath) {
+  if (/^\/(store|cart|checkout|payment|my-account\/(orders|downloads))(\/|$)/.test(urlPath)) return null
+  if (/^\/(interview-prep|certificates)(\/|$)/.test(urlPath)) return null
   if (/^\/(newsletter|brochures)(?:\/|$)/.test(urlPath)) return {file:'content-shell.html', dynamic:true}
   if (/^\/learn(?:\/|$)/.test(urlPath)) return {file: 'content-shell.html', dynamic: true}
   // Explicit Studio nginx locations: canonical landing has no slash; private routes use the SPA shell.
   if (urlPath === '/interview-studio') return { file: 'interview-studio/index.html' }
   if (/^\/interview-studio\/(dashboard|coding-interviews(?:\/(new|history|session\/[a-f0-9-]+))?|practice|problems|company-preparation|dsa-roadmaps|system-design(?:\/interview)?|low-level-design|ai-tutor|analytics|profile)\/?$/.test(urlPath)) return { file: 'index.html', static: true }
   // blog / case studies come from the database: nginx hands these URLs to the backend (server-rendered)
-  if (/^\/(blog|case-studies|store|projects|project-guides)(\/[^/]+)?$/.test(urlPath)) return { file: 'content-shell.html', dynamic: true }
+  if (/^\/(blog|case-studies|projects|project-guides)(\/[^/]+)?$/.test(urlPath)) return { file: 'content-shell.html', dynamic: true }
   // account / checkout screens are app-only (noindex SPA shell)
-  if (/^\/(cart|checkout|payment\/(success|failure)|my-account(\/orders|\/downloads)?)$/.test(urlPath)) return { file: 'index.html', static: true }
+  if (urlPath === '/my-account') return { file: 'index.html', static: true }
   if (urlPath === '/') return { file: 'home.html' }
   if (urlPath.endsWith('/')) {
     const f = path.posix.join(urlPath, 'index.html').slice(1)
@@ -80,7 +83,8 @@ for (const pg of pages) {
   const tag = (re) => html.match(re)?.[1]
   const title = decode(tag(/<title>([\s\S]*?)<\/title>/) ?? '')
   const desc = decode(tag(/<meta name="description" content="([^"]*)"/) ?? '')
-  const canonical = tag(/<link rel="canonical" href="([^"]*)"/)
+  const seo = inspectSeoHtml(html)
+  const canonical = seo.canonicals[0]
   const robotsMeta = tag(/<meta name="robots" content="([^"]*)"/) ?? ''
   const where = `[${urlPath}]`
 
@@ -90,7 +94,8 @@ for (const pg of pages) {
   if (descs.has(desc)) fail(`${where} duplicate description with ${descs.get(desc)}`)
   titles.set(title, urlPath); descs.set(desc, urlPath)
   if (canonical !== pg.url) fail(`${where} canonical is ${canonical}, expected ${pg.url}`)
-  if (/noindex/i.test(robotsMeta) || !robotsMeta) fail(`${where} robots meta missing or noindex: "${robotsMeta}"`)
+  if (seo.canonicals.length !== 1) fail(`${where} expected exactly one canonical`)
+  if (seo.noindex || !robotsMeta) fail(`${where} robots/googlebot meta missing or noindex: ${JSON.stringify(seo.robots)}`)
   if (!html.includes('<html lang="en-IN">')) fail(`${where} missing lang="en-IN"`)
   for (const k of ['og:title', 'og:description', 'og:url', 'og:image']) if (!html.includes(`property="${k}"`)) fail(`${where} missing ${k}`)
   if (tag(/property="og:url" content="([^"]*)"/) !== pg.url) fail(`${where} og:url differs from canonical`)
@@ -132,6 +137,10 @@ for (const pg of pages) {
     if (!href.startsWith('/') || href.startsWith('//')) continue
     const clean = href.split('#')[0].split('?')[0] || '/'
     out.add(clean)
+    if (/^\/(store|cart|checkout|payment|my-account\/(orders|downloads)|interview-prep|certificates)(\/|$)/.test(clean)) {
+      fail(`${where} link to retired/legacy URL ${href}`)
+      continue
+    }
     if (APP_ONLY.test(clean) || PROXIED.test(clean)) continue
     const r = resolveUrl(clean)
     if (!r) { fail(`${where} broken internal link ${href}`); continue }
@@ -166,7 +175,7 @@ for (const slug of courseSlugs) {
   const p = '/interview/' + slug + '/'
   const html = await read('interview/' + slug + '/index.html')
   const source = sources[slug]
-  const ready = (source?.availableDays ?? 0) >= 3
+  const ready = (source?.availableDays ?? 0) > 0
   const indexed = ready && source.primary === slug
   if (urls.includes(SITE + p) !== indexed) fail('Prep source/sitemap mismatch: ' + p)
   if (indexed) {

@@ -22,8 +22,10 @@ export function learningMeta(kind: 'courses' | 'interview', slug?: string): Seo 
   const path = '/' + kind + '/' + (course ? course.slug + '/' : '')
   const canonicalPath = prep && source ? '/interview/' + source.primary + '/' : path
   const canonical = SITE_URL + canonicalPath
-  // Partial guides need at least three substantive lessons before search promotion.
-  const indexable = (!slug || !!course) && (!prep || !course || (source?.availableDays ?? 0) >= 3)
+  // The exporter already rejects placeholder lessons. Published, source-backed guides
+  // are public resources even when the rest of their 30-day plan is unfinished.
+  // Workspaces without a substantive source remain excluded.
+  const indexable = (!slug || !!course) && (!prep || !course || (source?.availableDays ?? 0) > 0)
   const description = course
     ? prep ? 'Prepare for ' + course.name + ' interviews with topic-wise answers, practical examples and ' + (source?.complete ? 'a 30-day study roadmap.' : 'available subject-specific lessons.')
       : 'Explore ' + course.name + ': learning topics, tools, project ideas and related interview preparation resources from Coding Hubs School of AI, Delhi.'

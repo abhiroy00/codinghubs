@@ -25,8 +25,8 @@ Each `pages/<name>.mp4` is a ~10 s section (8-9 s for the shorter clips) of the 
 | --- | --- | --- | --- |
 | `courses` | /courses | [College Students Studying in Class #8198517](https://www.pexels.com/video/college-students-studying-in-class-8198517/) | Yan Krukau |
 | `course-detail` | /courses/:slug | [People Looking At A Computer #3248994](https://www.pexels.com/video/people-looking-at-a-computer-3248994/) | fauxels |
-| `interview-prep` | /interview-prep | [Job Interview #7652008](https://www.pexels.com/video/job-interview-7652008/) | Kindel Media |
-| `interview-prep-detail` | /interview-prep/:slug | [Young Man Studying Through Online Learning #5272272](https://www.pexels.com/video/young-man-studying-through-online-learning-5272272/) | Vlada Karpovich |
+| `interview-prep` | /interview/ | [Job Interview #7652008](https://www.pexels.com/video/job-interview-7652008/) | Kindel Media |
+| `interview-prep-detail` | /interview/:slug/ | [Young Man Studying Through Online Learning #5272272](https://www.pexels.com/video/young-man-studying-through-online-learning-5272272/) | Vlada Karpovich |
 | `faq` | /faq | [Call Center Agents Wearing their Headphones #7682953](https://www.pexels.com/video/call-center-agents-wearing-their-headphones-7682953/) | Mikhail Nilov |
 | `ai` | /ai | [Running Codes on a Computer #6804121](https://www.pexels.com/video/running-codes-on-a-computer-6804121/) | cottonbro studio |
 | `ai-tools` | /ai-tools | [A Computer Code Running on Screen #6804117](https://www.pexels.com/video/a-computer-code-running-on-screen-6804117/) | cottonbro studio |

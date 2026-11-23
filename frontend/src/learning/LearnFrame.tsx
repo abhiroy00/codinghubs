@@ -30,11 +30,13 @@ export function LearnFrame({
   trail,
   title,
   description,
+  metadata,
 }: {
   children: ReactNode
   trail?: Crumb[]
   title?: string
   description?: string
+  metadata?: Seo
 }) {
   const { pathname } = useLocation()
   const parts = pathname.split('/').filter(Boolean)
@@ -43,9 +45,9 @@ export function LearnFrame({
   const slug = parts[1]
   const seo = useMemo(
     // Courses added in the admin panel are not in the catalogue: their page sets its own metadata (CustomCourseDetails).
-    () => (kind === 'courses' && slug && !COURSE_BY_SLUG.has(slug) ? null
+    () => metadata ?? (kind === 'courses' && slug && !COURSE_BY_SLUG.has(slug) ? null
       : learning ? learningMeta(kind, slug) : title && description ? pageMeta(pathname, title, description) : null),
-    [learning, kind, slug, pathname, title, description],
+    [metadata, learning, kind, slug, pathname, title, description],
   )
   useSeo(seo)
   const course = learning && slug ? COURSE_BY_SLUG.get(slug) : undefined
