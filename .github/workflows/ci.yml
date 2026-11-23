@@ -229,7 +229,15 @@ jobs:
           for i in $(seq 1 90); do
             if curl --connect-timeout 3 --max-time 5 -fsSL "https://codinghubs.in/api/learning/release/?expected=${SHA}" -o deployed-release.json && jq -e --arg sha "$SHA" '.release == $sha and .catalog_ready == true' deployed-release.json >/dev/null && curl --connect-timeout 3 --max-time 5 -fsSL "$CSS_URL" -o deployed-tutor.css && grep -qF 'max-height:calc(100dvh - 1.5rem)' deployed-tutor.css && [ "$(sha256sum deployed-tutor.css | awk '{print $1}')" = "$CSS_SHA" ]; then
               echo "Verified deployed release $SHA and tutor stylesheet checksum: $CSS_URL"
-              exit 0
+              # The HTTP server can be healthy before post-migration verification and seeding finish.
+              # Require the remote script's final success line and retain its backup/count evidence.
+              COMPLETION_CMD="grep -qx 'deployed $SHA' /opt/codinghubs/deploy-logs/$SHA.log && grep -E 'Verified pre-migration database backup:|/opt/codinghubs/backups/before-|Retained record baseline:|retired_store_tables_remaining|^deployed ' /opt/codinghubs/deploy-logs/$SHA.log"
+              COMPLETION_LOG=$(remote "$COMPLETION_CMD")
+              if printf '%s\n' "$COMPLETION_LOG" | grep -qx "deployed $SHA"; then
+                printf '%s\n' "$COMPLETION_LOG"
+                exit 0
+              fi
+              echo "Waiting for post-migration checks and seeding to finish for $SHA"
             fi
             echo "Waiting for release $SHA and asset: $CSS_URL"
             sleep 10

@@ -56,6 +56,8 @@ Schema reversal restores empty Store tables and the previous access label while 
 
 These production archives are host-local; the existing S3 backup process remains the separate off-host recovery mechanism. Automatic rollback to an old image after this schema cleanup is unsafe; restore the database backup with a compatible release when a full rollback is necessary.
 
+The CI deployment gate also waits for the remote script's final `deployed <sha>` line, after verification and seeding. It copies the backup path/checksum and before/after record counts into the workflow log. A healthy HTTP release alone is insufficient to mark this cleanup complete.
+
 ## Verification
 
 - Original schema-retirement regression checks failed against the old implementation, detecting registered Store models, product/order fields, the obsolete command, commerce payload fields and missing restricted access.
