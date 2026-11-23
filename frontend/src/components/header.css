@@ -70,7 +70,7 @@ html:root {
   background: transparent;
   color: #e4e9f2;
   font: inherit;
-  font-size: 16px;
+  font-size: 14.5px;
   font-weight: 600;
   letter-spacing: -0.005em;
   text-decoration: none;
@@ -113,7 +113,7 @@ html:root {
   background: var(--ch-brand, #0062fa);
   color: #fff;
   font:
-    700 15px/1.3 "Poppins", "Noto Sans Devanagari",
+    700 14px/1.3 "Poppins", "Noto Sans Devanagari",
     system-ui,
     sans-serif;
   text-decoration: none;
@@ -314,12 +314,12 @@ html:root {
   }
   .site-header .sh-link,
   .site-header .sh-res-button {
-    padding-inline: 9px;
-    font-size: 16px;
+    padding-inline: 8px;
+    font-size: 14px;
   }
   .site-header .sh-demo {
-    padding-inline: 16px;
-    font-size: 14.5px;
+    padding-inline: 14px;
+    font-size: 13.5px;
   }
   .site-header .sh-actions {
     gap: 12px;
@@ -357,7 +357,7 @@ html:root {
     width: 100%;
     min-height: 48px;
     padding: 12px;
-    font-size: 17px;
+    font-size: 16px;
   }
   .site-header .sh-res {
     width: 100%;
@@ -369,7 +369,7 @@ html:root {
     flex: 1;
     min-height: 48px;
     padding: 12px;
-    font-size: 17px;
+    font-size: 16px;
   }
   .site-header .sh-courses-trigger .sh-res-button {
     width: 44px;

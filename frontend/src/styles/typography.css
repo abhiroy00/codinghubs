@@ -3,3 +3,7 @@
    page stylesheets loaded later (e.g. /free-session.css) cannot drift from these values. */
 main h2{font-size:clamp(1.75rem,1.5rem + 1.2vw,2rem)!important;line-height:1.25}
 h1,h2,h3,h4,h5,h6,.h2,.display-xl,.display-lg,.display-md,.font-display{font-family:'Plus Jakarta Sans','Poppins','Poppins Fallback','Noto Sans Devanagari',system-ui,sans-serif!important;letter-spacing:-.02em}
+/* One heading style on every page and section, matching the home hero ("Delhi's most practical AI learning
+   community."): Plus Jakarta Sans semibold, with the hero's tight tracking on page and section titles. */
+h1,h2,h3,h4,h5,h6,.h2,.display-xl,.display-lg,.display-md,.font-display{font-weight:600!important}
+h1,main h2,.display-xl,.display-lg{letter-spacing:-.04em!important}

@@ -20,7 +20,7 @@ const read = (f) => readFile(path.join(dist, f), 'utf8')
 /** Mirrors nginx.conf: where a clean URL is served from. */
 function resolveUrl(urlPath) {
   if (/^\/(store|cart|checkout|payment|my-account\/(orders|downloads))(\/|$)/.test(urlPath)) return null
-  if (/^\/(interview-prep|certificates)(\/|$)/.test(urlPath)) return null
+  if (/^\/interview-prep(\/|$)/.test(urlPath) || /^\/certificates\/[^/]+/.test(urlPath)) return null
   if (/^\/(newsletter|brochures)(?:\/|$)/.test(urlPath)) return {file:'content-shell.html', dynamic:true}
   if (/^\/learn(?:\/|$)/.test(urlPath)) return {file: 'content-shell.html', dynamic: true}
   // Explicit Studio nginx locations: canonical landing has no slash; private routes use the SPA shell.
@@ -136,7 +136,7 @@ for (const pg of pages) {
     if (!href.startsWith('/') || href.startsWith('//')) continue
     const clean = href.split('#')[0].split('?')[0] || '/'
     out.add(clean)
-    if (/^\/(store|cart|checkout|payment|my-account\/(orders|downloads)|interview-prep|certificates)(\/|$)/.test(clean)) {
+    if (/^\/(store|cart|checkout|payment|my-account\/(orders|downloads)|interview-prep)(\/|$)/.test(clean) || /^\/certificates\/[^/]+/.test(clean)) {
       fail(`${where} link to retired/legacy URL ${href}`)
       continue
     }

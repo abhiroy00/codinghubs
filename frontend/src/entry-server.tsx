@@ -40,9 +40,10 @@ import { COURSE_ROADMAPS,courseLevelPath,type CourseRoadmapData } from './learni
 import { courseRoadmapMeta } from './learning/course-roadmap-seo'
 import { genaiMeta } from './learning/genai-seo'
 import { isIndexable } from './seo/robots'
+import { Certificates } from './pages/Certificates'
 import { GENAI_LEVELS,genaiPath,type GenAILevel } from './learning/genai-content'
 import type { LocationContent } from './locations/types'
-import { HOME_META, LOGO_URL, NOT_FOUND_META, STUDIO_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
+import { CERTIFICATES_META, HOME_META, LOGO_URL, NOT_FOUND_META, STUDIO_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -138,6 +139,10 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
         html:renderToString(<AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<GenAILearning initialData={data}/>}/></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>)})
     }
   }
+
+  pages.push({ ...CERTIFICATES_META, file: 'certificates/index.html', fsDesign: true,
+    html: renderToString(<AuthProvider><StaticRouter location="/certificates/"><LenisProvider><ModalProvider><Routes><Route path="/certificates/" element={<Certificates />} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>),
+  })
 
   pages.push({ ...STUDIO_META, file: 'interview-studio/index.html', fsDesign: false,
     html: renderLearningPage('/interview-studio', <StudioLanding />, [{ label: 'Interview Studio' }]),
