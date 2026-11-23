@@ -33,13 +33,11 @@ export function ContentList({ kind }: { kind: Kind }) {
   const [busyId, setBusyId] = useState<number | null>(null)
   const [gsc, setGsc] = useState<{ configured: boolean } | null>(null)
   const [gscBusy, setGscBusy] = useState(false)
+  const [stats, setStats] = useState<{ total: number; published: number; drafts: number } | null>(null)
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      setDq(q)
-      setPage(1)
-    }, 300)
-    return () => clearTimeout(t)
+    if (q) return
+    setDq('') // clearing the box resets the search right away
   }, [q])
   useEffect(() => {
     if (kind === 'blogs') adminApi.get<Taxon[]>('/blog-categories/').then((r) => setCats(r.data)).catch(() => undefined)
@@ -53,6 +51,14 @@ export function ContentList({ kind }: { kind: Kind }) {
       .catch(() => setError('Could not load the list.'))
   }, [kind, page, dq, status, category, ordering])
   useEffect(load, [load])
+  const loadStats = useCallback(() => {
+    const count = (st?: string) => adminApi.get<Paged<Row>>(`/${kind}/`, { params: { page_size: 1, status: st } }).then((r) => r.data.count)
+    Promise.all([count(), count('published'), count('draft')])
+      .then(([total, published, drafts]) => setStats({ total, published, drafts }))
+      .catch(() => setStats(null))
+  }, [kind])
+  useEffect(loadStats, [loadStats])
+  const reload = () => { load(); loadStats() }
 
   const act = async (row: Row, action: 'publish' | 'unpublish') => {
     setBusyId(row.id)
@@ -60,7 +66,7 @@ export function ContentList({ kind }: { kind: Kind }) {
     try {
       await adminApi.post(`/${kind}/${row.id}/${action}/`, {})
       setNotice(action === 'publish' ? `“${row.title}” is live.` : `“${row.title}” was unpublished.`)
-      load()
+      reload()
     } catch (err) {
       const msg = (err as { response?: { data?: Record<string, string[]> } })?.response?.data
       setError(msg ? Object.values(msg).flat().join(' ') : 'That did not work. Please try again.')
@@ -93,7 +99,7 @@ export function ContentList({ kind }: { kind: Kind }) {
     try {
       await adminApi.patch(`/${kind}/${row.id}/`, { is_featured: !row.is_featured })
       setNotice(row.is_featured ? `“${row.title}” is no longer featured.` : `“${row.title}” is now featured.`)
-      load()
+      reload()
     } catch {
       setError('Could not change the featured setting. You may not have permission.')
     } finally {
@@ -116,7 +122,7 @@ export function ContentList({ kind }: { kind: Kind }) {
       await adminApi.delete(`/${kind}/${del.id}/`)
       setNotice(`“${del.title}” was deleted.`)
       setDel(null)
-      load()
+      reload()
     } catch {
       setError('Could not delete it. You may not have permission.')
       setDel(null)
@@ -124,113 +130,122 @@ export function ContentList({ kind }: { kind: Kind }) {
   }
 
   const pages = data ? Math.max(1, Math.ceil(data.count / 20)) : 1
+  const plural = kind === 'blogs' ? 'Posts' : 'Case Studies'
+  const applyFilter = () => { setDq(q); setPage(1); load() }
   return (
-    <>
-      <div className="ad-head">
-        <h1 className="ad-h1">{kind === 'blogs' ? 'Blogs' : 'Case studies'}</h1>
-        {kind === 'blogs' && gsc?.configured && (
-          <button type="button" className="ad-btn" disabled={gscBusy} onClick={() => void refreshGoogle()}>{gscBusy ? 'Checking Google…' : 'Refresh Google status'}</button>
-        )}
-        <Link className="ad-btn ad-btn-primary" to={`/${kind}/create`}>
-          + New {noun}
-        </Link>
+    <div className="cx">
+      <div className="cx-stats">
+        <div className="cx-stat"><span className="cx-stat-ico blue" aria-hidden="true">▤</span><div><strong>{stats?.total ?? '–'}</strong><span>Total {plural}</span></div></div>
+        <div className="cx-stat"><span className="cx-stat-ico green" aria-hidden="true">✔</span><div><strong>{stats?.published ?? '–'}</strong><span>Published</span></div></div>
+        <div className="cx-stat"><span className="cx-stat-ico yellow" aria-hidden="true">✎</span><div><strong>{stats?.drafts ?? '–'}</strong><span>Drafts</span></div></div>
       </div>
-      <div className="ad-filters">
-        <input type="search" placeholder="Search title or URL…" value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Search ${noun}s`} />
-        <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1) }} aria-label="Filter by status">
-          <option value="">All statuses</option>
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>{s[0].toUpperCase() + s.slice(1)}</option>
-          ))}
-        </select>
-        {kind === 'blogs' && (
-          <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1) }} aria-label="Filter by category">
-            <option value="">All categories</option>
-            {cats.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
+
+      <div className="cx-card">
+        <header className="cx-card-head">
+          <h1><span className="cx-head-ico" aria-hidden="true">▤</span>All {kind === 'blogs' ? 'Blog Posts' : 'Case Studies'}</h1>
+          <div className="cx-head-actions">
+            {kind === 'blogs' && gsc?.configured && (
+              <button type="button" className="cx-btn-outline" disabled={gscBusy} onClick={() => void refreshGoogle()}>{gscBusy ? 'Checking Google…' : 'Refresh Google status'}</button>
+            )}
+            <Link className="cx-btn-primary" to={`/${kind}/create`}>+ {kind === 'blogs' ? 'Write New Post' : 'Add New Study'}</Link>
+          </div>
+        </header>
+
+        <form className="cx-filters" role="search" onSubmit={(e) => { e.preventDefault(); applyFilter() }}>
+          <input type="search" className="cx-input" placeholder="🔍 Search by title..." value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Search ${noun}s`} />
+          {kind === 'blogs' && (
+            <select className="cx-input" value={category} onChange={(e) => { setCategory(e.target.value); setPage(1) }} aria-label="Filter by category">
+              <option value="">All Categories</option>
+              {cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          )}
+          <select className="cx-input" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1) }} aria-label="Filter by status">
+            <option value="">All Status</option>
+            {STATUSES.map((s) => <option key={s} value={s}>{s[0].toUpperCase() + s.slice(1)}</option>)}
           </select>
+          <select className="cx-input" value={ordering} onChange={(e) => setOrdering(e.target.value)} aria-label="Sort">
+            {SORTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          </select>
+          <button type="submit" className="cx-btn-primary">Filter</button>
+        </form>
+
+        {notice && <div className="ad-notice ok cx-inset" role="status">{notice}</div>}
+        {error && <div className="ad-notice error cx-inset" role="alert">{error}</div>}
+        {!data && !error && <p className="cx-empty" role="status">Loading…</p>}
+        {data && data.results.length === 0 && (
+          <div className="cx-empty">
+            <p>{q || status || category ? `Is filter se koi ${noun} nahi mila.` : `Abhi koi ${noun} nahi hai.`}</p>
+            {!q && !status && !category && <Link className="cx-btn-primary" to={`/${kind}/create`}>Pehla post likho</Link>}
+          </div>
         )}
-        <select value={ordering} onChange={(e) => setOrdering(e.target.value)} aria-label="Sort">
-          {SORTS.map(([v, l]) => (
-            <option key={v} value={v}>{l}</option>
-          ))}
-        </select>
+        {data && data.results.length > 0 && (
+          <div className="cx-tablewrap">
+            <table className="cx-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Thumb</th>
+                  <th>Title</th>
+                  <th>{kind === 'blogs' ? 'Category' : 'Industry'}</th>
+                  <th>Status</th>
+                  <th>Featured</th>
+                  <th>Views</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.results.map((r, i) => {
+                  const live = r.status === 'published' || r.status === 'scheduled'
+                  const liveNow = isLiveNow(r.status, r.published_at)
+                  const busy = busyId === r.id
+                  return (
+                    <tr key={r.id}>
+                      <td className="cx-num">{(page - 1) * 20 + i + 1}</td>
+                      <td>{r.featured_image ? <img className="cx-thumb" src={r.featured_image} alt="" loading="lazy" /> : <span className="cx-thumb cx-thumb-empty" aria-hidden="true">🖼</span>}</td>
+                      <td className="cx-title">
+                        <Link to={`/${kind}/edit/${r.id}`}>{r.title}</Link>
+                        <small>{r.slug}</small>
+                      </td>
+                      <td>{(kind === 'blogs' ? r.category_name : r.industry) || '—'}</td>
+                      <td><span className={`cx-status st-${r.status}`}>{r.status === 'published' ? '✅ ' : r.status === 'scheduled' ? '🕒 ' : r.status === 'draft' ? '📝 ' : ''}{r.status[0].toUpperCase() + r.status.slice(1)}</span></td>
+                      <td>{r.is_featured ? <span className="cx-star" title="Featured">⭐</span> : <span className="cx-muted">—</span>}</td>
+                      <td className="cx-views" title="Article page views, one per visitor session (bots excluded)">{(r.view_count ?? 0).toLocaleString('en-IN')}</td>
+                      <td className="cx-date">{fmtDate(r.published_at || r.updated_at)}</td>
+                      <td>
+                        <div className="cx-acts">
+                          <Link className="cx-act edit" to={`/${kind}/edit/${r.id}`}><Icon name="edit" />Edit</Link>
+                          {live ? (
+                            <button type="button" className="cx-act draft" disabled={busy} onClick={() => void act(r, 'unpublish')}><Icon name="pause" />Draft</button>
+                          ) : (
+                            <button type="button" className="cx-act publish" disabled={busy} onClick={() => void act(r, 'publish')}><Icon name="send" />Publish</button>
+                          )}
+                          <button type="button" className="cx-act feature" disabled={busy} aria-pressed={r.is_featured} onClick={() => void toggleFeatured(r)}><Icon name="star" />{r.is_featured ? 'Unfeature' : 'Feature'}</button>
+                          {liveNow ? (
+                            <a className="cx-act view" href={publicUrl(PUBLIC_BASE[kind], r.slug)} target="_blank" rel="noopener noreferrer"><Icon name="eye" />View</a>
+                          ) : (
+                            <button type="button" className="cx-act view" onClick={() => void preview(r)} title="Private preview (not indexed)"><Icon name="eye" />Preview</button>
+                          )}
+                          <button type="button" className="cx-act del" onClick={() => setDel(r)} aria-label={`Delete ${r.title}`} title="Delete"><Icon name="trash" /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {data && pages > 1 && (
+          <div className="cx-pager">
+            <button type="button" className="cx-btn-outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>← Previous</button>
+            <span>Page {page} of {pages} · {data.count} {plural.toLowerCase()}</span>
+            <button type="button" className="cx-btn-outline" disabled={page >= pages} onClick={() => setPage(page + 1)}>Next →</button>
+          </div>
+        )}
       </div>
-      {notice && <div className="ad-notice ok" role="status">{notice}</div>}
-      {error && <div className="ad-notice error" role="alert">{error}</div>}
-      {!data && !error && <p className="ad-muted" role="status">Loading…</p>}
-      {data && data.results.length === 0 && (
-        <div className="ad-empty">
-          <p>{q || status || category ? `No ${noun}s match these filters.` : `No ${noun}s yet.`}</p>
-          {!q && !status && !category && <Link className="ad-btn ad-btn-primary" to={`/${kind}/create`}>Write the first one</Link>}
-        </div>
-      )}
-      {data && data.results.length > 0 && (
-        <div className="ad-tablewrap">
-          <table className="ad-table ad-ctable">
-            <thead>
-              <tr>
-                <th className="ad-num">#</th>
-                <th>Title</th>
-                <th>{kind === 'blogs' ? 'Category' : 'Industry'}</th>
-                <th>Status</th>
-                <th>Featured</th>
-                <th>Views</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.results.map((r, i) => {
-                const live = r.status === 'published' || r.status === 'scheduled'
-                const liveNow = isLiveNow(r.status, r.published_at)
-                const busy = busyId === r.id
-                return (
-                  <tr key={r.id}>
-                    <td className="ad-num">{(page - 1) * 20 + i + 1}</td>
-                    <td className="ad-ctitle">
-                      <Link to={`/${kind}/edit/${r.id}`}><strong>{r.title}</strong></Link>
-                      <small className="ad-muted">{PUBLIC_BASE[kind]}/{r.slug}</small>
-                    </td>
-                    <td>{(kind === 'blogs' ? r.category_name : r.industry) || '—'}</td>
-                    <td><span className={`ad-pill st-${r.status}`}>{r.status === 'published' && <Icon name="check" />}{r.status}</span></td>
-                    <td>{r.is_featured ? <span className="ad-star" title="Featured"><Icon name="star" /></span> : <span className="ad-muted">—</span>}</td>
-                    <td className="ad-views" title="Article page views, one per visitor session (bots excluded)">{(r.view_count ?? 0).toLocaleString('en-IN')}</td>
-                    <td className="nowrap">{fmtDate(r.published_at || r.updated_at)}</td>
-                    <td>
-                      <div className="ad-row-actions">
-                        <Link className="ad-act act-edit" to={`/${kind}/edit/${r.id}`}><Icon name="edit" />Edit</Link>
-                        {live ? (
-                          <button type="button" className="ad-act act-draft" disabled={busy} onClick={() => void act(r, 'unpublish')}><Icon name="pause" />Draft</button>
-                        ) : (
-                          <button type="button" className="ad-act act-publish" disabled={busy} onClick={() => void act(r, 'publish')}><Icon name="send" />Publish</button>
-                        )}
-                        <button type="button" className="ad-act act-feature" disabled={busy} aria-pressed={r.is_featured} onClick={() => void toggleFeatured(r)}><Icon name="star" />{r.is_featured ? 'Unfeature' : 'Feature'}</button>
-                        {liveNow ? (
-                          <a className="ad-act act-view" href={publicUrl(PUBLIC_BASE[kind], r.slug)} target="_blank" rel="noopener noreferrer" title={publicUrl(PUBLIC_BASE[kind], r.slug)}><Icon name="eye" />View</a>
-                        ) : (
-                          <button type="button" className="ad-act act-preview" onClick={() => void preview(r)} title="Private preview (not indexed)"><Icon name="eye" />Preview</button>
-                        )}
-                        <button type="button" className="ad-act act-delete" onClick={() => setDel(r)}><Icon name="trash" />Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-      {data && pages > 1 && (
-        <div className="ad-pager">
-          <button type="button" className="ad-btn" disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button>
-          <span>Page {page} of {pages} · {data.count} items</span>
-          <button type="button" className="ad-btn" disabled={page >= pages} onClick={() => setPage(page + 1)}>Next</button>
-        </div>
-      )}
       {del && <ConfirmDelete title={del.title} onCancel={() => setDel(null)} onConfirm={() => void remove()} />}
-    </>
+    </div>
   )
 }
 

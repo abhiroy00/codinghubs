@@ -6,14 +6,12 @@ import { uploadImage } from './RichEditor'
 import { blankBlog, MAX_BLOG_WORDS, readingMinutes, toLocalInput, wordCount, type Taxon } from './types'
 import { useContentForm } from './useContentForm'
 
-const BlogBodyEditor = lazy(() => import('./BlogBodyEditor').then((m) => ({ default: m.BlogBodyEditor })))
+const TinyBodyEditor = lazy(() => import('./TinyBodyEditor').then((m) => ({ default: m.TinyBodyEditor })))
 const SITE = 'codinghubs.in'
-const plain = (html: string) => (new DOMParser().parseFromString(html || '', 'text/html').body.textContent ?? '').replace(/\s+/g, ' ').trim()
-const clip = (t: string, n: number) => (t.length <= n ? t : t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…')
 const list = (v: string) => v.split(',').map((s) => s.trim()).filter(Boolean)
 
 function Label({ htmlFor, children, required, note }: { htmlFor?: string; children: ReactNode; required?: boolean; note?: string }) {
-  return <label className="wp-label" htmlFor={htmlFor}>{children}{required && <span className="wp-req"> *</span>}{note && <span className="wp-note"> {note}</span>}</label>
+  return <label className="cx-label" htmlFor={htmlFor}>{children}{required && <span className="cx-req"> *</span>}{note && <span className="cx-note"> {note}</span>}</label>
 }
 
 /** Single-page blog form: title, URL, SEO, category, image, excerpt, article, status. */
@@ -24,7 +22,6 @@ export function BlogEditor() {
   const { form, set, errors, busy, dirty, loading, notice, recover } = api
   const [cats, setCats] = useState<Taxon[]>([])
   const [uploading, setUploading] = useState(false)
-  const [imageTab, setImageTab] = useState<'upload' | 'url'>('upload')
   const [imageError, setImageError] = useState('')
   const [keywordsText, setKeywordsText] = useState<string | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -44,7 +41,6 @@ export function BlogEditor() {
 
   // What search engines get when the optional SEO fields are left empty (mirrors backend services.seo_for).
   const seoTitle = form.seo_title || (form.title ? `${form.title} | Coding Hubs School of AI` : '')
-  const seoDescription = form.meta_description || clip(form.excerpt || plain(form.content), 158)
 
   const upload = async (file?: File) => {
     if (!file) return
@@ -78,189 +74,169 @@ export function BlogEditor() {
     window.scrollTo({ top: 0 })
   }
   const primaryLabel = intent === 'schedule' ? 'Schedule Post' : live ? 'Update Post' : 'Publish Now'
+  const focusOnBlur = () => {
+    // One main phrase only; extra comma-separated phrases move to Meta keywords.
+    const [first = '', ...rest] = list(form.focus_keyword)
+    if (!rest.length && first.length <= 120) return
+    set('focus_keyword', first.slice(0, 120))
+    const seen = new Set<string>()
+    const merged = [...form.secondary_keywords, ...rest].filter((k) => {
+      const key = k.toLowerCase()
+      if (seen.has(key) || key === first.toLowerCase()) return false
+      seen.add(key)
+      return true
+    })
+    set('secondary_keywords', merged.slice(0, 10))
+  }
 
   if (loading) return <p role="status">Loading post…</p>
+  const err = (k: keyof typeof errors) => errors[k] && <p className="cx-error" role="alert">{errors[k]}</p>
   return (
-    <form className="wp" noValidate onSubmit={(e) => { e.preventDefault(); if (!disabled) primary() }}>
-      <div className="wp-card">
-        <header className="wp-card-head">
-          <h1><span className="wp-plus" aria-hidden="true">+</span>{form.id ? 'Edit Blog Post' : 'Write New Blog Post'}</h1>
-          <div className="wp-head-actions">
-            {form.id && liveNow && <a className="wp-btn-outline" href={`https://${SITE}/blog/${form.slug}`} target="_blank" rel="noopener noreferrer">View live post</a>}
-            <Link className="wp-btn-outline" to="/blogs">← All Posts</Link>
+    <form className="cx cx-form" noValidate onSubmit={(e) => { e.preventDefault(); if (!disabled) primary() }}>
+      <div className="cx-card">
+        <header className="cx-card-head">
+          <h1><span className="cx-plus" aria-hidden="true">+</span>{form.id ? 'Edit Blog Post' : 'Write New Blog Post'}</h1>
+          <div className="cx-head-actions">
+            {form.id && liveNow && <a className="cx-btn-outline" href={`https://${SITE}/blog/${form.slug}`} target="_blank" rel="noopener noreferrer">↗ View Live</a>}
+            <Link className="cx-btn-outline" to="/blogs">← All Posts</Link>
           </div>
         </header>
 
-        <div className="wp-body">
-          {recover && <div className="ad-banner" role="status"><span>You have an unsaved draft from an earlier session.</span>
+        <div className="cx-body">
+          {recover && <div className="ad-banner" role="status"><span>Pichle session ka ek unsaved draft mila hai.</span>
             <button type="button" className="ad-btn" onClick={api.acceptDraft}>Restore draft</button>
             <button type="button" className="ad-link" onClick={api.dropDraft}>Discard</button></div>}
           {notice && <div className={`ad-notice ${notice.type}`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.text}</div>}
 
-          <div className="wp-field">
+          <div className="cx-field">
             <Label htmlFor="title" required>Post title</Label>
-            <input id="title" className="wp-input" required maxLength={200} placeholder="e.g. Python Developer Roadmap for Beginners" value={form.title} onChange={(e) => set('title', e.target.value)} />
-            {errors.title && <p className="wp-error" role="alert">{errors.title}</p>}
+            <input id="title" className="cx-input" required maxLength={200} placeholder="e.g. Data Science Career Guide 2026 — Jobs, Skills & Salaries" value={form.title} onChange={(e) => set('title', e.target.value)} />
+            {err('title')}
           </div>
 
-          <div className="wp-field">
+          <div className="cx-field">
             <Label htmlFor="slug" note="(auto-generated)">URL slug</Label>
-            <input id="slug" className="wp-input" placeholder="python-developer-roadmap" value={form.slug} onChange={(e) => api.setSlug(e.target.value)} />
-            <span className="wp-urlpill">🔗 {SITE}/blog/{form.slug || 'your-post-slug'}</span>
-            {errors.slug && <p className="wp-error" role="alert">{errors.slug}</p>}
+            <input id="slug" className="cx-input" placeholder="data-science-career-guide-2026" value={form.slug} onChange={(e) => api.setSlug(e.target.value)} />
+            <span className="cx-urlpill">🔗 {SITE}/blog/{form.slug || 'your-post-slug'}</span>
+            {err('slug')}
           </div>
 
-          <section className="wp-seo-preview" aria-label="SEO preview">
+          <section className="cx-seo" aria-label="SEO preview">
             <h2>✎ SEO Preview (Auto-Generated)</h2>
-            <p><strong>Meta Title:</strong> {seoTitle || '–'}</p>
-            <p><strong>Meta Description:</strong> {seoDescription || '–'}</p>
-            <p><strong>Focus Keyword:</strong> {form.focus_keyword || '–'}</p>
-            <p className="wp-hint">These are filled automatically from the title, excerpt and article. You can change them below.</p>
+            <p className="cx-seo-label">Meta Title:</p>
+            <p className={`cx-seo-box${seoTitle ? '' : ' empty'}`}>{seoTitle || 'Title likho — auto-set hoga'}</p>
+            <p className="cx-seo-label">Focus Keyword:</p>
+            <p className={`cx-seo-box${form.focus_keyword ? '' : ' empty'}`}>{form.focus_keyword || 'Neeche Focus Keyword likho — yahan dikhega'}</p>
           </section>
 
-          <hr className="wp-rule" />
+          <hr className="cx-rule" />
 
-          <div className="wp-grid-3">
-            <div className="wp-field">
+          <div className="cx-grid-3">
+            <div className="cx-field">
               <Label htmlFor="category">Category</Label>
-              <select id="category" className="wp-input" value={form.category} onChange={(e) => set('category', e.target.value ? Number(e.target.value) : '')}>
-                <option value="">No category</option>
-                {cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              <select id="category" className="cx-input" value={form.category} onChange={(e) => set('category', e.target.value ? Number(e.target.value) : '')}>
+                <option value="">— Category choose karo —</option>
+                {cats.map((c) => <option key={c.id} value={c.id}>📚 {c.name}</option>)}
               </select>
             </div>
-            <div className="wp-field">
+            <div className="cx-field">
               <Label htmlFor="author_name">Author name</Label>
-              <input id="author_name" className="wp-input" placeholder="Coding Hubs Team" value={form.author_name} onChange={(e) => set('author_name', e.target.value)} />
+              <input id="author_name" className="cx-input" placeholder="Coding Hubs School of AI" value={form.author_name} onChange={(e) => set('author_name', e.target.value)} />
             </div>
-            <div className="wp-field">
+            <div className="cx-field">
               <Label htmlFor="read_time">Read time</Label>
-              <input id="read_time" className="wp-input" readOnly value={`${readingMinutes(form.content)} min`} aria-describedby="read-time-hint" />
-              <span id="read-time-hint" className="wp-hint">{words.toLocaleString()} words · calculated automatically</span>
+              <input id="read_time" className="cx-input" readOnly value={`${readingMinutes(form.content)} min`} title="Article ke words se apne aap calculate hota hai" />
             </div>
           </div>
 
-          <div className="wp-grid-2">
-            <div className="wp-field">
+          <div className="cx-grid-2">
+            <div className="cx-field">
               <Label htmlFor="seo_title" note="(optional)">Meta title</Label>
-              <input id="seo_title" className="wp-input" maxLength={70} placeholder="Leave empty to use the post title" value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} />
-              <span className="wp-hint">{form.seo_title.length}/60 characters</span>
+              <input id="seo_title" className="cx-input" maxLength={70} placeholder="Auto-set hoga — override karo if needed" value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} />
             </div>
-            <div className="wp-field">
-              <Label htmlFor="focus_keyword" note="(primary)">Focus keyword</Label>
-              <input
-                id="focus_keyword"
-                className="wp-input"
-                maxLength={400}
-                placeholder="e.g. python course in Delhi"
-                value={form.focus_keyword}
-                onChange={(e) => set('focus_keyword', e.target.value)}
-                onBlur={() => {
-                  // One main phrase only; extra comma-separated phrases move to Meta keywords.
-                  const [first = '', ...rest] = list(form.focus_keyword)
-                  if (!rest.length && first.length <= 120) return
-                  set('focus_keyword', first.slice(0, 120))
-                  const seen = new Set<string>()
-                  const merged = [...form.secondary_keywords, ...rest].filter((k) => {
-                    const key = k.toLowerCase()
-                    if (seen.has(key) || key === first.toLowerCase()) return false
-                    seen.add(key)
-                    return true
-                  })
-                  set('secondary_keywords', merged.slice(0, 10))
-                }}
-              />
-              <span className="wp-hint">One main phrase. Extra phrases after a comma move to Meta keywords.</span>
-              {errors.focus_keyword && <p className="wp-error" role="alert">{errors.focus_keyword}</p>}
+            <div className="cx-field">
+              <Label htmlFor="focus_keyword">Focus keyword</Label>
+              <input id="focus_keyword" className="cx-input" maxLength={400} placeholder="e.g. data science course Delhi" value={form.focus_keyword} onChange={(e) => set('focus_keyword', e.target.value)} onBlur={focusOnBlur} />
+              {err('focus_keyword')}
             </div>
           </div>
 
-          <div className="wp-field">
-            <Label htmlFor="meta_description" note="(optional — auto from excerpt or content if empty)">Meta description</Label>
-            <textarea id="meta_description" className="wp-input" rows={3} maxLength={320} placeholder="150–160 characters that make people want to click…" value={form.meta_description} onChange={(e) => set('meta_description', e.target.value)} />
-            <span className="wp-hint">ⓘ If left empty, the excerpt (or the start of the article) is used. {form.meta_description.length}/160</span>
-            {errors.meta_description && <p className="wp-error" role="alert">{errors.meta_description}</p>}
+          <div className="cx-field">
+            <Label htmlFor="meta_description" note="(optional — auto from content)">Meta description</Label>
+            <textarea id="meta_description" className="cx-input" rows={3} maxLength={320} placeholder="Auto-generate hoga... (150-160 characters ideal)" value={form.meta_description} onChange={(e) => set('meta_description', e.target.value)} />
+            {err('meta_description')}
           </div>
 
-          <div className="wp-field">
-            <Label htmlFor="secondary_keywords" note="(optional)">Meta keywords</Label>
-            <input id="secondary_keywords" className="wp-input" placeholder="python roadmap, learn python, python projects" value={keywordsText ?? form.secondary_keywords.join(', ')} onChange={(e) => setKeywordsText(e.target.value)} onBlur={() => { if (keywordsText !== null) { set('secondary_keywords', list(keywordsText).slice(0, 10)); setKeywordsText(null) } }} />
-            <span className="wp-hint">Up to 10 related phrases, separated by commas.</span>
+          <div className="cx-field">
+            <Label htmlFor="secondary_keywords" note="(comma separated)">Meta keywords</Label>
+            <input id="secondary_keywords" className="cx-input" placeholder="data science, machine learning, python course delhi" value={keywordsText ?? form.secondary_keywords.join(', ')} onChange={(e) => setKeywordsText(e.target.value)} onBlur={() => { if (keywordsText !== null) { set('secondary_keywords', list(keywordsText).slice(0, 10)); setKeywordsText(null) } }} />
           </div>
 
-          <hr className="wp-rule" />
+          <hr className="cx-rule" />
 
-          <div className="wp-field">
-            <Label>Thumbnail image</Label>
-            <div className="wp-tabs" role="tablist">
-              <button type="button" role="tab" aria-selected={imageTab === 'upload'} className={imageTab === 'upload' ? 'on' : ''} onClick={() => setImageTab('upload')}>⇪ Upload from Computer</button>
-              <button type="button" role="tab" aria-selected={imageTab === 'url'} className={imageTab === 'url' ? 'on' : ''} onClick={() => setImageTab('url')}>🔗 Paste URL</button>
+          <div className="cx-field">
+            <Label htmlFor="featured_image">Thumbnail image URL</Label>
+            <input id="featured_image" className="cx-input" type="url" placeholder="https://images.unsplash.com/photo-xxxx" value={form.featured_image} onChange={(e) => set('featured_image', e.target.value)} />
+            <div className="cx-chips">
+              <span className="cx-chips-label">Free images:</span>
+              <a className="cx-chip" href="https://unsplash.com/" target="_blank" rel="noopener noreferrer">🌄 Unsplash</a>
+              <a className="cx-chip" href="https://www.pexels.com/" target="_blank" rel="noopener noreferrer">📷 Pexels</a>
+              <a className="cx-chip" href="https://pixabay.com/" target="_blank" rel="noopener noreferrer">🖼️ Pixabay</a>
+              <button type="button" className="cx-chip cx-chip-upload" disabled={uploading} onClick={() => fileInput.current?.click()}>⇪ {uploading ? 'Uploading…' : 'Computer se upload'}</button>
+              <input ref={fileInput} type="file" hidden accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Thumbnail image file" onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = '' }} />
             </div>
-            {imageTab === 'upload' ? (
-              <div className="wp-drop" role="button" tabIndex={0} onClick={() => fileInput.current?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.current?.click() } }}
-                onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); void upload(e.dataTransfer.files?.[0]) }}>
-                {form.featured_image ? <img src={form.featured_image} alt="" className="wp-drop-preview" /> : <span className="wp-drop-icon" aria-hidden="true">☁</span>}
-                <strong>{uploading ? 'Uploading…' : form.featured_image ? 'Click to replace image' : 'Click to choose image'}</strong>
-                <small>JPG, PNG, WEBP, GIF — max 5 MB · 1200 × 630 recommended</small>
-                <input ref={fileInput} type="file" hidden accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Thumbnail image file" onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = '' }} />
-              </div>
-            ) : (
-              <>
-                <input className="wp-input" type="url" placeholder="https://… or /media/…" value={form.featured_image} onChange={(e) => set('featured_image', e.target.value)} aria-label="Thumbnail image URL" />
-                {form.featured_image && <img src={form.featured_image} alt="" className="wp-drop-preview wp-url-preview" />}
-              </>
-            )}
-            {(imageError || errors.featured_image) && <p className="wp-error" role="alert">{imageError || errors.featured_image}</p>}
             {form.featured_image && (
-              <div className="wp-image-text">
+              <div className="cx-thumb-preview">
+                <img src={form.featured_image} alt="" />
                 <button type="button" className="ad-link ad-danger" onClick={() => set('featured_image', '')}>Remove image</button>
               </div>
             )}
+            {(imageError || errors.featured_image) && <p className="cx-error" role="alert">{imageError || errors.featured_image}</p>}
           </div>
 
-          <div className="wp-field">
+          <div className="cx-field">
             <Label htmlFor="excerpt" required>Excerpt (short description)</Label>
-            <textarea id="excerpt" className="wp-input" rows={3} maxLength={400} placeholder="Two or three sentences that tell readers what they will learn…" value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} />
-            <span className="wp-hint">📈 Important for SEO — include the focus keyword naturally. {form.excerpt.length}/400</span>
-            {errors.excerpt && <p className="wp-error" role="alert">{errors.excerpt}</p>}
+            <textarea id="excerpt" className="cx-input" rows={3} maxLength={400} placeholder="150-200 characters ka summary — Google search mein dikhega..." value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} />
+            <span className="cx-hint">ⓘ Target keyword zaroor include karo.</span>
+            {err('excerpt')}
           </div>
 
-          <hr className="wp-rule" />
+          <hr className="cx-rule" />
 
-          <div className="wp-field">
+          <div className="cx-field">
             <Label required>Blog content</Label>
-            <div className="wp-tip"><span aria-hidden="true">ⓘ </span><strong>Google Docs/Word se paste kar rahe ho?</strong> Ctrl+Shift+V (plain paste) ya neeche editor mein paste karo — header/footer/nav automatically remove ho jayega. Server-side cleaning bhi lagti hai.</div>
-            <Suspense fallback={<p role="status">Loading article editor…</p>}>
-              <BlogBodyEditor value={form.content} onChange={(v) => set('content', v)} onBusy={setUploading} />
+            <div className="cx-tip"><span aria-hidden="true">ⓘ</span> <strong>Google Docs/Word se paste?</strong> Header/footer/nav automatically remove ho jayega. Server-side cleaning bhi hoti hai.</div>
+            <Suspense fallback={<div className="cx-editor-loading" role="status">Editor load ho raha hai…</div>}>
+              <TinyBodyEditor value={form.content} onChange={(v) => set('content', v)} onBusy={setUploading} />
             </Suspense>
-            <p className="wp-hint">🛡 <strong>Note:</strong> Extra HTML wrappers (header, nav, footer, scripts) apne aap remove ho jayenge save hone par.</p>
-            <p className={`wp-count${words > MAX_BLOG_WORDS ? ' over' : words > MAX_BLOG_WORDS * 0.9 ? ' near' : ''}`} role="status">{words.toLocaleString()} / {MAX_BLOG_WORDS.toLocaleString()} words · {readingMinutes(form.content)} min read</p>
-            {(errors.content || words > MAX_BLOG_WORDS) && <p className="wp-error" role="alert">{errors.content || `The article can have up to ${MAX_BLOG_WORDS.toLocaleString()} words. Remove ${(words - MAX_BLOG_WORDS).toLocaleString()} words to save.`}</p>}
+            <p className={`cx-count${words > MAX_BLOG_WORDS ? ' over' : words > MAX_BLOG_WORDS * 0.9 ? ' near' : ''}`} role="status">{words.toLocaleString()} / {MAX_BLOG_WORDS.toLocaleString()} words · {readingMinutes(form.content)} min read</p>
+            {(errors.content || words > MAX_BLOG_WORDS) && <p className="cx-error" role="alert">{errors.content || `Article mein maximum ${MAX_BLOG_WORDS.toLocaleString()} words ho sakte hain. ${(words - MAX_BLOG_WORDS).toLocaleString()} words kam karo.`}</p>}
           </div>
 
-          <hr className="wp-rule" />
+          <hr className="cx-rule" />
 
-          <div className="wp-grid-2">
-            <div className="wp-field">
+          <div className="cx-grid-2">
+            <div className="cx-field">
               <Label htmlFor="status">Status</Label>
-              <select id="status" className="wp-input" value={intent} onChange={(e) => setIntent(e.target.value as typeof intent)}>
-                <option value="draft">📝 Draft — save, don't publish yet</option>
-                <option value="publish">✅ {live ? 'Published — live on the website' : 'Publish — goes live now'}</option>
-                <option value="schedule">🕒 Scheduled — publish at a later time</option>
+              <select id="status" className="cx-input" value={intent} onChange={(e) => setIntent(e.target.value as typeof intent)}>
+                <option value="draft">📝 Draft — Abhi publish mat karo</option>
+                <option value="publish">✅ {live ? 'Published — Website par live hai' : 'Publish — Abhi live karo'}</option>
+                <option value="schedule">🕒 Scheduled — Baad mein publish karo</option>
               </select>
-              {intent === 'schedule' && <input id="published_at" type="datetime-local" className="wp-input wp-gap" value={form.published_at} onChange={(e) => set('published_at', e.target.value)} aria-label="Publish date and time" />}
-              {errors.published_at && <p className="wp-error" role="alert">{errors.published_at}</p>}
+              {intent === 'schedule' && <input id="published_at" type="datetime-local" className="cx-input cx-gap" value={form.published_at} onChange={(e) => set('published_at', e.target.value)} aria-label="Publish date and time" />}
+              {err('published_at')}
             </div>
-            <div className="wp-field">
+            <div className="cx-field">
               <Label>Featured post?</Label>
-              <label className="wp-check"><input type="checkbox" checked={form.is_featured} onChange={(e) => set('is_featured', e.target.checked)} /> ⭐ Show this post in the featured spot on the blog page</label>
+              <label className="cx-check"><input type="checkbox" checked={form.is_featured} onChange={(e) => set('is_featured', e.target.checked)} /> ⭐ Blog listing mein featured dikhao</label>
             </div>
           </div>
 
-          {notice && <div className={`ad-notice ${notice.type} wp-action-notice`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.type === 'ok' ? '✅ ' : '⚠️ '}{notice.text}</div>}
-          <div className="wp-actions">
-            <button type="button" className="wp-btn-light" disabled={disabled} onClick={() => void saveDraft()}>💾 Save as Draft</button>
-            <button type="button" className="wp-btn-primary" disabled={disabled} onClick={() => (intent === 'schedule' ? primary() : void publishAndNext())}>➤ {primaryLabel}</button>
-            <span className="wp-hint" role="status">{uploading ? 'Uploading image…' : busy ? 'Saving…' : dirty ? 'Unsaved changes' : form.id ? 'All changes saved' : ''}</span>
+          {notice && <div className={`ad-notice ${notice.type} cx-action-notice`} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.type === 'ok' ? '✅ ' : '⚠️ '}{notice.text}</div>}
+          <div className="cx-actions">
+            <button type="button" className="cx-btn-light" disabled={disabled} onClick={() => void saveDraft()}>💾 Save as Draft</button>
+            <button type="button" className="cx-btn-primary" disabled={disabled} onClick={() => (intent === 'schedule' ? primary() : void publishAndNext())}>➤ {primaryLabel}</button>
+            <span className="cx-hint" role="status">{uploading ? 'Image upload ho rahi hai…' : busy ? 'Saving…' : dirty ? 'Unsaved changes' : form.id ? 'All changes saved' : ''}</span>
           </div>
         </div>
       </div>

@@ -15,10 +15,13 @@ ALLOWED_TAGS = {
     'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'caption', 'span', 'div',
 }
 ALLOWED_ATTRIBUTES = {
+    # `style` is filtered below to text-align (blocks) and font-size (span) — what the editor's align and size buttons write.
+    **{t: {'style'} for t in ('p', 'h2', 'h3', 'h4', 'li', 'div', 'figure', 'blockquote')},
+    'span': {'style'},
     'a': {'href', 'title', 'target'},
     'img': {'src', 'alt', 'title', 'width', 'height'},
-    'th': {'colspan', 'rowspan', 'scope'},
-    'td': {'colspan', 'rowspan'},
+    'th': {'colspan', 'rowspan', 'scope', 'style'},
+    'td': {'colspan', 'rowspan', 'style'},
     'ol': {'start', 'type'},
     'code': {'class'},
     'pre': {'class'},
@@ -28,6 +31,20 @@ ALLOWED_SCHEMES = {'http', 'https', 'mailto', 'tel'}
 DROP_WITH_CONTENT = {'script', 'style', 'noscript', 'template', 'header', 'nav', 'footer', 'aside', 'form', 'button', 'select', 'textarea', 'iframe', 'object', 'svg'}
 # `class` on code/pre only for syntax-highlighting names like language-python.
 _LANG = re.compile(r'^language-[a-z0-9+#-]{1,20}$')
+_ALIGN = re.compile(r'^(left|center|right|justify)$')
+_SIZE = re.compile(r'^\d{1,2}(\.\d)?(pt|px|em|rem)$')
+
+
+def _safe_style(tag, value):
+    keep = []
+    for decl in value.split(';'):
+        prop, _, val = decl.partition(':')
+        prop, val = prop.strip().lower(), val.strip().lower()
+        if prop == 'text-align' and tag != 'span' and _ALIGN.match(val):
+            keep.append(f'text-align: {val}')
+        elif prop == 'font-size' and tag == 'span' and _SIZE.match(val):
+            keep.append(f'font-size: {val}')
+    return '; '.join(keep) or None
 
 _HEADING = re.compile(r'<(h[23])(\s[^>]*)?>(.*?)</\1>', re.I | re.S)
 _TAGS = re.compile(r'<[^>]+>')
@@ -42,6 +59,8 @@ def sanitize_html(value: str) -> str:
     def attr_filter(tag, attr, val):
         if attr == 'class':
             return val if _LANG.match(val) else None
+        if attr == 'style':
+            return _safe_style(tag, val)
         if attr == 'target':
             return '_blank' if val == '_blank' else None
         return val

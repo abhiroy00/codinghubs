@@ -13,6 +13,7 @@ export interface Row {
   industry?: string
   is_featured: boolean
   reading_time: number
+  featured_image?: string
   view_count?: number
   gsc_status?: '' | 'indexed' | 'not_indexed'
   gsc_coverage?: string
