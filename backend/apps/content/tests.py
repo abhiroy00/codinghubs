@@ -429,6 +429,30 @@ class SeoTests(ContentBase):
         rows = self.api.get('/api/admin/blogs/?ordering=-views').json()['results']
         self.assertEqual((rows[0]['slug'], rows[0]['view_count']), (b['slug'], 2))
 
+    def test_editing_publishing_and_restoring_never_reset_view_counts(self):
+        b = self.make_blog('Busy post')
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        anon = self.as_user(None)
+        browser = {'HTTP_USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0) Chrome/131.0 Safari/537.36'}
+        for _ in range(3):
+            anon.post(f'/api/blogs/{b["slug"]}/view/', **browser)
+        # An editor loaded the post before these views arrived and saves it afterwards.
+        stale = Blog.objects.get(pk=b['id'])
+        stale.view_count = 0
+        anon.post(f'/api/blogs/{b["slug"]}/view/', **browser)
+        stale.title = 'Busy post, updated'
+        stale.save()
+        self.assertEqual(Blog.objects.get(pk=b['id']).view_count, 4)
+        self.assertEqual(Blog.objects.get(pk=b['id']).title, 'Busy post, updated')
+        # Admin edit, republish and revision restore through the API keep the count too.
+        self.api.patch(f'/api/admin/blogs/{b["id"]}/', {'excerpt': 'A new summary.'}, format='json')
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        revisions = self.api.get(f'/api/admin/blogs/{b["id"]}/revisions/').json()
+        rows = revisions['results'] if isinstance(revisions, dict) else revisions
+        self.assertTrue(rows)
+        self.assertEqual(self.api.post(f'/api/admin/blogs/{b["id"]}/revisions/{rows[-1]["id"]}/restore/').status_code, 200)
+        self.assertEqual(Blog.objects.get(pk=b['id']).view_count, 4)
+
     def test_empty_listing_is_noindex_and_left_out_of_the_sitemap(self):
         anon = self.as_user(None)
         self.assertIn('noindex', anon.get('/case-studies').content.decode())

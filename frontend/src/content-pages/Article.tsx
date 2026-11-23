@@ -39,7 +39,15 @@ function useArticle(kind: Kind) {
 
   const viewedSlug = article && !preview ? article.slug : ''
   useEffect(() => {
-    if (viewedSlug) recordView(kind, viewedSlug)
+    if (!viewedSlug) return
+    let live = true
+    // Show the visitor's own view in the count once the server has recorded it.
+    recordView(kind, viewedSlug).then((counted) => {
+      if (counted && live) setArticle((a) => (a && a.slug === viewedSlug ? { ...a, view_count: (a.view_count ?? 0) + 1 } : a))
+    })
+    return () => {
+      live = false
+    }
   }, [kind, viewedSlug])
 
   useSeo(article?.seo ?? null)

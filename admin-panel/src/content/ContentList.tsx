@@ -210,7 +210,7 @@ export function ContentList({ kind }: { kind: Kind }) {
                       <td>{(kind === 'blogs' ? r.category_name : r.industry) || '—'}</td>
                       <td><span className={`cx-status st-${r.status}`}>{r.status === 'published' ? '✅ ' : r.status === 'scheduled' ? '🕒 ' : r.status === 'draft' ? '📝 ' : ''}{r.status[0].toUpperCase() + r.status.slice(1)}</span></td>
                       <td>{r.is_featured ? <span className="cx-star" title="Featured">⭐</span> : <span className="cx-muted">—</span>}</td>
-                      <td className="cx-views" title="Article page views, one per visitor session (bots excluded)">{(r.view_count ?? 0).toLocaleString('en-IN')}</td>
+                      <td className="cx-views" title="Article page views: one per visitor per post every 30 minutes (refreshes and bots excluded)">{(r.view_count ?? 0).toLocaleString('en-IN')}</td>
                       <td className="cx-date">{fmtDate(r.published_at || r.updated_at)}</td>
                       <td>
                         <div className="cx-acts">

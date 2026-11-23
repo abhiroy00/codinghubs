@@ -34,6 +34,19 @@ def unique_slug(model, wanted: str, exclude_pk=None, max_length=180) -> str:
     return slug
 
 
+# Counters written only by targeted UPDATEs: page views (RecordView) and the Search Console sync. A full save() from
+# the editor, publishing or a revision restore must never write back the value it loaded earlier, or every view
+# recorded in the meantime is lost. Saves of existing rows therefore list their fields without these.
+COUNTER_FIELDS = frozenset({'view_count', 'gsc_status', 'gsc_coverage', 'gsc_clicks', 'gsc_impressions', 'gsc_checked_at'})
+
+
+def without_counters(instance, kwargs):
+    if instance._state.adding or kwargs.get('force_insert') or kwargs.get('update_fields') is not None:
+        return kwargs
+    fields = [f.name for f in instance._meta.concrete_fields if not f.primary_key and f.name not in COUNTER_FIELDS]
+    return {**kwargs, 'update_fields': fields}
+
+
 class PublicQuerySet(models.QuerySet):
     def public(self):
         """Visible on the website: published, or scheduled and its time has come. Evaluated per request, so
@@ -177,7 +190,7 @@ class Blog(SeoMixin, PublishMixin):
     def save(self, *args, **kwargs):
         self.content = sanitize_html(self.content)
         self.reading_time = reading_minutes(self.content)
-        super().save(*args, **kwargs)
+        super().save(*args, **without_counters(self, kwargs))
 
 
 class CaseStudy(SeoMixin, PublishMixin):
@@ -238,7 +251,7 @@ class CaseStudy(SeoMixin, PublishMixin):
         for f in self.SECTIONS + ('objectives',):
             setattr(self, f, sanitize_html(getattr(self, f)))
         self.reading_time = reading_minutes(*(getattr(self, f) for f in self.SECTIONS + ('objectives',)))
-        super().save(*args, **kwargs)
+        super().save(*args, **without_counters(self, kwargs))
 
 
 def _clean_publish(obj):
