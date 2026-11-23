@@ -74,7 +74,8 @@ for (const [from, to] of [
 const retired = []
 for (const path of ['/store', '/store/', '/store/old-product', '/store/old-product/', '/cart', '/checkout', '/payment/success', '/my-account/orders', '/my-account/downloads', '/this-page-does-not-exist-indexing-check']) {
   const row = await get(path)
-  assert.equal(row.status, 404, path)
+  // The retired store answers 410 Gone; the control URL must stay a plain 404.
+  assert.equal(row.status, path.includes('does-not-exist') ? 404 : 410, path)
   assert.ok(!urls.includes(SITE + path), path)
   retired.push({ path, status: row.status })
 }

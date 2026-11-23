@@ -43,7 +43,7 @@ import { isIndexable } from './seo/robots'
 import { Certificates } from './pages/Certificates'
 import { GENAI_LEVELS,genaiPath,type GenAILevel } from './learning/genai-content'
 import type { LocationContent } from './locations/types'
-import { CERTIFICATES_META, HOME_META, LOGO_URL, NOT_FOUND_META, STUDIO_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
+import { CERTIFICATES_META, GONE_META, HOME_META, LOGO_URL, NOT_FOUND_META, STUDIO_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
@@ -326,6 +326,23 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
       jsonLd: locationJsonLd(meta, content),
     })
   }
+
+  pages.push({
+    file: '410.html',
+    path: GONE_META.path,
+    title: GONE_META.title,
+    description: GONE_META.description,
+    image: GONE_META.image,
+    indexable: false,
+    fsDesign: true,
+    html: renderToString(
+      <AuthProvider>
+        <StaticRouter location="/410">
+          <NotFound gone />
+        </StaticRouter>
+      </AuthProvider>,
+    ),
+  })
 
   pages.push({
     file: '404.html',
