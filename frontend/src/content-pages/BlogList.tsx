@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getBlogCategories, getBlogs, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
-import { CardView, PageFrame, Pager, SearchIcon, useSeo } from './shared'
+import { FeaturedInsight, InsightCard, NumberPager, PageFrame, SearchIcon, useSeo } from './shared'
 import { LOGO_URL, SITE_ID } from '../seo/site'
 import { SITE_URL } from '../locations/registry'
 import type { Seo } from './api'
 import './blog.css'
-import { HeroVideo } from '../components/HeroVideo'
-import { Reveal } from '../components/ui'
 
 type Cats = { name: string; slug: string; blog_count: number }[]
 const initial = typeof document === 'undefined' ? null : takeInitial()
@@ -93,93 +91,75 @@ export function BlogList() {
     return () => clearTimeout(t)
   }, [text]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const go = (patch: Record<string, string | null>) => {
-    const next = new URLSearchParams(params)
-    for (const [k, v] of Object.entries(patch)) {
-      if (v) next.set(k, v)
-      else next.delete(k)
-    }
-    if (!('page' in patch)) next.delete('page')
-    setParams(next)
-  }
-
   const topic = cats.find((c) => c.slug === category)?.name ?? ''
   const seo = useMemo(() => (category && !topic ? null : listSeo(category, topic, q, page, data ? data.count : null)), [category, topic, q, page, data])
   useSeo(seo)
-  const featured = useMemo(() => (page === 1 && !category && !q ? data?.results.find((c) => c.is_featured) : undefined), [data, page, category, q])
+  // Page 1 without filters leads with the post marked "featured" in the admin, or else the newest one.
+  const featured = useMemo(() => (page === 1 && !category && !q && data ? data.results.find((c) => c.is_featured) ?? data.results[0] : undefined), [data, page, category, q])
   const rest = data?.results.filter((c) => c !== featured) ?? []
 
   return (
-    <PageFrame wide>
-      <section className="bl-hero hv-host"><HeroVideo clip="blog" />
-        <span className="bl-blob b1" aria-hidden="true" />
-        <span className="bl-blob b2" aria-hidden="true" />
-        <span className="bl-grid-bg" aria-hidden="true" />
-        <div className="bl-hero-in">
-          <p className="bl-eyebrow">Learn · Blog</p>
-          <h1>
-            {topic ? (
-              <>
-                {topic} <span>Articles</span>
-              </>
-            ) : (
-              <>
-                AI &amp; Coding <span>Blog</span>
-              </>
-            )}
-          </h1>
-          <p className="bl-lead">Guides, tutorials and career advice on AI, programming and data from Coding Hubs School of AI.</p>
-          <label className="bl-search">
-            <span className="sr-only">Search articles</span>
-            <SearchIcon />
-            <input type="search" placeholder="Search articles" value={text} onChange={(e) => setText(e.target.value)} />
-            {text && (
-              <button type="button" className="bl-clear" aria-label="Clear search" onClick={() => setText('')}>
-                ×
-              </button>
-            )}
-          </label>
-          {data && (
-            <ul className="bl-stats">
-              <li><strong>{data.count}</strong><span>{q || category ? 'Matching' : 'Articles'}</span></li>
-              <li><strong>{cats.length}</strong><span>Categories</span></li>
-            </ul>
+    <PageFrame wide insight>
+      <section className="ins-hero">
+        <p className="ins-kicker">{topic ? 'Insights & Blog' : 'AI & Coding Blog'}</p>
+        <h1>
+          {topic ? (
+            <>
+              {topic} <span>Articles</span>
+            </>
+          ) : (
+            <>
+              Learn from <span>Experts</span> at<br /> Coding Hubs School of AI
+            </>
           )}
-        </div>
+        </h1>
+        <p className="ins-lead">Articles on AI, Machine Learning, Data Science, Python, Full Stack Development and Careers, written by our mentors at Netaji Subhash Place, Delhi.</p>
+        <label className="ins-search">
+          <span className="sr-only">Search articles</span>
+          <SearchIcon />
+          <input type="search" placeholder="Search articles" value={text} onChange={(e) => setText(e.target.value)} />
+          {text && (
+            <button type="button" className="ins-clear" aria-label="Clear search" onClick={() => setText('')}>
+              ×
+            </button>
+          )}
+        </label>
       </section>
 
-      {cats.length > 0 && (
-        <nav className="bl-chips" aria-label="Blog categories">
-          <Link to={listHref({ category: '', q })} className={!category ? 'on' : ''} aria-current={!category ? 'page' : undefined}>
-            All
-          </Link>
-          {cats.map((c) => (
-            <Link key={c.slug} to={listHref({ category: c.slug, q })} className={category === c.slug ? 'on' : ''} aria-current={category === c.slug ? 'page' : undefined}>
-              {c.name} <span>({c.blog_count})</span>
+      {featured && <FeaturedInsight c={featured} />}
+
+      <section className="ins-latest" aria-labelledby="ins-latest-title">
+        <p className="ins-kicker-plain">All Insights</p>
+        <h2 id="ins-latest-title">{q ? 'Search Results' : topic ? `${topic} Guides` : 'Latest Articles & Guides'}</h2>
+        <p className="ins-sub">Stay updated with practical guides, career tips and tech deep-dives from our expert mentors.</p>
+        {cats.length > 0 && (
+          <nav className="ins-chips" aria-label="Blog categories">
+            <Link to={listHref({ category: '', q })} className={!category ? 'on' : ''} aria-current={!category ? 'page' : undefined}>
+              All
             </Link>
+            {cats.map((c) => (
+              <Link key={c.slug} to={listHref({ category: c.slug, q })} className={category === c.slug ? 'on' : ''} aria-current={category === c.slug ? 'page' : undefined}>
+                {c.name}
+              </Link>
+            ))}
+          </nav>
+        )}
+
+        {error && <p className="ins-state" role="alert">We could not load the articles. Please refresh the page.</p>}
+        {!data && !error && (
+          <div className="ins-grid" role="status" aria-label="Loading articles">
+            {[0, 1, 2].map((i) => (<div key={i} className="ins-skel" />))}
+          </div>
+        )}
+        {data && data.count === 0 && <p className="ins-state">{q || category ? 'No articles match your search.' : 'No articles published yet. Check back soon.'}</p>}
+
+        <div className="ins-grid">
+          {rest.map((c) => (
+            <InsightCard key={c.slug} c={c} />
           ))}
-        </nav>
-      )}
-
-      {error && <p className="bl-state" role="alert">We could not load the articles. Please refresh the page.</p>}
-      {!data && !error && (
-        <div className="bl-grid" role="status" aria-label="Loading articles">
-          {[0, 1, 2].map((i) => (<div key={i} className="bl-skel" />))}
         </div>
-      )}
-      {data && data.count === 0 && <p className="bl-state">{q || category ? 'No articles match your search.' : 'No articles published yet. Check back soon.'}</p>}
-
-      {featured && (
-        <div className="bl-featured">
-          <CardView c={featured} base="/blog" />
-        </div>
-      )}
-      <Reveal stagger className="bl-grid" key={`${page}-${category}-${q}`}>
-        {rest.map((c, i) => (
-          <CardView key={c.slug} c={c} base="/blog" index={i} />
-        ))}
-      </Reveal>
-      {data && <Pager page={page} count={data.count} size={PAGE_SIZE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} hrefFor={(p) => listHref({ category, q, page: p })} />}
+        {data && <NumberPager page={page} count={data.count} size={PAGE_SIZE} hrefFor={(p) => listHref({ category, q, page: p })} />}
+      </section>
     </PageFrame>
   )
 }

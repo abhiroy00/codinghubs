@@ -1,13 +1,31 @@
-<div class="fs-page">{% include "content/_chrome_top.html" %}
-<main id="main" class="wrap bl-main">
-  <h1>{% if topic %}{{ topic }} Articles{% else %}AI &amp; Coding Blog{% endif %}</h1>
-  <p class="bl-lead">Guides, tutorials and career advice on AI, programming and data from Coding Hubs School of AI.</p>
-  {% if categories %}<nav class="bl-cats" aria-label="Blog categories"><a href="/blog"{% if not cat %} aria-current="page"{% endif %}>All articles</a>{% for c in categories %} <a href="/blog?category={{ c.slug|urlencode }}"{% if c.slug == cat %} aria-current="page"{% endif %}>{{ c.name }}</a>{% endfor %}</nav>{% endif %}
-  {% if query %}<p>Results for “{{ query }}”</p>{% endif %}
-  <div class="bl-grid">{% for c in items %}{% include "content/_card.html" %}{% empty %}<p>No articles published yet.</p>{% endfor %}</div>
-  {% if page.paginator.num_pages > 1 %}<nav class="bl-pager" aria-label="Pagination">
-    {% if page.has_previous %}<a rel="prev" href="/blog{% if cat or page.previous_page_number > 1 %}?{% endif %}{% if cat %}category={{ cat|urlencode }}{% endif %}{% if cat and page.previous_page_number > 1 %}&amp;{% endif %}{% if page.previous_page_number > 1 %}page={{ page.previous_page_number }}{% endif %}">Previous</a>{% endif %}
-    <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
-    {% if page.has_next %}<a rel="next" href="/blog?{% if cat %}category={{ cat|urlencode }}&amp;{% endif %}page={{ page.next_page_number }}">Next</a>{% endif %}
-  </nav>{% endif %}
+<div class="fs-page ins-page">{% include "content/_chrome_top.html" %}
+<main id="main" class="wrap bl-main bl-wide-main">
+  <section class="ins-hero">
+    <p class="ins-kicker">{% if topic %}Insights &amp; Blog{% else %}AI &amp; Coding Blog{% endif %}</p>
+    <h1>{% if topic %}{{ topic }} <span>Articles</span>{% else %}Learn from <span>Experts</span> at<br> Coding Hubs School of AI{% endif %}</h1>
+    <p class="ins-lead">Articles on AI, Machine Learning, Data Science, Python, Full Stack Development and Careers, written by our mentors at Netaji Subhash Place, Delhi.</p>
+    <form class="ins-search" role="search" action="/blog" method="get"><label class="sr-only" for="ins-q">Search articles</label><input id="ins-q" type="search" name="q" placeholder="Search articles" value="{{ query }}"></form>
+  </section>
+  {% if page.number == 1 and not cat and not query and items %}{% with c=items.0 %}<article class="ins-featured">
+    <a href="{{ c.url }}" class="ins-featured-img" tabindex="-1" aria-hidden="true">{% if c.featured_image %}<img src="{{ c.featured_image }}" alt="{{ c.featured_image_alt }}" decoding="async" width="1200" height="630">{% endif %}<span class="ins-badge">Featured Article</span></a>
+    <div class="ins-featured-body">
+      {% if c.category %}<a href="/blog?category={{ c.category.slug|urlencode }}" class="ins-pill-outline">{{ c.category.name }}</a>{% endif %}
+      <h2><a href="{{ c.url }}">{{ c.title }}</a></h2>
+      <p class="ins-meta">{% if c.author_name %}<span>{{ c.author_name }}</span>{% endif %}{% if c.date %}<span>{{ c.date }}</span>{% endif %}{% if c.reading_time %}<span>{{ c.reading_time }} min read</span>{% endif %}</p>
+      {% if c.excerpt %}<p class="ins-excerpt">{{ c.excerpt }}</p>{% endif %}
+      <a href="{{ c.url }}" class="ins-btn">Read Full Article →</a>
+    </div>
+  </article>{% endwith %}{% endif %}
+  <section class="ins-latest" aria-labelledby="ins-latest-title">
+    <p class="ins-kicker-plain">All Insights</p>
+    <h2 id="ins-latest-title">{% if query %}Search Results{% elif topic %}{{ topic }} Guides{% else %}Latest Articles &amp; Guides{% endif %}</h2>
+    <p class="ins-sub">Stay updated with practical guides, career tips and tech deep-dives from our expert mentors.</p>
+    {% if categories %}<nav class="ins-chips" aria-label="Blog categories"><a href="/blog"{% if not cat %} class="on" aria-current="page"{% endif %}>All</a>{% for c in categories %}<a href="/blog?category={{ c.slug|urlencode }}"{% if c.slug == cat %} class="on" aria-current="page"{% endif %}>{{ c.name }}</a>{% endfor %}</nav>{% endif %}
+    <div class="ins-grid">{% for c in items %}{% if not forloop.first or page.number != 1 or cat or query %}{% include "content/_insight_card.html" %}{% endif %}{% empty %}<p class="ins-state">No articles published yet.</p>{% endfor %}</div>
+    {% if page.paginator.num_pages > 1 %}<nav class="ins-pager" aria-label="Pagination">
+      {% if page.has_previous %}<a rel="prev" href="/blog{% if cat or page.previous_page_number > 1 %}?{% endif %}{% if cat %}category={{ cat|urlencode }}{% endif %}{% if cat and page.previous_page_number > 1 %}&amp;{% endif %}{% if page.previous_page_number > 1 %}page={{ page.previous_page_number }}{% endif %}" aria-label="Previous page">‹</a>{% endif %}
+      {% for n in page.paginator.page_range %}<a href="/blog{% if cat or n > 1 %}?{% endif %}{% if cat %}category={{ cat|urlencode }}{% endif %}{% if cat and n > 1 %}&amp;{% endif %}{% if n > 1 %}page={{ n }}{% endif %}"{% if n == page.number %} class="on" aria-current="page"{% endif %}>{{ n }}</a>{% endfor %}
+      {% if page.has_next %}<a rel="next" href="/blog?{% if cat %}category={{ cat|urlencode }}&amp;{% endif %}page={{ page.next_page_number }}" aria-label="Next page">›</a>{% endif %}
+    </nav>{% endif %}
+  </section>
 </main>{% include "content/_chrome_bottom.html" %}</div>

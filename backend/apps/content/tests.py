@@ -404,12 +404,11 @@ class SeoTests(ContentBase):
     def test_blog_reader_has_summary_and_linked_contents_before_javascript(self):
         b = self.published_blog(content='<p>Start reading here.</p><h2>Build a model</h2><p>Check its results.</p><h2>Evaluate</h2><p>Measure quality.</p><h2>Deploy</h2><p>Monitor results.</p>')
         html = self.as_user(None).get(f'/blog/{b["slug"]}').content.decode()
-        self.assertIn('class="bl-deck"', html)
-        self.assertIn('A short intro to Python for AI work.', html)
-        self.assertIn('On this page', html)
+        self.assertIn('<meta name="description" content="A short intro to Python for AI work.">', html)
+        self.assertIn('Table of contents', html)
         self.assertIn('href="#build-a-model"', html)
         self.assertIn('id="build-a-model"', html)
-        self.assertIn('words</span>', html)
+        self.assertIn('1 min read</span>', html)
 
     def test_view_counter_counts_live_posts_only_and_keeps_updated_at(self):
         b = self.make_blog('Counted post')
@@ -518,7 +517,7 @@ class SeoTests(ContentBase):
         html = anon.get('/blog?category=python').content.decode()
         self.assertIn('<link rel="canonical" href="https://codinghubs.in/blog?category=python">', html)
         self.assertIn('<title>Python Articles | Coding Hubs Blog</title>', html)
-        self.assertIn('<h1>Python Articles</h1>', html)
+        self.assertIn('<h1>Python <span>Articles</span></h1>', html)
         self.assertIn('href="/blog?category=python"', html)  # crawlable category link
         self.assertIn('href="/blog?category=python&amp;page=2"', html)
         page2 = anon.get('/blog?category=python&page=2').content.decode()

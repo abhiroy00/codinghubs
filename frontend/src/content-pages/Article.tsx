@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { fmtDate, getBlog, getCase, recordView, takeInitial, type Article } from './api'
-import { CardView, PageFrame, useSeo } from './shared'
+import { CardView, InsIcon, InsightCard, InsMeta, PageFrame, useSeo } from './shared'
 import { ArticleToc } from './ArticleToc'
 import './blog.css'
 import { HeroVideo } from '../components/HeroVideo'
@@ -79,71 +79,72 @@ function ReadProgress() {
 export function BlogDetail() {
   const { article: a, missing } = useArticle('blog')
   if (missing) return <NotFound />
-  if (!a) return <PageFrame><p className="bl-state" role="status">Loading…</p></PageFrame>
+  if (!a) return <PageFrame insight><p className="ins-state" role="status">Loading…</p></PageFrame>
   return (
-    <PageFrame reading>
+    <PageFrame reading insight>
       <ReadProgress />
-      <article className="bl-reader">
-        {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-        <header className="bl-reader-hero hv-host"><HeroVideo clip="blog-article" />
-          <div className="bl-reader-hero-in">
+      <article className="ins-article">
+        <header className="ins-art-hero">
+          <div className="ins-art-hero-in">
+            {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
+            <Link to="/blog" className="ins-back"><InsIcon name="back" /> Back to Insights</Link>
             {a.category && (
-              <p className="bl-cat">
+              <p className="ins-art-cat">
                 <Link to={`/blog?category=${a.category.slug}`}>{a.category.name}</Link>
               </p>
             )}
             <h1>{a.title}</h1>
-            {a.excerpt && <p className="bl-deck">{a.excerpt}</p>}
-            <p className="bl-meta">
-              {a.author_name && <span>By {a.author_name}{a.author_title ? `, ${a.author_title}` : ''}</span>}
-              {a.published_at && <time dateTime={a.published_at}>{fmtDate(a.published_at)}</time>}
-              <span>{a.reading_time} min read</span>
-              {(a.view_count ?? 0) > 0 && <span>{a.view_count!.toLocaleString('en-IN')} {a.view_count === 1 ? 'view' : 'views'}</span>}
-              {typeof a.word_count === 'number' && <span>{a.word_count.toLocaleString()} words</span>}
-              {a.updated_at && new Date(a.updated_at).getTime() - new Date(a.published_at).getTime() > 86400000 && <span>Updated {fmtDate(a.updated_at)}</span>}
-            </p>
-            {a.featured_image && <figure className="bl-reader-figure"><img className="bl-reader-cover" src={a.featured_image} alt={a.featured_image_alt} width={1200} height={630} decoding="async" fetchPriority="high" />{a.featured_image_caption && <figcaption className="bl-reader-caption">{a.featured_image_caption}</figcaption>}</figure>}
+            <InsMeta c={a} author long />
           </div>
         </header>
-        <div className={`bl-reader-layout${a.toc.length ? '' : ' bl-reader-no-toc'}`}>
-          <ArticleToc items={a.toc} />
-          <div className="bl-reader-content">
-            {/* content_html is sanitised on the server (allowlist) when saved and again when served */}
-            <div className="bl-body" dangerouslySetInnerHTML={{ __html: a.content_html ?? '' }} />
-            {a.gallery && a.gallery.length > 0 && (
-              <section className="bl-gallery" aria-label="Article gallery">
-                {a.gallery.map((g, idx) => (
-                  <figure key={`${g.src}-${idx}`}>
-                    <img src={g.src} alt={g.alt || a.title} loading="lazy" decoding="async" />
-                    {g.alt && <figcaption>{g.alt}</figcaption>}
-                  </figure>
-                ))}
-              </section>
-            )}
-            {a.faq && a.faq.length > 0 && (
-              <section className="bl-faq">
-                <h2>Frequently asked questions</h2>
-                {a.faq.map((f) => (
-                  <div key={f.q}>
-                    <h3>{f.q}</h3>
-                    <div dangerouslySetInnerHTML={{ __html: f.a }} />
-                  </div>
-                ))}
-              </section>
-            )}
-            <Share title={a.title} url={a.seo.canonical} />
-            {a.related.length > 0 && (
-              <section className="bl-related">
-                <h2>Related articles</h2>
-                <div className="bl-grid">
-                  {a.related.map((r) => (
-                    <CardView key={r.slug} c={r} base="/blog" />
-                  ))}
-                </div>
-              </section>
-            )}
-          </div>
+        {a.featured_image && (
+          <figure className="ins-art-cover">
+            <img src={a.featured_image} alt={a.featured_image_alt} width={1200} height={630} decoding="async" fetchPriority="high" />
+            {a.featured_image_caption && <figcaption>{a.featured_image_caption}</figcaption>}
+          </figure>
+        )}
+        <div className="ins-art-body">
+          {a.toc.length > 2 && (
+            <details className="ins-toc">
+              <summary>Table of contents</summary>
+              <ArticleToc items={a.toc} />
+            </details>
+          )}
+          {/* content_html is sanitised on the server (allowlist) when saved and again when served */}
+          <div className="bl-body ins-prose" dangerouslySetInnerHTML={{ __html: a.content_html ?? '' }} />
+          {a.gallery && a.gallery.length > 0 && (
+            <section className="bl-gallery" aria-label="Article gallery">
+              {a.gallery.map((g, idx) => (
+                <figure key={`${g.src}-${idx}`}>
+                  <img src={g.src} alt={g.alt || a.title} loading="lazy" decoding="async" />
+                  {g.alt && <figcaption>{g.alt}</figcaption>}
+                </figure>
+              ))}
+            </section>
+          )}
+          {a.faq && a.faq.length > 0 && (
+            <section className="ins-faq">
+              <h2>Frequently Asked Questions</h2>
+              {a.faq.map((f) => (
+                <details key={f.q}>
+                  <summary>{f.q}</summary>
+                  <div dangerouslySetInnerHTML={{ __html: f.a }} />
+                </details>
+              ))}
+            </section>
+          )}
+          <Share title={a.title} url={a.seo.canonical} />
         </div>
+        {a.related.length > 0 && (
+          <section className="ins-related" aria-labelledby="ins-related-title">
+            <h2 id="ins-related-title">Related Articles</h2>
+            <div className="ins-grid">
+              {a.related.map((r) => (
+                <InsightCard key={r.slug} c={r} />
+              ))}
+            </div>
+          </section>
+        )}
       </article>
     </PageFrame>
   )
