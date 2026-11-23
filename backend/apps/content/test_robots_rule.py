@@ -24,3 +24,7 @@ class RobotsRuleTests(SimpleTestCase):
         self.assertEqual(robots.get_robots_directive('COMPLETE', private=True), 'noindex, nofollow')
         self.assertEqual(robots.hub_status(0), 'PLACEHOLDER')
         self.assertEqual(robots.hub_status(1), 'COMPLETE')
+
+    def test_canonical_drops_tracking_parameters(self):
+        self.assertEqual(robots.clean_canonical('https://codinghubs.in/blog/x?utm_source=a&gclid=1#top'), 'https://codinghubs.in/blog/x')
+        self.assertEqual(robots.clean_canonical('https://codinghubs.in/tutors?city=delhi&utm_medium=b&page=2'), 'https://codinghubs.in/tutors?city=delhi&page=2')

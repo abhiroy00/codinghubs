@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import type { Seo } from '../content-pages/api'
+import { cleanCanonical } from './robots'
 
 /** Keeps <head> right on client-side navigation (a direct visit already has it from the server). Restores on leave. */
 export function useSeo(seo: Seo | null) {
@@ -54,7 +55,7 @@ export function useSeo(seo: Seo | null) {
     metaTag('name', 'twitter:image', seo.og.image)
     metaTag('name', 'twitter:image:alt', imageAlt)
     if (seo.canonical) {
-      set('link[rel="canonical"]', () => Object.assign(document.createElement('link'), { rel: 'canonical' }), 'href', seo.canonical)
+      set('link[rel="canonical"]', () => Object.assign(document.createElement('link'), { rel: 'canonical' }), 'href', cleanCanonical(seo.canonical))
     }
     if (!seo.canonical) {
       const canonical = document.head.querySelector('link[rel="canonical"]')

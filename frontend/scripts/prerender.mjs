@@ -110,8 +110,16 @@ function heroPosterPreloads(html) {
     `<link rel="preload" as="image" type="${type(lg)}" href="${esc(lg)}" media="(min-width: 768px)" fetchpriority="high" />`,
   ]
 }
+const TRACKING = /^(utm_[a-z_]+|gclid|fbclid|msclkid|dclid|yclid|mc_[a-z]+|_ga|_gl|ref|igshid|si|next|review)$/i
+function stripTracking(url) {
+  const u = new URL(url)
+  for (const key of [...u.searchParams.keys()]) if (TRACKING.test(key)) u.searchParams.delete(key)
+  u.hash = ''
+  return u.toString()
+}
 function buildHead(page) {
-  const canonical = page.canonical ?? `${SITE}${page.path}`
+  // Canonicals are built from paths; strip tracking/session parameters defensively all the same.
+  const canonical = stripTracking(page.canonical ?? `${SITE}${page.path}`)
   const imageAlt = page.image?.endsWith('/assets/coding-hubs-school-of-ai-logo.jpeg') ? 'Coding Hubs School of AI logo' : page.title
   const tags = [
     `<title>${esc(page.title)}</title>`,

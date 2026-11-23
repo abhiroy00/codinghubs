@@ -52,6 +52,8 @@ if (new Set(urls).size !== urls.length) fail('sitemap.xml contains duplicate URL
 const robots = await read('robots.txt')
 if (!robots.includes(`Sitemap: ${SITE}/sitemap-index.xml`)) fail('robots.txt has no master Sitemap line')
 const sitemapIndex = await read('sitemap-index.xml')
+for (const child of ['sitemap.xml', 'sitemap-content.xml', 'sitemap-shop.xml', 'sitemap-directory.xml', 'sitemap-learning.xml'])
+  if (!sitemapIndex.includes(`<loc>${SITE}/${child}</loc>`)) fail('sitemap-index.xml does not list ' + child)
 if (!sitemapIndex.startsWith('<?xml') || !/<sitemapindex\s+xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9"/.test(sitemapIndex) || !sitemapIndex.trim().endsWith('</sitemapindex>')) fail('sitemap-index.xml is not a sitemap index')
 const children = [...sitemapIndex.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])
 const expectedChildren = ['sitemap.xml', 'sitemap-content.xml', 'sitemap-shop.xml', 'sitemap-directory.xml'].map(name => `${SITE}/${name}`)
