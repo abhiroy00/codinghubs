@@ -1,0 +1,241 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 7,
+  "title": "Data Classification, Lifecycle and Retention",
+  "module": "Asset security, continuity and architecture",
+  "level": "Beginner",
+  "objectives": [
+    "Explain why data is classified and who decides the classification.",
+    "Compare government and commercial classification schemes and the difference between labeling and marking.",
+    "Describe the data lifecycle and the three states of data with suitable controls for each.",
+    "Set retention periods from legal and business requirements, including legal holds.",
+    "Choose a sanitization method (clear, purge or destroy) using NIST SP 800-88.",
+    "Explain scoping, tailoring and data minimization."
+  ],
+  "definition": "Data classification sorts information by its value and sensitivity so that each level gets protection proportionate to the harm its disclosure, alteration or loss would cause. Data lifecycle management applies those protections from creation to destruction, including how long data is kept and how it is securely disposed of when it is no longer needed.",
+  "theory": [
+    {
+      "heading": "Why and how data is classified",
+      "body": "Protecting all data at the highest level is unaffordable, and protecting it all at the lowest level is dangerous. Classification sets a small number of levels with handling rules for each. The data owner decides the classification, based on value, sensitivity, legal requirements and the impact of compromise; custodians implement the handling rules. Government schemes often use Top Secret, Secret, Confidential and Unclassified, where Top Secret disclosure could cause exceptionally grave damage. Commercial schemes are usually simpler, such as Confidential or Proprietary, Private, Sensitive and Public, or just Restricted, Internal and Public. Classification should be reviewed over time, because value changes: unreleased results are confidential until they are published.",
+      "points": [
+        "Few levels, clear handling rules.",
+        "Owner decides; custodian implements.",
+        "Reclassify when value or sensitivity changes."
+      ]
+    },
+    {
+      "heading": "Labeling, marking and handling",
+      "body": "Marking and labeling make classification visible. In many CISSP sources, a label is the system-readable or physical tag on the media or object, such as a metadata tag or a sticker on a drive, while marking is the human-readable designation on the content itself, such as a 'Confidential' header on a document. Terminology varies between sources, but the goal is the same: anyone handling the data, and any tool such as data loss prevention, can see how to treat it. Handling rules state who may access each level, whether it may be emailed externally or stored on personal devices, which encryption is required and how it is transported."
+    },
+    {
+      "heading": "Data lifecycle and data states",
+      "body": "Data moves through a lifecycle: create or collect, store, use, share, archive and destroy. Security applies at every stage, starting with collecting only what is needed. Data also exists in three states. Data at rest is stored on disks, databases or backups and is protected with encryption, access control and secure backups. Data in transit moves across networks and is protected with TLS, VPNs and secure file transfer. Data in use is being processed in memory and is the hardest to protect; controls include least privilege, screen locks, secure enclaves or confidential computing, and careful handling of exports. Data loss prevention tools watch for sensitive data leaving through email, uploads or removable media.",
+      "points": [
+        "Lifecycle: create → store → use → share → archive → destroy.",
+        "States: at rest, in transit, in use.",
+        "Data minimization reduces risk at every stage."
+      ]
+    },
+    {
+      "heading": "Retention and legal holds",
+      "body": "A retention schedule states how long each category of record is kept and why. Minimums come from laws, regulations and contracts, such as tax and accounting rules or log-retention directions; maximums come from privacy principles and laws that require erasure when the purpose is served. Keeping data forever increases breach impact and discovery costs. When litigation or an investigation is reasonably expected, a legal hold suspends destruction of the relevant records regardless of the schedule, and destroying them can be treated as spoliation of evidence. Retention periods should be set with legal counsel and approved by data owners, and destruction should be logged.",
+      "points": [
+        "Retention minimums: legal, regulatory, contractual.",
+        "Retention maximums: privacy and purpose limitation.",
+        "Legal hold overrides the schedule."
+      ]
+    },
+    {
+      "heading": "Sanitization and data remanence",
+      "body": "Data remanence is data that remains on media after deletion; simply deleting files or quick-formatting leaves recoverable data. NIST SP 800-88 defines three sanitization levels. Clear uses logical techniques, such as overwriting, to protect against simple non-invasive recovery. Purge uses physical or logical techniques, such as block erase or cryptographic erase, that make recovery infeasible even with laboratory techniques. Destroy makes the media unusable, for example by shredding, disintegrating, pulverizing or incinerating. Degaussing works on magnetic media but not on SSDs or flash memory. For SSDs, use manufacturer-supported purge or cryptographic erase, or physical destruction. Organizations should record what was sanitized, by which method and by whom, often as a certificate of destruction. Scoping and tailoring complete the picture: scoping selects which baseline controls apply to a system, and tailoring adjusts them to its specific context."
+    }
+  ],
+  "example": {
+    "title": "A classification and handling standard",
+    "body": "The coaching institute adopts four levels. Each has an example, an owner-approved handling rule and a retention note. Staff can decide quickly how to treat a file, and data loss prevention rules can enforce the most important ones.",
+    "code": {
+      "language": "yaml",
+      "source": "levels:\n  restricted:\n    examples: [student payment records, identity documents, unpublished exam papers]\n    access: named roles only, approved by data owner\n    at_rest: encrypted; no personal devices\n    in_transit: TLS only; never by personal email\n    destruction: purge or destroy per NIST SP 800-88; certificate logged\n  confidential:\n    examples: [student records, staff HR files, unreleased course material]\n    access: role-based, need to know\n    at_rest: encrypted storage\n    sharing: external only with NDA and approval\n  internal:\n    examples: [timetables, internal procedures]\n    access: all staff\n  public:\n    examples: [published brochures, website content]\n    access: anyone; integrity still protected\nretention_examples:   # illustrative; final periods set with legal counsel\n  enquiry_leads: 1 year after last contact\n  student_and_payment_records: per legal and tax requirements\n  cctv_footage: 30 days unless needed for an incident\nlegal_hold: overrides retention; only legal counsel can release it\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Data loss prevention",
+      "description": "Classification labels let DLP tools block restricted data from leaving by email, upload or USB."
+    },
+    {
+      "title": "Cloud migration",
+      "description": "Classification decides which data may move to which service and which encryption and key management are required."
+    },
+    {
+      "title": "Privacy compliance",
+      "description": "Retention schedules and secure destruction support privacy laws that require erasure when the purpose is served."
+    },
+    {
+      "title": "Hardware disposal",
+      "description": "Retired laptops and drives are sanitized with an approved method and certificates are kept as evidence."
+    },
+    {
+      "title": "Litigation readiness",
+      "description": "Legal holds and organized retention reduce discovery costs and avoid accusations of destroying evidence."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script reviews records against an illustrative retention schedule. It keeps records within their period, flags expired records for approved destruction, and refuses to mark a record for destruction while it is under a legal hold. The periods are examples only; real periods must be set with legal counsel. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Retention review: flag records kept longer than the schedule allows, so they can be destroyed\n# with an approved sanitization method, and records still under a legal hold.\nfrom datetime import date\n\ntoday = date(2026, 11, 23)\nschedule_years = {'enquiry lead': 1, 'student record': 8, 'payment record': 8, 'cctv footage': 0.08}\n\nrecords = [\n    ('enquiry lead', 'LEAD-2023-0412', date(2023, 4, 12), False),\n    ('enquiry lead', 'LEAD-2026-0301', date(2026, 3, 1), False),\n    ('student record', 'STU-2016-0098', date(2016, 7, 1), False),\n    ('payment record', 'PAY-2017-1120', date(2017, 11, 20), True),\n    ('cctv footage', 'CAM2-2026-09-30', date(2026, 9, 30), False),\n]\n\nfor category, record_id, created, legal_hold in records:\n    age_years = (today - created).days / 365.25\n    limit = schedule_years[category]\n    if age_years <= limit:\n        action = 'keep'\n    elif legal_hold:\n        action = 'past retention but on LEGAL HOLD - do not destroy'\n    else:\n        action = 'destroy (approved sanitization, log certificate)'\n    print(f'{record_id:<16} {category:<15} age {age_years:5.1f}y limit {limit}y -> {action}')\n"
+    },
+    "output": "LEAD-2023-0412   enquiry lead    age   3.6y limit 1y -> destroy (approved sanitization, log certificate)\nLEAD-2026-0301   enquiry lead    age   0.7y limit 1y -> keep\nSTU-2016-0098    student record  age  10.4y limit 8y -> destroy (approved sanitization, log certificate)\nPAY-2017-1120    payment record  age   9.0y limit 8y -> past retention but on LEGAL HOLD - do not destroy\nCAM2-2026-09-30  cctv footage    age   0.1y limit 0.08y -> destroy (approved sanitization, log certificate)"
+  },
+  "takeaways": [
+    "Classify by value and sensitivity so protection is proportionate; the data owner decides.",
+    "Labels and markings make classification visible to people and tools.",
+    "Protect data at rest, in transit and in use, across the whole lifecycle.",
+    "Retention balances legal minimums with privacy maximums; legal holds override schedules.",
+    "NIST SP 800-88 defines clear, purge and destroy; degaussing does not work on SSDs.",
+    "Collect and keep only the data you need."
+  ],
+  "interview": [
+    {
+      "question": "Why do organizations classify data, and who decides the classification?",
+      "answer": "Classification lets an organization protect information in proportion to its value and sensitivity. Without it, everything is either over-protected, which is expensive and slows work, or under-protected, which risks harmful disclosure. A small set of levels, each with clear handling rules, lets staff and tools such as data loss prevention treat data correctly. The data owner, a business manager accountable for the data, decides the classification based on value, legal requirements and the impact of compromise. Custodians implement the handling rules, and the security team defines the scheme and advises. Classification should be reviewed, because sensitivity changes over time, such as exam results that become public on release day.",
+      "explanation": "Strong answers explain the cost-proportionality argument and correctly assign the decision to the data owner.",
+      "follow_ups": [
+        "How many classification levels would you recommend for a small company?",
+        "What happens when data of two classifications is combined?"
+      ]
+    },
+    {
+      "question": "Explain the three states of data and how you protect each.",
+      "answer": "Data at rest is stored on disks, databases, backups or removable media. I protect it with encryption, strong access control, secure backups and key management that keeps keys separate from data. Data in transit moves across networks. I protect it with TLS, VPNs, secure file transfer and by avoiding unencrypted protocols. Data in use is being processed in memory or displayed on screen, which is the hardest state to protect. Controls include least privilege, session timeouts and screen locks, limits on exports and copy-paste for sensitive systems, and, where justified, confidential computing or secure enclaves. Data loss prevention monitors movement between these states, such as a confidential file being uploaded to a personal cloud account.",
+      "explanation": "Interviewers expect a correct definition and at least two controls for each state, plus an acknowledgment that data in use is hardest.",
+      "follow_ups": [
+        "What is confidential computing?",
+        "Why is key management critical for encryption at rest?"
+      ]
+    },
+    {
+      "question": "How would you securely dispose of old laptops with SSDs?",
+      "answer": "I would follow NIST SP 800-88. First, I would confirm from the asset inventory which devices are being retired and their highest data classification. For SSDs, overwriting is unreliable because of wear leveling, and degaussing does not work on flash memory. If the laptops will be reused or resold, I would use a purge method supported by the manufacturer, such as a secure erase command, or cryptographic erase if the disks were fully encrypted, then verify the result. If they held restricted data or cannot be verified, I would have the drives physically destroyed, for example shredded by a certified provider. Each device's serial number, method, date and responsible person would be recorded, with a certificate of destruction.",
+      "explanation": "Strong answers mention SSD-specific issues, NIST SP 800-88, verification and documentation. Suggesting degaussing for SSDs is wrong.",
+      "follow_ups": [
+        "What is the difference between clear and purge?",
+        "Why does full-disk encryption make disposal easier?"
+      ]
+    },
+    {
+      "question": "What is a legal hold, and how does it interact with retention schedules?",
+      "answer": "A legal hold, sometimes called a litigation hold, is an instruction to preserve information relevant to a lawsuit, investigation or audit that is reasonably anticipated or under way. It overrides the normal retention schedule: records that would otherwise be destroyed must be kept, including emails, logs, backups and messages within scope. Destroying held information can be treated as spoliation of evidence, which can lead to court sanctions and an assumption that the destroyed evidence was harmful. In practice, legal counsel issues and releases holds, IT suspends automated deletion for the affected systems and people, and the retention process checks for active holds before any destruction. The hold is lifted only when counsel confirms the matter is closed.",
+      "explanation": "Good answers explain that holds override schedules, mention spoliation and assign issuing and releasing to legal counsel.",
+      "follow_ups": [
+        "Which systems are easiest to forget when applying a legal hold?",
+        "How would you design retention automation to respect holds?"
+      ]
+    },
+    {
+      "question": "What is the difference between scoping and tailoring a security baseline?",
+      "answer": "Both adapt a standard set of controls, such as a baseline from NIST SP 800-53 or the CIS Benchmarks, to a specific system. Scoping decides which controls in the baseline apply at all. For example, controls for wireless networking do not apply to a system with no wireless capability, so they are scoped out. Tailoring adjusts the applicable controls to fit the system's context and risk: changing parameter values such as session timeout lengths, adding compensating controls where a control is not feasible, or strengthening controls for sensitive data. Both decisions should be documented and justified, so auditors can see why the system's control set differs from the generic baseline.",
+      "explanation": "Strong candidates distinguish removing irrelevant controls from adjusting applicable ones, and stress documentation.",
+      "follow_ups": [
+        "Give an example of a compensating control.",
+        "Who should approve tailoring decisions?"
+      ]
+    },
+    {
+      "question": "A marketing manager wants to keep every enquiry lead forever in case it is useful later. How do you respond?",
+      "answer": "I would explain that keeping personal data indefinitely increases risk without clear value. Old leads are a liability in a breach, and privacy laws such as India's DPDP Act and the GDPR expect personal data to be kept only as long as its purpose requires and erased afterwards. I would agree a retention period with the data owner and legal counsel that matches realistic sales cycles, for example erasing leads a year after last contact unless the person becomes a student or opts in again. The rule would be automated, with exceptions for legal holds. I would also suggest keeping aggregated, anonymized statistics for marketing analysis, which gives most of the value without the personal data.",
+      "explanation": "This tests privacy-aware, business-friendly judgment. Strong answers cite purpose limitation, offer a defined retention period and suggest anonymized alternatives.",
+      "follow_ups": [
+        "How would you prove that leads are actually being deleted?",
+        "When is anonymized data still personal data?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design a classification scheme and retention schedule",
+    "difficulty": "Basic",
+    "objective": "Apply classification, lifecycle controls, retention and sanitization to a real organization.",
+    "statement": "Design a data classification scheme for the coaching institute with three or four levels, assign at least eight real data types to the levels, and write handling rules for each level. Then create a retention schedule for the same data types and a disposal procedure for retired laptops and drives.",
+    "deliverable": "A classification table with handling rules, a retention schedule with justification and owner for each data type, and a one-page disposal procedure.",
+    "steps": [
+      "Define three or four classification levels and the impact that defines each.",
+      "Assign at least eight data types to levels with the data owner for each.",
+      "Write handling rules per level for access, storage, sharing and transport.",
+      "Set a retention period and justification for each data type, marking where legal counsel must confirm.",
+      "Describe how legal holds override the schedule.",
+      "Write a disposal procedure that chooses clear, purge or destroy by media type and classification."
+    ],
+    "checklist": [
+      "Each data type has an owner and a level.",
+      "Handling rules cover data at rest, in transit and in use.",
+      "Retention periods have a stated reason and minimize personal data.",
+      "Legal holds are handled explicitly.",
+      "The disposal procedure handles SSDs correctly and records evidence."
+    ],
+    "sample_answer": "Levels: Restricted (serious legal or financial harm), Confidential (harm to students or the institute), Internal (minor harm), Public. Assignments: payment records and ID documents Restricted (Finance Head); student records, HR files and unreleased course material Confidential (Academic Director, Operations Head); timetables and procedures Internal; brochures and website Public. Handling: Restricted encrypted at rest, named-role access, no personal devices or email, TLS only; Confidential role-based access, encrypted storage, external sharing only with approval and NDA; Internal staff-only; Public integrity-protected. Retention: enquiry leads 1 year after last contact (purpose limitation); student and payment records per legal and tax requirements, confirmed by counsel; CCTV 30 days unless an incident occurs; logs at least 180 days for CERT-In. Legal hold: counsel issues and releases; automated deletion is suspended for held items. Disposal: HDDs overwritten (clear) for internal reuse or shredded if Restricted; SSDs cryptographically erased or physically destroyed by a certified vendor; record serial, method, date and person, with a certificate of destruction."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Who is responsible for deciding a dataset's classification level?",
+      "options": [
+        "The data custodian",
+        "The data owner",
+        "The DLP administrator",
+        "Any employee who creates the data"
+      ],
+      "answer": 1,
+      "explanation": "The data owner decides classification; custodians implement handling rules."
+    },
+    {
+      "type": "concept",
+      "question": "Which sanitization method is NOT effective on solid-state drives?",
+      "options": [
+        "Cryptographic erase",
+        "Physical shredding",
+        "Degaussing",
+        "Manufacturer secure erase"
+      ],
+      "answer": 2,
+      "explanation": "Degaussing relies on magnetism and does not erase flash memory."
+    },
+    {
+      "type": "concept",
+      "question": "Under NIST SP 800-88, which category makes data recovery infeasible even with laboratory techniques while leaving the media reusable?",
+      "options": [
+        "Clear",
+        "Purge",
+        "Destroy",
+        "Format"
+      ],
+      "answer": 1,
+      "explanation": "Purge protects against laboratory recovery; destroy also makes the media unusable."
+    },
+    {
+      "type": "scenario",
+      "question": "A record has passed its retention period but is relevant to an expected lawsuit. What should happen?",
+      "options": [
+        "Destroy it on schedule",
+        "Keep it under a legal hold",
+        "Anonymize it immediately",
+        "Move it to an archive and delete the original"
+      ],
+      "answer": 1,
+      "explanation": "A legal hold overrides the retention schedule; destroying it could be spoliation of evidence."
+    },
+    {
+      "type": "concept",
+      "question": "Encrypting data with TLS while it moves between a browser and a server protects data in which state?",
+      "options": [
+        "At rest",
+        "In transit",
+        "In use",
+        "Archived"
+      ],
+      "answer": 1,
+      "explanation": "TLS protects data in transit across the network."
+    }
+  ]
+}

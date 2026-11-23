@@ -1,0 +1,258 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 1,
+  "title": "Security Goals and Assets: CIA, Accountability and Asset Value",
+  "module": "Security and risk management",
+  "level": "Beginner",
+  "objectives": [
+    "Explain confidentiality, integrity and availability and give an attack that breaks each one.",
+    "Distinguish identification, authentication, authorization, auditing and accountability, and explain nonrepudiation.",
+    "Identify tangible and intangible assets and describe how their value is estimated.",
+    "Assign the data owner, custodian, system owner and user roles for a real business system.",
+    "Rate an asset's confidentiality, integrity and availability impact and derive its overall criticality.",
+    "Relate these ideas to CISSP Domain 1 (Security and Risk Management) and Domain 2 (Asset Security)."
+  ],
+  "definition": "Information security exists to protect assets so the organization can meet its goals. Its core goals are confidentiality (only authorized parties can read information), integrity (information and systems are changed only in authorized ways) and availability (authorized users get timely, reliable access). An asset is anything of value to the organization, such as data, systems, people, facilities and reputation, and the value of an asset determines how much protection it deserves.",
+  "theory": [
+    {
+      "heading": "Why CISSP starts with goals and assets",
+      "body": "Every later topic in the CISSP Common Body of Knowledge, including risk analysis, access control, cryptography and incident response, answers one question: which asset are we protecting, from what, and how much is that protection worth? The exam rewards a manager's perspective. A technically clever control is the wrong answer if it costs more than the asset is worth, conflicts with a business goal, or ignores human safety. Security supports the business; it does not exist for its own sake. Senior management is ultimately accountable for protecting assets, even when day-to-day work is delegated to security teams.",
+      "points": [
+        "Domain 1, Security and Risk Management: governance, risk and ethics.",
+        "Domain 2, Asset Security: identifying, classifying, owning and handling assets.",
+        "Human safety always takes priority over protecting property or data."
+      ]
+    },
+    {
+      "heading": "The CIA triad and its opposite, DAD",
+      "body": "Confidentiality prevents unauthorized disclosure. Encryption, access control and data classification support it; eavesdropping, shoulder surfing and a misconfigured public storage bucket break it. Integrity prevents unauthorized or accidental modification. Hashing, digital signatures, input validation and change management support it; a tampered invoice amount or a corrupted database breaks it. Availability keeps systems and data usable when needed. Redundancy, backups, capacity planning and DDoS protection support it; ransomware, hardware failure and denial-of-service attacks break it. The opposing model, DAD, names the failures: Disclosure, Alteration and Destruction (sometimes written as Denial). The three goals often trade off against each other. Encrypting everything with keys held by one administrator improves confidentiality but endangers availability if that person leaves.",
+      "points": [
+        "Confidentiality ↔ Disclosure",
+        "Integrity ↔ Alteration",
+        "Availability ↔ Destruction or Denial"
+      ]
+    },
+    {
+      "heading": "From identity to accountability",
+      "body": "Accountability means every action can be traced to the person or process that performed it. It depends on a chain of steps. Identification is claiming an identity, for example typing a username. Authentication proves the claim with something you know, have or are, or a combination in multifactor authentication. Authorization decides what the authenticated subject may do, ideally by least privilege. Auditing, also called accounting, records what the subject actually did. Accountability is only possible when identities are unique and logs are protected, so shared accounts break it. Nonrepudiation goes further: the subject cannot credibly deny an action, typically because it was signed with a private key only they control and the record is protected from tampering.",
+      "points": [
+        "Identification: who do you claim to be?",
+        "Authentication: prove it.",
+        "Authorization: what are you allowed to do?",
+        "Auditing: what did you do?",
+        "Accountability: you are answerable for it."
+      ]
+    },
+    {
+      "heading": "What counts as an asset and how value is estimated",
+      "body": "Assets include tangible items such as servers, laptops, network equipment and buildings, and intangible items such as customer data, source code, trade secrets, brand reputation and staff knowledge. People are the most important asset of all. Asset value is broader than purchase price. It includes the cost to replace or rebuild, revenue lost while the asset is unavailable, regulatory fines and legal liability if it is disclosed, the value to competitors, and the damage to customer trust. Quantitative valuation assigns monetary figures and feeds later calculations such as annualized loss expectancy. Qualitative valuation uses ratings such as low, moderate and high when reliable figures do not exist. An accurate, owned asset inventory comes first: you cannot protect what you do not know you have.",
+      "points": [
+        "Tangible and intangible assets both need owners.",
+        "Value drives how much control spending is justified.",
+        "Inventory first, then classification, then controls."
+      ]
+    },
+    {
+      "heading": "Ownership roles",
+      "body": "The data owner is a business manager who is accountable for a set of data. The owner decides its classification, who may access it and how long it is kept. The data custodian, often IT or operations staff, implements the owner's decisions day to day by running backups, applying access rules and maintaining the systems. The system owner is responsible for the system that processes the data and its security controls. Users must handle the data according to policy. Under privacy laws such as the GDPR, the data controller decides why and how personal data is processed, and the data processor processes it on the controller's behalf. A common exam trap is to give the custodian the owner's decisions: custodians implement, owners decide.",
+      "points": [
+        "Owner: accountable, classifies, approves access.",
+        "Custodian: implements and maintains protection.",
+        "User: follows handling rules."
+      ]
+    },
+    {
+      "heading": "Rating impact and deriving criticality",
+      "body": "A practical way to connect goals and assets is to rate the impact of losing each goal for each asset. FIPS 199, used by US federal agencies and widely borrowed elsewhere, rates the potential impact of a confidentiality, integrity or availability loss as low, moderate or high, and categorizes the system at the highest of the three, called the high-water mark. A public marketing website may have low confidentiality impact but moderate availability impact, so it is moderate overall. A payroll database is usually high for confidentiality and integrity. These ratings then decide which baseline controls apply, how often backups run and who must approve access."
+    }
+  ],
+  "example": {
+    "title": "An asset register entry for a payroll system",
+    "body": "An asset register records each asset with its owner, custodian, classification and impact ratings, so that protection decisions are explicit and reviewable. The entry below is for a mid-sized company's payroll database. The HR director owns it and IT operations is its custodian. Disclosure exposes salaries and bank details, so confidentiality is high. A silent change to an amount pays someone wrongly, so integrity is high. Payroll runs monthly and a one-day outage can be tolerated, so availability is moderate. Its overall category is therefore high, which drives encryption, multifactor access, quarterly access reviews and tested restores.",
+    "code": {
+      "language": "yaml",
+      "source": "asset_id: APP-PAY-001\nname: Payroll database\ntype: intangible (data) on tangible host DB-PRD-07\ndata_owner: HR Director\ncustodian: IT Operations (DBA team)\nsystem_owner: Head of Business Applications\nclassification: Confidential\ncontains_personal_data: true\nimpact:\n  confidentiality: high   # salaries, bank account numbers\n  integrity: high         # wrong amounts are paid out\n  availability: moderate  # monthly run; one-day outage tolerable\noverall_category: high    # high-water mark of C, I, A\nvalue_drivers:\n  - regulatory fines for personal-data disclosure\n  - cost of incorrect payments and correction\n  - employee trust\nreview: quarterly access review by data owner\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Prioritizing a security budget",
+      "description": "A security manager ranks assets by value and impact so that money goes first to protecting the customer database rather than to low-value test servers."
+    },
+    {
+      "title": "Designing access to a new system",
+      "description": "Before go-live, the data owner sets the classification and approves role-based access, and the custodian implements it. This creates accountability from day one."
+    },
+    {
+      "title": "Responding to an incident",
+      "description": "During ransomware recovery, the asset register shows which systems are high availability so they are restored first, and who must approve their return to service."
+    },
+    {
+      "title": "Preparing for an audit",
+      "description": "Auditors ask for the inventory, owners and access reviews. A maintained register with CIA ratings answers most of their questions with evidence."
+    },
+    {
+      "title": "Answering CISSP scenario questions",
+      "description": "Many exam questions are decided by asking which goal is threatened and who is accountable for the asset. That points to the management answer rather than the technical one."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script applies the high-water-mark rule to a small asset list. It checks that every asset has an owner, derives each overall category from its C, I and A ratings, and sorts assets so the most critical are reviewed first. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "LEVELS = {'low': 1, 'moderate': 2, 'high': 3}\nNAMES = {v: k for k, v in LEVELS.items()}\n\nassets = [\n    {'name': 'Marketing website', 'owner': 'Marketing Head', 'c': 'low', 'i': 'moderate', 'a': 'moderate'},\n    {'name': 'Payroll database', 'owner': 'HR Director', 'c': 'high', 'i': 'high', 'a': 'moderate'},\n    {'name': 'Build server', 'owner': '', 'c': 'moderate', 'i': 'high', 'a': 'low'},\n]\n\nfor asset in assets:\n    level = max(LEVELS[asset[k]] for k in ('c', 'i', 'a'))  # high-water mark\n    asset['category'] = NAMES[level]\n    if not asset['owner']:\n        print(f\"WARNING: {asset['name']} has no data owner; nobody is accountable\")\n\nfor asset in sorted(assets, key=lambda a: -LEVELS[a['category']]):\n    print(f\"{asset['category']:>8}  {asset['name']}  (C={asset['c']}, I={asset['i']}, A={asset['a']})\")\n"
+    },
+    "output": "WARNING: Build server has no data owner; nobody is accountable\n    high  Payroll database  (C=high, I=high, A=moderate)\n    high  Build server  (C=moderate, I=high, A=low)\nmoderate  Marketing website  (C=low, I=moderate, A=moderate)"
+  },
+  "takeaways": [
+    "Security protects assets so the business can meet its goals; human safety comes first.",
+    "Confidentiality, integrity and availability fail as disclosure, alteration and destruction or denial.",
+    "Accountability needs unique identification, authentication, authorization and protected audit logs; nonrepudiation adds proof such as digital signatures.",
+    "Asset value includes replacement cost, lost revenue, legal liability and reputation, not just purchase price.",
+    "Data owners decide classification and access; custodians implement those decisions.",
+    "The overall category of a system is the highest of its C, I and A impact ratings."
+  ],
+  "interview": [
+    {
+      "question": "Explain the CIA triad with an example of an attack against each goal.",
+      "answer": "The CIA triad names the three goals of information security. Confidentiality means only authorized people can read information; it is broken when an attacker sniffs unencrypted traffic or a storage bucket is accidentally made public. Integrity means information is changed only in authorized ways; it is broken when someone alters an invoice's bank details or malware corrupts records. Availability means authorized users can use systems when needed; it is broken by a DDoS attack, ransomware or a failed server without redundancy. The goals trade off against each other. Strict encryption with a single key holder helps confidentiality but risks availability, so the right balance depends on the asset's value and business needs.",
+      "explanation": "A strong answer gives one concrete attack per goal and mentions trade-offs. A weak answer only expands the acronym, or calls a DDoS a confidentiality problem.",
+      "follow_ups": [
+        "Which goal matters most for a hospital's patient-monitoring system, and why?",
+        "What is the DAD model?"
+      ]
+    },
+    {
+      "question": "What is the difference between authentication, authorization and accountability?",
+      "answer": "Authentication proves a claimed identity, for example a password plus a one-time code after the user types a username, which is identification. Authorization decides what that authenticated identity may do, such as read-only access to payroll reports under least privilege. Accountability means actions can be traced back to the individual responsible, which requires unique accounts, auditing of their actions, and logs protected from tampering. They build on each other: without reliable authentication, the audit log records the wrong person; without authorization, an authenticated user can do anything. Shared admin accounts are a classic accountability failure, because the logs show the account but not the person behind it.",
+      "explanation": "Interviewers look for the full sequence, identification through accountability, and a realistic failure such as shared accounts. Confusing authentication with authorization is the most common weak answer.",
+      "follow_ups": [
+        "How does nonrepudiation differ from accountability?",
+        "Why are shared service accounts a risk, and how would you mitigate them?"
+      ]
+    },
+    {
+      "question": "Who should decide the classification of customer data: the data owner or the data custodian?",
+      "answer": "The data owner. The owner is a business manager who is accountable for the data, so they decide its classification, who may access it, and how long it is retained. The custodian, usually IT or database administration staff, implements those decisions: configuring access controls, running and testing backups, and maintaining the systems. Security teams advise both, but they should not choose the classification themselves, because the business owner understands the data's value and legal obligations. If the custodian makes these decisions, accountability is blurred and protection may not match business needs. Senior management remains ultimately responsible for making sure owners are assigned and do this job.",
+      "explanation": "This is a frequent CISSP scenario. Strong answers separate deciding (owner) from implementing (custodian) and mention senior management's ultimate accountability.",
+      "follow_ups": [
+        "What is the difference between a data controller and a data processor under the GDPR?",
+        "What should happen when a data owner leaves the company?"
+      ]
+    },
+    {
+      "question": "How would you estimate the value of an information asset?",
+      "answer": "I would look beyond purchase price at everything the organization would lose if the asset were disclosed, altered or unavailable. That includes the cost to replace or rebuild it, revenue lost during an outage, regulatory fines and legal liability, contractual penalties, the value to competitors, and reputational damage. Where reliable figures exist, a quantitative value in money supports later calculations such as single and annualized loss expectancy. Where they do not, I would use qualitative ratings such as low, moderate and high, agreed with the asset owner. The purpose is to justify proportionate controls, so I would revisit the value when the asset, its data or the regulations change.",
+      "explanation": "Good candidates list several value components and link valuation to control decisions. Answering only 'what it cost to buy' is the weak answer.",
+      "follow_ups": [
+        "When is qualitative valuation preferable to quantitative valuation?",
+        "Why can source code be worth more than the servers it runs on?"
+      ]
+    },
+    {
+      "question": "A system has low confidentiality, high integrity and moderate availability impact. What is its overall security category, and why?",
+      "answer": "Its overall category is high. Under the high-water-mark approach used in FIPS 199, a system is categorized at the highest impact level among confidentiality, integrity and availability, because a serious failure in any single goal can cause serious harm. Here integrity is high, so the whole system is treated as high. That choice drives stronger baseline controls, such as change management, integrity monitoring, signed releases and stricter access approval. Averaging the ratings to reach moderate would under-protect the one property that matters most. In practice I would still tailor controls: a high integrity rating does not require heavy encryption if the data is public.",
+      "explanation": "A strong answer names the high-water mark, explains why averaging is wrong, and notes that controls can still be tailored to the high-rated goal.",
+      "follow_ups": [
+        "Give a real system with low confidentiality but high integrity impact.",
+        "How would the category change what backup policy you choose?"
+      ]
+    },
+    {
+      "question": "A developer asks for production database admin rights to fix bugs faster. How do you respond as a security manager?",
+      "answer": "I would start from the business goal, faster fixes, and the asset at risk, a production database with high confidentiality and integrity impact. Standing admin rights would break least privilege and separation of duties, and would weaken accountability if changes bypass review. Instead I would propose controlled alternatives: read-only access to masked production data for diagnosis, a change process for fixes, and time-bound, approved and logged elevated access for genuine emergencies. The data owner should approve any access decision, not the security team alone. That way the developer's need is met, every change remains attributable, and the risk stays proportionate to the asset's value.",
+      "explanation": "This tests manager-level thinking. Strong answers balance business needs, mention least privilege, separation of duties and owner approval, and offer an alternative. A flat refusal or a simple yes are both weak answers.",
+      "follow_ups": [
+        "What is the difference between least privilege and need to know?",
+        "How would you audit emergency access afterwards?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Build a mini asset register with CIA ratings",
+    "difficulty": "Basic",
+    "objective": "Apply security goals, ownership roles and the high-water mark to a realistic small organization.",
+    "statement": "A 40-person online coaching institute runs a public website, a student portal with names, phone numbers and payment records, a video lesson library, staff laptops and a shared Google Workspace. Create an asset register for at least five assets. For each one, assign a data owner and a custodian, rate the confidentiality, integrity and availability impact as low, moderate or high with a one-line justification, derive the overall category, and name two proportionate controls.",
+    "deliverable": "A table or YAML file with five or more assets, plus a short paragraph naming the single most critical asset and explaining why.",
+    "steps": [
+      "List the institute's tangible and intangible assets, including people and reputation.",
+      "Pick five or more assets that hold or process information.",
+      "Assign each a business data owner and a technical custodian.",
+      "Rate C, I and A impact for each and justify each rating in one line.",
+      "Derive the overall category using the high-water mark.",
+      "Choose two controls per asset that match the highest-rated goal.",
+      "Identify the most critical asset and explain your choice in terms of business impact."
+    ],
+    "checklist": [
+      "Every asset has a named business owner, not just IT.",
+      "Each rating has a justification tied to a real consequence.",
+      "Overall categories follow the highest of C, I and A.",
+      "Controls address the highest-rated goal rather than generic best practice.",
+      "The summary paragraph speaks in business terms."
+    ],
+    "sample_answer": "Student portal: owner Academic Director, custodian IT lead; C high (personal and payment data), I high (wrong fees or results harm students), A moderate (a few hours' outage is tolerable); category high; controls: MFA for staff with role-based access, plus daily backups with tested restores. Video library: owner Content Head, custodian IT lead; C moderate (paid content could be pirated), I moderate, A high during class hours; category high; controls: signed, expiring video URLs and a CDN with redundancy. Public website: owner Marketing Head; C low, I moderate (defacement harms reputation), A moderate; category moderate; controls: managed hosting with WAF and change approval for content. Staff laptops: owner Operations Head, custodian IT lead; C high (cached student data), I moderate, A low; category high; controls: full-disk encryption and remote wipe. Google Workspace: owner Director, custodian IT lead; C high, I moderate, A moderate; category high; controls: enforced 2-step verification and quarterly sharing reviews. Most critical: the student portal, because a breach would expose personal and payment data, create legal liability and damage enrolment trust."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which security goal is directly violated when an attacker changes the bank account number on a supplier invoice without being detected?",
+      "options": [
+        "Confidentiality",
+        "Integrity",
+        "Availability",
+        "Nonrepudiation"
+      ],
+      "answer": 1,
+      "explanation": "Unauthorized modification of information is an integrity failure. Confidentiality concerns disclosure, and availability concerns access."
+    },
+    {
+      "type": "concept",
+      "question": "Who is primarily responsible for deciding the classification of a dataset?",
+      "options": [
+        "The data custodian",
+        "The data owner",
+        "The security administrator",
+        "The end user"
+      ],
+      "answer": 1,
+      "explanation": "The data owner, a business manager accountable for the data, decides its classification and access. Custodians implement those decisions."
+    },
+    {
+      "type": "scenario",
+      "question": "Five administrators share one 'admin' account on a firewall. Which property is most directly lost?",
+      "options": [
+        "Availability",
+        "Accountability",
+        "Confidentiality of the configuration",
+        "Authentication strength"
+      ],
+      "answer": 1,
+      "explanation": "Logs show the shared account, not which person acted, so actions cannot be traced to individuals. Shared accounts break accountability."
+    },
+    {
+      "type": "scenario",
+      "question": "A system's impact ratings are confidentiality low, integrity moderate and availability high. What is its overall security category under the high-water mark?",
+      "options": [
+        "Low",
+        "Moderate",
+        "High",
+        "It cannot be determined"
+      ],
+      "answer": 2,
+      "explanation": "The overall category is the highest of the three ratings. Availability is high, so the system is high."
+    },
+    {
+      "type": "concept",
+      "question": "Which mechanism best supports nonrepudiation of an electronic approval?",
+      "options": [
+        "A shared password",
+        "A digital signature with a private key held only by the approver",
+        "Encrypting the document with a symmetric key known to both parties",
+        "Daily backups of the approval system"
+      ],
+      "answer": 1,
+      "explanation": "Only the approver controls the private key, so a valid signature is strong evidence they approved it. A shared or symmetric key cannot prove which party acted."
+    }
+  ]
+}

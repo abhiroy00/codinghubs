@@ -31,6 +31,10 @@ const trackTitles={
  marketing:['Audience, intent and measurement','Search, content and campaign planning','Attribution, optimization and privacy','Campaign portfolio and interview practice'],
  program:['Goals, scope and professional foundations','Research, planning and delivery','Collaboration, quality and review','Portfolio, presentation and interview practice'],
 }
+// Level titles for courses that follow an external syllabus (see SYLLABUS_OVERRIDES in catalog.ts).
+const levelTitleOverrides={
+ cissp:['Security, risk and asset foundations','Architecture, cryptography and networks','Identity, assessment and operations','Operations, secure development and exam readiness'],
+}
 const manifest={}
 function write(file,value){
  const text=JSON.stringify(value,null,2)+'\n'
@@ -67,7 +71,7 @@ for(const course of COURSE_CATALOG.filter(c=>c.slug!=='generative-ai')){
     revision:lesson?.takeaways??['State the problem and assumptions clearly','Show evidence for the expected behavior','Explain one tradeoff and one failure case','Cite the documentation you actually used','Distinguish what you built from what remains untested'],
    }
   })
-  return {level:index+1,title:(trackTitles[course.track]??titles)[index],start,end,articles,questions,days,
+  return {level:index+1,title:(levelTitleOverrides[course.slug]??trackTitles[course.track]??titles)[index],start,end,articles,questions,days,
    progressIds:{articles:articles.map(a=>a.id),questions:questions.map(q=>q.id),coding:articles.filter(a=>a.lesson.practice.kind==='coding').map(a=>`${course.slug}:coding:${a.lesson.day}`),assignments:days.map(d=>d.id)}}
  })
  const data={slug:course.slug,name:course.name,focus:course.focus,track:course.track,tools:course.tools,projects:course.projects,hasCoding:course.hasCoding,primary:mapping?.primary??course.slug,levels}

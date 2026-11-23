@@ -1,0 +1,238 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 4,
+  "title": "Security Governance, Policies and Frameworks",
+  "module": "Security and risk management",
+  "level": "Beginner",
+  "objectives": [
+    "Distinguish security governance from security management.",
+    "Explain how security aligns with the organization's mission, goals and strategy.",
+    "Describe the roles of the board, senior management, the CISO, a steering committee and auditors.",
+    "Differentiate policies, standards, baselines, procedures and guidelines.",
+    "Compare ISO/IEC 27001, NIST CSF 2.0, COBIT, the CIS Controls and SOC 2.",
+    "Explain due care and due diligence with examples."
+  ],
+  "definition": "Security governance is the system by which senior leadership directs and controls security: setting objectives, assigning responsibility, approving policy and making sure risk stays within the organization's appetite. Management then plans and runs the work. Policies, standards and frameworks turn governance decisions into rules people can follow and auditors can check.",
+  "theory": [
+    {
+      "heading": "Governance versus management",
+      "body": "Governance answers what we should do and whether it is working. It belongs to the board and senior management, who set direction, approve policy, allocate resources and receive assurance. Management answers how. Security leaders and teams plan, build and operate controls within that direction. Security must align with the organization's mission, goals and objectives: a hospital's priorities differ from those of an online coaching company. Planning happens at three horizons. Strategic plans cover several years, often around five. Tactical plans cover about a year and support the strategy. Operational plans are short-term and detailed, such as this quarter's patching schedule.",
+      "points": [
+        "Governance: direct and oversee.",
+        "Management: plan and execute.",
+        "Strategic, tactical and operational plans should connect."
+      ]
+    },
+    {
+      "heading": "Roles and responsibilities",
+      "body": "Senior management, including the board, is ultimately accountable for security; this accountability cannot be delegated even when the work is. The Chief Information Security Officer leads the security program and reports risk to leadership, ideally with enough independence to raise uncomfortable issues. A security steering committee brings business leaders together to set priorities and resolve conflicts. Data and system owners make decisions about their assets, custodians implement them and users follow policy. Auditors provide independent assurance that controls exist and work. Internal audit reports to an audit committee rather than to the people whose work it checks."
+    },
+    {
+      "heading": "The policy hierarchy",
+      "body": "A policy is a high-level, mandatory statement of management intent, such as 'all access to company systems must be authenticated'. It is approved by senior management and changes rarely. Standards are mandatory, specific requirements that support a policy, such as 'all staff accounts must use multifactor authentication'. Baselines define a minimum security configuration for a type of system, such as a hardened laptop build, often based on CIS Benchmarks. Procedures are mandatory step-by-step instructions, such as how the help desk resets MFA after a lost phone. Guidelines are recommended but optional advice, such as tips for choosing a passphrase. Keeping these separate lets policies stay stable while standards and procedures change with technology.",
+      "points": [
+        "Policy: what and why; mandatory; senior management approves.",
+        "Standard: specific mandatory requirement.",
+        "Baseline: minimum configuration.",
+        "Procedure: mandatory step-by-step instructions.",
+        "Guideline: recommended, optional."
+      ]
+    },
+    {
+      "heading": "Common frameworks",
+      "body": "ISO/IEC 27001 specifies requirements for an information security management system (ISMS) and is the standard organizations certify against; ISO/IEC 27002 gives guidance on implementing its controls. The NIST Cybersecurity Framework 2.0, released in 2024, organizes outcomes into six functions: Govern, Identify, Protect, Detect, Respond and Recover; Govern was added in version 2.0. COBIT, from ISACA, is a framework for governance and management of enterprise IT. The CIS Critical Security Controls are a prioritized list of defensive actions; version 8 has 18 controls. SOC 2 is an AICPA attestation report on a service organization's controls against the Trust Services Criteria, often requested by customers. Choosing a framework depends on regulation, customer demands and maturity; many organizations map one set of controls to several frameworks."
+    },
+    {
+      "heading": "Due care and due diligence",
+      "body": "Due diligence is the effort to understand risk and to plan, research and verify: performing risk assessments, checking a vendor's security before signing, reviewing whether controls work. Due care is acting on that knowledge, doing what a reasonable person would do to protect assets: applying patches, enforcing policy, training staff. A useful memory aid is that due diligence is thinking before doing, and due care is doing. Failing at either can expose leadership to negligence claims, because courts and regulators ask whether the organization knew about a risk and took reasonable steps."
+    }
+  ],
+  "example": {
+    "title": "From policy to procedure for remote access",
+    "body": "The coaching institute's directors approve a short access-control policy. Each lower document gets more specific and changes more often, but every one traces back to the policy. Auditors can test each layer: is the policy approved, do systems meet the standard and baseline, and do help-desk tickets show the procedure being followed?",
+    "code": {
+      "language": "yaml",
+      "source": "policy:\n  id: POL-03 Access control\n  statement: Access to institute systems and student data is granted on least privilege and must be authenticated.\n  owner: Board of Directors\n  review: every 2 years\nstandard:\n  id: STD-03.1\n  requirement: All staff and admin accounts use multifactor authentication; shared accounts are prohibited.\nbaseline:\n  id: BAS-03.2 Staff laptop\n  settings: [full-disk encryption on, screen lock 5 min, OS auto-update on, local admin removed]\nprocedure:\n  id: PRO-03.4 Lost MFA device\n  steps:\n    - verify identity by a video call with the line manager\n    - revoke old MFA device and sessions\n    - enrol new device and log the ticket\nguideline:\n  id: GUI-03.5\n  advice: Prefer an authenticator app or passkey over SMS codes.\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Setting up a security program",
+      "description": "A new CISO uses governance structures and a framework to show leadership where the organization stands and what to fund first."
+    },
+    {
+      "title": "Customer due diligence",
+      "description": "Enterprise clients ask for ISO/IEC 27001 certificates or SOC 2 reports before sharing data with a vendor."
+    },
+    {
+      "title": "Writing and maintaining policy",
+      "description": "Separating policies from standards and procedures keeps approvals manageable while technical details evolve."
+    },
+    {
+      "title": "Board reporting",
+      "description": "Mapping controls to NIST CSF functions gives directors a simple view of strengths and gaps."
+    },
+    {
+      "title": "Legal defensibility",
+      "description": "Documented due diligence and due care show regulators and courts that leadership acted reasonably."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script maps an organization's existing controls to the six NIST CSF 2.0 functions and highlights functions with no controls. In this example the institute has no Respond controls, which tells leadership to fund an incident response plan before buying more protective tools. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Map an organisation's controls to the six NIST CSF 2.0 functions and report gaps.\nFUNCTIONS = ['Govern', 'Identify', 'Protect', 'Detect', 'Respond', 'Recover']\n\ncontrols = {\n    'Information security policy approved by directors': 'Govern',\n    'Named risk owner for each critical system': 'Govern',\n    'Asset inventory reviewed quarterly': 'Identify',\n    'MFA for all staff accounts': 'Protect',\n    'Full-disk encryption on laptops': 'Protect',\n    'Security awareness training at joining': 'Protect',\n    'Central log collection with alerting': 'Detect',\n    'Daily backups': 'Recover',\n}\n\ncoverage = {f: [c for c, fn in controls.items() if fn == f] for f in FUNCTIONS}\nfor function in FUNCTIONS:\n    items = coverage[function]\n    status = f'{len(items)} control(s)' if items else 'GAP - no controls mapped'\n    print(f'{function:<9} {status}')\ngaps = [f for f in FUNCTIONS if not coverage[f]]\nprint('Priority gaps:', ', '.join(gaps) if gaps else 'none')\n"
+    },
+    "output": "Govern    2 control(s)\nIdentify  1 control(s)\nProtect   3 control(s)\nDetect    1 control(s)\nRespond   GAP - no controls mapped\nRecover   1 control(s)\nPriority gaps: Respond"
+  },
+  "takeaways": [
+    "Governance directs and oversees; management plans and executes.",
+    "Senior management remains ultimately accountable for security.",
+    "Policies state intent; standards, baselines and procedures are mandatory detail; guidelines are optional.",
+    "ISO/IEC 27001 is certifiable; NIST CSF 2.0 has six functions including Govern; CIS Controls v8 has 18 controls.",
+    "Due diligence is researching and verifying; due care is acting reasonably on what you know.",
+    "Security plans must align with the organization's mission and goals."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between a policy, a standard, a procedure and a guideline?",
+      "answer": "A policy is a high-level, mandatory statement of management intent approved by senior leadership, for example that all access must be authenticated and based on least privilege. A standard is a specific, mandatory requirement that supports the policy, such as requiring multifactor authentication on all accounts. A procedure gives mandatory step-by-step instructions, such as how the help desk verifies identity before resetting MFA. A guideline is recommended but optional advice, such as preferring an authenticator app over SMS. Baselines also sit in the hierarchy as minimum configurations for a system type. Separating them keeps policies stable while technical details change.",
+      "explanation": "Strong answers mark which documents are mandatory and give one connected example. Calling guidelines mandatory or merging policy with standard is the common weak answer.",
+      "follow_ups": [
+        "Who should approve a policy versus a procedure?",
+        "Where do baselines fit and what source would you base one on?"
+      ]
+    },
+    {
+      "question": "Explain due care and due diligence.",
+      "answer": "Due diligence is the work of understanding risk before and while acting: performing risk assessments, checking a vendor's security, reviewing audit results and verifying that controls work. Due care is acting on that understanding as a reasonable person would: patching known vulnerabilities, enforcing access policy, training staff and fixing audit findings. Due diligence without due care means you knew and did nothing; due care without due diligence means acting blindly. Both matter legally, because negligence claims ask whether leadership knew, or should have known, about a risk and took reasonable steps. Good records of assessments and remediation are the evidence that both were done.",
+      "explanation": "Interviewers want both definitions, an example of each and the legal link to negligence.",
+      "follow_ups": [
+        "Give an example where an organization showed due diligence but not due care.",
+        "How would you evidence due care to a regulator?"
+      ]
+    },
+    {
+      "question": "How would you choose between ISO/IEC 27001 and NIST CSF for a company?",
+      "answer": "I would start with what the business needs. ISO/IEC 27001 is a certifiable management-system standard, so it suits a company whose customers, often international or enterprise clients, ask for a certificate as proof. NIST CSF 2.0 is a flexible, outcome-based framework with six functions, Govern, Identify, Protect, Detect, Respond and Recover. It is excellent for assessing maturity, setting targets and reporting to the board, but there is no NIST CSF certificate. They are not exclusive. Many organizations use CSF to communicate and prioritize, and build an ISMS that meets 27001 for certification. I would also consider sector regulations and the size of the team that must maintain it.",
+      "explanation": "Strong answers mention certification, audience and the possibility of combining frameworks. Claiming one is simply better is weak.",
+      "follow_ups": [
+        "What did NIST CSF 2.0 add compared with version 1.1?",
+        "What is a SOC 2 report and who asks for one?"
+      ]
+    },
+    {
+      "question": "Who is ultimately responsible for information security in an organization?",
+      "answer": "Senior management, including the board of directors, is ultimately accountable. They set risk appetite, approve policy, fund the program and accept residual risk, and they answer to regulators, customers and shareholders when things go wrong. They delegate the work to a CISO, the security team, asset owners and custodians, but they cannot delegate the accountability itself. That is why security leaders need regular reporting to the board in business terms, and why risk acceptance should be signed by someone with real authority. In a CISSP scenario, an answer that involves senior management approval is often the most appropriate first step.",
+      "explanation": "Strong answers distinguish responsibility, which can be delegated, from accountability, which cannot.",
+      "follow_ups": [
+        "What should a CISO report to the board each quarter?",
+        "Why should internal audit be independent of IT?"
+      ]
+    },
+    {
+      "question": "Why does security need to align with business goals?",
+      "answer": "Security exists to protect the organization's ability to achieve its mission. Controls that ignore business goals either block important work or spend money protecting low-value assets. For a coaching institute, the goals might be reliable live classes, trusted handling of student data and fast online admissions. Security priorities follow: availability of the video platform during class hours, confidentiality of student records and a secure but simple payment flow. Alignment also earns support. When leaders see security as enabling those goals, they fund it and follow policy. I would show alignment through a security strategy that references business objectives and through risk reports written in business terms.",
+      "explanation": "Good answers link controls to specific business objectives and mention funding and support. Purely technical answers miss the point.",
+      "follow_ups": [
+        "How would you handle a business goal that conflicts with a security requirement?",
+        "What is the difference between strategic, tactical and operational plans?"
+      ]
+    },
+    {
+      "question": "You find that staff routinely ignore a password policy because it is impractical. What do you do?",
+      "answer": "I would treat widespread non-compliance as evidence that the control is badly designed, not just that people are careless. First I would find out why: perhaps frequent forced changes or complex rules cause people to write passwords down. Then I would propose a better standard aligned with the policy's intent, such as longer passphrases, no forced periodic changes without signs of compromise, a password manager and multifactor authentication, which modern NIST guidance supports. I would get the change approved through governance, communicate it with short training and monitor compliance afterwards. If exceptions remain necessary, they should be documented and approved by the risk owner.",
+      "explanation": "This tests whether the candidate fixes the cause and uses governance correctly. Strong answers update the standard, not the policy's intent, and measure results.",
+      "follow_ups": [
+        "How would you handle a formal policy exception request?",
+        "What metrics would show the new standard is working?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Write a policy set for remote work",
+    "difficulty": "Basic",
+    "objective": "Apply the policy hierarchy and map the result to a framework.",
+    "statement": "The coaching institute is moving most staff to remote work. Draft a short remote-work security policy, one supporting standard, one laptop baseline, one procedure and one guideline. Then map each document's main control to a NIST CSF 2.0 function.",
+    "deliverable": "Five short documents (one paragraph or list each) and a table mapping them to NIST CSF functions, with an owner and review period for each.",
+    "steps": [
+      "Write a one-paragraph policy statement of management intent and name who approves it.",
+      "Write a standard with specific mandatory requirements, such as MFA and VPN or zero-trust access.",
+      "Define a laptop baseline with at least five settings.",
+      "Write a step-by-step procedure for one event, such as reporting a lost laptop.",
+      "Write one optional guideline for working safely from home.",
+      "Map each document to a NIST CSF 2.0 function and assign an owner and review cycle."
+    ],
+    "checklist": [
+      "The policy states intent without technical detail.",
+      "Mandatory and optional documents are clearly distinguished.",
+      "The baseline settings are concrete and checkable.",
+      "The procedure can be followed by someone new.",
+      "Every document has an owner and a review period."
+    ],
+    "sample_answer": "Policy: Staff may work remotely only on institute-managed devices, and all access to institute systems must be authenticated and encrypted; approved by the directors, reviewed every two years (CSF Govern). Standard: All remote access uses MFA and the managed access gateway; personal devices may not store student data (Protect). Baseline: full-disk encryption, automatic screen lock at five minutes, OS and browser auto-update, EDR agent running, no local admin rights (Protect). Procedure: Lost laptop - report to IT within one hour; IT disables the account sessions, triggers remote wipe, records the incident and informs the data owner; the device is reissued after the manager approves (Respond). Guideline: Use a privacy screen in public places and lock the screen when stepping away (Protect). Owners: Operations Head for policy and procedure, IT lead for standard and baseline; review annually."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which document is mandatory, specific and supports a policy, for example 'all accounts must use MFA'?",
+      "options": [
+        "Guideline",
+        "Standard",
+        "Procedure",
+        "Policy"
+      ],
+      "answer": 1,
+      "explanation": "A standard sets a specific mandatory requirement that supports a policy."
+    },
+    {
+      "type": "concept",
+      "question": "Who is ultimately accountable for information security in an organization?",
+      "options": [
+        "The CISO",
+        "The IT manager",
+        "Senior management and the board",
+        "External auditors"
+      ],
+      "answer": 2,
+      "explanation": "Work can be delegated, but ultimate accountability stays with senior management."
+    },
+    {
+      "type": "concept",
+      "question": "Which function was added in NIST Cybersecurity Framework 2.0?",
+      "options": [
+        "Identify",
+        "Recover",
+        "Govern",
+        "Detect"
+      ],
+      "answer": 2,
+      "explanation": "CSF 2.0 (2024) added Govern to the existing five functions."
+    },
+    {
+      "type": "scenario",
+      "question": "A company reviews a cloud provider's SOC 2 report and security questionnaire before signing a contract. This is an example of:",
+      "options": [
+        "Due care",
+        "Due diligence",
+        "Risk transfer",
+        "A baseline"
+      ],
+      "answer": 1,
+      "explanation": "Researching and verifying a vendor's security before acting is due diligence."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these is certifiable as an information security management system?",
+      "options": [
+        "NIST CSF 2.0",
+        "CIS Controls v8",
+        "ISO/IEC 27001",
+        "COBIT"
+      ],
+      "answer": 2,
+      "explanation": "Organizations are certified against ISO/IEC 27001. The others are frameworks without an ISMS certification."
+    }
+  ]
+}
