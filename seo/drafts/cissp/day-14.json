@@ -1,0 +1,246 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 14,
+  "title": "Network Attacks and Defenses",
+  "module": "Physical and network security",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain denial-of-service and amplification attacks and how to mitigate them.",
+    "Describe spoofing, ARP poisoning, DNS poisoning and on-path attacks.",
+    "Compare packet-filtering, stateful, proxy and next-generation firewalls and web application firewalls.",
+    "Distinguish IDS from IPS and signature from anomaly detection.",
+    "Explain network access control, honeypots and egress filtering.",
+    "Detect a port scan and a SYN flood from log data."
+  ],
+  "definition": "Network attacks target the availability, confidentiality or integrity of data as it moves between systems, from flooding services offline to quietly intercepting traffic. Network defenses combine prevention, such as firewalls and access control, with detection and response, such as intrusion detection, logging and incident handling, arranged in layers so that no single failure exposes the organization.",
+  "theory": [
+    {
+      "heading": "Denial of service",
+      "body": "A denial-of-service (DoS) attack makes a service unavailable; a distributed DoS (DDoS) uses many sources, usually botnets. Volumetric attacks fill bandwidth. Protocol attacks exhaust connection tables or devices, such as SYN floods. Application-layer attacks send expensive requests, such as repeated searches or logins. Amplification attacks send small requests with the victim's spoofed address to services that send large responses, such as open DNS resolvers, NTP or memcached, multiplying traffic. Mitigations include upstream scrubbing services and CDNs, rate limiting, SYN cookies, autoscaling, closing open resolvers and reflectors, and ingress filtering by internet providers, described in BCP 38, so spoofed source addresses are dropped near their origin.",
+      "points": [
+        "Volumetric, protocol and application-layer DoS.",
+        "Amplification relies on spoofing and open reflectors.",
+        "Mitigate upstream; you cannot absorb large floods alone."
+      ]
+    },
+    {
+      "heading": "Spoofing, poisoning and on-path attacks",
+      "body": "IP spoofing forges source addresses, mainly for DoS and to bypass weak filters. ARP poisoning sends forged ARP replies on a local network so that traffic for the gateway goes to the attacker, enabling an on-path, or man-in-the-middle, attack; dynamic ARP inspection and port security on switches help prevent it. DNS cache poisoning inserts false records into a resolver so users are sent to malicious sites; DNSSEC lets resolvers verify signed records, and randomized source ports make poisoning harder. Session hijacking steals a session token to take over an authenticated session, countered by TLS, secure cookie flags and short session lifetimes. VLAN hopping abuses switch trunking to reach other VLANs; disabling automatic trunking and not using the native VLAN for users prevent it.",
+      "points": [
+        "ARP poisoning → dynamic ARP inspection.",
+        "DNS poisoning → DNSSEC.",
+        "Session hijacking → TLS, secure cookies, short sessions."
+      ]
+    },
+    {
+      "heading": "Firewalls",
+      "body": "Packet-filtering firewalls allow or deny traffic based on addresses, ports and protocols in each packet, without context. Stateful firewalls track connections, so return traffic is allowed only for sessions started from the permitted side. Application-level or proxy firewalls terminate connections and inspect application content. Next-generation firewalls (NGFW) combine stateful inspection with application awareness, user identity, intrusion prevention and threat intelligence. Web application firewalls (WAF) protect HTTP applications from attacks such as SQL injection and cross-site scripting. Good rule sets start with default deny, allow only documented flows with an owner and reason, filter outbound (egress) traffic as well as inbound, log denied traffic, and are reviewed regularly to remove obsolete rules.",
+      "points": [
+        "Packet filter → stateful → proxy → NGFW.",
+        "WAF for web applications.",
+        "Default deny, egress filtering, regular rule reviews."
+      ]
+    },
+    {
+      "heading": "Intrusion detection and prevention",
+      "body": "An intrusion detection system (IDS) monitors traffic or hosts and raises alerts; an intrusion prevention system (IPS) sits inline and can block traffic. Network-based systems watch network segments, and host-based systems watch individual servers. Signature-based detection matches known attack patterns and is accurate for known threats but misses new ones. Anomaly- or behavior-based detection learns normal activity and flags deviations, which can catch new attacks but produces more false positives. Placement matters: an IPS in front of critical servers, sensors at segment boundaries and alerts sent to a SIEM for correlation. Tuning reduces false positives, because ignored alerts are no better than no alerts.",
+      "points": [
+        "IDS alerts; IPS blocks inline.",
+        "Signature: accurate for known attacks; anomaly: catches new ones, more false positives.",
+        "Send alerts to a SIEM and tune."
+      ]
+    },
+    {
+      "heading": "Network access control, deception and monitoring",
+      "body": "Network access control (NAC) checks devices before they join the network, using 802.1X authentication and posture checks such as patch level and endpoint protection, and places non-compliant devices in a remediation VLAN. Honeypots are decoy systems, and honeynets are networks of them, which attract attackers so defenders can detect and study them; honeytokens such as fake credentials raise alerts when used. Egress filtering blocks unexpected outbound traffic, which can stop malware reaching its command-and-control servers and limit data exfiltration. Network flow data, DNS logs and full packet capture for critical segments give the visibility needed to detect and investigate attacks. Regular scanning and authorized penetration testing check that defenses actually work."
+    }
+  ],
+  "example": {
+    "title": "Network defense plan for the institute",
+    "body": "The institute layers prevention, detection and response around its most important services, with an owner for each control and a clear first step if an attack is detected.",
+    "code": {
+      "language": "yaml",
+      "source": "prevention:\n  ddos: CDN and provider scrubbing in front of website and portal; rate limits on login and search\n  firewall: stateful NGFW between segments, default deny, egress allowed only via proxy and DNS filter\n  waf: managed WAF rules for the student portal (SQLi, XSS, bot protection)\n  switches: port security, dynamic ARP inspection, DHCP snooping, no auto-trunking\n  nac: 802.1X for staff devices; non-compliant devices go to remediation VLAN\n  dns: internal resolver validates DNSSEC; no open resolvers exposed to the internet\ndetection:\n  ids: network sensor at the internet edge and server segment, alerts to SIEM\n  honeytoken: fake admin account; any login attempt raises a critical alert\n  logs: firewall, DNS and VPN logs kept at least 180 days (CERT-In)\nresponse:\n  ddos_runbook: activate provider mitigation, inform students via status page\n  scan_detected: block source at edge, check for follow-up exploitation, record in incident log\nreview: firewall rules quarterly; IDS tuning monthly\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Keeping exam days online",
+      "description": "DDoS protection, rate limiting and capacity planning keep results and live classes available under attack."
+    },
+    {
+      "title": "Protecting staff logins",
+      "description": "IPS rules and rate limits block credential stuffing and brute-force attempts."
+    },
+    {
+      "title": "Detecting attackers inside",
+      "description": "IDS sensors, honeytokens and DNS monitoring reveal lateral movement and command-and-control traffic."
+    },
+    {
+      "title": "Securing shared networks",
+      "description": "Switch protections stop ARP poisoning and VLAN hopping on student networks."
+    },
+    {
+      "title": "Investigating incidents",
+      "description": "Firewall, flow and DNS logs show what an attacker reached and when."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script analyses a small firewall log. It flags a source that probed many different ports, a sign of a port scan, and a port receiving many incomplete handshakes from many sources, a sign of a SYN flood. Real systems apply the same logic at scale in an IDS or SIEM. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Spot two attack patterns in a firewall log: a port scan and a SYN flood.\nfrom collections import defaultdict\n\nlog = [  # (source IP, destination port, TCP flags, completed handshake?)\n    ('203.0.113.7', p, 'SYN', False) for p in (21, 22, 23, 25, 80, 110, 143, 443, 445, 3389, 8080, 8443)\n] + [\n    (f'198.51.100.{i}', 443, 'SYN', False) for i in range(1, 41)\n] + [\n    ('10.10.10.25', 443, 'SYN', True), ('10.10.10.26', 443, 'SYN', True),\n]\n\nports = defaultdict(set)\nhalf_open = defaultdict(int)\nfor src, port, flags, completed in log:\n    ports[src].add(port)\n    if flags == 'SYN' and not completed:\n        half_open[port] += 1\n\nfor src, seen in ports.items():\n    if len(seen) >= 10:\n        print(f'Possible port scan from {src}: {len(seen)} ports probed')\nfor port, count in half_open.items():\n    sources = {s for s, p, _, c in log if p == port and not c}\n    if count >= 30 and len(sources) >= 20:\n        print(f'Possible SYN flood on port {port}: {count} half-open connections from {len(sources)} sources')\n"
+    },
+    "output": "Possible port scan from 203.0.113.7: 12 ports probed\nPossible SYN flood on port 443: 41 half-open connections from 41 sources"
+  },
+  "takeaways": [
+    "DDoS mitigation needs upstream help: CDNs, scrubbing services, rate limiting and SYN cookies.",
+    "Counter ARP poisoning with dynamic ARP inspection and DNS poisoning with DNSSEC.",
+    "Firewalls range from packet filters to NGFWs; WAFs protect web applications.",
+    "An IDS alerts and an IPS blocks; signature detection catches known attacks and anomaly detection catches new ones.",
+    "Use NAC, honeytokens and egress filtering to control and detect activity inside the network.",
+    "Log and review firewall, DNS and flow data, and test defenses regularly."
+  ],
+  "interview": [
+    {
+      "question": "How does a DNS amplification attack work, and how would you defend against it?",
+      "answer": "The attacker sends many small DNS queries to open resolvers on the internet, forging the victim's IP address as the source. The queries ask for large responses, such as records with many entries, so each small request generates a much larger reply, all sent to the victim. Thousands of resolvers multiply the traffic and can overwhelm the victim's bandwidth. As a potential victim, I would rely on upstream DDoS protection, such as a scrubbing service or CDN, because a local firewall cannot absorb traffic that has already filled the link. As a good internet citizen, I would make sure our own DNS servers are not open resolvers, apply response rate limiting and support ingress filtering under BCP 38.",
+      "explanation": "Strong answers explain spoofing plus amplification and separate victim defenses from not becoming a reflector.",
+      "follow_ups": [
+        "What is BCP 38?",
+        "Which other protocols have been abused for amplification?"
+      ]
+    },
+    {
+      "question": "Explain the difference between an IDS and an IPS, and between signature and anomaly detection.",
+      "answer": "An intrusion detection system monitors traffic or host activity and raises alerts, but it does not block traffic. It is often connected to a mirror port, so it cannot affect availability. An intrusion prevention system sits inline and can drop or reset malicious traffic automatically, which stops attacks faster but means false positives can block legitimate users. Signature-based detection compares activity with known attack patterns, so it is precise for known threats but misses new or modified attacks. Anomaly-based detection builds a baseline of normal behavior and alerts on deviations, which can catch novel attacks but produces more false positives and needs tuning. Most organizations use both, sending alerts to a SIEM for correlation.",
+      "explanation": "Interviewers expect inline versus passive placement, the trade-offs and the value of combining methods.",
+      "follow_ups": [
+        "Where would you place IPS sensors in a small network?",
+        "How do you reduce false positives without missing attacks?"
+      ]
+    },
+    {
+      "question": "How does ARP poisoning enable a man-in-the-middle attack, and how do you prevent it?",
+      "answer": "ARP maps IP addresses to MAC addresses on a local network and has no authentication. An attacker on the same segment sends forged ARP replies saying the gateway's IP address belongs to the attacker's MAC address, and tells the gateway the same about the victim. Traffic between the victim and the gateway then flows through the attacker, who can read or alter unencrypted data or attempt downgrade attacks. Prevention on switches includes dynamic ARP inspection, which validates ARP packets against DHCP snooping records, port security and segmentation that limits who shares a segment. End-to-end encryption such as TLS and SSH ensures that even intercepted traffic remains protected, and detection tools can alert on suspicious ARP changes.",
+      "explanation": "Good answers explain why ARP is vulnerable and combine switch controls with encryption.",
+      "follow_ups": [
+        "What is DHCP snooping?",
+        "Why does TLS still protect users during ARP poisoning?"
+      ]
+    },
+    {
+      "question": "Compare stateful firewalls, next-generation firewalls and web application firewalls.",
+      "answer": "A stateful firewall tracks connections and decides based on addresses, ports, protocols and connection state, so return traffic for allowed sessions is permitted automatically. It does not understand application content. A next-generation firewall adds application awareness, so it can tell one application from another on the same port, plus user identity, intrusion prevention, TLS inspection where allowed and threat intelligence. A web application firewall focuses on HTTP traffic to web applications. It understands requests, parameters and cookies, and blocks attacks such as SQL injection, cross-site scripting and bots. They complement each other: an NGFW protects network boundaries, while a WAF sits in front of specific web applications. Neither replaces secure coding.",
+      "explanation": "Strong answers explain what each inspects and how they work together, and note that WAFs do not replace secure development.",
+      "follow_ups": [
+        "What are the privacy and legal considerations of TLS inspection?",
+        "How would you tune a WAF without blocking real users?"
+      ]
+    },
+    {
+      "question": "Why is egress filtering important?",
+      "answer": "Most firewall effort goes into inbound rules, but attackers who get in, often through phishing, need outbound connections: to download tools, reach command-and-control servers and exfiltrate data. If every internal system can connect anywhere on any port, those steps are easy and hard to spot. Egress filtering allows only the outbound traffic each segment needs, such as web traffic through a proxy and DNS only through approved resolvers. Servers rarely need to start connections to the internet at all. Combined with DNS filtering and logging, it can block known malicious destinations and surface unusual connections, such as a database server suddenly talking to an unknown host. It also prevents your network from being used to attack others.",
+      "explanation": "Good answers link egress filtering to post-compromise attacker behavior and give concrete rules.",
+      "follow_ups": [
+        "How can attackers tunnel data through DNS?",
+        "What egress rules would you apply to a database server?"
+      ]
+    },
+    {
+      "question": "The IDS shows a single external IP scanning many ports on your web server. What do you do?",
+      "answer": "A port scan on its own is very common on the internet, so I would avoid panic but treat it as a signal. First I would check whether the scan was followed by anything more serious: exploitation attempts in WAF or web logs, successful logins or unusual outbound connections from the server. I would confirm that only intended ports, such as 443, are open, because an exposed admin or database port is the real risk the scan reveals. Depending on policy, I would block the source at the edge or let the IPS rate-limit it, record the event, and check threat intelligence for the address. If follow-up activity appeared, I would escalate to the incident response process.",
+      "explanation": "This tests proportionate triage. Strong answers look for follow-up activity and exposed services rather than only blocking an IP.",
+      "follow_ups": [
+        "Why is blocking a single IP often not enough?",
+        "What would make you escalate to a full incident?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Build a detection and response plan for network attacks",
+    "difficulty": "Intermediate",
+    "objective": "Map realistic network attacks to preventive, detective and response controls.",
+    "statement": "Choose five network attacks from this lesson that matter to the coaching institute, including at least one DoS attack and one attack on the local network. For each, define how you would prevent it, how you would detect it, and the first response steps.",
+    "deliverable": "A table with attack, likely impact, preventive controls, detection source and alert rule, first response steps and owner.",
+    "steps": [
+      "Pick five relevant attacks and describe their impact on the institute.",
+      "List preventive controls for each.",
+      "Identify the log or sensor that would detect each attack.",
+      "Write a simple alert rule or threshold for each.",
+      "Define the first three response steps and an owner.",
+      "Explain how you will test at least two of the controls."
+    ],
+    "checklist": [
+      "At least one DoS and one local-network attack are included.",
+      "Each attack has prevention, detection and response.",
+      "Detection names a real data source.",
+      "Response steps are proportionate and assigned.",
+      "Testing is planned and authorized."
+    ],
+    "sample_answer": "DDoS on results day: impact, portal unavailable; prevent with CDN, scrubbing and rate limits; detect with provider alerts and request-rate threshold; respond by activating provider mitigation, posting on the status page and informing students; owner IT lead. Port scan followed by exploitation: prevent by exposing only 443 and patching; detect with IDS port-scan rule (10+ ports from one source in a minute) and WAF alerts; respond by checking for exploitation, blocking the source and reviewing exposed services; owner IT lead. ARP poisoning on student Wi-Fi: prevent with client isolation and dynamic ARP inspection; detect with switch logs of DAI drops; respond by locating the port or device, disconnecting it and reviewing affected sessions. Credential stuffing on staff portal: prevent with MFA and rate limits; detect with failed-login spikes per account and IP; respond by blocking sources, forcing resets for targeted accounts and notifying users. Malware beaconing: prevent with egress filtering and DNS filtering; detect with DNS logs showing repeated queries to new domains; respond by isolating the device, collecting evidence and reimaging. Tests: an authorized scan from an external host to confirm the IDS alert, and a monthly check that student devices cannot reach internal ranges."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which attack sends small requests with a spoofed source address to servers that return much larger responses to the victim?",
+      "options": [
+        "SYN flood",
+        "Amplification attack",
+        "ARP poisoning",
+        "VLAN hopping"
+      ],
+      "answer": 1,
+      "explanation": "Amplification attacks use spoofing and reflectors that send large responses to the victim."
+    },
+    {
+      "type": "concept",
+      "question": "Which switch feature helps prevent ARP poisoning?",
+      "options": [
+        "Port mirroring",
+        "Dynamic ARP inspection",
+        "Spanning tree",
+        "Link aggregation"
+      ],
+      "answer": 1,
+      "explanation": "Dynamic ARP inspection validates ARP packets against trusted DHCP snooping records."
+    },
+    {
+      "type": "concept",
+      "question": "What is the main difference between an IDS and an IPS?",
+      "options": [
+        "An IDS encrypts traffic",
+        "An IPS sits inline and can block traffic",
+        "An IDS only works on hosts",
+        "An IPS only uses anomaly detection"
+      ],
+      "answer": 1,
+      "explanation": "An IPS is placed inline to block malicious traffic; an IDS monitors and alerts."
+    },
+    {
+      "type": "concept",
+      "question": "Which control helps protect against DNS cache poisoning?",
+      "options": [
+        "DNSSEC",
+        "DHCP snooping",
+        "WPA3",
+        "SPF"
+      ],
+      "answer": 0,
+      "explanation": "DNSSEC lets resolvers verify that DNS records are signed by the zone owner."
+    },
+    {
+      "type": "scenario",
+      "question": "Malware on a laptop is trying to contact an unknown server on an unusual port. Which control would most directly block it?",
+      "options": [
+        "Inbound firewall rules",
+        "Egress filtering",
+        "A longer password policy",
+        "Disk encryption"
+      ],
+      "answer": 1,
+      "explanation": "Egress filtering restricts outbound connections, blocking command-and-control traffic."
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 10,
+  "title": "PKI, Digital Signatures and Key Management",
+  "module": "Asset security, continuity and architecture",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain how a digital signature is created and verified and what it proves.",
+    "Describe the components of a PKI: certificate authorities, registration authorities and X.509 certificates.",
+    "Explain the chain of trust from root to leaf certificates.",
+    "Compare CRLs, OCSP and OCSP stapling for revocation.",
+    "Describe the key management lifecycle and protections such as HSMs, split knowledge and dual control.",
+    "Explain certificate transparency, pinning and the move to shorter certificate lifetimes."
+  ],
+  "definition": "A public key infrastructure (PKI) is the set of roles, policies, hardware, software and procedures that create, distribute, use, store and revoke digital certificates. A certificate binds a public key to an identity and is signed by a trusted certificate authority, so others can trust that the key really belongs to that website, person or device. Key management protects the private keys on which the whole system depends.",
+  "theory": [
+    {
+      "heading": "Digital signatures",
+      "body": "To sign a message, the sender hashes it and encrypts the hash with their private key; in practice, signature algorithms such as RSA-PSS, ECDSA and Ed25519 combine these steps. The recipient recomputes the hash and checks the signature with the sender's public key. A valid signature proves integrity, because any change alters the hash, and authenticates the origin, because only the private key holder could have produced it, which also supports nonrepudiation. A signature does not provide confidentiality; to keep the message secret, it must also be encrypted. Signatures are only as trustworthy as the link between the public key and the person, which is the problem PKI solves.",
+      "points": [
+        "Sign with the private key; verify with the public key.",
+        "Proves integrity, origin and nonrepudiation.",
+        "No confidentiality by itself."
+      ]
+    },
+    {
+      "heading": "PKI components and X.509 certificates",
+      "body": "A certificate authority (CA) issues and signs certificates. A registration authority (RA) verifies the identity of requesters on the CA's behalf. An X.509 certificate contains the subject's name, the subject's public key, the issuer, a serial number, a validity period, extensions such as subject alternative names and key usage, and the CA's signature. For websites, domain validation (DV) checks control of the domain; organization validation (OV) and extended validation (EV) also verify the organization. Organizations often run an internal CA for devices and internal services, while public websites use certificates from CAs trusted by browsers.",
+      "points": [
+        "CA signs; RA verifies identity.",
+        "X.509: subject, public key, issuer, serial, validity, extensions, signature."
+      ]
+    },
+    {
+      "heading": "Chain of trust and revocation",
+      "body": "Browsers and operating systems ship a set of trusted root CA certificates. Root CAs are kept offline and sign intermediate CAs, which sign end-entity, or leaf, certificates. A client builds a chain from the leaf through intermediates to a trusted root and checks every signature and validity date. If a private key is compromised or a certificate is issued wrongly, it must be revoked. A certificate revocation list (CRL) is a signed list of revoked serial numbers published periodically. The Online Certificate Status Protocol (OCSP) lets a client ask about one certificate. OCSP stapling lets the server attach a recent signed OCSP response during the TLS handshake, improving speed and privacy. Certificate Transparency logs publicly record issued certificates so that wrongly issued ones can be detected.",
+      "points": [
+        "Root (offline) → intermediate → leaf.",
+        "Revocation: CRL, OCSP, OCSP stapling.",
+        "Certificate Transparency exposes misissuance."
+      ]
+    },
+    {
+      "heading": "Key management lifecycle",
+      "body": "Keys pass through generation, distribution, storage, use, rotation, backup or escrow, revocation and destruction. Keys must be generated with strong randomness and sized appropriately. Private keys for high-value uses should be stored in hardware security modules (HSMs) or cloud key management services, where they can be used without being exported. Split knowledge means no single person knows the whole key; dual control means two people must act together, such as for operating a root CA. Key escrow keeps a copy with a trusted party so encrypted data can be recovered, which must be tightly controlled. Rotation limits the damage from an undetected compromise. Destroyed keys make data encrypted with them unrecoverable, which is the basis of cryptographic erase.",
+      "points": [
+        "Generate, distribute, store, use, rotate, recover, revoke, destroy.",
+        "HSM/KMS: use keys without exporting them.",
+        "Split knowledge and dual control for the most sensitive keys."
+      ]
+    },
+    {
+      "heading": "Operational practices",
+      "body": "Expired certificates are a common cause of outages, so organizations keep a certificate inventory and automate renewal, for example with the ACME protocol used by Let's Encrypt for 90-day certificates. Certificate lifetimes are getting shorter across the industry, which makes automation essential. Certificate pinning, where an application accepts only specific keys, can stop interception but causes outages if keys change unexpectedly, so it is now used carefully, mainly in mobile apps. Wildcard certificates are convenient but increase the impact of a key compromise. Signing keys for software releases need special protection, because a stolen code-signing key lets attackers distribute signed malware."
+    }
+  ],
+  "example": {
+    "title": "Certificate and key policy for the institute",
+    "body": "The institute uses a public CA for its websites and a small internal CA for staff devices and internal services. The policy states who may request certificates, how keys are protected and how revocation works.",
+    "code": {
+      "language": "yaml",
+      "source": "public_certificates:\n  issuer: public CA via ACME (automatic renewal at two-thirds of lifetime)\n  validation: domain validation\n  keys: ECDSA P-256 generated on the server or in the load balancer's key store\n  monitoring: certificate transparency alerts for *.example-institute.in\ninternal_ca:\n  root: offline, stored encrypted; operated under dual control by IT lead + Director\n  intermediate: online, in cloud KMS (non-exportable), issues device and service certificates\n  validity: devices 1 year, services 90 days\nrevocation:\n  triggers: lost device, staff exit, key compromise, wrong details\n  methods: CRL published every 24h + OCSP; servers use OCSP stapling\ncode_signing:\n  key: in HSM, used only by the release pipeline; two-person approval for releases\ninventory:\n  owner: IT lead\n  review: weekly report of certificates expiring within 30 days\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "HTTPS for every site",
+      "description": "Certificates from trusted CAs let browsers verify the site's identity and set up encrypted sessions."
+    },
+    {
+      "title": "Signed documents and certificates",
+      "description": "Course completion certificates signed with the institute's key can be verified by employers."
+    },
+    {
+      "title": "Device authentication",
+      "description": "Internal CA certificates on staff laptops support 802.1X Wi-Fi and zero-trust access."
+    },
+    {
+      "title": "Code and update signing",
+      "description": "Signing release packages lets users and systems reject tampered software."
+    },
+    {
+      "title": "Encrypted email",
+      "description": "S/MIME certificates allow signed and encrypted email between staff and partners."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script reviews a certificate inventory against today's date. It flags certificates that have expired or will expire within 30 days, RSA keys shorter than 2048 bits and SHA-1 signatures. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Certificate inventory review: expiry, key strength and signature algorithm.\nfrom datetime import date\n\ntoday = date(2026, 11, 23)\ncerts = [\n    ('www.example-institute.in', date(2027, 1, 30), 'ECDSA P-256', 'sha256WithECDSA', 'public CA'),\n    ('portal.example-institute.in', date(2026, 12, 5), 'RSA 2048', 'sha256WithRSA', 'public CA'),\n    ('legacy-vpn.example-institute.in', date(2026, 11, 1), 'RSA 1024', 'sha1WithRSA', 'internal CA'),\n    ('api.example-institute.in', date(2027, 6, 1), 'RSA 3072', 'sha256WithRSA', 'internal CA'),\n]\n\nfor name, expires, key, signature, issuer in certs:\n    days = (expires - today).days\n    issues = []\n    if days < 0:\n        issues.append(f'EXPIRED {-days} days ago')\n    elif days <= 30:\n        issues.append(f'expires in {days} days - renew now')\n    if key.startswith('RSA') and int(key.split()[1]) < 2048:\n        issues.append('weak key size')\n    if 'sha1' in signature.lower():\n        issues.append('SHA-1 signature')\n    print(f\"{name:<34} {', '.join(issues) if issues else 'OK'}\")\n"
+    },
+    "output": "www.example-institute.in           OK\nportal.example-institute.in        expires in 12 days - renew now\nlegacy-vpn.example-institute.in    EXPIRED 22 days ago, weak key size, SHA-1 signature\napi.example-institute.in           OK"
+  },
+  "takeaways": [
+    "A digital signature proves integrity, origin and nonrepudiation, but not confidentiality.",
+    "A CA signs certificates; an RA verifies identities; X.509 binds a public key to a subject.",
+    "Trust flows from offline roots through intermediates to leaf certificates.",
+    "Revocation uses CRLs, OCSP and OCSP stapling.",
+    "Protect private keys with HSMs or KMS, split knowledge and dual control.",
+    "Inventory certificates and automate renewal; lifetimes keep getting shorter."
+  ],
+  "interview": [
+    {
+      "question": "How does a digital signature work, and what does it prove?",
+      "answer": "The signer hashes the message and creates a signature over that hash with their private key, using an algorithm such as RSA-PSS, ECDSA or Ed25519. The recipient computes the hash of the received message and uses the signer's public key to verify the signature. If verification succeeds, the message has not been changed since signing, so integrity holds. Only the holder of the private key could have produced it, so the origin is authenticated, and the signer cannot credibly deny it, giving nonrepudiation as long as the private key was protected. A signature does not hide the content. If confidentiality is needed, the message must also be encrypted, typically with the recipient's public key or a session key.",
+      "explanation": "Strong answers describe which key is used at each step and list what is and is not provided. Saying the sender signs with the recipient's public key is a common mistake.",
+      "follow_ups": [
+        "Why is the hash signed instead of the whole message?",
+        "What happens to nonrepudiation if a private key is shared?"
+      ]
+    },
+    {
+      "question": "Explain the chain of trust in PKI.",
+      "answer": "Clients such as browsers trust a set of root certificate authorities whose certificates are installed in their trust store. Root CAs are usually kept offline because their compromise would be catastrophic. A root signs one or more intermediate CA certificates, and intermediates sign the end-entity certificates used by websites, devices and people. When a client receives a server's certificate, the server also sends the intermediates. The client builds the path from the leaf through each intermediate to a trusted root, checking every signature, validity period, name constraint and revocation status. If any link fails, the connection is rejected. Using intermediates means a compromised issuing CA can be revoked without replacing the root everywhere.",
+      "explanation": "Interviewers expect root, intermediate and leaf roles, offline roots and the reason intermediates exist.",
+      "follow_ups": [
+        "What happens if a server forgets to send its intermediate certificate?",
+        "Why are root CAs kept offline?"
+      ]
+    },
+    {
+      "question": "Compare CRL, OCSP and OCSP stapling.",
+      "answer": "A certificate revocation list is a signed list of revoked serial numbers that the CA publishes periodically. Clients download it, which can be large and may be out of date between publications. OCSP lets a client ask the CA's responder about one certificate and get a signed good, revoked or unknown answer. It is more current, but it adds latency, reveals to the CA which sites a user visits, and fails if the responder is unavailable. With OCSP stapling, the server periodically fetches its own signed OCSP response and staples it to the TLS handshake. The client gets a fresh, CA-signed status without contacting the CA, which improves performance and privacy.",
+      "explanation": "Strong answers compare freshness, performance and privacy and explain who fetches the response in stapling.",
+      "follow_ups": [
+        "What is soft-fail versus hard-fail revocation checking?",
+        "Why are short-lived certificates seen as an alternative to revocation?"
+      ]
+    },
+    {
+      "question": "What are split knowledge and dual control in key management?",
+      "answer": "Both prevent a single person from misusing the most sensitive keys. Split knowledge means a key, or the secret needed to use it, is divided so that no one person knows the whole thing. For example, a root CA's activation secret is split into shares held by different officers. Dual control means two or more authorized people must be present and act together to perform an operation, such as activating the root CA in a ceremony or exporting a key from an HSM. They are often used together and recorded in signed ceremony logs. They reduce insider risk and accidental misuse and provide audit evidence that no individual could have acted alone.",
+      "explanation": "Good answers distinguish the two concepts and give a realistic ceremony example.",
+      "follow_ups": [
+        "What is an M-of-N scheme?",
+        "How would you audit a key ceremony?"
+      ]
+    },
+    {
+      "question": "Why do certificate expiries still cause outages, and how would you prevent them?",
+      "answer": "Certificates have fixed validity periods, and many organizations track them manually in spreadsheets or rely on one person's memory. Certificates are spread across load balancers, APIs, internal services and devices, often without a clear owner. When one expires, clients reject the connection and the service goes down, sometimes in a hidden dependency such as a payment callback. Prevention starts with discovery and an inventory with an owner for each certificate. Renewal should be automated, for example with ACME, at around two-thirds of the lifetime, with monitoring that alerts at 30 and 7 days and checks the certificate actually served. Because industry lifetimes keep shrinking, manual renewal will not scale.",
+      "explanation": "Strong answers address inventory, ownership, automation and monitoring of the deployed certificate, not just reminders.",
+      "follow_ups": [
+        "What is the ACME protocol?",
+        "How would you find certificates you do not know about?"
+      ]
+    },
+    {
+      "question": "A developer stored the code-signing private key in the build server's configuration repository. What do you do?",
+      "answer": "I would treat the key as compromised, because anyone with repository access, now or in the history, could have copied it and signed malware as our organization. I would revoke the code-signing certificate, generate a new key inside an HSM or managed signing service, issue a new certificate and re-sign current releases. I would investigate whether anything was signed with the old key outside our pipeline and inform customers if needed. Then I would fix the process: signing happens only through the release pipeline with the key non-exportable, releases need two-person approval, and secret scanning blocks keys from being committed. The repository history should also be cleaned, although rotation is what actually removes the risk.",
+      "explanation": "This tests incident handling and key management judgment. Strong answers revoke and rotate first, then fix the process.",
+      "follow_ups": [
+        "Why does deleting the file from the repository not solve the problem?",
+        "What evidence would show whether the key was misused?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design certificate and key management for the institute",
+    "difficulty": "Intermediate",
+    "objective": "Design a practical PKI and key management approach for a small organization.",
+    "statement": "The institute has three public websites, an internal admin portal, 40 staff laptops on 802.1X Wi-Fi, a mobile app and signed course-completion certificates. Design its certificate and key management.",
+    "deliverable": "A design covering public certificates, an internal CA, key storage, renewal, revocation, signing of completion certificates and a certificate inventory process.",
+    "steps": [
+      "Decide which certificates come from a public CA and which from an internal CA.",
+      "Design the internal CA hierarchy and protection of the root.",
+      "Choose key types and where each private key is stored.",
+      "Define renewal automation and expiry monitoring.",
+      "Define revocation triggers and methods.",
+      "Design how completion certificates are signed and verified by employers."
+    ],
+    "checklist": [
+      "Public and internal certificates are separated sensibly.",
+      "The root CA is offline and protected by dual control.",
+      "Private keys are non-exportable where possible.",
+      "Renewal is automated and monitored.",
+      "Revocation triggers include staff exit and lost devices."
+    ],
+    "sample_answer": "Public CA via ACME for the three websites and the mobile app API, with 90-day certificates renewed automatically and certificate transparency monitoring. Internal CA: offline root kept encrypted in a safe, activated only under dual control by the IT lead and Director; one online intermediate in cloud KMS issuing laptop certificates for 802.1X (one-year validity) and admin portal certificates (90 days). Keys: ECDSA P-256; laptop keys in the TPM, server keys in the load balancer key store, intermediate in KMS, none exported. Renewal: ACME automation for public certificates; device certificates auto-renewed by the device management tool; weekly report of anything expiring within 30 days. Revocation: staff exit, lost laptop, compromise or wrong details trigger revocation; CRL every 24 hours and OCSP with stapling. Completion certificates: issued as PDFs signed with an institute document-signing key held in an HSM-backed signing service, with a verification page where employers enter the certificate ID to confirm details. Inventory owned by the IT lead and reviewed monthly."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which key does a sender use to create a digital signature?",
+      "options": [
+        "The recipient's public key",
+        "The sender's public key",
+        "The sender's private key",
+        "A shared symmetric key"
+      ],
+      "answer": 2,
+      "explanation": "Signatures are created with the signer's private key and verified with the matching public key."
+    },
+    {
+      "type": "concept",
+      "question": "Which PKI component verifies a requester's identity before a certificate is issued?",
+      "options": [
+        "Certificate authority",
+        "Registration authority",
+        "OCSP responder",
+        "Root store"
+      ],
+      "answer": 1,
+      "explanation": "The registration authority performs identity verification on behalf of the CA."
+    },
+    {
+      "type": "concept",
+      "question": "What does OCSP stapling change compared with standard OCSP?",
+      "options": [
+        "The client downloads the full CRL",
+        "The server provides a recent CA-signed status during the handshake",
+        "Revocation checking is disabled",
+        "The certificate is re-issued daily"
+      ],
+      "answer": 1,
+      "explanation": "With stapling, the server attaches a fresh signed OCSP response, so the client need not contact the CA."
+    },
+    {
+      "type": "scenario",
+      "question": "Two officers must each enter part of a secret to activate the root CA. Which controls are being used?",
+      "options": [
+        "Key escrow and rotation",
+        "Split knowledge and dual control",
+        "Certificate pinning",
+        "Perfect forward secrecy"
+      ],
+      "answer": 1,
+      "explanation": "Dividing the secret is split knowledge; requiring two people to act together is dual control."
+    },
+    {
+      "type": "concept",
+      "question": "Which property does a digital signature NOT provide on its own?",
+      "options": [
+        "Integrity",
+        "Authentication of origin",
+        "Nonrepudiation",
+        "Confidentiality"
+      ],
+      "answer": 3,
+      "explanation": "Signatures do not hide content; encryption is needed for confidentiality."
+    }
+  ]
+}

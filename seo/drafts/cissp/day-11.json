@@ -1,0 +1,240 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 11,
+  "title": "Physical and Site Security",
+  "module": "Physical and network security",
+  "level": "Intermediate",
+  "objectives": [
+    "Apply layered physical security from the site perimeter to the equipment rack.",
+    "Explain CPTED principles for designing safer facilities.",
+    "Choose access controls such as badges, vestibules, guards and locks.",
+    "Describe environmental controls for temperature, humidity, power and water.",
+    "Explain fire classes and suppression systems suitable for data rooms.",
+    "Keep human safety as the top priority in every physical control decision."
+  ],
+  "definition": "Physical security protects people, facilities, equipment and information from physical threats such as theft, intrusion, fire, flood and power failure. It uses layered barriers, access controls, surveillance and environmental protections. Because a person with physical access can often bypass technical controls, physical security is a foundation for every other domain.",
+  "theory": [
+    {
+      "heading": "Site selection and CPTED",
+      "body": "Security starts before construction. Site selection considers crime rates, flood and earthquake risk, proximity to emergency services, and access to reliable power and network routes. Crime Prevention Through Environmental Design (CPTED) uses the building itself to discourage crime. Natural surveillance arranges windows, lighting and open sightlines so that people can see and be seen. Natural access control guides people towards controlled entrances with landscaping and design. Territorial reinforcement makes it clear which spaces are private, and maintenance shows that the site is cared for. Sensitive rooms such as server rooms should be in the interior of the building, away from external walls, top floors with roof leaks and basements prone to flooding.",
+      "points": [
+        "Natural surveillance, natural access control, territorial reinforcement, maintenance.",
+        "Put sensitive rooms in the building's interior."
+      ]
+    },
+    {
+      "heading": "Perimeter and access controls",
+      "body": "Physical defense is layered: perimeter, building, floor, room and rack. Fences are often described by height: about 3–4 feet deters casual trespassers, 6–7 feet is hard to climb, and 8 feet with barbed wire deters determined intruders. Lighting supports surveillance and deterrence. Entry points use badges, PINs or biometrics, and access control vestibules, also called mantraps, have two doors so only one authorized person passes at a time, preventing tailgating and piggybacking. Guards provide judgment that automated systems lack, and visitor procedures include sign-in, badges and escorts. Locks range from mechanical to electronic, and keys and badges must be recovered when staff leave. CCTV deters and records events, and intrusion detection sensors raise alarms when barriers are crossed.",
+      "points": [
+        "Layers: perimeter → building → room → rack.",
+        "Vestibules stop tailgating.",
+        "Recover keys and badges at exit."
+      ]
+    },
+    {
+      "heading": "Environmental controls and power",
+      "body": "Equipment needs stable conditions. Many data rooms follow ASHRAE guidance, whose recommended inlet temperature range is about 18–27 °C, and keep humidity in a moderate band to avoid static discharge when too dry and condensation when too humid. Hot-aisle and cold-aisle layouts improve cooling. Water detection sensors belong under raised floors and near cooling units. Power problems include a fault (momentary loss), a blackout (prolonged loss), a sag or dip (momentary low voltage), a brownout (prolonged low voltage), a spike (momentary high voltage), a surge (prolonged high voltage) and inrush current when equipment starts. Surge protectors, uninterruptible power supplies (UPS) and generators address these, and the UPS must bridge the gap until the generator takes over.",
+      "points": [
+        "Recommended inlet temperature ≈ 18–27 °C (ASHRAE).",
+        "UPS bridges to the generator.",
+        "Monitor water, temperature and humidity."
+      ]
+    },
+    {
+      "heading": "Fire detection and suppression",
+      "body": "Fire needs heat, fuel and oxygen, plus a chemical chain reaction; suppression removes one of these. Common US fire classes are A for ordinary combustibles, B for flammable liquids, C for energized electrical equipment, D for combustible metals and K for cooking oils; other countries use different letters, so check local codes. Detection uses smoke, heat or flame detectors. Water sprinkler types include wet pipe, which always holds water and is simple but risks leaks; dry pipe, which holds air until activated; deluge, which discharges through all heads at once; and pre-action, which needs a detector to fill the pipes and a sprinkler head to open, making it a common choice for data centres that use water. Clean-agent gas systems such as FM-200 or inert gases suppress fire without water damage. Halon is no longer produced because it depletes the ozone layer."
+    },
+    {
+      "heading": "Life safety and secure operations",
+      "body": "Human safety always comes first. Fire exits must work in an emergency even if that means doors fail safe and unlock, and gas suppression systems need warnings and evacuation time before discharge. Evacuation plans, drills, wardens and head counts are part of physical security. Other operational controls include clean desk policies, locking screens and cabinets, secure media storage, controlled wiring closets, and secure disposal of printed and electronic media. Remote and home workers extend the physical perimeter, so laptop locks, privacy screens and guidance on working in public places are needed. Physical access logs and CCTV recordings should be retained and reviewed like other security logs."
+    }
+  ],
+  "example": {
+    "title": "Physical security plan for the institute's office and data room",
+    "body": "The institute has a classroom floor and a small data room holding network equipment and a local backup server. The plan layers controls from the building entrance to the rack and puts safety first.",
+    "code": {
+      "language": "yaml",
+      "source": "layers:\n  building_entrance: reception, visitor sign-in, visitor badges, CCTV covering the door\n  office_floor: staff badge access; classrooms separated from staff area\n  data_room:\n    location: interior room, no external walls or windows, not on the top floor\n    access: badge + PIN, access list reviewed monthly; no tailgating (signage + door alarm)\n    rack: locked cabinets; keys held by IT lead\nenvironment:\n  temperature: 18-27 C at rack inlets, alerts sent to IT\n  humidity: monitored, alerts outside site policy band\n  water: leak sensor under the cooling unit\n  power: UPS for 20 minutes, generator for the building, surge protection\nfire:\n  detection: smoke detectors linked to building alarm\n  suppression: building sprinklers (pre-action in data room) + CO2 extinguisher for electrical fires\nsafety:\n  exits: fail-safe doors on fire alarm; evacuation drill twice a year; wardens on each floor\noperations: clean desk, shredding bins, locked media cabinet, quarterly review of access logs\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Protecting server and network rooms",
+      "description": "Layered access and environmental monitoring keep critical equipment available and secure."
+    },
+    {
+      "title": "Preventing tailgating",
+      "description": "Vestibules, door alarms and staff awareness stop unauthorized people following staff through secure doors."
+    },
+    {
+      "title": "Classroom and office safety",
+      "description": "CPTED, lighting and visitor procedures protect students and staff."
+    },
+    {
+      "title": "Choosing colocation or cloud providers",
+      "description": "Physical controls, certifications and environmental design are key criteria in provider due diligence."
+    },
+    {
+      "title": "Business continuity",
+      "description": "Power, fire and water protections reduce the chance that a physical event becomes a long outage."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script compares data-room sensor readings with alert thresholds for temperature and humidity and raises alarms for water leaks and smoke. The smoke rule tells staff to evacuate first, reflecting the life-safety priority. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Data-room environmental monitoring: compare sensor readings with the site's alert thresholds.\nTHRESHOLDS = {\n    'temperature_c': (18, 27),   # inside the commonly used ASHRAE recommended range\n    'humidity_pct': (40, 60),    # site policy band\n}\nreadings = [\n    ('Rack A inlet', {'temperature_c': 24.5, 'humidity_pct': 48, 'water_leak': False, 'smoke': False}),\n    ('Rack B inlet', {'temperature_c': 29.1, 'humidity_pct': 44, 'water_leak': False, 'smoke': False}),\n    ('UPS room', {'temperature_c': 23.0, 'humidity_pct': 33, 'water_leak': False, 'smoke': False}),\n    ('Under-floor sensor', {'temperature_c': 21.0, 'humidity_pct': 52, 'water_leak': True, 'smoke': False}),\n]\nfor location, values in readings:\n    alerts = []\n    for metric, (low, high) in THRESHOLDS.items():\n        if not low <= values[metric] <= high:\n            alerts.append(f'{metric} {values[metric]} outside {low}-{high}')\n    if values['water_leak']:\n        alerts.append('WATER LEAK')\n    if values['smoke']:\n        alerts.append('SMOKE - evacuate and follow the fire procedure')\n    print(f\"{location:<19} {'; '.join(alerts) if alerts else 'normal'}\")\n"
+    },
+    "output": "Rack A inlet        normal\nRack B inlet        temperature_c 29.1 outside 18-27\nUPS room            humidity_pct 33 outside 40-60\nUnder-floor sensor  WATER LEAK"
+  },
+  "takeaways": [
+    "Physical access can defeat technical controls, so layer physical defenses from the perimeter to the rack.",
+    "CPTED uses natural surveillance, natural access control, territorial reinforcement and maintenance.",
+    "Vestibules and visitor procedures prevent tailgating.",
+    "Monitor temperature, humidity, water and power; a UPS bridges to the generator.",
+    "Match suppression to the risk; pre-action and clean agents suit data rooms.",
+    "Human safety always comes first, so fire exits must fail safe."
+  ],
+  "interview": [
+    {
+      "question": "What is CPTED, and how would you apply it to an office?",
+      "answer": "Crime Prevention Through Environmental Design uses the physical environment to reduce crime. It has four main principles. Natural surveillance arranges lighting, windows and open sightlines so people are visible. Natural access control channels visitors towards a staffed reception rather than side doors. Territorial reinforcement uses signage, flooring and boundaries to show which areas are private. Maintenance keeps the site tidy and repaired, signalling that someone cares. In an office, I would place reception where it overlooks the main entrance, light the car park and entrances well, keep landscaping low near walkways, mark staff-only zones clearly and make sure broken lights and locks are repaired quickly.",
+      "explanation": "Strong answers name all four principles and apply each to a real space. Listing them without examples, or confusing CPTED with CCTV, is the weak answer.",
+      "follow_ups": [
+        "How does CPTED complement technical controls such as CCTV?",
+        "What CPTED issues would you look for in a site visit?"
+      ]
+    },
+    {
+      "question": "How do you prevent tailgating into a secure area?",
+      "answer": "Tailgating happens when an unauthorized person follows an authorized one through a door, with or without their consent. Controls work in layers. Physically, an access control vestibule, or mantrap, allows only one person through at a time, and turnstiles or optical gates can count passages. Technically, door-held-open alarms and anti-passback rules on badges detect misuse. Procedurally, policy requires every person to badge individually and staff are trained to challenge or report unbadged people politely. Guards and CCTV add monitoring. The most effective approach depends on the room's sensitivity. A vestibule makes sense for a data centre, while awareness and alarms may be enough for an office floor.",
+      "explanation": "Interviewers expect physical, technical and human controls and proportionality to the area's sensitivity.",
+      "follow_ups": [
+        "What is anti-passback?",
+        "How would you test whether staff challenge tailgaters?"
+      ]
+    },
+    {
+      "question": "Which fire suppression system would you choose for a data room?",
+      "answer": "It depends on the building, local codes and cost. Many data rooms use a pre-action sprinkler system, which needs both a detector to activate and a sprinkler head to open before water flows, so a damaged pipe or one triggered detector does not flood equipment. For rooms where water damage is unacceptable, a clean-agent gas system, such as FM-200 or an inert gas, suppresses fire without residue, but it needs a sealed room, warning alarms and time for people to evacuate before discharge. Wet pipe systems are simplest but riskier for equipment, and deluge systems are for high-hazard areas. Portable extinguishers rated for electrical fires should also be available. Halon is no longer produced.",
+      "explanation": "Strong answers explain how pre-action works, discuss clean agents with their safety requirements and mention codes.",
+      "follow_ups": [
+        "Why is a deluge system unsuitable for data rooms?",
+        "What safety measures must accompany a gas suppression system?"
+      ]
+    },
+    {
+      "question": "Explain the difference between a blackout, brownout, sag, spike and surge.",
+      "answer": "These are power quality problems. A blackout is a prolonged complete loss of power, and a fault is a momentary loss. A brownout is a prolonged period of low voltage, and a sag or dip is a momentary drop. A surge is prolonged high voltage, and a spike is a momentary one. Inrush is the high current drawn when equipment powers on. Each can damage equipment or cause outages, so protections are layered: surge protectors and power conditioners for voltage problems, a UPS to keep equipment running through short interruptions and to allow a clean shutdown, and a generator for long outages. The UPS must run long enough for the generator to start and stabilize.",
+      "explanation": "Good answers pair each term with its duration and voltage direction and map protections to them.",
+      "follow_ups": [
+        "How long should a UPS run before the generator takes over?",
+        "Why test generators under load?"
+      ]
+    },
+    {
+      "question": "Why should a server room be in the middle of the building?",
+      "answer": "Location is a physical control. An interior room has no external walls or windows, so it is harder to break into, harder to observe and less exposed to weather. Avoiding the top floor reduces the risk of roof leaks, and avoiding basements reduces flood risk, especially near rivers or in low-lying cities. A central location is also easier to reach for power and network cabling and easier to monitor. Other placement factors include distance from plumbing and kitchens, enough structural strength for racks and batteries, and limited signage so the room is not advertised. Where an office cannot meet these conditions, moving equipment to a colocation facility or cloud provider may be the better risk decision.",
+      "explanation": "Strong answers cover intrusion, water and environmental risks and consider moving to a provider.",
+      "follow_ups": [
+        "What would you ask a colocation provider about physical security?",
+        "How do raised floors help and hurt?"
+      ]
+    },
+    {
+      "question": "During a fire drill, staff say they should first grab backup tapes from the server room. How do you respond?",
+      "answer": "I would be clear that people's safety always comes first. Nobody should go towards a fire or delay evacuation to save equipment or media. Life safety is the top priority in any security plan, and CISSP scenarios treat it the same way. The way to protect backups is to design for it beforehand: keep current backups offsite or in a separate cloud region, use fire-rated media safes where local copies are needed, and test restores so that losing the server room does not mean losing data. I would update the evacuation briefing, thank the staff for caring about the data, and add the backup strategy to the business continuity plan so they know the data is already safe elsewhere.",
+      "explanation": "This tests the life-safety priority and turning a risky instinct into better design.",
+      "follow_ups": [
+        "How would you verify offsite backups are actually usable?",
+        "What should a fire warden's checklist include?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Physical security walkthrough",
+    "difficulty": "Basic",
+    "objective": "Assess a real or imagined facility using layered physical security and life safety.",
+    "statement": "Do a physical security walkthrough of a location you know, such as your office, college or the coaching institute's centre, or use the description in this lesson. Identify weaknesses and propose controls for each layer.",
+    "deliverable": "A walkthrough report with at least eight findings across perimeter, building, room and rack, environmental and life-safety controls, each with a risk rating and a proportionate recommendation.",
+    "steps": [
+      "Sketch the layout and mark entrances, sensitive rooms and exits.",
+      "Assess the perimeter and entrances, including lighting and visitor handling.",
+      "Assess internal access, including badges, tailgating and key control.",
+      "Assess sensitive rooms for location, environment, power and fire protection.",
+      "Check life safety: exits, alarms, drills and fail-safe doors.",
+      "Rate each finding and recommend controls proportionate to the risk."
+    ],
+    "checklist": [
+      "Findings cover all physical layers.",
+      "Environmental and power controls are assessed.",
+      "Fire protection matches the room's use.",
+      "Life safety is never traded for asset protection.",
+      "Recommendations are proportionate and practical."
+    ],
+    "sample_answer": "Findings: (1) side door propped open for deliveries - high; install a door-held-open alarm and a delivery bell. (2) No visitor badges - moderate; introduce sign-in, badges and escorts. (3) Staff tailgate through the office door - moderate; awareness training and a sign asking everyone to badge. (4) Network rack in a store room with cleaning supplies - high; move it to an interior room with badge access and a locked cabinet. (5) No temperature or water monitoring - moderate; add sensors with alerts to IT. (6) UPS lasts 5 minutes but there is no generator - moderate; extend runtime for a clean shutdown and confirm the building generator connection. (7) Only a water extinguisher near the rack - high; add a CO2 extinguisher rated for electrical fires and confirm sprinkler type. (8) Emergency exit blocked by stored chairs - high; clear immediately and add to weekly checks. (9) Keys for the rack held by several former staff - moderate; change locks and keep a key register. Priorities: fix life-safety items (8) at once, then (1), (4) and (7)."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which CPTED principle uses lighting and open sightlines so that people can see and be seen?",
+      "options": [
+        "Territorial reinforcement",
+        "Natural surveillance",
+        "Natural access control",
+        "Maintenance"
+      ],
+      "answer": 1,
+      "explanation": "Natural surveillance increases visibility to discourage crime."
+    },
+    {
+      "type": "concept",
+      "question": "What physical control allows only one person at a time through two interlocking doors?",
+      "options": [
+        "Turnstile",
+        "Access control vestibule (mantrap)",
+        "Bollard",
+        "Proximity reader"
+      ],
+      "answer": 1,
+      "explanation": "A vestibule with interlocking doors prevents tailgating and piggybacking."
+    },
+    {
+      "type": "concept",
+      "question": "A prolonged period of low voltage is called a:",
+      "options": [
+        "Spike",
+        "Sag",
+        "Brownout",
+        "Fault"
+      ],
+      "answer": 2,
+      "explanation": "A brownout is prolonged low voltage; a sag is momentary."
+    },
+    {
+      "type": "concept",
+      "question": "Which sprinkler type requires a detector to activate before water enters the pipes, making it common in data centres?",
+      "options": [
+        "Wet pipe",
+        "Deluge",
+        "Pre-action",
+        "Dry pipe without detection"
+      ],
+      "answer": 2,
+      "explanation": "Pre-action systems need detection before the pipes fill, reducing accidental water damage."
+    },
+    {
+      "type": "scenario",
+      "question": "A fire alarm sounds. The electronic locks on the fire exits should:",
+      "options": [
+        "Stay locked to protect equipment",
+        "Fail safe and unlock",
+        "Require a badge to open",
+        "Lock until security staff arrive"
+      ],
+      "answer": 1,
+      "explanation": "Life safety comes first, so fire exits must fail safe and open."
+    }
+  ]
+}

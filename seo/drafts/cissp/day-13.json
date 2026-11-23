@@ -1,0 +1,241 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 13,
+  "title": "Secure Communication Channels: TLS, VPN and Wireless",
+  "module": "Physical and network security",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain how TLS 1.3 protects web traffic and which older protocols must be disabled.",
+    "Compare IPsec AH and ESP, and transport and tunnel modes.",
+    "Choose between site-to-site VPNs, remote-access VPNs and zero trust network access.",
+    "Secure wireless networks with WPA3, WPA2-AES and 802.1X.",
+    "Protect email with SPF, DKIM, DMARC and TLS.",
+    "Evaluate a service's TLS and Wi-Fi configuration against a standard."
+  ],
+  "definition": "Secure communication channels protect data while it moves across networks that may be untrusted. TLS secures web and application traffic, IPsec and other VPN technologies secure traffic between networks or for remote users, and wireless security protocols protect radio links. Each provides confidentiality, integrity and authentication when configured correctly, and each can fail through outdated versions or weak settings.",
+  "theory": [
+    {
+      "heading": "TLS and HTTPS",
+      "body": "Transport Layer Security protects most internet traffic, including HTTPS. In the handshake, the client and server agree on a protocol version and cipher suite, the server proves its identity with a certificate, and both sides derive session keys, usually through ephemeral Diffie-Hellman (ECDHE). Data is then protected with authenticated encryption. TLS 1.3, published in 2018, removed obsolete features such as static RSA key exchange, so every session has forward secrecy, meaning a later compromise of the server's private key does not expose past sessions. It also shortened the handshake. SSL and TLS 1.0 and 1.1 are deprecated and should be disabled. HTTP Strict Transport Security (HSTS) tells browsers to use only HTTPS for a site, which blocks downgrade and SSL-stripping attacks.",
+      "points": [
+        "Use TLS 1.3, with TLS 1.2 (ECDHE + AEAD) as fallback.",
+        "Disable SSL, TLS 1.0 and TLS 1.1.",
+        "Forward secrecy and HSTS."
+      ]
+    },
+    {
+      "heading": "IPsec",
+      "body": "IPsec secures traffic at the network layer. The Authentication Header (AH) provides integrity and authentication of the packet but no encryption. The Encapsulating Security Payload (ESP) provides confidentiality and can also provide integrity and authentication, so it is used in almost all deployments. In transport mode, only the payload is protected and the original IP header remains, which suits host-to-host communication. In tunnel mode, the entire original packet is encrypted and wrapped in a new IP header, which suits gateway-to-gateway VPNs. Internet Key Exchange (IKE, now IKEv2) negotiates security associations and keys, authenticating peers with certificates or pre-shared keys.",
+      "points": [
+        "AH: integrity/authentication only.",
+        "ESP: confidentiality (+ integrity).",
+        "Transport mode: host-to-host; tunnel mode: gateway-to-gateway."
+      ]
+    },
+    {
+      "heading": "VPNs and zero trust access",
+      "body": "A site-to-site VPN connects networks, such as a branch office to headquarters, usually with IPsec tunnels between gateways. A remote-access VPN connects individual users to the network, using IPsec or TLS-based clients. Split tunnelling sends only corporate traffic through the VPN and the rest directly to the internet; it saves bandwidth but leaves internet traffic outside corporate controls, so it needs endpoint protections. Traditional VPNs often grant broad network access once connected, which helps attackers move laterally with stolen credentials. Zero trust network access (ZTNA) instead publishes specific applications to authenticated users and healthy devices, checking each request, and is increasingly replacing broad VPN access. SSH tunnels and secure protocols such as SFTP protect specific administrative channels."
+    },
+    {
+      "heading": "Wireless security",
+      "body": "WEP is broken and must never be used. WPA replaced it temporarily with TKIP, which is also deprecated. WPA2 with AES-CCMP has been the long-standing standard, but WPA2-Personal pre-shared keys can be attacked offline after capturing a handshake if the passphrase is weak. WPA3-Personal replaces the pre-shared key handshake with Simultaneous Authentication of Equals (SAE), which resists offline guessing, and WPA3-Enterprise offers an optional 192-bit security mode. For organizations, Enterprise mode with 802.1X authenticates each user or device through a RADIUS server using EAP methods, ideally with certificates such as EAP-TLS, so one leaked password does not open the network to everyone. Other risks include rogue access points, evil twin networks that imitate legitimate SSIDs, and deauthentication attacks; wireless intrusion detection and certificate validation on clients help counter them.",
+      "points": [
+        "Never WEP or TKIP.",
+        "Prefer WPA3; WPA2-AES at minimum.",
+        "Enterprise: 802.1X with RADIUS and EAP-TLS."
+      ]
+    },
+    {
+      "heading": "Email and other channels",
+      "body": "Email was not designed with security in mind. SPF lists the servers allowed to send mail for a domain, DKIM signs messages so recipients can verify they were not altered and came from the domain, and DMARC tells receivers what to do when SPF or DKIM checks fail and sends reports to the domain owner. Together they reduce spoofing of the organization's domain in phishing. TLS between mail servers protects messages in transit, and S/MIME or PGP provide end-to-end encryption and signatures. Voice over IP can be protected with SRTP and TLS-secured signalling. For every channel, the same rule applies: use current protocol versions, strong authentication and authenticated encryption, and monitor for downgrade and interception attempts."
+    }
+  ],
+  "example": {
+    "title": "Secure channel standard for the institute",
+    "body": "The institute sets one standard for every channel: web, remote access, Wi-Fi and email. Each service is checked against it before going live and at least once a year.",
+    "code": {
+      "language": "yaml",
+      "source": "web:\n  protocols: [TLS 1.3, TLS 1.2]\n  tls12_ciphers: ECDHE with AES-GCM or ChaCha20-Poly1305 only\n  disabled: [SSLv3, TLS 1.0, TLS 1.1, RC4, 3DES, CBC-SHA1 suites]\n  hsts: max-age=31536000; includeSubDomains\nremote_access:\n  staff_apps: zero trust access proxy (SSO + MFA + managed device check)\n  admin: SSH with keys via jump host; no direct RDP from the internet\n  branch_office: IPsec site-to-site tunnel (IKEv2, ESP, tunnel mode, certificate auth)\nwireless:\n  staff: WPA3-Enterprise, 802.1X EAP-TLS with device certificates\n  students: WPA3-Personal (WPA2-AES transition), client isolation, internet only\n  monitoring: rogue access point detection\nemail:\n  spf: published\n  dkim: signing enabled for all outbound mail\n  dmarc: p=reject after monitoring reports\n  transport: TLS required with partner domains\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Protecting online classes and payments",
+      "description": "TLS 1.3 and HSTS protect every student session, login and payment redirect."
+    },
+    {
+      "title": "Connecting branch offices",
+      "description": "Site-to-site IPsec tunnels connect a new centre's network to central systems."
+    },
+    {
+      "title": "Remote staff access",
+      "description": "Zero trust access gives staff specific applications without broad network access."
+    },
+    {
+      "title": "Campus Wi-Fi",
+      "description": "WPA3 and 802.1X keep staff and student wireless separate and protected."
+    },
+    {
+      "title": "Stopping domain spoofing",
+      "description": "SPF, DKIM and DMARC make phishing emails that impersonate the institute easier to block."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script checks services against a minimum secure-channel standard. It flags deprecated TLS versions, weak cipher suites such as 3DES (shown as DES-CBC3-SHA), a missing HSTS header, and Wi-Fi networks still using TKIP. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Review TLS and wireless settings against a minimum standard.\nWEAK_PROTOCOLS = {'SSLv3', 'TLSv1.0', 'TLSv1.1'}\nWEAK_CIPHER_WORDS = ('RC4', '3DES', 'NULL', 'EXPORT', 'MD5')\nWEAK_WIFI = {'WEP', 'WPA', 'WPA2-TKIP'}\n\nservices = [\n    ('student portal', ['TLSv1.2', 'TLSv1.3'], ['TLS_AES_128_GCM_SHA256', 'ECDHE-RSA-AES128-GCM-SHA256'], True),\n    ('old admin panel', ['TLSv1.0', 'TLSv1.2'], ['ECDHE-RSA-AES128-GCM-SHA256', 'DES-CBC3-SHA'], False),\n]\nfor name, protocols, ciphers, hsts in services:\n    issues = [f'disable {p}' for p in protocols if p in WEAK_PROTOCOLS]\n    issues += [f'remove {c}' for c in ciphers if any(w in c.upper() or (w == '3DES' and 'DES-CBC3' in c.upper()) for w in WEAK_CIPHER_WORDS)]\n    if not hsts:\n        issues.append('enable HSTS')\n    print(f\"{name:<16} {'; '.join(issues) if issues else 'meets standard'}\")\n\nfor ssid, security in [('Institute-Staff', 'WPA3-Enterprise'), ('Institute-Guest', 'WPA2-TKIP')]:\n    print(f\"Wi-Fi {ssid:<16} {'upgrade to WPA3 (or WPA2-AES at minimum)' if security in WEAK_WIFI else 'meets standard'}\")\n"
+    },
+    "output": "student portal   meets standard\nold admin panel  disable TLSv1.0; remove DES-CBC3-SHA; enable HSTS\nWi-Fi Institute-Staff  meets standard\nWi-Fi Institute-Guest  upgrade to WPA3 (or WPA2-AES at minimum)"
+  },
+  "takeaways": [
+    "Use TLS 1.3 (TLS 1.2 with ECDHE and AEAD as fallback); disable SSL, TLS 1.0 and 1.1.",
+    "Forward secrecy protects past sessions if a server key is later stolen; HSTS blocks downgrades.",
+    "IPsec ESP encrypts; AH only authenticates. Tunnel mode suits gateway VPNs.",
+    "Zero trust access limits users to specific applications rather than whole networks.",
+    "Use WPA3 or at least WPA2-AES, and 802.1X with EAP-TLS for organizations.",
+    "SPF, DKIM and DMARC together reduce email spoofing."
+  ],
+  "interview": [
+    {
+      "question": "What improvements did TLS 1.3 bring over TLS 1.2?",
+      "answer": "TLS 1.3 removed many legacy and risky options. Static RSA key exchange is gone, so every connection uses ephemeral Diffie-Hellman and has forward secrecy: stealing the server's private key later does not decrypt recorded traffic. Weak and obsolete algorithms such as RC4, 3DES, CBC-mode suites with problematic constructions, and SHA-1 were removed, leaving a small set of AEAD cipher suites. The handshake was redesigned to complete in one round trip, and more of it is encrypted, including the server certificate. These changes reduce both attack surface and configuration mistakes. TLS 1.2 is still acceptable when configured with ECDHE and AEAD ciphers, but SSL, TLS 1.0 and TLS 1.1 should be disabled.",
+      "explanation": "Strong answers mention forward secrecy, removed algorithms, the faster handshake and what remains acceptable.",
+      "follow_ups": [
+        "What is 0-RTT in TLS 1.3, and what is its risk?",
+        "How would you check which TLS versions a server supports?"
+      ]
+    },
+    {
+      "question": "Compare IPsec AH and ESP, and transport and tunnel modes.",
+      "answer": "The Authentication Header provides integrity and authentication of the packet, including parts of the IP header, but no encryption, so contents remain readable. The Encapsulating Security Payload provides confidentiality and usually integrity and authentication as well, which is why almost all VPNs use ESP. AH also conflicts with NAT because it protects header fields that NAT changes. In transport mode, IPsec protects the payload but keeps the original IP header, which suits direct host-to-host connections. In tunnel mode, the whole original packet, including its header, is encrypted and placed inside a new packet between gateways, which hides internal addressing and suits site-to-site VPNs. IKEv2 negotiates the keys and security associations.",
+      "explanation": "Interviewers expect the encryption difference, the NAT issue and the correct use of each mode.",
+      "follow_ups": [
+        "What is a security association?",
+        "Why might you choose certificates over pre-shared keys for IKE?"
+      ]
+    },
+    {
+      "question": "How would you secure Wi-Fi for staff and for guests or students?",
+      "answer": "For staff I would use WPA3-Enterprise, or WPA2-Enterprise where devices require it, with 802.1X and a RADIUS server. Ideally EAP-TLS with device certificates means each laptop authenticates individually, access can be revoked per device, and there is no shared password to leak. Clients must validate the server certificate to resist evil twin attacks. For guests or students I would use a separate SSID on its own VLAN, WPA3-Personal or WPA2-AES with a passphrase that changes regularly, client isolation so devices cannot attack each other, and internet-only access through DNS filtering. WEP, WPA-TKIP and WPS would be disabled, and wireless intrusion detection would watch for rogue access points.",
+      "explanation": "Strong answers separate staff and guest designs, explain 802.1X and certificate validation, and segment guest traffic.",
+      "follow_ups": [
+        "What is an evil twin attack?",
+        "Why is WPS a risk?"
+      ]
+    },
+    {
+      "question": "What do SPF, DKIM and DMARC do?",
+      "answer": "They work together to stop attackers sending email that appears to come from your domain. SPF is a DNS record listing the mail servers allowed to send for the domain, so receivers can check the sending server. DKIM adds a digital signature to outgoing messages using a key whose public part is in DNS, letting receivers verify that the message was not altered and was authorized by the domain. DMARC builds on both: it requires alignment between the visible From domain and the SPF or DKIM domain, tells receivers whether to accept, quarantine or reject failing messages, and sends reports to the domain owner. I would deploy DMARC in monitoring mode first, fix legitimate senders, then move to reject.",
+      "explanation": "Good answers explain each record's role, the alignment idea and the staged rollout of DMARC.",
+      "follow_ups": [
+        "Why is SPF alone not enough?",
+        "What breaks when DMARC is set to reject too early?"
+      ]
+    },
+    {
+      "question": "Should we replace our VPN with zero trust network access?",
+      "answer": "It depends on what the VPN is used for. A traditional remote-access VPN usually places users on the internal network after authentication, so stolen credentials or an infected laptop can reach far more than needed. Zero trust network access publishes specific applications to authenticated users on compliant devices, checks each request, and hides applications from the internet. That reduces lateral movement and attack surface. I would migrate in stages: start with web applications and high-risk user groups, keep the VPN for legacy protocols or site-to-site needs, and retire it once usage drops. The decision also depends on cost, user experience and whether identity and device management are mature enough to support ZTNA.",
+      "explanation": "Strong answers compare access scope, propose a staged migration and acknowledge prerequisites such as identity maturity.",
+      "follow_ups": [
+        "What prerequisites does ZTNA need?",
+        "Which use cases still need a VPN?"
+      ]
+    },
+    {
+      "question": "A scan shows the old admin panel still supports TLS 1.0 and 3DES. The vendor says changing it might break old browsers. What do you do?",
+      "answer": "I would assess the risk first: who uses the panel, from which browsers, and what it controls. TLS 1.0 and 3DES are deprecated and vulnerable, and admin panels are high-value targets, so the risk is real. Modern browsers no longer support TLS 1.0 by default anyway, so the compatibility concern may be smaller than the vendor thinks. I would check access logs for client versions, then disable TLS 1.0 and 1.1 and 3DES, enable HSTS, and test with current browsers. If a legitimate legacy client really needs the old settings, I would restrict the panel to an internal network or put it behind a modern TLS proxy rather than weaken it for everyone, and document any accepted risk with the owner's approval.",
+      "explanation": "This tests balancing compatibility and security with evidence. Strong answers check logs, use compensating controls and document any exception.",
+      "follow_ups": [
+        "How would a TLS-terminating proxy help here?",
+        "What evidence would you give the vendor?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Audit secure channels",
+    "difficulty": "Intermediate",
+    "objective": "Assess real services against a secure channel standard and plan fixes.",
+    "statement": "Choose two websites you are allowed to test, such as your own site or a test lab, plus a Wi-Fi network you manage. Record their TLS versions, cipher suites, HSTS status, certificate details and Wi-Fi security mode. Compare them with the standard in this lesson and plan remediation.",
+    "deliverable": "A table of findings per service with evidence, risk rating and recommended fix, plus a short email-security check of SPF, DKIM and DMARC for one domain you own.",
+    "steps": [
+      "Get permission and list the services in scope.",
+      "Use a TLS scanning tool or online test to record versions, ciphers and certificate details.",
+      "Check for HSTS and redirection from HTTP to HTTPS.",
+      "Record the Wi-Fi security mode and whether guests are isolated.",
+      "Look up the SPF, DKIM and DMARC records for your domain.",
+      "Rate each finding and propose a fix with a test to confirm it."
+    ],
+    "checklist": [
+      "Testing is limited to systems you are authorized to test.",
+      "Each finding has evidence and a risk rating.",
+      "Deprecated TLS versions and weak ciphers are flagged.",
+      "Wi-Fi findings cover encryption mode and segmentation.",
+      "DMARC policy and rollout are addressed."
+    ],
+    "sample_answer": "Service 1 (student portal): TLS 1.3 and 1.2 with ECDHE-AEAD only, HSTS present, ECDSA certificate valid for 64 days, auto-renewed - meets standard. Service 2 (old admin panel): TLS 1.0 enabled, DES-CBC3-SHA offered, no HSTS, certificate RSA 2048 - high risk; disable TLS 1.0/1.1 and 3DES, add HSTS, restrict access to the admin network, and re-test with a scanner. Wi-Fi: staff on WPA3-Enterprise with EAP-TLS - good; guest network on WPA2-TKIP with no isolation - moderate; switch to WPA3-Personal or WPA2-AES, enable client isolation and move it to an internet-only VLAN. Email: SPF present with -all; DKIM enabled for the main mail provider but not the marketing platform; DMARC at p=none - enable DKIM on the marketing platform, review two weeks of DMARC reports, then move to quarantine and later reject. All tests were run only on systems owned by the institute."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which TLS 1.3 change guarantees forward secrecy for every session?",
+      "options": [
+        "Support for RC4",
+        "Removal of static RSA key exchange",
+        "Use of SHA-1 signatures",
+        "Longer certificate lifetimes"
+      ],
+      "answer": 1,
+      "explanation": "Without static RSA key exchange, every session uses ephemeral Diffie-Hellman, giving forward secrecy."
+    },
+    {
+      "type": "concept",
+      "question": "Which IPsec protocol provides confidentiality?",
+      "options": [
+        "AH",
+        "ESP",
+        "IKE",
+        "GRE"
+      ],
+      "answer": 1,
+      "explanation": "ESP encrypts the payload; AH provides only integrity and authentication."
+    },
+    {
+      "type": "concept",
+      "question": "Which WPA3 feature resists offline password-guessing attacks against a personal network?",
+      "options": [
+        "TKIP",
+        "WEP keys",
+        "SAE (Simultaneous Authentication of Equals)",
+        "WPS"
+      ],
+      "answer": 2,
+      "explanation": "SAE replaces the pre-shared key handshake and resists offline dictionary attacks."
+    },
+    {
+      "type": "concept",
+      "question": "Which email mechanism tells receivers what to do when SPF or DKIM checks fail and sends reports to the domain owner?",
+      "options": [
+        "SPF",
+        "DKIM",
+        "DMARC",
+        "S/MIME"
+      ],
+      "answer": 2,
+      "explanation": "DMARC sets the policy for failing messages and provides reporting."
+    },
+    {
+      "type": "scenario",
+      "question": "Staff connect through a VPN that gives full internal network access, and stolen credentials led to lateral movement. Which approach best reduces this risk?",
+      "options": [
+        "Enable split tunnelling",
+        "Zero trust network access to specific applications",
+        "Switch the VPN to IPsec AH",
+        "Disable MFA to simplify logins"
+      ],
+      "answer": 1,
+      "explanation": "ZTNA grants access only to specific applications per request, limiting lateral movement."
+    }
+  ]
+}

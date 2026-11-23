@@ -1,0 +1,240 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 9,
+  "title": "Cryptography Fundamentals: Symmetric, Asymmetric and Hashing",
+  "module": "Asset security, continuity and architecture",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain what cryptography can and cannot provide: confidentiality, integrity, authentication and nonrepudiation.",
+    "Compare symmetric and asymmetric encryption, including key counts and typical uses.",
+    "Describe AES, its modes of operation, and why ECB is unsafe.",
+    "Explain hashing, HMAC and how passwords should be stored.",
+    "Recognize common cryptanalytic attacks, including the birthday attack and side channels.",
+    "Describe Kerckhoffs's principle and the move to post-quantum cryptography."
+  ],
+  "definition": "Cryptography uses mathematical algorithms and secret keys to protect information. Encryption protects confidentiality; hashing and message authentication codes protect integrity; digital signatures add authentication and nonrepudiation. Security comes from strong, well-reviewed algorithms used correctly and from keeping keys secret, not from keeping the algorithm secret.",
+  "theory": [
+    {
+      "heading": "Goals and principles",
+      "body": "Cryptography supports four goals. Confidentiality keeps data unreadable to unauthorized parties. Integrity detects modification. Authentication confirms the origin of data or the identity of a party. Nonrepudiation provides evidence that a specific party performed an action, which in practice requires asymmetric digital signatures. Kerckhoffs's principle says a system should remain secure even if everything except the key is public, which is why trusted algorithms are openly published and analyzed. The work factor is the time and effort needed to break a scheme; key length, algorithm strength and implementation quality all affect it. Most real failures come from poor implementation and key management rather than broken algorithms.",
+      "points": [
+        "Confidentiality, integrity, authentication, nonrepudiation.",
+        "Kerckhoffs: only the key should need to be secret."
+      ]
+    },
+    {
+      "heading": "Symmetric encryption",
+      "body": "Symmetric algorithms use the same secret key to encrypt and decrypt. They are fast and suit bulk data. AES, the Advanced Encryption Standard, is the dominant block cipher, with a 128-bit block and 128-, 192- or 256-bit keys. ChaCha20 is a widely used stream cipher. The mode of operation matters. ECB encrypts identical blocks to identical ciphertext and leaks patterns, so it should not be used. CBC chains blocks but needs a random IV and separate integrity protection. GCM is an authenticated encryption mode that provides confidentiality and integrity together and is common in TLS. The weakness of symmetric cryptography is key distribution: n parties who all need private channels need n(n−1)/2 keys, and every key must be shared securely.",
+      "points": [
+        "AES: 128-bit block; 128/192/256-bit keys.",
+        "Avoid ECB; prefer authenticated modes such as GCM.",
+        "Keys needed: n(n−1)/2."
+      ]
+    },
+    {
+      "heading": "Asymmetric encryption and key exchange",
+      "body": "Asymmetric, or public key, cryptography uses a key pair: a public key anyone may know and a private key only the owner holds. Data encrypted with the public key can only be decrypted with the private key, which solves key distribution, and n users need only n key pairs. RSA relies on the difficulty of factoring large numbers; elliptic curve cryptography (ECC) gives similar strength with much smaller keys. Diffie-Hellman, and its elliptic-curve form ECDH, lets two parties agree a shared secret over an open network without sending it. Asymmetric operations are slow, so real systems use hybrid cryptography: asymmetric methods authenticate parties and agree a symmetric session key, and symmetric encryption protects the data. TLS works this way."
+    },
+    {
+      "heading": "Hashing, HMAC and password storage",
+      "body": "A hash function maps input of any size to a fixed-size digest. Good hashes are one-way, and a small change in input produces a completely different output. They should also be collision resistant, meaning it is infeasible to find two inputs with the same hash. SHA-256 and the SHA-3 family are current choices; MD5 and SHA-1 are broken for collision resistance and must not be used for signatures or certificates. A plain hash does not prove who created data, because anyone can recompute it. An HMAC combines a secret key with the hash so only key holders can produce a valid tag. Passwords must never be stored encrypted or with fast hashes. Use a slow, salted password hashing function such as Argon2, bcrypt, scrypt or PBKDF2, so each guess is expensive and identical passwords produce different hashes.",
+      "points": [
+        "SHA-256/SHA-3 yes; MD5/SHA-1 no for signatures.",
+        "HMAC = hash + secret key → integrity and origin.",
+        "Passwords: salted, slow functions such as Argon2 or bcrypt."
+      ]
+    },
+    {
+      "heading": "Attacks and the post-quantum transition",
+      "body": "Brute force tries every key, so key length sets the minimum work. Known-plaintext, chosen-plaintext and chosen-ciphertext attacks give the attacker pairs of input and output to analyze. A birthday attack exploits the birthday paradox to find hash collisions in roughly the square root of the number of possible outputs, which is why hash outputs must be long. Side-channel attacks measure timing, power use or electromagnetic emissions instead of attacking the mathematics; constant-time comparisons and hardened hardware reduce them. Large quantum computers would break RSA and ECC. In August 2024 NIST published its first post-quantum standards: FIPS 203 (ML-KEM) for key establishment, and FIPS 204 (ML-DSA) and FIPS 205 (SLH-DSA) for digital signatures. Organizations are starting by inventorying where they use public key cryptography, an approach often called crypto-agility."
+    }
+  ],
+  "example": {
+    "title": "Choosing cryptography for the student portal",
+    "body": "The architect documents which cryptographic control protects each piece of data and why. Writing this down makes reviews easy and shows where keys live, which is where most real failures happen.",
+    "code": {
+      "language": "yaml",
+      "source": "data_in_transit:\n  browser_to_portal: TLS 1.3 (ECDHE key agreement, AES-GCM or ChaCha20-Poly1305)\ndata_at_rest:\n  student_database: AES-256 encryption at rest; keys in the cloud KMS, rotated yearly\n  backups: encrypted with a separate key held by the backup service\npasswords:\n  storage: Argon2id with a unique salt per user (never encrypted, never MD5/SHA-1)\nintegrity:\n  payment_webhook: HMAC-SHA256 with a shared secret from the gateway; compare in constant time\n  result_exports: SHA-256 checksum published with each export file\nsignatures:\n  certificates_issued_to_students: signed by the institute's private key (ECDSA P-256)\nprohibited: [ECB mode, MD5, SHA-1 signatures, RC4, custom algorithms]\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Protecting data at rest",
+      "description": "Disk, database and backup encryption with AES protect data if storage media are lost or stolen."
+    },
+    {
+      "title": "Secure web traffic",
+      "description": "TLS combines asymmetric key exchange with symmetric encryption to protect every HTTPS session."
+    },
+    {
+      "title": "Webhook and API integrity",
+      "description": "HMAC signatures let a server confirm that a callback really came from the payment provider and was not changed."
+    },
+    {
+      "title": "Password databases",
+      "description": "Salted, slow hashing limits damage when a user database is stolen."
+    },
+    {
+      "title": "Software and file integrity",
+      "description": "Published hashes and signatures let users verify downloads and updates."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script uses only the standard library. It shows that a one-character change completely changes a SHA-256 hash, that an HMAC detects a tampered message, how a slow salted password hash is produced, and how fast symmetric key counts grow compared with asymmetric key pairs. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Hashing, HMAC and password storage with Python's standard library.\nimport hashlib, hmac\n\nfor text in ['Pay 1000 to account 42', 'Pay 9000 to account 42']:\n    print(f'SHA-256({text!r}) = {hashlib.sha256(text.encode()).hexdigest()[:24]}...')\n\nkey = b'shared-secret-key'\nmessage = b'Pay 1000 to account 42'\ntag = hmac.new(key, message, hashlib.sha256).hexdigest()\ntampered = b'Pay 9000 to account 42'\nprint('HMAC valid for original:', hmac.compare_digest(tag, hmac.new(key, message, hashlib.sha256).hexdigest()))\nprint('HMAC valid for tampered:', hmac.compare_digest(tag, hmac.new(key, tampered, hashlib.sha256).hexdigest()))\n\n# Passwords: slow, salted key derivation. A fixed salt is used only so the output is reproducible.\nsalt = bytes.fromhex('a3f1c2d4e5b60718293a4b5c6d7e8f90')\nstored = hashlib.pbkdf2_hmac('sha256', b'correct horse battery staple', salt, 600_000)\nprint('PBKDF2 hash prefix:', stored.hex()[:24], '...')\n\nfor users in (10, 100, 1000):\n    print(f'{users} users: symmetric keys needed = {users * (users - 1) // 2}, asymmetric key pairs = {users}')\n"
+    },
+    "output": "SHA-256('Pay 1000 to account 42') = 32f0c206d11fcde72a32dee1...\nSHA-256('Pay 9000 to account 42') = 97c540b6d86341d180640435...\nHMAC valid for original: True\nHMAC valid for tampered: False\nPBKDF2 hash prefix: 356e7ebaba0d64163f1c92eb ...\n10 users: symmetric keys needed = 45, asymmetric key pairs = 10\n100 users: symmetric keys needed = 4950, asymmetric key pairs = 100\n1000 users: symmetric keys needed = 499500, asymmetric key pairs = 1000"
+  },
+  "takeaways": [
+    "Encryption gives confidentiality; hashes and MACs give integrity; signatures add authentication and nonrepudiation.",
+    "Symmetric encryption is fast but needs n(n−1)/2 keys; asymmetric needs one key pair per user.",
+    "Use AES in an authenticated mode such as GCM; never use ECB.",
+    "Use SHA-256 or SHA-3; MD5 and SHA-1 are broken for collision resistance.",
+    "Store passwords with salted, slow functions such as Argon2 or bcrypt.",
+    "Only the key should be secret; plan for post-quantum algorithms."
+  ],
+  "interview": [
+    {
+      "question": "Compare symmetric and asymmetric encryption.",
+      "answer": "Symmetric encryption uses one shared key for encryption and decryption. It is fast and suited to bulk data, with AES as the standard choice. Its problem is key distribution: every pair of parties needs a secret key delivered securely, so n parties need n(n−1)/2 keys. Asymmetric encryption uses a public and private key pair. Anyone can encrypt with the public key, but only the private key holder can decrypt, so keys are easy to distribute and n users need only n pairs. It also enables digital signatures. However, it is much slower. Real systems combine them: TLS uses asymmetric cryptography to authenticate and agree a session key, then symmetric encryption for the data.",
+      "explanation": "Strong answers cover speed, key distribution with the formula, signatures and the hybrid approach used in TLS.",
+      "follow_ups": [
+        "How many keys do 50 people need with symmetric encryption?",
+        "Why is ECC attractive for mobile devices?"
+      ]
+    },
+    {
+      "question": "Why should you never store passwords with plain SHA-256?",
+      "answer": "SHA-256 is designed to be fast, which helps attackers: with a stolen database they can test billions of guesses per second on GPUs. Without a unique salt, identical passwords produce identical hashes, so one cracked hash reveals every user with that password, and precomputed tables work. Password storage needs a deliberately slow, salted function such as Argon2id, bcrypt, scrypt or PBKDF2 with a high iteration count. The salt is unique per user and stored with the hash; the work factor is tuned so a legitimate login takes a fraction of a second but mass guessing becomes very expensive. Encryption is also wrong for passwords, because anyone with the key could recover all of them.",
+      "explanation": "Interviewers want speed, salting and named password hashing functions. Suggesting encryption or MD5 is a red flag.",
+      "follow_ups": [
+        "What is a pepper, and where would you store it?",
+        "How do you migrate existing hashes to Argon2 without forcing resets?"
+      ]
+    },
+    {
+      "question": "What is the difference between a hash and an HMAC?",
+      "answer": "A hash is a one-way fingerprint of data. Anyone can compute it, so it detects accidental corruption or tampering only if the hash itself is delivered through a trusted channel. An attacker who modifies a message can simply recompute the hash. An HMAC mixes a secret key into the hashing process, so only parties holding the key can produce a valid tag. It therefore provides integrity and data origin authentication between those parties. It does not provide nonrepudiation, because both sides share the key and either could have created the tag. Payment gateways use HMACs to sign webhooks. Verifiers should compare tags in constant time to avoid timing side channels.",
+      "explanation": "Strong answers explain why a plain hash is not enough against an attacker and note that HMAC lacks nonrepudiation.",
+      "follow_ups": [
+        "Why must HMAC comparison be constant time?",
+        "When would you use a digital signature instead of an HMAC?"
+      ]
+    },
+    {
+      "question": "Why is ECB mode considered insecure?",
+      "answer": "Electronic Codebook mode encrypts each block independently with the same key, so identical plaintext blocks always produce identical ciphertext blocks. Patterns in the data survive encryption. The famous example is an encrypted bitmap image in which the outline remains clearly visible. An attacker can also rearrange or replay blocks without detection, because ECB provides no integrity. Secure modes add randomness and chaining, such as CBC with a random initialization vector, or counter-based modes. Best practice is authenticated encryption such as AES-GCM or ChaCha20-Poly1305, which provides confidentiality and integrity together and detects tampering. If I see ECB in a code review, I treat it as a finding to fix.",
+      "explanation": "Good answers explain pattern leakage, lack of integrity and the recommended alternatives.",
+      "follow_ups": [
+        "What goes wrong if a GCM nonce is reused?",
+        "Why does CBC need separate integrity protection?"
+      ]
+    },
+    {
+      "question": "What is a birthday attack?",
+      "answer": "A birthday attack exploits the birthday paradox: in a group of only 23 people there is about a 50% chance that two share a birthday. Applied to hashes, an attacker needs roughly the square root of the number of possible outputs to find any two inputs with the same hash, far fewer than finding a match for one specific hash. For a 128-bit hash that is about 2^64 attempts, which is within reach for well-funded attackers. That is why MD5 is unsafe for signatures and why we use outputs of 256 bits or more. In practice it lets an attacker prepare two documents, one harmless and one malicious, with the same hash, get the harmless one signed and substitute the other.",
+      "explanation": "Strong answers explain the square-root effect, give the bit arithmetic and describe a realistic abuse.",
+      "follow_ups": [
+        "How does output length affect resistance to birthday attacks?",
+        "Which real certificate attacks used MD5 collisions?"
+      ]
+    },
+    {
+      "question": "A developer proposes a custom encryption algorithm because 'attackers will not know how it works'. How do you respond?",
+      "answer": "I would explain Kerckhoffs's principle: a secure system must stay secure even when everything except the key is public. Custom algorithms have not had years of public analysis, and history shows that even experts' private designs are usually broken quickly once examined. Secrecy of the design also fails as soon as code is reverse engineered or leaked. I would ask the developer what problem they are solving and point them to well-reviewed libraries and standard constructions, such as AES-GCM through a maintained library, with keys in a key management service. I would add a code review rule that bans custom cryptography and low-level primitives unless the security team approves the design.",
+      "explanation": "This tests judgment and communication. Strong answers cite Kerckhoffs, offer a concrete standard alternative and set a policy guardrail.",
+      "follow_ups": [
+        "What library guidance would you give developers?",
+        "How would you detect custom crypto during code review?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Write a cryptography standard for the institute",
+    "difficulty": "Intermediate",
+    "objective": "Select appropriate algorithms and practices for real data flows and justify each choice.",
+    "statement": "Write a one-page cryptography standard for the coaching institute covering web traffic, stored student data, backups, passwords, payment webhooks and file downloads. Include prohibited algorithms and how keys are managed.",
+    "deliverable": "A table of data flow, protection goal, approved algorithm or protocol, and key location, plus a list of prohibited algorithms and a short key-management section.",
+    "steps": [
+      "List the data flows and decide the protection goals for each.",
+      "Choose an approved algorithm or protocol for each flow.",
+      "State where each key or secret is stored and who can use it.",
+      "Specify password storage parameters.",
+      "List prohibited algorithms and modes with reasons.",
+      "Add a note on preparing for post-quantum migration."
+    ],
+    "checklist": [
+      "Each flow has a goal and a matching control.",
+      "Passwords use a salted, slow function.",
+      "Prohibited list includes ECB, MD5, SHA-1 signatures and custom algorithms.",
+      "Keys are stored separately from the data they protect.",
+      "A post-quantum or crypto-agility note is present."
+    ],
+    "sample_answer": "Web traffic: confidentiality and integrity; TLS 1.3 (TLS 1.2 with ECDHE and AEAD ciphers as fallback); certificate keys in the hosting provider's managed store. Student database: confidentiality; AES-256 at rest; keys in cloud KMS with yearly rotation and access only for the database service. Backups: confidentiality; AES-256 with a separate backup key. Passwords: Argon2id with a unique salt per user and parameters reviewed yearly. Payment webhooks: integrity and origin; HMAC-SHA256 with the gateway secret in the secrets vault; constant-time comparison. Downloads: integrity; SHA-256 checksums published on the site. Prohibited: ECB mode (pattern leakage), MD5 and SHA-1 for signatures (collisions), RC4 and 3DES (weak), custom algorithms (Kerckhoffs's principle). Key management: generated in KMS, never in source code, rotated on schedule or on suspected compromise, access logged. Post-quantum: maintain an inventory of where RSA and ECC are used and prefer libraries that support ML-KEM and ML-DSA as they mature."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "How many symmetric keys are needed for 20 people to each communicate privately with every other person?",
+      "options": [
+        "20",
+        "40",
+        "190",
+        "400"
+      ],
+      "answer": 2,
+      "explanation": "n(n−1)/2 = 20 × 19 / 2 = 190."
+    },
+    {
+      "type": "concept",
+      "question": "Which mode of operation should NOT be used because identical plaintext blocks produce identical ciphertext?",
+      "options": [
+        "GCM",
+        "CBC",
+        "CTR",
+        "ECB"
+      ],
+      "answer": 3,
+      "explanation": "ECB leaks patterns because each block is encrypted independently with the same key."
+    },
+    {
+      "type": "concept",
+      "question": "Which provides nonrepudiation?",
+      "options": [
+        "HMAC-SHA256",
+        "AES-GCM",
+        "A digital signature with a private key",
+        "A SHA-256 checksum"
+      ],
+      "answer": 2,
+      "explanation": "Only the private key holder can create a signature, so it provides nonrepudiation. HMAC keys are shared."
+    },
+    {
+      "type": "scenario",
+      "question": "A breached database stores passwords as unsalted SHA-1 hashes. What is the best long-term fix?",
+      "options": [
+        "Encrypt the hashes with AES",
+        "Switch to unsalted SHA-256",
+        "Use a salted, slow function such as Argon2id or bcrypt",
+        "Store passwords in plaintext in a separate secure table"
+      ],
+      "answer": 2,
+      "explanation": "Password storage needs unique salts and a deliberately slow algorithm."
+    },
+    {
+      "type": "concept",
+      "question": "Which NIST standard published in 2024 specifies a post-quantum key encapsulation mechanism?",
+      "options": [
+        "FIPS 197",
+        "FIPS 203 (ML-KEM)",
+        "FIPS 180-4",
+        "FIPS 140-3"
+      ],
+      "answer": 1,
+      "explanation": "FIPS 203 specifies ML-KEM. FIPS 197 is AES, 180-4 is SHA-2 and 140-3 covers cryptographic modules."
+    }
+  ]
+}

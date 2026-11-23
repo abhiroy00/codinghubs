@@ -1,0 +1,245 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 12,
+  "title": "Network Architecture and the OSI Model",
+  "module": "Physical and network security",
+  "level": "Intermediate",
+  "objectives": [
+    "Describe the seven OSI layers, their data units and typical protocols.",
+    "Map the OSI model to the TCP/IP model.",
+    "Explain TCP's three-way handshake and how TCP and UDP differ.",
+    "Recognize common ports and the security of the protocols that use them.",
+    "Explain IPv4 private ranges, subnetting and IPv6 security considerations.",
+    "Design segmented networks with VLANs, screened subnets and micro-segmentation."
+  ],
+  "definition": "Network architecture is the design of how systems connect and communicate. The OSI model divides communication into seven layers so that each function, from electrical signals to applications, can be understood, secured and troubleshooted separately. Secure network architecture uses segmentation and controlled paths so that a compromise in one area does not spread everywhere.",
+  "theory": [
+    {
+      "heading": "The OSI model",
+      "body": "The seven OSI layers, from bottom to top, are Physical, Data Link, Network, Transport, Session, Presentation and Application. The Physical layer carries bits over cables, fibre or radio. The Data Link layer frames data and uses MAC addresses; switches and Ethernet work here. The Network layer routes packets between networks using IP addresses; routers work here. The Transport layer provides end-to-end delivery with TCP or UDP in segments or datagrams. The Session layer manages sessions, the Presentation layer handles formatting, encoding and encryption, and the Application layer provides services such as HTTP and DNS to applications. Encapsulation adds a header at each layer on the way down and removes it on the way up. A mnemonic is 'Please Do Not Throw Sausage Pizza Away'.",
+      "points": [
+        "Physical (bits), Data Link (frames), Network (packets), Transport (segments).",
+        "Session, Presentation, Application (data).",
+        "Switch = layer 2, router = layer 3."
+      ]
+    },
+    {
+      "heading": "TCP/IP, TCP and UDP",
+      "body": "The TCP/IP model used on the internet has four layers: Link (network access), Internet, Transport and Application, which combine OSI's top three layers and bottom two. TCP is connection-oriented and reliable. It sets up a connection with a three-way handshake of SYN, SYN-ACK and ACK, numbers and acknowledges segments, retransmits losses and controls flow. UDP is connectionless and has no handshake or delivery guarantee, so it is faster and suits DNS queries, streaming, voice and gaming. Security matters at each layer. For example, the TCP handshake can be abused in SYN floods, and UDP's lack of a handshake makes source spoofing and amplification attacks easier.",
+      "points": [
+        "TCP: SYN → SYN-ACK → ACK; reliable.",
+        "UDP: connectionless, fast, easier to spoof."
+      ]
+    },
+    {
+      "heading": "Ports, protocols and addressing",
+      "body": "Ports identify services. Well-known examples include 20/21 FTP, 22 SSH, 23 Telnet, 25 SMTP, 53 DNS, 80 HTTP, 110 POP3, 143 IMAP, 443 HTTPS, 445 SMB and 3389 RDP. Insecure protocols such as Telnet, FTP and plain HTTP send data, including passwords, in clear text and should be replaced by SSH, SFTP or FTPS, and HTTPS. IPv4 private address ranges defined in RFC 1918 are 10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16; they are not routed on the internet and usually reach it through network address translation. Subnetting divides address space; a /24 has 256 addresses and 254 usable hosts. IPv6 has a much larger address space and built-in support for IPsec, but it is often enabled by default and overlooked, so firewalls and monitoring must cover it too.",
+      "points": [
+        "Replace Telnet/FTP/HTTP with SSH/SFTP/HTTPS.",
+        "RFC 1918: 10/8, 172.16/12, 192.168/16.",
+        "Do not forget IPv6 in firewall rules."
+      ]
+    },
+    {
+      "heading": "Network devices and segmentation",
+      "body": "Hubs repeat signals to every port at layer 1 and are obsolete. Switches forward frames by MAC address at layer 2 and support VLANs, which split one physical network into separate logical networks. Routers connect networks at layer 3 and can filter traffic with access control lists. Firewalls enforce policy between zones. A screened subnet, often still called a DMZ, holds internet-facing services between the internet and the internal network, so a compromised web server does not give direct access to internal systems. Segmentation limits lateral movement and reduces compliance scope. Micro-segmentation goes further, applying policies between individual workloads, often with software-defined networking in data centres and the cloud.",
+      "points": [
+        "VLANs separate logical networks.",
+        "Screened subnet (DMZ) isolates public services.",
+        "Segmentation limits lateral movement."
+      ]
+    },
+    {
+      "heading": "Converged and modern architectures",
+      "body": "Converged protocols carry specialized traffic over standard IP networks. Examples include voice over IP, iSCSI for storage over IP, and Fibre Channel over Ethernet, all of which bring their own security requirements, such as separate VLANs and authentication. Software-defined networking separates the control plane, which decides where traffic goes, from the data plane, which forwards it, enabling central, programmable policy. Content delivery networks distribute content close to users and absorb attacks. Cloud networks use virtual private clouds, security groups and private endpoints, which follow the same segmentation principles in software. In every architecture, documenting data flows and trust boundaries is the starting point for securing them."
+    }
+  ],
+  "example": {
+    "title": "Segmented network design for the institute",
+    "body": "The institute's network is split by trust level. Student Wi-Fi never reaches staff systems, internet-facing services sit in a screened subnet, and management interfaces are reachable only from an admin network.",
+    "code": {
+      "language": "yaml",
+      "source": "segments:\n  staff_vlan: {subnet: 10.10.10.0/24, access: staff laptops (802.1X), can reach internal apps}\n  student_wifi: {subnet: 10.20.0.0/22, access: internet only; client isolation on}\n  servers_dmz: {subnet: 172.16.5.0/28, hosts: web server, student portal reverse proxy}\n  management: {subnet: 10.99.0.0/27, access: IT admins via jump host with MFA}\nfirewall_rules:\n  - internet -> servers_dmz: allow 443\n  - servers_dmz -> internal_db: allow 5432 from portal proxy only\n  - student_wifi -> any internal: deny\n  - staff_vlan -> management: deny (use jump host)\n  - any -> internet: allow 80/443/53 via filtering DNS; log all denies\nprotocols:\n  disabled: [telnet, ftp, smbv1]\n  ipv6: filtered with the same policy as IPv4\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Troubleshooting with layers",
+      "description": "The OSI model helps teams locate problems and attacks, from a faulty cable at layer 1 to a malicious request at layer 7."
+    },
+    {
+      "title": "Firewall design",
+      "description": "Knowing ports and protocols lets administrators allow only what each service needs."
+    },
+    {
+      "title": "Limiting ransomware spread",
+      "description": "Segmentation stops malware moving freely from a student device to staff or servers."
+    },
+    {
+      "title": "Compliance scope reduction",
+      "description": "Isolating payment systems into their own segment reduces PCI DSS scope."
+    },
+    {
+      "title": "Cloud network design",
+      "description": "VPCs, subnets and security groups apply the same segmentation principles in the cloud."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script uses the standard ipaddress module to classify addresses as private, public or loopback and to find which network segment each host belongs to. Note that 172.16.5.20 falls outside the /28 DMZ, which ends at .15, so it would not get the DMZ's rules. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Classify addresses and check which network segment each host belongs to.\nimport ipaddress\n\nsegments = {\n    'staff VLAN': ipaddress.ip_network('10.10.10.0/24'),\n    'student Wi-Fi': ipaddress.ip_network('10.20.0.0/22'),\n    'servers (DMZ)': ipaddress.ip_network('172.16.5.0/28'),\n}\nhosts = ['10.10.10.25', '10.20.3.200', '172.16.5.10', '172.16.5.20', '192.168.1.10', '8.8.8.8', '127.0.0.1']\n\nfor host in hosts:\n    ip = ipaddress.ip_address(host)\n    kind = 'loopback' if ip.is_loopback else 'private' if ip.is_private else 'public'\n    segment = next((name for name, net in segments.items() if ip in net), 'no known segment')\n    print(f'{host:<15} {kind:<9} {segment}')\n\ndmz = segments['servers (DMZ)']\nprint(f'{dmz}: {dmz.num_addresses} addresses, {dmz.num_addresses - 2} usable hosts')\n"
+    },
+    "output": "10.10.10.25     private   staff VLAN\n10.20.3.200     private   student Wi-Fi\n172.16.5.10     private   servers (DMZ)\n172.16.5.20     private   no known segment\n192.168.1.10    private   no known segment\n8.8.8.8         public    no known segment\n127.0.0.1       loopback  no known segment\n172.16.5.0/28: 16 addresses, 14 usable hosts"
+  },
+  "takeaways": [
+    "Know the seven OSI layers, their data units and where switches, routers and firewalls operate.",
+    "TCP is reliable with a three-way handshake; UDP is connectionless and easier to spoof.",
+    "Replace clear-text protocols such as Telnet and FTP with SSH and SFTP.",
+    "RFC 1918 private ranges are 10/8, 172.16/12 and 192.168/16.",
+    "Segment networks with VLANs, screened subnets and micro-segmentation.",
+    "Apply the same security policy to IPv6 as to IPv4."
+  ],
+  "interview": [
+    {
+      "question": "Walk me through the OSI model with a security example at each of several layers.",
+      "answer": "The OSI model has seven layers. At the Physical layer, an attacker might tap a cable or plant a rogue device in an open network port, so we lock wiring closets and disable unused ports. At the Data Link layer, ARP spoofing redirects traffic, which dynamic ARP inspection and port security help prevent. At the Network layer, IP spoofing and routing attacks are mitigated with ingress filtering and ACLs. At the Transport layer, SYN floods exhaust connections, countered by SYN cookies and rate limiting. Session and Presentation concerns include session hijacking and encryption, handled by TLS and secure session management. At the Application layer, SQL injection and similar attacks need secure coding and web application firewalls.",
+      "explanation": "Strong answers give the layer order and a real attack and control for several layers rather than reciting names.",
+      "follow_ups": [
+        "Which layer does TLS belong to, and why is it debated?",
+        "Which layers does a stateful firewall inspect?"
+      ]
+    },
+    {
+      "question": "Describe the TCP three-way handshake and how it can be abused.",
+      "answer": "A client starts a TCP connection by sending a SYN with an initial sequence number. The server replies with a SYN-ACK, acknowledging the client's number and sending its own. The client completes the connection with an ACK. In a SYN flood, an attacker sends many SYNs, often from spoofed addresses, and never completes the handshake, so the server fills its table of half-open connections and cannot accept legitimate ones. Mitigations include SYN cookies, which avoid storing state until the handshake completes, shorter timeouts, rate limiting and upstream DDoS protection. Scanners also use the handshake: a SYN scan sends a SYN and treats a SYN-ACK as an open port without completing the connection.",
+      "explanation": "Interviewers expect the three steps, the SYN flood mechanism and at least one mitigation such as SYN cookies.",
+      "follow_ups": [
+        "How do SYN cookies work?",
+        "What is the difference between a SYN scan and a connect scan?"
+      ]
+    },
+    {
+      "question": "Why is network segmentation important, and how would you segment a small organization?",
+      "answer": "Segmentation limits how far an attacker or malware can move after compromising one device, and it lets you apply stronger controls to sensitive systems. It also reduces compliance scope, for example by isolating card-processing systems. For a small organization, I would create separate VLANs or subnets for staff devices, guest or student Wi-Fi, servers, internet-facing services in a screened subnet, and management interfaces. Firewall rules between them would allow only required flows, such as staff reaching internal applications and the web proxy reaching the database on one port. Guest Wi-Fi would reach only the internet. Administrators would use a jump host with MFA for management access. I would log denied traffic to spot misconfigurations and attacks.",
+      "explanation": "Strong answers give concrete segments and specific allowed flows, not just 'use VLANs'.",
+      "follow_ups": [
+        "Is a VLAN by itself a security boundary?",
+        "How does micro-segmentation differ from VLAN segmentation?"
+      ]
+    },
+    {
+      "question": "Which common protocols are insecure, and what replaces them?",
+      "answer": "Telnet sends logins and commands in clear text, so it is replaced by SSH. FTP sends credentials and files unencrypted, replaced by SFTP, which runs over SSH, or FTPS, which uses TLS. Plain HTTP is replaced by HTTPS with HSTS. POP3 and IMAP without TLS expose email passwords, so their TLS-protected versions on ports 995 and 993, or modern authenticated mail clients, are used. SNMP versions 1 and 2c use community strings in clear text, so SNMPv3 with authentication and encryption is preferred. SMBv1 is obsolete and was exploited by WannaCry, so it should be disabled. In audits, I scan for these services and make removing them a priority.",
+      "explanation": "Good answers pair each insecure protocol with its secure replacement and mention real consequences.",
+      "follow_ups": [
+        "How would you find clear-text protocols on your network?",
+        "Why is SMBv1 particularly dangerous?"
+      ]
+    },
+    {
+      "question": "What are the security considerations for IPv6?",
+      "answer": "IPv6 is often enabled by default on modern operating systems even when an organization believes it runs only IPv4. If firewalls, intrusion detection and monitoring are configured only for IPv4, IPv6 traffic can bypass them. Attackers can use rogue router advertisements to redirect traffic, and tunnelling mechanisms such as Teredo can carry IPv6 through IPv4 networks unnoticed. The huge address space makes scanning harder, but addresses can still be discovered from DNS and logs. My approach is to decide deliberately whether IPv6 is used, apply equivalent firewall policies and monitoring for both protocols, enable RA guard on switches, disable unused tunnelling, and include IPv6 in vulnerability scans and asset inventories.",
+      "explanation": "Strong answers stress the unmanaged-by-default risk and give concrete controls such as RA guard and equal firewall policy.",
+      "follow_ups": [
+        "What is a router advertisement attack?",
+        "Should you simply disable IPv6 everywhere?"
+      ]
+    },
+    {
+      "question": "A student device on campus Wi-Fi was able to reach the staff file server. How do you investigate and fix this?",
+      "answer": "First I would confirm the path: check the student Wi-Fi's subnet and VLAN, the firewall and router rules between that segment and the server's segment, and the server's own host firewall. Common causes are a flat network, an overly broad 'allow internal' rule, a misconfigured trunk port, or the server having an interface on the wrong VLAN. I would review logs to see whether any student devices actually accessed files, and involve the data owner if sensitive data might have been read. The fix is to deny all traffic from the student segment to internal ranges by default, allowing only internet access, enable client isolation on the Wi-Fi, require authentication on the file server and add a test that regularly verifies the isolation.",
+      "explanation": "This tests structured investigation and layered fixes, including checking whether data was accessed.",
+      "follow_ups": [
+        "How would you continuously verify segmentation?",
+        "What logs would show whether files were accessed?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Design and verify a segmented network",
+    "difficulty": "Intermediate",
+    "objective": "Design a segmented network with explicit allowed flows and check addressing.",
+    "statement": "Design a network for the coaching institute with staff, student Wi-Fi, servers, an internet-facing zone and management. Choose subnets, list the allowed flows between segments, and identify insecure protocols to disable.",
+    "deliverable": "A diagram or list of segments with subnets, a firewall rule table with source, destination, port and reason, and a list of disabled or replaced protocols.",
+    "steps": [
+      "List the segments needed and their trust levels.",
+      "Assign non-overlapping private subnets of a suitable size to each.",
+      "Write firewall rules that allow only required flows, with a default deny.",
+      "Decide how administrators reach management interfaces.",
+      "List insecure protocols to disable and their replacements.",
+      "Explain how you will test that segmentation works."
+    ],
+    "checklist": [
+      "Subnets are private, non-overlapping and sized appropriately.",
+      "Default deny is applied between segments.",
+      "Student Wi-Fi cannot reach internal systems.",
+      "Management access uses a jump host or equivalent with MFA.",
+      "Insecure protocols are replaced, and IPv6 is considered."
+    ],
+    "sample_answer": "Segments: staff 10.10.10.0/24, student Wi-Fi 10.20.0.0/22 (up to about 1,000 devices), servers 10.30.0.0/26, screened subnet 172.16.5.0/28, management 10.99.0.0/27. Rules: internet to screened subnet TCP 443 (public sites); screened subnet to servers TCP 5432 from the portal proxy only (database); staff to servers TCP 443 and 445 (internal apps and file share); student Wi-Fi to internet TCP 80/443 and DNS through the filtering resolver only, with client isolation; management reachable only from the jump host, which requires MFA; everything else denied and logged. Disabled: Telnet (use SSH), FTP (use SFTP), SMBv1 (use SMBv3 with signing), SNMPv2c (use SNMPv3), HTTP to admin pages (HTTPS only). IPv6: either disabled deliberately on internal segments or filtered with identical rules, with RA guard on switches. Testing: a monthly automated scan from a student-segment probe confirms it reaches nothing internal, and firewall deny logs are reviewed weekly."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "At which OSI layer do routers make forwarding decisions?",
+      "options": [
+        "Layer 2 – Data Link",
+        "Layer 3 – Network",
+        "Layer 4 – Transport",
+        "Layer 7 – Application"
+      ],
+      "answer": 1,
+      "explanation": "Routers forward packets using IP addresses at the Network layer."
+    },
+    {
+      "type": "concept",
+      "question": "What is the correct order of the TCP three-way handshake?",
+      "options": [
+        "SYN, ACK, SYN-ACK",
+        "SYN-ACK, SYN, ACK",
+        "SYN, SYN-ACK, ACK",
+        "ACK, SYN, SYN-ACK"
+      ],
+      "answer": 2,
+      "explanation": "The client sends SYN, the server replies SYN-ACK and the client completes with ACK."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these is NOT an RFC 1918 private IPv4 range?",
+      "options": [
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "100.0.0.0/8"
+      ],
+      "answer": 3,
+      "explanation": "The private ranges are 10/8, 172.16/12 and 192.168/16."
+    },
+    {
+      "type": "scenario",
+      "question": "An administrator manages switches with Telnet. What should replace it?",
+      "options": [
+        "FTP",
+        "SSH",
+        "SNMPv1",
+        "HTTP"
+      ],
+      "answer": 1,
+      "explanation": "SSH provides encrypted, authenticated remote administration."
+    },
+    {
+      "type": "concept",
+      "question": "Where should internet-facing web servers usually be placed?",
+      "options": [
+        "On the staff VLAN",
+        "In a screened subnet (DMZ)",
+        "On the management network",
+        "On the same subnet as the database"
+      ],
+      "answer": 1,
+      "explanation": "A screened subnet isolates public-facing services from internal networks."
+    }
+  ]
+}

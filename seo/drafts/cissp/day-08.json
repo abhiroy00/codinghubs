@@ -1,0 +1,245 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 8,
+  "title": "Security Models and Secure Design Principles",
+  "module": "Asset security, continuity and architecture",
+  "level": "Intermediate",
+  "objectives": [
+    "Explain the reference monitor concept, the trusted computing base and the security kernel.",
+    "Apply the Bell-LaPadula and Biba rules to read and write decisions.",
+    "Describe Clark-Wilson, Brewer-Nash and other models and the problem each solves.",
+    "Apply secure design principles such as least privilege, defense in depth, secure defaults and fail securely.",
+    "Explain zero trust, privacy by design and shared responsibility as design principles.",
+    "Describe how Common Criteria evaluation provides assurance."
+  ],
+  "definition": "Security models are formal descriptions of how a system enforces a security policy, such as preventing secret data from flowing to unauthorized users or preventing untrusted input from corrupting trusted data. Secure design principles are the practical rules architects apply so that systems stay secure even when individual components fail or are attacked.",
+  "theory": [
+    {
+      "heading": "Trusted computing base and the reference monitor",
+      "body": "The trusted computing base (TCB) is the combination of hardware, firmware and software that enforces a system's security policy; if any part of it fails, security fails. The security perimeter separates the TCB from everything else. The reference monitor is the abstract concept that mediates every access by a subject to an object. To be trustworthy it must be tamperproof, always invoked so it cannot be bypassed, and small enough to be verified. The security kernel is the actual implementation of the reference monitor inside the TCB. These ideas explain why designers try to keep security-critical code small and isolated.",
+      "points": [
+        "TCB: everything security depends on.",
+        "Reference monitor: tamperproof, always invoked, verifiable.",
+        "Security kernel: its implementation."
+      ]
+    },
+    {
+      "heading": "Bell-LaPadula: protecting confidentiality",
+      "body": "Bell-LaPadula was developed for the US military to stop classified information leaking to lower levels. Subjects and objects have security levels. The simple security property means no read up: a subject cannot read an object at a higher level. The star (*) property means no write down: a subject cannot write to a lower level, which stops a user or malware copying secret data into a public file. The strong star property allows reading and writing only at the subject's own level. Bell-LaPadula addresses confidentiality only; it does nothing to stop a low-level user corrupting high-level data.",
+      "points": [
+        "No read up (simple security property).",
+        "No write down (* property).",
+        "Confidentiality only."
+      ]
+    },
+    {
+      "heading": "Biba and Clark-Wilson: protecting integrity",
+      "body": "Biba inverts Bell-LaPadula to protect integrity. The simple integrity axiom means no read down: a trusted subject must not read less trustworthy data that could corrupt its decisions. The star integrity axiom means no write up: a low-integrity subject must not modify higher-integrity data. Clark-Wilson takes a commercial view of integrity. Users cannot touch protected data, called constrained data items, directly; they can only run approved programs, called transformation procedures, that perform well-formed transactions. Integrity verification procedures check data consistency, and separation of duties prevents one person from completing a sensitive task alone. Its access triple is subject, program and object.",
+      "points": [
+        "Biba: no read down, no write up.",
+        "Clark-Wilson: well-formed transactions, separation of duties, access triple."
+      ]
+    },
+    {
+      "heading": "Other models",
+      "body": "Brewer-Nash, also called the Chinese Wall model, prevents conflicts of interest: once a consultant reads one client's data, access to competitors' data in the same conflict class is blocked dynamically. Graham-Denning defines rules for creating and deleting subjects and objects and for granting and transferring rights, and Harrison-Ruzzo-Ullman studies whether access rights can leak through such operations. State machine models require every state transition to keep the system secure. Lattice and information flow models describe permitted flows between levels, and noninterference models require that actions at a high level have no visible effect on lower levels, which helps close covert channels."
+    },
+    {
+      "heading": "Secure design principles",
+      "body": "Least privilege gives every user and process only the access it needs. Defense in depth layers independent controls so one failure is not a breach. Secure defaults ship systems locked down, with risky features off until needed. Fail securely means a failure leaves the system in a safe state, such as denying access rather than allowing it. Separation of duties splits sensitive tasks between people. Keep it simple reduces attack surface and makes verification possible. Zero trust removes implicit trust based on network location and verifies every request using identity, device health and context. Privacy by design builds privacy into systems from the start. Shared responsibility recognizes that cloud providers and customers each secure different layers. Assurance can be independently evaluated with the Common Criteria, ISO/IEC 15408, which uses evaluation assurance levels EAL1 to EAL7.",
+      "points": [
+        "Least privilege, defense in depth, secure defaults, fail securely.",
+        "Separation of duties, keep it simple.",
+        "Zero trust, privacy by design, shared responsibility."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Applying the models to the institute's exam system",
+    "body": "The institute stores exam papers, results and public notices. Confidentiality and integrity both matter, so the architect applies different rules to different flows and records the design principles behind each control.",
+    "code": {
+      "language": "yaml",
+      "source": "system: Online exam and results\nlevels: [public, internal, confidential, restricted]\nconfidentiality_rules:   # Bell-LaPadula\n  - unpublished exam papers are restricted; trainers at confidential level cannot read them (no read up)\n  - exam-setting tool cannot save paper content to the public notices area (no write down)\nintegrity_rules:         # Biba / Clark-Wilson\n  - results can be changed only through the approved results-entry program (transformation procedure)\n  - the entering trainer and the approving coordinator must be different people (separation of duties)\n  - a nightly integrity check compares results with signed mark sheets (integrity verification)\ndesign_principles:\n  least_privilege: trainers see only their own batches\n  fail_securely: if the authorization service is down, results entry is refused\n  secure_defaults: new accounts start with no roles\n  zero_trust: every request re-checks identity and device posture\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Designing access control",
+      "description": "Models give architects precise rules for who can read and write what, especially where both confidentiality and integrity matter."
+    },
+    {
+      "title": "Financial and records systems",
+      "description": "Clark-Wilson's well-formed transactions and separation of duties underpin approval workflows in payment and grading systems."
+    },
+    {
+      "title": "Consulting and audit firms",
+      "description": "Chinese Wall controls stop staff accessing competing clients' confidential information."
+    },
+    {
+      "title": "Procurement of secure products",
+      "description": "Common Criteria certificates and evaluation levels help buyers compare assurance claims."
+    },
+    {
+      "title": "Cloud architecture reviews",
+      "description": "Zero trust, least privilege and shared responsibility guide how workloads and identities are designed in the cloud."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script applies Bell-LaPadula and Biba rules to the same read and write requests. Every decision is reversed between the two models, which shows why a system that needs both confidentiality and integrity cannot rely on one model alone. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Bell-LaPadula protects confidentiality; Biba protects integrity. Same levels, opposite rules.\nLEVELS = {'public': 0, 'internal': 1, 'confidential': 2, 'restricted': 3}\n\ndef blp(subject, obj, action):\n    s, o = LEVELS[subject], LEVELS[obj]\n    if action == 'read':\n        return s >= o   # simple security property: no read up\n    return s <= o       # *-property: no write down\n\ndef biba(subject, obj, action):\n    s, o = LEVELS[subject], LEVELS[obj]\n    if action == 'read':\n        return s <= o   # simple integrity axiom: no read down\n    return s >= o       # *-integrity axiom: no write up\n\ntests = [\n    ('confidential', 'restricted', 'read'),\n    ('confidential', 'internal', 'read'),\n    ('confidential', 'internal', 'write'),\n    ('confidential', 'restricted', 'write'),\n]\nprint(f\"{'subject':<13}{'action':<7}{'object':<13}{'Bell-LaPadula':<15}Biba\")\nfor subject, obj, action in tests:\n    ok = lambda allowed: 'allow' if allowed else 'deny'\n    print(f'{subject:<13}{action:<7}{obj:<13}{ok(blp(subject, obj, action)):<15}{ok(biba(subject, obj, action))}')\n"
+    },
+    "output": "subject      action object       Bell-LaPadula  Biba\nconfidential read   restricted   deny           allow\nconfidential read   internal     allow          deny\nconfidential write  internal     deny           allow\nconfidential write  restricted   allow          deny"
+  },
+  "takeaways": [
+    "The reference monitor must be tamperproof, always invoked and verifiable; the security kernel implements it.",
+    "Bell-LaPadula protects confidentiality: no read up, no write down.",
+    "Biba protects integrity: no read down, no write up.",
+    "Clark-Wilson enforces integrity through well-formed transactions and separation of duties.",
+    "Brewer-Nash prevents conflicts of interest dynamically.",
+    "Design for least privilege, defense in depth, secure defaults, failing securely and zero trust."
+  ],
+  "interview": [
+    {
+      "question": "Explain the Bell-LaPadula model.",
+      "answer": "Bell-LaPadula is a confidentiality model created for military classification systems. Subjects and objects are assigned security levels such as confidential and secret. The simple security property says no read up: a user cleared for confidential cannot read secret documents. The star property says no write down: a secret-level subject cannot write into a confidential or public object, which stops data being leaked deliberately or by malware acting on the user's behalf. The strong star property limits reading and writing to the subject's own level. Its weakness is that it ignores integrity, so a low-level user could still write up and corrupt more trusted data, which is why Biba exists.",
+      "explanation": "Strong answers name both properties with their meaning and note the model's integrity gap. Mixing up 'no read up' and 'no write down' is the classic error.",
+      "follow_ups": [
+        "Why does the star property block writing down even for trusted users?",
+        "How would you combine Bell-LaPadula with an integrity model?"
+      ]
+    },
+    {
+      "question": "How does Biba differ from Bell-LaPadula?",
+      "answer": "Biba protects integrity rather than confidentiality, so its rules are the inverse. Its simple integrity axiom says no read down: a high-integrity subject should not read lower-integrity data that could corrupt its decisions, such as a payroll process trusting an unvalidated spreadsheet. Its star integrity axiom says no write up: a low-integrity subject must not modify higher-integrity data, such as an intern editing the master price list. Bell-LaPadula says no read up and no write down. Because the rules conflict, a system needing both properties uses separate mechanisms or labels, for example classification for secrecy and integrity levels for trust, rather than one lattice.",
+      "explanation": "Interviewers expect the inverted rules with a practical example of each. Saying Biba protects availability is a common mistake.",
+      "follow_ups": [
+        "Give a real system where integrity matters more than confidentiality.",
+        "What is the invocation property in Biba?"
+      ]
+    },
+    {
+      "question": "What is the Clark-Wilson model and where would you see it?",
+      "answer": "Clark-Wilson is an integrity model designed for commercial systems. Protected data, called constrained data items, cannot be changed directly by users. Changes happen only through approved programs called transformation procedures, which perform well-formed transactions that keep data consistent. Integrity verification procedures check that the data stays valid, and unconstrained data items, such as user input, must be validated before they become trusted. Access is defined as a triple of subject, program and object, and separation of duties means no single person can complete a sensitive process alone. You see it in banking, payroll and grading systems, where entries go through an application with validation and a separate approval step.",
+      "explanation": "Strong answers mention the access triple, well-formed transactions and separation of duties, with a commercial example.",
+      "follow_ups": [
+        "What is the difference between a CDI and a UDI?",
+        "How does Clark-Wilson prevent a single administrator from committing fraud?"
+      ]
+    },
+    {
+      "question": "What does it mean for a system to fail securely?",
+      "answer": "Failing securely means that when a component fails, the system ends up in a state that preserves security rather than bypassing it. If an authorization service is unreachable, the application should deny access instead of letting everyone in. If a firewall crashes, it should block traffic rather than pass it, unless a documented safety requirement says otherwise. Error messages should not reveal stack traces or internal details. The distinction between fail-secure and fail-safe matters physically: an electronic door to a server room may fail secure and stay locked, but fire-exit doors must fail safe and open, because human safety takes priority over protecting assets.",
+      "explanation": "Strong answers give both a software example and the physical fail-safe versus fail-secure distinction, putting life safety first.",
+      "follow_ups": [
+        "When would you choose fail-open for a network device?",
+        "How do you test failure behavior before production?"
+      ]
+    },
+    {
+      "question": "What is zero trust, and how does it change network design?",
+      "answer": "Zero trust removes implicit trust based on network location. Being inside the office network or VPN no longer grants access. Every request is authenticated and authorized using identity, device health and context, with least privilege and continuous verification. NIST SP 800-207 describes the architecture: a policy decision point evaluates requests and a policy enforcement point allows or blocks each session. In design terms, flat internal networks give way to micro-segmentation, applications are published through identity-aware proxies instead of broad VPN access, and monitoring assumes attackers may already be inside. It is a strategy implemented over time, not a single product. Most organizations start with strong identity, device management and their most sensitive applications.",
+      "explanation": "Good answers reject location-based trust, mention continuous verification and NIST SP 800-207, and treat zero trust as a journey.",
+      "follow_ups": [
+        "What is the role of the policy enforcement point?",
+        "How would you introduce zero trust for a small organization?"
+      ]
+    },
+    {
+      "question": "Your developers want to give a reporting service full database admin rights because it is easier. How do you apply secure design principles?",
+      "answer": "I would explain the risk with least privilege: if the reporting service is compromised, admin rights would let an attacker read, change or delete everything. The secure design is a dedicated read-only account limited to the views the reports need, ideally on a read replica, so a compromise cannot change production data or affect availability. Secrets should come from a vault rather than configuration files, and queries should be logged. Defense in depth adds network rules allowing only the reporting host to connect. If the team argues this slows them down, I would provide a standard pattern or template so the secure option becomes the easy option, which is how principles stick in practice.",
+      "explanation": "This tests applying principles to a real request. Strong answers propose a concrete least-privilege design and make the secure path easy rather than just refusing.",
+      "follow_ups": [
+        "How would you detect privilege creep over time?",
+        "What is the difference between least privilege and need to know?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Apply security models to a results workflow",
+    "difficulty": "Intermediate",
+    "objective": "Choose and apply the right security models and design principles for a system that needs both confidentiality and integrity.",
+    "statement": "The institute is building a workflow where trainers enter marks, a coordinator approves them, results are published on a set date and parents can view only their child's results. Design the security rules for this workflow.",
+    "deliverable": "A short design document listing classification levels, confidentiality rules, integrity rules, the models they come from, and at least five secure design principles with how each is applied.",
+    "steps": [
+      "Identify the data objects and their confidentiality and integrity levels.",
+      "Write confidentiality rules and map them to Bell-LaPadula.",
+      "Write integrity rules and map them to Biba or Clark-Wilson.",
+      "Define the transformation procedures and separation of duties.",
+      "Apply at least five design principles, including fail securely and least privilege.",
+      "Explain how the design handles publication day, when results move from restricted to public."
+    ],
+    "checklist": [
+      "Both confidentiality and integrity rules are present.",
+      "Models are named correctly with their rules.",
+      "Separation of duties is enforced in the approval flow.",
+      "Failure behavior is specified.",
+      "Reclassification on publication is handled explicitly."
+    ],
+    "sample_answer": "Objects: draft marks (confidential, high integrity), approved results (restricted until publication, high integrity), published results (public, high integrity), parent accounts (confidential). Confidentiality (Bell-LaPadula): trainers cannot read other batches' marks or approved results (no read up); the results system cannot write restricted results to the public notices area before publication (no write down). Integrity (Clark-Wilson): marks change only through the results-entry program, which validates ranges and logs every change; the trainer enters and a different coordinator approves (separation of duties); a nightly integrity check compares totals with signed mark sheets. Biba: parent-submitted queries are low-integrity and cannot modify results directly. Principles: least privilege by batch; secure defaults with new users having no roles; fail securely so entry is refused if the approval service is down; defense in depth with MFA, logging and backups; zero trust re-checking identity per request. Publication: the coordinator triggers a controlled reclassification that copies approved results to the public view at the set time; parents see only their child's record by enforcing ownership checks."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which Bell-LaPadula rule prevents a subject from writing information to a lower security level?",
+      "options": [
+        "Simple security property",
+        "Star (*) property",
+        "Simple integrity axiom",
+        "Invocation property"
+      ],
+      "answer": 1,
+      "explanation": "The star property is 'no write down', which prevents leakage to lower levels."
+    },
+    {
+      "type": "concept",
+      "question": "Which model's rules are 'no read down' and 'no write up'?",
+      "options": [
+        "Bell-LaPadula",
+        "Biba",
+        "Brewer-Nash",
+        "Graham-Denning"
+      ],
+      "answer": 1,
+      "explanation": "Biba protects integrity with no read down and no write up."
+    },
+    {
+      "type": "scenario",
+      "question": "A consulting firm must stop an analyst who has viewed Bank A's data from accessing Bank B's data. Which model fits?",
+      "options": [
+        "Clark-Wilson",
+        "Bell-LaPadula",
+        "Brewer-Nash (Chinese Wall)",
+        "Biba"
+      ],
+      "answer": 2,
+      "explanation": "Brewer-Nash dynamically prevents conflicts of interest between competing clients."
+    },
+    {
+      "type": "concept",
+      "question": "Which is NOT a required characteristic of a reference monitor?",
+      "options": [
+        "Tamperproof",
+        "Always invoked",
+        "Verifiable",
+        "Encrypted"
+      ],
+      "answer": 3,
+      "explanation": "A reference monitor must be tamperproof, always invoked and small enough to verify; encryption is not a requirement."
+    },
+    {
+      "type": "scenario",
+      "question": "An authorization service crashes and the application starts allowing all requests. Which principle was violated?",
+      "options": [
+        "Defense in depth",
+        "Fail securely",
+        "Privacy by design",
+        "Keep it simple"
+      ],
+      "answer": 1,
+      "explanation": "Failing securely means a failure should deny access, not grant it."
+    }
+  ]
+}
