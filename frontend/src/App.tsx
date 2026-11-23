@@ -56,6 +56,7 @@ const Policies = lazy(() => import('./pages/Policies').then((m) => ({ default: m
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
 const BookTutor = lazy(() => import('./pages/BookTutor').then((m) => ({ default: m.BookTutor })))
 const LatestJobs = lazy(() => import('./pages/LatestJobs').then((m) => ({ default: m.LatestJobs })))
+const Certificates = lazy(() => import('./pages/Certificates').then((m) => ({ default: m.Certificates })))
 const StudioApp = lazy(() => import('./studio/Studio').then((m) => ({ default: m.StudioApp })))
 
 function LegacyInterviewRedirect(){const location=useLocation();return <Navigate to={location.pathname.replace(/^\/interview-prep(?=\/|$)/,'/interview')+location.search+location.hash} replace/>}
@@ -138,7 +139,7 @@ export function AppContent() {
                 <Route path="ai/mock-interview" element={<MockInterview />} />
                 <Route path="ai/resume-analyzer" element={<ResumeAnalyzer />} />
                 <Route path="ai/job-matcher" element={<JobMatcher />} />
-                <Route path="certificates" element={<Navigate to="/interview/#certificates" replace />} />
+                <Route path="certificates" element={<Certificates />} />
                 <Route path="certificates/:slug" element={<CertificateRedirect />} />
               <Route element={<Layout />}>
                 <Route path="policies" element={<Policies />} />

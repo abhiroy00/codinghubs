@@ -144,6 +144,13 @@ export const JOBS_META: PageMeta = {
   },
 }
 
+/** /certificates/ shows each visitor's own certificates and progress, so it stays out of search results. */
+export const CERTIFICATES_META: PageMeta = {
+  path: '/certificates/', title: 'Course Certificates | Coding Hubs',
+  description: 'Earn a Coding Hubs School of AI certificate of completion by finishing a course roadmap, and view your certificates.',
+  image: LOGO_URL, indexable: false,
+}
+
 export const STUDIO_META: PageMeta = {
   path: '/interview-studio', title: 'Interview Studio | Coding Hubs',
   description: 'Think clearly. Code confidently. Interview better. Original coding practice, AI mock interviews and design workspaces from Coding Hubs.',
