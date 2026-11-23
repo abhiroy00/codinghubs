@@ -31,7 +31,6 @@ Each `pages/<name>.mp4` is a ~10 s section (8-9 s for the shorter clips) of the 
 | `ai` | /ai | [Running Codes on a Computer #6804121](https://www.pexels.com/video/running-codes-on-a-computer-6804121/) | cottonbro studio |
 | `ai-tools` | /ai-tools | [A Computer Code Running on Screen #6804117](https://www.pexels.com/video/a-computer-code-running-on-screen-6804117/) | cottonbro studio |
 | `blog` | /blog | [Woman Writing on a Notebook #5173824](https://www.pexels.com/video/woman-writing-on-a-notebook-5173824/) | Bethany Ferr |
-| `blog-article` | /blog/:slug | [A Man Reading an E-Book by the Window #15928111](https://www.pexels.com/video/a-man-reading-an-e-book-by-the-window-15928111/) | khanhhoangminh |
 | `projects` | /projects | [Person Sticking Sticky Notes on a Whiteboard #7429487](https://www.pexels.com/video/person-sticking-sticky-notes-on-a-whiteboard-7429487/) | cottonbro studio |
 | `project-guides` | /project-guides | [Close up on Coding on Laptop Screen #11274330](https://www.pexels.com/video/close-up-on-coding-on-laptop-screen-11274330/) | Raddy |
 | `book-a-tutor` | /book-a-tutor | [Man Writing in His Notebook While Looking at the Laptop #4873104](https://www.pexels.com/video/man-writing-in-his-notebook-while-looking-at-the-laptop-4873104/) | Tima Miroshnichenko |

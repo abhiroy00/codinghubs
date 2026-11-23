@@ -24,7 +24,7 @@ const POSTER_SM = homePosterSmall
 /** Retained page identifiers select the matching static banner illustration. */
 export type HeroClip =
   | 'courses' | 'course-detail' | 'interview-prep' | 'interview-prep-detail' | 'faq' | 'ai' | 'ai-tools'
-  | 'blog' | 'blog-article' | 'projects' | 'project-guides' | 'book-a-tutor' | 'latest-jobs' | 'our-work'
+  | 'blog' | 'projects' | 'project-guides' | 'book-a-tutor' | 'latest-jobs' | 'our-work'
   | 'learn' | 'locations' | 'location-detail' | 'policies'
 const VIDEO_MIN_WIDTH = 768
 const HD_MIN_WIDTH = 1100
