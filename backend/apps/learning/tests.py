@@ -124,6 +124,8 @@ class LearningTests(TestCase):
     def test_seo_only_published_content_and_escaped_html(self):
         self.assertEqual(self.client.get('/learn/ai-engineering/cosine/').status_code, 404)
         self.assertNotIn('cosine/', self.client.get('/sitemap-learning.xml').content.decode())
+        self.assertContains(self.client.get('/learn/'), 'content="noindex, follow"')
+        self.assertNotIn('<loc>', self.client.get('/sitemap-learning.xml').content.decode())
         self.publish_fixture()
         response = self.client.get('/learn/ai-engineering/cosine/')
         self.assertContains(response, 'rel="canonical"')
@@ -131,6 +133,8 @@ class LearningTests(TestCase):
         self.assertNotContains(response, '<script>alert(1)</script>')
         sitemap = self.client.get('/sitemap-learning.xml').content.decode()
         self.assertIn('cosine/', sitemap)
+        self.assertIn('https://codinghubs.in/learn/</loc>', sitemap)
+        self.assertContains(self.client.get('/learn/'), 'content="index, follow, max-image-preview:large"')
         self.assertNotIn('<lastmod>', sitemap)  # no published revision recorded, so no date is claimed
         self.assertIn('content="index, follow, max-image-preview:large"', response.content.decode())
 

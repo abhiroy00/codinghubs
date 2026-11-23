@@ -5,7 +5,7 @@ from django.db.models import Max, Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 from apps.content.ssr import respond, not_found
-from apps.content.robots import INDEX, get_robots_directive, hub_status
+from apps.content.robots import get_robots_directive, hub_status
 from .models import Concept, LearningCourse, Module
 
 BASE = '/learn/ai-engineering/'
@@ -79,7 +79,8 @@ def sitemap(request):
         rows.append((f'/learn/{course}/{c.slug}/', c.published_at))
         hubs[course] = max(filter(None, (hubs.get(course), c.published_at)), default=None)
     live = set(LearningCourse.objects.filter(slug__in=hubs, is_active=True).values_list('slug', flat=True))
-    rows = [('/learn/', max(filter(None, hubs.values()), default=None))] + [(f'/learn/{course}/', mod) for course, mod in sorted(hubs.items()) if course in live] + rows
+    # The directory is listed (and indexed) only once some path has a published concept.
+    rows = ([('/learn/', max(filter(None, hubs.values()), default=None))] if rows else []) + [(f'/learn/{course}/', mod) for course, mod in sorted(hubs.items()) if course in live] + rows
     body = ''.join(f'<url><loc>{xml_escape(settings.SITE_URL + path)}</loc>' + (f'<lastmod>{mod.date().isoformat()}</lastmod>' if mod else '') + '</url>' for path, mod in rows)
     return HttpResponse('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + body + '</urlset>', content_type='application/xml')
 
@@ -92,4 +93,5 @@ def academy_page(request):
     for course in LearningCourse.objects.filter(is_active=True):
         body += f'<section><h2><a href="/learn/{course.slug}/">{escape(course.title)}</a></h2><p>{escape(course.summary)}</p><p>{escape(course.category)} · {escape(course.level)} · self-paced</p></section>'
     body += '<a href="/visual-lab/">Explore the interactive visual lab</a></main>'
-    return respond({'title': title, 'description': description, 'robots': INDEX, 'canonical': settings.SITE_URL + '/learn/'}, body)
+    published = Concept.objects.filter(Q(chapter__module__course__is_active=True) | Q(chapter__module__course__isnull=True), version__gt=0).count()
+    return respond({'title': title, 'description': description, 'robots': get_robots_directive(hub_status(published)), 'canonical': settings.SITE_URL + '/learn/'}, body)
