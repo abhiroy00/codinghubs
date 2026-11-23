@@ -18,7 +18,7 @@ for(const course of Object.values(courses)){
   const difficulty=level.level===1?'Beginner':level.level===4?'Advanced':'Intermediate'
   if(level.articles.length)add(`/interview/${course.slug}/levels/${level.level}/`,`${course.name}: ${level.title}`,category,difficulty,level.title,level.title,'level')
   for(const a of level.articles)add(`/interview/${course.slug}/levels/${level.level}/articles/${a.slug}/`,a.lesson.title,category,difficulty,a.lesson.definition||a.lesson.title,a.lesson,'article')
-  for(const d of level.days.filter(d=>d.available))add(`/interview/${course.slug}/levels/${level.level}/days/${d.day}/`,`${course.name} day ${d.day}: ${d.title}`,category,difficulty,d.title,d,'day')
+  // Days with a published lesson 301 to their article (listed above); the rest are unlisted study briefs.
  }
 }
 add('/interview/generative-ai/','Generative AI','AI & Technology','Beginner','A four-level Generative AI study roadmap with substantive articles and original interview questions.','Generative AI','course')
@@ -27,7 +27,7 @@ for(const level of genai){
  const data=await read(`frontend/src/learning/genai-generated/level-${level.level}.json`)
  add(`/interview/generative-ai/levels/${level.level}/`,level.title,'AI & Technology',difficulty,level.title,level.title,'level')
  for(const a of level.articleSlugs){const questions=data.questions.filter(q=>q.article===a.slug);add(`/interview/generative-ai/levels/${level.level}/articles/${a.slug}/`,a.title,'AI & Technology',difficulty,a.summary,{article:data.articles?.find(x=>x.slug===a.slug),questions},'article')}
- for(const d of level.days)add(`/interview/generative-ai/levels/${level.level}/days/${d.day}/`,d.title,'AI & Technology',difficulty,`Generative AI day ${d.day}: ${d.title}`,d,'day')
+ // Every GenAI day 301s to its first article, which is listed above.
 }
 const serialized=JSON.stringify(rows.sort((a,b)=>a.url.localeCompare(b.url)))+'\n'
 const destination=path.join(root,'backend/apps/accounts/interview_catalog.json')
@@ -42,5 +42,5 @@ const summaries=JSON.stringify(rows.filter(r=>r.kind==="guide").map(({search,...
 if(process.argv.includes("--check")){if(JSON.stringify(JSON.parse(await readFile(summariesPath,"utf8")))!==JSON.stringify(JSON.parse(summaries)))throw Error("Interview summaries are stale.")}else await writeFile(summariesPath,summaries)
 
 const seoPath=path.join(root,"frontend/src/seo/roadmap-summary.json")
-const seo=Object.fromEntries(Object.entries(courses).map(([slug,row])=>[slug,{primary:row.primary,levels:row.levels.map(({level,title})=>({level,title}))}]))
+const seo=Object.fromEntries(Object.entries(courses).map(([slug,row])=>[slug,{primary:row.primary,completeLessons:row.availableLessons,levels:row.levels.map(({level,title})=>({level,title}))}]))
 if(process.argv.includes("--check")){if(JSON.stringify(JSON.parse(await readFile(seoPath,"utf8")))!==JSON.stringify(seo))throw Error("Roadmap SEO summary is stale")}else await writeFile(seoPath,JSON.stringify(seo)+"\n")

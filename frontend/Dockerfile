@@ -37,6 +37,7 @@ FROM nginx:1.27-alpine
 COPY --from=build /workspace/frontend/dist /usr/share/nginx/html
 COPY --from=admin-build /admin-panel/dist /usr/share/nginx/html/admin-panel
 COPY frontend/nginx.conf /etc/nginx/templates/default.conf.template
+COPY --from=build /workspace/frontend/dist-nginx/ /etc/nginx/redirects/
 ENV BACKEND_HOST=backend:8000 \
     SERVER_NAME=_ \
     ADMIN_SERVER_NAME=admin.invalid
