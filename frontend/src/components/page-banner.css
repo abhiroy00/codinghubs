@@ -248,3 +248,34 @@
 .hv-host.hv-host.hv-host:has(> .page-banner-art).st-hero :is(.st-text-link, .st-hero-foot span),
 .hv-host.hv-host.hv-host:has(> .page-banner-art).gig-hero .gig-actions a { color: #90dfff !important; }
 .expert-banner .btn-ink { background: #2864e8; border-color: #3779ff; color: #fff; }
+
+/* ===== Light inner-page heroes (same look as the blog); home keeps its own video hero ===== */
+.hv-light { display: none; }
+.hv-host.hv-host.hv-host:has(> .hv-light) {
+  --hv-ink: #0b1f3a;
+  --hv-text: #475569;
+  --hv-kicker: #2563eb;
+  --hv-accent: #2563eb;
+  --hv-accent-grad: linear-gradient(90deg, #2563eb, #3b82f6);
+  background: radial-gradient(60% 80% at 85% 10%, rgba(37, 99, 235, 0.1), transparent 60%), linear-gradient(180deg, #eef3ff 0%, #f7f9ff 100%) !important;
+  color: #475569 !important;
+  border: 0 !important;
+  border-bottom: 1px solid #dbe4f5 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.hv-host.hv-host.hv-host:has(> .hv-light) :is(h1, .display-lg, .display-xl) { color: #0b1f3a !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) h2:not(a *) { color: #0b1f3a !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) :is(.csx-kicker, .learn-kicker, .bl-eyebrow, .pj-eyebrow, .ow-eyebrow, .eyebrow, .academy-eyebrow, .gig-kicker, .st-eyebrow) { color: #2563eb !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) :is(.csx-pill-ghost, .learn-button-quiet) { border-color: #b9cdf5 !important; background: #ffffff !important; color: #0b1f3a !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) :is(.csx-pill-ghost, .learn-button-quiet):hover { border-color: #2563eb !important; background: #f2f6ff !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) :focus-visible { outline-color: #2563eb !important; }
+.hv-host:has(> .hv-light) > :is(.bl-blob, .bl-grid-bg) { display: none; }
+.bl-main:has(.hv-light) > .breadcrumb { color: #64748b; }
+.bl-main:has(.hv-light) > .breadcrumb a { color: #2563eb; }
+/* Text inside light heroes whose page CSS assumed a dark background (locations, tutors, academy, studio…). */
+.hv-host.hv-host.hv-host:has(> .hv-light) :is(h1, h2, h3):not(a *) { color: #0b1f3a !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) h1 :is(span, em, b, i, strong) { color: #2563eb !important; -webkit-text-fill-color: #2563eb !important; background: none !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) :is(p, li, small, dt, dd, span, figcaption, .sub, .lede):not(h1 *, h2 *, h3 *, a *, button *, label *, [class*="card"] *, [class*="badge"], [class*="pill"]) { color: #475569 !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) :is(.breadcrumb, .loc-breadcrumb) :is(a, span) { color: #2563eb !important; }
+.hv-host.hv-host.hv-host:has(> .hv-light) a:not([class]) { color: #2563eb !important; }

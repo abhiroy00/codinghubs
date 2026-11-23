@@ -69,10 +69,11 @@ export function FsFooter({ home = false }: { home?: boolean }) {
 
   return (
     <>
-    <section className={`ch-band${home ? '' : ' ch-band--editorial'}`} aria-labelledby="ch-band-title">
+    {/* The demo band above the footer appears on the home page only. */}
+    {home && (
+    <section className="ch-band" aria-labelledby="ch-band-title">
       <div className="ch-band-card">
         <div className="ch-band-copy">
-          {!home && <div className="ch-band-stamp" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="m14 2 3 8 8 4-8 3-3 9-3-9-9-3 9-4 3-8Z" stroke="currentColor" strokeWidth="1.5" /></svg>Your next chapter starts with a conversation</div>}
           <p className="ch-band-kicker"><span aria-hidden="true" />Free · Live online · 2 hours</p>
           <h2 id="ch-band-title">Try a real class before you choose a course.</h2>
           <p>See how we teach, follow a live demo and ask the trainer your questions. No payment needed.</p>
@@ -85,6 +86,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
         </div>
       </div>
     </section>
+    )}
     <footer className="ftr fx" id="site-footer">
       <span className="fx-blob" aria-hidden="true"></span>
       <div className="wrap">

@@ -148,3 +148,26 @@
 .at-search input:focus-visible { outline: 3px solid #9cc0ff; outline-offset: 2px; }
 .at-empty { margin: 1rem auto; text-align: center; color: #e6edf8; }
 .at-empty button { padding: 0; border: 0; background: none; color: #9cc0ff; font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+/* ===== Light theme (matches the blog / insights pages) ===== */
+.at-band { background: radial-gradient(60% 50% at 85% 0%, rgba(37, 99, 235, 0.1), transparent 60%), linear-gradient(180deg, #eef3ff 0%, #edf2ff 100%); color: #475569; }
+.at-stars { display: none; }
+.at-head.hv-host.hv-host.hv-host { background: transparent !important; border: 0 !important; }
+.at-head h1 { color: #0b1f3a; }
+.at-head .at-accent { color: #2563eb; background: none; -webkit-text-fill-color: #2563eb; }
+.at-head p { color: #475569; }
+.at-chips button { border-color: #dbe4f5; background: #fff; color: #0b1f3a; }
+.at-chips button span { color: #64748b; }
+.at-chips button:hover { border-color: #2563eb; color: #2563eb; }
+.at-chips button.on { border-color: #2563eb; background: #2563eb; color: #fff; }
+.at-chips button.on span { color: #dbe7ff; }
+.at-count, .at-note { color: #64748b; }
+.at-card { border-color: #dbe4f5; background: #fff; box-shadow: 0 1px 2px rgba(11, 31, 58, 0.04); }
+.at-card::before { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+.at-card:hover, .at-card:focus-visible { background: #fff; box-shadow: 0 24px 44px -30px rgba(11, 31, 58, 0.5); }
+.at-text strong { color: #0b1f3a; }
+.at-text > span { color: #475569; }
+.at-go, .at-card:hover .at-go, .at-card:focus-visible .at-go { color: #2563eb; }
+.at-search input { border-color: #dbe4f5; background: #fff; }
+.at-empty { color: #475569; }
+.at-empty button { color: #2563eb; }
