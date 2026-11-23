@@ -72,7 +72,9 @@ function ResourceActionsForUser({ resource }: { resource: string }) {
       setBusy(false);
     }
   }
-  if (loading) return <p role="status">Loading account…</p>;
+  // Server HTML and the first client render are identical (the account is unknown in both), so this renders
+  // nothing rather than visible "loading" text that crawlers would index as page content.
+  if (loading) return null;
   if (!user)
     return (
       <p>
