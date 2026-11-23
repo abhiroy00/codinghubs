@@ -1,0 +1,256 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 2,
+  "title": "Threat Modeling: STRIDE, PASTA and Attack Trees",
+  "module": "Security and risk management",
+  "level": "Beginner",
+  "objectives": [
+    "Explain what threat modeling is, when it should happen and what it produces.",
+    "Distinguish a threat, a threat agent, a vulnerability and a risk.",
+    "Apply STRIDE to the elements of a data flow diagram, including trust boundaries.",
+    "Compare STRIDE, PASTA, attack trees and DREAD, and choose one for a given situation.",
+    "Turn identified threats into decisions: mitigate, avoid, transfer or accept.",
+    "Explain how threat modeling supports risk management and secure development in CISSP."
+  ],
+  "definition": "Threat modeling is a structured way to find out what can go wrong with a system before attackers do. The team describes the system, identifies threats against its assets and trust boundaries, ranks them, and decides how to respond. It works best early in design, when changes are cheap, and should be repeated whenever the system or its environment changes.",
+  "theory": [
+    {
+      "heading": "Threats, threat agents, vulnerabilities and risk",
+      "body": "These words are often mixed up, and CISSP questions depend on keeping them apart. A threat is a potential cause of harm, such as credential theft or data tampering. A threat agent, or threat actor, is whoever or whatever carries it out: a criminal group, a careless insider, a competitor or even a flood. A vulnerability is a weakness that a threat can exploit, such as a missing input check or an unpatched server. Risk is the likelihood that a threat exploits a vulnerability, combined with the impact on an asset. Threat modeling sits between asset identification from Day 1 and formal risk analysis. It tells you which threats are realistic for which assets, so risk analysis can concentrate on what matters.",
+      "points": [
+        "Threat: what could happen.",
+        "Threat agent: who or what makes it happen.",
+        "Vulnerability: the weakness that lets it happen.",
+        "Risk: likelihood × impact on an asset."
+      ]
+    },
+    {
+      "heading": "The four questions and when to model",
+      "body": "Adam Shostack's widely used framing reduces threat modeling to four questions. What are we working on? What can go wrong? What are we going to do about it? Did we do a good job? The first is usually answered with a data flow diagram (DFD) showing external entities, processes, data stores, data flows and trust boundaries. A trust boundary is any place where data passes between parts of the system with different levels of trust, such as the internet and an API, or an application and its database. Most serious threats sit on these boundaries. Modeling is cheapest during design, but it is also valuable before a major change, after an incident, and when a new integration or vendor is added.",
+      "points": [
+        "Model early in the SDLC, then update it with each significant change.",
+        "Draw trust boundaries explicitly; attackers cross them."
+      ]
+    },
+    {
+      "heading": "STRIDE",
+      "body": "STRIDE, developed at Microsoft, is a mnemonic for six threat categories, each the opposite of a security property. Spoofing violates authentication, for example logging in with stolen credentials. Tampering violates integrity, such as changing a price in a request. Repudiation violates nonrepudiation, when a user denies an action and no reliable log proves otherwise. Information disclosure violates confidentiality, such as an error page that leaks stack traces. Denial of service violates availability, for example flooding a login endpoint. Elevation of privilege violates authorization, when an ordinary user reaches admin functions. With STRIDE-per-element, each DFD element type gets only the relevant categories. External entities face spoofing and repudiation; processes face all six; data flows and data stores face tampering, information disclosure and denial of service, and stores holding audit logs also face repudiation.",
+      "points": [
+        "Spoofing ↔ Authentication",
+        "Tampering ↔ Integrity",
+        "Repudiation ↔ Nonrepudiation",
+        "Information disclosure ↔ Confidentiality",
+        "Denial of service ↔ Availability",
+        "Elevation of privilege ↔ Authorization"
+      ]
+    },
+    {
+      "heading": "PASTA, attack trees and other approaches",
+      "body": "PASTA, the Process for Attack Simulation and Threat Analysis, is a risk-centric method with seven stages: define business objectives, define the technical scope, decompose the application, analyze threats, analyze vulnerabilities and weaknesses, model and simulate attacks, and analyze risk and impact. It ties threats to business impact, so it suits organizations that want threat modeling to feed risk management directly. Attack trees, popularized by Bruce Schneier, put an attacker's goal at the root and break it into alternative or combined sub-goals as branches. They are good for analyzing one high-value target in depth. Models are also described by their focus: asset-centric, attacker-centric or software-centric. MITRE ATT&CK, a knowledge base of real adversary tactics and techniques, helps make the attacker-centric view concrete. No single method is mandatory; the best choice is the one the team will actually use consistently.",
+      "points": [
+        "STRIDE: fast, design-level, good for developers.",
+        "PASTA: seven stages, risk- and business-focused.",
+        "Attack trees: deep analysis of one goal.",
+        "MITRE ATT&CK: catalogue of observed attacker techniques."
+      ]
+    },
+    {
+      "heading": "Ranking threats and deciding what to do",
+      "body": "Not every threat deserves the same effort. DREAD scores Damage, Reproducibility, Exploitability, Affected users and Discoverability. It is easy to explain, but its scores are subjective, and Microsoft itself moved away from it, so many teams now use a simple likelihood-and-impact rating or CVSS for specific vulnerabilities. For each significant threat, the owner chooses a response. Mitigate by adding a control, such as MFA against spoofing. Avoid, or eliminate, by removing the feature or data. Transfer by using insurance or a provider that carries the responsibility. Accept, with the risk documented and signed off by someone with authority. The output is a list of threats, decisions and owners that becomes security requirements and test cases, not a diagram that sits in a folder.",
+      "points": [
+        "Rank with likelihood × impact; treat DREAD scores as rough.",
+        "Responses: mitigate, avoid, transfer, accept.",
+        "Every accepted risk needs a named, authorized owner."
+      ]
+    }
+  ],
+  "example": {
+    "title": "STRIDE on a student portal login",
+    "body": "The coaching institute from Day 1 is adding a student portal login. The team draws a DFD: the student's browser (external entity) sends credentials across the internet trust boundary to the Login API (process), which reads the user database (data store) and writes to an audit log (data store). Walking STRIDE across these elements gives a focused list. Each threat gets a response and an owner, and the list becomes security requirements for developers and test cases for testers.",
+    "code": {
+      "language": "yaml",
+      "source": "system: Student portal login\ntrust_boundaries:\n  - internet -> Login API\n  - Login API -> user database\nthreats:\n  - id: T1\n    stride: Spoofing\n    element: Student (browser)\n    threat: credential stuffing with leaked passwords\n    response: mitigate - rate limiting, breached-password check, optional MFA\n    owner: Portal product owner\n  - id: T2\n    stride: Information disclosure\n    element: Browser -> Login API\n    threat: credentials intercepted on public Wi-Fi\n    response: mitigate - TLS everywhere, HSTS\n    owner: IT lead\n  - id: T3\n    stride: Elevation of privilege\n    element: Login API\n    threat: student changes role=admin in the request\n    response: mitigate - server-side role lookup, never trust client claims\n    owner: Development lead\n  - id: T4\n    stride: Repudiation\n    element: Audit log\n    threat: staff member denies changing exam results\n    response: mitigate - unique accounts, append-only log with restricted access\n    owner: Academic Director\n  - id: T5\n    stride: Denial of service\n    element: Login API\n    threat: login flood during results day\n    response: transfer/mitigate - CDN and WAF provider, autoscaling\n    owner: IT lead\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Secure design review",
+      "description": "Before building a feature, architects model it so authentication, authorization and logging requirements are designed in rather than patched in later."
+    },
+    {
+      "title": "Prioritizing penetration tests",
+      "description": "Testers use the threat model to target trust boundaries and the highest-ranked threats instead of scanning everything equally."
+    },
+    {
+      "title": "Third-party and cloud integrations",
+      "description": "Adding a payment gateway or SaaS tool creates new data flows and trust boundaries; modeling them shows which data leaves the organization and what can go wrong."
+    },
+    {
+      "title": "Incident follow-up",
+      "description": "After an incident, the team updates the model with the threat that was missed, so the same class of attack is designed out elsewhere."
+    },
+    {
+      "title": "CISSP scenario questions",
+      "description": "Questions asking for the best first step or the category of an attack are often answered by mapping the scenario to STRIDE and the violated security property."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script applies STRIDE-per-element to the five elements of the login DFD. It lists which threat categories to analyse for each element, flags data flows that cross a trust boundary, and adds repudiation for the store that holds audit records. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# STRIDE per element: which threat categories to consider for each element type of a data flow diagram.\nSTRIDE_PER_ELEMENT = {\n    'external entity': 'SR',\n    'process': 'STRIDE',\n    'data flow': 'TID',\n    'data store': 'TID',\n}\nNAMES = {'S': 'Spoofing', 'T': 'Tampering', 'R': 'Repudiation',\n         'I': 'Information disclosure', 'D': 'Denial of service', 'E': 'Elevation of privilege'}\n\nelements = [\n    ('Student (browser)', 'external entity', False),\n    ('Login API', 'process', False),\n    ('Browser -> Login API (credentials)', 'data flow', True),   # crosses a trust boundary\n    ('User database', 'data store', False),\n    ('Audit log', 'data store', False),\n]\n\ncount = 0\nfor name, kind, crosses_boundary in elements:\n    letters = STRIDE_PER_ELEMENT[kind]\n    if name == 'Audit log':\n        letters += 'R'  # a store that holds audit records also faces repudiation threats\n    flag = '  [crosses trust boundary]' if crosses_boundary else ''\n    print(f'{name} ({kind}){flag}')\n    for letter in letters:\n        print(f'  - {NAMES[letter]}')\n        count += 1\nprint(f'{count} threats to analyse')\n"
+    },
+    "output": "Student (browser) (external entity)\n  - Spoofing\n  - Repudiation\nLogin API (process)\n  - Spoofing\n  - Tampering\n  - Repudiation\n  - Information disclosure\n  - Denial of service\n  - Elevation of privilege\nBrowser -> Login API (credentials) (data flow)  [crosses trust boundary]\n  - Tampering\n  - Information disclosure\n  - Denial of service\nUser database (data store)\n  - Tampering\n  - Information disclosure\n  - Denial of service\nAudit log (data store)\n  - Tampering\n  - Information disclosure\n  - Denial of service\n  - Repudiation\n18 threats to analyse"
+  },
+  "takeaways": [
+    "Threat modeling answers four questions: what are we building, what can go wrong, what will we do about it, and did we do a good job?",
+    "Keep threat, threat agent, vulnerability and risk distinct; risk combines likelihood and impact on an asset.",
+    "Draw a data flow diagram with trust boundaries first; most serious threats cross a boundary.",
+    "STRIDE maps six threat categories to the properties they violate: authentication, integrity, nonrepudiation, confidentiality, availability and authorization.",
+    "PASTA is a seven-stage, risk-centric method; attack trees analyze one attacker goal in depth.",
+    "Every significant threat ends with a decision (mitigate, avoid, transfer or accept) and a named owner."
+  ],
+  "interview": [
+    {
+      "question": "What is threat modeling, and when in a project should it happen?",
+      "answer": "Threat modeling is a structured way to identify what can go wrong with a system, rank those threats and decide how to respond before attackers find them. A practical framing is four questions: what are we working on, what can go wrong, what are we going to do about it, and did we do a good job? It should start during design, when changing an architecture costs little, and it should be updated when the system changes significantly, when a new integration or vendor is added, and after incidents. The output is not just a diagram. It is a list of threats with decisions and owners, which becomes security requirements, test cases and accepted-risk records.",
+      "explanation": "Strong answers stress early timing, iteration and concrete outputs. A weak answer says threat modeling is something done once by the security team at the end.",
+      "follow_ups": [
+        "What is a trust boundary, and why do threats cluster there?",
+        "How would you keep a threat model current in an agile team?"
+      ]
+    },
+    {
+      "question": "Explain STRIDE and map each category to the security property it violates.",
+      "answer": "STRIDE is a Microsoft-developed mnemonic for six threat categories. Spoofing pretends to be someone else and violates authentication. Tampering modifies data or code and violates integrity. Repudiation means denying an action without the system being able to prove it, which violates nonrepudiation. Information disclosure exposes data to unauthorized parties and violates confidentiality. Denial of service makes a system unavailable and violates availability. Elevation of privilege gains rights a user should not have and violates authorization. Applied per element of a data flow diagram, it gives a manageable checklist: external entities mainly face spoofing and repudiation, while processes face all six categories.",
+      "explanation": "Interviewers expect all six categories with the correct property each. Mixing up repudiation and information disclosure, or skipping the per-element idea, marks a weaker answer.",
+      "follow_ups": [
+        "Which STRIDE categories apply to a data flow, and why not spoofing?",
+        "Give one control for each STRIDE category."
+      ]
+    },
+    {
+      "question": "What is the difference between a threat, a vulnerability and a risk?",
+      "answer": "A threat is a potential cause of harm, such as ransomware encrypting file servers, and the threat agent is whoever carries it out, such as a criminal group. A vulnerability is a weakness the threat can exploit, such as an internet-exposed remote desktop service with weak passwords. Risk combines the likelihood that the threat exploits the vulnerability with the impact on an asset, in this case the business cost of losing file servers for days. The distinction matters because the responses differ. You usually cannot remove the threat, but you can reduce vulnerabilities and impact, and then decide whether the remaining risk is acceptable to the asset owner.",
+      "explanation": "A strong answer uses one connected example and ends with what can actually be controlled. Defining the three terms in isolation, or treating them as synonyms, is the common weak answer.",
+      "follow_ups": [
+        "Can a vulnerability exist without a risk?",
+        "Who should decide whether a residual risk is acceptable?"
+      ]
+    },
+    {
+      "question": "When would you choose PASTA over STRIDE?",
+      "answer": "STRIDE is quick and design-focused. Developers can apply it to a data flow diagram in a short workshop, so I use it for most features and sprint-level changes. PASTA is a seven-stage, risk-centric process: business objectives, technical scope, application decomposition, threat analysis, vulnerability analysis, attack modeling and risk and impact analysis. I would choose PASTA for a high-value or regulated system, such as a payment platform, where leadership needs threats tied to business impact and risk decisions, and where there is time and threat intelligence to support it. The methods are not exclusive. STRIDE can serve as the threat-identification step inside a PASTA engagement.",
+      "explanation": "Good answers compare cost, depth and audience and show the methods can be combined. Claiming one method is simply better is a weak answer.",
+      "follow_ups": [
+        "Name the seven PASTA stages.",
+        "Where would MITRE ATT&CK fit into PASTA?"
+      ]
+    },
+    {
+      "question": "How do you prioritize threats once you have identified dozens of them?",
+      "answer": "I rate each threat by likelihood and impact on the affected asset, using the asset values and owners identified earlier. Likelihood considers exposure, such as whether the element is internet-facing or crosses a trust boundary, attacker capability and existing controls. Impact considers the confidentiality, integrity and availability ratings of the asset. DREAD can structure the discussion, but its scores are subjective and Microsoft moved away from it, so I treat any score as a conversation aid rather than precise. High-ranked threats get mitigations scheduled with owners. Low ones may be accepted, but acceptance is documented and approved by someone with authority over the asset, not decided quietly by the engineering team.",
+      "explanation": "Strong candidates link ranking to asset value and exposure, discuss DREAD's limits, and insist on authorized risk acceptance.",
+      "follow_ups": [
+        "What do the letters in DREAD stand for?",
+        "What would make you re-rank an accepted threat?"
+      ]
+    },
+    {
+      "question": "A product manager says threat modeling slows releases. How do you respond as a security manager?",
+      "answer": "I would agree that a heavy, document-driven process can slow teams, and offer a version that fits their delivery cycle. For most changes, a 30-minute STRIDE session on the updated data flow diagram is enough. A deeper review is reserved for new trust boundaries, sensitive data or high-value features. I would show the business case: design flaws found in a workshop are far cheaper to fix than vulnerabilities found in production or by attackers, and the threat list becomes ready-made test cases and audit evidence. I would also make outputs lightweight, such as tickets in their backlog with owners, so security work is planned rather than a surprise at release time.",
+      "explanation": "This tests manager-level judgment. Strong answers keep business speed in view, scale effort to risk and integrate with existing workflows. Insisting on a heavy process, or dropping threat modeling, are both weak answers.",
+      "follow_ups": [
+        "Which changes would you say always need a full threat model?",
+        "How would you measure whether threat modeling is working?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Threat model an OTP password-reset feature",
+    "difficulty": "Basic",
+    "objective": "Apply a data flow diagram, trust boundaries and STRIDE to a realistic feature and turn the threats into decisions.",
+    "statement": "The coaching institute's student portal will let students reset their password. The student enters a registered mobile number, the Reset API sends a six-digit one-time password through an SMS provider, and the student enters the code and a new password. The API stores reset attempts in a database and writes events to an audit log. Produce a threat model for this feature.",
+    "deliverable": "A simple data flow diagram (a sketch or text list is fine) with trust boundaries marked, a table of at least six threats covering at least four STRIDE categories, and a response with an owner for each threat.",
+    "steps": [
+      "List the external entities, processes, data stores and data flows, including the SMS provider.",
+      "Mark every trust boundary, such as internet to API and API to SMS provider.",
+      "Walk STRIDE-per-element across each element and write down concrete threats.",
+      "Rate each threat's likelihood and impact as low, moderate or high.",
+      "Choose a response (mitigate, avoid, transfer or accept) and a control for each threat.",
+      "Assign an owner to each decision and note which threats need business sign-off.",
+      "List three test cases that would show your controls work."
+    ],
+    "checklist": [
+      "The SMS provider appears as an external entity behind a trust boundary.",
+      "At least four STRIDE categories are covered with concrete threats.",
+      "Each threat has a response, a control and a named owner.",
+      "Any accepted risk is explicitly approved by someone with authority.",
+      "Test cases follow directly from the threats."
+    ],
+    "sample_answer": "Elements: Student (external entity), Reset API (process), SMS provider (external entity), reset-attempts database and audit log (data stores); boundaries: internet to Reset API, Reset API to SMS provider. Threats: (1) Spoofing - attacker requests a reset for a victim's number and guesses the OTP; mitigate with a five-attempt limit, ten-minute expiry and lockout; owner Development lead. (2) Spoofing - SIM-swap gives the attacker the victim's SMS; partly accept for low-value student accounts, require re-verification for fee or result changes; approved by Academic Director. (3) Information disclosure - the API reveals whether a mobile number is registered; mitigate with an identical response for all numbers; owner Development lead. (4) Tampering - user ID changed in the final reset request to reset someone else's password; mitigate by binding the OTP to a server-side session; owner Development lead. (5) Denial of service - SMS flooding raises cost and spams students; mitigate with per-number and per-IP rate limits and a provider spending cap; owner IT lead. (6) Repudiation - student claims they never reset the password; mitigate with an append-only audit log of request IP, time and outcome; owner IT lead. Tests: the seventh wrong OTP is rejected; registered and unregistered numbers get identical responses; a reset with a swapped user ID fails."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "In STRIDE, which category describes a user successfully denying that they approved a payment because no reliable record exists?",
+      "options": [
+        "Spoofing",
+        "Tampering",
+        "Repudiation",
+        "Elevation of privilege"
+      ],
+      "answer": 2,
+      "explanation": "Repudiation is the ability to deny an action. It is countered by nonrepudiation controls such as unique accounts, digital signatures and protected logs."
+    },
+    {
+      "type": "concept",
+      "question": "Which statement best describes a trust boundary in a data flow diagram?",
+      "options": [
+        "A firewall rule that blocks all traffic",
+        "A point where data moves between components with different levels of trust",
+        "The boundary of the organization's physical premises",
+        "A list of users allowed to access a system"
+      ],
+      "answer": 1,
+      "explanation": "A trust boundary marks where data crosses between differently trusted zones, such as the internet and an API. Threats tend to concentrate there."
+    },
+    {
+      "type": "scenario",
+      "question": "A student edits a hidden form field from role=student to role=admin and gains access to the admin dashboard. Which STRIDE category is this?",
+      "options": [
+        "Tampering only",
+        "Information disclosure",
+        "Elevation of privilege",
+        "Denial of service"
+      ],
+      "answer": 2,
+      "explanation": "Gaining rights the user should not have is elevation of privilege. The request was tampered with, but the resulting threat is unauthorized privilege, which violates authorization."
+    },
+    {
+      "type": "concept",
+      "question": "Which threat modeling method is a seven-stage, risk-centric process that links threats to business objectives and impact?",
+      "options": [
+        "STRIDE",
+        "PASTA",
+        "DREAD",
+        "CVSS"
+      ],
+      "answer": 1,
+      "explanation": "PASTA (Process for Attack Simulation and Threat Analysis) runs from business objectives through attack modeling to risk and impact analysis."
+    },
+    {
+      "type": "scenario",
+      "question": "A team finds a low-impact threat and decides not to fix it this quarter. What must happen for this to be a valid risk acceptance?",
+      "options": [
+        "Nothing; low-impact threats can be ignored",
+        "The developer who found it records it in code comments",
+        "The decision is documented and approved by someone with authority over the asset",
+        "A penetration test must first prove the threat is exploitable"
+      ],
+      "answer": 2,
+      "explanation": "Risk acceptance is a management decision. It must be documented and signed off by an authorized owner, not made informally by the team."
+    }
+  ]
+}

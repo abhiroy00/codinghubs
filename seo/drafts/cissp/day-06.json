@@ -1,0 +1,243 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 6,
+  "title": "Business Continuity Planning and Business Impact Analysis",
+  "module": "Asset security, continuity and architecture",
+  "level": "Beginner",
+  "objectives": [
+    "Distinguish business continuity planning from disaster recovery planning.",
+    "Describe the phases of the BCP process and the role of senior management.",
+    "Conduct a business impact analysis and identify critical functions and dependencies.",
+    "Define MTD, RTO, RPO and WRT and check that recovery targets are consistent.",
+    "Compare the five main ways to test a continuity plan.",
+    "Explain why people's safety always comes first."
+  ],
+  "definition": "Business continuity planning (BCP) prepares an organization to keep its critical business functions running, or restore them quickly, during and after a disruption. A business impact analysis (BIA) is its foundation: it identifies which functions matter most, how long the business can survive without each one, and how much data loss is tolerable. Disaster recovery planning (DRP) is the more technical subset that restores IT systems and data.",
+  "theory": [
+    {
+      "heading": "BCP versus DRP",
+      "body": "BCP looks at the whole business: people, processes, facilities, suppliers and technology, and how to keep critical functions going during disruption. DRP focuses on recovering IT systems, applications and data after a disaster. A coaching institute's BCP covers how classes continue if the office floods, how staff communicate and how students are informed. Its DRP covers how the video platform, student portal and databases are restored. The two must be consistent: DRP recovery targets come from the BCP's business impact analysis. Standards such as ISO 22301, for business continuity management systems, describe the overall approach.",
+      "points": [
+        "BCP: keep the business running.",
+        "DRP: restore IT after a disaster.",
+        "DRP targets come from the BIA."
+      ]
+    },
+    {
+      "heading": "The BCP process",
+      "body": "Senior management must sponsor and approve the plan; without their support, budget and authority are missing. The process usually runs through four phases. Project scope and planning includes a structured analysis of the organization, forming a BCP team with business and technical members, and confirming resources and legal requirements. The business impact analysis follows. Continuity planning then designs strategies to protect and recover critical functions, such as alternative sites, cross-trained staff, manual workarounds and supplier arrangements. Finally, plan approval and implementation includes training, communication and maintenance. Plans go stale quickly as systems and staff change, so they need regular review and testing."
+    },
+    {
+      "heading": "Business impact analysis and recovery targets",
+      "body": "A BIA identifies business functions, the resources and dependencies each one needs, and the impact of losing it over time, including financial, legal, reputational and safety impacts. From this it sets recovery targets. Maximum tolerable downtime (MTD), also called maximum tolerable period of disruption, is the longest a function can be unavailable before the damage becomes unacceptable. Recovery time objective (RTO) is the target time to restore the systems supporting the function. Work recovery time (WRT) is the time needed after systems return to verify data, catch up on backlog and resume normal work. Recovery point objective (RPO) is the maximum acceptable data loss, measured in time, which sets how often data must be backed up or replicated. A consistent plan needs RTO + WRT ≤ MTD, and a backup or replication interval no longer than the RPO.",
+      "points": [
+        "MTD: how long the business can survive the outage.",
+        "RTO: target time to restore systems.",
+        "WRT: time to get back to normal work after systems return.",
+        "RPO: maximum acceptable data loss in time.",
+        "Check: RTO + WRT ≤ MTD."
+      ]
+    },
+    {
+      "heading": "Continuity strategies",
+      "body": "Strategies range in cost and speed. A hot site is a fully equipped, ready-to-run alternative site with current data, giving the fastest recovery at the highest cost. A warm site has equipment but needs data and some configuration. A cold site provides space and power but little else. Cloud services often replace physical sites, using multi-region deployments, infrastructure as code and replicated databases. People strategies include cross-training, succession plans and remote-work capability. Supplier strategies include second sources and contractual service levels. The right choice follows the BIA: a function with a four-hour MTD cannot rely on a cold site, while a monthly reporting job can wait."
+    },
+    {
+      "heading": "Testing the plan",
+      "body": "Untested plans fail in real incidents. A checklist or read-through test has team members review the plan for accuracy. A structured walk-through, often run as a tabletop exercise, has the team talk through a scenario step by step. A simulation acts out the scenario more realistically without affecting operations. A parallel test brings recovery systems up at the alternative site while production keeps running, proving they work. A full-interruption test shuts down production and runs on the recovery systems; it is the most realistic and the most disruptive, so it needs senior management approval. Above all, any plan must put human safety first: evacuation, accounting for staff and life safety come before data and equipment.",
+      "points": [
+        "Read-through → walk-through/tabletop → simulation → parallel → full interruption.",
+        "Full interruption needs senior management approval.",
+        "People's safety comes first."
+      ]
+    }
+  ],
+  "example": {
+    "title": "A BIA summary for the coaching institute",
+    "body": "The BCP team interviews each function owner and agrees targets. Live classes cannot be down for more than four hours on a teaching day, so their systems need a two-hour RTO plus one hour of work recovery. Fee payments can be down for a day, but losing an hour of payment records causes reconciliation problems, so RPO is one hour. These figures drive the DR design and the backup schedule.",
+    "code": {
+      "language": "yaml",
+      "source": "bia:\n  - function: Live classes\n    owner: Academic Director\n    dependencies: [video platform, scheduling, trainers' laptops, internet]\n    mtd_hours: 4\n    rto_hours: 2\n    wrt_hours: 1\n    rpo_hours: 24\n    strategy: multi-region video provider; backup trainer roster; status page for students\n  - function: Student portal and fee payments\n    owner: Finance Head\n    dependencies: [portal app, database, payment gateway]\n    mtd_hours: 24\n    rto_hours: 8\n    wrt_hours: 4\n    rpo_hours: 1\n    strategy: database point-in-time recovery; replicated standby in second region\n  - function: Exam results publishing\n    owner: Academic Director\n    mtd_hours: 72\n    rto_hours: 24\n    wrt_hours: 8\n    rpo_hours: 4\n    strategy: four-hourly backups; manual results email as workaround\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Designing disaster recovery",
+      "description": "RTO and RPO from the BIA decide whether systems need replication, hot standby or simple nightly backups."
+    },
+    {
+      "title": "Choosing cloud architecture",
+      "description": "Multi-region deployment is justified only for functions whose MTD is short enough to need it."
+    },
+    {
+      "title": "Supplier contracts",
+      "description": "Service levels with providers are set to meet the business's recovery targets."
+    },
+    {
+      "title": "Crisis communication",
+      "description": "The plan defines how students, staff and parents are informed during an outage."
+    },
+    {
+      "title": "Regulatory and customer assurance",
+      "description": "Tested continuity plans are evidence for auditors, ISO 22301 certification and enterprise clients."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script checks a BIA for internal consistency. It flags functions where RTO plus WRT exceeds MTD and where backups run less often than the RPO requires. In this example, the portal's one-hour RPO cannot be met by daily backups and the website needs at least daily backups. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Check BIA targets: recovery must fit inside the maximum tolerable downtime (MTD >= RTO + WRT),\n# and backups must run at least as often as the recovery point objective (RPO) requires.\nfunctions = [\n    # name, MTD h, RTO h, WRT h, RPO h, backup interval h\n    ('Live classes (video platform)', 4, 2, 1, 24, 24),\n    ('Student portal and fee payments', 24, 8, 4, 1, 24),\n    ('Exam results publishing', 72, 24, 8, 4, 4),\n    ('Marketing website', 168, 48, 24, 24, 168),\n]\n\nfor name, mtd, rto, wrt, rpo, backup in functions:\n    issues = []\n    if rto + wrt > mtd:\n        issues.append(f'RTO+WRT {rto + wrt}h exceeds MTD {mtd}h')\n    if backup > rpo:\n        issues.append(f'backups every {backup}h cannot meet RPO {rpo}h')\n    print(f\"{name}: {'OK' if not issues else '; '.join(issues)}\")\n"
+    },
+    "output": "Live classes (video platform): OK\nStudent portal and fee payments: backups every 24h cannot meet RPO 1h\nExam results publishing: OK\nMarketing website: backups every 168h cannot meet RPO 24h"
+  },
+  "takeaways": [
+    "BCP keeps critical business functions running; DRP restores IT systems and data.",
+    "Senior management must sponsor and approve the plan.",
+    "The BIA identifies critical functions and sets MTD, RTO, WRT and RPO.",
+    "Recovery targets must satisfy RTO + WRT ≤ MTD, and backup frequency must meet the RPO.",
+    "Test plans regularly, from read-throughs up to full interruption with approval.",
+    "Human safety always comes first."
+  ],
+  "interview": [
+    {
+      "question": "What is the difference between RTO and RPO?",
+      "answer": "Recovery time objective is the target time to restore a system after a disruption: how long we can wait for it to come back. Recovery point objective is the maximum acceptable data loss, measured in time: how far back we can afford to go when restoring data. If a fee-payment database has an RTO of eight hours and an RPO of one hour, it must be running again within eight hours, and we must not lose more than one hour of transactions. RTO drives the recovery approach, such as standby servers or cloud failover. RPO drives backup and replication frequency. A nightly backup cannot meet a one-hour RPO, however fast the restore.",
+      "explanation": "Strong answers give one system with both values and link each to a design decision. Swapping the two terms is the classic weak answer.",
+      "follow_ups": [
+        "How does MTD relate to RTO?",
+        "What technologies would you use to achieve an RPO near zero?"
+      ]
+    },
+    {
+      "question": "Walk me through how you would conduct a business impact analysis.",
+      "answer": "I would start with senior management sponsorship and a clear scope. Then I would identify business functions and their owners through interviews and workshops, and map each function's dependencies: people, systems, data, facilities and suppliers. For each function I would assess the impact of disruption over time, including financial loss, legal and regulatory consequences, reputation and safety. From that, owners agree the maximum tolerable downtime, and we derive RTO, work recovery time and RPO, checking that RTO plus WRT fits within MTD. I would rank functions by criticality and present the results for management approval. The BIA then drives continuity strategies, the DR design and the order of recovery.",
+      "explanation": "Interviewers expect owner involvement, dependency mapping, time-based impact and management approval. Doing the BIA purely from the IT asset list is the weak answer.",
+      "follow_ups": [
+        "Why should business owners, not IT, set MTD?",
+        "How often should the BIA be updated?"
+      ]
+    },
+    {
+      "question": "What is the difference between BCP and DRP?",
+      "answer": "Business continuity planning keeps critical business functions operating during and after a disruption. It covers people, processes, facilities, suppliers, communications and technology. Disaster recovery planning is a subset focused on restoring IT systems, applications and data after a disaster. For example, if an office becomes unusable, BCP decides how trainers teach from home, how students are told and how payments continue manually. DRP decides how the video platform and database are restored in another region. BCP is usually led by the business with senior management sponsorship, while DRP is led by IT. DRP targets must come from the BCP's business impact analysis, so the two plans need to stay consistent.",
+      "explanation": "Strong answers state that DRP is a subset and use one scenario to show both. Treating them as identical is weak.",
+      "follow_ups": [
+        "Who should own the BCP?",
+        "What belongs in a crisis communication plan?"
+      ]
+    },
+    {
+      "question": "Which BCP test types exist, and which would you run first?",
+      "answer": "The common types, from least to most disruptive, are a checklist or read-through, a structured walk-through or tabletop exercise, a simulation, a parallel test and a full-interruption test. I would start with a read-through to fix outdated contacts and steps, then run a tabletop exercise where the team talks through a realistic scenario, such as ransomware on results day. That reveals gaps in roles and decisions cheaply. Next I would run a parallel test to prove the recovery systems actually work while production continues. A full-interruption test is the most realistic, but it can cause the outage it is meant to prepare for, so I would only run it with senior management approval and when the earlier tests are passing.",
+      "explanation": "Strong answers order the tests correctly, justify a progressive approach and require approval for full interruption.",
+      "follow_ups": [
+        "What makes a tabletop exercise effective?",
+        "How would you measure the results of a parallel test?"
+      ]
+    },
+    {
+      "question": "A fire breaks out in the server room during business hours. What is the first priority?",
+      "answer": "People's safety. The first actions are raising the alarm, evacuating everyone following the emergency procedures, calling emergency services and accounting for all staff and visitors. Nobody should stay behind to shut down servers or rescue equipment if that puts them at risk. Fire-suppression systems are designed for this reason. Only once people are safe does the continuity plan move to protecting and recovering business functions: activating the crisis team, switching to alternative sites or cloud systems, and communicating with students and staff. In CISSP scenarios, any answer that protects human life comes before answers that protect data or property.",
+      "explanation": "This tests the core principle that life safety comes first. Answers that start with backups or servers are wrong.",
+      "follow_ups": [
+        "What fire-suppression approaches suit data centres?",
+        "How should the plan account for staff working remotely?"
+      ]
+    },
+    {
+      "question": "Leadership wants a hot site for every system. How do you respond?",
+      "answer": "I would welcome the commitment to resilience but bring the decision back to the business impact analysis. A hot site gives the fastest recovery but is the most expensive option, and many systems do not need it. Functions with short maximum tolerable downtime, such as live classes during teaching hours, may justify hot standby or multi-region cloud deployment. Others, such as monthly reporting or the marketing site, can be recovered from backups within days at much lower cost. I would present options with costs against each function's MTD and RPO, recommend a tiered approach, and let leadership choose. That spends money where interruption really hurts and keeps continuity affordable to maintain and test.",
+      "explanation": "This tests manager-level judgment. Strong answers tie spending to the BIA and propose tiers. Simply agreeing or refusing are both weak.",
+      "follow_ups": [
+        "What is the difference between hot, warm and cold sites?",
+        "How can cloud services change these trade-offs?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Run a mini BIA and continuity plan",
+    "difficulty": "Basic",
+    "objective": "Derive recovery targets from business impact and design proportionate continuity strategies.",
+    "statement": "For the coaching institute, carry out a business impact analysis of four functions: live classes, admissions and fee payments, exam results, and the marketing website. Then design a continuity strategy for each and a test plan for the next six months.",
+    "deliverable": "A BIA table (function, owner, dependencies, impacts over time, MTD, RTO, WRT, RPO), a strategy per function, and a test schedule.",
+    "steps": [
+      "List each function's owner and dependencies: people, systems, data, facilities and suppliers.",
+      "Describe the impact of losing each function after 1 hour, 1 day and 1 week.",
+      "Agree MTD with the owner, then set RTO, WRT and RPO.",
+      "Check that RTO + WRT ≤ MTD and that backup frequency meets the RPO.",
+      "Choose a continuity strategy proportionate to each MTD.",
+      "Plan a read-through, a tabletop exercise and a parallel test, with dates and participants."
+    ],
+    "checklist": [
+      "Every function has a business owner who agreed the MTD.",
+      "Targets are internally consistent.",
+      "Strategies match criticality instead of using the most expensive option everywhere.",
+      "A people-safety and communication step is included.",
+      "The test plan progresses from low to higher disruption."
+    ],
+    "sample_answer": "Live classes: owner Academic Director; dependencies video platform, scheduling, trainers, internet; impact after 1 hour high (classes missed, refunds, reputation); MTD 4h, RTO 2h, WRT 1h, RPO 24h; strategy multi-region video provider, backup trainers, status page. Admissions and fees: owner Finance Head; MTD 24h, RTO 8h, WRT 4h, RPO 1h; strategy point-in-time database recovery, replicated standby, manual receipt process. Exam results: MTD 72h, RTO 24h, WRT 8h, RPO 4h; strategy four-hourly backups, emailed results as workaround. Marketing website: MTD 7 days, RTO 48h, WRT 24h, RPO 24h; strategy daily backups and managed hosting. All targets satisfy RTO + WRT ≤ MTD; backup schedules updated so the portal uses continuous backups and the website daily ones. Tests: read-through in month 1 with all owners; tabletop ransomware scenario in month 3; parallel test of the portal standby in month 6. Safety: evacuation and staff check-in steps are the first page of the plan."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Which value represents the maximum acceptable amount of data loss measured in time?",
+      "options": [
+        "RTO",
+        "MTD",
+        "RPO",
+        "WRT"
+      ],
+      "answer": 2,
+      "explanation": "RPO is the recovery point objective: how much data, in time, can be lost."
+    },
+    {
+      "type": "scenario",
+      "question": "A function has an MTD of 12 hours and a WRT of 4 hours. What is the longest RTO that keeps the plan consistent?",
+      "options": [
+        "16 hours",
+        "12 hours",
+        "8 hours",
+        "4 hours"
+      ],
+      "answer": 2,
+      "explanation": "RTO + WRT must not exceed MTD, so RTO ≤ 12 − 4 = 8 hours."
+    },
+    {
+      "type": "concept",
+      "question": "Which BCP test brings recovery systems online while production continues running?",
+      "options": [
+        "Read-through",
+        "Tabletop exercise",
+        "Parallel test",
+        "Full-interruption test"
+      ],
+      "answer": 2,
+      "explanation": "A parallel test runs recovery systems alongside production without interrupting it."
+    },
+    {
+      "type": "concept",
+      "question": "Who must sponsor and approve the business continuity plan?",
+      "options": [
+        "The IT manager",
+        "Senior management",
+        "The DR vendor",
+        "External auditors"
+      ],
+      "answer": 1,
+      "explanation": "Senior management support is essential for authority, budget and approval."
+    },
+    {
+      "type": "scenario",
+      "question": "During a building fire, what should the continuity team do first?",
+      "options": [
+        "Back up the database",
+        "Shut down servers gracefully",
+        "Ensure everyone is evacuated safely",
+        "Activate the hot site"
+      ],
+      "answer": 2,
+      "explanation": "Human safety always comes before data, equipment and recovery steps."
+    }
+  ]
+}

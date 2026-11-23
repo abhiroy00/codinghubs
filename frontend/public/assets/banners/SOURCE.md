@@ -7,9 +7,8 @@ References:
 - https://www.canva.com/templates/s/artificial-intelligence/
 - Blue futuristic AI presentation: https://marketplace.canva.com/EAGkM3SBZNA/1/0/800w/canva-blue-futuristic-artificial-intelligence-presentation-GEuf7J58gqM.jpg
 - Purple AI presentation: https://marketplace.canva.com/EAGX0xkrv_8/2/0/800w/canva-purple-white-modern-artificial-intelligence-presentation-WObnf8iYbRc.jpg
-- Robot AI presentation: https://marketplace.canva.com/EAGQV5X-GD8/1/0/800w/canva-green-and-black-modern-futuristic-artificial-intelligence-presentation-lj9WsschCEk.jpg
 
-Assets: `ai-neural-{768,1440}.webp`, `ai-robot-{768,1440}.webp`, `ai-network-{768,1440}.webp` in this directory. Original outputs are retained in Codex's generated_images directory; WebP exports are resized for the site.
+Assets: `ai-neural-{768,1440}.webp`, `ai-network-{768,1440}.webp` in this directory. Original outputs are retained in Codex's generated_images directory; WebP exports are resized for the site.
 
 Home-page media and footer remain unchanged. All banner text and controls remain native HTML.
 

@@ -174,10 +174,31 @@ const PROJECT_OVERRIDES: Record<string, CourseDefinition['projects']> = {
   ],
 }
 
+/**
+ * Courses whose syllabus follows an external body of knowledge rather than the shared track template.
+ * Topics are used as written (no "for <focus>" suffix); six modules of five days, in order.
+ */
+const SYLLABUS_OVERRIDES: Record<string, { modules: string[]; topics: string[] }> = {
+  // The eight ISC2 CISSP domains (2024 exam outline), ordered so each 30-day level builds on the last.
+  cissp: {
+    modules: ['Security and risk management', 'Asset security, continuity and architecture', 'Physical and network security', 'Identity and security assessment', 'Security operations and secure development', 'Third parties and exam readiness'],
+    topics: [
+      'Security goals and assets', 'Threat modeling', 'Risk analysis and treatment', 'Security governance, policies and frameworks', 'Law, privacy, compliance and professional ethics',
+      'Business continuity planning and impact analysis', 'Data classification, lifecycle and retention', 'Security models and secure design principles', 'Cryptography fundamentals', 'PKI, digital signatures and key management',
+      'Physical and site security', 'Network architecture and the OSI model', 'Secure communication channels: TLS, VPN and wireless', 'Network attacks and defenses', 'Identity and access management lifecycle',
+      'Single sign-on and federation: SAML, OAuth and OIDC', 'Access control models: DAC, MAC, RBAC and ABAC', 'Security assessment, testing and audits', 'Logging, monitoring and security metrics', 'Incident management lifecycle',
+      'Investigations, forensics and evidence handling', 'Disaster recovery, backups and resilience', 'Change, configuration and patch management', 'Secure software development lifecycle and DevSecOps', 'Software vulnerabilities and secure coding',
+      'Supply chain, third-party and cloud security', 'Personnel security and security awareness', 'Cross-domain scenarios: thinking like a manager', 'Cross-domain scenarios: incidents and trade-offs', 'CISSP exam strategy and revision map',
+    ],
+  },
+}
+
 function makeCourse([slug, name, category, track, focus]: CourseRow): CourseDefinition {
   const source = TRACKS[track]
-  const topics = source.topics.map((topic) => `${topic[0].toUpperCase()}${topic.slice(1)} for ${focus}`)
-  const modules = source.modules.map((title, index) => {
+  const syllabus = SYLLABUS_OVERRIDES[slug]
+  const topics = syllabus?.topics ?? source.topics.map((topic) => `${topic[0].toUpperCase()}${topic.slice(1)} for ${focus}`)
+  const moduleTitles = syllabus?.modules ?? source.modules
+  const modules = moduleTitles.map((title, index) => {
     const moduleTopics = topics.slice(index * 5, index * 5 + 5)
     return {
       title,
@@ -212,7 +233,7 @@ function makeCourse([slug, name, category, track, focus]: CourseRow): CourseDefi
       { question: `What will I practise?`, answer: `You will work through structured exercises, quality checks and practical projects connected to ${focus}.` },
       { question: `How can I prepare for interviews?`, answer: `Use the linked 30-day roadmap to practise one topic, a short interview response and a daily knowledge check at a time.` },
     ],
-    days: topics.map((title, index) => ({ title, module: source.modules[Math.floor(index / 5)], focus })),
+    days: topics.map((title, index) => ({ title, module: moduleTitles[Math.floor(index / 5)], focus })),
     hasCoding: !['program', 'design', 'marketing'].includes(track),
   }
 }

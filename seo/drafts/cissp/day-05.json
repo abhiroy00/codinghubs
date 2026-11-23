@@ -1,0 +1,243 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 5,
+  "title": "Law, Privacy, Compliance and Professional Ethics",
+  "module": "Security and risk management",
+  "level": "Beginner",
+  "objectives": [
+    "Distinguish criminal, civil and administrative law and contractual obligations such as PCI DSS.",
+    "Summarize the security-relevant parts of India's IT Act 2000 and the CERT-In reporting directions.",
+    "Explain the key roles and duties under the Digital Personal Data Protection Act 2023 and the GDPR.",
+    "Identify the four types of intellectual property protection.",
+    "Plan breach notification across more than one regime.",
+    "Apply the ISC2 Code of Ethics canons to workplace dilemmas."
+  ],
+  "definition": "Security professionals work inside a web of obligations: laws that define crimes and civil liability, regulations that require specific protections and notifications, contracts that impose standards, and professional ethics that guide behavior where law is silent. Compliance means knowing which obligations apply to the organization's data and activities, and being able to show they are met.",
+  "theory": [
+    {
+      "heading": "Categories of law and obligation",
+      "body": "Criminal law covers acts against society, such as hacking or data theft, prosecuted by the state with penalties including imprisonment. Civil law settles disputes between parties, such as breach of contract or negligence claims, usually with financial compensation. Administrative or regulatory law comes from government agencies and sets rules for regulated activities, enforced through fines and orders. Contracts create obligations too. PCI DSS, the Payment Card Industry Data Security Standard, is not a law but a contractual requirement for organizations that store, process or transmit cardholder data. Security professionals should know which category an obligation falls into, because that determines who enforces it and what evidence is needed.",
+      "points": [
+        "Criminal: state prosecutes; prison possible.",
+        "Civil: parties dispute; compensation.",
+        "Administrative: regulators; fines and orders.",
+        "Contractual: e.g. PCI DSS for card data."
+      ]
+    },
+    {
+      "heading": "Indian cyber law: the IT Act and CERT-In",
+      "body": "The Information Technology Act, 2000, amended in 2008, is India's main cyber law. It gives legal recognition to electronic records and digital signatures and defines offences. Section 43 covers penalties and compensation for damage to computer systems, such as unauthorized access or introducing malware. Section 66 makes those acts offences when done dishonestly or fraudulently. Section 72A penalizes disclosing personal information in breach of a lawful contract. CERT-In, the national computer emergency response team, issued directions on 28 April 2022 requiring service providers and organizations to report specified cyber incidents within six hours of noticing them, to keep ICT system logs for 180 days, and to synchronize clocks with designated time sources. These directions shape every Indian organization's incident response plan."
+    },
+    {
+      "heading": "Privacy: the DPDP Act 2023 and the GDPR",
+      "body": "India's Digital Personal Data Protection Act, 2023 governs digital personal data. The Data Fiduciary decides the purpose and means of processing, and the Data Principal is the individual the data is about. Processing generally needs notice and consent or another legitimate use. Fiduciaries must take reasonable security safeguards, notify the Data Protection Board of India and affected Data Principals of personal data breaches, and erase data when the purpose is served. Penalties reach up to ₹250 crore for failing to take reasonable safeguards. Detailed rules and timelines are set by the DPDP Rules, so check the current version. The EU's GDPR applies to organizations that process EU residents' data, including Indian companies offering services to them. It defines controllers and processors, requires notifying the supervisory authority within 72 hours of becoming aware of a reportable breach, and allows fines up to €20 million or 4% of worldwide annual turnover, whichever is higher.",
+      "points": [
+        "DPDP: Data Fiduciary, Data Principal, Data Protection Board of India.",
+        "GDPR: controller, processor, 72-hour authority notification.",
+        "Privacy laws can apply across borders based on whose data you process."
+      ]
+    },
+    {
+      "heading": "Intellectual property and licensing",
+      "body": "Copyright protects original works of expression, such as course videos, written material and software code, automatically on creation. Trademarks protect names, logos and slogans that identify a brand. Patents protect new, useful and non-obvious inventions for a limited period in exchange for public disclosure. Trade secrets protect valuable confidential information, such as a proprietary teaching method or customer list, for as long as reasonable steps keep it secret, which makes access control and non-disclosure agreements essential. Software licensing defines how software may be used; installing more copies than licensed exposes the organization to legal and financial risk, so asset inventories should track licenses."
+    },
+    {
+      "heading": "Professional ethics: the ISC2 Code",
+      "body": "Every CISSP agrees to the ISC2 Code of Ethics. Its preamble calls for the highest ethical standards. Its four canons, in order of priority, are: protect society, the common good, necessary public trust and confidence, and the infrastructure; act honorably, honestly, justly, responsibly and legally; provide diligent and competent service to principals; and advance and protect the profession. When duties conflict, the earlier canon generally takes precedence. For example, a duty to protect society outweighs an employer's wish to hide a dangerous vulnerability. Violations can be reported to ISC2 and may lead to losing the certification. Many organizations also have their own codes of conduct, and the two should be followed together.",
+      "points": [
+        "1. Protect society and the infrastructure.",
+        "2. Act honorably, honestly, justly, responsibly and legally.",
+        "3. Provide diligent and competent service to principals.",
+        "4. Advance and protect the profession."
+      ]
+    }
+  ],
+  "example": {
+    "title": "Mapping obligations for an online coaching institute",
+    "body": "The institute is based in India, takes card payments through a gateway, and has some students living in the EU. A compliance map lists each obligation, what triggers it, who owns it and how compliance is shown. This one page drives the incident response plan, vendor contracts and the privacy notice.",
+    "code": {
+      "language": "yaml",
+      "source": "organisation: Online coaching institute (India)\nobligations:\n  - name: IT Act 2000 (s.43, s.66, s.72A)\n    type: criminal / civil\n    trigger: computer misuse; disclosure of personal data in breach of contract\n    owner: Director + legal counsel\n  - name: CERT-In Directions (28 Apr 2022)\n    type: regulatory\n    trigger: specified cyber incidents\n    duty: report within 6 hours of noticing; keep ICT logs 180 days; sync clocks\n    owner: IT lead\n  - name: DPDP Act 2023\n    type: regulatory\n    role: Data Fiduciary for student data\n    duty: notice and consent, reasonable safeguards, breach notice to Board and students\n    owner: Academic Director (data owner)\n  - name: GDPR\n    type: regulatory (extraterritorial)\n    trigger: offering services to students in the EU\n    duty: lawful basis, 72-hour authority notification where required\n    owner: Academic Director with legal counsel\n  - name: PCI DSS\n    type: contractual\n    approach: card data handled only by a compliant gateway; institute stores no card numbers\n    owner: Finance Head\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Incident response planning",
+      "description": "Notification deadlines from CERT-In, the DPDP Act and the GDPR are built into the response plan so the clock is never missed."
+    },
+    {
+      "title": "Vendor contracts",
+      "description": "Contracts with cloud and SaaS providers assign processing roles, security duties and breach-notification timelines."
+    },
+    {
+      "title": "Privacy by design",
+      "description": "New features collect only the data needed for a stated purpose, with notice and consent, reducing legal exposure."
+    },
+    {
+      "title": "Protecting course content",
+      "description": "Copyright, trade secret controls and NDAs protect the institute's course material and methods from copying."
+    },
+    {
+      "title": "Ethical decisions at work",
+      "description": "The ISC2 canons give a defensible way to handle pressure to hide incidents or overstate security."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script calculates breach-notification deadlines from the moment an incident is noticed. It shows how short the CERT-In window is compared with the GDPR's 72 hours, especially when an incident is noticed late on a Friday, and it deliberately does not hard-code a DPDP deadline because that comes from the current rules. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Breach-notification clocks from the moment an incident is noticed (Indian time).\n# CERT-In Directions (28 April 2022): report specified incidents within 6 hours of noticing them.\n# GDPR Article 33: notify the supervisory authority within 72 hours of becoming aware, where required.\nfrom datetime import datetime, timedelta\n\nnoticed = datetime(2026, 11, 20, 22, 30)  # Friday 10:30 pm IST\nobligations = [\n    ('CERT-In incident report', timedelta(hours=6), True),\n    ('GDPR supervisory authority (EU students affected)', timedelta(hours=72), True),\n    ('DPDP Act: Data Protection Board and affected Data Principals', None, True),\n]\n\nprint('Incident noticed:', noticed.strftime('%a %d %b %Y %H:%M'))\nfor name, window, applies in obligations:\n    if not applies:\n        continue\n    if window is None:\n        print(f'- {name}: check the current DPDP Rules for the deadline')\n    else:\n        print(f'- {name}: due by {(noticed + window).strftime(\"%a %d %b %Y %H:%M\")}')\n"
+    },
+    "output": "Incident noticed: Fri 20 Nov 2026 22:30\n- CERT-In incident report: due by Sat 21 Nov 2026 04:30\n- GDPR supervisory authority (EU students affected): due by Mon 23 Nov 2026 22:30\n- DPDP Act: Data Protection Board and affected Data Principals: check the current DPDP Rules for the deadline"
+  },
+  "takeaways": [
+    "Know whether an obligation is criminal, civil, administrative or contractual; PCI DSS is contractual.",
+    "CERT-In requires reporting specified incidents within 6 hours and keeping ICT logs for 180 days.",
+    "Under the DPDP Act, the Data Fiduciary must protect personal data and notify the Board and Data Principals of breaches.",
+    "The GDPR applies to EU residents' data and requires authority notification within 72 hours where required.",
+    "Copyright, trademarks, patents and trade secrets protect different kinds of intellectual property.",
+    "The ISC2 canons are ordered: protect society first, then act honorably, serve principals, and advance the profession."
+  ],
+  "interview": [
+    {
+      "question": "What are the four canons of the ISC2 Code of Ethics, and why does their order matter?",
+      "answer": "The canons are: protect society, the common good, necessary public trust and confidence, and the infrastructure; act honorably, honestly, justly, responsibly and legally; provide diligent and competent service to principals; and advance and protect the profession. Their order matters because when duties conflict, the earlier canon generally wins. If an employer asked me to conceal a vulnerability that endangered patients or the public, protecting society would outweigh my duty to serve that employer. In daily work the canons usually agree. They become important in hard cases: pressure to sign off a false audit, to hide a breach from regulators or to overstate my qualifications.",
+      "explanation": "Strong answers list all four in order and give a realistic conflict. Listing them without explaining precedence is the weaker answer.",
+      "follow_ups": [
+        "What would you do if your manager asked you to delay reporting a breach?",
+        "Can you report a fellow certified professional for unethical conduct?"
+      ]
+    },
+    {
+      "question": "What does the CERT-In April 2022 directive require of organizations in India?",
+      "answer": "The directions issued by CERT-In on 28 April 2022 require service providers, intermediaries, data centres, body corporates and government organizations to report specified types of cyber incidents to CERT-In within six hours of noticing them or being told about them. They also require ICT system logs to be kept securely within India for 180 days and provided to CERT-In when asked, and system clocks to be synchronized with designated NTP sources so timelines can be reconstructed. Some providers, such as VPN and cloud service providers, have additional record-keeping duties. Practically, this means the incident response plan needs a fast triage path, a named person who files the report, and logging that meets the retention period.",
+      "explanation": "Interviewers expect the six-hour window, 180-day log retention and clock synchronization. Confusing it with the 72-hour GDPR timeline is a common mistake.",
+      "follow_ups": [
+        "Which incident types fall under the CERT-In reporting list?",
+        "How would you design logging to meet the 180-day requirement?"
+      ]
+    },
+    {
+      "question": "Explain the roles of Data Fiduciary and Data Principal under India's DPDP Act.",
+      "answer": "The Data Principal is the individual to whom the personal data relates, such as a student. The Data Fiduciary is the person or organization that decides the purpose and means of processing that data, such as the coaching institute. A Data Processor processes data on the fiduciary's behalf, such as a cloud provider. The fiduciary carries the main obligations: giving notice and getting valid consent or relying on another legitimate use, taking reasonable security safeguards, notifying the Data Protection Board of India and affected individuals of breaches, and erasing data when its purpose is served. Data Principals have rights such as access, correction and erasure, and grievance redressal. The terms map closely to the GDPR's controller and data subject.",
+      "explanation": "Strong answers define the roles, list core duties and map them to the GDPR. Mixing up fiduciary and processor is the common weak answer.",
+      "follow_ups": [
+        "Who is accountable if a Data Processor causes a breach?",
+        "How does consent under DPDP differ from legitimate uses?"
+      ]
+    },
+    {
+      "question": "Is PCI DSS a law? How should a small business approach it?",
+      "answer": "No. PCI DSS is a contractual standard set by the payment card industry and enforced through agreements with acquiring banks and payment brands, not a law passed by a government. It applies to any organization that stores, processes or transmits cardholder data. For a small business the best approach is usually to reduce scope: use a compliant payment gateway with hosted payment pages or redirects so card numbers never touch the business's own systems. The business still completes the appropriate self-assessment questionnaire and keeps basic controls, but its effort and risk fall sharply. Storing card numbers is a business decision that should be avoided unless there is a strong reason.",
+      "explanation": "Good answers distinguish contractual from legal obligations and recommend scope reduction. Claiming PCI DSS is an Indian law is incorrect.",
+      "follow_ups": [
+        "What is a self-assessment questionnaire?",
+        "How does tokenization reduce PCI DSS scope?"
+      ]
+    },
+    {
+      "question": "Which types of intellectual property protection would apply to an online course?",
+      "answer": "Several. The recorded videos, slides, notes and code samples are protected by copyright automatically when they are created, which lets the institute act against piracy. The institute's name and logo can be protected as trademarks, which stops others from passing themselves off as the brand. A genuinely novel and non-obvious technical invention, such as a new assessment engine, might be patentable, but most course material is not. Confidential information, such as unreleased curriculum, pricing plans or student lists, can be protected as trade secrets, provided the institute takes reasonable steps to keep it secret, such as access controls, NDAs with trainers and watermarked previews. The security team supports trade secret protection directly.",
+      "explanation": "Strong answers match each type to an example and note that trade secrets depend on security controls.",
+      "follow_ups": [
+        "Why might a company choose a trade secret over a patent?",
+        "What controls would you use to protect course videos from piracy?"
+      ]
+    },
+    {
+      "question": "An Indian company with EU customers notices a breach late on Friday night. Which notification clocks start?",
+      "answer": "Several can start at once, so the response plan must be prepared. Under the CERT-In directions, if the incident is a reportable type, the report is due within six hours of noticing it, so the early hours of Saturday morning. Under the GDPR, if EU residents' personal data is affected and the breach is likely to result in a risk to them, the supervisory authority must be notified within 72 hours of becoming aware, and individuals without undue delay when the risk is high. Under the DPDP Act, the Data Protection Board and affected Data Principals must be informed, with timelines set by the current rules. I would also check contracts with customers and payment partners. Legal counsel and the data owner must be involved immediately.",
+      "explanation": "This tests whether the candidate recognizes overlapping regimes and different clocks. Strong answers mention all three and involve legal counsel and the data owner.",
+      "follow_ups": [
+        "What information should a first notification contain if the facts are incomplete?",
+        "Who should decide whether a breach is notifiable?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Create a compliance and notification map",
+    "difficulty": "Basic",
+    "objective": "Identify applicable obligations and turn them into owners and deadlines.",
+    "statement": "An Indian ed-tech startup runs online classes, takes payments through a gateway, stores student data on a cloud platform and has 200 students living in Germany. Build its compliance map and a one-page breach-notification checklist.",
+    "deliverable": "A table of at least five obligations (type, trigger, key duties, owner, evidence), and a notification checklist with deadlines and who files each notice.",
+    "steps": [
+      "List laws, regulations and contracts that could apply, including Indian and EU ones.",
+      "Classify each as criminal, civil, administrative or contractual.",
+      "Write the trigger and the key duties for each.",
+      "Assign a business owner and the evidence that shows compliance.",
+      "Build a notification checklist with each clock and who files the notice.",
+      "Note one ethical dilemma the team might face during a breach and how the ISC2 canons resolve it."
+    ],
+    "checklist": [
+      "The IT Act, CERT-In directions, DPDP Act and GDPR are considered.",
+      "PCI DSS is identified as contractual, with scope reduced by the gateway.",
+      "Each obligation has an owner and evidence.",
+      "Deadlines are correct: 6 hours for CERT-In, 72 hours for the GDPR authority, and DPDP timelines checked against the current rules.",
+      "The ethics note references the canons' order."
+    ],
+    "sample_answer": "Obligations: IT Act 2000 (criminal and civil; unauthorized access and misuse; owner Director; evidence access logs and contracts); CERT-In Directions (regulatory; specified incidents; report within 6 hours, keep logs 180 days, sync clocks; owner IT lead; evidence log retention configuration and reporting runbook); DPDP Act 2023 (regulatory; student data; notice and consent, safeguards, breach notice to the Board and students; owner Academic Director; evidence consent records and security controls); GDPR (regulatory, extraterritorial; German students' data; lawful basis, 72-hour authority notification where required; owner Academic Director with counsel; evidence records of processing); PCI DSS (contractual; card payments; use a hosted gateway, complete the SAQ; owner Finance Head). Checklist: confirm incident and scope; IT lead files CERT-In report within 6 hours; counsel assesses GDPR risk and notifies the authority within 72 hours where required; Academic Director notifies the DPDP Board and students per current rules. Ethics: if asked to delay notices to avoid embarrassment, canon 1 (protect society and public trust) and canon 2 (act legally) outweigh canon 3 (service to the employer)."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "Within how many hours must specified cyber incidents be reported to CERT-In under its April 2022 directions?",
+      "options": [
+        "6",
+        "24",
+        "72",
+        "168"
+      ],
+      "answer": 0,
+      "explanation": "The CERT-In directions require reporting within 6 hours of noticing the incident."
+    },
+    {
+      "type": "concept",
+      "question": "PCI DSS is best described as:",
+      "options": [
+        "A criminal law",
+        "An Indian government regulation",
+        "A contractual industry standard",
+        "A privacy law for EU citizens"
+      ],
+      "answer": 2,
+      "explanation": "PCI DSS is imposed by the payment card industry through contracts, not by legislation."
+    },
+    {
+      "type": "concept",
+      "question": "Under the DPDP Act 2023, the organization that decides the purpose and means of processing personal data is the:",
+      "options": [
+        "Data Principal",
+        "Data Fiduciary",
+        "Data Processor",
+        "Data Protection Board"
+      ],
+      "answer": 1,
+      "explanation": "The Data Fiduciary determines the purpose and means; the Data Principal is the individual."
+    },
+    {
+      "type": "scenario",
+      "question": "Your employer asks you to hide a vulnerability that could endanger public safety until after a product launch. According to the ISC2 canons, which duty comes first?",
+      "options": [
+        "Provide diligent service to principals",
+        "Protect society and the infrastructure",
+        "Advance the profession",
+        "Act in the employer's financial interest"
+      ],
+      "answer": 1,
+      "explanation": "The first canon, protecting society, the common good and the infrastructure, takes precedence over service to an employer."
+    },
+    {
+      "type": "concept",
+      "question": "Which form of intellectual property protects a confidential customer list as long as reasonable steps keep it secret?",
+      "options": [
+        "Copyright",
+        "Patent",
+        "Trademark",
+        "Trade secret"
+      ],
+      "answer": 3,
+      "explanation": "Trade secrets protect valuable confidential information while it is kept secret."
+    }
+  ]
+}

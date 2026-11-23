@@ -1,0 +1,241 @@
+{
+  "_status": "DRAFT – needs review",
+  "day": 3,
+  "title": "Risk Analysis and Treatment: SLE, ALE and Choosing Controls",
+  "module": "Security and risk management",
+  "level": "Beginner",
+  "objectives": [
+    "Define risk, inherent risk, residual risk, risk appetite and risk tolerance.",
+    "Calculate single loss expectancy and annualized loss expectancy from asset value, exposure factor and ARO.",
+    "Decide whether a safeguard is cost-justified.",
+    "Compare quantitative and qualitative risk analysis and know when to use each.",
+    "Choose between mitigating, transferring, avoiding and accepting a risk.",
+    "Classify controls by type and category and place risk analysis inside a framework such as NIST RMF."
+  ],
+  "definition": "Risk analysis estimates how likely it is that a threat exploits a vulnerability and how much damage that would do to an asset. Risk treatment is the management decision that follows: reduce the risk with controls, transfer it, avoid it, or accept it. The goal is not zero risk but risk the organization has knowingly chosen to carry at a cost it can justify.",
+  "theory": [
+    {
+      "heading": "The vocabulary of risk",
+      "body": "Risk combines the likelihood that a threat exploits a vulnerability with the impact on an asset. Inherent risk is the level before any controls; residual risk is what remains after controls are applied. Some texts also describe total risk as threats × vulnerabilities × asset value, and residual risk as total risk minus the effect of controls. Risk appetite is the broad amount of risk an organization is willing to pursue to meet its goals, set by senior management. Risk tolerance is the acceptable variation around that appetite for a specific objective. A risk register records each risk with its owner, rating, response and review date, so decisions are visible and can be audited.",
+      "points": [
+        "Inherent risk: before controls.",
+        "Residual risk: after controls; it is never zero.",
+        "Risk appetite is set by senior management, not by the security team."
+      ]
+    },
+    {
+      "heading": "Quantitative analysis: SLE and ALE",
+      "body": "Quantitative analysis puts money values on risk. Asset value (AV) is what the asset is worth to the organization. Exposure factor (EF) is the percentage of that value lost in one occurrence. Single loss expectancy is SLE = AV × EF. The annualized rate of occurrence (ARO) is how many times per year the event is expected, so 0.2 means once in five years. Annualized loss expectancy is ALE = SLE × ARO. A safeguard is worth its cost when ALE before the safeguard, minus ALE after it, minus the safeguard's annual cost is greater than zero. The numbers are only as good as their inputs, so quantitative results support decisions but do not make them.",
+      "points": [
+        "SLE = AV × EF",
+        "ALE = SLE × ARO",
+        "Safeguard value = ALE(before) − ALE(after) − annual cost of safeguard"
+      ]
+    },
+    {
+      "heading": "Qualitative analysis",
+      "body": "Qualitative analysis rates likelihood and impact on scales such as low, moderate and high, often plotted on a risk matrix. It is faster and works when reliable figures are not available, which is common for reputation damage or new technologies. The Delphi technique collects anonymous expert opinions in rounds until they converge, reducing the influence of the loudest voice. Most organizations combine both approaches: qualitative ratings to screen many risks quickly, and quantitative analysis for the few large decisions where money figures change the outcome."
+    },
+    {
+      "heading": "Risk responses",
+      "body": "Mitigation, or reduction, adds or improves controls to lower likelihood or impact. Transfer, or sharing, moves the financial impact to another party through insurance or contracts; accountability for protecting the data stays with the organization. Avoidance removes the risky activity altogether, such as not storing card numbers. Acceptance means knowingly carrying the risk, documented and approved by someone with authority, usually because treatment costs more than the expected loss. Ignoring a risk, sometimes called rejection, is never an acceptable response. Deterrence, such as warning banners and visible auditing, discourages attackers and is sometimes listed separately.",
+      "points": [
+        "Mitigate, transfer, avoid, accept.",
+        "Transfer moves money, not accountability.",
+        "Acceptance must be documented and authorized."
+      ]
+    },
+    {
+      "heading": "Controls and frameworks",
+      "body": "Controls are grouped by category: administrative or managerial (policies, training, background checks), technical or logical (encryption, MFA, firewalls) and physical (locks, guards, CCTV). They are also grouped by type: preventive, detective, corrective, deterrent, recovery, directive and compensating, where a compensating control provides an alternative when the primary control is not feasible. Risk work usually follows a framework. NIST SP 800-30 describes how to conduct risk assessments. The NIST Risk Management Framework in SP 800-37 runs through Prepare, Categorize, Select, Implement, Assess, Authorize and Monitor. ISO/IEC 27005 and ISO 31000 give international guidance on information security risk and risk management generally."
+    }
+  ],
+  "example": {
+    "title": "A risk register entry with a cost-justified safeguard",
+    "body": "The coaching institute's 20 staff laptops hold cached student data. Losing one costs the device, recovery effort and possible legal exposure, so the risk owner values the combined asset at ₹4,00,000 with an exposure factor of 50%, giving an SLE of ₹2,00,000. Two such losses a year are expected. Full-disk encryption with device tracking is expected to cut that to one every two years for ₹60,000 a year. The register records the calculation, the decision and who approved it.",
+    "code": {
+      "language": "yaml",
+      "source": "risk_id: R-007\nasset: Staff laptops with cached student data\nthreat: theft or loss in transit\nvulnerability: unencrypted disks, no tracking\nowner: Operations Head\nanalysis:\n  asset_value_inr: 400000\n  exposure_factor: 0.50\n  sle_inr: 200000          # AV x EF\n  aro_before: 2.0\n  ale_before_inr: 400000   # SLE x ARO\n  aro_after: 0.5\n  ale_after_inr: 100000\n  safeguard: full-disk encryption + device tracking\n  safeguard_annual_cost_inr: 60000\n  safeguard_value_inr: 240000  # 400000 - 100000 - 60000\nresponse: mitigate\nresidual_risk: low - accepted by Operations Head\nreview: annually or after any laptop incident\n"
+    }
+  },
+  "use_cases": [
+    {
+      "title": "Justifying security budget",
+      "description": "ALE and safeguard value turn security requests into business cases that finance and directors can compare with other investments."
+    },
+    {
+      "title": "Cyber insurance decisions",
+      "description": "Comparing expected losses with premiums shows whether to transfer part of a risk and how much residual risk remains."
+    },
+    {
+      "title": "Prioritizing a remediation backlog",
+      "description": "A risk register ranks findings by likelihood and impact so that the team fixes what matters most first."
+    },
+    {
+      "title": "Vendor and project approvals",
+      "description": "New systems are assessed before go-live, and any accepted risks are signed off by the business owner."
+    },
+    {
+      "title": "CISSP calculation questions",
+      "description": "The exam expects quick SLE, ALE and safeguard-value calculations and the correct choice of risk response."
+    }
+  ],
+  "demonstration": {
+    "description": "This Python script calculates SLE, ALE before and after a safeguard, and the safeguard's annual value for three risks. A negative value means the control costs more than it saves, which is a reason to look for a cheaper control or document acceptance, not to ignore the risk. Run it with Python 3 and no extra packages.",
+    "code": {
+      "language": "python",
+      "source": "# Quantitative risk: SLE = AV x EF, ALE = SLE x ARO, and the annual value of a safeguard.\ndef ale(asset_value, exposure_factor, aro):\n    sle = asset_value * exposure_factor\n    return sle, sle * aro\n\nrisks = [\n    # name, asset value (INR), exposure factor, ARO before, ARO after safeguard, safeguard name, annual safeguard cost (INR)\n    ('Laptop theft (data + device)', 400_000, 0.50, 2.0, 0.5, 'Full-disk encryption + tracking', 60_000),\n    ('Ransomware on file server', 5_000_000, 0.40, 0.2, 0.05, 'Immutable offsite backups + EDR', 250_000),\n    ('Website defacement', 300_000, 0.10, 0.5, 0.1, 'Managed WAF', 150_000),\n]\n\nfor name, av, ef, aro_before, aro_after, safeguard, cost in risks:\n    sle, ale_before = ale(av, ef, aro_before)\n    _, ale_after = ale(av, ef, aro_after)\n    value = ale_before - ale_after - cost\n    verdict = 'justified' if value > 0 else 'not justified on cost alone'\n    print(f'{name}')\n    print(f'  SLE = {sle:,.0f}  ALE before = {ale_before:,.0f}  ALE after = {ale_after:,.0f}')\n    print(f'  {safeguard}: annual cost {cost:,.0f} -> value {value:,.0f} ({verdict})')\n"
+    },
+    "output": "Laptop theft (data + device)\n  SLE = 200,000  ALE before = 400,000  ALE after = 100,000\n  Full-disk encryption + tracking: annual cost 60,000 -> value 240,000 (justified)\nRansomware on file server\n  SLE = 2,000,000  ALE before = 400,000  ALE after = 100,000\n  Immutable offsite backups + EDR: annual cost 250,000 -> value 50,000 (justified)\nWebsite defacement\n  SLE = 30,000  ALE before = 15,000  ALE after = 3,000\n  Managed WAF: annual cost 150,000 -> value -138,000 (not justified on cost alone)"
+  },
+  "takeaways": [
+    "Risk is likelihood combined with impact on an asset; residual risk never reaches zero.",
+    "SLE = AV × EF and ALE = SLE × ARO.",
+    "A safeguard is cost-justified when ALE before − ALE after − its annual cost is positive.",
+    "Use qualitative analysis to screen many risks and quantitative analysis for big decisions.",
+    "Responses are mitigate, transfer, avoid or accept; ignoring a risk is never valid.",
+    "Risk appetite and acceptance decisions belong to senior management and asset owners."
+  ],
+  "interview": [
+    {
+      "question": "Walk me through SLE, ARO and ALE with an example.",
+      "answer": "Single loss expectancy is the money lost in one occurrence: asset value multiplied by exposure factor. If a file server's data and service are worth ₹50 lakh and ransomware would destroy 40% of that value, SLE is ₹20 lakh. The annualized rate of occurrence is how often we expect the event each year; once in five years is 0.2. Annualized loss expectancy is SLE multiplied by ARO, so ₹4 lakh a year. That figure lets me compare safeguards. If immutable backups and EDR cost ₹2.5 lakh a year and cut ARO to 0.05, the new ALE is ₹1 lakh, so the safeguard is worth ₹50,000 a year.",
+      "explanation": "Strong answers state both formulas, use one consistent example and finish with the safeguard decision. Weak answers mix up SLE and ALE or skip ARO.",
+      "follow_ups": [
+        "What are the weaknesses of quantitative risk analysis?",
+        "How would you estimate an exposure factor for reputation damage?"
+      ]
+    },
+    {
+      "question": "What is the difference between inherent risk and residual risk?",
+      "answer": "Inherent risk is the level of risk before any controls are applied, based only on the threat, the vulnerability and the asset's value. Residual risk is what remains after controls are in place. For example, customer data on an internet-facing application has high inherent risk; after MFA, encryption, monitoring and secure coding, the residual risk might be moderate. Residual risk is never zero, so the asset owner must formally accept it or ask for more treatment. I would also keep both figures in the risk register, because if a control fails or is removed, the risk returns towards its inherent level and the organization needs to know how exposed it would be.",
+      "explanation": "Good answers give an example, say residual risk is never zero and link it to formal acceptance by the owner.",
+      "follow_ups": [
+        "Who should accept residual risk?",
+        "How do compensating controls affect residual risk?"
+      ]
+    },
+    {
+      "question": "When would you choose qualitative over quantitative risk analysis?",
+      "answer": "I use qualitative analysis when reliable figures are not available or when I need to screen many risks quickly. Reputation damage, new technologies and rare events are hard to price honestly, and false precision can mislead decision-makers. A likelihood and impact matrix, agreed with asset owners and possibly refined with the Delphi technique, gives a defensible ranking quickly. I switch to quantitative analysis for a few large decisions where money figures matter, such as whether a ₹40 lakh disaster recovery site or a cyber insurance policy is worth it. In practice I combine them: qualitative to prioritize, quantitative to justify major spending.",
+      "explanation": "Strong candidates explain trade-offs and say the methods are complementary. Saying quantitative is always better is the weak answer.",
+      "follow_ups": [
+        "What is the Delphi technique and why is it anonymous?",
+        "How do you avoid false precision in risk numbers?"
+      ]
+    },
+    {
+      "question": "Explain the four risk responses and give an example of each.",
+      "answer": "Mitigation reduces likelihood or impact with controls, such as adding MFA to reduce account takeover. Transfer shifts financial impact to another party, such as buying cyber insurance or contracting card processing to a PCI-compliant payment provider. Transfer does not move accountability: if student data leaks, the institute still answers to students and regulators. Avoidance removes the activity, such as deciding not to store card numbers at all. Acceptance means knowingly carrying the risk because treating it costs more than the expected loss, such as accepting minor website downtime. Acceptance must be documented and approved by someone with authority. Ignoring a risk without a decision is not a valid response.",
+      "explanation": "Interviewers look for one concrete example per response and the point that transfer does not transfer accountability.",
+      "follow_ups": [
+        "Is buying insurance enough to meet a legal duty to protect data?",
+        "Who can sign off on risk acceptance?"
+      ]
+    },
+    {
+      "question": "A safeguard costs more per year than the loss it prevents. What do you do?",
+      "answer": "First I check the inputs, because asset value, exposure factor and ARO are estimates, and costs such as legal liability or lost trust may be missing. If the numbers hold, the safeguard is not cost-justified. I would look for cheaper ways to reduce the same risk, such as a compensating control or a configuration change. I would also consider transferring part of the impact or avoiding the activity. If none makes sense, the asset owner can accept the risk, documented with the analysis and a review date. I would not implement an uneconomic control simply because it is technically better. Security exists to support the business, and spending more than the asset is worth fails that test.",
+      "explanation": "This tests manager-level judgment. Strong answers validate inputs, look at alternatives and end with documented acceptance.",
+      "follow_ups": [
+        "What would make you implement the control anyway?",
+        "How often should accepted risks be reviewed?"
+      ]
+    },
+    {
+      "question": "Name the steps of the NIST Risk Management Framework.",
+      "answer": "NIST SP 800-37 Revision 2 defines seven steps. Prepare sets up the organization's context, roles and risk strategy. Categorize determines the system's impact level, often using FIPS 199 confidentiality, integrity and availability ratings. Select chooses an appropriate baseline of controls from SP 800-53 and tailors it. Implement puts the controls in place and documents them. Assess checks that the controls are implemented correctly and work as intended. Authorize is a senior official's decision to accept the residual risk and allow the system to operate. Monitor keeps track of the controls, changes and new threats so the authorization stays valid. The process repeats as systems and threats change.",
+      "explanation": "Strong answers list all seven steps in order and explain authorize as a risk-acceptance decision. Forgetting Prepare is the usual gap.",
+      "follow_ups": [
+        "What is an authorizing official?",
+        "How does continuous monitoring change the authorization process?"
+      ]
+    }
+  ],
+  "practice": {
+    "kind": "exercise",
+    "title": "Build a risk register and justify one safeguard",
+    "difficulty": "Basic",
+    "objective": "Apply quantitative and qualitative analysis and choose defensible risk responses.",
+    "statement": "Using the coaching institute from earlier lessons, create a risk register with five risks covering the student portal, staff laptops, the video library, the payment flow and a key staff member leaving. Rate each qualitatively, calculate SLE and ALE for two of them with stated assumptions, and recommend a response for every risk.",
+    "deliverable": "A five-row risk register (table or YAML), two worked ALE calculations with a safeguard-value result, and a short note naming who must approve any accepted risk.",
+    "steps": [
+      "Name the asset, threat, vulnerability and owner for each risk.",
+      "Rate likelihood and impact as low, moderate or high.",
+      "For two risks, estimate AV, EF and ARO and calculate SLE and ALE.",
+      "Propose a safeguard for each of those two and calculate its annual value.",
+      "Choose a response (mitigate, transfer, avoid or accept) for all five risks.",
+      "Record residual risk and who approves it."
+    ],
+    "checklist": [
+      "Every risk has a business owner.",
+      "Formulas are applied correctly and assumptions are stated.",
+      "At least one risk uses a response other than mitigation.",
+      "Accepted risks name an approver with authority.",
+      "Recommendations are proportionate to the asset's value."
+    ],
+    "sample_answer": "R1 Student portal breach: owner Academic Director; likelihood moderate, impact high; mitigate with MFA, WAF and quarterly access reviews. R2 Laptop theft: AV ₹4,00,000, EF 0.5, SLE ₹2,00,000, ARO 2, ALE ₹4,00,000; full-disk encryption at ₹60,000 a year reduces ARO to 0.5 (ALE ₹1,00,000), so its value is ₹2,40,000 a year; mitigate. R3 Video piracy: moderate and moderate; mitigate with signed expiring URLs and watermarking. R4 Payment fraud: transfer card handling to a PCI DSS-compliant payment gateway so no card data is stored, which also avoids storing it; residual risk low. R5 Key IT staff member leaves: likelihood moderate, impact moderate; mitigate with documentation and a second trained person, accept remaining risk. Laptop ALE assumptions: ₹20,000 device plus recovery and legal effort; two losses a year seen historically. Residual risks are accepted by the Director after review."
+  },
+  "quiz": [
+    {
+      "type": "concept",
+      "question": "An asset is worth ₹10,00,000, the exposure factor is 30% and the event is expected once every four years. What is the ALE?",
+      "options": [
+        "₹3,00,000",
+        "₹75,000",
+        "₹2,50,000",
+        "₹1,20,000"
+      ],
+      "answer": 1,
+      "explanation": "SLE = 10,00,000 × 0.3 = ₹3,00,000. ARO = 0.25, so ALE = 3,00,000 × 0.25 = ₹75,000."
+    },
+    {
+      "type": "concept",
+      "question": "Which risk response moves the financial impact of a loss to another party but leaves accountability with the organization?",
+      "options": [
+        "Avoidance",
+        "Acceptance",
+        "Transfer",
+        "Mitigation"
+      ],
+      "answer": 2,
+      "explanation": "Insurance and outsourcing transfer financial impact. The organization remains accountable to customers and regulators."
+    },
+    {
+      "type": "scenario",
+      "question": "ALE before a safeguard is ₹5,00,000, ALE after is ₹1,00,000, and the safeguard costs ₹3,00,000 a year. What is its annual value?",
+      "options": [
+        "₹4,00,000",
+        "₹1,00,000",
+        "₹2,00,000",
+        "−₹1,00,000"
+      ],
+      "answer": 1,
+      "explanation": "Value = 5,00,000 − 1,00,000 − 3,00,000 = ₹1,00,000, so the safeguard is cost-justified."
+    },
+    {
+      "type": "concept",
+      "question": "Which of these is NOT a valid risk response?",
+      "options": [
+        "Accepting the risk with documented approval",
+        "Ignoring the risk because it is unlikely",
+        "Avoiding the activity that creates the risk",
+        "Buying insurance against the loss"
+      ],
+      "answer": 1,
+      "explanation": "Ignoring, sometimes called rejecting, a risk is never valid. Acceptance must be a documented, authorized decision."
+    },
+    {
+      "type": "concept",
+      "question": "In the NIST Risk Management Framework, which step is a senior official's decision to accept residual risk and allow a system to operate?",
+      "options": [
+        "Categorize",
+        "Assess",
+        "Authorize",
+        "Monitor"
+      ],
+      "answer": 2,
+      "explanation": "Authorize is the formal acceptance of residual risk by an authorizing official."
+    }
+  ]
+}
