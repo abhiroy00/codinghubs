@@ -4,12 +4,18 @@ import { Reveal } from '../../components/ui'
 import { useLenisRef } from '../../lib/lenis-context'
 import './career-launch.css'
 
-const LEFT = ['Industry-aligned AI curriculum', 'Hands-on GenAI projects', 'Classroom in Pitampura + live online'] as const
-const RIGHT = ['Placement support & job alerts', '1:1 mentor guidance', 'Certificate on completion'] as const
+const BENEFITS = ['Industry-aligned AI curriculum', 'Hands-on GenAI projects', 'Delhi classrooms + live online', 'Placement support & job alerts', '1:1 mentor guidance', 'Certificate on completion'] as const
+const EXPLORE = [
+  { to: '/courses/', label: 'Courses' },
+  { to: '/blog', label: 'Blog' },
+  { to: '/case-studies', label: 'Case studies' },
+  { to: '/brochures/', label: 'Brochures' },
+  { to: '/locations/', label: 'Locations' },
+] as const
 
-function Pill({ text, side, i }: { text: string; side: 'l' | 'r'; i: number }) {
+function Pill({ text, i }: { text: string; i: number }) {
   return (
-    <li className={`cl-pill cl-pill-${side}`} style={{ '--cl-i': i } as CSSProperties}>
+    <li className="cl-pill" style={{ '--cl-i': i } as CSSProperties}>
       <span className="cl-check" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 5 5 9-10" /></svg>
       </span>
@@ -18,7 +24,7 @@ function Pill({ text, side, i }: { text: string; side: 'l' | 'r'; i: number }) {
   )
 }
 
-/** Centered career CTA: headline, two buttons, floating benefit pills on both sides and the students photo over an arc. */
+/** Career CTA that fits one desktop screen: copy, buttons, benefits and quick links beside the students photo. */
 export function CareerLaunch() {
   const lenisRef = useLenisRef()
   // Scroll to the contact section through Lenis (the page's smooth scroller); a native hash jump gets cut short by it.
@@ -39,27 +45,28 @@ export function CareerLaunch() {
       <span className="cl-glow cl-glow-a" aria-hidden="true" />
       <span className="cl-glow cl-glow-b" aria-hidden="true" />
       <div className="wrap cl-wrap">
-        <ul className="cl-pills cl-pills-l" aria-label="What you get">
-          {LEFT.map((t, i) => <Pill key={t} text={t} side="l" i={i} />)}
-        </ul>
         <Reveal className="cl-copy">
           <h2 id="cl-title" className="cl-title">
             Join <span className="cl-brand">Coding Hub</span>
             <br />Start Your AI Career Today
           </h2>
-          <p className="cl-sub">AI, Data Science and Generative AI courses in Pitampura, Delhi. Our counsellors help you choose the right path. Get a free career consultation now.</p>
+          <p className="cl-sub">AI, Data Science and Generative AI courses at our Delhi classrooms in Netaji Subhash Place and Pitampura, or live online. Get a free career consultation.</p>
           <div className="cl-actions">
             <Link className="ui-btn ui-btn-ghost cl-btn" to="/courses/#catalogue">View Courses</Link>
             <a className="ui-btn ui-btn-primary cl-btn" href="#contact" onClick={toContact}>Enquire Now</a>
           </div>
+          <ul className="cl-pills" aria-label="What you get">
+            {BENEFITS.map((t, i) => <Pill key={t} text={t} i={i} />)}
+          </ul>
+          <nav className="cl-explore" aria-label="Explore Coding Hub">
+            <span>Explore:</span>
+            {EXPLORE.map(item => <Link key={item.to} to={item.to}>{item.label}</Link>)}
+          </nav>
         </Reveal>
-        <ul className="cl-pills cl-pills-r" aria-label="Career support">
-          {RIGHT.map((t, i) => <Pill key={t} text={t} side="r" i={i} />)}
-        </ul>
-      </div>
-      <div className="cl-stage">
-        <span className="cl-arc" aria-hidden="true" />
-        <img className="cl-students" src="/img/students-1000.webp" srcSet="/img/students-720.webp 720w, /img/students-1000.webp 1000w, /img/students.webp 1400w" sizes="(max-width: 940px) 96vw, 900px" alt="Five smiling Coding Hub students holding laptops and notebooks" width={1400} height={665} loading="lazy" decoding="async" />
+        <div className="cl-stage">
+          <span className="cl-arc" aria-hidden="true" />
+          <img className="cl-students" src="/img/students-1000.webp" srcSet="/img/students-720.webp 720w, /img/students-1000.webp 1000w, /img/students.webp 1400w" sizes="(max-width: 900px) 92vw, 620px" alt="Five smiling Coding Hub students holding laptops and notebooks" width={1400} height={665} loading="lazy" decoding="async" />
+        </div>
       </div>
     </section>
   )
