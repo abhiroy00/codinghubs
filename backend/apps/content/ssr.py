@@ -90,6 +90,13 @@ def head_tags(seo: dict, with_og=True) -> str:
         tags += [f'<meta property="og:image:alt" content="{escape(image_alt)}">', f'<meta name="twitter:image:alt" content="{escape(image_alt)}">']
         if og['image'] == services.LOGO_URL:
             tags += ['<meta property="og:image:width" content="1254">', '<meta property="og:image:height" content="1254">']
+    article = seo.get('og_article')
+    if article and og and with_og:
+        for key in ('published_time', 'modified_time', 'section'):
+            if article.get(key):
+                tags.append(f'<meta property="article:{key}" content="{escape(article[key])}">')
+        tags.extend(f'<meta property="article:tag" content="{escape(tag)}">' for tag in article.get('tags', []))
+    tags.extend(f'<link rel="alternate" type="{escape(a["type"])}" title="{escape(a["title"])}" href="{escape(a["href"])}">' for a in seo.get('alternate', []))
     if seo.get('json_ld'):
         tags.append('<script type="application/ld+json">' + json.dumps(seo['json_ld']).replace('<', '\\u003c') + '</script>')
     return '\n    '.join(tags)
@@ -124,7 +131,7 @@ def card_ctx(items, base):
     return [{**i, 'url': f'{base}/{i["slug"]}', 'date': fmt_date(i.get('published_at'))} for i in items]
 
 
-def listing_seo(kind, page, filters, indexable, topic=''):
+def listing_seo(kind, page, filters, indexable, topic='', items=()):
     """`filters` is an ordered list of (key, value) pairs kept in the canonical; page 1 never carries `page=`."""
     path = '/blog' if kind == 'blog' else '/case-studies'
     suffix = '' if page == 1 else f', page {page}'
@@ -134,7 +141,8 @@ def listing_seo(kind, page, filters, indexable, topic=''):
             desc = f'{topic} guides, tutorials and career advice from Coding Hubs School of AI, Delhi.'
         else:
             title = f'AI & Coding Blog{suffix} | Coding Hubs School of AI'
-            desc = 'Guides, tutorials and career advice on AI, programming and data from the team at Coding Hubs School of AI, Delhi.'
+            desc = ('Free guides on AI, machine learning, Python, web development and IT careers in India: roadmaps, '
+                    'salaries, interview questions and examples from Coding Hubs School of AI, Delhi.')
     else:
         title = f'Case Studies{suffix} | Coding Hubs School of AI'
         desc = 'Real learning and project stories from Coding Hubs School of AI, with only the details the people involved have verified.'
@@ -147,9 +155,13 @@ def listing_seo(kind, page, filters, indexable, topic=''):
         'json_ld': {
             '@context': 'https://schema.org',
             '@graph': [
-                {'@type': 'CollectionPage', '@id': f'{canonical}#webpage', 'url': canonical, 'name': title, 'description': desc, 'inLanguage': 'en-IN', 'isPartOf': {'@id': f'{settings.SITE_URL}/#website'}},
+                {'@type': 'CollectionPage', '@id': f'{canonical}#webpage', 'url': canonical, 'name': title, 'description': desc, 'inLanguage': 'en-IN', 'isPartOf': {'@id': f'{settings.SITE_URL}/#website'},
+                 **({'mainEntity': {'@type': 'ItemList', 'itemListElement': [
+                     {'@type': 'ListItem', 'position': i, 'url': f"{settings.SITE_URL}{path}/{item['slug']}", 'name': item['title']}
+                     for i, item in enumerate(items, start=(page - 1) * 9 + 1)]}} if items else {})},
             ],
         },
+        **({'alternate': [services.BLOG_FEED]} if kind == 'blog' else {}),
     }
 
 
@@ -183,7 +195,7 @@ def blog_list(request):
     from .serializers import BlogCardSerializer
 
     items = BlogCardSerializer(pg.object_list, many=True).data
-    seo = listing_seo('blog', page, [('category', cat)], indexable=not query and paginator.count > 0, topic=topic)
+    seo = listing_seo('blog', page, [('category', cat)], indexable=not query and paginator.count > 0, topic=topic, items=items)
     public = Blog.objects.public().values('pk')
     cats = [{'name': c.name, 'slug': c.slug, 'blog_count': c.n} for c in BlogCategory.objects.annotate(n=Count('blogs', filter=Q(blogs__pk__in=public))).filter(n__gt=0).order_by('name')]
     html = render_to_string('content/blog_list.html', {'items': card_ctx(items, '/blog'), 'page': pg, 'cat': cat, 'topic': topic, 'categories': cats, 'query': query})
@@ -203,7 +215,9 @@ def blog_detail(request, slug):
         return HttpResponsePermanentRedirect(f'/blog/{obj.slug}')
     data = blog_detail_payload(obj, preview)
     seo = data['seo']
-    html = render_to_string('content/blog_detail.html', {'a': data, 'date': fmt_date(obj.published_at), 'preview': preview})
+    updated = obj.updated_at and obj.published_at and (obj.updated_at - obj.published_at).total_seconds() >= 86400
+    html = render_to_string('content/blog_detail.html', {'a': data, 'date': fmt_date(obj.published_at), 'preview': preview,
+                                                         'updated': fmt_date(obj.updated_at) if updated else '', 'updated_iso': obj.updated_at.isoformat() if updated else ''})
     return respond(seo, html, preview=preview, data={'kind': 'blog', 'slug': obj.slug, 'article': data})
 
 

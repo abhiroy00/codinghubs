@@ -155,7 +155,33 @@ def seo_for(obj, kind: str, preview: bool = False) -> dict:
             'url': canonical,
         },
         'json_ld': article_json_ld(obj, kind, canonical, description, image),
+        **({'og_article': article_meta(obj), 'alternate': [BLOG_FEED]} if kind == 'blog' else {}),
     }
+
+
+BLOG_ID = f'{settings.SITE_URL}/blog#blog'
+BLOG_FEED = {'type': 'application/rss+xml', 'title': 'Coding Hubs School of AI Blog', 'href': f'{settings.SITE_URL}/blog/feed.xml'}
+
+
+def article_meta(obj) -> dict:
+    """Open Graph article:* values (publish/update dates, section, tags) that social and AI crawlers read."""
+    meta = {'section': obj.category.name if getattr(obj, 'category_id', None) else '', 'tags': [t.name for t in obj.tags.all()][:6]}
+    if obj.published_at:
+        meta['published_time'] = obj.published_at.isoformat()
+    if obj.updated_at:
+        meta['modified_time'] = obj.updated_at.isoformat()
+    return meta
+
+
+def keywords_for(obj) -> list:
+    """Focus keyword first, then secondary keywords and tags, without duplicates (case-insensitive)."""
+    seen, out = set(), []
+    for word in [obj.focus_keyword, *(obj.secondary_keywords or []), *(t.name for t in obj.tags.all())]:
+        word = str(word or '').strip()
+        if word and word.lower() not in seen:
+            seen.add(word.lower())
+            out.append(word)
+    return out[:12]
 
 
 def organization_ref() -> dict:
@@ -178,7 +204,22 @@ def article_json_ld(obj, kind, canonical, description, image) -> dict:
         'image': [image],
         'inLanguage': 'en-IN',
         'publisher': organization_ref(),
+        'url': canonical,
     }
+    if kind == 'blog':
+        # Answer engines (Google Assistant, AI overviews) read the headline and the opening answer paragraph aloud.
+        words = len(plain_text(obj.content).split())
+        node.update({
+            'isPartOf': {'@type': 'Blog', '@id': BLOG_ID, 'name': 'Coding Hubs School of AI Blog', 'url': f'{settings.SITE_URL}/blog'},
+            'wordCount': words,
+            'timeRequired': f'PT{max(1, obj.reading_time or round(words / 200))}M',
+            'speakable': {'@type': 'SpeakableSpecification', 'cssSelector': ['.ins-art-hero h1', '.ins-prose > p:first-of-type']},
+        })
+        if obj.category_id:
+            node['articleSection'] = obj.category.name
+        keywords = keywords_for(obj)
+        if keywords:
+            node['keywords'] = ', '.join(keywords)
     if obj.published_at:
         node['datePublished'] = obj.published_at.isoformat()
     node['dateModified'] = (obj.updated_at or obj.published_at).isoformat() if (obj.updated_at or obj.published_at) else None
@@ -189,6 +230,14 @@ def article_json_ld(obj, kind, canonical, description, image) -> dict:
     else:
         node['author'] = {'@id': ORG_ID, '@type': 'EducationalOrganization', 'name': 'Coding Hubs School of AI'}
     graph = [node]
+    if kind == 'blog':
+        # Mirrors the visible breadcrumb on the article (Home / Blog / Category).
+        trail = [('Home', f'{settings.SITE_URL}/'), ('Blog', f'{settings.SITE_URL}/blog')]
+        if obj.category_id:
+            trail.append((obj.category.name, f'{settings.SITE_URL}/blog?category={obj.category.slug}'))
+        trail.append((_trim(obj.title, 110), canonical))
+        graph.append({'@type': 'BreadcrumbList', 'itemListElement': [
+            {'@type': 'ListItem', 'position': i, 'name': name, 'item': url} for i, (name, url) in enumerate(trail, start=1)]})
     if kind == 'blog' and obj.faq:
         faq = [f for f in obj.faq if f.get('q') and f.get('a')]
         if faq:
