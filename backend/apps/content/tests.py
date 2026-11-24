@@ -237,6 +237,28 @@ class BlogWorkflowTests(ContentBase):
         self.assertEqual((s['blogs']['total'], s['blogs']['published'], s['blogs']['draft']), (2, 1, 1))
         self.assertEqual(len(s['recent']), 2)
 
+    def test_admin_blog_list_supports_500_posts_per_page_and_caps_larger_requests(self):
+        posts = Blog.objects.bulk_create([
+            Blog(title=f'Scroll post {i:03}', slug=f'scroll-post-{i:03}')
+            for i in range(501)
+        ])
+        params = {'q': 'Scroll post', 'ordering': 'title', 'page_size': 500}
+        first = self.api.get('/api/admin/blogs/', params)
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(first.data['count'], 501)
+        self.assertEqual([row['id'] for row in first.data['results']], [post.id for post in posts[:500]])
+        self.assertIsNotNone(first.data['next'])
+
+        second = self.api.get('/api/admin/blogs/', {**params, 'page': 2})
+        self.assertEqual([row['id'] for row in second.data['results']], [posts[500].id])
+        self.assertIsNone(second.data['next'])
+
+        capped = self.api.get('/api/admin/blogs/', {**params, 'page_size': 1000})
+        self.assertEqual(len(capped.data['results']), 500)
+
+        default = self.api.get('/api/admin/blogs/', {'q': 'Scroll post'})
+        self.assertEqual(len(default.data['results']), 20)
+
     def test_slug_change_keeps_old_url_working(self):
         b = self.make_blog('Original')
         self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')

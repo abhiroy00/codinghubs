@@ -44,6 +44,10 @@ class AdminPage(PageNumberPagination):
     max_page_size = 100
 
 
+class AdminBlogPage(AdminPage):
+    max_page_size = 500
+
+
 class IsStaff(permissions.BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated and request.user.is_staff and request.user.is_active)
@@ -282,6 +286,7 @@ class AdminListMixin:
 class AdminBlogList(AdminListMixin, generics.ListCreateAPIView):
     model_class = Blog
     serializer_class = BlogAdminSerializer
+    pagination_class = AdminBlogPage
 
     def get_queryset(self):
         qs = Blog.objects.select_related('category').prefetch_related('tags', 'related')

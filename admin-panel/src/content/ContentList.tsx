@@ -19,6 +19,7 @@ const SORTS = [
 
 export function ContentList({ kind }: { kind: Kind }) {
   const noun = kind === 'blogs' ? 'blog post' : 'case study'
+  const pageSize = kind === 'blogs' ? 500 : 20
   const [q, setQ] = useState('')
   const [dq, setDq] = useState('')
   const [status, setStatus] = useState('')
@@ -46,10 +47,10 @@ export function ContentList({ kind }: { kind: Kind }) {
   const load = useCallback(() => {
     setError('')
     adminApi
-      .get<Paged<Row>>(`/${kind}/`, { params: { page, q: dq || undefined, status: status || undefined, category: category || undefined, ordering } })
+      .get<Paged<Row>>(`/${kind}/`, { params: { page, page_size: pageSize, q: dq || undefined, status: status || undefined, category: category || undefined, ordering } })
       .then((r) => setData(r.data))
       .catch(() => setError('Could not load the list.'))
-  }, [kind, page, dq, status, category, ordering])
+  }, [kind, page, pageSize, dq, status, category, ordering])
   useEffect(load, [load])
   const loadStats = useCallback(() => {
     const count = (st?: string) => adminApi.get<Paged<Row>>(`/${kind}/`, { params: { page_size: 1, status: st } }).then((r) => r.data.count)
@@ -129,7 +130,7 @@ export function ContentList({ kind }: { kind: Kind }) {
     }
   }
 
-  const pages = data ? Math.max(1, Math.ceil(data.count / 20)) : 1
+  const pages = data ? Math.max(1, Math.ceil(data.count / pageSize)) : 1
   const plural = kind === 'blogs' ? 'Posts' : 'Case Studies'
   const applyFilter = () => { setDq(q); setPage(1); load() }
   return (
@@ -163,7 +164,7 @@ export function ContentList({ kind }: { kind: Kind }) {
             <option value="">All Status</option>
             {STATUSES.map((s) => <option key={s} value={s}>{s[0].toUpperCase() + s.slice(1)}</option>)}
           </select>
-          <select className="cx-input" value={ordering} onChange={(e) => setOrdering(e.target.value)} aria-label="Sort">
+          <select className="cx-input" value={ordering} onChange={(e) => { setOrdering(e.target.value); setPage(1) }} aria-label="Sort">
             {SORTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
           </select>
           <button type="submit" className="cx-btn-primary">Filter</button>
@@ -201,7 +202,7 @@ export function ContentList({ kind }: { kind: Kind }) {
                   const busy = busyId === r.id
                   return (
                     <tr key={r.id}>
-                      <td className="cx-num">{(page - 1) * 20 + i + 1}</td>
+                      <td className="cx-num">{(page - 1) * pageSize + i + 1}</td>
                       <td>{r.featured_image ? <img className="cx-thumb" src={r.featured_image} alt="" loading="lazy" /> : <span className="cx-thumb cx-thumb-empty" aria-hidden="true">🖼</span>}</td>
                       <td className="cx-title">
                         <Link to={`/${kind}/edit/${r.id}`}>{r.title}</Link>
