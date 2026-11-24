@@ -305,14 +305,6 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .ad-blog-toolbar :is(button,select){min-height:34px;padding:.35rem .55rem;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--ink);font:inherit;font-size:.8rem;cursor:pointer}
 .ad-blog-toolbar :is(button,select):hover,.ad-blog-toolbar button[aria-pressed=true]{background:#e8edff;border-color:#cbd5f7}
 .ad-blog-toolbar button:disabled{opacity:.4;cursor:default}
-.ad-blog-visual{border:1px solid var(--line);border-radius:0 0 8px 8px}
-.ad-blog-visual .tiptap{min-height:320px;padding:1.25rem;outline:none;line-height:1.8;font-size:1rem;overflow-wrap:anywhere}
-.ad-blog-visual:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.ad-blog-visual p{margin:0 0 1rem}.ad-blog-visual :is(h2,h3,h4){line-height:1.4;margin:1.5rem 0 .75rem}
-.ad-blog-visual ul,.ad-blog-visual ol{padding-left:1.5rem}.ad-blog-visual blockquote{border-left:3px solid var(--accent);padding-left:1rem;margin:1rem 0;color:var(--mut)}
-.ad-blog-visual img{max-width:100%;height:auto}.ad-blog-visual a{color:var(--accent);text-decoration:underline}
-.ad-blog-visual pre{background:#132039;color:#fff;border-radius:6px;padding:1rem;overflow-x:auto}
-.ad-blog-visual .tableWrapper{overflow-x:auto}.ad-blog-visual table{border-collapse:collapse;max-width:100%}.ad-blog-visual :is(td,th){border:1px solid var(--line);padding:.5rem;min-width:60px}
 .ad-blog-link-box{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.75rem;border:1px solid var(--line)}
 .ad-blog-link-box label{font-size:.85rem}.ad-blog-link-box .ad-input{flex:1;min-width:140px}
 
@@ -441,9 +433,6 @@ textarea.ad-input{resize:vertical;line-height:1.5}
 .wp-btn-light{background:#f1f5f9;border-color:#d6dde8;color:#334155}
 .wp-btn-outline{background:#fff;border-color:#c7d2fe;color:#3b5bfd!important;padding:.55rem 1rem}
 .wp-btn-primary:disabled,.wp-btn-light:disabled{opacity:.6;cursor:wait}
-.ad-shell .wp .ad-blog-visual .ProseMirror,.ad-shell .wp .ad-blog-visual .ProseMirror *{font-size:14px!important}
-.ad-shell .wp .ad-blog-visual .ProseMirror h2{font-size:18px!important}
-.ad-shell .wp .ad-blog-visual .ProseMirror h3{font-size:16px!important}
 .wp-count{margin:0;color:var(--mut);font-weight:600}
 .wp-count.near{color:#b45309}
 .wp-count.over{color:var(--err)}
