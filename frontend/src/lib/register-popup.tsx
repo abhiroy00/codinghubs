@@ -1,5 +1,5 @@
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 const RegisterForm = lazy(() => import('../pages/free-session/RegisterForm').then((m) => ({ default: m.RegisterForm })))
 import { useLenisRef } from './lenis-context'
 import { FS_CSS } from './fs-css'
@@ -11,12 +11,13 @@ function PopupStyles() {
 }
 
 const KEY = 'ch_registered'
-const AUTO_MIN_MS = 30_000
-const AUTO_MAX_MS = 45_000
 
 interface PopupApi {
-  /** Opens the "Reserve your free seat" popup; after the visitor has registered it takes them to the courses instead. */
-  open: (course?: string) => void
+  /**
+   * Opens the "Reserve your free seat" form (only when a visitor asks for it: it never opens by itself). After the
+   * visitor has registered it takes them to the courses instead. `campaignId` records the offer that led here.
+   */
+  open: (course?: string, campaignId?: number) => void
   /** Enrollment enquiries remain available after a previous demo registration. */
   openEnrollment: (course: string) => void
   registered: boolean
@@ -41,11 +42,11 @@ function readFlag() {
 
 export function RegisterPopupProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
-  const { pathname } = useLocation()
   const lenisRef = useLenisRef()
   const [registered, setRegistered] = useState(false)
   const [isOpen, setOpen] = useState(false)
   const [course, setCourse] = useState<string | null>(null)
+  const [campaignId, setCampaignId] = useState<number | null>(null)
   const [intent, setIntent] = useState<'demo' | 'enrollment'>('demo')
   const [token, setToken] = useState(0)
   const returnFocus = useRef<HTMLElement | null>(null)
@@ -60,10 +61,11 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
   }, [lenisRef])
 
   const showPopup = useCallback(
-    (nextIntent: 'demo' | 'enrollment', c?: string) => {
+    (nextIntent: 'demo' | 'enrollment', c?: string, campaign?: number) => {
       returnFocus.current = document.activeElement as HTMLElement | null
       setIntent(nextIntent)
       setCourse(c ?? null)
+      setCampaignId(campaign ?? null)
       setToken((t) => t + 1)
       setOpen(true)
       document.body.style.overflow = 'hidden'
@@ -72,26 +74,12 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
     [lenisRef],
   )
 
-  const open = useCallback((c?: string) => {
+  const open = useCallback((c?: string, campaign?: number) => {
     if (readFlag()) { navigate('/courses/'); return }
-    showPopup('demo', c)
+    showPopup('demo', c, campaign)
   }, [navigate, showPopup])
 
   const openEnrollment = useCallback((c: string) => showPopup('enrollment', c), [showPopup])
-
-  // Home page: bring the popup back every 30-45 seconds until the visitor has registered.
-  useEffect(() => {
-    if (pathname !== '/' || registered) return
-    let timer: ReturnType<typeof setTimeout>
-    const schedule = () => {
-      timer = setTimeout(() => {
-        if (!readFlag() && !document.querySelector('.rp-overlay')) open()
-        schedule()
-      }, AUTO_MIN_MS + Math.random() * (AUTO_MAX_MS - AUTO_MIN_MS))
-    }
-    schedule()
-    return () => clearTimeout(timer)
-  }, [pathname, registered, open])
 
   useEffect(() => {
     if (!isOpen) return
@@ -155,7 +143,7 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
             </button>
             <div className="form-card">
               <Suspense fallback={<p className="rp-loading" role="status">Loading…</p>}>
-                <RegisterForm key={token} idPrefix="rp-" intent={intent} onThanksChange={intent === 'demo' ? onThanks : undefined} prefillCourse={course} prefillToken={token} />
+                <RegisterForm key={token} idPrefix="rp-" intent={intent} onThanksChange={intent === 'demo' ? onThanks : undefined} prefillCourse={course} prefillToken={token} campaignId={campaignId} />
               </Suspense>
             </div>
           </div>

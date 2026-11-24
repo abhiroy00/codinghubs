@@ -33,9 +33,11 @@ interface RegisterFormProps {
   prefillToken?: number
   /** Prefix for element ids so the form can be mounted twice on one page (inline and in the popup). */
   idPrefix?: string
+  /** The live course offer that opened this form, recorded with the enquiry. */
+  campaignId?: number | null
 }
 
-export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPrefix = '', intent = 'demo' }: RegisterFormProps = {}) {
+export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPrefix = '', intent = 'demo', campaignId = null }: RegisterFormProps = {}) {
   const enrollment = intent === 'enrollment'
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -103,7 +105,7 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
 
     setSubmitting(true)
     try {
-      await api.post('/leads/', {
+      const lead = {
         name: name.trim().replace(/\s+/g, ' '),
         phone: '+91' + normalized,
         email: email.trim(),
@@ -112,14 +114,22 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
         course,
         mode: enrollment ? 'expert' : 'demo',
         source_page: window.location.pathname,
-      })
+      }
+      try {
+        await api.post('/leads/', campaignId ? { ...lead, campaign: campaignId } : lead)
+      } catch (error) {
+        // If the offer ended while the form was open, keep the enquiry and drop only the offer reference.
+        const data = (error as { response?: { status?: number; data?: Record<string, unknown> } }).response
+        if (!(campaignId && data?.status === 400 && data.data?.campaign)) throw error
+        await api.post('/leads/', lead)
+      }
       try {
         localStorage.setItem(dupKey, JSON.stringify({ ts: Date.now() }))
       } catch {
         // The server accepted the lead even when local storage is unavailable.
       }
       setThanks({ firstName: name.trim().split(' ')[0], course })
-      trackLead(enrollment ? 'enquiry' : 'demo', course)
+      trackLead(enrollment ? 'enquiry' : 'demo', course, campaignId)
     } catch {
       setStatus({ msg: enrollment ? 'Your enquiry could not be sent. Please try again.' : 'Something went wrong and your registration was not submitted. Please try again.', type: 'error' })
     } finally {
@@ -267,7 +277,8 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
           </label>
           <select id={`${idPrefix}f-course`} name="course" required aria-describedby={`${idPrefix}e-course`} value={course} onChange={(e) => setCourse(e.target.value)} aria-invalid={!!errors.course}>
             <option value="">Choose a course</option>
-            {enrollment && prefillCourse && !COURSE_CATALOG.some(item => item.name === prefillCourse) && <option value={prefillCourse}>{prefillCourse}</option>}
+            {/* A course page can preselect a course that is not in the short demo list (e.g. Data Science): keep it selectable. */}
+            {prefillCourse && !(enrollment ? COURSE_CATALOG.some(item => item.name === prefillCourse) : COURSE_OPTIONS.some(g => g.items.includes(prefillCourse))) && <option value={prefillCourse}>{prefillCourse}</option>}
             {enrollment ? COURSE_CATALOG.map((item) => <option key={item.slug} value={item.name}>{item.name}</option>) : COURSE_OPTIONS.map((g) => (
               <optgroup label={g.group} key={g.group}>
                 {g.items.map((c) => (

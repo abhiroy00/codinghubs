@@ -11,8 +11,8 @@ export function track(name: string, params: Record<string, string> = {}) {
 }
 
 /** A lead form was accepted by the server (demo registration, admission enquiry or location enquiry). */
-export function trackLead(form: 'demo' | 'enquiry' | 'location_enquiry', course: string) {
-  track('generate_lead', { form, course: course || 'not_selected' })
+export function trackLead(form: 'demo' | 'enquiry' | 'location_enquiry', course: string, campaignId?: number | null) {
+  track('generate_lead', { form, course: course || 'not_selected', ...(campaignId ? { campaign_id: String(campaignId) } : {}) })
 }
 
 /** Counts phone, WhatsApp and email link clicks anywhere on the site with one listener. */

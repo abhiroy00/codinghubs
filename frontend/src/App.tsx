@@ -3,6 +3,7 @@ import { PrivateRouteMeta } from './seo/PrivateRouteMeta'
 import { BrowserRouter, Navigate, Route, Routes, useParams, useLocation } from 'react-router-dom'
 import { AuthProvider } from './lib/auth-context'
 import { ScrollManager } from './components/ScrollManager'
+import { OfferCampaign } from './components/OfferCampaign'
 import { LenisProvider } from './lib/lenis-context'
 import { ModalProvider } from './lib/modal-context'
 import { RegisterPopupProvider } from './lib/register-popup'
@@ -87,6 +88,7 @@ export function AppContent() {
         <LenisProvider>
           <ModalProvider>
             <RegisterPopupProvider>
+            <OfferCampaign />
             <Suspense fallback={null}>
 <Routes>
 <Route path="interview-prep/*" element={<LegacyInterviewRedirect/>}/>

@@ -162,9 +162,11 @@ class LeadSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'phone', 'course', 'mode', 'source_page', 'utm_source', 'utm_medium',
             'utm_campaign', 'status', 'notes', 'created_at',
-            'email', 'education', 'whatsapp_consent',
+            'email', 'education', 'whatsapp_consent', 'campaign', 'campaign_title',
         )
-        read_only_fields = ('id', 'name', 'phone', 'course', 'mode', 'source_page', 'utm_source', 'utm_medium', 'utm_campaign', 'created_at', 'email', 'education', 'whatsapp_consent')
+        read_only_fields = ('id', 'name', 'phone', 'course', 'mode', 'source_page', 'utm_source', 'utm_medium', 'utm_campaign', 'created_at', 'email', 'education', 'whatsapp_consent', 'campaign')
+
+    campaign_title = serializers.CharField(source='campaign.title', read_only=True, default='')
 
 
 def filtered_leads(request):
@@ -176,6 +178,8 @@ def filtered_leads(request):
         qs = qs.filter(status=s)
     if m := p.get('mode'):
         qs = qs.filter(mode=m)
+    if campaign := p.get('campaign'):
+        qs = qs.filter(campaign_id=campaign)
     if src := p.get('source'):
         qs = qs.filter(source_page__icontains=src)
     if d := p.get('from'):

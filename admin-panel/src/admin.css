@@ -544,6 +544,15 @@ select.cx-input{cursor:pointer}
 .cx-pager{display:flex;align-items:center;justify-content:center;gap:16px;padding:18px;font-size:14px;color:var(--cx-muted)}
 @media (max-width:900px){.cx-grid-3,.cx-grid-2{grid-template-columns:1fr}.cx-body{padding:20px 16px}.cx-card-head,.cx-filters{padding:16px}.cx-stat{flex:1 1 140px;min-width:0}}
 
+/* Course Offers editor preview */
+.ad-offer-preview{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px;padding:12px 14px;border-radius:12px;background:#0b1530;color:#fff}
+.ad-offer-preview > .ad-muted{flex-basis:100%;color:#9fb0d0}
+.ad-offer-card,.ad-offer-modal{background:#fff;color:#0b1220;border:1px solid #dbe4f3}
+.ad-offer-label{display:inline-block;margin-right:8px;padding:2px 8px;border-radius:999px;background:#ffb020;color:#1b1300;font-weight:700}
+.ad-offer-state-live{background:#dcfce7;color:#166534}
+.ad-offer-state-scheduled{background:#e0ecff;color:#1d4ed8}
+.ad-offer-state-expired,.ad-offer-state-paused{background:#f1f5f9;color:#475569}
+
 /* Every text in the admin panel is 12px: headings, numbers, tables, buttons, forms and the editors. The #root
    selector outranks any class rule (including !important ones above) and inline styles, so new screens follow it
    automatically. Change the value here to resize the whole panel. */

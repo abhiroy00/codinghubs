@@ -2,6 +2,7 @@ from django.urls import include, path
 
 from . import prep_views, views
 from apps.courses import brochures
+from apps.leads import admin_api as campaigns
 
 urlpatterns = [
     path('courses/<int:pk>/brochure/', brochures.AdminBrochure.as_view()),
@@ -10,6 +11,8 @@ urlpatterns = [
     path('login/', views.AdminLoginView.as_view(), name='admin-login'),
     path('stats/', views.StatsView.as_view(), name='admin-stats'),
     path('change-password/', views.ChangePasswordView.as_view(), name='admin-change-password'),
+    path('campaigns/', campaigns.CampaignList.as_view(), name='admin-campaigns'),
+    path('campaigns/<int:pk>/', campaigns.CampaignDetail.as_view(), name='admin-campaign'),
     path('leads/', views.LeadListView.as_view(), name='admin-leads'),
     path('leads/export/', views.LeadExportView.as_view(), name='admin-leads-export'),
     path('leads/<int:pk>/', views.LeadDetailView.as_view(), name='admin-lead'),
