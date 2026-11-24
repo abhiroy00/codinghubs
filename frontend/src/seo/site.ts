@@ -144,10 +144,36 @@ export const JOBS_META: PageMeta = {
   },
 }
 
-/** /certificates/ shows each visitor's own certificates and progress, so it stays out of search results. */
+/** Certificate questions, shown on /certificates/ and repeated as FAQPage data for search and AI answers. */
+export const CERTIFICATES_FAQ = [
+  { q: 'How do I get my Coding Hubs certificate?', a: 'Sign in at codinghubs.in/certificates/, fill in the short application with your name, course and completion date, and submit it. Our academic team reviews it, and once approved the certificate appears in the same page for download.' },
+  { q: 'How long does approval take?', a: 'Applications are reviewed by our academic team in the order they arrive. You can follow the status on the Certificates page; if anything needs confirming, the team may call the number you gave.' },
+  { q: 'How can an employer verify a certificate?', a: 'Scan the QR code on the certificate or enter its ID (CH-XXXX-XXXX-XXXX) at codinghubs.in/certificates/verify/. The result shows whether it is valid, revoked or replaced, with the course, dates and the holder\'s initials only.' },
+  { q: 'I lost my certificate or its ID. What should I do?', a: 'Sign in with the account you applied from: every issued certificate is listed under Download with its ID, and you can download the PDF again at any time. If you applied without an account or cannot sign in, contact us with your name, course and batch.' },
+  { q: 'The name or course on my certificate is wrong. Can it be corrected?', a: 'Yes. Contact us with the certificate ID and the correction. A corrected certificate is reissued with a new ID, and the old ID then shows as replaced when verified.' },
+  { q: 'Is the online roadmap certificate the same as the course certificate?', a: 'No. Finishing a free 30-day online roadmap earns an automatic roadmap certificate. The course certificate described here is for learners who completed a Coding Hubs classroom or live online course and is issued only after review.' },
+] as const
+
 export const CERTIFICATES_META: PageMeta = {
-  path: '/certificates/', title: 'Course Certificates | Coding Hubs',
-  description: 'Earn a Coding Hubs School of AI certificate of completion by finishing a course roadmap, and view your certificates.',
+  path: '/certificates/', title: 'Certificates: Apply, Download & Verify | Coding Hubs',
+  description: 'Apply for your Coding Hubs School of AI course certificate, download the PDF, or verify a certificate ID. Every certificate has a unique ID and QR code.',
+  image: LOGO_URL, indexable: true,
+  jsonLd: { '@context': 'https://schema.org', '@graph': [
+    organizationNode(),
+    { '@type': 'WebPage', '@id': `${SITE_URL}/certificates/#webpage`, url: `${SITE_URL}/certificates/`, name: 'Coding Hubs certificates: apply, download and verify',
+      isPartOf: { '@id': SITE_ID }, about: { '@id': ORG_ID }, inLanguage: 'en-IN' },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Certificates', item: `${SITE_URL}/certificates/` },
+    ] },
+    { '@type': 'FAQPage', mainEntity: CERTIFICATES_FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  ] },
+}
+
+/** Verification results are per-certificate and private in spirit: never indexed, never in the sitemap. */
+export const CERTIFICATE_VERIFY_META: PageMeta = {
+  path: '/certificates/verify/', title: 'Verify a Certificate | Coding Hubs',
+  description: 'Check whether a Coding Hubs School of AI certificate ID is valid.',
   image: LOGO_URL, indexable: false,
 }
 

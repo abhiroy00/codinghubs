@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { CampaignsPage } from './CampaignsPage'
+import { CertificatesPage } from './CertificatesPage'
 import { adminApi, adminTokens } from './api'
 import { BlogEditor } from './content/BlogEditor'
 import { CaseEditor } from './content/CaseEditor'
@@ -46,6 +47,7 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
     items: [
       { to: '/leads', label: 'Manage Leads', icon: 'M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0Zm-12 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Z' },
       { to: '/offers', label: 'Course Offers', icon: 'M3 12 12 3h9v9l-9 9-9-9Zm14-5a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z' },
+      { to: '/certificates', label: 'Certificates', icon: 'M4 4h16v12H4V4Zm4 16 4-2 4 2v-4H8v4Zm0-12h8M8 11h5' },
       { to: '/enrollments', label: 'Enrollments', icon: 'M12 3 2 8l10 5 8-4v6h2V8L12 3Zm-6 9.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-3.5l-6 3-6-3Z' },
       { to: '/orders', label: 'Course Orders', icon: 'M7 4h10l1 4H6l1-4ZM5 10h14l-1 10H6L5 10Z' },
       { to: '/users', label: 'Users', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z' },
@@ -248,6 +250,7 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <Route index element={<Overview />} />
             <Route path="leads" element={<LeadsPage />} />
             <Route path="offers" element={<CampaignsPage />} />
+            <Route path="certificates" element={<CertificatesPage />} />
             <Route
               path="enrollments"
               element={

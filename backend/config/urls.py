@@ -36,6 +36,8 @@ urlpatterns = [
     path('api/auth/', include('apps.accounts.urls')),
     path('api/studio/v1/', include('apps.studio.urls')),
     path('api/leads/', include('apps.leads.urls')),
+    path('api/certificates/', include('apps.certificates.urls')),
+    path('api/admin/', include('apps.certificates.admin_urls')),
     path('api/courses/', include('apps.courses.urls')),
     path('api/ai/', include('apps.aicoach.urls')),
     path('api/payments/', include('apps.payments.urls')),

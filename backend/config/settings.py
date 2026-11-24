@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.learning',
     'apps.studio',
     'apps.newsletter',
+    'apps.certificates',
 ]
 
 MIDDLEWARE = [
@@ -163,6 +164,9 @@ REST_FRAMEWORK = {
         'resume_upload': '10/hour',
         'gigs_write': '20/hour',
         'gigs_report': '5/hour',
+        'cert_verify': '20/min',
+        'cert_apply': '5/hour',
+        'cert_download': '30/hour',
     },
 }
 
