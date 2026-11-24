@@ -389,8 +389,12 @@
   text-decoration: none;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
+.community .brochure-btn {
+  min-width: 0;
+  padding-inline: 0.8rem;
+}
 .community .brochure-download {
-  flex: 1;
+  flex: 1.4 1 0;
   background: #1554d6;
   color: #fff;
 }
@@ -398,7 +402,8 @@
   background: #0f43b0;
 }
 .community .brochure-view {
-  min-width: 6.5rem;
+  flex: 1 1 0;
+  min-width: 4.75rem;
   background: #fff;
   color: #1554d6;
 }
