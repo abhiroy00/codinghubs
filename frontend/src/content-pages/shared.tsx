@@ -115,11 +115,12 @@ export function InsIcon({ name }: { name: keyof typeof ICON_PATHS }) {
 
 const views = (n?: number) => ((n ?? 0) > 0 ? n!.toLocaleString('en-IN') : '')
 
-export function InsMeta({ c, author = false, long = false }: { c: Card; author?: boolean; long?: boolean }) {
+export function InsMeta({ c, author = false, long = false, updated }: { c: Card; author?: boolean; long?: boolean; updated?: { iso: string; text: string } }) {
   return (
     <p className="ins-meta">
       {author && c.author_name && <span><InsIcon name="user" />{c.author_name}</span>}
       {c.published_at && <span><InsIcon name="calendar" /><time dateTime={c.published_at}>{fmtDate(c.published_at)}</time></span>}
+      {updated && <span>Updated <time dateTime={updated.iso}>{updated.text}</time></span>}
       {!!c.reading_time && <span><InsIcon name="clock" />{c.reading_time} {long ? 'min read' : 'min'}</span>}
       {views(c.view_count) && <span><InsIcon name="eye" />{views(c.view_count)}{long ? (c.view_count === 1 ? ' view' : ' views') : ''}</span>}
     </p>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { fmtDate, getBlog, getCase, recordView, takeInitial, type Article } from './api'
-import { CardView, InsIcon, InsightCard, InsMeta, PageFrame, useSeo } from './shared'
+import { CardView, InsightCard, InsMeta, PageFrame, useSeo } from './shared'
 import { ArticleToc } from './ArticleToc'
 import './blog.css'
 import { HeroVideo } from '../components/HeroVideo'
@@ -84,6 +84,13 @@ function ReadProgress() {
   return <div className="bl-progress" role="presentation"><span style={{ width: `${pct}%` }} /></div>
 }
 
+/** "Updated" is shown, like on the server-rendered page, only when a post changed at least a day after publishing. */
+function updatedLabel(a: Article): { iso: string; text: string } | undefined {
+  if (!a.updated_at || !a.published_at) return undefined
+  const updated = new Date(a.updated_at), published = new Date(a.published_at)
+  return updated.getTime() - published.getTime() >= 86_400_000 ? { iso: a.updated_at, text: fmtDate(a.updated_at) } : undefined
+}
+
 export function BlogDetail() {
   const { article: a, missing } = useArticle('blog')
   if (missing) return <NotFound />
@@ -95,14 +102,18 @@ export function BlogDetail() {
         <header className="ins-art-hero">
           <div className="ins-art-hero-in">
             {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-            <Link to="/blog" className="ins-back"><InsIcon name="back" /> Back to Insights</Link>
+            {/* Same breadcrumb as the server-rendered page and its BreadcrumbList schema. */}
+            <nav className="ins-crumbs" aria-label="Breadcrumb">
+              <Link to="/">Home</Link><span aria-hidden="true">/</span><Link to="/blog">Blog</Link>
+              {a.category && <><span aria-hidden="true">/</span><Link to={`/blog?category=${a.category.slug}`}>{a.category.name}</Link></>}
+            </nav>
             {a.category && (
               <p className="ins-art-cat">
                 <Link to={`/blog?category=${a.category.slug}`}>{a.category.name}</Link>
               </p>
             )}
             <h1>{a.title}</h1>
-            <InsMeta c={a} author long />
+            <InsMeta c={a} author long updated={updatedLabel(a)} />
           </div>
         </header>
         {a.featured_image && (

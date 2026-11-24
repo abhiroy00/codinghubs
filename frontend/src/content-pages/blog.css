@@ -175,3 +175,7 @@
 .fs-page.bl-reading-page .ins-related h2{margin:0 0 1.6rem;color:var(--ins-ink);font:800 1.8rem var(--f-head,Poppins,sans-serif);text-align:center}
 @media (max-width:640px){.fs-page .ins-hero h1 br{display:none}.fs-page .ins-prose{font-size:1rem}.fs-page.bl-reading-page .ins-prose h2{font-size:1.45rem}}
 @media (prefers-reduced-motion:reduce){.fs-page .ins-card,.fs-page .ins-card-img img,.fs-page .ins-featured-img img{transition:none}.fs-page .ins-skel{animation:none}}
+/* Article breadcrumb (Home / Blog / Category): matches the BreadcrumbList schema. */
+.fs-page .ins-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin:0 0 1.2rem;font:500 .85rem/1.4 var(--f-body,Poppins,sans-serif);color:#5c6c81}
+.fs-page .ins-crumbs a{color:var(--ins-blue);text-decoration:none}
+.fs-page .ins-crumbs a:hover{text-decoration:underline}
