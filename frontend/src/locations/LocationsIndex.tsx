@@ -8,7 +8,8 @@ import { EnquiryForm } from './EnquiryForm'
 import { FsHeader } from './FsShell'
 import { SiteFooter } from '../components/SiteFooter'
 import { Marquee } from './Marquee'
-import { COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, HEAD_OFFICE, LOCATIONS, locationPath } from './registry'
+import { CAMPUSES, COURSE_NAMES, GROUP_LABELS, GROUP_ORDER, LOCATIONS, locationPath } from './registry'
+import './locations-index.css'
 import { INDEX_TITLE, INDEX_DESCRIPTION, indexJsonLd } from './seo'
 import { LOGO_URL, pageSeo } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
@@ -24,7 +25,7 @@ const thumbSet = (slug: string, ext: 'avif' | 'webp') => `/assets/ai/loc/thumb/$
 
 const PERKS = [
   { i: 'i-monitor', t: 'Learn online', d: 'The free demo and 15-day programs are live and online, so learners anywhere in NCR can join.' },
-  { i: 'i-pin', t: 'Honest about location', d: 'One official head office at Netaji Subhash Place. No fake local branches.' },
+  { i: 'i-pin', t: 'Honest about location', d: 'Classrooms only at Netaji Subhash Place (head office) and Pitampura. Other area guides are for online learners; no fake local branches.' },
   { i: 'i-check', t: 'Written per locality', d: 'Each guide is written for its own area and audience, not copy-pasted.' },
 ]
 
@@ -87,7 +88,7 @@ export function LocationsIndex() {
             <ul className="lx-chips" aria-label="Highlights">
               <li><strong>{LOCATIONS.length}</strong> area guides</li>
               <li><strong>2-hour</strong> free live online demo</li>
-              <li><strong>NSP, Delhi</strong> official head office</li>
+              <li><strong>NSP + Pitampura</strong> classrooms in Delhi</li>
             </ul>
           </div>
         </section>
@@ -121,7 +122,7 @@ export function LocationsIndex() {
             </div>
             <div className="lx-avail" aria-label="How you can learn">
               <p><span className="lx-dot lx-dot-online" aria-hidden="true" /><strong>Online live</strong> classes and the free demo are available from every area listed.</p>
-              <p><span className="lx-dot lx-dot-office" aria-hidden="true" /><strong>In person</strong> at our one head office in Netaji Subhash Place, Delhi. <a href="#head-office">Contact us before visiting</a>.</p>
+              <p><span className="lx-dot lx-dot-office" aria-hidden="true" /><strong>In person</strong> at our classrooms in Netaji Subhash Place (head office) and Pitampura, Delhi. <a href="#head-office">Contact us before visiting</a>.</p>
             </div>
             <p className="lx-count" role="status" aria-live="polite">
               Showing {filtered.length} of {LOCATIONS.length} locations
@@ -139,7 +140,7 @@ export function LocationsIndex() {
                     <span className="lx-badge" aria-hidden="true">{String(LOCATIONS.indexOf(l) + 1).padStart(2, '0')}</span>
                     <span className="lx-tag">{GROUP_LABELS[l.group]}</span>
                     <strong>AI Course in {l.short}</strong>
-                    <span className="lx-mode">Online live · Head office in NSP, Delhi</span>
+                    <span className="lx-mode">{l.slug === 'ai-course-in-pitampura-delhi' || l.slug === 'ai-course-in-nsp-delhi' ? 'Classroom + online live' : 'Online live · Classrooms in NSP & Pitampura'}</span>
                     <span className="lx-blurb">{l.blurb}</span>
                     <span className="lx-go">
                       Read the guide <FsIcon id="i-arrow" />
@@ -195,14 +196,16 @@ export function LocationsIndex() {
         <section className="loc-office" id="head-office" aria-labelledby="idx-ho">
           <div className="wrap loc-office-in">
             <div>
-              <p className="eyebrow">Head Office</p>
-              <h2 id="idx-ho">Where to find us</h2>
-              <address>
-                <strong>Head Office:</strong> {HEAD_OFFICE.line}.
-              </address>
+              <p className="eyebrow">Where we teach</p>
+              <h2 id="idx-ho">Classrooms in Delhi</h2>
+              <div className="lx-campuses">
+                {CAMPUSES.map((c) => (
+                  <div key={c.name}><b>{c.name}</b><small>{c.role}</small><address>{c.address}</address></div>
+                ))}
+              </div>
               <p>
-                All of our location guides refer to this single official address. Please contact us before visiting so a counsellor can confirm current
-                arrangements for your enquiry.
+                The area guides on this page are written for learners in those areas, most of whom join live online. Please contact us before visiting a
+                classroom so a counsellor can confirm the batch and timing for your enquiry.
               </p>
             </div>
             <div className="loc-office-cta">

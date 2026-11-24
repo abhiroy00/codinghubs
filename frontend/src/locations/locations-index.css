@@ -1,0 +1,10 @@
+/* /locations/ hero on the light background (no banner art): keep the secondary button and highlight chips readable. */
+.lx-hero.lx-hero:not(:has(> .page-banner-art)) .btn-ghost-light{background:#fff;color:#0b1530;border:1.5px solid #0b153033}
+.lx-hero.lx-hero:not(:has(> .page-banner-art)) .btn-ghost-light:hover{border-color:#0b5cf0;color:#0b5cf0}
+.lx-hero.lx-hero:not(:has(> .page-banner-art)) .lx-chips li{color:#334155;background:#fff;border:1px solid #dbe4f5}
+.lx-hero.lx-hero:not(:has(> .page-banner-art)) .lx-chips strong{color:#1d4ed8}
+.lx-campuses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;margin:12px 0 16px}
+.lx-campuses div{padding:14px 16px;border:1px solid #dbe4f5;border-radius:14px;background:#fff}
+.lx-campuses b{display:block;color:#0b1530}
+.lx-campuses small{display:block;margin:2px 0 6px;color:#1d4ed8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+.lx-campuses address{font-style:normal;color:#41506a}

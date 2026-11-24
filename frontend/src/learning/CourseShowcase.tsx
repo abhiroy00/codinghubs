@@ -165,36 +165,63 @@ function CourseCard({ c, rating }: { c: CourseDefinition; rating?: Rating }) {
   )
 }
 
-/** Every course is visible as a card; category filters narrow the same catalogue. */
+/** Every course is visible as a card; search and category filters (sidebar on desktop) narrow the same catalogue. */
 export function CoursesShowcase() {
   const [filter, setFilter] = useState('')
+  const [query, setQuery] = useState('')
+  const { open: openDemo } = useRegisterPopup()
   const ratings = useCourseRatings()
   const custom = useCustomCourses()
   const all = [...COURSE_CATALOG, ...custom]
   const categories = [...COURSE_CATEGORIES.map((cat) => ({ name: cat.name, count: all.filter((c) => c.category === cat.name).length })),
     ...[...new Set(custom.map((c) => c.category))].filter((name) => !COURSE_CATEGORIES.some((cat) => cat.name === name))
       .map((name) => ({ name, count: custom.filter((c) => c.category === name).length }))]
-  const visible = filter ? all.filter((c) => c.category === filter) : all
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  const visible = all.filter((c) => (!filter || c.category === filter)
+    && words.every((w) => `${c.name} ${c.category} ${blurb(c)}`.toLowerCase().includes(w)))
 
   return (
     <Section id="catalogue" titleId="csx-courses-title" className="csx-courses" align="left" badge={`${all.length}+ courses`} title="All Courses"
       subtitle="Explore Coding Hub courses in AI, data science, GenAI, development and more. Compare paths and find the right next step for you.">
-      <div className="csx-chips" role="group" aria-label="Filter by category">
-        <button type="button" className={!filter ? 'on' : ''} aria-pressed={!filter} onClick={() => setFilter('')}>
-          All <span>{all.length}</span>
-        </button>
-        {categories.map((cat) => (
-          <button key={cat.name} type="button" className={filter === cat.name ? 'on' : ''} aria-pressed={filter === cat.name} onClick={() => setFilter(cat.name)}>
-            {cat.name} <span>{cat.count}</span>
-          </button>
-        ))}
+      <div className="csx-layout">
+        <aside className="csx-side" aria-label="Find a course">
+          <div className="csx-box csx-search">
+            <label htmlFor="csx-q">Search courses</label>
+            <input id="csx-q" type="search" placeholder="e.g. Python, AWS, GenAI" value={query} onChange={(e) => setQuery(e.target.value)} />
+          </div>
+          <div className="csx-box">
+            <h3 id="csx-cat-title">Categories</h3>
+            <div className="csx-chips" role="group" aria-labelledby="csx-cat-title">
+              <button type="button" className={!filter ? 'on' : ''} aria-pressed={!filter} onClick={() => setFilter('')}>
+                All <span>{all.length}</span>
+              </button>
+              {categories.map((cat) => (
+                <button key={cat.name} type="button" className={filter === cat.name ? 'on' : ''} aria-pressed={filter === cat.name} onClick={() => setFilter(cat.name)}>
+                  {cat.name} <span>{cat.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="csx-box csx-next">
+            <h3>Before you choose</h3>
+            <ul>
+              <li><Link to="/brochures/">Download a course brochure</Link></li>
+              <li><Link to="/certificates/">How certificates work</Link></li>
+              <li><Link to="/locations/">Classrooms in NSP &amp; Pitampura</Link></li>
+              <li><Link to="/blog">Career guides on the blog</Link></li>
+            </ul>
+            <button type="button" className="ui-btn ui-btn-primary" onClick={() => openDemo()}>Book a free demo</button>
+          </div>
+        </aside>
+
+        <div className="csx-results">
+          <p className="csx-count" role="status">Showing {visible.length} of {all.length} courses{filter ? ` in ${filter}` : ''}{words.length ? ` matching “${query.trim()}”` : ''}</p>
+          <Reveal as="ul" stagger key={filter} className="csx-grid" aria-label="Courses">
+            {visible.map((c) => <li key={c.slug}><CourseCard c={c} rating={ratings.get(c.name.trim().toLowerCase())} /></li>)}
+          </Reveal>
+          {visible.length === 0 && <p className="csx-none">No course matches. Try a shorter keyword, or <button type="button" className="csx-linkbtn" onClick={() => { setQuery(''); setFilter('') }}>show all courses</button>.</p>}
+        </div>
       </div>
-
-      <p className="csx-count" role="status">Showing {visible.length} of {all.length} courses{filter ? ` in ${filter}` : ''}</p>
-
-      <Reveal as="ul" stagger key={filter} className="csx-grid" aria-label="Courses">
-        {visible.map((c) => <li key={c.slug}><CourseCard c={c} rating={ratings.get(c.name.trim().toLowerCase())} /></li>)}
-      </Reveal>
     </Section>
   )
 }

@@ -20,6 +20,12 @@ export const HEAD_OFFICE = {
   country: 'IN',
 }
 
+/** Where classes happen. Pitampura shows only the area until its street address is confirmed. */
+export const CAMPUSES = [
+  { name: 'Netaji Subhash Place', role: 'Head office and classroom', address: HEAD_OFFICE.line },
+  { name: 'Pitampura', role: 'Classroom', address: 'Pitampura, North-West Delhi' },
+] as const
+
 export const LOCATIONS: LocationMeta[] = [
   { slug: 'ai-course-in-south-extension-delhi', label: 'South Extension, Delhi', short: 'South Extension', group: 'delhi', blurb: 'For students and professionals in South Delhi comparing AI learning options.', related: ['ai-course-in-lajpat-nagar-delhi', 'ai-course-in-connaught-place-delhi', 'ai-course-in-nsp-delhi'] },
   { slug: 'ai-course-in-pitampura-delhi', label: 'Pitampura, Delhi', short: 'Pitampura', group: 'delhi', blurb: 'For North-West Delhi learners, close to the Netaji Subhash Place head office.', related: ['ai-course-in-nsp-delhi', 'ai-course-in-tagore-garden-delhi', 'ai-course-in-patel-nagar-delhi'] },

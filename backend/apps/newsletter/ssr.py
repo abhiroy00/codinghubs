@@ -1,3 +1,4 @@
+import re
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -42,7 +43,7 @@ def brochures(request):
     data = Metadata(rows, many=True).data
     # Same values the React page renders (Brochures.tsx), and the list itself embedded for its first render, so the
     # page is not replaced by a loading state and a second request.
-    cards = [{**row, 'size_label': size_label(row['size']), 'updated': parse_datetime(row['updated_at'])} for row in data]
+    cards = [{**row, 'heading': re.sub(r'\bAi\b', 'AI', row['title']), 'size_label': size_label(row['size']), 'updated': parse_datetime(row['updated_at'])} for row in data]
     return respond(seo, render_to_string('newsletter/brochures.html', {'brochures': cards}), data=data)
 
 

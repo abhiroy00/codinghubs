@@ -6,6 +6,8 @@ import { FsHeader } from '../locations/FsShell'
 import { SiteFooter } from '../components/SiteFooter'
 import { fmtDate, type Card } from './api'
 import { AnimatedCard } from '../components/ui'
+import { useRegisterPopup } from '../lib/register-popup'
+import { CAMPUSES } from '../locations/registry'
 
 export function SearchIcon() {
   return (
@@ -178,6 +180,49 @@ export function NumberPager({ page, count, size, hrefFor }: { page: number; coun
       ))}
       {page < pages && <Link to={hrefFor(page + 1)} rel="next" aria-label="Next page"><InsIcon name="right" /></Link>}
     </nav>
+  )
+}
+
+/* ---------- Hub layout (blog, case studies): compact header, cards, sidebar with search, filters and next steps ---------- */
+
+const HUB_LINKS = [
+  { to: '/courses/', label: 'All courses' },
+  { to: '/brochures/', label: 'Course brochures' },
+  { to: '/blog', label: 'Blog' },
+  { to: '/case-studies', label: 'Case studies' },
+  { to: '/locations/', label: 'Locations' },
+  { to: '/certificates/', label: 'Certificates' },
+] as const
+
+/** Sidebar box: related hubs, the two Delhi classrooms and the free demo. Markup mirrors content/_hub_plan.html. */
+export function HubPlan({ current }: { current: string }) {
+  const popup = useRegisterPopup()
+  return (
+    <aside className="hub-plan" aria-labelledby="hub-plan-title">
+      <h2 id="hub-plan-title">Plan your course</h2>
+      <ul className="hub-links">
+        {HUB_LINKS.filter((l) => l.to !== current).map((l) => <li key={l.to}><Link to={l.to}>{l.label}<InsIcon name="right" /></Link></li>)}
+      </ul>
+      <div className="hub-campus">
+        <h3>Classrooms in Delhi</h3>
+        {CAMPUSES.map((c) => <p key={c.name}><b>{c.name}</b> · {c.role}<br /><span>{c.address}</span></p>)}
+        <p><b>Live online</b> · <span>for learners anywhere in India</span></p>
+      </div>
+      <button type="button" className="hub-demo" onClick={() => popup.open()}>Book a free demo</button>
+    </aside>
+  )
+}
+
+/** Search box used in the hub sidebar; submits as a normal GET form when scripts are off. */
+export function HubSearch({ action, label, value, onChange }: { action: string; label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <form className="hub-search" role="search" action={action} method="get" onSubmit={(e) => e.preventDefault()}>
+      <label htmlFor="hub-q">{label}</label>
+      <div>
+        <input id="hub-q" type="search" name="q" placeholder="Search keyword" value={value} onChange={(e) => onChange(e.target.value)} />
+        <SearchIcon />
+      </div>
+    </form>
   )
 }
 

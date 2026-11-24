@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { getCases, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
-import { CardView, PageFrame, Pager, SearchIcon } from './shared'
-import { HeroVideo } from '../components/HeroVideo'
+import { CardView, HubPlan, HubSearch, PageFrame, Pager } from './shared'
 import './blog.css'
 import { Reveal } from '../components/ui'
 
@@ -62,46 +61,44 @@ export function CaseList() {
     setParams(next)
   }
 
+  const filters = (label: string, key: 'industry' | 'technology', values: string[] | undefined, current: string, all?: string) =>
+    values && values.length > 0 && (
+      <nav className="hub-cats" aria-label={label}>
+        <h2>{label}</h2>
+        <ul>
+          {all && <li><button type="button" className={!current ? 'on' : ''} aria-pressed={!current} onClick={() => go({ [key]: null })}>{all}</button></li>}
+          {values.map((v) => (
+            <li key={v}><button type="button" className={current === v ? 'on' : ''} aria-pressed={current === v} onClick={() => go({ [key]: current === v ? null : v })}>{v}</button></li>
+          ))}
+        </ul>
+      </nav>
+    )
+
   return (
-    <PageFrame>
-      <section className="bl-hero hv-host" aria-labelledby="case-studies-title">
-        <HeroVideo clip="our-work" />
-        <span className="bl-blob b1" aria-hidden="true" />
-        <span className="bl-blob b2" aria-hidden="true" />
-        <span className="bl-grid-bg" aria-hidden="true" />
-        <div className="bl-hero-in">
-          <p className="bl-eyebrow">Build · Case studies</p>
-          <h1 id="case-studies-title">Case <span>Studies</span></h1>
-          <p className="bl-lead">Learning and project stories from Coding Hubs School of AI.</p>
+    <PageFrame wide insight>
+      <header className="hub-head">
+        <p className="ins-kicker">Build · Case studies</p>
+        <h1 id="case-studies-title">Case <span>studies</span></h1>
+        <p className="hub-lead">Learning and project stories from Coding Hubs School of AI: what learners built, the tools they used and what changed for them.</p>
+      </header>
+      <div className="hub-layout">
+        <div className="hub-tools">
+          <HubSearch action="/case-studies" label="Search case studies" value={text} onChange={setText} />
+          {filters('Industry', 'industry', data?.industries, industry, 'All industries')}
+          {filters('Technology', 'technology', data?.technologies, technology)}
         </div>
-      </section>
-      <div className="bl-tools">
-        <label className="bl-search">
-          <span className="sr-only">Search case studies</span>
-          <SearchIcon />
-          <input type="search" placeholder="Search case studies" value={text} onChange={(e) => setText(e.target.value)} />
-        </label>
-        {data?.industries && data.industries.length > 0 && (
-          <div className="bl-chips" role="group" aria-label="Industry">
-            <button type="button" className={!industry ? 'on' : ''} aria-pressed={!industry} onClick={() => go({ industry: null })}>All industries</button>
-            {data.industries.map((i) => (
-              <button key={i} type="button" className={industry === i ? 'on' : ''} aria-pressed={industry === i} onClick={() => go({ industry: i })}>{i}</button>
-            ))}
-          </div>
-        )}
-        {data?.technologies && data.technologies.length > 0 && (
-          <div className="bl-chips" role="group" aria-label="Technology">
-            {data.technologies.map((t) => (
-              <button key={t} type="button" className={technology === t ? 'on' : ''} aria-pressed={technology === t} onClick={() => go({ technology: technology === t ? null : t })}>{t}</button>
-            ))}
-          </div>
-        )}
+        <section className="hub-main" aria-labelledby="case-list-title">
+          <h2 id="case-list-title" className="hub-title">{q ? `Results for “${q}”` : 'All case studies'}</h2>
+          {error && <p className="ins-state" role="alert">We could not load the case studies. Please refresh the page.</p>}
+          {!data && !error && <p className="ins-state" role="status">Loading…</p>}
+          {data && data.count === 0 && (q || industry || technology
+            ? <p className="ins-state">No case studies match your filters.</p>
+            : <div className="hub-empty"><b>Case studies are on the way.</b><p>New case studies will appear here. Meanwhile, see learner projects on <Link to="/our-work">Projects</Link> or read the <Link to="/blog">blog</Link>.</p></div>)}
+          <Reveal stagger className="bl-grid hub-grid" key={data ? `${page}-${q}-${industry}-${technology}` : 'loading'}>{data?.results.map((c) => <CardView key={c.slug} c={c} base="/case-studies" />)}</Reveal>
+          {data && <Pager page={page} count={data.count} size={PAGE_SIZE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
+        </section>
+        <HubPlan current="/case-studies" />
       </div>
-      {error && <p className="bl-state" role="alert">We could not load the case studies. Please refresh the page.</p>}
-      {!data && !error && <p className="bl-state" role="status">Loading…</p>}
-      {data && data.count === 0 && <p className="bl-state">{q || industry || technology ? 'No case studies match your filters.' : 'No case studies published yet. Check back soon.'}</p>}
-      <Reveal stagger className="bl-grid" key={data ? `${page}-${q}-${industry}-${technology}` : "loading"}>{data?.results.map((c) => <CardView key={c.slug} c={c} base="/case-studies" />)}</Reveal>
-      {data && <Pager page={page} count={data.count} size={PAGE_SIZE} onPage={(p) => go({ page: p > 1 ? String(p) : null })} />}
     </PageFrame>
   )
 }

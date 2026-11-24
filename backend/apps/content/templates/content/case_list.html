@@ -1,20 +1,24 @@
-<div class="fs-page">{% include "content/_chrome_top.html" %}
-<main id="main" class="wrap bl-main">
-  <section class="bl-hero hv-host" aria-labelledby="case-studies-title">
-    <div class="hv-bg" style='--hv-poster: url("/assets/hero/video/pages/our-work-poster-1280.webp"); --hv-poster-sm: url("/assets/hero/video/pages/our-work-poster-768.webp");' aria-hidden="true">{% include "content/_hero_still.html" with clip="our-work" %}</div>
-    <span class="bl-blob b1" aria-hidden="true"></span>
-    <span class="bl-blob b2" aria-hidden="true"></span>
-    <span class="bl-grid-bg" aria-hidden="true"></span>
-    <div class="bl-hero-in">
-      <p class="bl-eyebrow">Build · Case studies</p>
-      <h1 id="case-studies-title">Case <span>Studies</span></h1>
-      <p class="bl-lead">Learning and project stories from Coding Hubs School of AI.</p>
+<div class="fs-page ins-page">{% include "content/_chrome_top.html" %}
+<main id="main" class="wrap bl-main bl-wide-main">
+  <header class="hub-head">
+    <p class="ins-kicker">Build · Case studies</p>
+    <h1 id="case-studies-title">Case <span>studies</span></h1>
+    <p class="hub-lead">Learning and project stories from Coding Hubs School of AI: what learners built, the tools they used and what changed for them.</p>
+  </header>
+  <div class="hub-layout">
+    <div class="hub-tools">
+      <form class="hub-search" role="search" action="/case-studies" method="get"><label for="hub-q">Search case studies</label><div><input id="hub-q" type="search" name="q" placeholder="Search keyword" value="{{ query }}"></div></form>
+      {% if industries %}<nav class="hub-cats" aria-label="Industry"><h2>Industry</h2><ul><li><a href="/case-studies"{% if not industry %} class="on"{% endif %}>All industries</a></li>{% for i in industries %}<li><a href="/case-studies?industry={{ i|urlencode }}"{% if i == industry %} class="on"{% endif %}>{{ i }}</a></li>{% endfor %}</ul></nav>{% endif %}
     </div>
-  </section>
-  <div class="bl-grid">{% for c in items %}{% include "content/_card.html" %}{% empty %}<p>No case studies published yet.</p>{% endfor %}</div>
-  {% if page.paginator.num_pages > 1 %}<nav class="bl-pager" aria-label="Pagination">
-    {% if page.has_previous %}<a rel="prev" href="/case-studies{% if page.previous_page_number > 1 %}?page={{ page.previous_page_number }}{% endif %}">Previous</a>{% endif %}
-    <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
-    {% if page.has_next %}<a rel="next" href="/case-studies?page={{ page.next_page_number }}">Next</a>{% endif %}
-  </nav>{% endif %}
+    <section class="hub-main" aria-labelledby="case-list-title">
+      <h2 id="case-list-title" class="hub-title">{% if query %}Results for “{{ query }}”{% else %}All case studies{% endif %}</h2>
+      <div class="bl-grid hub-grid">{% for c in items %}{% include "content/_card.html" %}{% empty %}{% if query or industry %}<p class="ins-state">No case studies match your filters.</p>{% else %}<div class="hub-empty"><b>Case studies are on the way.</b><p>New case studies will appear here. Meanwhile, see learner projects on <a href="/our-work">Projects</a> or read the <a href="/blog">blog</a>.</p></div>{% endif %}{% endfor %}</div>
+      {% if page.paginator.num_pages > 1 %}<nav class="bl-pager" aria-label="Pagination">
+        {% if page.has_previous %}<a rel="prev" href="/case-studies{% if page.previous_page_number > 1 %}?page={{ page.previous_page_number }}{% endif %}">Previous</a>{% endif %}
+        <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+        {% if page.has_next %}<a rel="next" href="/case-studies?page={{ page.next_page_number }}">Next</a>{% endif %}
+      </nav>{% endif %}
+    </section>
+    {% include "content/_hub_plan.html" with current="/case-studies" %}
+  </div>
 </main>{% include "content/_chrome_bottom.html" %}</div>

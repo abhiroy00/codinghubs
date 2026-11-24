@@ -245,8 +245,8 @@ def case_list(request):
 
     items = CaseCardSerializer(pg.object_list, many=True).data
     seo = listing_seo('case', page, [('industry', industry)], indexable=not query and paginator.count > 0)
-    html = render_to_string('content/case_list.html', {'items': card_ctx(items, '/case-studies'), 'page': pg, 'query': query})
     industries = sorted(set(public_case_qs().exclude(industry='').values_list('industry', flat=True)))
+    html = render_to_string('content/case_list.html', {'items': card_ctx(items, '/case-studies'), 'page': pg, 'query': query, 'industries': industries, 'industry': industry})
     data = {'kind': 'case-list', 'page': page, 'industry': industry, 'q': query, 'results': items, 'count': paginator.count, 'industries': industries}
     return respond(seo, html, data=data)
 

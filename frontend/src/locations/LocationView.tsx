@@ -253,9 +253,11 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
                 <strong>Head Office:</strong> {HEAD_OFFICE.line}.
               </address>
               <p>
-                This is the official address of Coding Hubs School of AI. This page does not describe a separate branch or classroom in {meta.short}; it is
-                written for learners in and around {meta.short} who want to understand AI training and enquire about the options available to them.
-                Please contact us before travelling so that a counsellor can confirm the current arrangements.
+                {meta.slug === 'ai-course-in-pitampura-delhi'
+                  ? <>This is the official address of Coding Hubs School of AI. We also run a classroom in Pitampura; call us for its address and the current batch timings.</>
+                  : <>This is the official address of Coding Hubs School of AI. Classes are held here and at our Pitampura classroom, and live online. This page does not describe a separate branch in {meta.short}; it is
+                written for learners in and around {meta.short} who want to understand AI training and enquire about the options available to them.</>}
+                {' '}Please contact us before travelling so that a counsellor can confirm the current arrangements.
               </p>
               <ul className="loc-office-links">
                 <li><a href={INSTITUTE.phoneHref}>Call {INSTITUTE.phone}</a></li>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getBlogCategories, getBlogs, PAGE_SIZE, takeInitial, type Card, type Paged } from './api'
-import { FeaturedInsight, InsightCard, NumberPager, PageFrame, SearchIcon, useSeo } from './shared'
+import { FeaturedInsight, HubPlan, HubSearch, InsightCard, NumberPager, PageFrame, useSeo } from './shared'
 import { LOGO_URL, SITE_ID } from '../seo/site'
 import { SITE_URL } from '../locations/registry'
 import type { Seo } from './api'
@@ -100,66 +100,52 @@ export function BlogList() {
 
   return (
     <PageFrame wide insight>
-      <section className="ins-hero">
-        <p className="ins-kicker">{topic ? 'Insights & Blog' : 'AI & Coding Blog'}</p>
-        <h1>
-          {topic ? (
-            <>
-              {topic} <span>Articles</span>
-            </>
-          ) : (
-            <>
-              Learn from <span>Experts</span> at<br /> Coding Hubs School of AI
-            </>
+      <header className="hub-head">
+        <p className="ins-kicker">{topic ? 'Coding Hubs Blog' : 'AI & Coding Blog'}</p>
+        <h1>{topic ? <>{topic} <span>Articles</span></> : <>Guides from <span>Coding Hubs</span> School of AI</>}</h1>
+        <p className="hub-lead">Practical articles on AI, machine learning, data science, Python, full stack development and careers, written by our mentors in Delhi.</p>
+      </header>
+
+      <div className="hub-layout">
+        <div className="hub-tools">
+          <HubSearch action="/blog" label="Search articles" value={text} onChange={setText} />
+          {cats.length > 0 && (
+            <nav className="hub-cats" aria-labelledby="hub-cats-title">
+              <h2 id="hub-cats-title">Categories</h2>
+              <ul>
+                <li><Link to={listHref({ category: '', q })} className={!category ? 'on' : ''} aria-current={!category ? 'page' : undefined}>All articles</Link></li>
+                {cats.map((c) => (
+                  <li key={c.slug}>
+                    <Link to={listHref({ category: c.slug, q })} className={category === c.slug ? 'on' : ''} aria-current={category === c.slug ? 'page' : undefined}>
+                      {c.name}<span>{c.blog_count}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           )}
-        </h1>
-        <p className="ins-lead">Articles on AI, Machine Learning, Data Science, Python, Full Stack Development and Careers, written by our mentors at Netaji Subhash Place, Delhi.</p>
-        <label className="ins-search">
-          <span className="sr-only">Search articles</span>
-          <SearchIcon />
-          <input type="search" placeholder="Search articles" value={text} onChange={(e) => setText(e.target.value)} />
-          {text && (
-            <button type="button" className="ins-clear" aria-label="Clear search" onClick={() => setText('')}>
-              ×
-            </button>
-          )}
-        </label>
-      </section>
-
-      {featured && <FeaturedInsight c={featured} />}
-
-      <section className="ins-latest" aria-labelledby="ins-latest-title">
-        <p className="ins-kicker-plain">All Insights</p>
-        <h2 id="ins-latest-title">{q ? 'Search Results' : topic ? `${topic} Guides` : 'Latest Articles & Guides'}</h2>
-        <p className="ins-sub">Stay updated with practical guides, career tips and tech deep-dives from our expert mentors.</p>
-        {cats.length > 0 && (
-          <nav className="ins-chips" aria-label="Blog categories">
-            <Link to={listHref({ category: '', q })} className={!category ? 'on' : ''} aria-current={!category ? 'page' : undefined}>
-              All
-            </Link>
-            {cats.map((c) => (
-              <Link key={c.slug} to={listHref({ category: c.slug, q })} className={category === c.slug ? 'on' : ''} aria-current={category === c.slug ? 'page' : undefined}>
-                {c.name}
-              </Link>
-            ))}
-          </nav>
-        )}
-
-        {error && <p className="ins-state" role="alert">We could not load the articles. Please refresh the page.</p>}
-        {!data && !error && (
-          <div className="ins-grid" role="status" aria-label="Loading articles">
-            {[0, 1, 2].map((i) => (<div key={i} className="ins-skel" />))}
-          </div>
-        )}
-        {data && data.count === 0 && <p className="ins-state">{q || category ? 'No articles match your search.' : 'No articles published yet. Check back soon.'}</p>}
-
-        <div className="ins-grid">
-          {rest.map((c) => (
-            <InsightCard key={c.slug} c={c} />
-          ))}
         </div>
-        {data && <NumberPager page={page} count={data.count} size={PAGE_SIZE} hrefFor={(p) => listHref({ category, q, page: p })} />}
-      </section>
+
+        <section className="hub-main" aria-labelledby="ins-latest-title">
+          <h2 id="ins-latest-title" className="hub-title">{q ? `Results for “${q}”` : topic ? `${topic} guides` : 'Latest articles and guides'}</h2>
+          {featured && <FeaturedInsight c={featured} />}
+          {error && <p className="ins-state" role="alert">We could not load the articles. Please refresh the page.</p>}
+          {!data && !error && (
+            <div className="ins-grid" role="status" aria-label="Loading articles">
+              {[0, 1, 2].map((i) => (<div key={i} className="ins-skel" />))}
+            </div>
+          )}
+          {data && data.count === 0 && <p className="ins-state">{q || category ? 'No articles match your search. Try another keyword or category.' : 'No articles published yet. Check back soon.'}</p>}
+          <div className="ins-grid">
+            {rest.map((c) => (
+              <InsightCard key={c.slug} c={c} />
+            ))}
+          </div>
+          {data && <NumberPager page={page} count={data.count} size={PAGE_SIZE} hrefFor={(p) => listHref({ category, q, page: p })} />}
+        </section>
+
+        <HubPlan current="/blog" />
+      </div>
     </PageFrame>
   )
 }

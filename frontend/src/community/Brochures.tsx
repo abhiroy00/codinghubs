@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../lib/api";
 import { takeInitial } from "../content-pages/api";
-import { PageFrame } from "../content-pages/shared";
-import { HeroVideo } from "../components/HeroVideo";
+import { HubPlan, PageFrame } from "../content-pages/shared";
 import "./public.css";
 import "../content-pages/blog.css";
 import { AnimatedCard, Reveal } from '../components/ui'
@@ -28,6 +27,9 @@ const size = (bytes: number) =>
   bytes >= 1024 * 1024
     ? `${(bytes / 1024 / 1024).toFixed(1)} MB`
     : `${Math.ceil(bytes / 1024)} KB`;
+/** Admin titles sometimes say "Ai"; show the acronym correctly (mirrored in backend newsletter/ssr.py). */
+const fixAcronyms = (text: string) => text.replace(/\bAi\b/g, "AI");
+
 export function Brochures() {
   useSeo(
     pageSeo({
@@ -66,21 +68,19 @@ export function Brochures() {
     };
   }, [retry, embedded]);
   return (
-    <PageFrame>
-      <div className="community">
-        <section className="bl-hero hv-host">
-          <HeroVideo clip="courses" />
-          <div className="bl-hero-in">
-            <p className="bl-eyebrow">Explore · Course PDFs</p>
-            <h1>
-              Course <span>Brochures</span>
-            </h1>
-            <p className="bl-lead">
-              Download published course PDFs to read at your own pace. No signup
-              required.
-            </p>
-          </div>
-        </section>
+    <PageFrame wide insight>
+      <header className="hub-head">
+        <p className="ins-kicker">Explore · Course PDFs</p>
+        <h1>
+          Course <span>Brochures</span>
+        </h1>
+        <p className="hub-lead">
+          Download published course PDFs to read at your own pace. No signup
+          required.
+        </p>
+      </header>
+      <div className="hub-layout">
+      <section className="hub-main community" aria-label="Brochures">
         {error ? (
           <p role="alert">
             {error}{" "}
@@ -112,7 +112,7 @@ export function Brochures() {
                   </div>
                 )}
                 <p className="brochure-course">{b.course_name}</p>
-                <h2>{b.title}</h2>
+                <h2>{fixAcronyms(b.title)}</h2>
                 {b.description && <p className="brochure-desc">{b.description}</p>}
                 <p className="brochure-meta">
                   <span className="brochure-tag">PDF</span>
@@ -134,6 +134,8 @@ export function Brochures() {
             ))}
           </Reveal>
         )}
+      </section>
+      <HubPlan current="/brochures/" />
       </div>
     </PageFrame>
   );
