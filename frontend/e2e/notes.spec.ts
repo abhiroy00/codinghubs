@@ -4,7 +4,7 @@ test('subject cards open complete notes, topic search and shareable selections',
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   await page.goto('/notes/')
-  await expect(page.getByRole('heading', { name: 'Good notes. Great ideas.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Free Programming & AI Notes Library' })).toBeVisible()
   await expect(page.locator('.nt-card')).toHaveCount(7)
   await expect(page.getByText('1,078 learning notes', { exact: false })).toBeVisible()
   await page.getByRole('searchbox', { name: 'Search notebooks' }).fill('Python')

@@ -6,6 +6,8 @@ import { pageSeo } from '../seo/site'
 import { NotFound } from '../pages/NotFound'
 import { NOTE_COUNT, NOTE_SUBJECTS, notesMeta, type NoteArticle, type NoteSubject, type NoteTopic } from './catalog'
 import './notes.css'
+import { HeroVideo } from '../components/HeroVideo'
+import '../learning/course-showcase.css'
 
 const GLYPHS: Record<string, string> = { python: 'Py', sql: 'SQL', 'machine-learning': 'ML', dl: 'DL', 'agentic-ai': 'AI', html: '</>', 'generative-ai': 'Gen' }
 
@@ -42,6 +44,25 @@ function ArticleBody({ subject, topic }: { subject: NoteSubject; topic: NoteTopi
   </>
 }
 
+/** The Courses page banner (same markup and styles, with the robot), for the library and each notebook. */
+function NotesBanner({ kicker, title, accent, lead, action, highlights }: { kicker: string; title: string; accent: string; lead: string; action: { href: string; label: string }; highlights: string[] }) {
+  return (
+    <header className="csx-hero csx-hero-robot hv-host"><HeroVideo clip="courses" />
+      <div className="csx-hero-copy">
+        <p className="csx-kicker">{kicker}</p>
+        <h1 id="nt-title"><span>{title}</span> <span><em>{accent}</em></span></h1>
+        <p className="csx-lead">{lead}</p>
+        <div className="csx-hero-actions">
+          <a className="ui-btn ui-btn-primary" href={action.href}>{action.label} <span aria-hidden="true">→</span></a>
+          <a className="ui-btn ui-btn-ghost" href="/#register">Book free demo</a>
+        </div>
+        <ul className="csx-strip" aria-label="Highlights">{highlights.map(item => <li key={item}>{item}</li>)}</ul>
+      </div>
+      <img className="csx-robot" src="/assets/coding-hubs-ai-courses.gif" alt="Animated Coding Hubs AI robot" width={760} height={800} decoding="async" />
+    </header>
+  )
+}
+
 function Notebook({ subject }: { subject: NoteSubject }) {
   const [params, setParams] = useSearchParams()
   const [query, setQuery] = useState('')
@@ -70,12 +91,12 @@ function Notebook({ subject }: { subject: NoteSubject }) {
     } catch { setCopyStatus('Copy this page’s address to share the note.') }
   }
 
-  return <section className="nt-workspace" aria-labelledby="nt-notebook-title" onKeyDown={event => {
+  return <section className="nt-workspace" id="nt-notebook" aria-labelledby="nt-notebook-title" onKeyDown={event => {
     if (event.key === 'Escape' && !event.defaultPrevented) { event.preventDefault(); navigate(closePath) }
   }}>
     <header className="nt-workspace-head">
       <div className={`nt-glyph nt-glyph--${subject.slug}`} aria-hidden="true">{GLYPHS[subject.slug]}</div>
-      <div><p>THE {subject.title.toUpperCase()} NOTEBOOK</p><h1 id="nt-notebook-title" ref={heading} tabIndex={-1}>{subject.title} notes</h1><span>{subject.topics.length} topics. One place to learn.</span></div>
+      <div><p>THE {subject.title.toUpperCase()} NOTEBOOK</p><h2 id="nt-notebook-title" ref={heading} tabIndex={-1}>{subject.title} notes</h2><span>{subject.topics.length} topics. One place to learn.</span></div>
       <Link className="nt-close" to={closePath} aria-label="Close notebook">×</Link>
     </header>
     <div className="nt-workspace-grid">
@@ -120,15 +141,17 @@ export function NotesPage() {
 
   if (slug && !subject) return <NotFound />
   return <div className="ch-home nt-page"><PageFrame wide>
-    {subject ? <div className="nt-subject-page"><Link className="nt-back" to="/notes/">← All notebooks</Link><Notebook key={subject.slug} subject={subject} /></div> : <>
-      <section className="nt-hero" aria-labelledby="nt-title">
-        <div className="nt-hero-copy"><p className="nt-eyebrow"><span /> THE CODING HUB NOTEBOOK</p><h1 id="nt-title">Good notes.<br /><span>Great ideas.</span></h1><p className="nt-lede">A little clarity goes a long way. Explore our free notes, untangle a tricky concept, or find your next “aha” moment.</p><a className="nt-button" href="#notebooks">Find your notebook <span aria-hidden="true">↘</span></a><p className="nt-hero-foot">No signup. No paywall. Just learning.</p></div>
-        <div className="nt-hero-art" aria-hidden="true">
-          <div className="nt-paper nt-paper-back" /><div className="nt-paper nt-paper-middle" />
-          <div className="nt-paper nt-paper-front"><div className="nt-paper-top"><span>FIELD NOTES / 001</span><span>✦</span></div><span className="nt-paper-label">A SPACE FOR YOUR</span><strong>next big<br />idea.</strong><div className="nt-paper-code"><span>def keep_learning():</span><span>    curiosity = True</span><span>    return possibilities</span></div><div className="nt-paper-bottom"><span>READ. UNDERSTAND. BUILD.</span><span>↗</span></div></div>
-          <span className="nt-art-caption">YOUR CURIOSITY BELONGS HERE.</span>
-        </div>
-      </section>
+    {subject ? <>
+      <NotesBanner kicker={`The ${subject.title} notebook`} title={subject.title} accent="Notes"
+        lead={`Read ${subject.topics.length} free ${subject.title} notes. Search a topic and explore practical explanations and code examples.`}
+        action={{ href: '#nt-notebook', label: 'Start reading' }}
+        highlights={[`${subject.topics.length} notes`, 'Free to read', 'No signup']} />
+      <div className="nt-subject-page"><Link className="nt-back" to="/notes/">← All notebooks</Link><Notebook key={subject.slug} subject={subject} /></div>
+    </> : <>
+      <NotesBanner kicker="The Coding Hub notebook" title="Free Programming & AI Notes" accent="Library"
+        lead="Explore our free notes, untangle a tricky concept, or find your next “aha” moment."
+        action={{ href: '#notebooks', label: 'Find your notebook' }}
+        highlights={[`${NOTE_SUBJECTS.length} notebooks`, `${NOTE_COUNT.toLocaleString('en-IN')} learning notes`, 'Always free', 'No signup']} />
       <section className="nt-library" id="notebooks" aria-labelledby="nt-library-title">
         <div className="nt-library-head"><div><p className="nt-eyebrow">THE LIBRARY</p><h2 id="nt-library-title">Pick a subject. Open a world.</h2><p>{NOTE_SUBJECTS.length} notebooks <span>·</span> {NOTE_COUNT.toLocaleString('en-IN')} learning notes <span>·</span> Always free</p></div><label className="nt-search"><SearchIcon /><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Python, SQL, neural networks…" aria-label="Search notebooks" /></label></div>
         <div className="nt-cards">
