@@ -1,0 +1,83 @@
+/* The homepage owns its existing design. This DOM-based scope also follows client-side
+   navigation and prerendered pages without changing route wrappers or page content. */
+html:not(:has(.fs-page.ch-home)) body {
+  --ui-line: #e2e8f0;
+  --ui-radius: 16px;
+  --ui-shadow: 0 2px 8px -4px #0b1f3a18;
+  --ui-shadow-hover: 0 12px 28px -16px #0b1f3a38;
+  background: #fff;
+}
+
+html:not(:has(.fs-page.ch-home)) :is(h1, h2, h3, h4, h5, h6, .h2, .display-xl, .display-lg, .display-md, .font-display) {
+  font-weight: 700 !important;
+  text-wrap: pretty;
+}
+
+html:not(:has(.fs-page.ch-home)) :is(h1, main h2, .display-xl, .display-lg) {
+  letter-spacing: -.035em !important;
+}
+
+/* Quiet, consistent banners keep the brand blue and leave the content in focus. */
+html:not(:has(.fs-page.ch-home)) .hv-host.hv-host.hv-host:has(> .hv-light) {
+  background: linear-gradient(135deg, #f8fafc, #eef4ff) !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+html:not(:has(.fs-page.ch-home)) .csx-aurora {
+  display: none;
+}
+html:not(:has(.fs-page.ch-home)) .csx-hero::before,
+html:not(:has(.fs-page.ch-home)) .csx-hero::after {
+  display: none;
+}
+html:not(:has(.fs-page.ch-home)) main :is(.csx-kicker, .learn-kicker, .bl-eyebrow, .pj-eyebrow, .ow-eyebrow) {
+  letter-spacing: .12em;
+  line-height: 1.5;
+}
+
+/* Shared catalogue/editorial surfaces; specialised lesson and studio panels keep
+   their own layout and interaction styles. */
+html:not(:has(.fs-page.ch-home)) main :is(.bl-card, .pj-card, .csx-card, .brochure-card, .community-card, .lx-card) {
+  border-color: var(--ui-line);
+  border-radius: var(--ui-radius);
+  box-shadow: var(--ui-shadow);
+}
+html:not(:has(.fs-page.ch-home)) body main .ui-card.ui-card:is(:hover, :focus-within) {
+  border-color: #b6c8e3;
+  box-shadow: var(--ui-shadow-hover);
+  transform: translateY(-3px) !important;
+}
+html:not(:has(.fs-page.ch-home)) main .ui-card::before {
+  display: none;
+}
+html:not(:has(.fs-page.ch-home)) main .csx-feature h3 {
+  background: none;
+  color: var(--ui-ink);
+  -webkit-text-fill-color: currentColor;
+}
+
+/* Solid, readable actions and visible keyboard focus across the inner pages. */
+html:not(:has(.fs-page.ch-home)) body main :is(.btn, .ui-btn, .csx-pill) {
+  border-radius: 10px;
+}
+html:not(:has(.fs-page.ch-home)) body main :is(.btn.btn-yellow, .ui-btn-primary):not(.ui-tone-dark *, .ui-on-dark *, .csx-cta *, .pj-cta-band *) {
+  background: var(--ui-primary-strong);
+  color: #fff;
+  box-shadow: 0 2px 4px #0b1f3a12;
+}
+html:not(:has(.fs-page.ch-home)) body main :is(.btn.btn-yellow, .ui-btn-primary)::after {
+  display: none;
+}
+html:not(:has(.fs-page.ch-home)) main :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+html:not(:has(.fs-page.ch-home)) main .breadcrumb {
+  font-size: .8125rem;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(:has(.fs-page.ch-home)) body main .ui-card.ui-card:is(:hover, :focus-within, :active) {
+    transform: none !important;
+  }
+}
