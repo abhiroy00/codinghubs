@@ -55,5 +55,14 @@ for (const width of [320, 768, 1024, 1440]) {
     await expect(section.getByRole('heading', { name: 'Our placed students' })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
     await page.screenshot({ path: `../artifacts/student-placements/placements-${width}.png` })
+    const brands = page.getByRole('region', { name: 'Explore US Technology Companies' })
+    await brands.scrollIntoViewIfNeeded()
+    await expect(brands.getByRole('img')).toHaveCount(5)
+    for (const image of await brands.getByRole('img').all()) {
+      await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
+    }
+    await expect(brands.getByRole('link', { name: /Microsoft/ })).toHaveAttribute('href', 'https://www.microsoft.com/')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+    await brands.screenshot({ path: `../artifacts/student-placements/us-brands-${width}.png` })
   })
 }

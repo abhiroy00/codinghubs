@@ -2,6 +2,7 @@ import { CampusConnect } from './free-session/CampusConnect'
 import { CampusExplore } from './free-session/CampusExplore'
 import { HomeTeam } from './free-session/HomeTeam'
 import { StudentPlacements } from './free-session/StudentPlacements'
+import { USCompanyLogos } from './free-session/USCompanyLogos'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useLenisRef } from '../lib/lenis-context'
@@ -247,6 +248,7 @@ export function FreeSession() {
         </section>
 
         <StudentPlacements />
+        <USCompanyLogos />
 
         <section className="sec" id="about" aria-labelledby="about-title">
           <div className="wrap about-grid">
