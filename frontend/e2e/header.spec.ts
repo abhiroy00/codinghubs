@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test'
 const menus = {
   Courses: [['All Courses', '/courses/'], ['Course Brochures', '/brochures/'], ['Book a Tutor', '/book-a-tutor/']],
   Careers: [['Interview Prep', '/interview/'], ['Latest Jobs', '/latest-jobs/']],
-  Resources: [['AI Tools', '/ai-tools'], ['Blog', '/blog'], ['Newsletter', '/newsletter/'], ['Case Studies', '/case-studies'], ['About the Live Demo', '/#session']],
+  Resources: [['AI Tools', '/ai-tools'], ['Blog', '/blog'], ['Notes', '/notes/'], ['Newsletter', '/newsletter/'], ['Case Studies', '/case-studies'], ['About the Live Demo', '/#session']],
 } as const
 const header = (page: Page) => page.locator('.site-header')
 const primary = (page: Page) => header(page).getByRole('navigation', { name: 'Primary', exact: true })

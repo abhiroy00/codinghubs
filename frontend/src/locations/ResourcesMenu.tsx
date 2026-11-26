@@ -4,6 +4,7 @@ import { HeaderDropdown, type DropdownControl } from '../components/HeaderDropdo
 const LINKS = [
   ['/ai-tools', 'AI Tools'],
   ['/blog', 'Blog'],
+  ['/notes/', 'Notes'],
   ['/newsletter/', 'Newsletter'],
   ['/case-studies', 'Case Studies'],
   ['/#session', 'About the Live Demo'],

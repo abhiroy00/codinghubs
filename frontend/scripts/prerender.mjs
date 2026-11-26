@@ -180,6 +180,9 @@ function buildHead(page) {
   if (page.path === '/our-work') {
     for (const file of ourWorkCss) tags.push(`<link rel="stylesheet" href="/${file}" />`)
   }
+  if (page.path.startsWith('/notes/')) {
+    for (const file of chunkCss('src/notes/NotesPage.tsx')) tags.push(`<link rel="stylesheet" href="/${file}" />`)
+  }
   if (page.path === '/visual-lab/') {
     // The client's own order for the VisualLab chunk (it also pulls in academy.css, which the filename filter missed).
     const linked = tags.join('\n')

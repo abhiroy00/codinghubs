@@ -27,6 +27,7 @@ const messages = {
 }
 
 interface RegisterFormProps {
+  compact?: boolean
   intent?: 'demo' | 'enrollment'
   onThanksChange?: (shown: boolean) => void
   prefillCourse?: string | null
@@ -37,7 +38,7 @@ interface RegisterFormProps {
   campaignId?: number | null
 }
 
-export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPrefix = '', intent = 'demo', campaignId = null }: RegisterFormProps = {}) {
+export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPrefix = '', intent = 'demo', campaignId = null, compact = false }: RegisterFormProps = {}) {
   const enrollment = intent === 'enrollment'
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -189,8 +190,9 @@ export function RegisterForm({ onThanksChange, prefillCourse, prefillToken, idPr
   return (
     <div id={`${idPrefix}formWrap`}>
       <div className="form-head">
-        <h2 id={`${idPrefix}form-title`}>{enrollment ? 'Enrollment enquiry' : 'Reserve your free seat'}</h2>
-        <p>{enrollment ? 'Share your contact details and preferred course. Our team will help you explore admission options.' : 'Fill in your details to register for the free live online session.'}</p>
+        {compact && <span className="rp-form-kicker">YOUR FIRST STEP IS ON US</span>}
+        <h2 id={`${idPrefix}form-title`}>{enrollment ? 'Enrollment enquiry' : compact ? 'Let’s find your starting point.' : 'Reserve your free seat'}</h2>
+        <p>{enrollment ? 'Share your contact details and preferred course. Our team will help you explore admission options.' : compact ? 'Tell us a little about yourself. We’ll help you choose a free demo that fits.' : 'Fill in your details to register for the free live online session.'}</p>
         {!enrollment && <ul className="form-meta" aria-label="Session summary">
           <li>
             <FsIcon id="i-clock" />2 Hours

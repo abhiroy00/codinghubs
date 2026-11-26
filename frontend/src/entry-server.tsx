@@ -41,6 +41,8 @@ import { courseRoadmapMeta } from './learning/course-roadmap-seo'
 import { genaiMeta } from './learning/genai-seo'
 import { isIndexable } from './seo/robots'
 import { Certificates } from './pages/Certificates'
+import { NotesPage } from './notes/NotesPage'
+import { NOTE_SUBJECTS, notesMeta } from './notes/catalog'
 import { GENAI_LEVELS,genaiPath,type GenAILevel } from './learning/genai-content'
 import type { LocationContent } from './locations/types'
 import { CERTIFICATES_META, GONE_META, HOME_META, LOGO_URL, NOT_FOUND_META, STUDIO_META, POLICIES_META, PROGRAM_METAS, TUTOR_META, JOBS_META, organizationNode } from './seo/site'
@@ -101,6 +103,12 @@ const sitemapEligible = (seo: { robots: string; canonical: string }, path: strin
 
 export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedPage[] {
   const pages: PrerenderedPage[] = []
+  for (const subject of [undefined, ...NOTE_SUBJECTS]) {
+    const meta = notesMeta(subject)
+    pages.push({ ...meta, file: meta.path.slice(1) + 'index.html', fsDesign: true,
+      html: renderToString(<AuthProvider><StaticRouter location={meta.path}><LenisProvider><ModalProvider><Routes><Route path="/notes/:subject?" element={<NotesPage />} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>),
+    })
+  }
   pages.push({
     ...OUR_WORK_META, file: 'our-work.html', fsDesign: true,
     html: renderToString(<AuthProvider><StaticRouter location="/our-work"><LenisProvider><ModalProvider><OurWork /></ModalProvider></LenisProvider></StaticRouter></AuthProvider>),

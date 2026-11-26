@@ -4,6 +4,7 @@ const RegisterForm = lazy(() => import('../pages/free-session/RegisterForm').the
 import { useLenisRef } from './lenis-context'
 import { FS_CSS } from './fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
+import './demo-dialog.css'
 
 function PopupStyles() {
   useScopedStylesheet([FS_CSS])
@@ -137,13 +138,27 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
       {isOpen && (
         <div className="rp-overlay" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}>
           <PopupStyles />
-          <div className="rp-dialog fs-page" role="dialog" aria-modal="true" aria-label={intent === 'enrollment' ? 'Enrollment enquiry' : 'Free demo registration'} data-intent={intent} data-lenis-prevent>
+          <div className={`rp-dialog fs-page${intent === 'demo' ? ' rp-consultation' : ''}`} role="dialog" aria-modal="true" aria-label={intent === 'enrollment' ? 'Enrollment enquiry' : 'Free demo registration'} data-intent={intent} data-lenis-prevent>
             <button type="button" className="rp-close" aria-label="Close" onClick={close}>
               ×
             </button>
+            {intent === 'demo' && <aside className="rp-story">
+              <p className="rp-story-brand">CODING HUB <span>SCHOOL OF AI</span></p>
+              <div className="rp-story-heading">
+                <span className="rp-story-kicker"><span /> A little curiosity. A new direction.</span>
+                <h2>Your next chapter<br /> starts with <em>you.</em></h2>
+                <p>Bring your questions. Meet a mentor. Find the skills you want to build next.</p>
+              </div>
+              <div className="rp-path" aria-label="Your learning journey">
+                <div><span>01</span><p>Find your path<small>AI, data, development &amp; more</small></p></div>
+                <div><span>02</span><p>Try a live class<small>2 hours. Online. Completely free.</small></p></div>
+                <div><span>03</span><p>Build from there<small>Learn with mentors and real projects</small></p></div>
+              </div>
+              <p className="rp-story-foot"><span aria-hidden="true">↗</span> Big ideas begin with a small first step.</p>
+            </aside>}
             <div className="form-card">
               <Suspense fallback={<p className="rp-loading" role="status">Loading…</p>}>
-                <RegisterForm key={token} idPrefix="rp-" intent={intent} onThanksChange={intent === 'demo' ? onThanks : undefined} prefillCourse={course} prefillToken={token} campaignId={campaignId} />
+                <RegisterForm key={token} idPrefix="rp-" intent={intent} compact={intent === 'demo'} onThanksChange={intent === 'demo' ? onThanks : undefined} prefillCourse={course} prefillToken={token} campaignId={campaignId} />
               </Suspense>
             </div>
           </div>

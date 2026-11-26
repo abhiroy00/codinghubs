@@ -93,6 +93,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
               <li><Link to="/ai-tools">AI Tools</Link></li>
               <li><Link to="/projects">Projects</Link></li>
               <li><Link to="/learn/">Learning Library</Link></li>
+              <li><Link to="/notes/">Free Notes</Link></li>
               <li><Link to="/visual-lab/">Visual Lab</Link></li>
               <li><Link to="/faq">FAQ</Link></li>
               <li><Link to="/newsletter/">Newsletter</Link></li>

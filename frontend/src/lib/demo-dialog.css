@@ -1,0 +1,65 @@
+.rp-dialog.rp-consultation.fs-page{display:grid;grid-template-columns:.85fr 1.15fr;max-width:1000px;overflow:hidden;border:1px solid #dce5f2;border-radius:24px;background:#fff;box-shadow:0 32px 100px #020b2466;color:#10203a}
+.rp-consultation .rp-story{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:28px;overflow:hidden;padding:36px 30px;background:#102a48;color:#fff}
+.rp-story::before{position:absolute;inset:auto -90px -170px auto;width:390px;height:390px;border:1px solid #6cddcd50;border-radius:50%;box-shadow:0 0 0 40px #6cddcd0c,0 0 0 80px #6cddcd08;content:"";pointer-events:none}
+.rp-consultation .rp-story-brand{display:grid;gap:5px;margin:0;font-size:18px;font-weight:800;letter-spacing:.02em}
+.rp-story-brand span{color:#a4c4d5;font-size:10px;font-weight:500;letter-spacing:.25em}
+.rp-story-kicker{display:flex;align-items:center;gap:7px;color:#9ce5d4;font-size:11px;line-height:1.6}
+.rp-story-kicker>span{width:6px;height:6px;flex:none;border-radius:50%;background:#9ce5d4}
+.rp-consultation .rp-story h2{margin:14px 0;color:#fff;font-size:clamp(30px,3.2vw,42px);font-weight:600;line-height:1.15;letter-spacing:-.04em}
+.rp-story h2 em{color:#a7ecd7;font-style:normal}
+.rp-consultation .rp-story-heading>p{max-width:30ch;margin:0;color:#bdcddb;font-size:14px;line-height:1.8}
+.rp-path{position:relative;display:grid;gap:20px}
+.rp-path::before{position:absolute;top:18px;bottom:18px;left:17px;border-left:1px dashed #8ba8bc5c;content:""}
+.rp-path>div{position:relative;display:flex;align-items:center;gap:13px}
+.rp-path>div>span{display:grid;width:36px;height:36px;flex:none;place-items:center;border:1px solid #527384;border-radius:11px;background:#183650;color:#a7ecd7;font:500 12px/1 monospace}
+.rp-consultation .rp-path p{display:grid;gap:3px;margin:0;color:#fff;font-size:13px;font-weight:600}
+.rp-path small{color:#adc2d0;font-size:11px;font-weight:400;line-height:1.5}
+.rp-consultation .rp-story-foot{display:flex;gap:8px;align-items:center;margin:0;color:#a7c2d1;font-size:10px;line-height:1.6}
+.rp-story-foot>span{color:#9ce5d4;font-size:22px}
+.rp-dialog.rp-consultation .rp-close{top:14px;right:14px;width:36px;height:36px;background:#edf2f7;color:#334b63}
+.rp-dialog.rp-consultation .rp-close:hover{background:#dfe8f3;transform:none}
+.rp-dialog.rp-consultation .form-card{--fp-x:30px;--fp-y:28px;margin:0;padding:0 0 26px;border:0;border-radius:0;background:#fff;box-shadow:none}
+.rp-dialog.rp-consultation .form-head{margin:0;padding:34px 48px 0 30px;border:0;background:#fff;color:#10203a}
+.rp-form-kicker{color:#206659;font-size:10px;font-weight:700;letter-spacing:.14em}
+.rp-dialog.rp-consultation .form-head h2{margin:9px 0 0;color:#10203a;font-size:25px;line-height:1.3;letter-spacing:-.035em}
+.rp-dialog.rp-consultation .form-head p{margin:10px 0 0;color:#5d6b7c;font-size:12px;line-height:1.8}
+.rp-dialog.rp-consultation .form-meta{gap:8px;margin:16px 0 0}
+.rp-dialog.rp-consultation .form-meta li{gap:5px;padding:4px 8px;border:1px solid #dbe7e3;border-radius:6px;background:#f4faf7;color:#276152;font-size:10px}
+.rp-dialog.rp-consultation .form-meta .ico{width:13px;height:13px;color:inherit}
+.rp-dialog.rp-consultation .lead-form{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin-top:24px;padding:0 30px}
+.rp-dialog.rp-consultation .field{min-width:0}
+.rp-dialog.rp-consultation .field label{display:block;margin-bottom:6px;color:#334155;font-size:11px;line-height:1.5;font-weight:600}
+.rp-dialog.rp-consultation .field :is(input,select){width:100%;min-height:44px;height:44px;padding:10px 11px;border:1px solid #d4dfe9;border-radius:8px;background:#f9fbfd;color:#193047;font-size:12px;line-height:1.5;box-shadow:none}
+.rp-dialog.rp-consultation .field input::placeholder{color:#758393}
+.rp-dialog.rp-consultation .field select{padding-right:26px}
+.rp-dialog.rp-consultation .field :is(input,select):focus{border-color:#24695d;outline:3px solid #24695d20}
+.rp-dialog.rp-consultation .phone-wrap{height:44px;border:1px solid #d4dfe9;border-radius:8px;background:#f9fbfd}
+.rp-dialog.rp-consultation .phone-wrap .cc{padding-inline:8px;border-color:#d4dfe9;background:#edf3f7;color:#405569;font-size:12px}
+.rp-dialog.rp-consultation .phone-wrap input{height:42px;min-height:42px;border:0}
+.rp-dialog.rp-consultation .field .err{margin:4px 0 0;font-size:10px;line-height:1.5}
+.rp-dialog.rp-consultation .err:empty,.rp-dialog.rp-consultation .form-status:empty{display:none}
+.rp-dialog.rp-consultation .lead-form>.field:nth-child(5),.rp-dialog.rp-consultation .lead-form>:is(.check,.lead-submit,.form-status,.privacy){grid-column:1/-1}
+.rp-dialog.rp-consultation .opt{color:#64748b;font-size:10px;font-weight:400}
+.rp-dialog.rp-consultation .check{gap:8px;align-items:center;color:#596a7b;font-size:10px;line-height:1.6}
+.rp-dialog.rp-consultation .check input{width:16px;height:16px;flex:none;accent-color:#24695d}
+.rp-dialog.rp-consultation .lead-form .lead-submit{height:46px;min-height:46px;border:0;border-radius:9px;background:#153d37;color:#fff;font-size:13px;box-shadow:0 5px 12px #153d371a}
+.rp-dialog.rp-consultation .lead-submit:hover{background:#20554c;transform:none}
+.rp-dialog.rp-consultation .lead-submit::after{display:none}
+.rp-dialog.rp-consultation .privacy{flex-wrap:wrap;gap:8px;margin:0;padding-top:0;border:0;color:#657487;font-size:10px;line-height:1.6}
+.rp-dialog.rp-consultation .privacy .ico{width:12px;height:12px;color:#24695d}
+.rp-dialog.rp-consultation .privacy a{color:#657487}
+.rp-dialog.rp-consultation .form-status{font-size:12px;line-height:1.6}
+.rp-dialog.rp-consultation .thanks{padding:50px 30px 30px}
+@media(max-width:700px){
+ .rp-dialog.rp-consultation.fs-page{max-width:520px;grid-template-columns:1fr;border-radius:18px}
+ .rp-consultation .rp-story{gap:18px;padding:24px}
+ .rp-story-heading .rp-story-kicker,.rp-consultation .rp-path,.rp-consultation .rp-story-foot{display:none}
+ .rp-consultation .rp-story h2{margin:0 0 10px;font-size:30px}
+ .rp-consultation .rp-story h2 br{display:none}
+ .rp-consultation .rp-story-heading>p{max-width:none;font-size:12px}
+ .rp-dialog.rp-consultation .rp-close{background:#ffffff20;color:#fff}
+ .rp-dialog.rp-consultation .form-head{padding:24px 24px 0}
+ .rp-dialog.rp-consultation .form-head h2{font-size:23px}
+ .rp-dialog.rp-consultation .lead-form{padding-inline:24px}
+}
+@media(max-width:380px){.rp-dialog.rp-consultation .lead-form{grid-template-columns:1fr}.rp-dialog.rp-consultation .field{grid-column:1/-1}.rp-dialog.rp-consultation .form-head,.rp-consultation .rp-story{padding-inline:20px}.rp-dialog.rp-consultation .lead-form{padding-inline:20px}}

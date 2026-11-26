@@ -21,6 +21,7 @@ const Academy = lazy(() => import('./learning/Academy').then(m => ({ default: m.
 const Learning = lazy(() => import('./learning/Learning').then(m => ({ default: m.Learning })))
 const VisualLab = lazy(() => import('./learning/VisualLab').then(m => ({ default: m.VisualLab })))
 const Faq = lazy(() => import('./pages/Faq').then(m => ({ default: m.Faq })))
+const NotesPage = lazy(() => import('./notes/NotesPage').then(m => ({ default: m.NotesPage })))
 
 const GigsPage = lazy(() => import('./gigs/GigsPage').then(m => ({ default: m.GigsPage })))
 const Curriculum = lazy(() => import('./pages/Curriculum').then((m) => ({ default: m.Curriculum })))
@@ -92,6 +93,8 @@ export function AppContent() {
             <OfferCampaign />
             <Suspense fallback={null}>
 <Routes>
+<Route path="notes" element={<NotesPage />} />
+<Route path="notes/:subject" element={<NotesPage />} />
 <Route path="interview-prep/*" element={<LegacyInterviewRedirect/>}/>
 <Route path="newsletter" element={<Newsletter/>}/><Route path="newsletter/issues/:slug" element={<NewsletterIssue/>}/><Route path="newsletter/confirm" element={<NewsletterAction action="confirm"/>}/><Route path="newsletter/unsubscribe" element={<NewsletterAction action="unsubscribe"/>}/><Route path="brochures" element={<Brochures/>}/>
               <Route path="learn" element={<LearnFrame><Academy /></LearnFrame>} />
