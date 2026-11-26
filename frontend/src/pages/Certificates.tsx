@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { LearnFrame } from '../learning/LearnFrame'
+import { HeroVideo } from '../components/HeroVideo'
 import { useCertificates } from '../learning/certificates'
 import { COURSE_BY_SLUG, COURSE_CATALOG } from '../learning/catalog'
 import { api } from '../lib/api'
@@ -8,7 +9,6 @@ import { CERTIFICATES_FAQ, CERTIFICATES_META, pageSeo } from '../seo/site'
 import './certificates.css'
 
 const TOTAL_DAYS = 30
-const SAMPLE_PDF = '/api/certificates/sample.pdf'
 
 interface Application { id: number; course_name: string; completed_on: string; status: 'pending' | 'approved' | 'rejected'; staff_note: string; created_at: string }
 interface InstituteCertificate { code: string; recipient_name: string; course_name: string; completed_on: string; issued_on: string; status: 'valid' | 'revoked' | 'replaced' }
@@ -38,25 +38,12 @@ export function VerifyForm({ initial = '' }: { initial?: string }) {
   )
 }
 
-/** Original sample design, always marked SAMPLE; the real PDF adds a QR code that opens verification. */
-function SamplePreview() {
+/** The blank certificate of completion, as supplied by the institute. */
+function CertificatePreview() {
   return (
-    <figure className="cert-sample">
-      <div className="cert-sample-sheet" aria-label="Sample certificate, not valid">
-        <span className="cert-sample-mark" aria-hidden="true">SAMPLE</span>
-        <b className="cert-sample-brand">CODING HUBS</b>
-        <small>SCHOOL OF AI · NEW DELHI</small>
-        <strong className="cert-sample-title">Certificate of Completion</strong>
-        <small>This is to certify that</small>
-        <span className="cert-sample-name">Your Name</span>
-        <small>has successfully completed the course</small>
-        <span className="cert-sample-course">Generative AI &amp; Machine Learning</span>
-        <div className="cert-sample-foot">
-          <span>Certificate ID<br /><code>CH-SAMP-LE00-0000</code></span>
-          <span className="cert-sample-qr" aria-hidden="true" />
-        </div>
-      </div>
-      <figcaption>Sample only. Real certificates carry the learner&apos;s name, a unique ID and a QR code that opens verification. <a href={SAMPLE_PDF} target="_blank" rel="noopener nofollow">Open the sample PDF</a></figcaption>
+    <figure className="cert-preview">
+      <img src="/assets/certificate-of-completion.jpg" alt="Blank Coding Hubs School of AI certificate of completion" width={1200} height={848} decoding="async" />
+      <figcaption>Certificate of Completion</figcaption>
     </figure>
   )
 }
@@ -105,12 +92,39 @@ function useInstitute(signedIn: boolean) {
   return { data, reload: load }
 }
 
+type Panel = 'apply' | 'download' | 'verify'
+const ACTIONS: { id: Panel; label: string; icon: string }[] = [
+  { id: 'apply', label: 'Apply for Certificate', icon: '→' },
+  { id: 'download', label: 'Download Certificate', icon: '↓' },
+  { id: 'verify', label: 'Verify Certificate', icon: '✓' },
+]
+
+/** The service the visitor picked. It is kept in the URL hash, so /certificates/#verify opens that form directly. */
+function usePanel() {
+  const [panel, setPanel] = useState<Panel | null>(null)
+  useEffect(() => {
+    const read = () => setPanel(ACTIONS.find((a) => `#${a.id}` === window.location.hash)?.id ?? null)
+    read()
+    window.addEventListener('hashchange', read)
+    return () => window.removeEventListener('hashchange', read)
+  }, [])
+  useEffect(() => {
+    if (panel) document.getElementById('cert-panel')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' })
+  }, [panel])
+  const open = (id: Panel) => {
+    window.history.replaceState(window.history.state, '', `#${id}`)
+    setPanel(id)
+  }
+  return { panel, open }
+}
+
 /** /certificates/: apply for, download and verify Coding Hubs certificates, plus the online roadmap certificates. */
 export function Certificates() {
   const { user, days, certificates, loading } = useCertificates()
   const seo = useMemo(() => pageSeo(CERTIFICATES_META), [])
   const institute = useInstitute(!!user)
   const [sent, setSent] = useState(false)
+  const { panel, open } = usePanel()
   const [downloadError, setDownloadError] = useState('')
   const roadmap = Object.values(certificates)
   const inProgress = Object.entries(days)
@@ -131,38 +145,42 @@ export function Certificates() {
     <div className="certificate-locked">
       <b>Sign in to {section}</b>
       <p>Certificates are linked to your Coding Hubs account, so only you can apply for and download yours.</p>
-      <Link className="learn-button" to="/login?next=%2Fcertificates%2F">Sign in</Link>
+      <Link className="learn-button" to={`/login?next=${encodeURIComponent(`/certificates/#${panel}`)}`}>Sign in</Link>
     </div>
   )
 
   return (
     <LearnFrame metadata={seo}>
       <div className="learn-shell certificates-page">
-        <header className="learn-hero cert-hero">
-          <p className="learn-kicker">CODING HUBS CERTIFICATES</p>
-          <h1>Apply for, download and verify your certificate</h1>
-          <p>
-            Learners who complete a Coding Hubs School of AI course can apply for a certificate of completion. Our academic team
-            checks every application against attendance and course records before issuing it. Each certificate has a unique ID
-            and a QR code, so an employer can confirm it in seconds.
-          </p>
-          <nav className="cert-jump" aria-label="Certificate services">
-            <a href="#apply"><b>Apply</b><span>Request your certificate after you finish a course</span></a>
-            <a href="#download"><b>Download</b><span>Get the PDF of an issued certificate</span></a>
-            <a href="#verify"><b>Verify</b><span>Check a certificate ID</span></a>
-          </nav>
+        <header className="learn-hero cert-hero hv-host">
+          <HeroVideo clip="faq" />
+          <p className="learn-kicker">CODING HUBS SCHOOL OF AI</p>
+          <h1>Get Your Certificate</h1>
+          <p>Apply, verify your achievement, and download your course certificate.</p>
         </header>
 
-        <section className="learn-section cert-verify" id="verify" aria-labelledby="cert-verify-title">
-          <div>
+        <section className="cert-hub" aria-label="Certificate services">
+          <div className="cert-hub-preview"><CertificatePreview /></div>
+          <div className="cert-hub-actions">
+            {ACTIONS.map((a) => (
+              <button key={a.id} type="button" aria-expanded={panel === a.id} aria-controls={panel === a.id ? 'cert-panel' : undefined} onClick={() => open(a.id)}>
+                <span>{a.label}</span><span aria-hidden="true">{a.icon}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {panel && <div id="cert-panel">
+        {panel === 'verify' && (
+          <section className="learn-section" aria-labelledby="cert-verify-title">
             <h2 id="cert-verify-title">Verify a certificate</h2>
             <p className="learn-muted">Enter the ID printed at the bottom of the certificate, or scan its QR code. The result shows whether it is valid, with the course, dates and the holder&apos;s initials. Full names and contact details are never shown.</p>
             <VerifyForm />
-          </div>
-          <SamplePreview />
-        </section>
+          </section>
+        )}
 
-        <section className="learn-section" id="apply" aria-labelledby="cert-apply-title">
+        {panel === 'apply' && (
+        <section className="learn-section" aria-labelledby="cert-apply-title">
           <h2 id="cert-apply-title">Apply for a certificate</h2>
           <div className="cert-two">
             <div className="cert-help">
@@ -203,8 +221,10 @@ export function Certificates() {
             </>
           )}
         </section>
+        )}
 
-        <section className="learn-section" id="download" aria-labelledby="cert-download-title">
+        {panel === 'download' && (<>
+        <section className="learn-section" aria-labelledby="cert-download-title">
           <h2 id="cert-download-title">Download your certificate</h2>
           {!user ? signIn('download your certificates') : loading || !institute.data ? null : (
             <>
@@ -236,19 +256,10 @@ export function Certificates() {
                   </ul>
                 </>
               )}
-              {!institute.data.certificates.length && !roadmap.length && <p className="learn-muted">No certificates in your account yet. Apply above once you finish your course.</p>}
+              {!institute.data.certificates.length && !roadmap.length && <p className="learn-muted">No certificates in your account yet. Use Apply for Certificate once you finish your course.</p>}
               <p className="learn-muted">Download links work for 10 minutes. Click Download again any time for a fresh copy.</p>
             </>
           )}
-        </section>
-
-        <section className="learn-section" aria-labelledby="cert-faq-title">
-          <h2 id="cert-faq-title">Certificate questions</h2>
-          <div className="cert-faq">
-            {CERTIFICATES_FAQ.map((item) => (
-              <details key={item.q}><summary>{item.q}</summary><p>{item.a}</p></details>
-            ))}
-          </div>
         </section>
 
         <section className="learn-section" aria-labelledby="cert-how">
@@ -270,6 +281,17 @@ export function Certificates() {
               ))}
             </ul>
           )}
+        </section>
+        </>)}
+        </div>}
+
+        <section className="learn-section" aria-labelledby="cert-faq-title">
+          <h2 id="cert-faq-title">Certificate questions</h2>
+          <div className="cert-faq">
+            {CERTIFICATES_FAQ.map((item) => (
+              <details key={item.q}><summary>{item.q}</summary><p>{item.a}</p></details>
+            ))}
+          </div>
         </section>
       </div>
     </LearnFrame>
