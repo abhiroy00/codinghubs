@@ -20,6 +20,7 @@ def offer(**kw):
 class PublicCampaignTests(TestCase):
     def setUp(self):
         cache.clear()
+        Campaign.objects.all().delete()  # start without the offer published by migration 0005
         self.client = APIClient()
 
     def active(self, **params):
@@ -98,6 +99,11 @@ class AdminCampaignTests(TestCase):
         self.assertIn('target_values', no_target.json())
         bad_link = self.api.post('/api/admin/campaigns/', self.body(cta_url='javascript:alert(1)'), format='json')
         self.assertIn('cta_url', bad_link.json())
+
+    def test_migration_published_the_twenty_percent_offer(self):
+        offer = Campaign.objects.get(title='20% off course fees')
+        self.assertEqual((offer.status, offer.offer_label, offer.cta_url, offer.ends_at), ('published', '20% OFF', '#demo', None))
+        self.assertEqual(offer.presentation, 'modal')
 
     def test_staff_without_permission_and_visitors_are_refused(self):
         staff = APIClient()

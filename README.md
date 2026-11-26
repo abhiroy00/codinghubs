@@ -61,6 +61,8 @@ Apply the schema with `python manage.py migrate` in `backend/`. Email notificati
 
 “Enrollment options” on course detail pages opens a contact form with the current course preselected. Learners can provide their name, mobile, email and preferred course, plus optional education and WhatsApp consent. The form saves an expert lead through `/api/leads/` for the admissions team; it works without login and after a previous demo registration. Confirmation means the enquiry was saved. Existing paid checkout at `/enroll/:slug` is separate and remains unchanged.
 
+The welcome offer uses a two-column popup with name, email and WhatsApp fields, saving the selected campaign with the enquiry. Manage it under **Course Offers** in the admin panel; a countdown appears only when an end date and **Show countdown** are configured. Apply `python manage.py migrate` to switch the existing default 20% offer from a bar to this popup. Coupon delivery by WhatsApp or email still requires admissions follow-up; the form confirms that the request was saved.
+
 ## Razorpay setup (required for payments to work)
 
 1. Create a [Razorpay](https://dashboard.razorpay.com/) account, switch to **Test Mode**.

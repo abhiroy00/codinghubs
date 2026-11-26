@@ -4,6 +4,8 @@ import { api } from '../lib/api'
 import { track } from '../lib/analytics'
 import { useRegisterPopup } from '../lib/register-popup'
 import { COURSE_BY_SLUG } from '../learning/catalog'
+import { useLenisRef } from '../lib/lenis-context'
+import { OfferClaimForm } from './OfferClaimForm'
 import './offer-campaign.css'
 
 /** Public fields of an admin-managed course offer (backend: apps/leads Campaign). */
@@ -71,6 +73,7 @@ export function OfferCampaign() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const popup = useRegisterPopup()
+  const lenisRef = useLenisRef()
   const [campaign, setCampaign] = useState<Campaign | null>(null)
   const [now, setNow] = useState(() => Date.now())
   const viewed = useRef<number | null>(null)
@@ -125,19 +128,28 @@ export function OfferCampaign() {
     if (visible?.presentation !== 'modal') return
     returnFocus.current = document.activeElement as HTMLElement | null
     const dialog = dialogRef.current
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    lenisRef.current?.stop()
     dialog?.querySelector<HTMLElement>('button, a[href]')?.focus()
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { event.preventDefault(); dismiss(); return }
       if (event.key !== 'Tab' || !dialog) return
-      const items = [...dialog.querySelectorAll<HTMLElement>('button, a[href], summary')]
+      const items = [...dialog.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled), summary, [tabindex="0"]')]
+        .filter(element => element.tabIndex >= 0 && element.getClientRects().length > 0)
       if (!items.length) return
       const first = items[0], last = items[items.length - 1]
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+      if (event.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) { event.preventDefault(); first.focus() }
     }
     document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [visible, dismiss])
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = previousOverflow
+      lenisRef.current?.start()
+      returnFocus.current?.focus?.()
+    }
+  }, [visible, dismiss, lenisRef])
 
   if (!visible) return null
   const countdown = visible.show_countdown && visible.ends_at ? remaining(visible.ends_at, now) : null
@@ -158,9 +170,39 @@ export function OfferCampaign() {
     </>
   )
   if (visible.presentation === 'modal') {
+    const percentage = visible.offer_label.match(/(\d+)\s*%/)?.[1]
+    const welcomeOffer = visible.title === '20% off course fees' && percentage === '20'
+    const timerParts = visible.ends_at && countdown
+      ? Math.max(0, Math.floor((new Date(visible.ends_at).getTime() - now) / 1000))
+      : null
+    const units = timerParts === null ? [] : [Math.floor(timerParts / 3600), Math.floor(timerParts / 60) % 60, timerParts % 60]
     return (
       <div className="oc-overlay" onClick={(event) => { if (event.target === event.currentTarget) dismiss() }}>
-        <div className="oc-modal" role="dialog" aria-modal="true" aria-labelledby={`oc-title-${visible.id}`} ref={dialogRef}>{body}</div>
+        <div className="oc-modal" role="dialog" aria-modal="true" aria-labelledby={`oc-title-${visible.id}`} ref={dialogRef} data-lenis-prevent>
+          <button type="button" className="oc-close" onClick={dismiss} aria-label="Dismiss offer">×</button>
+          <div className="oc-offer-panel">
+            <span className="oc-bubble oc-bubble-one" aria-hidden="true" />
+            <span className="oc-bubble oc-bubble-two" aria-hidden="true" />
+            <span className="oc-bubble oc-bubble-three" aria-hidden="true" />
+            <span className="oc-offer-badge">{visible.ends_at ? 'LIMITED TIME' : 'WELCOME OFFER'}</span>
+            {percentage ? <><div className="oc-percent">{percentage}<span>%</span></div><div className="oc-off">OFF</div></> : <div className="oc-off">{visible.offer_label || 'Course offer'}</div>}
+            <p className="oc-offer-sub">{course.name || 'On all AI & Full Stack Courses'}</p>
+            <div className="oc-stars" aria-label="5 stars">★★★★★</div>
+            <p className="oc-rating">Rated 4.8 by 3,200+ students</p>
+          </div>
+          <div className="oc-offer-main">
+            <p className="oc-eyebrow">🎉 Exclusive Welcome Offer</p>
+            <h2 id={`oc-title-${visible.id}`} className="oc-offer-title">{welcomeOffer ? 'Grab Your 20% Discount Before It Expires!' : visible.title}</h2>
+            <p className="oc-description">{welcomeOffer && visible.cta_url === '#demo' ? 'Enter your details and our team will reach out with your personalised course offer.' : visible.offer_text}</p>
+            {units.length > 0 && <div className="oc-countdown" role="timer" aria-label="Time remaining for this offer">
+              {units.map((value, index) => <div className="oc-unit" key={index}><span>{String(value).padStart(2, '0')}</span><small>{['HOURS', 'MINS', 'SECS'][index]}</small></div>)}
+            </div>}
+            {visible.cta_url === '#demo'
+              ? <OfferClaimForm key={visible.id} campaignId={visible.id} course={course.name} label={visible.offer_label || 'Course Offer'} couponCode={visible.coupon_code} />
+              : <div className="oc-actions">{visible.coupon_code && <span className="oc-code">Code <b>{visible.coupon_code}</b></span>}<button type="button" className="oc-claim-button" onClick={act}>{visible.cta_label}</button></div>}
+            {visible.terms && <details className="oc-terms"><summary>Offer terms</summary><p>{visible.terms}</p></details>}
+          </div>
+        </div>
       </div>
     )
   }

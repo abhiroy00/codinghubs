@@ -141,7 +141,7 @@ export function AiTools() {
             <p className="at-note">Each card opens the tool’s official website. Plans and pricing are set by each provider. Logos and names are trademarks of their owners.</p>
           </div>
         </section>
-        <InnovativeToolkit id="innovative-tools" tone="dark" limit={12} />
+        <InnovativeToolkit id="innovative-tools" tone="plain" limit={12} />
       </main>
       <SiteFooter />
     </div>

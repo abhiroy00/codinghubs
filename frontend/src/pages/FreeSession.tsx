@@ -1,4 +1,4 @@
-import { HomeNewsletter } from '../community/HomeNewsletter'
+import { CampusConnect } from './free-session/CampusConnect'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useLenisRef } from '../lib/lenis-context'
@@ -316,7 +316,7 @@ export function FreeSession() {
 
         <ContactHub />
 
-        <HomeNewsletter />
+        <CampusConnect />
       </main>
 
       <FsFooter home />

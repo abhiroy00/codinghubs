@@ -31,8 +31,8 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' } as const
 
 export interface InnovativeToolkitProps {
   id?: string
-  /** 'light' for the homepage, 'dark' for the dark /ai-tools page. */
-  tone?: 'light' | 'dark'
+  /** 'plain' uses a white surface; 'light' and 'dark' use tinted surfaces. */
+  tone?: 'light' | 'dark' | 'plain'
   /** How many category cards to show (the rest are one click away on the tools site). */
   limit?: number
 }
