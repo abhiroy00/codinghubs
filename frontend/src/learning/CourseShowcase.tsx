@@ -42,27 +42,30 @@ function Arrow() {
   )
 }
 
-/** Hero: spaced kicker, two-line headline over a slow-moving aurora, CTAs and a highlight strip. */
+/** Course directory hero with the supplied robot animation beside the introduction and course links. */
 export function CoursesHero() {
   return (
-    <header className="csx-hero hv-host"><HeroVideo clip="courses" />
+    <header className="csx-hero csx-hero-robot hv-host"><HeroVideo clip="courses" />
       <div className="csx-aurora" aria-hidden="true"><span className="a1" /><span className="a2" /><span className="a3" /></div>
-      <p className="csx-kicker">Introducing</p>
-      <h1>
-        <span>Practical AI &amp; Tech Courses</span>
-        <span>with <em>Certification</em></span>
-      </h1>
-      <p className="csx-lead">Live, mentor-led courses in AI, full stack development, cloud, data, security and design. Start with a free 2-hour demo class.</p>
-      <div className="csx-hero-actions">
-        <a className="ui-btn ui-btn-primary" href="#catalogue">Start Learning <Arrow /></a>
-        <a className="ui-btn ui-btn-ghost" href="/#register">Book free demo</a>
+      <div className="csx-hero-copy">
+        <p className="csx-kicker">Introducing</p>
+        <h1>
+          <span>Practical AI &amp; Tech Courses</span>
+          <span>with <em>Certification</em></span>
+        </h1>
+        <p className="csx-lead">Live, mentor-led courses in AI, full stack development, cloud, data, security and design. Start with a free 2-hour demo class.</p>
+        <div className="csx-hero-actions">
+          <a className="ui-btn ui-btn-primary" href="#catalogue">Start Learning <Arrow /></a>
+          <a className="ui-btn ui-btn-ghost" href="/#register">Book free demo</a>
+        </div>
+        <ul className="csx-strip" aria-label="Highlights">
+          <li>Mentor-led live classes</li>
+          <li>Certificate on completion</li>
+          <li>Real portfolio projects</li>
+          <li>{COURSE_CATALOG.length}+ courses</li>
+        </ul>
       </div>
-      <ul className="csx-strip" aria-label="Highlights">
-        <li>Mentor-led live classes</li>
-        <li>Certificate on completion</li>
-        <li>Real portfolio projects</li>
-        <li>{COURSE_CATALOG.length}+ courses</li>
-      </ul>
+      <img className="csx-robot" src="/assets/coding-hubs-ai-courses.gif" alt="Animated Coding Hubs AI robot" width={760} height={800} loading="lazy" decoding="async" />
     </header>
   )
 }

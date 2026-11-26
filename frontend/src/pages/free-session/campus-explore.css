@@ -1,0 +1,20 @@
+.ch-home.fs-page main>.campus-explore{padding:64px 0 48px;overflow:hidden;background:#0b1f3a!important;color:#fff}
+.campus-explore-heading{max-width:760px;margin:0 auto 28px;padding:0 24px;text-align:center}
+.campus-explore .campus-explore-heading h2{margin:0;color:#fff;font:700 clamp(28px,3vw,36px)/1.25 Poppins,sans-serif!important;letter-spacing:-.02em}
+.campus-explore-heading h2 span{color:#60a5fa}
+.campus-explore-heading>p{margin:20px 0 0;color:#c7cede;font-size:15px;line-height:1.7}
+.campus-explore-viewport{overflow:hidden;padding:0 0 12px;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);outline-offset:-4px}
+.campus-explore-viewport:focus-visible{outline:3px solid #60a5fa}
+.campus-explore-track{display:flex;width:max-content;animation:campus-explore-scroll 45s linear infinite}
+.campus-explore-group{display:flex;flex:none;gap:22px;list-style:none;margin:0;padding:0 22px 0 0}
+.campus-explore-card{flex:none;width:280px;overflow:hidden;border-radius:18px;background:#fff;color:#0b1f3a}
+.campus-explore-card img{display:block;width:100%;height:210px;object-fit:cover}
+.campus-explore-card>div{padding:16px 18px 20px}
+.campus-explore-card h3{margin:0;color:#0b1f3a;font:700 16px/1.4 Poppins,sans-serif!important}
+.campus-explore-card p{margin:8px 0 0;color:#6b7280;font-size:14px;line-height:1.5}
+.campus-explore-pause{display:block;min-height:36px;margin:20px auto 0;padding:6px 14px;border:1px solid #8ba8cc;border-radius:999px;background:transparent;color:#dbeafe;font:500 12px/1.5 Poppins,sans-serif;cursor:pointer}
+.campus-explore-pause:focus-visible{outline:3px solid #60a5fa;outline-offset:3px}
+.campus-explore[data-paused=true] .campus-explore-track,.campus-explore-viewport:hover .campus-explore-track,.campus-explore-viewport:focus-within .campus-explore-track{animation-play-state:paused}
+@keyframes campus-explore-scroll{to{transform:translateX(-50%)}}
+@media(max-width:600px){.ch-home.fs-page main>.campus-explore{padding:40px 0}.campus-explore-card{width:250px}.campus-explore-card img{height:188px}.campus-explore-group{gap:16px;padding-right:16px}}
+@media(prefers-reduced-motion:reduce){.campus-explore-track{animation:none}.campus-explore-viewport{overflow-x:auto;mask-image:none}.campus-explore-group[aria-hidden=true],.campus-explore-pause{display:none}}

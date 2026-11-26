@@ -72,16 +72,17 @@ test('profile section has no boxed panels and the contact hub keeps its actions'
   await expect(contact.locator('iframe[title*="Google Maps"]')).toHaveCount(1)
 })
 
-test('banner above the footer has one primary action that opens the free demo registration', async ({ page }) => {
+test('home career banner has Call Us and Enroll Now actions with a working enrollment enquiry', async ({ page }) => {
   await blockSubmissions(page)
   for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: 900 })
-    await page.goto('/newsletter/')
-    const band = page.locator('.ch-band')
+    await page.goto('/')
+    const band = page.getByRole('region', { name: 'Start your AI career with Coding Hubs' })
     await expect(band.getByRole('button')).toHaveCount(1)
-    const button = band.getByRole('button', { name: 'Book a Free Demo' })
+    await expect(band.getByRole('link', { name: 'Call Us' })).toHaveAttribute('href', /^tel:/)
+    const button = band.getByRole('button', { name: 'Enroll Now' })
     await button.click()
-    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.getByRole('dialog', { name: 'Enrollment enquiry' })).toBeVisible()
     await page.keyboard.press('Escape')
     const box = await button.boundingBox()
     expect(box!.height).toBeGreaterThanOrEqual(44)

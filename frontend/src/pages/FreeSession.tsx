@@ -1,4 +1,6 @@
 import { CampusConnect } from './free-session/CampusConnect'
+import { CampusExplore } from './free-session/CampusExplore'
+import { HomeTeam } from './free-session/HomeTeam'
 import { StudentPlacements } from './free-session/StudentPlacements'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
@@ -272,9 +274,11 @@ export function FreeSession() {
           </div>
         </section>
 
+        <HomeTeam />
         <ContactHub />
 
         <CampusConnect />
+        <CampusExplore />
       </main>
 
       <FsFooter home />

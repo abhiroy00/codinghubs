@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { FsIcon } from '../pages/free-session/icons'
 import { INSTITUTE, WHATSAPP } from '../pages/free-session/data'
 import { PROGRAMS } from '../pages/free-session/programs'
-import { useRegisterPopup } from '../lib/register-popup'
+import { CareerFooterBanner } from '../components/CareerFooterBanner'
 import { FloatingContact } from '../components/FloatingContact'
 import { Header } from '../components/Header'
 import { useOptionalAuth } from '../lib/auth-context'
@@ -54,7 +54,6 @@ export function FsHeader() {
 }
 
 export function FsFooter({ home = false }: { home?: boolean }) {
-  const popup = useRegisterPopup()
   const auth = useOptionalAuth()
   // On the home page the in-page anchors scroll; everywhere else they go back to the home page section.
   const h = (hash: string) => (home ? hash : `/${hash}`)
@@ -69,24 +68,7 @@ export function FsFooter({ home = false }: { home?: boolean }) {
 
   return (
     <>
-    {/* The demo band above the footer appears on the home page only. */}
-    {home && (
-    <section className="ch-band" aria-labelledby="ch-band-title">
-      <div className="ch-band-card">
-        <div className="ch-band-copy">
-          <p className="ch-band-kicker"><span aria-hidden="true" />Free · Live online · 2 hours</p>
-          <h2 id="ch-band-title">Try a real class before you choose a course.</h2>
-          <p>See how we teach, follow a live demo and ask the trainer your questions. No payment needed.</p>
-        </div>
-        <div className="ch-band-actions">
-          <button type="button" className="ch-band-btn" data-cta="footer" onClick={() => popup.open()}>
-            Book a Free Demo <FsIcon id="i-arrow" />
-          </button>
-          <p className="ch-band-alt">Prefer to talk? <a href={INSTITUTE.phoneHref}>Call {INSTITUTE.phone}</a></p>
-        </div>
-      </div>
-    </section>
-    )}
+    {home && <CareerFooterBanner />}
     <footer className="ftr fx" id="site-footer">
       <span className="fx-blob" aria-hidden="true"></span>
       <div className="wrap">
