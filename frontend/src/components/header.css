@@ -478,3 +478,14 @@ main [id] { scroll-margin-top: calc(var(--site-header-height, 85px) + 16px); }
   .site-header .sh-account-trigger > svg { display: none; }
   .site-header .sh-account-trigger .sh-avatar { width: 32px; height: 32px; }
 }
+
+/* Signed-in header on phones: logo, avatar, demo button and menu must all fit, or the menu button leaves the screen. */
+@media (max-width: 480px) {
+  .site-header:has(.has-account) .sh-inner { width: calc(100% - 28px); gap: 8px; }
+  .site-header:has(.has-account) .sh-actions { gap: 8px; }
+  .site-header:has(.has-account) .sh-brand picture, .site-header:has(.has-account) .sh-brand img { width: 88px; }
+  .site-header:has(.has-account) .sh-account-trigger { min-height: 38px; padding: 2px; }
+  .site-header:has(.has-account) .sh-account-trigger > svg { display: none; }
+  .site-header:has(.has-account) .sh-account-trigger .sh-avatar { width: 32px; height: 32px; }
+  .site-header:has(.has-account) .sh-demo { padding-inline: 9px; font-size: 12px; white-space: nowrap; }
+}
