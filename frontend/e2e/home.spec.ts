@@ -15,6 +15,13 @@ test("home content and layout fit phone, tablet and desktop screens", async ({
   page.on("pageerror", (error) => errors.push(error.message));
   for (const width of [320, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
+    const animation = page.locator("#start-career img.cl-animation");
+    await animation.scrollIntoViewIfNeeded();
+    await expect(animation).toHaveAttribute("src", "/assets/coding-hubs-ai-courses.gif");
+    await expect.poll(() => animation.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth === 760 && image.naturalHeight === 800)).toBe(true);
+    const bounds = await animation.boundingBox();
+    expect(bounds!.width / bounds!.height).toBeCloseTo(760 / 800, 2);
+    await page.locator("#start-career").screenshot({ path: `../artifacts/career-animation/career-${width}.png` });
     await expect(page.locator("h1")).toHaveCount(1);
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth > window.innerWidth,
@@ -50,7 +57,7 @@ test("Join Coding Hub follows the hero, removed sections stay gone and its butto
   for (const id of ["courses", "demo-classes", "why", "reviews"]) await expect(page.locator(`#${id}`)).toHaveCount(0);
   await expect(page.getByText("Pick a path and try it free")).toHaveCount(0);
   const career = page.locator("#start-career");
-  await expect(career.locator("img.cl-students")).toBeVisible();
+  await expect(career.locator("img.cl-animation")).toBeVisible();
   await career.getByRole("link", { name: "Enquire Now" }).click();
   await expect.poll(() => page.locator("#contact").evaluate((el) => Math.round(el.getBoundingClientRect().top))).toBeLessThan(150);
   await page.goto("/");

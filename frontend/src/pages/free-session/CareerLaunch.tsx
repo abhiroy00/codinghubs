@@ -24,7 +24,7 @@ function Pill({ text, i }: { text: string; i: number }) {
   )
 }
 
-/** Career CTA that fits one desktop screen: copy, buttons, benefits and quick links beside the students photo. */
+/** Career CTA with copy, benefits and quick links beside the supplied AI courses animation. */
 export function CareerLaunch() {
   const lenisRef = useLenisRef()
   // Scroll to the contact section through Lenis (the page's smooth scroller); a native hash jump gets cut short by it.
@@ -64,8 +64,7 @@ export function CareerLaunch() {
           </nav>
         </Reveal>
         <div className="cl-stage">
-          <span className="cl-arc" aria-hidden="true" />
-          <img className="cl-students" src="/img/students-1000.webp" srcSet="/img/students-720.webp 720w, /img/students-1000.webp 1000w, /img/students.webp 1400w" sizes="(max-width: 900px) 92vw, 620px" alt="Five smiling Coding Hub students holding laptops and notebooks" width={1400} height={665} loading="lazy" decoding="async" />
+          <img className="cl-animation" src="/assets/coding-hubs-ai-courses.gif" alt="Animated Coding Hubs AI robot" width={760} height={800} loading="lazy" decoding="async" />
         </div>
       </div>
     </section>

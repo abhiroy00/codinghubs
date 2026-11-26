@@ -1,4 +1,4 @@
-/* "Join Coding Hub" career band: copy, benefits and quick links beside the students photo; fits one desktop screen. */
+/* "Join Coding Hub" career band with the supplied AI courses animation. */
 .cl{position:relative;isolation:isolate;overflow:hidden;padding:clamp(2.5rem,5vw,3.5rem) 0;background:radial-gradient(80% 70% at 75% 100%,#cfe0ff 0%,transparent 70%),linear-gradient(160deg,#eef5ff 0%,#dbe9ff 45%,#c8e6f5 100%)}
 .cl-glow{position:absolute;z-index:-1;border-radius:50%;pointer-events:none}
 .cl-glow-a{width:40rem;aspect-ratio:1;left:-18rem;top:-16rem;background:radial-gradient(closest-side,rgba(127,176,255,.55),transparent)}
@@ -21,8 +21,7 @@
 .cl-explore a:hover{text-decoration-color:currentColor}
 
 .cl-stage{position:relative;display:flex;justify-content:center;align-items:flex-end;pointer-events:none}
-.cl-arc{position:absolute;bottom:0;left:50%;width:100%;aspect-ratio:2/1;border-radius:50% 50% 0 0;background:radial-gradient(closest-side at 50% 100%,rgba(255,255,255,.75),rgba(255,255,255,.25));transform:translateX(-50%)}
-.cl-students{position:relative;display:block;width:100%;max-width:620px;height:auto;filter:drop-shadow(0 20px 30px rgba(11,18,32,.18))}
+.cl-animation{position:relative;display:block;width:min(100%,456px);height:auto;max-height:480px;object-fit:contain;border-radius:24px}
 
 @keyframes cl-in{from{opacity:0;transform:translateY(10px)}}
 
