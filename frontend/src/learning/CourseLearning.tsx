@@ -10,7 +10,7 @@ import { useLenisRef } from '../lib/lenis-context'
 import { api } from '../lib/api'
 import { useRegisterPopup } from '../lib/register-popup'
 import { COURSE_CATALOG, COURSE_BY_SLUG, type CourseDefinition } from './catalog'
-import { CoursesFeatures, CoursesHero, CoursesShowcase } from './CourseShowcase'
+import { CoursesHero, CoursesShowcase } from './CourseShowcase'
 import { CertificateSection, CourseTiles } from './certificates'
 import { CodeEditor } from './CodeEditor'
 import { FsIcon } from '../pages/free-session/icons'
@@ -80,7 +80,7 @@ function ProjectCompletion({ slug, project }: { slug: string; project: string })
 }
 
 export function CourseDirectory() {
-  return <div className="learn-shell csx-page"><CoursesHero /><CoursesFeatures /><CoursesShowcase /></div>
+  return <div className="learn-shell csx-page"><CoursesHero /><CoursesShowcase /></div>
 }
 
 function LearningDashboard() {

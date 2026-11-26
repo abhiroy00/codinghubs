@@ -70,43 +70,6 @@ export function CoursesHero() {
   )
 }
 
-const FEATURES = [
-  { title: 'Free Demo Class', text: 'Try a 2-hour live session before you decide. No payment needed.', art: 'tri' },
-  { title: 'Industry-Relevant Content', text: 'Built around real tools, real projects and day-to-day workflows.', art: 'rings' },
-  { title: 'Completion Certificate', text: 'Finish the 30-day roadmap to earn your course certificate.', art: 'slash' },
-  { title: 'Interview', text: 'Daily lessons, questions and challenges to get job-ready.', art: 'bars' },
-] as const
-
-function FeatureArt({ kind }: { kind: (typeof FEATURES)[number]['art'] }) {
-  return (
-    <svg className="csx-feat-art" viewBox="0 0 260 70" preserveAspectRatio="none" aria-hidden="true">
-      {kind === 'tri' && <><path d="M10 70 130 18 250 70" /><path d="M70 70 130 44 190 70" /></>}
-      {kind === 'rings' && <><circle cx="80" cy="80" r="52" /><circle cx="130" cy="80" r="52" /><circle cx="180" cy="80" r="52" /></>}
-      {kind === 'slash' && <path d="M20 10 70 70M70 10 120 70M120 10 170 70M170 10 220 70" />}
-      {kind === 'bars' && <path d="M20 70V18h220v52M64 18v52M108 18v52M152 18v52M196 18v52" />}
-    </svg>
-  )
-}
-
-export function CoursesFeatures() {
-  return (
-    <Section id="csx-feat" className="csx-features" tone="soft" badge="Why Coding Hub" title="Everything You Need To Start Learning"
-      subtitle="Mentor-led classes at Coding Hub, Pitampura, built to take you from first lesson to job-ready portfolio.">
-      <Reveal as="ul" stagger>
-        {FEATURES.map((f) => (
-          <li key={f.title}>
-            <AnimatedCard as="div" className="csx-feature">
-              <h3>{f.title}</h3>
-              <p>{f.text}</p>
-              <FeatureArt kind={f.art} />
-            </AnimatedCard>
-          </li>
-        ))}
-      </Reveal>
-    </Section>
-  )
-}
-
 /* Real learner ratings from the public testimonials feed, averaged per course; fetched once per page load. */
 type Rating = { avg: number; count: number }
 let ratingsCache: Promise<Map<string, Rating>> | null = null

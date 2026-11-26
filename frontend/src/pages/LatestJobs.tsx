@@ -11,7 +11,6 @@ import type { Seo } from '../content-pages/api'
 import { useSeo } from '../seo/useSeo'
 import { JOBS_SEO, MISSING_SEO, directoryInitial, recordSeo } from '../seo/directory'
 import { HeroVideo } from '../components/HeroVideo'
-import { AnimatedCard, Reveal } from '../components/ui'
 
 interface Job {
   seo?: Seo
@@ -101,17 +100,7 @@ function ExternalJobSearch() {
   )
 }
 
-type Filters = { q: string; company: string; location: string; mode: string; type: string; level: string; sort: 'latest' | 'oldest' }
-const NO_FILTERS: Filters = { q: '', company: '', location: '', mode: '', type: '', level: '', sort: 'latest' }
-
 const formatDate = (value: string) => new Date(value.length === 10 ? `${value}T00:00:00` : value).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-
-/** Unique [value, label] pairs for a select, in first-seen order. */
-function options(jobs: Job[], value: (job: Job) => string, label: (job: Job) => string = value) {
-  const seen = new Map<string, string>()
-  for (const job of jobs) if (!seen.has(value(job))) seen.set(value(job), label(job))
-  return [...seen].sort((a, b) => a[1].localeCompare(b[1]))
-}
 
 /** Where Apply Now goes: the external link if there is one, otherwise an email to the employer. */
 function applyTarget(job: Job) {
@@ -153,51 +142,6 @@ export function LatestJobs() {
 
 function JobListing() {
   useSeo(JOBS_SEO)
-  const initial = useMemo(() => directoryInitial<{ results: Job[] }>('jobs')?.results ?? null, [])
-  const [jobs, setJobs] = useState<Job[]>(initial ?? [])
-  const [loading, setLoading] = useState(initial === null)
-  const [loadError, setLoadError] = useState('')
-  const [filters, setFilters] = useState<Filters>(NO_FILTERS)
-  const [filtersOpen, setFiltersOpen] = useState(false)
-
-  useEffect(() => {
-    api.get<Job[]>('/jobs/')
-      .then(({ data }) => setJobs(data))
-      .catch(() => setLoadError('Job openings could not be loaded. Please try again later.'))
-      .finally(() => setLoading(false))
-  }, [])
-
-  const companies = useMemo(() => options(jobs, (job) => job.company_name), [jobs])
-  const locations = useMemo(() => options(jobs, (job) => job.location), [jobs])
-  const modes = useMemo(() => options(jobs, (job) => job.work_mode, (job) => job.work_mode_label), [jobs])
-  const types = useMemo(() => options(jobs, (job) => job.job_type, (job) => job.job_type_label), [jobs])
-  const levels = useMemo(() => options(jobs, (job) => job.experience_level, (job) => job.experience_level_label), [jobs])
-
-  const visible = useMemo(() => {
-    const q = filters.q.trim().toLowerCase()
-    const matches = jobs.filter((job) =>
-      (!q || [job.title, job.company_name, job.description, ...job.skills].some((text) => text.toLowerCase().includes(q))) &&
-      (!filters.company || job.company_name === filters.company) &&
-      (!filters.location || job.location === filters.location) &&
-      (!filters.mode || job.work_mode === filters.mode) &&
-      (!filters.type || job.job_type === filters.type) &&
-      (!filters.level || job.experience_level === filters.level))
-    // The API returns newest first.
-    return filters.sort === 'oldest' ? [...matches].reverse() : matches
-  }, [jobs, filters])
-
-  const activeCount = [filters.company, filters.location, filters.mode, filters.type, filters.level].filter(Boolean).length
-  const set = (field: keyof Filters) => (event: { target: { value: string } }) => setFilters((current) => ({ ...current, [field]: event.target.value }))
-  const select = (field: keyof Filters, label: string, items: [string, string][]) => (
-    <label className="jobs-control">
-      <span>{label}</span>
-      <select value={filters[field]} onChange={set(field)}>
-        <option value="">All</option>
-        {items.map(([value, text]) => <option key={value} value={value}>{text}</option>)}
-      </select>
-    </label>
-  )
-
   return (
     <>
       <section className="tutors-hero hv-host"><HeroVideo clip="latest-jobs" />
@@ -212,88 +156,8 @@ function JobListing() {
         </div>
       </section>
 
-      <section className="section tutors-section" id="job-list" aria-labelledby="jobs-heading">
+      <section className="section tutors-section" id="job-list" aria-labelledby="jobs-external-title">
         <div className="container-x">
-          <div className="tutors-section-heading">
-            <div>
-              <p className="eyebrow">OPEN POSITIONS</p>
-              <h2 className="display-md" id="jobs-heading">Find a role that fits your skills</h2>
-            </div>
-            <p className="muted">New openings are added regularly. Apply directly with the employer.</p>
-          </div>
-
-          <form className="jobs-filters" role="search" aria-label="Filter jobs" onSubmit={(event) => event.preventDefault()}>
-            <label className="jobs-control jobs-search">
-              <span>Search</span>
-              <input type="search" value={filters.q} onChange={set('q')} placeholder="Job title, company or skill" />
-            </label>
-            <button type="button" className="btn btn-ghost jobs-filter-toggle" aria-expanded={filtersOpen} aria-controls="jobs-filter-more" onClick={() => setFiltersOpen((open) => !open)}>
-              Filters{activeCount > 0 ? ` (${activeCount})` : ''}
-            </button>
-            <div id="jobs-filter-more" className={`jobs-filter-more${filtersOpen ? ' open' : ''}`}>
-              {select('company', 'Company', companies)}
-              {select('location', 'Location', locations)}
-              {select('mode', 'Work mode', modes)}
-              {select('type', 'Job type', types)}
-              {select('level', 'Experience', levels)}
-              <label className="jobs-control">
-                <span>Sort by</span>
-                <select value={filters.sort} onChange={set('sort')}>
-                  <option value="latest">Latest</option>
-                  <option value="oldest">Oldest</option>
-                </select>
-              </label>
-            </div>
-          </form>
-          {!loading && !loadError && jobs.length > 0 && (
-            <div className="jobs-result-bar">
-              <p role="status">{visible.length} {visible.length === 1 ? 'job' : 'jobs'} found</p>
-              <button type="button" className="jobs-clear" onClick={() => setFilters(NO_FILTERS)} disabled={JSON.stringify(filters) === JSON.stringify(NO_FILTERS)}>Clear filters</button>
-            </div>
-          )}
-
-          {loading && <p className="tutors-state" role="status">Loading job openings…</p>}
-          {loadError && <p className="tutors-state tutors-error" role="alert">{loadError}</p>}
-          {!loading && !loadError && jobs.length === 0 && (
-            <div className="tutors-empty">
-              <h3>No openings right now</h3>
-              <p>New jobs are posted regularly. Please check back soon.</p>
-            </div>
-          )}
-          {jobs.length > 0 && visible.length === 0 && (
-            <div className="tutors-empty">
-              <h3>No jobs match your filters</h3>
-              <p>Try a different keyword or clear the filters to see all openings.</p>
-              <button type="button" className="btn btn-yellow" onClick={() => setFilters(NO_FILTERS)}>Clear filters</button>
-            </div>
-          )}
-          {visible.length > 0 && (
-            <Reveal stagger className="job-grid">
-              {visible.map((job) => (
-                <AnimatedCard bare className="job-card" key={job.id}>
-                  <div className="job-card-head">
-                    <CompanyLogo job={job} />
-                    <div>
-                      <p className="tutor-designation">{job.company_name}</p>
-                      <h3><Link to={`/latest-jobs/${job.slug}/`}>{job.title}</Link></h3>
-                    </div>
-                  </div>
-                  <ul className="job-meta">
-                    <li>{job.location}</li>
-                    <li>{job.work_mode_label}</li>
-                    <li>{job.job_type_label}</li>
-                    <li>{job.experience || job.experience_level_label}</li>
-                  </ul>
-                  {job.salary && <p className="job-salary">{job.salary}</p>}
-                  {job.published_at && <p className="job-posted">Posted {formatDate(job.published_at)}{job.is_imported && job.source_label ? <span className="job-source"> · via {job.source_label}</span> : null}</p>}
-                  <div className="tutor-actions">
-                    <Link className="btn btn-ghost" to={`/latest-jobs/${job.slug}/`}>View Details</Link>
-                    <ApplyButton job={job} />
-                  </div>
-                </AnimatedCard>
-              ))}
-            </Reveal>
-          )}
           <ExternalJobSearch />
         </div>
       </section>
