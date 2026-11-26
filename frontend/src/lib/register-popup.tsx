@@ -2,6 +2,8 @@ import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useM
 import { useNavigate } from 'react-router-dom'
 const RegisterForm = lazy(() => import('../pages/free-session/RegisterForm').then((m) => ({ default: m.RegisterForm })))
 import { useLenisRef } from './lenis-context'
+import { useOptionalAuth } from './auth-context'
+import { ENQUIRED_KEY } from './analytics'
 import { FS_CSS } from './fs-css'
 import { useScopedStylesheet } from '../hooks/useScopedStylesheet'
 import './demo-dialog.css'
@@ -12,11 +14,23 @@ function PopupStyles() {
 }
 
 const KEY = 'ch_registered'
+/** How long after page load, and after each close, the free demo form opens by itself. */
+export const AUTO_OPEN_MS = 25_000
+/** Sign-in, account and working screens, where an uninvited popup would get in the way. */
+const NO_AUTO_OPEN = /^\/(login|register|forgot-password|reset-password|dashboard|my-account|admin|enroll\/|ai\/|interview-studio\/.|gigs\/workspace|certificates\/verify|newsletter\/(confirm|unsubscribe)|policies)/
+
+/** True while the visitor is busy: another tab, another dialog, or typing in a form or the code editor. */
+function visitorIsBusy() {
+  if (document.hidden || NO_AUTO_OPEN.test(window.location.pathname)) return true
+  if (document.querySelector('[aria-modal="true"], .oc-modal, #modal.open')) return true
+  const active = document.activeElement as HTMLElement | null
+  return !!active && (active.isContentEditable || /^(INPUT|TEXTAREA|SELECT|IFRAME)$/.test(active.tagName))
+}
 
 interface PopupApi {
   /**
-   * Opens the "Reserve your free seat" form (only when a visitor asks for it: it never opens by itself). After the
-   * visitor has registered it takes them to the courses instead. `campaignId` records the offer that led here.
+   * Opens the "Reserve your free seat" form (it also opens by itself every AUTO_OPEN_MS for visitors who have not
+   * registered or signed in). After the visitor has registered it takes them to the courses instead. `campaignId` records the offer that led here.
    */
   open: (course?: string, campaignId?: number) => void
   /** Enrollment enquiries remain available after a previous demo registration. */
@@ -33,9 +47,9 @@ export function useRegisterPopup() {
   return useContext(PopupContext)
 }
 
-function readFlag() {
+function readFlag(key = KEY) {
   try {
-    return localStorage.getItem(KEY) === '1'
+    return localStorage.getItem(key) === '1'
   } catch {
     return false
   }
@@ -51,6 +65,9 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
   const [intent, setIntent] = useState<'demo' | 'enrollment'>('demo')
   const [token, setToken] = useState(0)
   const returnFocus = useRef<HTMLElement | null>(null)
+  const openedByItself = useRef(false)
+  const auth = useOptionalAuth()
+  const signedInOrChecking = !!auth && (auth.loading || !!auth.user)
 
   useEffect(() => setRegistered(readFlag()), [])
 
@@ -77,10 +94,23 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
 
   const open = useCallback((c?: string, campaign?: number) => {
     if (readFlag()) { navigate('/courses/'); return }
+    openedByItself.current = false
     showPopup('demo', c, campaign)
   }, [navigate, showPopup])
 
-  const openEnrollment = useCallback((c: string) => showPopup('enrollment', c), [showPopup])
+  const openEnrollment = useCallback((c: string) => { openedByItself.current = false; showPopup('enrollment', c) }, [showPopup])
+
+  // The timer restarts each time the popup closes. It is not tied to the route, so browsing does not postpone it.
+  useEffect(() => {
+    if (isOpen || registered || signedInOrChecking) return
+    let timer = window.setTimeout(function tryOpen() {
+      if (readFlag() || readFlag(ENQUIRED_KEY)) return
+      if (visitorIsBusy()) { timer = window.setTimeout(tryOpen, AUTO_OPEN_MS); return }
+      openedByItself.current = true
+      showPopup('demo')
+    }, AUTO_OPEN_MS)
+    return () => window.clearTimeout(timer)
+  }, [isOpen, registered, signedInOrChecking, showPopup])
 
   useEffect(() => {
     if (!isOpen) return
@@ -107,7 +137,7 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
       const input = document.getElementById('rp-f-name')
       if (!input) return
       // The lazy form may load after the visitor has already started tabbing.
-      if (!dialog?.contains(document.activeElement)) input.focus()
+      if (!dialog?.contains(document.activeElement)) (openedByItself.current ? dialog?.querySelector<HTMLElement>('.rp-close') : input)?.focus()
       loading.disconnect()
     }
     const loading = new MutationObserver(focusInitial)
@@ -143,7 +173,7 @@ export function RegisterPopupProvider({ children }: { children: ReactNode }) {
               ×
             </button>
             {intent === 'demo' && <aside className="rp-story">
-              <p className="rp-story-brand">CODING HUB <span>SCHOOL OF AI</span></p>
+              <p className="rp-story-brand"><img src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} /></p>
               <div className="rp-story-heading">
                 <span className="rp-story-kicker"><span /> A little curiosity. A new direction.</span>
                 <h2>Your next chapter<br /> starts with <em>you.</em></h2>

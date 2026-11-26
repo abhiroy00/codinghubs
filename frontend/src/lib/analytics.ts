@@ -10,8 +10,16 @@ export function track(name: string, params: Record<string, string> = {}) {
   if (typeof gtag === 'function') gtag('event', name, { page_path: window.location.pathname, ...params })
 }
 
+/** Set once any lead form is accepted: the automatic free demo popup then stays away from this browser. */
+export const ENQUIRED_KEY = 'ch_enquired'
+
 /** A lead form was accepted by the server (demo registration, admission enquiry or location enquiry). */
 export function trackLead(form: 'demo' | 'enquiry' | 'location_enquiry', course: string, campaignId?: number | null) {
+  try {
+    localStorage.setItem(ENQUIRED_KEY, '1')
+  } catch {
+    /* private mode: the popup may show again, which is harmless */
+  }
   track('generate_lead', { form, course: course || 'not_selected', ...(campaignId ? { campaign_id: String(campaignId) } : {}) })
 }
 
