@@ -204,7 +204,7 @@ export function HubPlan({ current }: { current: string }) {
         {HUB_LINKS.filter((l) => l.to !== current).map((l) => <li key={l.to}><Link to={l.to}>{l.label}<InsIcon name="right" /></Link></li>)}
       </ul>
       <div className="hub-campus">
-        <h3>Classrooms in Delhi</h3>
+        <h3>Our classroom in Delhi</h3>
         {CAMPUSES.map((c) => <p key={c.name}><b>{c.name}</b> · {c.role}<br /><span>{c.address}</span></p>)}
         <p><b>Live online</b> · <span>for learners anywhere in India</span></p>
       </div>

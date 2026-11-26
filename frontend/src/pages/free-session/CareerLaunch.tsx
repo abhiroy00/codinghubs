@@ -50,7 +50,7 @@ export function CareerLaunch() {
             Join <span className="cl-brand">Coding Hub</span>
             <br />Start Your AI Career Today
           </h2>
-          <p className="cl-sub">AI, Data Science and Generative AI courses at our Delhi classrooms in Netaji Subhash Place and Pitampura, or live online. Get a free career consultation.</p>
+          <p className="cl-sub">AI, Data Science and Generative AI courses at our Delhi classroom in Netaji Subhash Place, Pitampura, or live online. Get a free career consultation.</p>
           <div className="cl-actions">
             <Link className="ui-btn ui-btn-ghost cl-btn" to="/courses/#catalogue">View Courses</Link>
             <a className="ui-btn ui-btn-primary cl-btn" href="#contact" onClick={toContact}>Enquire Now</a>

@@ -210,7 +210,7 @@ export function CoursesShowcase() {
             <ul>
               <li><Link to="/brochures/">Download a course brochure</Link></li>
               <li><Link to="/certificates/">How certificates work</Link></li>
-              <li><Link to="/locations/">Classrooms in NSP &amp; Pitampura</Link></li>
+              <li><Link to="/locations/">Our classroom at NSP, Pitampura</Link></li>
               <li><Link to="/blog">Career guides on the blog</Link></li>
             </ul>
             <button type="button" className="ui-btn ui-btn-primary" onClick={() => openDemo()}>Book a free demo</button>

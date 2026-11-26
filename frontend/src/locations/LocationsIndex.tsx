@@ -25,7 +25,7 @@ const thumbSet = (slug: string, ext: 'avif' | 'webp') => `/assets/ai/loc/thumb/$
 
 const PERKS = [
   { i: 'i-monitor', t: 'Learn online', d: 'The free demo and 15-day programs are live and online, so learners anywhere in NCR can join.' },
-  { i: 'i-pin', t: 'Honest about location', d: 'Classrooms only at Netaji Subhash Place (head office) and Pitampura. Other area guides are for online learners; no fake local branches.' },
+  { i: 'i-pin', t: 'Honest about location', d: 'One head office and classroom at Netaji Subhash Place, Pitampura. Other area guides are for online learners; no fake local branches.' },
   { i: 'i-check', t: 'Written per locality', d: 'Each guide is written for its own area and audience, not copy-pasted.' },
 ]
 
@@ -88,7 +88,7 @@ export function LocationsIndex() {
             <ul className="lx-chips" aria-label="Highlights">
               <li><strong>{LOCATIONS.length}</strong> area guides</li>
               <li><strong>2-hour</strong> free live online demo</li>
-              <li><strong>NSP + Pitampura</strong> classrooms in Delhi</li>
+              <li><strong>NSP, Pitampura</strong> head office &amp; classroom</li>
             </ul>
           </div>
         </section>
@@ -122,7 +122,7 @@ export function LocationsIndex() {
             </div>
             <div className="lx-avail" aria-label="How you can learn">
               <p><span className="lx-dot lx-dot-online" aria-hidden="true" /><strong>Online live</strong> classes and the free demo are available from every area listed.</p>
-              <p><span className="lx-dot lx-dot-office" aria-hidden="true" /><strong>In person</strong> at our classrooms in Netaji Subhash Place (head office) and Pitampura, Delhi. <a href="#head-office">Contact us before visiting</a>.</p>
+              <p><span className="lx-dot lx-dot-office" aria-hidden="true" /><strong>In person</strong> at our head office and classroom in Netaji Subhash Place, Pitampura, Delhi. <a href="#head-office">Contact us before visiting</a>.</p>
             </div>
             <p className="lx-count" role="status" aria-live="polite">
               Showing {filtered.length} of {LOCATIONS.length} locations
@@ -140,7 +140,7 @@ export function LocationsIndex() {
                     <span className="lx-badge" aria-hidden="true">{String(LOCATIONS.indexOf(l) + 1).padStart(2, '0')}</span>
                     <span className="lx-tag">{GROUP_LABELS[l.group]}</span>
                     <strong>AI Course in {l.short}</strong>
-                    <span className="lx-mode">{l.slug === 'ai-course-in-pitampura-delhi' || l.slug === 'ai-course-in-nsp-delhi' ? 'Classroom + online live' : 'Online live · Classrooms in NSP & Pitampura'}</span>
+                    <span className="lx-mode">{l.slug === 'ai-course-in-pitampura-delhi' || l.slug === 'ai-course-in-nsp-delhi' ? 'Classroom + online live' : 'Online live · Classroom at NSP, Pitampura'}</span>
                     <span className="lx-blurb">{l.blurb}</span>
                     <span className="lx-go">
                       Read the guide <FsIcon id="i-arrow" />
@@ -197,14 +197,14 @@ export function LocationsIndex() {
           <div className="wrap loc-office-in">
             <div>
               <p className="eyebrow">Where we teach</p>
-              <h2 id="idx-ho">Classrooms in Delhi</h2>
+              <h2 id="idx-ho">Our classroom in Delhi</h2>
               <div className="lx-campuses">
                 {CAMPUSES.map((c) => (
                   <div key={c.name}><b>{c.name}</b><small>{c.role}</small><address>{c.address}</address></div>
                 ))}
               </div>
               <p>
-                The area guides on this page are written for learners in those areas, most of whom join live online. Please contact us before visiting a
+                The area guides on this page are written for learners in those areas, most of whom join live online. Please contact us before visiting the
                 classroom so a counsellor can confirm the batch and timing for your enquiry.
               </p>
             </div>

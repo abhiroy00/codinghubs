@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { LearnFrame } from '../learning/LearnFrame'
-import { CourseTiles, useCertificates } from '../learning/certificates'
+import { useCertificates } from '../learning/certificates'
 import { COURSE_BY_SLUG, COURSE_CATALOG } from '../learning/catalog'
 import { api } from '../lib/api'
 import { CERTIFICATES_FAQ, CERTIFICATES_META, pageSeo } from '../seo/site'
@@ -136,7 +136,7 @@ export function Certificates() {
   )
 
   return (
-    <LearnFrame metadata={seo} trail={[{ label: 'Certificates' }]}>
+    <LearnFrame metadata={seo}>
       <div className="learn-shell certificates-page">
         <header className="learn-hero cert-hero">
           <p className="learn-kicker">CODING HUBS CERTIFICATES</p>
@@ -254,7 +254,7 @@ export function Certificates() {
         <section className="learn-section" aria-labelledby="cert-how">
           <h2 id="cert-how">Free online roadmap certificates</h2>
           <ol className="certificates-steps">
-            <li><b>Choose a course roadmap.</b> Each course below has a free 30-day roadmap of lessons, practice and quizzes.</li>
+            <li><b>Choose a course roadmap.</b> Every course in <Link to="/interview/">Interview preparation</Link> has a free 30-day roadmap of lessons, practice and quizzes.</li>
             <li><b>Complete and save all 30 days.</b> Sign in so your progress is saved to your account on every device.</li>
             <li><b>Get your roadmap certificate.</b> It is issued automatically when all 30 days are recorded and stays in your account.</li>
           </ol>
@@ -271,8 +271,6 @@ export function Certificates() {
             </ul>
           )}
         </section>
-
-        <CourseTiles />
       </div>
     </LearnFrame>
   )

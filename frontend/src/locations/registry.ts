@@ -20,10 +20,9 @@ export const HEAD_OFFICE = {
   country: 'IN',
 }
 
-/** Where classes happen. Pitampura shows only the area until its street address is confirmed. */
+/** Where classes happen: one head office and classroom at Netaji Subhash Place, Pitampura (Delhi 110034). */
 export const CAMPUSES = [
-  { name: 'Netaji Subhash Place', role: 'Head office and classroom', address: HEAD_OFFICE.line },
-  { name: 'Pitampura', role: 'Classroom', address: 'Pitampura, North-West Delhi' },
+  { name: 'Netaji Subhash Place, Pitampura', role: 'Head office and classroom', address: HEAD_OFFICE.line },
 ] as const
 
 export const LOCATIONS: LocationMeta[] = [
