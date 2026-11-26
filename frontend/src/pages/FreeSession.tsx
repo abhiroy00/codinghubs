@@ -1,4 +1,5 @@
 import { CampusConnect } from './free-session/CampusConnect'
+import { StudentPlacements } from './free-session/StudentPlacements'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useLenisRef } from '../lib/lenis-context'
@@ -21,7 +22,7 @@ import { LogoWall } from './free-session/HomeExplore'
 import { useFsReveal } from './free-session/useFsReveal'
 import { HOME_META, pageSeo } from '../seo/site'
 import { useSeo } from '../seo/useSeo'
-import { AnimatedCard, Reveal } from '../components/ui'
+import { Reveal } from '../components/ui'
 
 const HOME_SEO = pageSeo(HOME_META)
 
@@ -243,50 +244,7 @@ export function FreeSession() {
           </div>
         </section>
 
-        <section className="sec plan-sec" id="program" aria-labelledby="program-title">
-          <div className="wrap">
-            <div className="sec-head center reveal">
-              <p className="eyebrow">Free live session</p>
-              <h2 id="program-title" className="h2">
-                Start with a <span className="marker">Free Live</span> Session.
-              </h2>
-              <p className="sub">Attend a free demo, see how we teach and ask your questions before choosing a course.</p>
-            </div>
-
-            <AnimatedCard bare className="demo-pass" aria-labelledby="demo-pass-title">
-              <div className="dp-stub" aria-hidden="true">
-                <span className="dp-step">Free demo</span>
-                <span className="dp-free">FREE</span>
-                <span className="dp-admit">Admit one · Live class</span>
-              </div>
-              <div className="dp-body">
-                <p className="dp-live"><span className="dp-dot" aria-hidden="true" />Live online demo class</p>
-                <h3 id="demo-pass-title">Your free pass to a 2-hour live class</h3>
-                <p className="dp-lead">Sit in on a real class, see how we teach and ask the trainer anything — before you pay for anything.</p>
-                <ol className="dp-agenda" aria-label="What happens in the session">
-                  <li><b>01</b>Course introduction</li>
-                  <li><b>02</b>Live demonstration</li>
-                  <li><b>03</b>Modules &amp; roadmap</li>
-                  <li><b>04</b>Trainer Q&amp;A</li>
-                </ol>
-                <div className="dp-foot">
-                  <ul className="dp-facts" aria-label="Session details">
-                    <li><FsIcon id="i-clock" />2 hours</li>
-                    <li><FsIcon id="i-monitor" />Online live</li>
-                    <li><FsIcon id="i-ticket" />No payment needed</li>
-                  </ul>
-                  <a href="#register" className="dp-cta" data-cta="plan-demo">
-                    Claim my free seat <FsIcon id="i-arrow" />
-                  </a>
-                </div>
-              </div>
-            </AnimatedCard>
-
-            <p className="plan-note">
-              <FsIcon id="i-ticket" />Registering for the free demo costs nothing.
-            </p>
-          </div>
-        </section>
+        <StudentPlacements />
 
         <section className="sec" id="about" aria-labelledby="about-title">
           <div className="wrap about-grid">
