@@ -102,11 +102,6 @@ export function BlogDetail() {
         <header className="ins-art-hero">
           <div className="ins-art-hero-in">
             {a.preview && <p className="bl-preview" role="status">Preview. This page is not public.</p>}
-            {/* Same breadcrumb as the server-rendered page and its BreadcrumbList schema. */}
-            <nav className="ins-crumbs" aria-label="Breadcrumb">
-              <Link to="/">Home</Link><span aria-hidden="true">/</span><Link to="/blog">Blog</Link>
-              {a.category && <><span aria-hidden="true">/</span><Link to={`/blog?category=${a.category.slug}`}>{a.category.name}</Link></>}
-            </nav>
             {a.category && (
               <p className="ins-art-cat">
                 <Link to={`/blog?category=${a.category.slug}`}>{a.category.name}</Link>

@@ -44,8 +44,8 @@ class BlogGeoSeoTests(ContentBase):
         crumbs = [i['name'] for i in nodes['BreadcrumbList']['itemListElement']]
         self.assertEqual(crumbs, ['Home', 'Blog', 'Artificial Intelligence', 'Sigmoid vs Softmax'])
         self.assertIn('FAQPage', nodes)
-        # The breadcrumb in the schema is also visible on the page.
-        self.assertIn('<nav class="ins-crumbs" aria-label="Breadcrumb"><a href="/">Home</a>', html)
+        # Pages show no breadcrumb path; the trail lives in the schema only.
+        self.assertNotIn('aria-label="Breadcrumb"', html)
         self.assertIn('<meta property="article:section" content="Artificial Intelligence">', html)
         self.assertIn('<meta property="article:tag" content="Deep Learning">', html)
         self.assertIn('<meta property="article:published_time"', html)

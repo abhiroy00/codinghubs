@@ -34,9 +34,6 @@ export function Dashboard() {
   );
   return (
     <>
-      <div className="st-breadcrumb">
-        YOUR WORKSPACE <span> / </span> OVERVIEW
-      </div>
       <PageTitle
         eyebrow="A LITTLE PRACTICE. A LITTLE MORE CONFIDENCE."
         title={`Welcome${user?.username ? `, ${user.username}` : " back"}.`}

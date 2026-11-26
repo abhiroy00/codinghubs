@@ -1,0 +1,114 @@
+/* Every inner-page banner is the same height on desktop: the 400px robot with 5px above and below it. */
+:root { --banner-h: 410px; }
+@media (min-width: 801px) {
+  html body main .csx-hero-robot:not(#_) { box-sizing: border-box; min-height: var(--banner-h) !important; padding-block: 5px !important; align-content: center; }
+  html body main .csx-hero-robot .csx-robot:not(#_) { width: min(100%, 380px); height: 400px; max-height: 400px; }
+  /* Text in the banners is spaced to fit that height. */
+  html body main .csx-hero-robot .csx-strip:not(#_) { margin-top: 1.25rem; }
+  /* Course detail has the most content (facts and a note), so its spacing is tighter. */
+  html body main .course-programme-hero > :not(.hv-bg, .hv-light):not(#_) { margin-top: 0; margin-bottom: 0; }
+  html body main .course-programme-hero:not(#_) { display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+  html body main .course-programme-hero .course-facts > div:not(#_) { padding-block: 6px; }
+  html body main .loc-hero .cta-row:not(#_) { margin-top: 0; }
+  html body main .lx-hero .lx-hero-in > *:not(#_) { margin-top: 0; margin-bottom: 8px; }
+}
+/* Narrower desktops and tablets: a smaller robot leaves the text enough width to fit the same height. */
+@media (min-width: 801px) and (max-width: 1199px) {
+  html body main :is(.hv-host:has(> .hv-light), .cert-hero, .hub-head, .ins-art-hero, .bl-head):not(.csx-hero-robot, #_) { --robot-w: 260px !important; }
+  html body main .course-programme-hero > p:not(.learn-kicker, #_):last-of-type { display: none; }
+  html body main .course-programme-hero .course-facts > div:not(#_) { padding: 4px 6px; }
+}
+/* Location intro text, directly below the banner. */
+html body main .lv-intro:not(#_) { padding-block: 2rem 0; }
+.lv-intro p { margin: 0 0 1rem; }
+
+/* The Courses page robot on every other inner-page banner. Done as CSS so React pages and the server-rendered
+   (Django) pages get it from the same rule. /courses/ has its own <img>; the home hero is not matched.
+   Keep the box at the GIF's 760:800 ratio. */
+@media (min-width: 801px) {
+  html body main :is(.hv-host:has(> .hv-light), .cert-hero, .hub-head, .ins-art-hero, .bl-head):not(.csx-hero-robot, #_) {
+    --robot-w: 380px;
+    --robot-gutter: max(24px, calc(50vw - 590px));
+    position: relative;
+    box-sizing: border-box;
+    min-height: var(--banner-h) !important;
+    padding: 5px calc(var(--robot-gutter) + var(--robot-w) + 40px) 5px var(--robot-gutter) !important;
+    align-content: center;
+  }
+  html body main :is(.hv-host:has(> .hv-light), .cert-hero, .hub-head, .ins-art-hero, .bl-head):not(.csx-hero-robot, #_)::after {
+    content: '';
+    display: block !important;
+    position: absolute;
+    inset: 50% var(--robot-gutter) auto auto;
+    width: var(--robot-w);
+    height: calc(var(--robot-w) * 800 / 760);
+    margin: 0;
+    border: 0;
+    border-radius: 20px;
+    transform: translateY(-50%);
+    background: url('/assets/coding-hubs-ai-courses.gif') center / contain no-repeat !important;
+    filter: none !important;
+    mask-image: none !important;
+    box-shadow: none !important;
+    z-index: 1;
+    opacity: 1 !important;
+    pointer-events: none;
+    animation: none;
+  }
+}
+@media (min-width: 801px) and (max-width: 999px) {
+  html body main :is(.hv-host:has(> .hv-light), .cert-hero, .hub-head, .ins-art-hero, .bl-head):not(.csx-hero-robot, #_) { --robot-w: 300px; }
+}
+/* Phones: the robot sits under the banner text, as on /courses/. */
+@media (max-width: 800px) {
+  html body main :is(.hv-host:has(> .hv-light), .cert-hero, .hub-head, .ins-art-hero, .bl-head):not(.csx-hero-robot, #_)::after {
+    content: '';
+    display: block !important;
+    position: static;
+    grid-column: 1 / -1;
+    flex: none;
+    width: min(100%, 280px);
+    height: auto;
+    aspect-ratio: 760 / 800;
+    margin: 5px auto;
+    border: 0;
+    border-radius: 20px;
+    transform: none;
+    background: url('/assets/coding-hubs-ai-courses.gif') center / contain no-repeat !important;
+    filter: none !important;
+    mask-image: none !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    animation: none;
+  }
+  /* These banners reserved 300px at the bottom for artwork that no longer exists. */
+  html body main :is(.hv-host:has(> .hv-light), .cert-hero, .hub-head, .ins-art-hero, .bl-head, .csx-hero-robot):not(#_) { padding-bottom: 0 !important; }
+  html body main .csx-hero-robot .csx-robot:not(#_) { margin-block: 5px; }
+}
+
+/* Banners that had their own right-hand artwork: the robot takes its place and the text uses one column. */
+html body main :is(.academy-hero .academy-illustration, .st-hero .st-hero-workspace, .loc-hero .lv-visual):not(#_) { display: none !important; }
+@media (min-width: 801px) {
+  html body main :is(.academy-hero, .st-hero, .loc-hero .loc-hero-grid):not(#_) { grid-template-columns: minmax(0, 1fr) !important; }
+}
+html body main .loc-hero .btn-ghost-light:not(#_) { background: #fff !important; border-color: #b9cdf5 !important; color: #0b1f3a !important; }
+
+/* Article and case study headers sit inside a narrow column: stretch them to the screen edges like the other banners. */
+html body main header.bl-head:not(#_) {
+  width: auto !important;
+  margin-inline: calc(50% - 50vw) !important;
+  max-width: none !important;
+  background: linear-gradient(135deg, #f8fafc, #eef4ff);
+  border-bottom: 1px solid #e2e8f0;
+}
+@media (max-width: 800px) {
+  html body main header.bl-head:not(#_) { padding: 2rem 1.25rem !important; }
+}
+@media (min-width: 801px) and (max-width: 1199px) {
+  html body main .st-hero .st-hero-copy > *:not(#_) { margin-top: 0; margin-bottom: 10px; }
+}
+/* AI Tools and Gigs banners sit inside a column too: same edge-to-edge width as the rest. */
+html body main :is(.at-head, .gig-hero).hv-host:not(#_) { width: auto !important; max-width: none !important; margin-inline: calc(50% - 50vw) !important; }
+@media (max-width: 800px) {
+  html body main :is(.at-head, .gig-hero).hv-host:not(#_) { padding-inline: 1.25rem !important; }
+}

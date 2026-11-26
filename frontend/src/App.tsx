@@ -94,13 +94,13 @@ export function AppContent() {
 <Routes>
 <Route path="interview-prep/*" element={<LegacyInterviewRedirect/>}/>
 <Route path="newsletter" element={<Newsletter/>}/><Route path="newsletter/issues/:slug" element={<NewsletterIssue/>}/><Route path="newsletter/confirm" element={<NewsletterAction action="confirm"/>}/><Route path="newsletter/unsubscribe" element={<NewsletterAction action="unsubscribe"/>}/><Route path="brochures" element={<Brochures/>}/>
-              <Route path="learn" element={<LearnFrame trail={[{ label: 'Learning library' }]}><Academy /></LearnFrame>} />
+              <Route path="learn" element={<LearnFrame><Academy /></LearnFrame>} />
               <Route path="learn/:course" element={<Learning />} />
               <Route path="learn/:course/:slug" element={<Learning />} />
-              <Route path="visual-lab" element={<LearnFrame trail={[{ label: 'Visual lab' }]}><VisualLab /></LearnFrame>} />
+              <Route path="visual-lab" element={<LearnFrame><VisualLab /></LearnFrame>} />
               {/* Main page. Has its own header/footer, not the shared Layout chrome. */}
               <Route path="/" element={<FreeSession />} />
-              <Route path="interview-studio/*" element={<LearnFrame trail={[{ label: 'Interview Studio' }]}><StudioApp /></LearnFrame>} />
+              <Route path="interview-studio/*" element={<LearnFrame><StudioApp /></LearnFrame>} />
               <Route path="program/:slug" element={<Curriculum />} />
               <Route path="gigs" element={<GigsPage />} />
               <Route element={<ProtectedRoute />}><Route path="gigs/workspace" element={<GigsPage workspace />} /></Route>
@@ -122,7 +122,7 @@ export function AppContent() {
               <Route path="project-guides/:slug" element={<GuidePage />} />
               <Route path="my-account" element={<MyAccount />} />
               <Route element={<ProtectedRoute />}><Route path="dashboard" element={<DashboardRedirect />} /></Route>
-              <Route path="faq" element={<LearnFrame trail={[{ label: 'FAQ' }]}><Faq /></LearnFrame>} />
+              <Route path="faq" element={<LearnFrame><Faq /></LearnFrame>} />
               <Route path="locations" element={<LocationsIndex />} />
               <Route path="locations/:slug" element={<LocationRoute />} />
 

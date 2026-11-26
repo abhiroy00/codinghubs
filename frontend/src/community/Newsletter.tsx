@@ -166,9 +166,6 @@ export function NewsletterIssue() {
   return (
     <PageFrame>
       <article className="community community-article">
-        <nav aria-label="Breadcrumb">
-          <Link to="/">Home</Link> / <Link to="/newsletter/">Newsletter</Link>
-        </nav>
         {error ? (
           <p role="alert">{error}</p>
         ) : !data ? (

@@ -80,10 +80,7 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
               Learn <span className="lv-rot"><b>Python</b><b>Machine Learning</b><b>Generative AI</b><b>RAG &amp; Chatbots</b><b>Real Projects</b></span>
             </p>
             <div className="loc-hero-grid">
-              <div className="loc-lead" data-editorial="hero">
-                {content.hero.map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
+              <div className="loc-lead">
                 <div className="cta-row">
                   <a href="#enquire" className="btn btn-yellow btn-lg">
                     Request Course Details <FsIcon id="i-arrow" />
@@ -112,6 +109,12 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
             </div>
           </div>
         </section>
+
+        <div className="wrap lv-intro" data-editorial="hero">
+          {content.hero.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
 
         <section className="lv-glance" aria-label="This guide at a glance">
           <div className="wrap">
@@ -253,9 +256,9 @@ export function LocationView({ meta, content }: { meta: LocationMeta; content: L
                 <strong>Head Office:</strong> {HEAD_OFFICE.line}.
               </address>
               <p>
-                {meta.slug === 'ai-course-in-pitampura-delhi'
-                  ? <>This is the official address of Coding Hubs School of AI. We also run a classroom in Pitampura; call us for its address and the current batch timings.</>
-                  : <>This is the official address of Coding Hubs School of AI. Classes are held here and at our Pitampura classroom, and live online. This page does not describe a separate branch in {meta.short}; it is
+                {meta.slug === 'ai-course-in-pitampura-delhi' || meta.slug === 'ai-course-in-nsp-delhi'
+                  ? <>This is the official address of Coding Hubs School of AI, at Netaji Subhash Place in Pitampura. Classroom batches run here, and every course is also available live online.</>
+                  : <>This is the official address of Coding Hubs School of AI, at Netaji Subhash Place in Pitampura, where classroom batches run; every course is also available live online. This page does not describe a separate branch in {meta.short}; it is
                 written for learners in and around {meta.short} who want to understand AI training and enquire about the options available to them.</>}
                 {' '}Please contact us before travelling so that a counsellor can confirm the current arrangements.
               </p>

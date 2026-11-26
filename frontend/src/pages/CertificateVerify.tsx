@@ -55,7 +55,7 @@ export function CertificateVerify() {
 
   const isSample = id.toUpperCase().replace(/[^A-Z0-9]/g, '') === SAMPLE_ID.replace(/-/g, '')
   return (
-    <LearnFrame metadata={seo} trail={[{ label: 'Certificates', to: '/certificates/' }, { label: 'Verify' }]}>
+    <LearnFrame metadata={seo}>
       <div className="learn-shell certificates-page">
         <header className="learn-hero">
           <p className="learn-kicker">CERTIFICATE VERIFICATION</p>

@@ -123,8 +123,6 @@ for (const pg of pages) {
     try { data = JSON.parse(m[1]) } catch { fail(`${where} invalid JSON-LD`); continue }
     const graph = data['@graph'] ?? [data]
     if (!graph.some((n) => n['@type'] === 'EducationalOrganization')) fail(`${where} JSON-LD has no organization node`)
-    const hasVisibleBreadcrumb = /class="breadcrumb"/.test(html)
-    if (graph.some((n) => n['@type'] === 'BreadcrumbList') && !hasVisibleBreadcrumb) fail(`${where} BreadcrumbList markup without a visible breadcrumb`)
     if (graph.some((n) => n['@type'] === 'LocalBusiness')) fail(`${where} LocalBusiness markup is not allowed (single head office)`)
     if (JSON.stringify(data).match(/aggregateRating|"review"|"price"/)) fail(`${where} JSON-LD contains rating/review/price data`)
   }

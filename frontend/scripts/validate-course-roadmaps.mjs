@@ -41,7 +41,6 @@ for(const course of Object.values(manifest)){
    const shouldIndex=route.ready,inSitemap=course.primary===course.slug&&route.ready
    assert((html.match(/<h1[\s>]/g)??[]).length===1,'H1 mismatch: '+url)
    assert((html.match(/<main[\s>]/g)??[]).length===1,'Main landmark mismatch: '+url)
-   assert(html.includes('class="breadcrumb"'),'Missing breadcrumbs: '+url)
    assert(sitemap.includes(`<loc>https://codinghubs.in${url}</loc>`)===inSitemap,'Sitemap gate mismatch: '+url)
    assert(!/<a [^>]*href="[^"]*\/days\/\d+\/"/.test(html),'Public HTML links a day page: '+url)
    assert(html.includes(`content="${shouldIndex?'index':'noindex'}, follow`),'Robots mismatch: '+url)

@@ -27,7 +27,7 @@ const words = (s) => (s.match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu) ?? []).length
 
 function editorial(html) {
   const heroStart = html.indexOf('data-editorial="hero"')
-  const heroEnd = html.indexOf('<aside class="loc-ho-card"', heroStart)
+  const heroEnd = html.indexOf('<section class="lv-glance"', heroStart)
   let hero = html.slice(heroStart, heroEnd)
   hero = hero.replace(/<div class="cta-row">[\s\S]*?<\/div>/, '')
   const bodyStart = html.indexOf('data-editorial="body"')

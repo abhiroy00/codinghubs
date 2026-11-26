@@ -2,7 +2,6 @@
 <main id="main" class="bl-main bl-reading-main"><article class="ins-article">
   <header class="ins-art-hero"><div class="ins-art-hero-in">
     {% if preview %}<p class="bl-preview" role="status">Preview. This page is not public.</p>{% endif %}
-    <nav class="ins-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/blog">Blog</a>{% if a.category %}<span aria-hidden="true">/</span><a href="/blog?category={{ a.category.slug }}">{{ a.category.name }}</a>{% endif %}</nav>
     {% if a.category %}<p class="ins-art-cat"><a href="/blog?category={{ a.category.slug }}">{{ a.category.name }}</a></p>{% endif %}
     <h1>{{ a.title }}</h1>
     <p class="ins-meta">{% if a.author_name %}<span>{{ a.author_name }}</span>{% endif %}<span><time datetime="{{ a.published_at }}">{{ date }}</time></span>{% if updated %}<span>Updated <time datetime="{{ updated_iso }}">{{ updated }}</time></span>{% endif %}<span>{{ a.reading_time }} min read</span>{% if a.view_count %}<span>{{ a.view_count }} views</span>{% endif %}</p>

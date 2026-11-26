@@ -13,10 +13,6 @@ export function InterviewGuide() {
   if (!guide) return <NotFound />;
   return (
     <LearnFrame
-      trail={[
-        { label: "Interview", to: "/interview/" },
-        { label: guide.title },
-      ]}
       metadata={metadata}
     >
       <div className="interview-guide-layout">

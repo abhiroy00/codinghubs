@@ -1,9 +1,27 @@
-/* Site-wide type rules: every heading uses Plus Jakarta Sans (as on innovativeais.com), body text stays Poppins; every page section's main heading (h2 inside <main>) is 32px on desktop,
-   easing down to 28px on small phones; paragraph text uses #363636. !important is deliberate so
-   page stylesheets loaded later (e.g. /free-session.css) cannot drift from these values. */
-main h2{font-size:clamp(1.75rem,1.5rem + 1.2vw,2rem)!important;line-height:1.25}
-h1,h2,h3,h4,h5,h6,.h2,.display-xl,.display-lg,.display-md,.font-display{font-family:'Plus Jakarta Sans','Poppins','Poppins Fallback','Noto Sans Devanagari',system-ui,sans-serif!important;letter-spacing:-.02em}
-/* One heading style on every page and section, matching the home hero ("Delhi's most practical AI learning
-   community."): Plus Jakarta Sans semibold, with the hero's tight tracking on page and section titles. */
-h1,h2,h3,h4,h5,h6,.h2,.display-xl,.display-lg,.display-md,.font-display{font-weight:600!important}
-h1,main h2,.display-xl,.display-lg{letter-spacing:-.04em!important}
+/* Site-wide type rules: one font (Poppins) on every page, headings (h1, h2) 32px, sub-headings (h3) 21px,
+   paragraphs 14px in #363636. !important and the :not(#_) specificity bump are deliberate: page stylesheets
+   loaded later (e.g. /free-session.css) must not drift from these values.
+   Noto Sans Devanagari only ever draws Hindi text. Code blocks and the code editor stay monospace. */
+:root{--font-sans:'Poppins','Poppins Fallback','Noto Sans Devanagari',system-ui,sans-serif;--font-display:var(--font-sans);--f-head:var(--font-sans);--f-body:var(--font-sans)}
+html body,
+html body :not(code,pre,kbd,samp,pre *,code *,.monaco-editor,.monaco-editor *):not(#_){font-family:'Poppins','Poppins Fallback','Noto Sans Devanagari',system-ui,sans-serif!important}
+
+/* Headings: 32px, easing down to 28px on small phones. */
+html body main :is(h1,h2):not(#_),
+html body :is(.display-xl,.display-lg,.display-md,.h2):not(#_){font-size:clamp(28px,24px + 1.2vw,32px)!important;line-height:1.25}
+h1,h2,h3,h4,h5,h6,.h2,.display-xl,.display-lg,.display-md,.font-display{font-weight:600!important;letter-spacing:-.02em}
+h1,main h2,.display-xl,.display-lg{letter-spacing:-.03em!important}
+
+/* Accent words inside a heading stay the same size as the rest of it. */
+html body main :is(h1,h2) :is(span,em):not(#_){font-size:inherit!important}
+
+/* Titles of sidebar and form cards are sub-headings, even where the markup uses h2. */
+html body main :is(aside h2,.form-head h2):not(#_){font-size:21px!important;line-height:1.35}
+
+/* Sub-headings. */
+html body main h3:not(#_){font-size:21px!important;line-height:1.35}
+
+/* Paragraphs. Small uppercase labels above headings (kickers / eyebrows) keep their own style. */
+html body p:not([class*='kicker'],[class*='eyebrow'],#_){font-size:14px!important;line-height:1.7}
+/* #363636 on light backgrounds only: dark panels, banners and the footer keep their light text. */
+html body main p:not([class*='kicker'],[class*='eyebrow'],:is(.ui-tone-dark,.ui-on-dark,.sec-navy,.session-card,.csx-cta,.pj-cta,.ow-cta,.learn-cta,.academy-lab-banner,.bl-cta,.lx-cta,.st-closing,.expert-banner,.ch-band,.join,.hs-cap,.lw,.campus-explore,.form-head,.st-principle-strip,footer) *,.err,.form-status,#_){color:#363636!important}

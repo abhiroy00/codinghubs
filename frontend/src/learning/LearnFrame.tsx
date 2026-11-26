@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { PageFrame, useSeo } from '../content-pages/shared'
 import { COURSE_BY_SLUG } from './catalog'
 import { learningMeta } from '../seo/learning'
@@ -10,8 +10,6 @@ import { getRobotsDirective } from '../seo/robots'
 import './learning.css'
 import './prep-shell.css'
 import '../pages/free-session/home-theme.css'
-
-export type Crumb = { label: string; to?: string }
 
 function pageMeta(path: string, title: string, description: string): Seo {
   const canonical = SITE_URL + path
@@ -24,18 +22,15 @@ function pageMeta(path: string, title: string, description: string): Seo {
 }
 
 /**
- * The public shell used by courses and interview prep (site header, breadcrumb, footer, site tokens).
- * Other learning-adjacent pages pass a `trail` so they sit inside exactly the same chrome.
+ * The public shell used by courses and interview prep (site header, footer, site tokens).
  */
 export function LearnFrame({
   children,
-  trail,
   title,
   description,
   metadata,
 }: {
   children: ReactNode
-  trail?: Crumb[]
   title?: string
   description?: string
   metadata?: Seo
@@ -52,31 +47,9 @@ export function LearnFrame({
     [metadata, learning, kind, slug, pathname, title, description],
   )
   useSeo(seo)
-  const course = learning && slug ? COURSE_BY_SLUG.get(slug) : undefined
-  const crumbs: Crumb[] =
-    trail ??
-    (learning
-      ? [{ label: kind === 'courses' ? 'Courses' : 'Interview', to: `/${kind}/` }, ...(course ? [{ label: course.name }] : [])]
-      : [])
   return (
     <div className="ch-home">
       <PageFrame wide>
-        <nav className="breadcrumb" aria-label="Breadcrumb">
-          <Link to="/">Home</Link>
-          {crumbs.map((crumb, index) => {
-            const current = index === crumbs.length - 1
-            return (
-              <span key={`${crumb.label}-${index}`}>
-                <span aria-hidden="true"> / </span>
-                {crumb.to && !current ? (
-                  <Link to={crumb.to}>{crumb.label}</Link>
-                ) : (
-                  <span aria-current={current ? 'page' : undefined}>{crumb.label}</span>
-                )}
-              </span>
-            )
-          })}
-        </nav>
         {children}
       </PageFrame>
     </div>

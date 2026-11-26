@@ -47,11 +47,11 @@ import { CERTIFICATES_META, GONE_META, HOME_META, LOGO_URL, NOT_FOUND_META, STUD
 
 const contentModules = import.meta.glob<{ default: LocationContent }>('./locations/content/*.ts', { eager: true })
 
-function renderLearningPage(path: string, element: ReactNode, trail?: { label: string; to?: string }[]) {
+function renderLearningPage(path: string, element: ReactNode) {
   // /courses/<slug>/ and /interview/<slug>/ need a :slug param for useParams()
   const pattern = path.replace(/^(\/[^/]+)\/[^/]+\/?$/, '$1/:slug')
   return renderToString(
-    <AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<LearnFrame trail={trail}>{element}</LearnFrame>} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
+    <AuthProvider><StaticRouter location={path}><LenisProvider><ModalProvider><Routes><Route path={pattern} element={<LearnFrame>{element}</LearnFrame>} /></Routes></ModalProvider></LenisProvider></StaticRouter></AuthProvider>,
   )
 }
 
@@ -113,8 +113,8 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
     ...DEMO_VIDEOS_META, file: 'demo-videos.html', fsDesign: true,
     html: renderToString(<AuthProvider><StaticRouter location="/demo-videos"><LenisProvider><ModalProvider><DemoVideosPage /></ModalProvider></LenisProvider></StaticRouter></AuthProvider>),
   })
-  pages.push({ ...FAQ_META, file: 'faq.html', fsDesign: false, html: renderLearningPage('/faq', <Faq />, [{ label: 'FAQ' }]) })
-  pages.push({file:'visual-lab/index.html',path:'/visual-lab/',title:'Interactive engineering visual lab | Coding Hubs',description:'Explore attention, vector similarity, gradient descent and engineering workflows with step-by-step controls.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderLearningPage('/visual-lab/', <VisualLab />, [{label:'Visual lab'}]),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:'Coding Hubs engineering visual lab',url:`${SITE_URL}/visual-lab/`,learningResourceType:'Interactive simulation'}]}})
+  pages.push({ ...FAQ_META, file: 'faq.html', fsDesign: false, html: renderLearningPage('/faq', <Faq />) })
+  pages.push({file:'visual-lab/index.html',path:'/visual-lab/',title:'Interactive engineering visual lab | Coding Hubs',description:'Explore attention, vector similarity, gradient descent and engineering workflows with step-by-step controls.',image:LOGO_URL,indexable:true,fsDesign:false,html:renderLearningPage('/visual-lab/', <VisualLab />),jsonLd:{'@context':'https://schema.org','@graph':[organizationNode(),{'@type':'LearningResource',name:'Coding Hubs engineering visual lab',url:`${SITE_URL}/visual-lab/`,learningResourceType:'Interactive simulation'}]}})
   for(const course of Object.values(COURSE_ROADMAPS)) {
     const data=courseRoadmapModules[`./learning/course-roadmaps/${course.slug}.json`].default
     for(const level of course.levels) {
@@ -145,7 +145,7 @@ export function renderAll(options: { skipMissing?: boolean } = {}): PrerenderedP
   })
 
   pages.push({ ...STUDIO_META, file: 'interview-studio/index.html', fsDesign: false,
-    html: renderLearningPage('/interview-studio', <StudioLanding />, [{ label: 'Interview Studio' }]),
+    html: renderLearningPage('/interview-studio', <StudioLanding />),
   })
 
   pages.push({
