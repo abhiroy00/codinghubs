@@ -62,8 +62,23 @@ for (const child of children) {
 
 const mapFile = path.join(root, 'frontend/dist-nginx/lesson-days.map')
 const dayRedirects = fs.existsSync(mapFile) ? fs.readFileSync(mapFile, 'utf8').split('\n').filter(l => l.startsWith('/')).map(l => l.replace(/;$/, '').split(' ')) : []
+// Blog cannibalization merges (migration 0020_merge_cannibalizing_blog_clusters) and the dead-URL fix for the
+// post deleted before the admin panel could prompt for a redirect target. See the audit report for the cluster table.
+const blogRedirects = [
+  { from: '/blog/non-it-to-it-career-switch-without-experience-2026', to: '/blog/switch-career-from-non-it-to-it' },
+  { from: '/blog/non-it-to-software-developer', to: '/blog/switch-career-from-non-it-to-it' },
+  { from: '/blog/career-switch-to-it', to: '/blog/switch-career-from-non-it-to-it' },
+  { from: '/blog/api-testing-tutorial-for-beginners-with-postman', to: '/blog/api-testing-tutorial' },
+  { from: '/blog/what-is-automation-testing-types-tools-and-examples', to: '/blog/what-is-automation-testing' },
+  { from: '/blog/ai-engineer-roadmap-for-beginners-your-complete-guide-to-starting-in-2026', to: '/blog/how-to-become-an-ai-engineer' },
+  { from: '/blog/coding-courses-in-nsp-delhi', to: '/blog/computer-and-coding-classes-near-netaji-subhash-place-nsp' },
+  { from: '/blog/coding-classes-near-pitampura', to: '/blog/python-course-in-pitampura-beginner-to-job-ready-roadmap' },
+  { from: '/blog/software-development-course-delhi', to: '/blog/full-stack-developer-course-delhi' },
+  { from: '/blog/what-is-an-ai-engineer', to: '/blog/what-is-ai-engineering' },
+]
 const expectations = [
   ...dayRedirects.map(([from, to]) => ({ from, to })),
+  ...blogRedirects,
   { from: '/interview-prep', to: '/interview/' },
   { from: '/interview-prep/', to: '/interview/' },
   { from: '/interview-prep/cissp/levels/2/days/14/', to: '/interview/cissp/levels/2/days/14/' },

@@ -1,0 +1,95 @@
+<h2 id="how-to-measure-automation-roi-the-math-that-gets-budget-appr"><span>How to Measure Automation ROI (The Math That Gets Budget Approved)</span></h2>
+<p><span>If you're a tester proposing automation to a manager, you need numbers, not enthusiasm. Here is the ROI model that actually gets approved.</span></p>
+<h3 id="the-simple-roi-formula"><span>The Simple ROI Formula</span></h3>
+<div>
+<div>
+<div>
+<div>
+<div><span>text</span></div>
+</div>
+</div>
+</div>
+<pre>ROI = (Time saved per cycle × Cycles per year × Hourly cost) − Setup cost</pre>
+</div>
+<p><strong><span>Worked example:</span></strong></p>
+<ul>
+<li>
+<p><span>Manual regression: 40 hours per sprint × 24 sprints per year = </span><strong><span>960 hours/year</span></strong></p>
+</li>
+<li>
+<p><span>Automated regression: 4 hours of maintenance per sprint × 24 = </span><strong><span>96 hours/year</span></strong></p>
+</li>
+<li>
+<p><span>Time recovered: </span><strong><span>864 hours/year</span></strong><span> = 108 person-days</span></p>
+</li>
+<li>
+<p><span>Loaded cost per QA hour: ₹1,500</span></p>
+</li>
+<li>
+<p><strong><span>Annual savings: ₹12,96,000</span></strong></p>
+</li>
+<li>
+<p><span>Setup cost (framework + first suite): 320 hours = </span><strong><span>₹4,80,000</span></strong></p>
+</li>
+<li>
+<p><strong><span>First-year net benefit: ₹8,16,000. Payback: ~4.5 months.</span></strong></p>
+</li>
+</ul>
+<p><span>That is a ROI every manager will approve. The trick is that the second and third years have no setup cost, so ROI compounds.</span></p>
+<h3 id="what-to-include-and-what-managers-care-about"><span>What to Include (and What Managers Care About)</span></h3>
+<div>
+<div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+</div>
+<table>
+<thead>
+<tr>
+<th><span>Metric</span></th>
+<th><span>What It Shows</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><span>Hours saved per release</span></strong></td>
+<td><span>Direct cost savings</span></td>
+</tr>
+<tr>
+<td><strong><span>Defects caught before production</span></strong></td>
+<td><span>Cost of fix: in-house vs production. A production bug costs 5–30× more than the same bug caught in QA</span></td>
+</tr>
+<tr>
+<td><strong><span>Release frequency increase</span></strong></td>
+<td><span>More releases = more business value</span></td>
+</tr>
+<tr>
+<td><strong><span>MTTD reduction</span></strong></td>
+<td><span>Faster feedback = faster fixes</span></td>
+</tr>
+<tr>
+<td><strong><span>Regression coverage increase</span></strong></td>
+<td><span>% of critical paths automated</span></td>
+</tr>
+<tr>
+<td><strong><span>Onboarding time for new QA</span></strong></td>
+<td><span>Automated suites document behaviour better than wikis</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="the-roi-traps-that-kill-budget-approvals"><span>The ROI Traps That Kill Budget Approvals</span></h3>
+<ol start="1">
+<li>
+<p><strong><span>Counting flaky tests as passing</span></strong><span> — the ROI disappears the moment the manager sees a production bug that automation "covered."</span></p>
+</li>
+<li>
+<p><strong><span>Ignoring maintenance cost</span></strong><span> — automation is not free after setup; plan for 20–30% of initial effort per year in maintenance.</span></p>
+</li>
+<li>
+<p><strong><span>Automating the wrong things</span></strong><span> — automating exploratory or one-off tests is negative ROI.</span></p>
+</li>
+<li>
+<p><strong><span>No reporting</span></strong><span> — if the dashboard doesn't exist, the savings don't exist for the manager.</span></p>
+</li>
+</ol>
+<hr>
