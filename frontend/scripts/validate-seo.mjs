@@ -54,8 +54,10 @@ if (!robots.includes(`Sitemap: ${SITE}/sitemap-index.xml`)) fail('robots.txt has
 const sitemapIndex = await read('sitemap-index.xml')
 if (!sitemapIndex.startsWith('<?xml') || !/<sitemapindex\s+xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9"/.test(sitemapIndex) || !sitemapIndex.trim().endsWith('</sitemapindex>')) fail('sitemap-index.xml is not a sitemap index')
 const children = [...sitemapIndex.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])
-const expectedChildren = ['sitemap.xml', 'sitemap-content.xml', 'sitemap-shop.xml', 'sitemap-directory.xml', 'sitemap-learning.xml'].map(name => `${SITE}/${name}`)
-if (children.length !== expectedChildren.length || new Set(children).size !== children.length || expectedChildren.some(url => !children.includes(url))) fail('sitemap index must reference all five public child sitemaps')
+// sitemap-learning.xml is left out while it has 0 published /learn/ concepts (apps/learning/ssr.py:sitemap) -
+// an empty child sitemap would be submitted to Search Console for nothing. Add it back once that content ships.
+const expectedChildren = ['sitemap.xml', 'sitemap-content.xml', 'sitemap-shop.xml', 'sitemap-directory.xml'].map(name => `${SITE}/${name}`)
+if (children.length !== expectedChildren.length || new Set(children).size !== children.length || expectedChildren.some(url => !children.includes(url))) fail('sitemap index must reference all four public child sitemaps')
 if (/<lastmod>/.test(sitemapIndex)) fail('Sitemap index must not invent child modification dates')
 const contentShell = await read('content-shell.html')
 if (!contentShell.includes('<!--SEO_HEAD-->') || !contentShell.includes('<!--SSR_ROOT-->')) fail('content-shell.html is missing its SEO_HEAD / SSR_ROOT markers (the backend fills them)')
