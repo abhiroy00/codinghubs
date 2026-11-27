@@ -72,6 +72,33 @@ def resolve_redirect(kind: str, slug: str):
     return SlugRedirect.objects.filter(kind=kind, old_slug=slug).values_list('new_slug', flat=True).first()
 
 
+def point_redirect(kind: str, old_slug: str, target_slug: str = ''):
+    """Make old_slug redirect to target_slug (another live slug of this kind), or to the listing page when ''.
+    Collapses any existing chain that pointed at old_slug, so A->B->C becomes A->C."""
+    SlugRedirect.objects.filter(kind=kind, new_slug=old_slug).update(new_slug=target_slug)
+    SlugRedirect.objects.update_or_create(kind=kind, old_slug=old_slug, defaults={'new_slug': target_slug})
+
+
+@transaction.atomic
+def delete_with_redirect(obj, target_slug: str = ''):
+    """Hard-deletes obj. If it was ever public, its old URL 301s instead of 404ing: to target_slug (another
+    live slug of the same kind) or, when target_slug is '', to the listing page."""
+    kind, slug, was_public = obj.KIND, obj.slug, obj.is_public
+    obj.delete()
+    if was_public:
+        point_redirect(kind, slug, target_slug)
+    else:
+        SlugRedirect.objects.filter(kind=kind, old_slug=slug).delete()
+
+
+@transaction.atomic
+def merge_into(obj, keep_slug: str):
+    """Fold obj into the post at keep_slug: unpublish obj (its content now lives in the keep post) and 301 its
+    old URL there. Used for cannibalizing-cluster merges, not for a plain slug rename."""
+    unpublish(obj)
+    point_redirect(obj.KIND, obj.slug, keep_slug)
+
+
 # ---------- workflow ----------
 @transaction.atomic
 def publish(obj, published_at=None):

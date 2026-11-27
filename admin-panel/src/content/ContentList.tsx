@@ -31,6 +31,7 @@ export function ContentList({ kind }: { kind: Kind }) {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [del, setDel] = useState<Row | null>(null)
+  const [delError, setDelError] = useState('')
   const [busyId, setBusyId] = useState<number | null>(null)
   const [gsc, setGsc] = useState<{ configured: boolean } | null>(null)
   const [gscBusy, setGscBusy] = useState(false)
@@ -117,16 +118,17 @@ export function ContentList({ kind }: { kind: Kind }) {
       setError('Could not open the preview.')
     }
   }
-  const remove = async () => {
+  const remove = async (redirectTo: string) => {
     if (!del) return
+    setDelError('')
     try {
-      await adminApi.delete(`/${kind}/${del.id}/`)
+      await adminApi.delete(`/${kind}/${del.id}/`, { data: redirectTo ? { redirect_to: redirectTo } : undefined })
       setNotice(`“${del.title}” was deleted.`)
       setDel(null)
       reload()
-    } catch {
-      setError('Could not delete it. You may not have permission.')
-      setDel(null)
+    } catch (err) {
+      const msg = (err as { response?: { data?: Record<string, string[]> } })?.response?.data
+      setDelError(msg ? Object.values(msg).flat().join(' ') : 'Could not delete it. You may not have permission.')
     }
   }
 
@@ -227,7 +229,7 @@ export function ContentList({ kind }: { kind: Kind }) {
                           ) : (
                             <button type="button" className="cx-act view" onClick={() => void preview(r)} title="Private preview (not indexed)"><Icon name="eye" />Preview</button>
                           )}
-                          <button type="button" className="cx-act del" onClick={() => setDel(r)} aria-label={`Delete ${r.title}`} title="Delete"><Icon name="trash" /></button>
+                          <button type="button" className="cx-act del" onClick={() => { setDel(r); setDelError('') }} aria-label={`Delete ${r.title}`} title="Delete"><Icon name="trash" /></button>
                         </div>
                       </td>
                     </tr>
@@ -245,7 +247,15 @@ export function ContentList({ kind }: { kind: Kind }) {
           </div>
         )}
       </div>
-      {del && <ConfirmDelete title={del.title} onCancel={() => setDel(null)} onConfirm={() => void remove()} />}
+      {del && (
+        <ConfirmDelete
+          title={del.title}
+          live={isLiveNow(del.status, del.published_at)}
+          error={delError}
+          onCancel={() => { setDel(null); setDelError('') }}
+          onConfirm={(redirectTo) => void remove(redirectTo)}
+        />
+      )}
     </div>
   )
 }

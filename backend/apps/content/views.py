@@ -121,8 +121,8 @@ class PublicBlogDetail(APIView):
 
     def get(self, request, slug):
         obj, preview = load_public_or_preview(Blog, request, slug, public_blog_qs())
-        if isinstance(obj, str):  # renamed slug
-            return HttpResponsePermanentRedirect(f'/api/blogs/{obj}/')
+        if isinstance(obj, str):  # renamed/merged/deleted slug
+            return HttpResponsePermanentRedirect(f'/api/blogs/{obj}/' if obj else '/api/blogs/')
         return Response(blog_detail_payload(obj, preview)) if preview else public_cache(Response(blog_detail_payload(obj, False)))
 
 
@@ -140,8 +140,10 @@ def load_public_or_preview(model, request, slug, qs):
     if obj:
         return obj, False
     new = services.resolve_redirect(model.KIND, slug)
-    if new and qs.filter(slug=new).exists():
-        return new, False
+    if new is None:
+        raise Http404
+    if new == '' or qs.filter(slug=new).exists():
+        return new, False  # '' is the sentinel for "redirect to the listing page"
     raise Http404
 
 
@@ -261,7 +263,7 @@ class PublicCaseDetail(APIView):
     def get(self, request, slug):
         obj, preview = load_public_or_preview(CaseStudy, request, slug, public_case_qs())
         if isinstance(obj, str):
-            return HttpResponsePermanentRedirect(f'/api/case-studies/{obj}/')
+            return HttpResponsePermanentRedirect(f'/api/case-studies/{obj}/' if obj else '/api/case-studies/')
         return Response(case_detail_payload(obj, True)) if preview else public_cache(Response(case_detail_payload(obj, False)))
 
 
@@ -295,7 +297,20 @@ class AdminBlogList(AdminListMixin, generics.ListCreateAPIView):
         return self.filter_common(qs)
 
 
-class AdminBlogDetail(generics.RetrieveUpdateDestroyAPIView):
+class DeleteWithRedirectMixin:
+    """DELETE accepts {"redirect_to": "<slug>"} (another live post of this kind) or omits it to send the old
+    URL to the listing page instead of 404ing."""
+
+    def destroy(self, request, *args, **kwargs):
+        obj = self.get_object()
+        target = (request.data.get('redirect_to') or '').strip()
+        if target and not self.model_class.objects.public().filter(slug=target).exists():
+            return Response({'redirect_to': ['No live post with this slug.']}, status=400)
+        services.delete_with_redirect(obj, target)
+        return Response(status=204)
+
+
+class AdminBlogDetail(DeleteWithRedirectMixin, generics.RetrieveUpdateDestroyAPIView):
     model_class = Blog
     permission_classes = [ContentPermission]
     serializer_class = BlogAdminSerializer
@@ -313,7 +328,7 @@ class AdminCaseList(AdminListMixin, generics.ListCreateAPIView):
         return self.filter_common(qs)
 
 
-class AdminCaseDetail(generics.RetrieveUpdateDestroyAPIView):
+class AdminCaseDetail(DeleteWithRedirectMixin, generics.RetrieveUpdateDestroyAPIView):
     model_class = CaseStudy
     permission_classes = [ContentPermission]
     serializer_class = CaseStudyAdminSerializer

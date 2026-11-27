@@ -210,7 +210,7 @@ def blog_detail(request, slug):
     except Http404:
         return not_found('Article not found')
     if isinstance(obj, str):
-        return HttpResponsePermanentRedirect(f'/blog/{obj}')
+        return HttpResponsePermanentRedirect(f'/blog/{obj}' if obj else '/blog')
     if not preview and 'preview' in request.GET:  # a preview link to a live item: send people and crawlers to the clean URL
         return HttpResponsePermanentRedirect(f'/blog/{obj.slug}')
     data = blog_detail_payload(obj, preview)
@@ -258,7 +258,7 @@ def case_detail(request, slug):
     except Http404:
         return not_found('Case study not found')
     if isinstance(obj, str):
-        return HttpResponsePermanentRedirect(f'/case-studies/{obj}')
+        return HttpResponsePermanentRedirect(f'/case-studies/{obj}' if obj else '/case-studies')
     if not preview and 'preview' in request.GET:  # a preview link to a live item: send people and crawlers to the clean URL
         return HttpResponsePermanentRedirect(f'/case-studies/{obj.slug}')
     data = case_detail_payload(obj, preview)

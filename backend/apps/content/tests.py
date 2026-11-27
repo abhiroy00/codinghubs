@@ -12,7 +12,7 @@ from django.utils import timezone
 from PIL import Image
 from rest_framework.test import APIClient
 
-from . import ssr
+from . import services, ssr
 from .models import Blog, BlogCategory, CaseStudy, SlugRedirect, Testimonial
 from .sanitize import add_heading_ids, sanitize_html, word_count
 
@@ -268,6 +268,68 @@ class BlogWorkflowTests(ContentBase):
         old = self.as_user(None).get('/blog/original')
         self.assertEqual(old.status_code, 301)
         self.assertEqual(old['Location'], '/blog/renamed')
+
+    def test_delete_with_redirect_target_keeps_old_url_working(self):
+        keep = self.make_blog('Keep')
+        gone = self.make_blog('Gone')
+        self.api.post(f'/api/admin/blogs/{keep["id"]}/publish/')
+        self.api.post(f'/api/admin/blogs/{gone["id"]}/publish/')
+        r = self.api.delete(f'/api/admin/blogs/{gone["id"]}/', {'redirect_to': 'keep'}, format='json')
+        self.assertEqual(r.status_code, 204)
+        self.assertFalse(Blog.objects.filter(pk=gone['id']).exists())
+        old = self.as_user(None).get('/blog/gone')
+        self.assertEqual(old.status_code, 301)
+        self.assertEqual(old['Location'], '/blog/keep')
+
+    def test_delete_without_redirect_target_sends_old_url_to_listing(self):
+        gone = self.make_blog('Gone Again')
+        self.api.post(f'/api/admin/blogs/{gone["id"]}/publish/')
+        r = self.api.delete(f'/api/admin/blogs/{gone["id"]}/')
+        self.assertEqual(r.status_code, 204)
+        old = self.as_user(None).get('/blog/gone-again')
+        self.assertEqual(old.status_code, 301)
+        self.assertEqual(old['Location'], '/blog')
+
+    def test_delete_rejects_a_redirect_target_that_is_not_a_live_post(self):
+        gone = self.make_blog('Gone Once More')
+        self.api.post(f'/api/admin/blogs/{gone["id"]}/publish/')
+        r = self.api.delete(f'/api/admin/blogs/{gone["id"]}/', {'redirect_to': 'no-such-post'}, format='json')
+        self.assertEqual(r.status_code, 400)
+        self.assertTrue(Blog.objects.filter(pk=gone['id']).exists())
+
+    def test_delete_of_a_draft_never_redirected_needs_no_target(self):
+        draft = self.make_blog('Never Published')
+        r = self.api.delete(f'/api/admin/blogs/{draft["id"]}/')
+        self.assertEqual(r.status_code, 204)
+        self.assertFalse(SlugRedirect.objects.filter(old_slug='never-published').exists())
+
+    def test_merge_into_unpublishes_source_and_redirects_to_keep(self):
+        keep = self.make_blog('Merged Keep')
+        loser = self.make_blog('Merged Loser')
+        self.api.post(f'/api/admin/blogs/{keep["id"]}/publish/')
+        self.api.post(f'/api/admin/blogs/{loser["id"]}/publish/')
+        loser_obj = Blog.objects.get(pk=loser['id'])
+        services.merge_into(loser_obj, 'merged-keep')
+        loser_obj.refresh_from_db()
+        self.assertEqual(loser_obj.status, 'draft')
+        old = self.as_user(None).get('/blog/merged-loser')
+        self.assertEqual(old.status_code, 301)
+        self.assertEqual(old['Location'], '/blog/merged-keep')
+        self.assertNotIn('merged-loser', self.as_user(None).get('/sitemap-content.xml').content.decode())
+
+    def test_deleting_a_renamed_posts_new_slug_collapses_the_chain(self):
+        keep = self.make_blog('Collapse Keep')
+        self.api.post(f'/api/admin/blogs/{keep["id"]}/publish/')
+        b = self.make_blog('Collapse Original')
+        self.api.post(f'/api/admin/blogs/{b["id"]}/publish/')
+        self.api.patch(f'/api/admin/blogs/{b["id"]}/', {'slug': 'collapse-renamed'}, format='json')
+        self.assertTrue(SlugRedirect.objects.filter(old_slug='collapse-original', new_slug='collapse-renamed').exists())
+        r = self.api.delete(f'/api/admin/blogs/{b["id"]}/', {'redirect_to': 'collapse-keep'}, format='json')
+        self.assertEqual(r.status_code, 204)
+        redirect = SlugRedirect.objects.get(old_slug='collapse-original')
+        self.assertEqual(redirect.new_slug, 'collapse-keep')  # A->B->C collapsed to A->C
+        old = self.as_user(None).get('/blog/collapse-original')
+        self.assertEqual(old['Location'], '/blog/collapse-keep')
 
     def test_revisions_and_restore(self):
         b = self.make_blog('Rev')

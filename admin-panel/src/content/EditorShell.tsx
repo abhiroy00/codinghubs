@@ -12,7 +12,8 @@ type Api<T extends Common> = ReturnType<typeof useContentForm<T>>
 export const KIND_LABEL: Record<Kind, string> = { blogs: 'Blogs', 'case-studies': 'Case studies', projects: 'Projects', 'project-guides': 'Project guides' }
 const STATUS_LABEL: Record<string, string> = { draft: 'Draft', scheduled: 'Scheduled', published: 'Published', archived: 'Archived' }
 
-export function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; onCancel: () => void; onConfirm: () => void }) {
+export function ConfirmDelete({ title, live, error, onCancel, onConfirm }: { title: string; live?: boolean; error?: string; onCancel: () => void; onConfirm: (redirectTo: string) => void }) {
+  const [redirectTo, setRedirectTo] = useState('')
   return (
     <div className="ad-modal" role="dialog" aria-modal="true" aria-label="Confirm delete" onClick={(e) => e.target === e.currentTarget && onCancel()}>
       <div className="ad-modal-card">
@@ -20,11 +21,25 @@ export function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; o
         <p>
           “{title || 'Untitled'}” will be removed for good. This cannot be undone. To hide it without deleting, use Unpublish or Archive instead.
         </p>
+        {live !== false && (
+          <div className="ad-field">
+            <label htmlFor="ad-del-redirect">Send its old URL to (slug of another live post, optional)</label>
+            <input
+              id="ad-del-redirect"
+              type="text"
+              placeholder="leave blank to send visitors to the listing page"
+              value={redirectTo}
+              onChange={(e) => setRedirectTo(e.target.value.trim())}
+            />
+            <small className="ad-muted">If this post was ever public, its old link will 301 there instead of 404ing.</small>
+          </div>
+        )}
+        {error && <div className="ad-notice error cx-inset" role="alert">{error}</div>}
         <div className="ad-modal-actions">
           <button type="button" className="ad-btn" onClick={onCancel} autoFocus>
             Keep it
           </button>
-          <button type="button" className="ad-btn ad-btn-danger" onClick={onConfirm}>
+          <button type="button" className="ad-btn ad-btn-danger" onClick={() => onConfirm(redirectTo)}>
             Delete permanently
           </button>
         </div>
