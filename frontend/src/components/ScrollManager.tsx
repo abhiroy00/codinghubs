@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useLocation, useNavigationType } from 'react-router-dom'
 import { trackPath } from '../lib/nav'
+import { trackContentView } from '../lib/analytics'
 
 /**
  * Scroll behaviour for every route: a new page opens at the top, and Back / Forward returns to the exact
@@ -31,6 +32,7 @@ export function ScrollManager() {
     const changed = lastPath.current !== pathname
     lastPath.current = pathname
     trackPath(pathname)
+    trackContentView(pathname)
     if (type === 'POP') {
       let y = 0
       try {

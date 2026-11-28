@@ -64,7 +64,15 @@ test('responsive images use versioned URLs and accessible video names include th
     expect(name).toContain((await button.locator('.n').innerText()).trim())
     if (await button.locator('.d').count()) expect(name).toContain((await button.locator('.d').innerText()).trim())
   }
+  await expect(page.locator('footer').getByRole('link', { name: 'Privacy Policy', exact: true })).toHaveAttribute('href', '/policies#privacy')
+})
+
+// Newsletter signup now lives on its own page, not the homepage (already true at baseline 4a74106).
+// Keep the original consent-link accessibility assertion against the component's current public route.
+test('newsletter consent retains its clearly identifiable privacy link', async ({ page }) => {
+  await page.goto('/newsletter/')
   const privacy = page.locator('.newsletter-consent').getByRole('link', { name: 'Privacy policy' })
+  await expect(privacy).toBeVisible()
   await expect(privacy).toHaveCSS('text-decoration-line', 'underline')
 })
 
@@ -89,7 +97,7 @@ test('homepage retains its complete design when JavaScript is disabled', async (
   await page.goto(baseURL!)
   await expect(page.locator('#home h1')).toBeVisible()
   await expect(page.locator('.site-header')).toHaveCSS('background-color', 'rgb(255, 255, 255)')
-  await expect(page.locator('.newsletter-consent a')).toHaveCSS('text-decoration-line', 'underline')
+  await expect(page.locator('footer').getByRole('link', { name: 'Privacy Policy', exact: true })).toHaveAttribute('href', '/policies#privacy')
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   await context.close()
 })

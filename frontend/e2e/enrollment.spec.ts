@@ -39,6 +39,13 @@ test('existing demo registrants can still open enrollment enquiries on mobile', 
 })
 
 test('enrollment enquiry validates, retries and saves contact details without a payment', async ({ page }) => {
+  // Record the production event queue locally; no analytics or fixture contact details leave this test.
+  await page.route('https://www.googletagmanager.com/**', route => route.fulfill({ contentType: 'application/javascript', body: '' }))
+  await page.route(/https:\/\/[^/]*google-analytics\.com\//, route => route.abort())
+  const trackedEvents = () => page.evaluate(() => {
+    const layer = (window as Window & { dataLayer?: Array<ArrayLike<unknown>> }).dataLayer ?? []
+    return layer.filter(item => item[0] === 'event').map(item => ({ name: item[1], params: item[2] }))
+  })
   let attempts = 0
   let payload: Record<string, unknown> = {}
   const payments: string[] = []
@@ -65,8 +72,12 @@ test('enrollment enquiry validates, retries and saves contact details without a 
   await dialog.getByRole('button', { name: 'Send enrollment enquiry' }).click()
   await expect(dialog.getByText('Your enquiry could not be sent. Please try again.')).toBeVisible()
   await expect(dialog.getByRole('heading', { name: 'Enquiry received' })).toHaveCount(0)
+  expect((await trackedEvents()).filter(event => event.name === 'generate_lead')).toEqual([])
   await dialog.getByRole('button', { name: 'Send enrollment enquiry' }).click()
   await expect(dialog.getByRole('heading', { name: 'Enquiry received' })).toBeVisible()
+  const events = await trackedEvents()
+  for (const name of ['generate_lead', 'form_submission', 'course_enquiry']) expect(events.filter(event => event.name === name)).toHaveLength(1)
+  for (const value of ['Test Learner', '9876543210', 'learner@example.com']) expect(JSON.stringify(events)).not.toContain(value)
   expect(payload).toEqual({
     name: 'Test Learner', phone: '+919876543210', email: 'learner@example.com',
     education: 'Graduate', whatsapp_consent: true, course: 'Google Cloud',

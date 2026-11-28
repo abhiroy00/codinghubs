@@ -46,6 +46,8 @@ jobs:
           DEBUG: 'False'
           ALLOWED_HOSTS: codinghubs.in
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/codinghubs
+      - name: SEO inventory and sitemap contract tests
+        run: python -m unittest discover -s scripts -p 'test_seo*.py'
       - name: Collect static files and run tests (Postgres)
         run: python manage.py collectstatic --noinput && python manage.py test apps
         working-directory: backend
@@ -68,6 +70,8 @@ jobs:
       - run: npx tsc -b --noEmit
         working-directory: frontend
       - run: npm run lint
+        working-directory: frontend
+      - run: npm run test:analytics
         working-directory: frontend
       - run: npm run build
         working-directory: frontend
