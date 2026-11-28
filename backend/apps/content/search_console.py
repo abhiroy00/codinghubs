@@ -7,8 +7,9 @@ Without credentials everything here reports "not configured" and nothing is call
 """
 import base64
 import json
-from datetime import date, timedelta
+from datetime import datetime, timedelta
 from urllib.parse import quote
+from zoneinfo import ZoneInfo
 
 from decouple import config
 from django.conf import settings
@@ -55,13 +56,59 @@ def inspect(session, url):
     return status, (result.get('coverageState') or '')[:200]
 
 
+def query_rows(session, start, end, dimensions, *, row_limit=5000, max_pages=10, data_state='final'):
+    """Bounded pagination. Top-row/privacy limits still apply even when truncated=False.
+
+    Search Console dates are inclusive. Raw responses stay server-side; callers must not expose
+    private query exports or credentials in public endpoints or repository files.
+    """
+    if start > end or not 1 <= row_limit <= 25000 or not 1 <= max_pages <= 20:
+        raise ValueError('Invalid reporting dates or pagination limits.')
+    if data_state not in ('final', 'all', 'hourly_all'):
+        raise ValueError('Invalid Search Console data state.')
+    rows, metadata = [], {}
+    for page in range(max_pages):
+        body = {'startDate': str(start), 'endDate': str(end), 'dimensions': dimensions,
+                'rowLimit': row_limit, 'startRow': page * row_limit, 'dataState': data_state, 'type': 'web'}
+        response = session.post(ANALYTICS_URL.format(site=quote(property_url(), safe='')), json=body, timeout=30)
+        response.raise_for_status()
+        payload = response.json()
+        batch = payload.get('rows', [])
+        rows.extend(batch)
+        metadata.update(payload.get('metadata', {}))
+        if len(batch) < row_limit:
+            return {'rows': rows, 'truncated': False, 'metadata': metadata}
+    return {'rows': rows, 'truncated': True, 'metadata': metadata}
+
+
+def report_windows(as_of=None):
+    """Stable daily windows, previous equal-length periods and a prior-year comparison.
+
+    Default to the Search Console reporting timezone, not the host server's date.
+    A two-day lag is explicit; dataState=final still controls actual available final data.
+    """
+    as_of = as_of or datetime.now(ZoneInfo('America/Los_Angeles')).date()
+    end = as_of - timedelta(days=2)
+    windows = {}
+    for days in (7, 28, 90):
+        start = end - timedelta(days=days - 1)
+        windows[f'{days}d'] = (start, end)
+        windows[f'previous_{days}d'] = (start - timedelta(days=days), start - timedelta(days=1))
+    # Leap-day-safe comparison with the same count of inclusive calendar days.
+    prior_end = end.replace(year=end.year - 1, day=min(end.day, 28)) if end.month == 2 else end.replace(year=end.year - 1)
+    windows['year_ago_28d'] = (prior_end - timedelta(days=27), prior_end)
+    return windows
+
+
 def page_stats(session, days=28):
     """{page_url: (clicks, impressions)} for the last `days` days of Search Console data."""
-    end = date.today() - timedelta(days=2)  # the newest days are incomplete in Search Console
-    body = {'startDate': str(end - timedelta(days=days)), 'endDate': str(end), 'dimensions': ['page'], 'rowLimit': 5000}
-    r = session.post(ANALYTICS_URL.format(site=quote(property_url(), safe='')), json=body, timeout=30)
-    r.raise_for_status()
-    return {row['keys'][0]: (int(row.get('clicks', 0)), int(row.get('impressions', 0))) for row in r.json().get('rows', [])}
+    if not 1 <= days <= 365:
+        raise ValueError('days must be between 1 and 365')
+    end = report_windows()['28d'][1]
+    result = query_rows(session, end - timedelta(days=days - 1), end, ['page'])
+    if result['truncated']:
+        raise ValueError('Search Console page data exceeded the safe reporting limit; counts were not overwritten.')
+    return {row['keys'][0]: (int(row.get('clicks', 0)), int(row.get('impressions', 0))) for row in result['rows']}
 
 
 def sync_blogs(limit=15, session=None):

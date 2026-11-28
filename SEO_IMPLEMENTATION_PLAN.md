@@ -1,0 +1,18 @@
+# SEO implementation plan — 28 November 2026
+
+Controlling brief: user-provided “COMPLETE SEO, AEO, GEO & ORGANIC TRAFFIC GROWTH OPTIMIZATION”. Baseline commit: `4a74106`. Work is local; this brief does not authorize a production push. Preserve design, routes, protected content, authentication, forms, payments and existing editorial work.
+
+1. **AUD-01 (P1): Fresh inventory and evidence.** Inspect existing architecture, built HTML and all URLs in the live sitemap hierarchy. Record status, indexability, metadata, headings, schema, content-size signals, links and sitemap membership. Distinguish built-only inspection from live verification. Verify with reproducible commands and raw evidence. No initial content/database changes.
+2. **GSC-01 (P1): Authorized search intelligence.** Check existing credentials/exports without exposing secrets. Preserve the supplied 9-click/1,410-impression snapshot as user-reported, not API-verified. Map the 12 supplied queries to existing pages. Build reusable, read-only period/query/page reporting where needed. Test date boundaries, pagination and missing-data behavior.
+3. **TECH-01 (P0/P1 if reproduced): Indexing and rendering fixes.** Fix verified metadata, canonical, sitemap, HTTP or internal-link defects in small slices. Reuse current SSR/SSG architecture and validators. Reproduce before fixing; exercise rendered HTML, redirects and negative cases afterward.
+4. **CONTENT-01 (P1): Existing-page improvements.** Compare mapped published articles with source content. Prepare reviewable, idempotent updates that preserve CMS editorial changes and URLs. Add only useful answer sections, examples and contextual links. Test sanitization, no-overwrite behavior and public output. Do not mass-publish pages.
+5. **MEASURE-01 (P1): Safe conversion events.** Audit current GA4 implementation and existing form/download/click seams. Fill verified tracking gaps without sending form values, URLs containing personal data or duplicate events. Test against a local recorder; real GA4 settings remain externally unverified without access.
+6. **PERF-01 (P2): Measured improvements.** Capture local/browser and available remote lab evidence. Fix only demonstrated bottlenecks without design changes. Compare before/after and distinguish lab results from p75 field Core Web Vitals.
+7. **GUARD-01 (P1): Quality gates.** Extend existing focused tests and CI checks for actual defects. Reuse repository commands, run builds and affected suites. Do not weaken tests or broaden unrelated changes.
+8. **REPORT-01 (P2): Growth system and handoff.** Deliver all 17 required reports/CSVs, plus a URL inventory, evidence-backed priorities, 90-day editorial/outreach plan and an honest phase/status tracker. Mark GSC, GA4, GBP, backlink datasets, verified business facts and future execution blockers explicitly.
+
+Dependency order: AUD-01 → GSC-01 / TECH-01 → CONTENT-01 / MEASURE-01 / PERF-01 → GUARD-01 → REPORT-01. Each implementation slice must leave its focused checks passing before the next slice.
+
+Rollback: retain baseline commit; review/revert individual local commits before deployment. Prefer dry-run/explicit-apply content tooling; never roll back production data by deleting records or resetting counters. Future deployment requires the normal release procedure and authorization.
+
+Acceptance: actual feasible fixes, original design preserved, priority URL mappings grounded in evidence, valid public indexing signals, private routes excluded, maintainable reporting/validation, passing relevant checks, and clearly separated external outcomes. Traffic targets are goals, not promised results.
