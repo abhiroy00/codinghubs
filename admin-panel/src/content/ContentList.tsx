@@ -53,6 +53,17 @@ export function ContentList({ kind }: { kind: Kind }) {
       .catch(() => setError('Could not load the list.'))
   }, [kind, page, pageSize, dq, status, category, ordering])
   useEffect(load, [load])
+  useEffect(() => {
+    const refreshVisible = () => { if (document.visibilityState === 'visible') load() }
+    const interval = window.setInterval(refreshVisible, 30_000)
+    window.addEventListener('focus', refreshVisible)
+    document.addEventListener('visibilitychange', refreshVisible)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('focus', refreshVisible)
+      document.removeEventListener('visibilitychange', refreshVisible)
+    }
+  }, [load])
   const loadStats = useCallback(() => {
     const count = (st?: string) => adminApi.get<Paged<Row>>(`/${kind}/`, { params: { page_size: 1, status: st } }).then((r) => r.data.count)
     Promise.all([count(), count('published'), count('draft')])
@@ -136,21 +147,21 @@ export function ContentList({ kind }: { kind: Kind }) {
   const plural = kind === 'blogs' ? 'Posts' : 'Case Studies'
   const applyFilter = () => { setDq(q); setPage(1); load() }
   return (
-    <div className="cx">
+    <div className="cx cx-list">
       <div className="cx-stats">
-        <div className="cx-stat"><span className="cx-stat-ico blue" aria-hidden="true">▤</span><div><strong>{stats?.total ?? '–'}</strong><span>Total {plural}</span></div></div>
-        <div className="cx-stat"><span className="cx-stat-ico green" aria-hidden="true">✔</span><div><strong>{stats?.published ?? '–'}</strong><span>Published</span></div></div>
-        <div className="cx-stat"><span className="cx-stat-ico yellow" aria-hidden="true">✎</span><div><strong>{stats?.drafts ?? '–'}</strong><span>Drafts</span></div></div>
+        <div className="cx-stat"><span className="cx-stat-ico blue"><Icon name="posts" /></span><div><strong>{stats?.total ?? '–'}</strong><span>Total {plural}</span></div></div>
+        <div className="cx-stat"><span className="cx-stat-ico green"><Icon name="check" /></span><div><strong>{stats?.published ?? '–'}</strong><span>Published</span></div></div>
+        <div className="cx-stat"><span className="cx-stat-ico yellow"><Icon name="edit" /></span><div><strong>{stats?.drafts ?? '–'}</strong><span>Drafts</span></div></div>
       </div>
 
       <div className="cx-card">
         <header className="cx-card-head">
-          <h1><span className="cx-head-ico" aria-hidden="true">▤</span>All {kind === 'blogs' ? 'Blog Posts' : 'Case Studies'}</h1>
+          <h1><span className="cx-head-ico"><Icon name="posts" /></span>All {kind === 'blogs' ? 'Blog Posts' : 'Case Studies'}</h1>
           <div className="cx-head-actions">
             {kind === 'blogs' && gsc?.configured && (
               <button type="button" className="cx-btn-outline" disabled={gscBusy} onClick={() => void refreshGoogle()}>{gscBusy ? 'Checking Google…' : 'Refresh Google status'}</button>
             )}
-            <Link className="cx-btn-primary" to={`/${kind}/create`}>+ {kind === 'blogs' ? 'Write New Post' : 'Add New Study'}</Link>
+            <Link className="cx-btn-primary" to={`/${kind}/create`}><Icon name="plus" />{kind === 'blogs' ? 'Write New Post' : 'Add New Study'}</Link>
           </div>
         </header>
 
@@ -182,8 +193,8 @@ export function ContentList({ kind }: { kind: Kind }) {
           </div>
         )}
         {data && data.results.length > 0 && (
-          <div className="cx-tablewrap">
-            <table className="cx-table">
+          <div className="cx-tablewrap" role="region" aria-label={`${plural} table`} tabIndex={0}>
+            <table className="cx-table" aria-label={plural}>
               <thead>
                 <tr>
                   <th>#</th>
@@ -261,6 +272,8 @@ export function ContentList({ kind }: { kind: Kind }) {
 }
 
 const ICONS = {
+  posts: 'M8 4h12v16H8V4zM4 7v13h4M11 8h6m-6 4h6m-6 4h6',
+  plus: 'M12 5v14M5 12h14',
   edit: 'M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4',
   pause: 'M8 5v14M16 5v14',
   send: 'M4 12l16-8-6 16-3-7-7-1z',

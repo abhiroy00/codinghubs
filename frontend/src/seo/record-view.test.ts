@@ -33,4 +33,26 @@ describe('recordView', () => {
     post.mockRejectedValueOnce(new Error('network'))
     await expect(recordView('blog', 'offline-post', 1)).resolves.toBe(false)
   })
+
+  it('retries a failed view without waiting thirty minutes', async () => {
+    const t = 1_700_000_000_000
+    post.mockRejectedValueOnce(new Error('network'))
+    expect(await recordView('blog', 'retry-post', t)).toBe(false)
+    expect(await recordView('blog', 'retry-post', t + 1000)).toBe(true)
+    expect(post).toHaveBeenCalledTimes(2)
+  })
+
+  it('shares an in-flight view and only marks it counted after success', async () => {
+    let resolve: (value: unknown) => void
+    post.mockReturnValueOnce(new Promise((done) => { resolve = done }))
+    const first = recordView('blog', 'concurrent-post', 1_700_000_000_000)
+    const second = recordView('blog', 'concurrent-post', 1_700_000_000_000)
+    expect(localStorage.getItem('ch_view_blog_concurrent-post')).toBeNull()
+    await Promise.resolve()
+    resolve!({ status: 204 })
+    expect(await first).toBe(true)
+    expect(await second).toBe(true)
+    expect(post).toHaveBeenCalledTimes(1)
+    expect(localStorage.getItem('ch_view_blog_concurrent-post')).toBe('1700000000000')
+  })
 })

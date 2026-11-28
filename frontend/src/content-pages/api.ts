@@ -90,6 +90,7 @@ export const getBlogCategories = () => api.get<{ name: string; slug: string; blo
 export const getBlog = (slug: string, preview?: string) => api.get<Article>(`/blogs/${slug}/`, { params: preview ? { preview } : {} }).then((r) => r.data)
 /** A repeat visit to the same post from the same browser counts again after this long (refreshes in between do not). */
 export const VIEW_WINDOW_MS = 30 * 60 * 1000
+const pendingViews = new Map<string, Promise<boolean>>()
 
 /**
  * Counts a view of a live post: once per browser per post within VIEW_WINDOW_MS, like an analytics session.
@@ -100,16 +101,22 @@ export async function recordView(kind: 'blog' | 'case', slug: string, now = Date
   try {
     const last = Number(localStorage.getItem(key) ?? 0)
     if (last && now - last < VIEW_WINDOW_MS) return false
-    localStorage.setItem(key, String(now))
   } catch {
     // Storage blocked (private mode, strict settings): still count, the server throttle limits abuse.
   }
-  try {
-    await api.post(`/${kind === 'blog' ? 'blogs' : 'case-studies'}/${slug}/view/`)
-    return true
-  } catch {
-    return false
-  }
+  const pending = pendingViews.get(key)
+  if (pending) return pending
+  // StrictMode and multiple consumers can request the same view before the POST finishes.
+  const request = Promise.resolve()
+    .then(() => api.post(`/${kind === 'blog' ? 'blogs' : 'case-studies'}/${slug}/view/`))
+    .then(() => {
+      try { localStorage.setItem(key, String(now)) } catch { /* Storage is optional. */ }
+      return true
+    })
+    .catch(() => false)
+    .finally(() => { pendingViews.delete(key) })
+  pendingViews.set(key, request)
+  return request
 }
 export const getCases = (params: Record<string, string | number>) => api.get<Paged<Card>>('/case-studies/', { params }).then((r) => r.data)
 export const getCase = (slug: string, preview?: string) => api.get<Article>(`/case-studies/${slug}/`, { params: preview ? { preview } : {} }).then((r) => r.data)

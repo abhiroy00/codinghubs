@@ -7,6 +7,7 @@ import { BlogEditor } from './content/BlogEditor'
 import { CaseEditor } from './content/CaseEditor'
 import { ContentList } from './content/ContentList'
 import { ContentDashboard } from './content/Dashboard'
+import { SITE_URL } from './content/liveUrl'
 import { ChangePassword } from './content/ChangePassword'
 import { GuideEditor, ProjectEditor } from './content/ShopEditors'
 import { ShopList } from './content/ShopLists'
@@ -28,18 +29,10 @@ const BrochureAdmin = lazy(() => import('./CommunityAdmin').then(m=>({default:m.
 
 const NAV: { heading: string; items: { to: string; label: string; icon: string; end?: boolean; count?: 'blogs' | 'cases' }[] }[] = [
   {
-    heading: 'Learning platform',
-    items: [
-      { to: '/learning-research', label: 'Research & PDF registry', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Z' },
-      { to: '/learning', label: 'Generative AI curriculum', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Zm0 4v2h6v-2H7Z' },
-      { to: '/learning-reviews', label: 'Assignment reviews', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Zm0 4v2h6v-2H7Z' },
-    ],
-  },
-  {
     heading: 'Main',
     items: [
-      { to: '/interview-studio', label: 'Interview Studio', icon: 'M4 5h16v14H4V5Zm3 4 3 3-3 3m6 0h4' },
       { to: '/', label: 'Dashboard', icon: 'M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z', end: true },
+      { to: '/interview-studio', label: 'Interview Studio', icon: 'M4 5h16v14H4V5Zm3 4 3 3-3 3m6 0h4' },
     ],
   },
   {
@@ -83,6 +76,14 @@ const NAV: { heading: string; items: { to: string; label: string; icon: string; 
     items: [
       { to: '/tutor-bookings', label: 'Tutor Bookings', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Zm14-11h4m-2-2v4' },
       { to: '/tutors', label: 'Tutors', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9c0-3.3 3.6-5 8-5s8 1.7 8 5v1H4v-1Z' },
+    ],
+  },
+  {
+    heading: 'Learning platform',
+    items: [
+      { to: '/learning-research', label: 'Research & PDF registry', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Z' },
+      { to: '/learning', label: 'Generative AI curriculum', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Zm0 4v2h6v-2H7Z' },
+      { to: '/learning-reviews', label: 'Assignment reviews', icon: 'M4 4h16v16H4V4Zm3 3v2h10V7H7Zm0 4v2h10v-2H7Zm0 4v2h6v-2H7Z' },
     ],
   },
   {
@@ -200,6 +201,13 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
   const [counts, setCounts] = useState<{ blogs?: number; cases?: number }>({})
   const [open, setOpen] = useState(false)
   const email = localStorage.getItem('ch_admin_email') ?? ''
+  const activeItem = NAV.flatMap((group) => group.items)
+    .filter((item) => location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(`${item.to}/`)))
+    .sort((a, b) => b.to.length - a.to.length)[0]
+  const pageTitle = activeItem?.to === '/blogs' ? 'Blog Posts'
+    : activeItem?.to === '/case-studies' ? 'Case Studies'
+    : activeItem?.label ?? (location.pathname === '/content' ? 'Content Overview' : 'Admin Panel')
+  const signOut = () => { onLogout(); navigate('/') }
   useEffect(() => {
     adminApi.get('/content/stats/').then((r) => setCounts({ blogs: r.data.blogs.total, cases: r.data.case_studies.total })).catch(() => undefined)
     setOpen(false)
@@ -209,8 +217,8 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
     <div className="ad-shell">
       <aside className={`ad-side${open ? ' open' : ''}`}>
         <div className="ad-brand">
-          <img src="/assets/coding-hubs-school-of-ai-logo-wide.png" alt="Coding Hubs School of AI" width={720} height={208} />
-          <span>Admin</span>
+          <img src="/assets/coding-hubs-school-of-ai-logo.jpeg" alt="" width={42} height={42} />
+          <div className="ad-brand-copy"><strong>Coding<span>Hub</span></strong><small>School of AI · Admin</small></div>
           <button type="button" className="ad-menu-btn" aria-expanded={open} aria-controls="ad-nav" onClick={() => setOpen((o) => !o)}>{open ? 'Close' : 'Menu'}</button>
         </div>
         <nav aria-label="Admin sections" id="ad-nav">
@@ -232,14 +240,26 @@ function Shell({ name, onLogout }: { name: string; onLogout: () => void }) {
             <span className="ad-avatar" aria-hidden="true">{initial}</span>
             <span className="ad-user-text"><strong>{name || 'Admin'}</strong>{email && <small>{email}</small>}</span>
           </div>
-          <button type="button" className="ad-signout" onClick={() => { onLogout(); navigate('/') }}>⎋ Sign Out</button>
+          <button type="button" className="ad-signout" onClick={signOut}>⎋ Sign Out</button>
           <div className="ad-side-foot">
-            <a href="/" target="_blank" rel="noopener noreferrer">View website ↗</a>
+            <a href={SITE_URL} target="_blank" rel="noopener noreferrer">View website ↗</a>
             <a href="/admin/" target="_blank" rel="noopener noreferrer">Django admin ↗</a>
           </div>
         </div>
       </aside>
       <div className="ad-main">
+        <header className="ad-top">
+          <p className="ad-page-title">{pageTitle}</p>
+          <div className="ad-top-actions">
+            <a className="ad-view-site" href={SITE_URL} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7m0-7L10 14M10 4H4v16h16v-6" /></svg>
+              View Site
+            </a>
+            <button type="button" className="ad-top-signout" onClick={signOut} aria-label="Sign out" title="Sign out">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H4v16h6m4-12 4 4-4 4m-6-4h12" /></svg>
+            </button>
+          </div>
+        </header>
         <main className="ad-content">
           <Suspense fallback={<p role="status">Loading admin workspace…</p>}><Routes>
             <Route path="learning" element={<LearningList />} />

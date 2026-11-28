@@ -6,6 +6,14 @@ The admin blog form shows title, short description, optional cover and article. 
 
 The blog visual editor uses the open-source Tiptap packages locally and needs no API key. It supports headings, basic formatting, lists, links, uploaded images, existing tables and HTML source editing. It loads only when the writing form needs it. Other content editors continue using their existing editor.
 
+## Article view counts
+
+Published blog posts and case studies count one view per browser per article within a 30-minute window. Refreshes during that window do not add views; bots and unpublished articles are excluded. This counter is separate from Google Search Console clicks and impressions.
+
+The browser marks a visit as counted only after the tracking request succeeds. Failed requests can retry on the next visit, and concurrent calls share one request. The admin content list refreshes when its tab becomes visible or regains focus, and every 30 seconds while visible, so an open panel picks up new reader views without a manual reload.
+
+Regression coverage is in `frontend/src/seo/record-view.test.ts`; backend counting, publication rules and preserving counts during edits are covered by `apps.content.tests.SeoTests`.
+
 ## Browser verification
 
 Use a disposable local database. The tests create, publish, schedule and delete test posts. They reject non-local server addresses.
