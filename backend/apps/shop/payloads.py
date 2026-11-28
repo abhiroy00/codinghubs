@@ -19,13 +19,20 @@ def guide_is_indexable(guide):
     This structural minimum is not an editorial quality score or a word-count ranking rule.
     Empty/disabled sections and known error placeholders must not submit a guide for indexing.
     """
+    placeholders = ('api failed', 'coming soon', 'todo', 'tbd', 'placeholder')
+
+    def normalized_text(value):
+        return ' '.join(plain_text(sanitize_html(value or '')).split()).rstrip('.').lower()
+
+    if normalized_text(guide.summary) in placeholders:
+        return False
     for section in guide.sections or []:
         if not section.get('enabled') or not section.get('title'):
             continue
         if guide.access_type != ProjectGuide.ACCESS_FREE and not section.get('preview'):
             continue
-        text = plain_text(sanitize_html(section.get('html', ''))).strip().rstrip('.').lower()
-        if text and text not in ('api failed', 'coming soon', 'todo', 'tbd', 'placeholder'):
+        text = normalized_text(section.get('html', ''))
+        if text and text not in placeholders:
             return True
     return False
 

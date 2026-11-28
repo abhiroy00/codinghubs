@@ -4,6 +4,8 @@
 
 The user subsequently instructed “hojaye to push kr do”, authorizing the push of the completed changes. The normal `main` push triggers the repository's gated production deployment workflow. The earlier statements that release permission was pending describe the 28 November audit state and are superseded by this authorization. Push/deployment results will be verified separately. This does not mark missing external datasets or future editorial work complete. The guarded production CMS update remains a separate dry-run/review/apply step; pushing source seeds does not overwrite existing posts.
 
+The first release's live smoke check found an uncovered case: the guide has the literal error summary “Api failed” alongside a generic section, which passed the section-only readiness test. Added a failing regression from the actual public payload, then extended the shared guard to reject known placeholder summaries as well as placeholder sections. This preserves readable content and allows eligibility after the owner repairs the summary/instructions. Included the summary in the sitemap queryset to avoid deferred per-guide queries. The corrective release must pass CI and the repeated live smoke check.
+
 ## Delivered locally
 
 This work extends the existing site rather than rebuilding it. Actual changes include empty-guide indexing safeguards, real 404s for nonexistent project/guide pagination, correct GSC date windows/pagination and private reporting, safe custom conversion/content events, 11 improved source articles, a guarded updater for existing CMS content, an original runnable retrieval resource, relevant links for five courses, accurate lastmod updates, audit tooling and CI checks. Existing design and business integrations were preserved.

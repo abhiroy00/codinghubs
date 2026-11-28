@@ -37,6 +37,16 @@ class GuideIndexingTests(TestCase):
         self.assertTrue(self.client.get('/api/project-guides/').json()['indexable'])
         self.assertTrue(self.client.get('/api/project-guides/practice-guide/').json()['seo']['robots'].startswith('index'))
 
+    def test_error_summary_with_generic_section_requires_repair_before_indexing(self):
+        guide = self.guide(summary='Api failed', sections=[{'key': 'guidance', 'title': 'Guidance', 'html': 'i have to improve my project', 'enabled': True}])
+        self.assertEqual(self.client.get('/api/project-guides/practice-guide/').json()['seo']['robots'], 'noindex, follow')
+        self.assertContains(self.client.get('/project-guides/practice-guide'), 'noindex, follow')
+        self.assertNotIn('/project-guides/practice-guide', self.client.get('/sitemap-shop.xml').content.decode())
+        guide.summary = 'Practice setting up and testing a project.'
+        guide.sections[0]['html'] = '<p>Run the example and compare its output with the expected result.</p>'
+        guide.save()
+        self.assertTrue(self.client.get('/api/project-guides/practice-guide/').json()['seo']['robots'].startswith('index'))
+
     def test_private_disabled_or_placeholder_sections_do_not_qualify(self):
         guide = self.guide(access_type='account', sections=[{'key': 'code', 'title': 'Code', 'html': '<p>Private instructional content.</p>', 'enabled': True}])
         self.assertEqual(self.client.get('/api/project-guides/practice-guide/').json()['seo']['robots'], 'noindex, follow')

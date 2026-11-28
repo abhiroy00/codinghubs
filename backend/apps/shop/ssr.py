@@ -131,7 +131,7 @@ def guide_detail(request, slug):
 
 @require_GET
 def shop_sitemap(request):
-    guides = list(payloads.public_guides().only('id', 'sections', 'access_type', 'project_id').order_by('-published_at', '-id'))
+    guides = list(payloads.public_guides().only('id', 'summary', 'sections', 'access_type', 'project_id').order_by('-published_at', '-id'))
     guide_ids = {guide.pk for guide in guides if payloads.guide_is_indexable(guide)}
     rows = [f'{settings.SITE_URL}/projects']
     if any(guide.pk in guide_ids for guide in guides[:PAGE]):

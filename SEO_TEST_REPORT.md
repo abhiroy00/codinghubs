@@ -1,5 +1,9 @@
 # SEO test and evidence report
 
+## Release smoke follow-up — 29 November
+
+The first release passed CI, but the production guide smoke check exposed a case missing from the original fixtures: an error-placeholder summary with a nonempty generic section remained indexable. A new regression reproduced this before the correction. The guide guard now checks known placeholder summaries, with no deletion/access/publication change. The repeated check covers repair/restoration as well. All 32 affected guide/shop/retirement tests and changed-file ruff checks pass locally (`/tmp/codinghubs-guide-summary-green.log`). The prior 559-test result below is historical; the corrective release adds one regression and requires fresh CI plus live smoke verification.
+
 ## Supplied-export follow-up checks
 
 All seven supplied CSVs were read successfully without modification. Validated expected columns, unique dimension keys, nonnegative counts and row CTR rounding; Chart.csv has 30 contiguous dates ending 26 November. Independently reconciled chart, country and device sums at 126 clicks / 8,048 impressions. Correctly retained different page totals (8,673 impressions) and the incomplete query subset (29 clicks / 2,262 impressions). Computed date windows from observed dates, without synthesizing missing days or averaging percentage rows.
