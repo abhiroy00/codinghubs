@@ -1,0 +1,80 @@
+# Optional Linux Docker Engine profile. Host networking preserves loopback-only policy.
+# Do not run alongside native services. No public ports are published.
+name: codinghubs-local-seo
+x-app: &app
+  build: .
+  image: codinghubs-local-seo:local
+  network_mode: host
+  env_file: .state/compose.env
+  volumes:
+    - ./.state/compose/app:/app/.state
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  shm_size: 256m
+  init: true
+  depends_on:
+    postgres: {condition: service_healthy}
+  restart: "no"
+services:
+  postgres:
+    image: pgvector/pgvector:pg15
+    network_mode: host
+    env_file: .state/compose.env
+    command: [postgres, -c, listen_addresses=127.0.0.1, -p, "55432", -c, shared_buffers=64MB, -c, max_connections=24]
+    volumes:
+      - ./.state/compose/pgdata:/var/lib/postgresql/data
+      - ./deploy/init-postgres.sh:/docker-entrypoint-initdb.d/10-local-seo.sh:ro
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -p 55432 -U postgres -d local_seo"]
+      interval: 5s
+      retries: 15
+    security_opt: [no-new-privileges:true]
+  ollama:
+    image: ollama/ollama:0.40.17
+    network_mode: host
+    environment:
+      OLLAMA_HOST: 127.0.0.1:11435
+      OLLAMA_NO_CLOUD: "1"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_KEEP_ALIVE: "0"
+    volumes: ["./.state/compose/models:/root/.ollama"]
+    security_opt: [no-new-privileges:true]
+  migrate:
+    <<: *app
+    command: [/app/.venv/bin/alembic, upgrade, head]
+  api:
+    <<: *app
+  worker:
+    <<: *app
+    command: [/app/.venv/bin/python, -m, app.worker]
+  prometheus:
+    profiles: [monitoring]
+    image: prom/prometheus:v3.5.0
+    network_mode: host
+    user: "10001:10001"
+    command: [--config.file=/etc/prometheus/prometheus.yml, --web.listen-address=127.0.0.1:9097, --storage.tsdb.retention.time=7d]
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./.state/compose/app/metrics.token:/run/secrets/metrics.token:ro
+    tmpfs: [/prometheus:uid=10001,gid=10001]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+  grafana:
+    profiles: [monitoring]
+    image: grafana/grafana-oss:12.3.0
+    network_mode: host
+    env_file: .state/compose.env
+    environment:
+      GF_SERVER_HTTP_ADDR: 127.0.0.1
+      GF_SERVER_HTTP_PORT: "3007"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_SECURITY_DISABLE_GRAVATAR: "true"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./deploy/grafana:/etc/grafana/provisioning:ro
+    tmpfs: [/var/lib/grafana:uid=472,gid=472]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]

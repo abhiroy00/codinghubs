@@ -4,6 +4,8 @@
 **/.env
 **/.env.local
 .git
+# The local SEO workspace has its own build context; never send its private state with the website build.
+seo-growth-ai/
 backend/**
 !backend/apps/
 !backend/apps/courses/

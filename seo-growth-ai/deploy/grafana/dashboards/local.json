@@ -1,0 +1,94 @@
+{
+  "uid": "local-seo-resources",
+  "title": "Local SEO resources",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "timezone": "Asia/Kolkata",
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Host RAM %",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "local-seo"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "local_seo_ram_used_pct",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Host CPU %",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "local-seo"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "local_seo_cpu_used_pct",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Local AI requests",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "local-seo"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "local_seo_local_ai_requests",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Database bytes",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "local-seo"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "local_seo_database_bytes",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}
