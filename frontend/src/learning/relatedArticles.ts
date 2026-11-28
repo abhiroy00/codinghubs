@@ -38,6 +38,10 @@ const A = {
   internships: { slug: 'internships-for-cs-students', title: 'How to find internships as a student' },
   resume: { slug: 'developer-resume-for-freshers', title: 'Write a developer resume that gets shortlisted' },
   github: { slug: 'github-profile-for-developers', title: 'Build a GitHub profile recruiters notice' },
+  apiTesting: { slug: 'api-testing-tutorial', title: 'API testing with Postman and code' },
+  testCases: { slug: 'how-to-write-test-cases', title: 'Write useful test cases' },
+  testingRoadmap: { slug: 'automation-testing-roadmap', title: 'Automation testing learning roadmap' },
+  microservices: { slug: 'microservices-spring-boot', title: 'Spring Boot microservices and architecture' },
 } satisfies Record<string, RelatedArticle>
 
 const RELATED: Record<string, RelatedArticle[]> = {
@@ -61,6 +65,11 @@ const RELATED: Record<string, RelatedArticle[]> = {
   'data-analytics-using-python': [A.pythonStart, A.automation, A.careers],
   'data-science': [A.careers, A.pythonRoadmap, A.genAi],
   'data-science-pro': [A.careers, A.pythonRoadmap, A.genAi],
+  'automation-testing': [A.apiTesting, A.testCases, A.testingRoadmap],
+  'python-automation': [A.automation, A.apiTesting, A.pythonStart],
+  'cloud-devops': [A.deploy, A.microservices, A.github],
+  'ai-ml-cloud-engineering': [A.aiEngineer, A.rag, A.deploy],
+  'ai-workflow-automation': [A.agents, A.rag, A.automation],
   internship: [A.internships, A.resume, A.github],
 }
 
