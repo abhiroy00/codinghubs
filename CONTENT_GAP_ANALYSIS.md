@@ -1,0 +1,33 @@
+# Content gaps and competitor evidence
+
+## Existing assets first
+
+The catalogue, 81 currently listed live blog posts, interview guides, project sections, location guides and learning workspaces already cover substantial subject matter. Many generated lesson/workspace routes remain intentionally noindex. Counted URLs or words are not proof of reviewed teaching quality. No mass publication or framework rebuild was needed.
+
+| Topic cluster | Existing destination to improve first | Gap / review task |
+|---|---|---|
+| AI / AI engineering / Generative AI | AI engineering guide, RAG and existing course pages | Assessment criteria and verified course facts |
+| Agentic AI / AI automation / Prompting | Agents article, Agentic AI and workflow topics | Bounded tool/failure demonstrations |
+| ML / Deep Learning / Data Science | Existing ML guide, Data Science learning paths | Original small-data evaluation exercise |
+| Data Analytics / SQL / Excel / Power BI | Existing analytics courses and database comparison | Review actual SQL/BI/Excel coverage before a new article or dataset |
+| Python | Beginner guide, roadmap, projects, interview material | Reproducible exercises and feedback criteria |
+| Full Stack / Java / React / MERN | Existing roadmaps, OOP, Spring, React and API articles | Scenario answers, tests and code walkthroughs |
+| Cloud / AWS / Azure / DevOps | Existing course/interview hubs and deployment guide | Confirm reviewed subject-specific lessons; preserve exclusions on placeholders |
+| Cybersecurity / System Design | Existing security learning routes and microservices guide | Original threat-model and architecture exercises; expert review needed |
+| Interview / Career / Placement Preparation | Existing interview hub, career switch, portfolio and resume guides | Practical evidence and accurate support statements, not job guarantees |
+
+This groups all 27 requested topic categories without asserting that every subject has a dedicated reviewed public resource.
+
+## Fresh search research
+
+Query results surfaced local course pages from [DICS Innovatives](https://www.dicsinnovatives.com/data-science-course-in-pitampura.php) and [TechExplica](https://techexplica.com/data-science-course-in-delhi/). These are relevant comparison candidates for location/course intent. Their current pages organize subject offerings and enquiries; their self-reported outcomes were not adopted as Coding Hubs facts.
+
+RAG results include [AWS](https://aws.amazon.com/what-is/retrieval-augmented-generation/) and [Stanford HAI](https://hai.stanford.edu/ai-definitions/what-is-rag). They illustrate definition/reference intent. React results also surfaced current scenario-based interview collections. These are search-discovered competitors/reference publishers, not verified personalized Google rankings, backlink profiles or traffic estimates. No competitor text was copied.
+
+## Implemented differentiation and pending work
+
+Eleven existing source pages now have original task-oriented additions and better metadata; five courses gain curated guides; one runnable retrieval resource is included. Next resources should be selected from actual longer-period query demand, genuinely original/licensed data and teaching expertise. Instructor bios, assessed projects, SQL/BI datasets and downloadable notes require subject review before publication. See the 90-day calendar.
+
+## Evidence and limits
+
+Audit date: 28 November 2026. Changes are local on `work/seo-growth-20261128`; production push is not authorized by this brief. Fresh evidence is under `artifacts/seo-growth/`; blank metrics mean unavailable, not zero. See [SEO_MASTER_STATUS.md](SEO_MASTER_STATUS.md) and [SEO_TEST_REPORT.md](SEO_TEST_REPORT.md).
