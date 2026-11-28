@@ -1,6 +1,6 @@
 # Local zero-cost SEO platform
 
-Controlling request: 29 November 2026 zero-cost platform attachment. Baseline: `9bbf4ea`. Add an independent localhost application; never migrate or deploy the existing Django website as part of this work. No paid requests, cloud provisioning, automatic publication or unapproved repository writes. Deliver on the isolated feature branch under the user's existing push instruction.
+Controlling request: 29 November 2026 zero-cost platform attachment. Baseline: `9bbf4ea`. Add an independent localhost application; never migrate or deploy the existing Django website as part of this work. No paid requests, cloud provisioning, automatic publication or unapproved repository writes. Implementation is committed on the isolated feature branch. Automatic approval review blocked remote push because prior website permission did not clearly authorize this new project's exact branch/destination; await explicit approval before retrying.
 
 ## Contract and dependency order
 
