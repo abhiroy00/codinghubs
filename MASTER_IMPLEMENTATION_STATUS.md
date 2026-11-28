@@ -2,6 +2,8 @@
 
 Updated **29 November 2026**. Branch `work/zero-cost-seo-platform`, website baseline `9bbf4ea`. New app: `seo-growth-ai/`, running at **http://127.0.0.1:8765/**. Existing Django/frontend/admin website code is unchanged on this branch. Implementation commits: `51f7ef8` and `9819b2f`. After automatic review initially required clearer publication authorization, the user explicitly approved this exact feature branch/destination. The branch was successfully pushed to `github.com/abhiroy00/codinghubs`; no production merge/deployment occurred.
 
+**Subsequent release authorization:** the user explicitly selected “Branch main mein merge aur deploy karo” on 29 November 2026. Main merge and the existing website CI/deployment are now authorized. This changes the delivery boundary above; it does not expose or provision hosting for the localhost SEO application. Release scope and rollback are recorded in `docs/seo/local-platform-release-2026-11-29.md`.
+
 | Phase | Implemented and exercised | Remaining limits / owner input |
 |---|---|---|
 | 1 Hardware/foundation/auth | M1/8 GiB screening, private PostgreSQL 18 + pgvector, frozen migrations, Ollama, protected React/FastAPI, owner login/password rotation, multiple sites and tenant boundaries | Native host is required; localhost deployment |
