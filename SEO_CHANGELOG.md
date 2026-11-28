@@ -12,7 +12,9 @@ Baseline: `4a74106`. Branch: `work/seo-growth-20261128`. No production push in t
 - Added anonymous guide-readiness gates shared by API/SSR/client/sitemap, preserving reading and protected access; corrected out-of-range project/guide listings from duplicate 200 responses to branded 404s.
 - Preserved design, authentication, payments, public content URLs, robots/sitemap architecture and private content controls. No content was deleted, merged or mass-published by this task.
 
-Pending: authorized deployment, guarded review/apply of existing production CMS records, GSC/GA4/field datasets, verified business facts and future content/outreach execution.
+- Analyzed all seven subsequently supplied GSC CSVs without changing originals. Reconciled 126 clicks / 8,048 impressions; documented actual chart coverage and dimensional differences. Updated 23 keyword opportunities, 490 page priorities and 1,871 known URLs; new historical URLs retain unverified current signals. Refreshed the status, local/content priorities and growth roadmap. No production code or publication change in this follow-up.
+
+Pending: authorized deployment, guarded CMS review/apply, complete/joined GSC histories and indexing reports, ongoing API access, GA4/field datasets, verified business facts and future content/outreach execution. Basic supplied-export GSC analysis is no longer blocked.
 
 ## Evidence and limits
 

@@ -16,6 +16,10 @@ Verify current head-office NAP against the actual GBP; confirm visit arrangement
 
 Focus first on Pitampura/NSP/Rohini/North Delhi and useful Delhi NCR access information. Ask real learners for honest feedback without rewards or scripted reviews. GBP edits and outreach were not performed.
 
+## Performance-export evidence
+
+The supplied country table records India at 112 clicks and 5,945 impressions (1.88% CTR, average position 11.12): 88.9% of chart clicks. The local query “best python institute in pitampura” has 17 impressions, zero clicks and average position 15.41. The existing Pitampura AI location page has 71 impressions, zero clicks and average position 8.01. These aggregate rows support a local intent review; there is no query-to-location-page or qualified-admission attribution. Keep verified business facts and relevant existing pages central, without adding branches or superlative claims. Chart coverage is 28 October–26 November 2026; this is not a daily baseline or GBP report.
+
 ## Evidence and limits
 
 Audit date: 28 November 2026. Changes are local on `work/seo-growth-20261128`; production push is not authorized by this brief. Fresh evidence is under `artifacts/seo-growth/`; blank metrics mean unavailable, not zero. See [SEO_MASTER_STATUS.md](SEO_MASTER_STATUS.md) and [SEO_TEST_REPORT.md](SEO_TEST_REPORT.md).

@@ -32,6 +32,10 @@ The live guide `/project-guides/ai` contains an error-placeholder description an
 
 Eleven existing source pages now have original task-oriented additions and better metadata; five courses gain curated guides; one runnable retrieval resource is included. Next resources should be selected from actual longer-period query demand, genuinely original/licensed data and teaching expertise. Instructor bios, assessed projects, SQL/BI datasets and downloadable notes require subject review before publication. See the 90-day calendar.
 
+## Export-informed review queue
+
+The newly supplied page table supports reviewing existing learning-time (417 impressions, 0.48% CTR), after-12th courses (284, 1.06%), in-demand skills (208, zero clicks), RAG (170, zero clicks), portfolio (163, 0.61%) and Django/Flask (119, zero clicks) content first. Keyword candidates now also include Python roadmap, automation testing, Postman and local Python training. These are a review backlog, not additional content already implemented. Existing API, roadmap and career-switch articles may overlap; separate page/query tables do not prove cannibalization, so no new duplicates or redirects were created. Preserve the two API articles' actual clicks while obtaining query+page history. See the updated keyword/page CSVs and GSC report.
+
 ## Evidence and limits
 
 Audit date: 28 November 2026. Changes are local on `work/seo-growth-20261128`; production push is not authorized by this brief. Fresh evidence is under `artifacts/seo-growth/`; blank metrics mean unavailable, not zero. See [SEO_MASTER_STATUS.md](SEO_MASTER_STATUS.md) and [SEO_TEST_REPORT.md](SEO_TEST_REPORT.md).

@@ -1,5 +1,11 @@
 # SEO test and evidence report
 
+## Supplied-export follow-up checks
+
+All seven supplied CSVs were read successfully without modification. Validated expected columns, unique dimension keys, nonnegative counts and row CTR rounding; Chart.csv has 30 contiguous dates ending 26 November. Independently reconciled chart, country and device sums at 126 clicks / 8,048 impressions. Correctly retained different page totals (8,673 impressions) and the incomplete query subset (29 clicks / 2,262 impressions). Computed date windows from observed dates, without synthesizing missing days or averaging percentage rows.
+
+Verified all 409 page rows match exactly in the 490-row priority CSV, including exported CTR/position; 23 curated keyword rows preserve original snapshot measurements separately; absent queries/pages stay blank rather than zero. The 162 inventory additions have historical provenance and unverified current signals. All seven source SHA-256 hashes are recorded privately and original files remain unchanged. Output CSVs have unique URLs/keywords, stable LF endings and valid headers. The follow-up touches reports/CSVs only, so application suites below were not rerun or newly claimed green. Private analysis/check evidence is under `artifacts/seo-growth/gsc-export-20261128/`.
+
 ## Fresh verification
 
 | Check | Result | Scope / limits |

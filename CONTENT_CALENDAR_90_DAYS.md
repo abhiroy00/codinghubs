@@ -4,10 +4,10 @@ Start: 28 November 2026. End: 25 February 2027. This is an execution plan, not a
 
 | Week / dates | Focus | Action | Acceptance evidence |
 |---|---|---|---|
-| 1: 2026-11-28–2026-12-04 | Audit and access | Review this inventory; request authorized GSC/GA4 data; investigate availability logs | 300 sitemap observations, blockers and baseline approved |
+| 1: 2026-11-28–2026-12-04 | Audit and measured baseline | Review supplied GSC analysis and page priorities; obtain joined/full-history GSC and GA4 data; investigate availability logs | 126-click observed baseline reconciled; 409 historical page rows matched; 300 live sitemap observations retained |
 | 2: 2026-12-05–2026-12-11 | RAG and agents | Review/apply guarded existing-page updates; publish original exercise only after release review | Correct answer sections, resource works, no duplicated target page |
 | 3: 2026-12-12–2026-12-18 | Java, React and API testing | Review OOP/React/API additions; record scenario answers and failure cases | Run examples and inspect actual snippets; retain existing URLs |
-| 4: 2026-12-19–2026-12-25 | Career and course clarity | Review portfolio/career/syllabus updates; collect verified course and trainer facts | Facts approved; no salary/hiring guarantees added |
+| 4: 2026-12-19–2026-12-25 | Career and course clarity | Prioritize learning-time/after-12th/skills and portfolio intent; review prepared career/syllabus updates and verified trainer/course facts | Export-informed existing-page review; facts approved; no salary/hiring guarantees |
 | 5: 2026-12-26–2027-01-01 | Internal discovery | Review course-guide links and crawl reachability; inspect 28-day query+page data if available | Natural anchors, working destinations, no orphan claim from incomplete crawl |
 | 6: 2027-01-02–2027-01-08 | SQL and analytics resource | Choose an original/licensed small dataset and a specific analysis exercise | Provenance, expected results, edge cases and reviewer sign-off |
 | 7: 2027-01-09–2027-01-15 | Python practice | Improve an existing project/tutorial with tests and a downloadable example if justified | Reproducible setup and meaningful checks |
@@ -20,7 +20,7 @@ Start: 28 November 2026. End: 25 February 2027. This is an execution plan, not a
 
 ## Reporting cadence and targets
 
-When authorized data is available, review technical errors weekly and business outcomes with rolling 28-day averages. Start with 25–50 daily organic clicks, then evaluate 100, 250, 500 and 1,000+ as successive sustained stages; no dates are promised for reaching them. The supplied two-day snapshot does not establish current daily traffic.
+Use the supplied export as a measured historical baseline: the latest exported 28 days (30 October–26 November) have 125 clicks, averaging 4.46/day; latest exported 7 days average 13.57/day. These precede the local changes and are not today's traffic or evidence of their impact. Request complete/joined updates for ongoing measurement. Review technical errors weekly and business outcomes with rolling 28-day averages. Start with sustained 25–50 daily clicks, then evaluate 100, 250, 500 and 1,000+; no dates are promised for reaching them. Prioritize the low-CTR mobile cohort for investigation without assuming UI causation.
 
 Scenario arithmetic: 5,000 impressions × 3% CTR = 150 clicks; 10,000 × 5% = 500; 20,000 × 5% = 1,000. These are scenarios, not demand forecasts. Track qualified enquiries separately and avoid counting multiple funnel events as multiple leads. Never buy or simulate traffic to meet a target.
 

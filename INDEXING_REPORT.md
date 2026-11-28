@@ -20,6 +20,10 @@ With authorized property data, separate crawled/discovered-not-indexed, selected
 
 Pending: current indexed counts, Google-selected canonicals, sitemap submission status and validation outcomes.
 
+## User-supplied performance export follow-up
+
+Pages.csv contains 409 historically appearing URL strings, including old `/interview-prep/` routes, filtered listing URLs and the empty guide. This is evidence of past search impressions during the selected export period, not a current URL Inspection result. It does not establish that all 409 remain indexed, indexable or canonical now. The source already redirects legacy interview routes; incomplete GenAI material remains deliberately excluded. Do not restore those aliases or remove quality gates to chase historical impressions. The 162 URLs newly added to the broad inventory retain unverified current status/metadata; no extra live checks or indexing requests occurred in this follow-up. Current indexing and sitemap report access is still needed.
+
 ## Evidence and limits
 
 Audit date: 28 November 2026. Changes are local on `work/seo-growth-20261128`; production push is not authorized by this brief. Fresh evidence is under `artifacts/seo-growth/`; blank metrics mean unavailable, not zero. See [SEO_MASTER_STATUS.md](SEO_MASTER_STATUS.md) and [SEO_TEST_REPORT.md](SEO_TEST_REPORT.md).
