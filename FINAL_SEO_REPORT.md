@@ -1,5 +1,9 @@
 # Final SEO implementation report
 
+## Release authorization — 29 November 2026
+
+The user subsequently instructed “hojaye to push kr do”, authorizing the push of the completed changes. The normal `main` push triggers the repository's gated production deployment workflow. The earlier statements that release permission was pending describe the 28 November audit state and are superseded by this authorization. Push/deployment results will be verified separately. This does not mark missing external datasets or future editorial work complete. The guarded production CMS update remains a separate dry-run/review/apply step; pushing source seeds does not overwrite existing posts.
+
 ## Delivered locally
 
 This work extends the existing site rather than rebuilding it. Actual changes include empty-guide indexing safeguards, real 404s for nonexistent project/guide pagination, correct GSC date windows/pagination and private reporting, safe custom conversion/content events, 11 improved source articles, a guarded updater for existing CMS content, an original runnable retrieval resource, relevant links for five courses, accurate lastmod updates, audit tooling and CI checks. Existing design and business integrations were preserved.

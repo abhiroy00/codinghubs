@@ -1,5 +1,7 @@
 # SEO master status — 28 November 2026
 
+Release addendum, 29 November 2026: the user authorized the push (“hojaye to push kr do”). The pending-approval statements below describe the original audit state. Proceed through the existing gated `main` CI/CD workflow and verify its result. Raw exports remain private, existing CMS article application remains separate, and all other data/future-work blockers still apply.
+
 Baseline `4a74106`; local branch `work/seo-growth-20261128`. No production push. This tracker distinguishes local completion from unavailable data, future execution and external outcomes.
 
 | Phase | Task ID | Priority | Status | Files modified / evidence | Tests performed | Result | Blockers / remaining work |
