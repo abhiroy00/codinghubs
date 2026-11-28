@@ -6,7 +6,7 @@ The user explicitly authorized **“Branch main mein merge aur deploy karo”** 
 
 ## Release scope
 
-The feature branch adds `seo-growth-ai/` and six root documents. Website baseline is `9bbf4ea`; production Django/frontend/admin source, Dockerfiles and production Compose/workflow files are unchanged. Existing `CI/CD` validates backend, frontend and admin before deploying the current website images. No new hosting, cloud resources, public Ollama/database ports, Google credentials or paid AI/SEO integration are introduced. The new SEO platform continues running locally at `http://127.0.0.1:8765/`.
+The feature branch adds `seo-growth-ai/` and six root documents. Website baseline is `9bbf4ea`; production Django/frontend/admin source, Dockerfiles and production Compose/workflow files are unchanged. The root `.dockerignore` explicitly excludes the separate SEO workspace so its ignored local credentials/database/models cannot be sent in a website Docker build context. The platform's own Docker context remains separate. Existing `CI/CD` validates backend, frontend and admin before deploying the current website images. No new hosting, cloud resources, public Ollama/database ports, Google credentials or paid AI/SEO integration are introduced. The new SEO platform continues running locally at `http://127.0.0.1:8765/`.
 
 The previous “no production merge/deployment” records describe the earlier feature-branch delivery. This explicit user authorization permits the subsequent release; it does not claim that the platform's optional Docker profile or Google OAuth connection has been verified.
 
