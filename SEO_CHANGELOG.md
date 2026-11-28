@@ -9,7 +9,8 @@ Baseline: `4a74106`. Branch: `work/seo-growth-20261128`. No production push in t
 - Improved 11 existing source articles with original answers/exercises, accurate metadata and contextual links. Added a guarded, dry-run-first updater with revision snapshots and no editor overwrite.
 - Added original `rag-retrieval-demo.py`; added 15 Related guides links for five existing courses. Dated only the two sitemap pages whose rendered preferred content changed.
 - Added analytics and sitemap/inventory checks to existing CI. Repaired stale newsletter test placement while preserving consent styling and no-JS policy-link coverage; added enquiry event/privacy assertions.
-- Preserved design, authentication, payments, public URLs, robots/sitemap architecture and private content controls. No content was deleted, merged or mass-published by this task.
+- Added anonymous guide-readiness gates shared by API/SSR/client/sitemap, preserving reading and protected access; corrected out-of-range project/guide listings from duplicate 200 responses to branded 404s.
+- Preserved design, authentication, payments, public content URLs, robots/sitemap architecture and private content controls. No content was deleted, merged or mass-published by this task.
 
 Pending: authorized deployment, guarded review/apply of existing production CMS records, GSC/GA4/field datasets, verified business facts and future content/outreach execution.
 

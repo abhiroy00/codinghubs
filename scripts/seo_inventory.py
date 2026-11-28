@@ -260,7 +260,7 @@ def run(args):
     (out / 'inventory.json').write_text(json.dumps(result, indent=2))
     columns = ['url', 'source', 'page_type', 'http_status', 'indexability', 'canonical', 'title', 'meta_description', 'h1', 'main_word_count', 'content_quality', 'internal_links', 'observed_inbound_links', 'sitemap_inclusion', 'schema_types', 'schema_status', 'issues', 'priority']
     with (ROOT / 'SEO_URL_INVENTORY.csv').open('w', newline='') as output:
-        writer = csv.DictWriter(output, fieldnames=columns, extrasaction='ignore')
+        writer = csv.DictWriter(output, fieldnames=columns, extrasaction='ignore', lineterminator='\n')
         writer.writeheader()
         for row in result['pages']:
             values = {key: json.dumps(value, ensure_ascii=False) if isinstance(value, list) else value for key, value in row.items() if key in columns}

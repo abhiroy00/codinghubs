@@ -2,7 +2,7 @@
 
 ## Delivered locally
 
-This work extends the existing site rather than rebuilding it. Actual changes include correct GSC date windows/pagination and private reporting, safe custom conversion/content events, 11 improved source articles, a guarded updater for existing CMS content, an original runnable retrieval resource, relevant links for five courses, accurate lastmod updates, audit tooling and CI checks. Existing design and business integrations were preserved.
+This work extends the existing site rather than rebuilding it. Actual changes include empty-guide indexing safeguards, real 404s for nonexistent project/guide pagination, correct GSC date windows/pagination and private reporting, safe custom conversion/content events, 11 improved source articles, a guarded updater for existing CMS content, an original runnable retrieval resource, relevant links for five courses, accurate lastmod updates, audit tooling and CI checks. Existing design and business integrations were preserved.
 
 The requested root reports and CSVs are present. Start with [SEO_AUDIT_REPORT.md](SEO_AUDIT_REPORT.md), [SEO_MASTER_STATUS.md](SEO_MASTER_STATUS.md), [GSC_PERFORMANCE_ANALYSIS.md](GSC_PERFORMANCE_ANALYSIS.md) and [SEO_TEST_REPORT.md](SEO_TEST_REPORT.md). The 90-day calendar gives the next editorial/measurement decisions without promising traffic gains.
 

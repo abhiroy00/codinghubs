@@ -8,7 +8,7 @@ Baseline `4a74106`; local branch `work/seo-growth-20261128`. No production push.
 | 2 | GSC-01 | P1 | Implemented reporting; data blocked | search_console.py; seo_gsc_report.py; GSC report | 6 reporting/sync checks | Exact dates and pagination pass | Authorized property data missing; no relevant Drive export found |
 | 3 | CONTENT-01 | P1 | Prepared locally | 11 source posts; keyword CSV | 11 hash checks; guarded updater tests | 12 queries mapped to 11 existing URLs | Longer-period validation and production apply pending |
 | 4 | META-01 | P1 | Implemented source changes | Existing article metadata fields | SEO validation; public HTML test | No duplicate metadata framework added | Google can rewrite snippets; CTR unmeasured |
-| 5 | TECH-01 | P1 | Verified existing; guards added | Audit, validators, source routes | 203 static URLs; generic 404 | No persistent P0 reproduced | Operational cause of recovered 5xx unknown |
+| 5 | TECH-01 | P1 | Verified existing; guards added | shop payloads/SSR/API; guide client metadata; audit | 203 static URLs; generic 404 | No persistent P0 after recheck; empty-guide P1 and invalid pagination fixed locally | Operational cause of recovered 5xx unknown |
 | 6 | INDEX-01 | P1 | Technical signals verified | INDEXING_REPORT.md | Sitemap/robots/HTML checks | Intentional exclusions preserved | Google indexing dataset unavailable |
 | 7 | MAP-01 | P2 | Verified existing | Master + four child maps | XML tests; live child requests | Working architecture retained | GSC submission state unavailable |
 | 8 | ROBOTS-01 | P2 | Verified existing | robots.txt | Public crawl; source validation | Public resources allowed; admin/API excluded | Crawler licensing preferences unchanged |
@@ -28,7 +28,7 @@ Baseline `4a74106`; local branch `work/seo-growth-20261128`. No production push.
 | 22 | CRO-01 | P1 | Implemented and tested | analytics.ts; enquiry tests | 6 event tests; browser accepted/rejected enquiry | No PII in custom-event queue; no payment regression | Property-level conversion setup needs access |
 | 23 | MONITOR-01 | P1 | Reporting infrastructure ready | GSC command; analytics helper | No-credential failure; data minimization | Raw exports remain private artifacts | GA4 automatic collection/DebugView not verified |
 | 24 | GUARD-01 | P1 | Implemented | CI; parser/sitemap/event checks | 6 Python + 6 event tests | Existing gates retained | Default frontend unit runner stalls locally |
-| 25 | QA-01 | P1 | Affected checks pass; one limitation | SEO_TEST_REPORT.md | 555 backend; 12 browser; builds; validators | 8 existing skips; no checks weakened | Full frontend unit suite remains inconclusive |
+| 25 | QA-01 | P1 | Affected checks pass; one limitation | SEO_TEST_REPORT.md | 559 backend; 14 browser; builds; validators | 8 existing skips; no checks weakened | Full frontend unit suite remains inconclusive |
 | 26 | ROADMAP-01 | P2 | Ready | CONTENT_CALENDAR_90_DAYS.md | 13 dated work windows | Future milestones explicit | Future work not claimed complete |
 | 27 | TARGET-01 | P2 | Defined; outcomes unverified | Calendar and GSC report | Scenario arithmetic | Rolling 28-day target framework | No demand forecast or ranking guarantee |
 | 28 | REPORT-01 | P2 | Delivered | 17 required reports/CSVs plus inventory | Deliverable file check | Findings, pending work and limits recorded | Reports must be refreshed when external evidence arrives |

@@ -24,6 +24,10 @@ Query results surfaced local course pages from [DICS Innovatives](https://www.di
 
 RAG results include [AWS](https://aws.amazon.com/what-is/retrieval-augmented-generation/) and [Stanford HAI](https://hai.stanford.edu/ai-definitions/what-is-rag). They illustrate definition/reference intent. React results also surfaced current scenario-based interview collections. These are search-discovered competitors/reference publishers, not verified personalized Google rankings, backlink profiles or traffic estimates. No competitor text was copied.
 
+## Readiness finding
+
+The live guide `/project-guides/ai` contains an error-placeholder description and lacks useful public instructions. A structural indexing/sitemap guard is implemented locally; the underlying guide remains available for its owner to repair. The very short existing project showcase needs editorial review; it was not deleted or hidden automatically.
+
 ## Implemented differentiation and pending work
 
 Eleven existing source pages now have original task-oriented additions and better metadata; five courses gain curated guides; one runnable retrieval resource is included. Next resources should be selected from actual longer-period query demand, genuinely original/licensed data and teaching expertise. Instructor bios, assessed projects, SQL/BI datasets and downloadable notes require subject review before publication. See the 90-day calendar.

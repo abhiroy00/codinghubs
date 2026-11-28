@@ -4,7 +4,7 @@
 
 | Check | Result | Scope / limits |
 |---|---|---|
-| `DEBUG=True .venv/bin/python manage.py test apps --noinput` | 555 tests completed; OK, 8 existing skips | Isolated SQLite; production PostgreSQL remains CI verification |
+| `DEBUG=True .venv/bin/python manage.py test apps --noinput` | 559 tests completed; OK, 8 existing skips | Isolated SQLite; production PostgreSQL remains CI verification |
 | GSC focused reporting + existing sync test | 6 passed | Exact dates, pagination, explicit limits and compatibility |
 | Guarded update + reporting tests | 9 passed | Dry run, no editor overwrite, restore point, counters/status, idempotence and public HTML |
 | All source/update hashes | 11 checked | Sanitized source matches frozen pack; within 10,000-word editor limit |
@@ -17,6 +17,8 @@
 | Enquiry event assertions | 4 enquiry scenarios passed | No lead for 503; one event per funnel stage after 201; no fixture contact values in event queue |
 | Changed Python ruff checks / frontend lint | Passed; existing frontend warnings | No warning gate weakened |
 | Default frontend `npm test` | Inconclusive: timed out | Baseline also stalled; direct `@testing-library/react` import stalled; unit checks were not disabled |
+| Guide indexing and access tests | 4 new regressions; existing shop checks pass | Empty/placeholder/private/disabled sections, restoration, sitemap/API/SSR and genuine pagination 404s |
+| Client guide metadata | 2 browser checks passed | noindex survives JavaScript; eligible canonical and filtered noindex verified |
 | Live crawl/recheck | 300 sitemap URLs observed at 200 | 72 initial failures recovered; not an uptime guarantee or Google indexing proof |
 | Generic missing URL | 404 | One clearly nonexistent public URL |
 | PageSpeed Insights | Blocked by 429 | No remote score or field data invented |
@@ -35,6 +37,8 @@ Before fixes, tests reproduced the 29-day GSC range and missing reporting helper
 | 1440px | 164ms / 88ms | 0.001038 / 0.001038 |
 
 Run-to-run timing differences are not evidence that these SEO changes caused a speed improvement. No speculative performance rewrite was introduced. INP and 75th-percentile field Core Web Vitals remain unverified. The final report must not claim a remote performance improvement from these observations.
+
+Additional final backend evidence: `/tmp/codinghubs-seo-backend-final.log`; guide-browser evidence: `/tmp/codinghubs-guide-browser.log`.
 
 Raw logs: `/tmp/codinghubs-seo-backend-tests.log`, `/tmp/codinghubs-seo-browser-integrated.log`, `/tmp/codinghubs-seo-final-build.log`, `/tmp/codinghubs-seo-final-validation.log`; structured evidence under `artifacts/seo-growth/`. Test outputs under `/tmp` are session-local.
 

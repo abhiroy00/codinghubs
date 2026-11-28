@@ -41,7 +41,9 @@ The crawler fetched robots first, used two workers, followed same-origin sitemap
 | PERF-01 | P2 measurement | Field p75 data unavailable; remote PSI returned 429 | Local timings and regression tests recorded; no speculative performance rewrite |
 | QA-01 | P2 | Two old browser assertions expected a newsletter on the homepage | Moved consent assertion to its existing newsletter route; retained current footer/no-JS checks |
 
-No persistent P0 indexing blocker was reproduced. Do not read that as a guarantee of rankings, Google indexing, external resource correctness or future uptime.
+Final content review also identified a concrete P1: `/project-guides/ai` exposes a short “Api failed” guide while remaining indexable and submitted in the live sitemap. Implemented a structural readiness guard: empty, disabled, placeholder-only or non-public instructional sections cannot qualify a guide for indexing; the page stays readable and published. The API, server HTML, client metadata and sitemap share the decision. Invalid project/guide pagination also returned the last page with 200; it now returns a branded 404. Short project-showcase content remains an editorial review item rather than being automatically removed.
+
+No persistent P0 availability blocker remained after rechecks. Do not read that as a guarantee of rankings, Google indexing, external resource correctness or future uptime.
 
 ## Completed work and remaining work
 

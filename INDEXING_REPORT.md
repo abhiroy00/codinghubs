@@ -6,6 +6,10 @@ The existing master map references static, content, shop and directory sitemaps.
 
 Eligibility, sitemap inclusion and HTTP 200 are not proof of Google indexing. No live URL Inspection or Pages-report dataset was available. Historical November 23 validation-triage rows include intentional account/practice exclusions, incomplete workspaces, aliases and legacy redirects; they must not all be forced into the index.
 
+## Minimum public-guide readiness
+
+The current live `/project-guides/ai` placeholder remains a deployment-pending finding in the inventory. The local fix changes its indexing signals and sitemap eligibility without deleting content or making it inaccessible. Enabled public instructions or an explicit public preview can restore eligibility; private/disabled sections and exact known placeholders cannot. This guard does not imply every short project showcase is low quality. Those require human review.
+
 ## Completed
 
 Preserved the working map architecture, canonical signals, genuine 404 behavior and private-route controls. Added XML/ownership tests and a reproducible public inventory. Rechecked the 72 failed live requests successfully. Did not submit indexing requests or misuse the Indexing API. Kept all existing URLs and content records.
