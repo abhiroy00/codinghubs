@@ -1,6 +1,6 @@
 from django.conf import settings
 from apps.content import services as content_services
-from apps.content.sanitize import add_heading_ids, sanitize_html
+from apps.content.sanitize import add_heading_ids, plain_text, sanitize_html
 from . import access
 from .models import Project, ProjectGuide
 
@@ -11,6 +11,23 @@ def public_projects():
 
 def public_guides():
     return ProjectGuide.objects.public().select_related('project')
+
+
+def guide_is_indexable(guide):
+    """Require actual anonymous instructional content, without unlocking protected sections.
+
+    This structural minimum is not an editorial quality score or a word-count ranking rule.
+    Empty/disabled sections and known error placeholders must not submit a guide for indexing.
+    """
+    for section in guide.sections or []:
+        if not section.get('enabled') or not section.get('title'):
+            continue
+        if guide.access_type != ProjectGuide.ACCESS_FREE and not section.get('preview'):
+            continue
+        text = plain_text(sanitize_html(section.get('html', ''))).strip().rstrip('.').lower()
+        if text and text not in ('api failed', 'coming soon', 'todo', 'tbd', 'placeholder'):
+            return True
+    return False
 
 
 def fill_description(desc: str, title: str, what: str) -> str:
@@ -127,7 +144,7 @@ def simple_seo(obj, kind, base, label, summary, preview=False, free=True) -> dic
     node['author'] = {'@type': 'Person', 'name': obj.author_name} if obj.author_name else {'@id': content_services.ORG_ID, '@type': 'EducationalOrganization', 'name': 'Coding Hubs School of AI'}
     return {
         'title': title, 'description': desc, 'canonical': canonical,
-        'robots': 'noindex, nofollow' if preview else 'index, follow, max-image-preview:large',
+        'robots': 'noindex, nofollow' if preview else 'noindex, follow' if kind == 'guide' and not guide_is_indexable(obj) else 'index, follow, max-image-preview:large',
         'og': {'type': 'article', 'title': obj.og_title or obj.seo_title or obj.title, 'description': obj.og_description or desc, 'image': image, 'url': canonical},
         'json_ld': {'@context': 'https://schema.org', '@graph': [node]},
     }

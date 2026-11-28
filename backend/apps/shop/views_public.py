@@ -124,7 +124,10 @@ class GuideList(generics.ListAPIView):
         page = self.paginate_queryset(qs.order_by(order, '-id'))
         resp = self.get_paginated_response([payloads.guide_card(x) for x in page])
         all_pub = payloads.public_guides()
-        resp.data = dict(resp.data) | {'categories': sorted(set(all_pub.exclude(category='').values_list('category', flat=True)))}
+        resp.data = dict(resp.data) | {
+            'categories': sorted(set(all_pub.exclude(category='').values_list('category', flat=True))),
+            'indexable': any(payloads.guide_is_indexable(guide) for guide in page),
+        }
         return revalidate(resp)
 
 

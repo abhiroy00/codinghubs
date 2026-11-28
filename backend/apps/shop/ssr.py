@@ -56,7 +56,7 @@ def paginate(qs, page):
     try:
         return pg.page(page), pg
     except EmptyPage:
-        return pg.page(pg.num_pages), pg
+        raise Http404('Page not found') from None
 
 
 @require_GET
@@ -69,7 +69,10 @@ def projects_list(request):
         qs = qs.filter(difficulty=diff)
     if query:
         qs = qs.filter(title__icontains=query)
-    pg, pager = paginate(qs.order_by('-published_at', '-id'), page_number(request))
+    try:
+        pg, pager = paginate(qs.order_by('-published_at', '-id'), page_number(request))
+    except Http404:
+        return not_found('Page not found')
     gmap = payloads.guides_by_project([p.pk for p in pg.object_list])
     cards = with_urls([payloads.project_card(p, gmap.get(p.pk)) for p in pg.object_list], '/projects')
     seo = listing_seo('projects', pg.number, ''.join(f'{k}={v}&' for k, v in (('category', cat), ('difficulty', diff)) if v), indexable=not query)
@@ -101,11 +104,15 @@ def guides_list(request):
         qs = qs.filter(category__iexact=cat)
     if query:
         qs = qs.filter(title__icontains=query)
-    pg, pager = paginate(qs.order_by('-published_at', '-id'), page_number(request))
+    try:
+        pg, pager = paginate(qs.order_by('-published_at', '-id'), page_number(request))
+    except Http404:
+        return not_found('Page not found')
     cards = with_urls([payloads.guide_card(g) for g in pg.object_list], '/project-guides')
-    seo = listing_seo('guides', pg.number, f'category={cat}&' if cat else '', indexable=not query)
+    indexable = not query and not cat and any(payloads.guide_is_indexable(guide) for guide in pg.object_list)
+    seo = listing_seo('guides', pg.number, f'category={cat}&' if cat else '', indexable=indexable)
     html = render_to_string('shop/guide_list.html', {'items': cards, 'page': pg, 'query': query})
-    return respond(seo, html, data={'kind': 'guide-list', 'page': pg.number, 'category': cat, 'q': query, 'results': cards, 'count': pager.count,
+    return respond(seo, html, data={'kind': 'guide-list', 'page': pg.number, 'category': cat, 'q': query, 'results': cards, 'count': pager.count, 'indexable': indexable,
                                     'categories': sorted(set(payloads.public_guides().exclude(category='').values_list('category', flat=True)))})
 
 
@@ -124,11 +131,15 @@ def guide_detail(request, slug):
 
 @require_GET
 def shop_sitemap(request):
-    rows = [f'{settings.SITE_URL}{b}' for b in ('/projects', '/project-guides')]
+    guides = list(payloads.public_guides().only('id', 'sections', 'access_type', 'project_id').order_by('-published_at', '-id'))
+    guide_ids = {guide.pk for guide in guides if payloads.guide_is_indexable(guide)}
+    rows = [f'{settings.SITE_URL}/projects']
+    if any(guide.pk in guide_ids for guide in guides[:PAGE]):
+        rows.append(f'{settings.SITE_URL}/project-guides')
     out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u in rows:
         out.append(f'  <url><loc>{escape(u)}</loc></url>')
-    for qs, base in ((payloads.public_projects(), '/projects'), (payloads.public_guides(), '/project-guides')):
+    for qs, base in ((payloads.public_projects(), '/projects'), (payloads.public_guides().filter(pk__in=guide_ids), '/project-guides')):
         for url, mod in content_services.canonical_sitemap_rows(qs, base):
             out.append(f'  <url><loc>{escape(url)}</loc><lastmod>{mod.date().isoformat()}</lastmod></url>')
     out.append('</urlset>')

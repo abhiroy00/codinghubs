@@ -40,6 +40,7 @@ export interface Paged<T> {
   results: T[]
   categories?: any[]
   technologies?: string[]
+  indexable?: boolean
 }
 
 export const get = <T = any>(url: string, params?: Record<string, any>) => shop.get<T>(url, { params }).then((r) => r.data)

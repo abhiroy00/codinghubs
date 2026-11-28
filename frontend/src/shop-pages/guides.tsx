@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { NotFound } from '../pages/NotFound'
 import { BackLink } from '../components/BackLink'
-import { PageFrame, Pager, SearchIcon } from '../content-pages/shared'
+import { PageFrame, Pager, SearchIcon, useSeo } from '../content-pages/shared'
+import { LOGO_URL, pageSeo } from '../seo/site'
 import { CodeEnhancedHtml, FileList, Html, useDetail } from './catalog'
 import { Arrow, Clock, Cover, cap } from './projects'
 import { get, initial, type Card, type Paged } from './api'
@@ -59,7 +60,7 @@ export function GuidesPage() {
     seedRef.current = i && i.kind === 'guide-list' ? i : {}
   }
   const seed = seedRef.current
-  const [data, setData] = useState<Paged<Card> | null>(seed.results ? { count: seed.count, results: seed.results } : null)
+  const [data, setData] = useState<Paged<Card> | null>(seed.results ? { count: seed.count, results: seed.results, indexable: seed.indexable } : null)
   const [cats, setCats] = useState<string[]>(seed.categories ?? [])
   const [text, setText] = useState(q)
   const [error, setError] = useState(false)
@@ -106,6 +107,12 @@ export function GuidesPage() {
     setParams(next)
   }
   const active = [category, difficulty, access, q].filter(Boolean).length
+  useSeo(pageSeo({
+    path: '/project-guides' + (page > 1 ? `?page=${page}` : ''),
+    title: `Project Guides: Step-by-Step Tutorials${page > 1 ? `, page ${page}` : ''} | Coding Hubs`,
+    description: 'Step-by-step project guides with setup, code, testing and deployment, from Coding Hubs School of AI.',
+    image: LOGO_URL, indexable: data?.indexable === true && !active && !error,
+  }))
   const reset = () => { setText(''); setParams(new URLSearchParams()) }
 
   return (
