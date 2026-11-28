@@ -3,11 +3,12 @@ slug: what-is-rag
 excerpt: Retrieval-augmented generation (RAG) explained simply: why LLMs need it, how embeddings and vector search work, the RAG pipeline step by step, evaluation and common mistakes.
 category: Artificial Intelligence
 tags: RAG, Generative AI, LLM, Vector Database, AI Engineering
-seo_title: What Is RAG? Retrieval-Augmented Generation Explained Simply
-meta_description: Understand RAG (retrieval-augmented generation): why LLMs need it, embeddings, chunking, vector databases, the full pipeline and evaluation.
+seo_title: What Is RAG in AI? Architecture and Retrieval Examples
+meta_description: Understand retrieval-augmented generation: retrieval, model context, citations, failure modes and a runnable Python retrieval exercise.
 focus_keyword: what is rag
 search_intent: Understand retrieval-augmented generation and how it works.
 ---
+<h2>What does RAG mean in practice?</h2><p><strong>Retrieval-augmented generation (RAG) retrieves relevant information and supplies it as context to a language model before an answer is generated.</strong> The model weights do not need to change each time a source document changes. Retrieval can still miss evidence, and a model can still make unsupported claims: citations, permission checks and evaluation remain necessary.</p><p>Try the <a href="/resources/rag-retrieval-demo.py" rel="noopener noreferrer">original Python retrieval exercise</a>. Run it with Python 3; it needs no packages, credentials or network. Its lexical search demonstrates selecting passages and abstaining when nothing matches. It is a retrieval exercise, not a full RAG system or a substitute for semantic-search evaluation.</p><p>For the surrounding skills, compare the <a href="/courses/generative-ai/" rel="noopener noreferrer">Generative AI learning topics</a> with the <a href="/blog/ai-agents-explained" rel="noopener noreferrer">tool-using agent workflow</a>. See <a href="https://aws.amazon.com/what-is/retrieval-augmented-generation/" rel="noopener noreferrer">AWS documentation on RAG</a> for a primary-source explanation.</p>
 <p>Large language models are impressive, but they have two big limits: they do not know your private data, and their built-in knowledge stops at their training date. Retrieval-augmented generation, or RAG, solves both. If you have wondered <strong>what is RAG</strong> and why every AI job description mentions it, this guide explains the idea and the full pipeline in simple terms.</p>
 
 <h2>The problem RAG solves</h2>

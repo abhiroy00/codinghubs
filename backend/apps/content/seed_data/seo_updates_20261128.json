@@ -1,0 +1,280 @@
+{
+  "version": "2026-11-28",
+  "updates": [
+    {
+      "slug": "what-is-rag",
+      "source_file": "31-what-is-rag.html",
+      "expected_body_sha256": "2dd2daca370de676133052aeb9cd7fe8e648daabdc824839d1edcdc8b5917727",
+      "updated_body_sha256": "699e64347c8b784280337f7d6ddb151c57d8dc3fa4519b2cfc58714cf28d3bb9",
+      "prepend_html": "<h2>What does RAG mean in practice?</h2><p><strong>Retrieval-augmented generation (RAG) retrieves relevant information and supplies it as context to a language model before an answer is generated.</strong> The model weights do not need to change each time a source document changes. Retrieval can still miss evidence, and a model can still make unsupported claims: citations, permission checks and evaluation remain necessary.</p><p>Try the <a href=\"/resources/rag-retrieval-demo.py\" rel=\"noopener noreferrer\">original Python retrieval exercise</a>. Run it with Python 3; it needs no packages, credentials or network. Its lexical search demonstrates selecting passages and abstaining when nothing matches. It is a retrieval exercise, not a full RAG system or a substitute for semantic-search evaluation.</p><p>For the surrounding skills, compare the <a href=\"/courses/generative-ai/\" rel=\"noopener noreferrer\">Generative AI learning topics</a> with the <a href=\"/blog/ai-agents-explained\" rel=\"noopener noreferrer\">tool-using agent workflow</a>. See <a href=\"https://aws.amazon.com/what-is/retrieval-augmented-generation/\" rel=\"noopener noreferrer\">AWS documentation on RAG</a> for a primary-source explanation.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "What Is RAG? Retrieval-Augmented Generation Explained Simply",
+          "to": "What Is RAG in AI? Architecture and Retrieval Examples"
+        },
+        "meta_description": {
+          "from": "Understand RAG (retrieval-augmented generation): why LLMs need it, embeddings, chunking, vector databases, the full pipeline and evaluation.",
+          "to": "Understand retrieval-augmented generation: retrieval, model context, citations, failure modes and a runnable Python retrieval exercise."
+        },
+        "og_title": {
+          "from": "What Is RAG? Retrieval-Augmented Generation Explained Simply",
+          "to": "What Is RAG in AI? Architecture and Retrieval Examples"
+        },
+        "og_description": {
+          "from": "Understand RAG (retrieval-augmented generation): why LLMs need it, embeddings, chunking, vector databases, the full pipeline and evaluation.",
+          "to": "Understand retrieval-augmented generation: retrieval, model context, citations, failure modes and a runnable Python retrieval exercise."
+        }
+      }
+    },
+    {
+      "slug": "ai-agents-explained",
+      "source_file": "32-ai-agents-explained.html",
+      "expected_body_sha256": "ec80cabe2eef0e2382b23c476ba5db118455ee661d111f7fe542a0a73f7de4ab",
+      "updated_body_sha256": "ec958848ede8e446e6988480e4299fa26738cf462dc7931a2238741d0004ebea",
+      "prepend_html": "<h2>How do you build a first AI agent safely?</h2><p>An AI agent combines a model, a goal, allowed tools and a bounded loop that checks tool results. Start with a read-only study assistant: let it choose between searching approved notes and reading a timetable. Validate tool arguments, limit the number of steps and stop when the evidence is insufficient. Saving a plan or contacting someone should require a separate explicit confirmation.</p><p>Test three cases: a supported question, a missing source and a tool timeout. Log which tool ran and whether the final answer cites its evidence. Add <a href=\"/blog/what-is-rag\" rel=\"noopener noreferrer\">retrieval grounding</a> before adding more actions, and compare the <a href=\"/courses/agentic-ai/\" rel=\"noopener noreferrer\">Agentic AI course topics</a> with your project goals. The <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/definitions.html\" rel=\"noopener noreferrer\">AWS agentic AI definitions</a> distinguish agent systems and workflows.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "AI Agents Explained: What They Are and How to Build One",
+          "to": "AI Agents Explained: How They Work and How to Build One"
+        },
+        "meta_description": {
+          "from": "Learn what AI agents are, how they differ from chatbots, how tools and function calling work, the agent loop, guardrails and how to build one.",
+          "to": "Learn the agent loop, tools, memory, limits and evaluation. Follow a small read-only project and distinguish agents from fixed workflows."
+        },
+        "og_title": {
+          "from": "AI Agents Explained: What They Are and How to Build One",
+          "to": "AI Agents Explained: How They Work and How to Build One"
+        },
+        "og_description": {
+          "from": "Learn what AI agents are, how they differ from chatbots, how tools and function calling work, the agent loop, guardrails and how to build one.",
+          "to": "Learn the agent loop, tools, memory, limits and evaluation. Follow a small read-only project and distinguish agents from fixed workflows."
+        }
+      }
+    },
+    {
+      "slug": "switch-career-from-non-it-to-it",
+      "source_file": "72-switch-career-from-non-it-to-it.html",
+      "expected_body_sha256": "588b3c4389a91ab2fa42599752c8bbf08c124ac385a0ebe7c570fdfa4c3bce33",
+      "updated_body_sha256": "92dd93adc305efbd27a0e7c8754bc1e896bb39903a24870017031c8e3b442057",
+      "prepend_html": "<h2>What should your first career-switch project prove?</h2><p>Choose a role before choosing a certificate. For an analyst role, clean a small public dataset, answer one business question with SQL and explain the limitations. For testing, write positive and negative tests for a practice API. For web development, build a small application with input validation and a documented setup.</p><p>Publish only work you are allowed to share, explain what you personally implemented, and practise describing a failed approach. A course can provide structure, but neither a certificate nor a fixed study timeline guarantees a job. Compare <a href=\"/courses/\" rel=\"noopener noreferrer\">existing course topics</a>, use the <a href=\"/blog/github-profile-for-developers\" rel=\"noopener noreferrer\">GitHub portfolio checklist</a>, and review <a href=\"/latest-jobs\" rel=\"noopener noreferrer\">current job requirements</a> before committing to a path.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "Switch Career from Non-IT to IT Without Experience (2026)",
+          "to": "Switch from Non-IT to IT Without Experience: Practical Steps"
+        },
+        "meta_description": {
+          "from": "Switching from non-IT to IT with no experience? Pick the right role, learn in 6-12 months, build proof projects and land your first IT job. Step-by-step plan.",
+          "to": "Choose an entry-level IT role, practise its core skills, build demonstrable projects and prepare applications without relying on hiring guarantees."
+        },
+        "og_title": {
+          "from": "Switch Career from Non-IT to IT Without Experience (2026)",
+          "to": "Switch from Non-IT to IT Without Experience: Practical Steps"
+        },
+        "og_description": {
+          "from": "Switching from non-IT to IT with no experience? Pick the right role, learn in 6-12 months, build proof projects and land your first IT job. Step-by-step plan.",
+          "to": "Choose an entry-level IT role, practise its core skills, build demonstrable projects and prepare applications without relying on hiring guarantees."
+        }
+      }
+    },
+    {
+      "slug": "api-testing-tutorial",
+      "source_file": "62-api-testing-tutorial.html",
+      "expected_body_sha256": "6267eaceca926313cde5ebca60096b7443b6b6d03cd1ed90e17b55bfdd4d6e0a",
+      "updated_body_sha256": "c57132c392f9747e2f61f8c593e26ca1ef5bcf14a17c41bb6b86adf7e8ddf910",
+      "prepend_html": "<h2>What should a beginner API test verify?</h2><p><strong>API testing checks whether a request produces the expected status, headers, data and side effects.</strong> A successful response alone does not prove correctness. Pair a valid request with missing-input, wrong-type, unauthorized and missing-resource cases. Confirm that a rejected write did not change stored data.</p><p>Use a local practice service or an explicitly designated demo API. Keep tokens out of collection exports, use environment variables and state the expected result for each test before running it. The <a href=\"https://learning.postman.com/docs/getting-started/quick-start/\" rel=\"noopener noreferrer\">Postman quick start</a> explains request and response inspection. Continue with <a href=\"/blog/how-to-write-test-cases\" rel=\"noopener noreferrer\">test-case design</a> or compare the <a href=\"/courses/automation-testing/\" rel=\"noopener noreferrer\">Automation Testing learning topics</a>.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "API Testing Tutorial for Beginners: Postman and Automation",
+          "to": "API Testing Tutorial: Postman, Python and Negative Tests"
+        },
+        "meta_description": {
+          "from": "A beginner API testing tutorial: HTTP methods and status codes, what to test, Postman collections, automated tests in Python and Java, and auth.",
+          "to": "Test REST APIs with Postman and Python: status codes, JSON contracts, authentication, negative cases and repeatable practice exercises."
+        },
+        "og_title": {
+          "from": "API Testing Tutorial for Beginners: Postman and Automation",
+          "to": "API Testing Tutorial: Postman, Python and Negative Tests"
+        },
+        "og_description": {
+          "from": "A beginner API testing tutorial: HTTP methods and status codes, what to test, Postman collections, automated tests in Python and Java, and auth.",
+          "to": "Test REST APIs with Postman and Python: status codes, JSON contracts, authentication, negative cases and repeatable practice exercises."
+        }
+      }
+    },
+    {
+      "slug": "oops-concepts-in-java",
+      "source_file": "19-oops-concepts-in-java.html",
+      "expected_body_sha256": "78c4bcc9ac5a91fc675233c98d02c338c979efa260a8db25a65d22946e19c9ca",
+      "updated_body_sha256": "53c48c3810d8ef9bce08cf1a5b5a5d533411852e5b51b67bdb0235f93e21e89a",
+      "prepend_html": "<h2>How do you distinguish the four OOP pillars?</h2><p>Encapsulation controls access to state; abstraction exposes a useful contract; inheritance specializes an existing type; polymorphism lets code work through a shared interface. These ideas overlap, but they solve different design problems.</p><p>Practise with a <code>PaymentMethod</code> interface and two implementations that return fictional receipts. A checkout function should depend on the interface instead of inspecting concrete class names. Then explain why an account balance belongs behind validated methods, and why composition may be simpler than a deep inheritance tree. Compare these decisions with <a href=\"/blog/java-interview-questions\" rel=\"noopener noreferrer\">Java interview answers</a> and the <a href=\"/courses/java-full-stack-developer-gen-ai/\" rel=\"noopener noreferrer\">Java full-stack learning path</a>.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "OOPs Concepts in Java with Real-Life Examples and Code",
+          "to": "OOPs Concepts in Java: Four Pillars with Code Examples"
+        },
+        "meta_description": {
+          "from": "Learn OOPs concepts in Java with real-life examples: class, object, encapsulation, inheritance, polymorphism, abstraction and interfaces.",
+          "to": "Learn encapsulation, abstraction, inheritance and polymorphism in Java, then explain the difference with a small object-oriented exercise."
+        },
+        "og_title": {
+          "from": "OOPs Concepts in Java with Real-Life Examples and Code",
+          "to": "OOPs Concepts in Java: Four Pillars with Code Examples"
+        },
+        "og_description": {
+          "from": "Learn OOPs concepts in Java with real-life examples: class, object, encapsulation, inheritance, polymorphism, abstraction and interfaces.",
+          "to": "Learn encapsulation, abstraction, inheritance and polymorphism in Java, then explain the difference with a small object-oriented exercise."
+        }
+      }
+    },
+    {
+      "slug": "react-interview-questions",
+      "source_file": "38-react-interview-questions.html",
+      "expected_body_sha256": "0bcbfcdbaa6fd6c3b053adec212046e3b53aa29fbdd0df7dfef86e4fb9b946c3",
+      "updated_body_sha256": "a55e02fef6020c86a3172563b59f6fa7ad28ea316a8a10b07a20c246a1bef313",
+      "prepend_html": "<h2>How should you practise a React interview answer?</h2><p>Start with the user-visible behavior, explain the relevant React concept, and walk through a small example and a failure case. For an asynchronous search component, explain which state is local, how stale requests are ignored and what the loading and error states show. State updates and network responses do not necessarily finish in the order they started.</p><p>For keys, describe what happens when a list is reordered. For effects, identify the external system being synchronized and how cleanup works. Use the existing questions below as a checklist, then build one working example. Revise <a href=\"/blog/javascript-concepts-before-react\" rel=\"noopener noreferrer\">JavaScript fundamentals</a> and compare the <a href=\"/courses/react-full-stack/\" rel=\"noopener noreferrer\">React Full Stack course topics</a> rather than memorizing definitions alone.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "Top 35 React Interview Questions and Answers (2026)",
+          "to": "React Interview Questions and Answers: Beginner to Advanced"
+        },
+        "meta_description": {
+          "from": "35 React interview questions and answers: virtual DOM, JSX, props vs state, hooks, useEffect, keys, memoization, context, routing and performance.",
+          "to": "Practise 35 React interview questions on components, hooks, state, effects, keys and performance, with a scenario-based revision exercise."
+        },
+        "og_title": {
+          "from": "Top 35 React Interview Questions and Answers (2026)",
+          "to": "React Interview Questions and Answers: Beginner to Advanced"
+        },
+        "og_description": {
+          "from": "35 React interview questions and answers: virtual DOM, JSX, props vs state, hooks, useEffect, keys, memoization, context, routing and performance.",
+          "to": "Practise 35 React interview questions on components, hooks, state, effects, keys and performance, with a scenario-based revision exercise."
+        }
+      }
+    },
+    {
+      "slug": "how-long-to-learn-coding",
+      "source_file": "50-how-long-to-learn-coding.html",
+      "expected_body_sha256": "50bd36b3df766bd8f247123064c30319e6e29f4419c82934de440aeea9b42651",
+      "updated_body_sha256": "0ee2843986c348180c57b1162538bef6e4d868cfbd8ff40cee1efb1b40ecc0a5",
+      "prepend_html": "<h2>How can you tell whether you are making progress?</h2><p>Use observable milestones instead of a promised hiring date. First, explain a small program without a tutorial. Next, change its behavior, find an intentionally introduced bug and write a check for the fix. Then build a small project from a written requirement and document its limitations.</p><p>Review these milestones weekly and adjust your workload when a concept needs more practice. Prior experience, study time, feedback and the target role all affect the timeline; finishing a course does not guarantee employment. Start with <a href=\"/blog/learn-python-for-beginners\" rel=\"noopener noreferrer\">beginner Python practice</a>, compare <a href=\"/blog/full-stack-vs-data-science-vs-ai\" rel=\"noopener noreferrer\">career paths</a>, and use <a href=\"/courses/\" rel=\"noopener noreferrer\">course learning topics</a> to identify gaps.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "How Long Does It Take to Learn Coding and Get a Job?",
+          "to": "How Long Does It Take to Learn Coding? Skills and Milestones"
+        },
+        "meta_description": {
+          "from": "How long it takes to learn coding and get a job: realistic timelines for web, Python, Java, data and AI roles, what affects speed, and a study plan.",
+          "to": "Plan coding study around weekly hours, independent projects and feedback. Separate learning the basics from readiness for a specific job role."
+        },
+        "og_title": {
+          "from": "How Long Does It Take to Learn Coding and Get a Job?",
+          "to": "How Long Does It Take to Learn Coding? Skills and Milestones"
+        },
+        "og_description": {
+          "from": "How long it takes to learn coding and get a job: realistic timelines for web, Python, Java, data and AI roles, what affects speed, and a study plan.",
+          "to": "Plan coding study around weekly hours, independent projects and feedback. Separate learning the basics from readiness for a specific job role."
+        }
+      }
+    },
+    {
+      "slug": "ai-engineering-course",
+      "source_file": "68-ai-engineering-course.html",
+      "expected_body_sha256": "2c75d95e0c3b0ee24b7b56eda363b73ad542a9485ff49c63fc18671216fab747",
+      "updated_body_sha256": "b82577b516e5cf6d374431dba324fe1587099a54b0d9ac4fe39bdef777b20269",
+      "prepend_html": "<h2>What belongs in an AI engineer syllabus?</h2><p>A practical AI engineer syllabus should connect Python and data fundamentals with model APIs, retrieval, tool use, evaluation, security and deployment. Treat this as a skills checklist, not a claim about the duration, accreditation or fees of any specific course.</p><p>For each module, ask what you will build and how it will be assessed. A document assistant should cite authorized sources and decline unsupported questions; an agent should handle a tool timeout; a deployed service should protect secrets, validate inputs and report failures. Compare the published <a href=\"/courses/ai-engineering-diploma/\" rel=\"noopener noreferrer\">AI Engineering Diploma topics</a> and <a href=\"/interview/ai-engineering-diploma/\" rel=\"noopener noreferrer\">interview preparation</a>. Confirm current delivery mode, fees and batch details directly with the school before enrolling.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "AI Engineering Course 2026: Syllabus, Projects and Careers",
+          "to": "AI Engineer Syllabus: Skills, RAG, Agents and Project Checklist"
+        },
+        "meta_description": {
+          "from": "AI engineering course guide: who should join, prerequisites, full syllabus (LLMs, RAG, agents, evaluation, deployment), projects, careers and how to choose.",
+          "to": "Review an AI engineer syllabus covering Python, ML, LLMs, RAG, agents, evaluation and deployment, with practical project acceptance criteria."
+        },
+        "og_title": {
+          "from": "AI Engineering Course 2026: Syllabus, Projects and Careers",
+          "to": "AI Engineer Syllabus: Skills, RAG, Agents and Project Checklist"
+        },
+        "og_description": {
+          "from": "AI engineering course guide: who should join, prerequisites, full syllabus (LLMs, RAG, agents, evaluation, deployment), projects, careers and how to choose.",
+          "to": "Review an AI engineer syllabus covering Python, ML, LLMs, RAG, agents, evaluation and deployment, with practical project acceptance criteria."
+        }
+      }
+    },
+    {
+      "slug": "github-profile-for-developers",
+      "source_file": "43-github-profile-for-developers.html",
+      "expected_body_sha256": "2154578531c5bd9768bc1e33cc4a7f7e2f53bc4b222cd1c368efa2cb851ce744",
+      "updated_body_sha256": "7742f06d7099b3b908577b1c85b666f323b18fd16e035bbbfbc2b5d72bee8510",
+      "prepend_html": "<h2>What should a useful GitHub profile show?</h2><p>A useful developer profile helps a reader understand what you built, how to run it and what evidence supports your claims. Pin a small selection of your strongest relevant projects. A project README should explain the problem, setup, sample input and output, tests, limitations and your contribution.</p><p>Do not publish API keys, private datasets or copied code without permission. A busy contribution graph is not proof of job readiness, and an attractive profile does not guarantee recruiter interest. Improve one <a href=\"/blog/python-projects-for-beginners\" rel=\"noopener noreferrer\">Python project</a> or <a href=\"/blog/build-mern-stack-project\" rel=\"noopener noreferrer\">MERN project</a>, then practise its technical walkthrough using the <a href=\"/interview/\" rel=\"noopener noreferrer\">interview guides</a>.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "How to Build a GitHub Profile That Recruiters Notice",
+          "to": "GitHub Profile for Developers: README and Project Checklist"
+        },
+        "meta_description": {
+          "from": "Build a strong GitHub profile: write a profile README, pin your best projects, write great project READMEs, keep clean commits and avoid mistakes.",
+          "to": "Improve your GitHub profile with useful pinned projects, setup instructions, tests, honest contribution notes and a clear profile README."
+        },
+        "og_title": {
+          "from": "How to Build a GitHub Profile That Recruiters Notice",
+          "to": "GitHub Profile for Developers: README and Project Checklist"
+        },
+        "og_description": {
+          "from": "Build a strong GitHub profile: write a profile README, pin your best projects, write great project READMEs, keep clean commits and avoid mistakes.",
+          "to": "Improve your GitHub profile with useful pinned projects, setup instructions, tests, honest contribution notes and a clear profile README."
+        }
+      }
+    },
+    {
+      "slug": "mongodb-vs-sql",
+      "source_file": "26-mongodb-vs-sql.html",
+      "expected_body_sha256": "3b731c3bfbffe79ee1014acf6154ee505ea1e18e171812b5565acf37948d3f9a",
+      "updated_body_sha256": "c9cd7905594a342b5253547f42ad70b34126cd5de46f2a9e7ab7e57970ffc1d8",
+      "prepend_html": "<h2>Should you learn MySQL or MongoDB first?</h2><p>For a broad foundation in structured data, SQL and a relational database such as MySQL are a sensible first choice. If your immediate project uses MongoDB, you can start there while still learning schema design, indexes and transactions. Neither choice removes the need to validate data or understand access patterns.</p><p>Practise the same task in each model: store customers and orders, find a customer’s recent orders and explain how you would prevent invalid references. Compare the query and update patterns before choosing a database. The <a href=\"/blog/node-js-express-rest-api\" rel=\"noopener noreferrer\">Node.js API tutorial</a> gives application context; <a href=\"/courses/mern-stack/\" rel=\"noopener noreferrer\">MERN learning topics</a> show where MongoDB fits.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "MongoDB vs SQL: Which Database Should You Learn First?",
+          "to": "MySQL or MongoDB First? A Beginner Database Comparison"
+        },
+        "meta_description": {
+          "from": "Compare MongoDB and SQL databases like MySQL and PostgreSQL: data models, schemas, joins, transactions, scaling and what beginners should learn.",
+          "to": "Compare relational SQL databases with MongoDB by schema, joins, transactions and project needs, then choose a sensible first learning path."
+        },
+        "og_title": {
+          "from": "MongoDB vs SQL: Which Database Should You Learn First?",
+          "to": "MySQL or MongoDB First? A Beginner Database Comparison"
+        },
+        "og_description": {
+          "from": "Compare MongoDB and SQL databases like MySQL and PostgreSQL: data models, schemas, joins, transactions, scaling and what beginners should learn.",
+          "to": "Compare relational SQL databases with MongoDB by schema, joins, transactions and project needs, then choose a sensible first learning path."
+        }
+      }
+    },
+    {
+      "slug": "microservices-spring-boot",
+      "source_file": "20-microservices-spring-boot.html",
+      "expected_body_sha256": "0e2786603a7b99b6e592ec93747eeee3c1d292a497b075e351a1679aa8cf712d",
+      "updated_body_sha256": "576cbe4e0f7ed205dc6e8b856a456e4aa697ee4969c7a65d4689ae66d7823f83",
+      "prepend_html": "<h2>When are Spring Boot microservices worth using?</h2><p>Microservices can help teams deploy and scale independent capabilities, but they add network failures, data-consistency problems and operational work. A modular monolith is often a simpler starting point when one team owns the application and independent scaling is unnecessary.</p><p>For a practice order service, specify what happens when a payment lookup times out. Set a timeout, limit retries, distinguish retryable failures and use an idempotency key before retrying a write. Explain how you would trace one request across services. First build a <a href=\"/blog/spring-boot-rest-api-tutorial\" rel=\"noopener noreferrer\">Spring Boot REST API</a>, then compare the <a href=\"/courses/java-full-stack-developer-gen-ai/\" rel=\"noopener noreferrer\">Java full-stack course topics</a>.</p>",
+      "fields": {
+        "seo_title": {
+          "from": "Microservices with Spring Boot: Beginner's Guide (2026)",
+          "to": "Spring Boot Microservices: Architecture and Failure Handling"
+        },
+        "meta_description": {
+          "from": "A beginner guide to microservices with Spring Boot: monolith vs microservices, REST and messaging, API gateway, discovery, resilience and Docker.",
+          "to": "Learn when Spring Boot microservices make sense, how services communicate, and how to reason about timeouts, retries and duplicate requests."
+        },
+        "og_title": {
+          "from": "Microservices with Spring Boot: Beginner's Guide (2026)",
+          "to": "Spring Boot Microservices: Architecture and Failure Handling"
+        },
+        "og_description": {
+          "from": "A beginner guide to microservices with Spring Boot: monolith vs microservices, REST and messaging, API gateway, discovery, resilience and Docker.",
+          "to": "Learn when Spring Boot microservices make sense, how services communicate, and how to reason about timeouts, retries and duplicate requests."
+        }
+      }
+    }
+  ]
+}
